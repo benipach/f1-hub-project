@@ -8,8 +8,7 @@
       "dateOfBirth": "1996-03-23",
       "number": 23,
       "image": "albon.png",
-      "logo": "albon_logo.png",
-      "helmet": "albon_helmet.png",
+      "coverImage": "albon-2.png",
       "history": [
         { "year": 2019, "teamId": "Toro Rosso", "points": 92, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 1, "position": 8 },
         { "year": 2020, "teamId": "Red Bull", "points": 105, "poles": 0, "podiums": 2, "wins": 0, "starts": 17, "dnfs": 2, "position": 7 },
@@ -27,8 +26,7 @@
       "dateOfBirth": "1981-07-29",
       "number": 14,
       "image": "alonso.png",
-      "logo": "alonso_logo.png",
-      "helmet": "alonso_helmet.png",
+      "coverImage": "alonso-2.png",
       "history": [
         { "year": 2001, "teamId": "Minardi", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 16, "dnfs": 4, "position": 23 },
         { "year": 2003, "teamId": "Renault", "points": 55, "poles": 1, "podiums": 4, "wins": 1, "starts": 16, "dnfs": 3, "position": 6 },
@@ -62,8 +60,7 @@
       "dateOfBirth": "2006-08-25",
       "number": 12,
       "image": "antonelli.png",
-      "logo": "antonelli_logo.png",
-      "helmet": "antonelli_helmet.png",
+      "coverImage": "antonelli-2.png",
       "history": [
         { "year": 2025, "teamId": "Mercedes", "points": 150, "poles": 1, "podiums": 3, "wins": 0, "starts": 24, "dnfs": 4, "position": 7 }
       ]
@@ -76,8 +73,7 @@
       "dateOfBirth": "2005-05-08",
       "number": 87,
       "image": "bearman.png",
-      "logo": "bearman_logo.png",
-      "helmet": "bearman_helmet.png",
+      "coverImage": "bearman-2.png",
       "history": [
         { "year": 2024, "teamId": "Ferrari / Haas", "points": 7, "poles": 0, "podiums": 0, "wins": 0, "starts": 3, "dnfs": 0, "position": 18 },
         { "year": 2025, "teamId": "Haas", "points": 41, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 3, "position": 13 }
@@ -91,8 +87,7 @@
       "dateOfBirth": "2004-10-14",
       "number": 5,
       "image": "bortoleto.png",
-      "logo": "bortoleto_logo.png",
-      "helmet": "bortoleto_helmet.png",
+      "coverImage": "bortoleto-2.png",
       "history": [
         { "year": 2025, "teamId": "Sauber", "points": 19, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 5, "position": 19 }
       ]
@@ -105,8 +100,7 @@
       "dateOfBirth": "1989-08-28",
       "number": 77,
       "image": "bottas.png",
-      "logo": "bottas_logo.png",
-      "helmet": "bottas_helmet.png",
+      "coverImage": "bottas-2.png",
       "history": [
         { "year": 2013, "teamId": "Williams", "points": 4, "poles": 0, "podiums": 0, "wins": 0, "starts": 19, "dnfs": 1, "position": 17 },
         { "year": 2014, "teamId": "Williams", "points": 186, "poles": 0, "podiums": 6, "wins": 0, "starts": 19, "dnfs": 1, "position": 4 },
@@ -130,8 +124,7 @@
       "dateOfBirth": "2003-05-27",
       "number": 43,
       "image": "colapinto.png",
-      "logo": "colapinto_logo.png",
-      "helmet": "colapinto_helmet.png",
+      "coverImage": "colapinto-2.png",
       "history": [
         { "year": 2024, "teamId": "Williams", "points": 5, "poles": 0, "podiums": 0, "wins": 0, "starts": 9, "dnfs": 2, "position": 19 },
         { "year": 2025, "teamId": "Alpine", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 0, "position": 20 }
@@ -145,8 +138,7 @@
       "dateOfBirth": "1996-02-07",
       "number": 10,
       "image": "gasly.png",
-      "logo": "gasly_logo.png",
-      "helmet": "gasly_helmet.png",
+      "coverImage": "gasly-2.png",
       "history": [
         { "year": 2017, "teamId": "Toro Rosso", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 5, "dnfs": 0, "position": 21 },
         { "year": 2018, "teamId": "Toro Rosso", "points": 29, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 5, "position": 15 },
@@ -167,8 +159,7 @@
       "dateOfBirth": "2004-09-28",
       "number": 6,
       "image": "hadjar.png",
-      "logo": "hadjar_logo.png",
-      "helmet": "hadjar_helmet.png",
+      "coverImage": "hadjar-2.png",
       "history": [
         { "year": 2024, "teamId": "Red Bull", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 0, "dnfs": 0, "position": 0 },
         { "year": 2025, "teamId": "Racing Bulls", "points": 51, "poles": 0, "podiums": 1, "wins": 0, "starts": 24, "dnfs": 2, "position": 12 }
@@ -182,8 +173,7 @@
       "dateOfBirth": "1985-01-07",
       "number": 44,
       "image": "hamilton.png",
-      "logo": "hamilton_logo.png",
-      "helmet": "hamilton_helmet.png",
+      "coverImage": "hamilton-2.png",
       "history": [
         { "year": 2007, "teamId": "McLaren", "points": 109, "poles": 6, "podiums": 12, "wins": 4, "starts": 17, "dnfs": 1, "position": 2 },
         { "year": 2008, "teamId": "McLaren", "points": 98, "poles": 7, "podiums": 10, "wins": 5, "starts": 18, "dnfs": 1, "position": 1 },
@@ -214,8 +204,7 @@
       "dateOfBirth": "1987-08-19",
       "number": 27,
       "image": "hulkenberg.png",
-      "logo": "hulkenberg_logo.png",
-      "helmet": "hulkenberg_helmet.png",
+      "coverImage": "hulkenberg-2.png",
       "history": [
         { "year": 2010, "teamId": "Williams", "points": 22, "poles": 1, "podiums": 0, "wins": 0, "starts": 19, "dnfs": 4, "position": 14 },
         { "year": 2012, "teamId": "Force India", "points": 63, "poles": 0, "podiums": 0, "wins": 0, "starts": 20, "dnfs": 2, "position": 11 },
@@ -241,8 +230,7 @@
       "dateOfBirth": "2002-02-11",
       "number": 30,
       "image": "lawson.png",
-      "logo": "lawson_logo.png",
-      "helmet": "lawson_helmet.png",
+      "coverImage": "lawson-2.png",
       "history": [
         { "year": 2023, "teamId": "AlphaTauri", "points": 2, "poles": 0, "podiums": 0, "wins": 0, "starts": 5, "dnfs": 0, "position": 20 },
         { "year": 2024, "teamId": "Racing Bulls", "points": 9, "poles": 0, "podiums": 0, "wins": 0, "starts": 6, "dnfs": 0, "position": 16 },
@@ -257,8 +245,7 @@
       "dateOfBirth": "1997-10-16",
       "number": 16,
       "image": "leclerc.png",
-      "logo": "leclerc_logo.png",
-      "helmet": "leclerc_helmet.png",
+      "coverImage": "leclerc-2.png",
       "history": [
         { "year": 2018, "teamId": "Sauber", "points": 39, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 6, "position": 13 },
         { "year": 2019, "teamId": "Ferrari", "points": 264, "poles": 7, "podiums": 10, "wins": 2, "starts": 21, "dnfs": 3, "position": 4 },
@@ -278,8 +265,7 @@
       "dateOfBirth": "2007-08-08",
       "number": 41,
       "image": "lindblad.png",
-      "logo": "lindblad_logo.png",
-      "helmet": "lindblad_helmet.png",
+      "coverImage": "lindblad-2.png",
       "history": [
       ]
     },
@@ -291,8 +277,7 @@
       "dateOfBirth": "1999-11-13",
       "number": 1,
       "image": "norris.png",
-      "logo": "norris_logo.png",
-      "helmet": "norris_helmet.png",
+      "coverImage": "norris-2.png",
       "history": [
         { "year": 2019, "teamId": "McLaren", "points": 49, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 5, "position": 11 },
         { "year": 2020, "teamId": "McLaren", "points": 97, "poles": 0, "podiums": 1, "wins": 0, "starts": 17, "dnfs": 1, "position": 9 },
@@ -311,8 +296,7 @@
       "dateOfBirth": "1996-09-17",
       "number": 31,
       "image": "ocon.png",
-      "logo": "ocon_logo.png",
-      "helmet": "ocon_helmet.png",
+      "coverImage": "ocon-2.png",
       "history": [
         { "year": 2016, "teamId": "Manor", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 9, "dnfs": 0, "position": 24 },
         { "year": 2017, "teamId": "Force India", "points": 87, "poles": 0, "podiums": 0, "wins": 0, "starts": 20, "dnfs": 1, "position": 8 },
@@ -333,8 +317,7 @@
       "dateOfBirth": "1990-01-26",
       "number": 11,
       "image": "perez.png",
-      "logo": "perez_logo.png",
-      "helmet": "perez_helmet.png",
+      "coverImage": "perez-2.png",
       "history": [
         { "year": 2011, "teamId": "Sauber", "points": 14, "poles": 0, "podiums": 0, "wins": 0, "starts": 17, "dnfs": 3, "position": 16 },
         { "year": 2012, "teamId": "Sauber", "points": 66, "poles": 0, "podiums": 3, "wins": 0, "starts": 20, "dnfs": 6, "position": 10 },
@@ -361,8 +344,7 @@
       "dateOfBirth": "2001-04-06",
       "number": 81,
       "image": "piastri.png",
-      "logo": "piastri_logo.png",
-      "helmet": "piastri_helmet.png",
+      "coverImage": "piastri-2.png",
       "history": [
         { "year": 2023, "teamId": "McLaren", "points": 97, "poles": 0, "podiums": 2, "wins": 0, "starts": 22, "dnfs": 3, "position": 9 },
         { "year": 2024, "teamId": "McLaren", "points": 292, "poles": 0, "podiums": 8, "wins": 2, "starts": 24, "dnfs": 0, "position": 4 },
@@ -377,8 +359,7 @@
       "dateOfBirth": "1998-02-15",
       "number": 63,
       "image": "russell.png",
-      "logo": "russell_logo.png",
-      "helmet": "russell_helmet.png",
+      "coverImage": "russell-2.png",
       "history": [
         { "year": 2019, "teamId": "Williams", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "fastestLaps": 0, "starts": 21, "dnfs": 2, "position": 20 },
         { "year": 2020, "teamId": "Williams", "points": 3, "poles": 0, "podiums": 0, "wins": 0, "fastestLaps": 1, "starts": 17, "dnfs": 4, "position": 18 },
@@ -397,8 +378,7 @@
       "dateOfBirth": "1994-09-01",
       "number": 55,
       "image": "sainz.png",
-      "logo": "sainz_logo.png",
-      "helmet": "sainz_helmet.png",
+      "coverImage": "sainz-2.png",
       "history": [
         { "year": 2015, "teamId": "Toro Rosso", "points": 18, "poles": 0, "podiums": 0, "wins": 0, "starts": 19, "dnfs": 7, "position": 15 },
         { "year": 2016, "teamId": "Toro Rosso", "points": 46, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 4, "position": 12 },
@@ -421,8 +401,7 @@
       "dateOfBirth": "1998-10-29",
       "number": 18,
       "image": "stroll.png",
-      "logo": "stroll_logo.png",
-      "helmet": "stroll_helmet.png",
+      "coverImage": "stroll-2.png",
       "history": [
         { "year": 2017, "teamId": "Williams", "points": 40, "poles": 0, "podiums": 1, "wins": 0, "starts": 20, "dnfs": 5, "position": 12 },
         { "year": 2018, "teamId": "Williams", "points": 6, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 2, "position": 18 },
@@ -443,8 +422,7 @@
       "dateOfBirth": "1997-09-30",
       "number": 3,
       "image": "verstappen.png",
-      "logo": "verstappen_logo.png",
-      "helmet": "verstappen_helmet.png",
+      "coverImage": "verstappen-2.png",
       "history": [
         { "year": 2015, "teamId": "Toro Rosso", "points": 49, "poles": 0, "podiums": 0, "wins": 0, "starts": 19, "dnfs": 4, "position": 12 },
         { "year": 2016, "teamId": "Toro Rosso / Red Bull", "points": 204, "poles": 0, "podiums": 7, "wins": 1, "starts": 21, "dnfs": 3, "position": 5 },
