@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 Hub | Teams</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap">
+    <script src="./js/twemoji.js"></script>
+    <script src="./js/navbar.js" defer></script>
+    <style>
+
+        /* ===================================== */
+        /*            TEAMS LIST PAGE            */
+        /* ===================================== */
+
+        /* --- HERO --- */
+        .teams-hero {
+            position: relative;
+            height: 520px;
+            margin-top: -80px;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+        }
+
+        .teams-hero-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 30%;
+            z-index: 1;
+        }
+
+        .teams-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(15, 15, 22, 0.2) 0%,
+                rgba(15, 15, 22, 0.5) 50%,
+                rgba(15, 15, 22, 1) 100%
+            );
+            z-index: 2;
+        }
+
+        .teams-hero-content {
+            position: relative;
+            z-index: 3;
+            padding: 0 5% 4rem;
+        }
+
+        .teams-hero-content h1 {
+            font-family: 'F1-Black', sans-serif;
+            font-size: clamp(4rem, 9vw, 7rem);
+            text-transform: uppercase;
+            line-height: 0.9;
+            color: #fff;
+            margin-bottom: 0.75rem;
+        }
+
+        .teams-hero-content p {
+            font-family: 'F1-Regular', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .teams-hero-content .hero-accent {
+            display: inline-block;
+            width: 40px;
+            height: 4px;
+            background: var(--primary-red);
+            margin-bottom: 1.25rem;
+            border-radius: 2px;
+        }
+
+        /* --- GRID SECTION --- */
+        .teams-section {
+            width: 60%;
+            margin: 0 auto;
+        }
+
+        .teams-section-header {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .teams-section-title {
+            font-family: 'F1-Black', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.3);
+        }
+
+        .teams-season-badge {
+            font-family: 'F1-Bold', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            background: rgba(232,0,45,0.12);
+            color: rgba(232,0,45,0.8);
+            border: 1px solid rgba(232,0,45,0.2);
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+/* --- TEAMS GRID --- */
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            padding-bottom: 4rem;
+        }
+
+        /* --- TEAMCARD --- */
+        .teamcard {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid rgba(255,255,255,0.07);
+            height: 260px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            text-decoration: none;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(28px);
+            transition: all 0.5s ease;
+        }
+
+        .teamcard.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .teamcard:hover {
+            transform: translateY(-6px) !important;
+        }
+
+        .tc-bg-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'F1-Black', sans-serif;
+            font-size: 5rem;
+            text-transform: uppercase;
+            line-height: 1;
+            color: var(--tc-color);
+            opacity: 1;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 1;
+            transform: translateY(100%);
+            transition: opacity 0.5s ease;
+            transition: transform 1s ease;
+        }
+
+        .teamcard:hover .tc-bg-text {
+            transform: translateY(-5%);
+        }
+
+        .tc-car {
+            position: absolute;
+            bottom: 30px;
+            right: -5%;
+            width: 75%;
+            height: auto;
+            z-index: 2;
+            object-fit: contain;
+            transition: all 0.5s ease;
+            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.4));
+            transform: translateX(-30px);
+        }
+
+        .teamcard:hover .tc-car {
+            transform: translateX(-22%) scale(1.25);
+        }
+
+        .tc-info {
+            position: relative;
+            z-index: 3;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transform: translateX(0);
+            transition: transform 0.5s ease;
+        }
+
+        .teamcard:hover .tc-info {
+            transform: translateY(-60%);
+        }
+
+        .tc-stripe-left {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            z-index: 4;
+        }
+
+        .tc-stripe-left-mercedes { background: var(--f1-mercedes); }
+        .tc-stripe-left-ferrari { background: var(--f1-ferrari); }
+        .tc-stripe-left-mclaren { background: var(--f1-mclaren); }
+        .tc-stripe-left-red-bull { background: var(--f1-red-bull); }
+        .tc-stripe-left-aston-martin { background: var(--f1-aston-martin); }
+        .tc-stripe-left-alpine { background: var(--f1-alpine); }
+        .tc-stripe-left-williams { background: var(--f1-williams); }
+        .tc-stripe-left-racing-bulls { background: var(--f1-racing-bulls); }
+        .tc-stripe-left-haas { background: var(--f1-haas); }
+        .tc-stripe-left-audi { background: var(--f1-audi); }
+        .tc-stripe-left-cadillac { background: var(--f1-cadillac); }
+
+        .tc-team-label {
+            font-family: 'F1-Regular', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--tc-color);
+        }
+
+        .tc-team-label-mercedes { color: var(--f1-mercedes); }
+        .tc-team-label-ferrari { color: var(--f1-ferrari); }
+        .tc-team-label-mclaren { color: var(--f1-mclaren); }
+        .tc-team-label-red-bull { color: var(--f1-red-bull); }
+        .tc-team-label-aston-martin { color: var(--f1-aston-martin); }
+        .tc-team-label-alpine { color: var(--f1-alpine); }
+        .tc-team-label-williams { color: var(--f1-williams); }
+        .tc-team-label-racing-bulls { color: var(--f1-racing-bulls); }
+        .tc-team-label-haas { color: var(--f1-haas); }
+        .tc-team-label-audi { color: var(--f1-audi); }
+        .tc-team-label-cadillac { color: var(--f1-cadillac); }
+
+        .tc-name {
+            font-family: 'F1-Black', sans-serif;
+            font-size: 40px;
+            text-transform: uppercase;
+            line-height: 1;
+            color: #ffffff;
+        }
+
+        .tc-cta {
+            font-family: 'F1-Regular', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            margin-top: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .teamcard:hover .tc-cta-mercedes { color: var(--f1-mercedes); }
+        .teamcard:hover .tc-cta-ferrari { color: var(--f1-ferrari); }
+        .teamcard:hover .tc-cta-mclaren { color: var(--f1-mclaren); }
+        .teamcard:hover .tc-cta-red-bull { color: var(--f1-red-bull); }
+        .teamcard:hover .tc-cta-aston-martin { color: var(--f1-aston-martin); }
+        .teamcard:hover .tc-cta-alpine { color: var(--f1-alpine); }
+        .teamcard:hover .tc-cta-williams { color: var(--f1-williams); }
+        .teamcard:hover .tc-cta-racing-bulls { color: var(--f1-racing-bulls); }
+        .teamcard:hover .tc-cta-haas { color: var(--f1-haas); }
+        .teamcard:hover .tc-cta-audi { color: var(--f1-audi); }
+        .teamcard:hover .tc-cta-cadillac { color: var(--f1-cadillac); }
+
+        /* Per-team glows */
+        .tc-bg-text-mercedes  { text-shadow: var(--f1-mercedes) 0 0 75px; }
+        .tc-bg-text-ferrari   { text-shadow: var(--f1-ferrari) 0 0 75px; }
+        .tc-bg-text-mclaren   { text-shadow: var(--f1-mclaren) 0 0 75px; }
+        .tc-bg-text-red-bull   { text-shadow: rgb(71, 150, 255) 0 0 75px; }
+        .tc-bg-text-aston-martin     { text-shadow: rgb(56, 255, 185) 0 0 75px; }
+        .tc-bg-text-alpine    { text-shadow: var(--f1-alpine) 0 0 75px; }
+        .tc-bg-text-williams  { text-shadow: var(--f1-williams) 0 0 75px; }
+        .tc-bg-text-racing-bulls { text-shadow: var(--f1-racing-bulls) 0 0 75px; }
+        .tc-bg-text-haas      { text-shadow: rgb(252, 254, 255) 0 0 75px; }
+        .tc-bg-text-audi      { text-shadow: var(--f1-audi) 0 0 75px; }
+        .tc-bg-text-cadillac  { text-shadow: rgb(252, 252, 255) 0 0 75px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .teams-section { padding: 3rem 4%; }
+            .teams-grid { grid-template-columns: 1fr; gap: 12px; }
+            .teams-hero { height: 400px; }
+            .teams-hero-content h1 { font-size: 3.5rem; }
+            .tc-name { font-size: 1.4rem; }
+            .tc-bg-text { font-size: 5.5rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="./index.html" class="logo-container">
+            <img src="img/logo.png" alt="F1 Hub Logo" class="nav-logo">
+        </a>
+        <button class="hamburger" id="hamburger-btn" aria-label="Open menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+        <nav>
+            <ul id="nav-menu" class="nav-menu">
+                <li><a href="./index.html#calendar">Calendar</a></li>
+                <li><a href="./championship.html">Championship</a></li>
+                <li><a href="./drivers.html">Drivers</a></li>
+                <li><a href="./teams.html">Teams</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <section class="teams-hero">
+            <img
+                class="teams-hero-bg"
+                src="https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/Racehub%20header%20images%2016x9/Abu%20Dhabi.webp"
+                alt="F1 Teams Hero">
+            <div class="teams-hero-overlay"></div>
+            <div class="teams-hero-content">
+                <span class="hero-accent"></span>
+                <h1>Teams</h1>
+                <p>2026 Constructor Season</p>
+            </div>
+        </section>
+
+        <div class="teams-section">
+
+            <div class="teams-section-header">
+                <span class="teams-section-title">Constructor standings</span>
+                <span class="teams-season-badge">Season 2026</span>
+            </div>
+
+            <div class="teams-grid">
+
+                <!-- 1. MERCEDES -->
+                <a href="./teams/mercedes.html" class="teamcard tc-mercedes" style="--tc-color: var(--f1-mercedes); background: rgb(4, 25, 21);">
+                    <div class="tc-stripe-left tc-stripe-left-mercedes"></div>
+                    <div class="tc-bg-text tc-bg-text-mercedes">W17</div>
+                    <img class="tc-car" src="./img/teams/mercedes-car.png">
+                    <div class="tc-info">
+                        <span class="tc-team-label tc-team-label-mercedes">Constructor</span>
+                        <span class="tc-name">Mercedes</span>
+                        <span class="tc-cta tc-cta-mercedes">View Team →</span>
+                    </div>
+                </a>
+
+                <!-- 2. FERRARI -->
+                <a href="./teams/ferrari.html" class="teamcard tc-ferrari" style="--tc-color: var(--f1-ferrari); background: rgb(25, 0, 2);">
+                    <div class="tc-stripe-left tc-stripe-left-ferrari"></div>
+                    <div class="tc-bg-text tc-bg-text-ferrari">SF-26</div>
+                    <img class="tc-car" src="./img/teams/ferrari-car.png">
+                    <div class="tc-info">
+                        <span class="tc-team-label tc-team-label-ferrari">Constructor</span>
+                        <span class="tc-name">Ferrari</span>
+                        <span class="tc-cta tc-cta-ferrari">View Team →</span>
+                    </div>
+                </a>
+
+                <!-- 3. MCLAREN -->
+                <a href="./teams/mclaren.html" class="teamcard tc-mclaren" style="--tc-color: var(--f1-mclaren); background: rgb(25, 13, 0);">
+                    <div class="tc-stripe-left tc-stripe-left-mclaren"></div>
+                    <div class="tc-bg-text tc-bg-text-mclaren">MCL40</div>
+                    <img class="tc-car" src="./img/teams/mclaren-car.png">
+                    <div class="tc-info">
+                        <span class="tc-team-label tc-team-label-mclaren">Constructor</span>
+                        <span class="tc-name">McLaren</span>
+                        <span class="tc-cta tc-cta-mclaren">View Team →</span>
+                    </div>
+                </a>
+
+                <!-- 4. RED BULL -->
+                <a href="./teams/red-bull.html" class="teamcard tc-redbull" style="--tc-color: rgb(71, 150, 255); background: rgb(7, 15, 25);">
+                    <div class="tc-stripe-left tc-stripe-left-red-bull"></div>
+                    <div class="tc-bg-text tc-bg-text-red-bull">RB22</div>
+                    <img class="tc-car" src="./img/teams/red-bull-car.png">
+                    <div class="tc-info">
+                        <span class="tc-team-label tc-team-label-red-bull">Constructor</span>
+                        <span class="tc-name">Red Bull</span>
+                        <span class="tc-cta tc-cta-red-bull">View Team →</span>
+                    </div>
+                </a>
+
+                <!-- 5. ASTON MARTIN -->
+                <a href="./teams/aston-martin.html" class="teamcard tc-aston" style="--tc-color: rgb(56, 255, 185); background: rgb(5, 25, 18);">
+                    <div class="tc-stripe-left tc-stripe-left-aston-martin"></div>
+                    <div class="tc-bg-text tc-bg-text-aston-martin">AMR26</div>
+                    <img class="tc-car" src="./img/teams/aston-martin-car.png">
+                    <div class="tc-info">
+                        <span class="tc-team-label tc-team-label-aston-martin">Constructor</span>
+                        <span class="tc-name">Aston Martin</span>
+                        <span class="tc-cta tc-cta-aston-martin">View Team →</span>
+                    </div>
+                </a>
+
+                <!-- 6. ALPINE -->
+                <a href="./teams/alpine.html" class="teamcard tc-alpine" style="--tc-color: var(--f1-alpine); background: rgb(0, 17, 25);">
+                    <div class="tc-stripe-left tc-stripe-left-alpine"></div>
+                    <div class="tc-bg-text tc-bg-text-alpine">A526</div>
+                    <img class="tc-car" src="./img/teams/alpine-car.png">
+                    <div class="tc-info">
+                        <span class="tc-team-label tc-team-label-alpine">Constructor</span>
+                        <span class="tc-name">Alpine</span>
+                        <span class="tc-cta tc-cta-alpine">View Team →</span>
+                    </div>
+                </a>
+
+                <!-- 7. WILLIAMS -->
+                <a href="./teams/williams.html" class="teamcard tc-williams" style="--tc-color: var(--f1-williams); background: rgb(2, 12, 25);">
+                    <div class="tc-stripe-left tc-stripe-left-williams"></div>
+                    <div class="tc-bg-text tc-bg-text-williams">FW48</div>
+                    <img class="tc-car" src="./img/teams/williams-car.png">
+                    <div class="tc-info">
+                        <span class="tc-team-label tc-team-label-williams">Constructor</span>
+                        <span class="tc-name">Williams</span>
+                        <span class="tc-cta tc-cta-williams">View Team →</span>
+                    </div>
+                </a>
+
+                <!-- 8. RACING BULLS -->
+                <a href="./teams/racing-bulls.html" class="teamcard tc-rb" style="--tc-color: var(--f1-racing-bulls); background: rgb(10, 12, 25);">
+                    <div class="tc-stripe-left tc-stripe-left-racing-bulls"></div>
+                    <div class="tc-bg-text tc-bg-text-racing-bulls">VCARB 03</div>
+                    <img class="tc-car" src="./img/teams/racingbulls-car.png">
+                    <div class="tc-info">
+                        <span class="tc-team-label tc-team-label-racing-bulls">Constructor</span>
+                        <span class="tc-name">Racing Bulls</span>
+                        <span class="tc-cta tc-cta-racing-bulls">View Team →</span>
+                    </div>
+                </a>
+
+                <!-- 9. HAAS -->
+                <a href="./teams/haas.html" class="teamcard tc-haas" style="--tc-color: rgb(252, 254, 255); background: rgb(25, 25, 25);">
+                    <div class="tc-stripe-left tc-stripe-left-haas"></div>
+                    <div class="tc-bg-text tc-bg-text-haas">VF-26</div>
+                    <img class="tc-car" src="./img/teams/haas-car.png">
+                    <div class="tc-info">
+                        <span class="tc-team-label tc-team-label-haas">Constructor</span>
+                        <span class="tc-name">Haas</span>
+                        <span class="tc-cta tc-cta-haas">View Team →</span>
+                    </div>
+                </a>
+
+                <!-- 10. AUDI -->
+                <a href="./teams/audi.html" class="teamcard tc-audi" style="--tc-color: var(--f1-audi); background: rgb(25, 5, 5);">
+                    <div class="tc-stripe-left tc-stripe-left-audi"></div>
+                    <div class="tc-bg-text tc-bg-text-audi">R26</div>
+                    <img class="tc-car" src="./img/teams/audi-car.png">
+                    <div class="tc-info">
+                        <span class="tc-team-label tc-team-label-audi">Constructor</span>
+                        <span class="tc-name">Audi</span>
+                        <span class="tc-cta tc-cta-audi">View Team →</span>
+                    </div>
+                </a>
+
+                <!-- 11. CADILLAC -->
+                <a href="./teams/cadillac.html" class="teamcard tc-cadillac" style="--tc-color: rgb(252, 252, 255); background: rgb(24, 24, 25);">
+                    <div class="tc-stripe-left tc-stripe-left-cadillac"></div>
+                    <div class="tc-bg-text tc-bg-text-cadillac">MAC-26</div>
+                    <img class="tc-car" src="./img/teams/cadillac-car.png">
+                    <div class="tc-info">
+                        <span class="tc-team-label tc-team-label-cadillac">Constructor</span>
+                        <span class="tc-name">Cadillac</span>
+                        <span class="tc-cta tc-cta-cadillac">View Team →</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="./index.html" class="footer-logo">
+                    <img src="img/logo.png" alt="F1 Hub Logo" class="footer-logo-img">
+                </a>
+                <p class="footer-tagline">
+                    Your go-to source for F1 schedules, standings,<br>
+                    and race data — all in your local time.
+                </p>
+                <div class="footer-social">
+                    <a href="#" class="social-btn" aria-label="X / Twitter">X</a>
+                    <a href="#" class="social-btn" aria-label="Instagram">IG</a>
+                    <a href="#" class="social-btn" aria-label="YouTube">YT</a>
+                    <a href="https://www.formula1.com" target="_blank" class="social-btn" aria-label="F1 Official">F1</a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <p class="footer-col-title">Navigate</p>
+                <ul>
+                    <li><a href="./index.html#calendar">Calendar</a></li>
+                    <li><a href="./championship.html">Championship</a></li>
+                    <li><a href="./drivers.html">Drivers</a></li>
+                    <li><a href="./teams.html">Teams</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <p class="footer-col-title">External</p>
+                <ul>
+                    <li><a href="https://www.formula1.com" target="_blank">Formula 1 Official</a></li>
+                    <li><a href="https://www.fia.com" target="_blank">FIA</a></li>
+                    <li><a href="https://f1-dash.com/dashboard" target="_blank">F1 Dash</a></li>
+                    <li><a href="https://ergast.com/mrd/" target="_blank">Ergast API</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span class="footer-copy">&copy; 2026 F1 Hub &mdash; Unofficial fan project. Not affiliated with Formula 1.</span>
+            <span class="footer-tz">All times shown in your local timezone</span>
+        </div>
+    </footer>
+
+    <script>
+        // Staggered entrance with IntersectionObserver
+        const cards = document.querySelectorAll('.teamcard');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const card = entry.target;
+                    const index = [...cards].indexOf(card);
+                    setTimeout(() => {
+                        card.classList.add('visible');
+                    }, index * 70);
+                    observer.unobserve(card);
+                }
+            });
+        }, {
+            threshold: 0.08,
+            rootMargin: '0px 0px -40px 0px'
+        });
+
+        cards.forEach(card => observer.observe(card));
+    </script>
+
+</body>
+</html>

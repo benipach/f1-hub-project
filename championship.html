@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 Hub | Championship</title>
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/championship.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="./js/navbar.js" defer></script>
+    <script src="./js/championship.js" defer></script>
+    <style>
+
+    </style>
+</head>
+<body>
+
+<header class="navbar">
+        <a href="./index.html" class="logo-container">
+            <img src="img/logo.png" alt="F1 Hub Logo" class="nav-logo">
+        </a>
+
+        <button class="hamburger" id="hamburger-btn" aria-label="Open Menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+
+        <nav>
+            <ul id="nav-menu" class="nav-menu">
+                <li><a href="./index.html#calendar">Calendar</a></li>
+                <li><a href="#">Championship</a></li>
+                <li><a href="./drivers.html">Drivers</a></li>
+                <li><a href="./teams.html">Teams</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="champ-header">
+            <h1>2026 CHAMPIONSHIP</h1>
+            <p>Drivers &amp; Constructors Standings</p>
+        </div>
+
+        <div class="tab-bar">
+            <button class="tab-btn active" data-tab="drivers">Drivers</button>
+            <button class="tab-btn" data-tab="constructors">Constructors</button>
+        </div>
+
+        <div class="champ-content">
+
+            <!-- DRIVERS TAB -->
+            <div id="tab-drivers" class="tab-panel active">
+                <p class="section-title">Drivers Standings</p>
+                <div class="standings-table-wrap" id="drivers-table-wrap"></div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <span class="chart-title">Cumulative points per race</span>
+                        <div class="filter-wrapper">
+                            <button class="filter-btn" id="driver-filter-btn">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 3h12M3 7h8M5 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                                Drivers
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <div class="filter-dropdown" id="driver-filter-dropdown">
+                                <button class="filter-all-btn" id="driver-select-all">Deselect all</button>
+                                <div class="filter-divider"></div>
+                                <div id="driver-filter-items"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <canvas id="driverChart" max-height="0"></canvas>
+                </div>
+            </div>
+
+            <!-- ── CONSTRUCTORS TAB ── -->
+            <div id="tab-constructors" class="tab-panel">
+                <p class="section-title">Constructors Standings</p>
+                    <div class="standings-table-wrap" id="constructors-table-wrap"></div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <span class="chart-title">Cumulative points per race</span>
+                        <div class="filter-wrapper">
+                            <button class="filter-btn" id="constructor-filter-btn">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 3h12M3 7h8M5 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                                Teams
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <div class="filter-dropdown" id="constructor-filter-dropdown">
+                                <button class="filter-all-btn" id="constructor-select-all">Diselect all</button>
+                                <div class="filter-divider"></div>
+                                <div id="constructor-filter-items"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <canvas id="constructorChart" max-height="0"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-grid">
+
+            <div class="footer-brand">
+                <a href="#" class="footer-logo">
+                    <img src="img/logo.png" alt="F1 Hub Logo" class="footer-logo-img">
+                </a>
+                <p class="footer-tagline">
+                    Your go-to source for F1 schedules, standings,<br>
+                    and race data — all in your local time.
+                </p>
+                <div class="footer-social">
+                    <a href="#" class="social-btn" aria-label="X / Twitter">X</a>
+                    <a href="#" class="social-btn" aria-label="Instagram">IG</a>
+                    <a href="#" class="social-btn" aria-label="YouTube">YT</a>
+                    <a href="https://www.formula1.com" target="_blank" class="social-btn" aria-label="F1 Official">F1</a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <p class="footer-col-title">Navigate</p>
+                <ul>
+                    <li><a href="#calendar">Calendar</a></li>
+                    <li><a href="./championship.html">Championship</a></li>
+                    <li><a href="./drivers.html">Drivers</a></li>
+                    <li><a href="./teams.html">Teams</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <p class="footer-col-title">External</p>
+                <ul>
+                    <li><a href="https://www.formula1.com" target="_blank">Formula 1 Official</a></li>
+                    <li><a href="https://www.fia.com" target="_blank">FIA</a></li>
+                    <li><a href="https://f1-dash.com/dashboard" target="_blank">F1 Dash</a></li>
+                    <li><a href="https://ergast.com/mrd/" target="_blank">Ergast API</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <span class="footer-copyright">
+                &copy; 2026 F1 Hub &mdash; Unofficial fan project. Not affiliated with Formula 1.
+            </span>
+            <span class="footer-timezone">
+                All times shown in your local timezone
+            </span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,103 @@
+{
+  "teams": [
+    {
+      "id": "alpine",
+      "name": "BWT Alpine F1 Team",
+      "country": "France",
+      "city": "Enstone",
+      "color": "#0093cc",
+      "image": "alpine.png",
+      "logo": "alpine_logo.png"
+    },
+    {
+    "id": "aston-martin",
+    "name": "Aston Martin Aramco F1 Team",
+    "country": "United Kingdom",
+    "city": "Silverstone",
+    "color": "#00594F",
+    "image": "aston_martin.png",
+    "logo": "aston_martin_logo.png"
+    },
+    {
+      "id": "audi",
+      "name": "Audi F1 Team",
+      "country": "Germany",
+      "city": "Neuburg an der Donau",
+      "color": "#EF3340",
+      "image": "audi.png",
+      "logo": "audi_logo.png"
+    },
+    {
+      "id": "cadillac",
+      "name": "Cadillac F1 Team",
+      "country": "United States",
+      "city": "Charlotte",
+      "color": "#ffd139",
+      "image": "cadillac.png",
+      "logo": "cadillac_logo.png"
+    },
+    {
+      "id": "ferrari",
+      "name": "Scuderia Ferrari",
+      "country": "Italy",
+      "city": "Maranello",
+      "color": "#E8002D",
+      "image": "ferrari.png",
+      "logo": "ferrari_logo.png"
+    },
+    {
+      "id": "haas",
+      "name": "Haas F1 Team",
+      "country": "United States",
+      "city": "Kannapolis",
+      "color": "#B6BABD",
+      "image": "haas.png",
+      "logo": "haas_logo.png"
+    },
+    {
+      "id": "mclaren",
+      "name": "McLaren Formula 1 Team",
+      "country": "United Kingdom",
+      "city": "Woking",
+      "color": "#FF8000",
+      "image": "mclaren.png",
+      "logo": "mclaren_logo.png"
+    },
+    {
+      "id": "mercedes",
+      "name": "Mercedes-AMG Petronas F1 Team",
+      "country": "Germany",
+      "city": "Brackley",
+      "color": "#27F4D2",
+      "image": "mercedes.png",
+      "logo": "mercedes_logo.png"
+    },
+    {
+      "id": "racing-bulls",
+      "name": "Racing Bulls F1 Team",
+      "country": "Italy",
+      "city": "Faenza",
+      "color": "#6692FF",
+      "image": "racing_bulls.png",
+      "logo": "racing_bulls_logo.png"
+    },
+    {
+      "id": "red-bull",
+      "name": "Oracle Red Bull Racing",
+      "country": "Austria",
+      "city": "Milton Keynes",
+      "color": "#3671C6",
+      "image": "red_bull.png",
+      "logo": "red_bull_logo.png"
+    },
+    {
+      "id": "williams",
+      "name": "Williams Racing",
+      "country": "United Kingdom",
+      "city": "Grove",
+      "color": "#00A0DE",
+      "image": "williams.png",
+      "logo": "williams_logo.png"
+    }
+  ]
+}

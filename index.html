@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 Hub | Home</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/index.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap">
+    <script src="./js/race.js"></script>
+    <script src="./js/index.js" defer></script>
+    <script src="./js/navbar.js" defer></script>
+    <script src="./js/twemoji.js"></script>
+</head>
+<body>
+
+<header class="navbar">
+        <a href="#" class="logo-container">
+            <img src="img/logo.png" alt="F1 Hub Logo" class="nav-logo">
+        </a>
+
+        <button class="hamburger" id="hamburger-btn" aria-label="Open Menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+
+        <nav>
+            <ul id="nav-menu" class="nav-menu">
+                <li><a href="#calendar">Calendar</a></li>
+                <li><a href="./championship.html">Championship</a></li>
+                <li><a href="./drivers.html">Drivers</a></li>
+                <li><a href="./teams.html">Teams</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main -->
+    <main>
+
+        <!-- Section race hero -->
+        <section class="race-hero">
+            <img src="img/hero-bg.jpg" id="hero-image" class="race-hero-bg">
+            <div class="race-hero-overlay"></div>
+        
+            <div class="race-hero-content">
+            
+                <div class="race-hero-meta">
+                    <span class="race-round-badge" id="hero-round">Round —</span>
+                
+                    <span id="hero-sprint-pill" class="race-sprint-badge" style="display:none">
+                        <span class="race-sprint-dot"></span>
+                        Sprint Weekend
+                    </span>
+                </div>
+            
+                <div class="race-title-group">
+                    <p class="race-circuit-name" id="hero-circuit-label">—</p>
+                
+                    <h1 id="hero-gp-title">-</h1>
+                
+                    <p class="race-grand-prix-label">Grand Prix</p>
+                </div>
+            
+                <div class="countdown-section">
+                    <p class="countdown-label" id="hero-countdown-label">
+                        Race starts in
+                    </p>
+                
+                    <div class="countdown-grid">
+                        <div class="countdown-card">
+                            <span id="time-days">-</span>
+                            <small>Days</small>
+                        </div>
+                    
+                        <div class="countdown-card">
+                            <span id="time-hours">-</span>
+                            <small>Hours</small>
+                        </div>
+                    
+                        <div class="countdown-card">
+                            <span id="time-mins">-</span>
+                            <small>Min</small>
+                        </div>
+                    
+                        <div class="countdown-card">
+                            <span id="time-secs">00</span>
+                            <small>Sec</small>
+                        </div>
+                    </div>
+                </div>
+            
+                <a href="#" class="race-details-btn" id="show-more-btn">
+                    View Race Details →
+                </a>
+            
+            </div>
+        
+            <div class="race-schedule">
+                <div class="race-schedule-card">
+                
+                    <p class="race-schedule-title" id="table-gp-name">
+                        Schedule
+                    </p>
+                
+                    <div class="schedule-day">
+                    
+                        <p class="schedule-day-title">—</p>
+                    
+                        <div class="schedule-session">
+                            <span class="schedule-session-name">FP 1</span>
+                            <span class="schedule-session-time">—</span>
+                        </div>
+                    
+                    </div>
+                
+                    <div class="race-schedule-footer">
+                        <p>Local time in Buenos Aires, Argentina</p>
+                    </div>
+                
+                </div>
+            </div>
+        </section>
+
+        <section id="calendar" class="race-calendar">
+        
+            <div class="race-card" data-id="australian-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 01</span>
+                    <h3>🇦🇺 Australia</h3>
+                    <p class="race-date">06th - 08th Mar</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=australian-gp">Loading...</a>
+                </div>
+            </div>
+        
+            <div class="race-card" data-id="chinese-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 02</span>
+                    <h3>🇨🇳 China</h3>
+                    <p class="race-date">13th - 15th Mar</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=chinese-gp">Loading...</a>
+                </div>
+            </div>
+        
+            <div class="race-card" data-id="japanese-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 03</span>
+                    <h3>🇯🇵 Japan</h3>
+                    <p class="race-date">27th - 29th Mar</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=japanese-gp">Loading...</a>
+                </div>
+            </div>
+        
+            <div class="race-card" data-id="bahrain-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 04</span>
+                    <h3>🇧🇭 Bahrain</h3>
+                    <p class="race-date">10th - 12th Apr</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=bahrain-gp">Loading...</a>
+                </div>
+            </div>
+        
+            <div class="race-card" data-id="saudi-arabian-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 05</span>
+                    <h3>🇸🇦 Saudi Arabia</h3>
+                    <p class="race-date">17th - 19th Apr</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=saudi-arabian-gp">Loading...</a>
+                </div>
+            </div>
+        
+            <div class="race-card" data-id="miami-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 06</span>
+                    <h3>🇺🇸 Miami</h3>
+                    <p class="race-date">01st - 03rd May</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=miami-gp">Loading...</a>
+                </div>
+            </div>
+        
+            <div class="race-card" data-id="canadian-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 07</span>
+                    <h3>🇨🇦 Canada</h3>
+                    <p class="race-date">22nd - 24th May</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=canadian-gp">Loading...</a>
+                </div>
+            </div>
+        
+            <div class="race-card" data-id="monaco-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 08</span>
+                    <h3>🇲🇨 Monaco</h3>
+                    <p class="race-date">05th - 07th Jun</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=monaco-gp">Loading...</a>
+                </div>
+            </div>
+
+            <div class="race-card" data-id="barcelona-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 09</span>
+                    <h3>🇪🇸 Barcelona</h3>
+                    <p class="race-date">12th - 14th Jun</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=barcelona-gp">Loading...</a>
+                </div>
+            </div>
+            
+            <div class="race-card" data-id="austrian-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 10</span>
+                    <h3>🇦🇹 Austria</h3>
+                    <p class="race-date">26th - 28th Jun</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=austrian-gp">Loading...</a>
+                </div>
+            </div>
+            
+            <div class="race-card" data-id="british-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 11</span>
+                    <h3>🇬🇧 Great Britain</h3>
+                    <p class="race-date">03rd - 05th Jul</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=british-gp">Loading...</a>
+                </div>
+            </div>
+            
+            <div class="race-card" data-id="belgian-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 12</span>
+                    <h3>🇧🇪 Belgium</h3>
+                    <p class="race-date">17th - 19th Jul</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=belgian-gp">Loading...</a>
+                </div>
+            </div>
+            
+            <div class="race-card" data-id="hungarian-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 13</span>
+                    <h3>🇭🇺 Hungary</h3>
+                    <p class="race-date">24th - 26th Jul</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=hungarian-gp">Loading...</a>
+                </div>
+            </div>
+            
+            <div class="race-card" data-id="dutch-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 14</span>
+                    <h3>🇳🇱 Netherlands</h3>
+                    <p class="race-date">21st - 23rd Aug</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=dutch-gp">Loading...</a>
+                </div>
+            </div>
+            
+            <div class="race-card" data-id="italian-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 15</span>
+                    <h3>🇮🇹 Italy</h3>
+                    <p class="race-date">04th - 06th Sep</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=italian-gp">Loading...</a>
+                </div>
+            </div>
+            
+            <div class="race-card" data-id="spanish-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 16</span>
+                    <h3>🇪🇸 Spain</h3>
+                    <p class="race-date">11th - 13th Sep</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=spanish-gp">Loading...</a>
+                </div>
+            </div>
+            
+            <div class="race-card" data-id="azerbaijan-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 17</span>
+                    <h3>🇦🇿 Azerbaijan</h3>
+                    <p class="race-date">25th - 27th Sep</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=azerbaijan-gp">Loading...</a>
+                </div>
+            </div>
+            
+            <div class="race-card" data-id="singapore-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 18</span>
+                    <h3>🇸🇬 Singapore</h3>
+                    <p class="race-date">09th - 11th Oct</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=singapore-gp">Loading...</a>
+                </div>
+            </div>
+            
+            <div class="race-card" data-id="united-states-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 19</span>
+                    <h3>🇺🇸 United States</h3>
+                    <p class="race-date">23rd - 25th Oct</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=united-states-gp">Loading...</a>
+                </div>
+            </div>
+            
+            <div class="race-card" data-id="mexican-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 20</span>
+                    <h3>🇲🇽 Mexico</h3>
+                    <p class="race-date">30th Oct - 01st Nov</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=mexican-gp">Loading...</a>
+                </div>
+            </div>
+            
+            <div class="race-card" data-id="brazilian-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 21</span>
+                    <h3>🇧🇷 Brazil</h3>
+                    <p class="race-date">06th - 08th Nov</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=brazilian-gp">Loading...</a>
+                </div>
+            </div>
+            
+            <div class="race-card" data-id="las-vegas-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 22</span>
+                    <h3>🇺🇸 Las Vegas</h3>
+                    <p class="race-date">19th - 21st Nov</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=las-vegas-gp">Loading...</a>
+                </div>
+            </div>
+            
+            <div class="race-card" data-id="qatar-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 23</span>
+                    <h3>🇶🇦 Qatar</h3>
+                    <p class="race-date">27th - 29th Nov</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=qatar-gp">Loading...</a>
+                </div>
+            </div>
+            
+            <div class="race-card" data-id="abu-dhabi-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 24</span>
+                    <h3>🇦🇪 Abu Dhabi</h3>
+                    <p class="race-date">04th - 06th Dec</p>
+                    <span class="race-status">Loading...</span>
+                    <a class="race-link" href="./races/race.html?gp=abu-dhabi-gp">Loading...</a>
+                </div>
+            </div>
+
+            <div class="race-card" data-id="abu-dhabi-gp">
+                <div class="race-card-content">
+                    <span class="race-round">Round 67?</span>
+                    <h3>🇮🇱 Tel Aviv</h3>
+                    <p class="race-date">67th Dec 2067</p>
+                    <span class="race-status">Show More</span>
+                    <a class="race-link" href="./races/race.html?gp=abu-dhabi-gp">Loading...</a>
+                </div>
+            </div>
+            
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-grid">
+
+            <div class="footer-brand">
+                <a href="#" class="footer-logo">
+                    <img src="img/logo.png" alt="F1 Hub Logo" class="footer-logo-img">
+                </a>
+                <p class="footer-tagline">
+                    Your go-to source for F1 schedules, standings,<br>
+                    and race data — all in your local time.
+                </p>
+                <div class="footer-social">
+                    <a href="#" class="social-btn" aria-label="X / Twitter">X</a>
+                    <a href="#" class="social-btn" aria-label="Instagram">IG</a>
+                    <a href="#" class="social-btn" aria-label="YouTube">YT</a>
+                    <a href="https://www.formula1.com" target="_blank" class="social-btn" aria-label="F1 Official">F1</a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <p class="footer-col-title">Navigate</p>
+                <ul>
+                    <li><a href="#calendar">Calendar</a></li>
+                    <li><a href="./championship.html">Championship</a></li>
+                    <li><a href="./drivers.html">Drivers</a></li>
+                    <li><a href="./teams.html">Teams</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <p class="footer-col-title">External</p>
+                <ul>
+                    <li><a href="https://www.formula1.com" target="_blank">Formula 1 Official</a></li>
+                    <li><a href="https://www.fia.com" target="_blank">FIA</a></li>
+                    <li><a href="https://f1-dash.com/dashboard" target="_blank">F1 Dash</a></li>
+                    <li><a href="https://ergast.com/mrd/" target="_blank">Ergast API</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <span class="footer-copyright">
+                &copy; 2026 F1 Hub &mdash; Unofficial fan project. Not affiliated with Formula 1.
+            </span>
+            <span class="footer-timezone">
+                All times shown in your local timezone
+            </span>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 Hub | Red Bull Racing</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="../js/twemoji.js"></script>
+    <script src="../js/navbar.js" defer></script>
+    <style>
+
+        /* ============================== */
+        /*        TEAM PROFILE PAGE       */
+        /* ============================== */
+
+        
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .team-hero-name { font-size: 3.2rem; }
+            .team-hero-name .team-name-thin { font-size: 1.6rem; }
+            .team-hero-content { flex-direction: column; align-items: flex-start; }
+            .team-hero-right { align-self: flex-start; }
+            .info-chart-row { grid-template-columns: 1fr; }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+            .gallery-item.featured { grid-column: span 2; }
+        }
+
+        @media (max-width: 600px) {
+            .team-hero-name { font-size: 2.4rem; }
+            .team-hero-name .team-name-thin { font-size: 1.2rem; }
+            .drivers-row { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-item.featured { grid-column: span 1; }
+            .championships-badge .champ-number { font-size: 2.5rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+<header class="navbar">
+    <a href="../index.html" class="logo-container">
+        <img src="../img/logo.png" alt="F1 Hub Logo" class="nav-logo">
+    </a>
+    <button class="hamburger" id="hamburger-btn" aria-label="Abrir menú">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </button>
+    <nav>
+        <ul id="nav-menu" class="nav-menu">
+            <li><a href="../index.html#calendar">Calendar</a></li>
+            <li><a href="../championship.html">Championship</a></li>
+            <li><a href="../drivers.html">Drivers</a></li>
+            <li><a href="../teams.html">Teams</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main style="--team-color: var(--f1-red-bull)">
+
+    <!-- HERO -->
+    <section class="team-hero">
+        <img class="team-hero-bg"
+             src="https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/Racehub%20header%20images%2016x9/Abu%20Dhabi.webp"
+             alt="Red Bull Racing">
+        <div class="team-hero-overlay"></div>
+        <div class="team-hero-accent"></div>
+
+        <div class="team-hero-content">
+            <div class="team-hero-left">
+                <p class="team-hero-label">Constructor</p>
+                <h1 class="team-hero-name">
+                    <span class="team-name-thin">Red Bull</span>
+                    Racing
+                </h1>
+                <div class="team-hero-meta">
+                    <div class="team-hero-meta-item">Base<strong>Milton Keynes, UK</strong></div>
+                    <div class="team-hero-meta-item">Principal<strong>Christian Horner</strong></div>
+                    <div class="team-hero-meta-item">Founded<strong>2005</strong></div>
+                    <div class="team-hero-meta-item">Power unit<strong>Honda RBPT</strong></div>
+                </div>
+            </div>
+
+            <div class="team-hero-right">
+                <div class="championships-badge">
+                    <span class="champ-number">6</span>
+                    <span class="champ-label">Constructors' titles</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTENT -->
+    <div class="team-content">
+
+        <!-- SEASON STATS -->
+        <h2 class="section-title">2025 Season</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <p class="stat-label">Points</p>
+                <p class="stat-value accent">702</p>
+                <p class="stat-sub">P1 in championship</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Wins</p>
+                <p class="stat-value">14</p>
+                <p class="stat-sub">out of 24 races</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Podiums</p>
+                <p class="stat-value">22</p>
+                <p class="stat-sub">season 2025</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Poles</p>
+                <p class="stat-value">11</p>
+                <p class="stat-sub">season 2025</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Fastest laps</p>
+                <p class="stat-value">9</p>
+                <p class="stat-sub">season 2025</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">1-2 finishes</p>
+                <p class="stat-value">6</p>
+                <p class="stat-sub">season 2025</p>
+            </div>
+        </div>
+
+        <!-- DRIVERS -->
+        <h2 class="section-title">Drivers</h2>
+        <div class="drivers-row">
+
+            <a href="../drivers/max-verstappen.html" class="driver-link-card">
+                <img class="driver-card-photo"
+                     src="https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/drivers/M/MAXVER01_Max_Verstappen/maxver01.png"
+                     alt="Max Verstappen">
+                <div class="driver-card-overlay"></div>
+                <span class="driver-card-number">#1</span>
+                <div class="driver-card-info">
+                    <span class="driver-card-flag">🇳🇱</span>
+                    <p class="driver-card-name">
+                        <span>Max</span>
+                        Verstappen
+                    </p>
+                    <span class="driver-card-cta">View profile</span>
+                </div>
+            </a>
+
+            <a href="../drivers/liam-lawson.html" class="driver-link-card">
+                <img class="driver-card-photo"
+                     src="https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/drivers/L/LIALAW01_Liam_Lawson/lialaw01.png"
+                     alt="Liam Lawson">
+                <div class="driver-card-overlay"></div>
+                <span class="driver-card-number">#30</span>
+                <div class="driver-card-info">
+                    <span class="driver-card-flag">🇳🇿</span>
+                    <p class="driver-card-name">
+                        <span>Liam</span>
+                        Lawson
+                    </p>
+                    <span class="driver-card-cta">View profile</span>
+                </div>
+            </a>
+
+        </div>
+
+        <!-- HISTORY + CHART -->
+        <h2 class="section-title">History</h2>
+        <div class="info-chart-row">
+
+            <div class="info-card">
+                <div class="info-row"><span class="info-key">Full name</span><span class="info-val">Oracle Red Bull Racing</span></div>
+                <div class="info-row"><span class="info-key">Founded</span><span class="info-val">2005</span></div>
+                <div class="info-row"><span class="info-key">Entries</span><span class="info-val">388</span></div>
+                <div class="info-row"><span class="info-key">Total wins</span><span class="info-val">123</span></div>
+                <div class="info-row"><span class="info-key">Total podiums</span><span class="info-val">264</span></div>
+                <div class="info-row"><span class="info-key">Total poles</span><span class="info-val">98</span></div>
+                <div class="info-row"><span class="info-key">Constructors' titles</span><span class="info-val">2010, 11, 12, 13, 22, 23</span></div>
+                <div class="info-row"><span class="info-key">Drivers' titles</span><span class="info-val">Vettel ×4, Verstappen ×4</span></div>
+            </div>
+
+            <div class="chart-card">
+                <p class="chart-label">Constructors' points per season</p>
+                <canvas id="teamChart" height="220"></canvas>
+            </div>
+
+        </div>
+
+        <!-- GALLERY -->
+        <h2 class="section-title">Gallery</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item featured">
+                <img src="https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/Racehub%20header%20images%2016x9/Belgium.webp" alt="">
+            </div>
+            <div class="gallery-item">
+                <img src="https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/Racehub%20header%20images%2016x9/Great%20Britain.webp" alt="">
+            </div>
+            <div class="gallery-item">
+                <img src="https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/Racehub%20header%20images%2016x9/Italy.webp" alt="">
+            </div>
+            <div class="gallery-item">
+                <img src="https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/Racehub%20header%20images%2016x9/Netherlands.webp" alt="">
+            </div>
+            <div class="gallery-item featured">
+                <img src="https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/Racehub%20header%20images%2016x9/Abu%20Dhabi.webp" alt="">
+            </div>
+        </div>
+
+    </div>
+</main>
+
+    <footer class="footer">
+        <div class="footer-grid">
+
+            <div class="footer-brand">
+                <a href="#" class="footer-logo">
+                    <img src="img/logo.png" alt="F1 Hub Logo" class="footer-logo-img">
+                </a>
+                <p class="footer-tagline">
+                    Your go-to source for F1 schedules, standings,<br>
+                    and race data — all in your local time.
+                </p>
+                <div class="footer-social">
+                    <a href="#" class="social-btn" aria-label="X / Twitter">X</a>
+                    <a href="#" class="social-btn" aria-label="Instagram">IG</a>
+                    <a href="#" class="social-btn" aria-label="YouTube">YT</a>
+                    <a href="https://www.formula1.com" target="_blank" class="social-btn" aria-label="F1 Official">F1</a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <p class="footer-col-title">Navigate</p>
+                <ul>
+                    <li><a href="#calendar">Calendar</a></li>
+                    <li><a href="./championship.html">Championship</a></li>
+                    <li><a href="./drivers.html">Drivers</a></li>
+                    <li><a href="./teams.html">Teams</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <p class="footer-col-title">External</p>
+                <ul>
+                    <li><a href="https://www.formula1.com" target="_blank">Formula 1 Official</a></li>
+                    <li><a href="https://www.fia.com" target="_blank">FIA</a></li>
+                    <li><a href="https://f1-dash.com/dashboard" target="_blank">F1 Dash</a></li>
+                    <li><a href="https://ergast.com/mrd/" target="_blank">Ergast API</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <span class="footer-copy">
+                &copy; 2026 F1 Hub &mdash; Unofficial fan project. Not affiliated with Formula 1.
+            </span>
+            <span class="footer-tz">
+                All times shown in your local timezone
+            </span>
+        </div>
+    </footer>
+
+<script>
+    const seasons = ['2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025'];
+    const points  = [34, 16, 24, 29, 153.5, 498, 650, 460, 596, 405, 187, 468, 368, 419, 417, 319, 585, 759, 860, 589, 702];
+    
+    const teamColor = '#2723ad';
+    const champYears = new Set(['2010','2011','2012','2013','2022','2023']);
+    
+    const trophyPlugin = {
+        id: 'trophyPlugin',
+        afterDatasetDraw(chart) {
+            const { ctx, data } = chart;
+            ctx.save();
+            ctx.font = '13px serif';
+            ctx.textAlign = 'center';
+            data.labels.forEach((label, i) => {
+                if (!champYears.has(label)) return;
+                const meta = chart.getDatasetMeta(0);
+                const bar = meta.data[i];
+                if (!bar) return;
+                ctx.fillText('🏆', bar.x, bar.y - 6);
+            });
+            ctx.restore();
+        }
+    };
+    
+    const ctx = document.getElementById('teamChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        plugins: [trophyPlugin],
+        data: {
+            labels: seasons,
+            datasets: [{
+                data: points,
+                backgroundColor: seasons.map(y => champYears.has(y) ? teamColor : teamColor + '59'),
+                borderColor: teamColor,
+                borderWidth: 1,
+                borderRadius: 4,
+                hoverBackgroundColor: teamColor
+            }]
+        },
+        options: {
+            responsive: true,
+            layout: { padding: { top: 24 } },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#1f1f27',
+                    borderColor: '#333',
+                    borderWidth: 1,
+                    titleColor: '#fff',
+                    bodyColor: '#aaa',
+                    titleFont: { family: 'Inter', size: 13 },
+                    bodyFont: { family: 'Inter', size: 12 },
+                    callbacks: {
+                        label: ctx => ` ${ctx.parsed.y} pts`,
+                        afterLabel: ctx => champYears.has(seasons[ctx.dataIndex]) ? ' 🏆 Constructors\' title' : ''
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(255,255,255,0.04)' },
+                    ticks: { color: '#888', font: { family: 'Inter', size: 10 }, maxRotation: 45 }
+                },
+                y: {
+                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    ticks: { color: '#888', font: { family: 'Inter', size: 11 } }
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

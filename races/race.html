@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">F1 Hub | Miami Grand Prix</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap">
+    <script src="../js/race.js" defer></script>
+    <script src="../js/twemoji.js"></script>
+    <script src="../js/navbar.js" defer></script>
+    <style>
+
+    /* ============================================ */
+    /*              RACE PAGE STYLES                */
+    /* ============================================ */
+
+    /* --- HERO --- */
+    .race-hero {
+        position: relative;
+        height: 100vh;
+        min-height: 620px;
+        margin-top: -80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        overflow: hidden;
+    }
+
+    .race-hero-video,
+    .race-hero-img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 35%;
+        z-index: 1;
+    }
+
+    .race-hero-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        background: linear-gradient(
+            to bottom,
+            rgba(10,10,20,0) 40%,
+            rgba(10,10,20,1) 100%
+        );
+    }
+
+    /* Top accent line */
+    .race-hero::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: var(--primary-red);
+        mask-image: linear-gradient(90deg, black 0%, black 60%, transparent 100%);
+        -webkit-mask-image: linear-gradient(90deg, black 0%, black 60%, transparent 100%);
+        z-index: 10;
+    }
+
+    .race-season-label {
+        font-family: 'F1-Regular', sans-serif;
+        font-size: 14px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+    }
+
+    .race-round-num {
+        font-family: 'F1-Bold', sans-serif;
+        font-size: 14px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--primary-red);
+        background: rgba(225, 6, 0, 0.08);
+        border: 1px solid rgba(225, 6, 0, 0.2);
+        padding: 2px 9px;
+        border-radius: 4px;
+    }
+
+    /* Sprint badge */
+    .race-sprint-badge {
+        position: absolute;
+        top: 88px; right: 5%;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        background: rgba(255,110,199,0.08);
+        border: 1px solid rgba(255,110,199,0.2);
+        border-radius: 20px;
+        padding: 5px 13px;
+        font-family: 'F1-Bold', sans-serif;
+        font-size: 0.62rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #ff6ec7;
+    }
+
+    .race-sprint-badge-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: #ff6ec7;
+        animation: pulse 2s infinite;
+    }
+
+    /* Bottom hero content */
+    .race-hero-bottom {
+        position: relative;
+        z-index: 3;
+        padding: 0 5% 3.5rem;
+    }
+
+    .race-hero-circuit {
+        font-family: 'F1-Regular', sans-serif;
+        font-size: clamp(0.4rem, 1.5vw, 1.2rem);
+        letter-spacing: 8px;
+        text-transform: uppercase;
+        color: var(--text-light);
+    }
+
+    .race-hero-name {
+        font-family: 'F1-Black', sans-serif;
+        font-size: clamp(48px, 9vw, 128px);
+        text-transform: uppercase;
+        line-height: 0.8;
+        color: var(--text-light);
+        margin-bottom: 2rem;
+    }
+
+    .race-hero-name-prefix {
+        display: block;
+        font-family: 'F1-Black', sans-serif;
+        font-size: clamp(1.4rem, 4.5vw, 3.2rem);
+        color: var(--text-light);
+        letter-spacing: 2px;
+        margin-bottom: 4px;
+    }
+
+    /* Quick stats bar */
+    .race-quick-stats {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .rqs-item {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .rqs-val {
+        font-family: 'F1-Bold', sans-serif;
+        font-size: 1.3rem;
+        color: #fff;
+        line-height: 1;
+    }
+
+    .rqs-label {
+        font-family: 'F1-Regular', sans-serif;
+        font-size: 0.6rem;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+    }
+
+    .rqs-divider {
+        width: 1px;
+        background: var(--text-dim);
+        align-self: stretch;
+    }
+
+    /* ---- PAGE CONTENT ---- */
+    .race-content {
+        max-width: 60%;
+        margin: 128px auto;
+        display: flex;
+        flex-direction: column;
+        gap: 128px;
+    }
+
+    /* Section title */
+    .rc-section-title {
+        font-family: 'F1-Regular';
+        font-size: clamp(18px, 4vw, 32px);
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--text-light);
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .rc-section-title::after {
+        content: '';
+        flex: 1;
+        height: 2px;
+        background: var(--primary-red);
+    }
+
+        /* Section subtitle */
+    .rc-section-subtitle {
+        font-family: 'F1-Regular';
+        font-size: clamp(8px, 3vw, 16px);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-light);
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .rc-section-subtitle::after {
+        content: '';
+        flex: 1;
+        height: 2px;
+        background: rgba(255,255,255,0.1);
+    }
+
+    /* ---- CIRCUIT OVERVIEW GRID ---- */
+    .circuit-overview {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 20px;
+    }
+
+    /* Track layout card */
+    .track-layout-card {
+        background: rgb(20,20,30);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 12px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        grid-row: span 2;
+    }
+
+    .track-layout-card img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        filter: brightness(0.9);
+        border-radius: 8px;
+    }
+
+    .track-layout-placeholder {
+        width: 100%;
+        background: rgb(10,10,20);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 24px;
+        color: var(--text-dim);
+        font-family: 'F1-Regular', sans-serif;
+        font-size: 0.7rem;
+        letter-spacing: 1px;
+    }
+
+    /* Circuit stats card */
+    .circuit-stats-card {
+        background: rgb(20,20,30);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 12px;
+        padding: 24px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .circuit-stats-card .rc-section-subtitle {
+    grid-column: 1 / -1;
+    margin-bottom: 0.5rem;
+    }
+
+    .cs-stat {
+        background: rgba(10,10,20);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 8px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .cs-stat-val {
+        font-family: 'F1-Regular', sans-serif;
+        font-size: 24px;
+        color: var(--text-light);
+        line-height: 1;
+    }
+
+    .cs-stat-val.accent {
+        background: var(--primary-red);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .cs-stat-label {
+        font-family: 'F1-Regular', sans-serif;
+        font-size: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+    }
+
+    /* Characteristics card */
+    .characteristics-card {
+        background: rgb(20,20,30);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 16px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .char-row {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .char-label-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .char-label {
+        font-family: 'F1-Regular', sans-serif;
+        font-size: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--text-light);
+    }
+
+    .char-val {
+        font-family: 'F1-Regular', sans-serif;
+        font-size: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: -15px;
+    }
+
+    .char-bar {
+        height: 4px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .char-bar-fill {
+        height: 100%;
+        border-radius: 2px;
+        background: var(--text-light);
+        transition: width 1s ease;
+    }
+
+    /* ---- LAP RECORD ---- */
+    .lap-record-banner {
+        background: rgb(10,10,20);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 12px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-top: -1rem;
+    }
+
+    .lr-label {
+        font-family: 'F1-Regular';
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: 4px;
+    }
+
+    .lr-time {
+        font-family: 'F1-Bold', sans-serif;
+        font-size: 24px;
+        color: var(--text-light);
+        line-height: 1;
+        background: var(--text-light);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .lr-meta {
+        font-family: 'F1-Regular', sans-serif;
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        margin-top: 4px;
+    }
+
+    /* ---- FUN FACTS ---- */
+    .facts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 14px;
+    }
+
+    .fact-card {
+        cursor: default;
+        background: rgb(20,20,30);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 14px;
+        padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: border-color 0.25s ease;
+    }
+
+    .fact-card::before {
+        content: '"';
+        position: absolute;
+        top: -10px; right: 12px;
+        font-size: 5rem;
+        color: rgba(255,255,255,0.04);
+        font-family: 'F1-Black';
+        line-height: 1;
+        pointer-events: none;
+    }
+
+    .fact-card:hover { border-color: rgba(255,255,255,0.2); }
+
+    .fact-num {
+        font-family: 'F1-Bold';
+        font-size: 20px;
+        letter-spacing: 2px;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: var(--text-light);
+        margin-bottom: 10px;
+    }
+
+    .fact-text {
+        font-family: 'F1-Regular', sans-serif;
+        font-size: 0.82rem;
+        color: var(--text-light);
+        line-height: 1.7;
+        letter-spacing: 0.5px;
+    }
+
+    /* ---- WEATHER ---- */
+.weather-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.weather-day-card {
+    cursor: default;
+    background: rgb(20,20,30);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 0.25s ease;
+}
+
+.weather-day-card:hover {
+    border-color: rgba(255,255,255,0.14);
+}
+
+.weather-day-label {
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.race-badge {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 1px;
+    background: rgba(225,6,0,0.1);
+    color: var(--primary-red);
+    border: 1px solid rgba(225,6,0,0.2);
+    padding: 2px 7px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.weather-day-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.weather-day-condition {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 1rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.weather-day-temp {
+    font-family: 'F1-Black', sans-serif;
+    font-size: 2rem;
+    line-height: 1;
+    background: var(--gp-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.weather-day-notes {
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin-top: 4px;
+}
+
+.weather-day-rain {
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.3);
+    margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+    .weather-grid { grid-template-columns: 1fr; }
+}
+
+/* ---- RACE RESULT 2026 ---- */
+.result-card {
+    background: rgb(15,15,25);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 96px;
+}
+
+.moments-card {
+    background: rgb(15,15,25);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 96px;
+}
+
+.history-card {
+    background: rgb(15,15,25);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 96px;
+}
+
+/* Estado de carga/vacío */
+.result-pending {
+    padding: 3rem;
+    text-align: center;
+}
+.result-pending-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.result-pending-text {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+/* Estructura de la Tabla */
+.result-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.result-table thead tr {
+    background: rgb(25, 25, 35);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.result-table th {
+    height: 64px;
+    padding: 0 20px;
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    background: rgb(30,30,40);
+}
+
+.result-table td {
+    height: 48px;
+    padding: 0 20px;
+    text-transform: none;
+    color: var(light);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    letter-spacing: 0.1px;
+}
+
+.result-table tbody tr:last-child td { border-bottom: none; }
+
+.result-table tbody tr:hover td {
+    background: rgba(255,255,255,0.025);
+}
+
+.res-pos {
+    font-family: 'F1-Regular', sans-serif;
+    width: 50px;
+}
+
+#result-card > div::-webkit-scrollbar {
+    width: 4px;
+}
+
+#result-card > div::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#result-card > div::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+    border-radius: 3px;
+}
+
+#result-card > div::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+
+
+
+#moments-card > div::-webkit-scrollbar {
+    width: 4px;
+}
+
+#moments-card > div::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#moments-card > div::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+    border-radius: 3px;
+}
+
+#moments-card > div::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+
+
+
+#history-card > div::-webkit-scrollbar {
+    width: 4px;
+}
+
+#history-card > div::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#history-card > div::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+    border-radius: 3px;
+}
+
+#history-card > div::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.driver-lastname { display: none; }
+
+@media (max-width: 600px) {
+    .driver-fullname { display: none; }
+    .driver-lastname { display: inline; }
+}
+
+/* Estilo para las posiciones */
+.res-pos {
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 16px;
+    width: 25px;
+    text-align: center;
+}
+
+.res-driver {
+    font-family: 'F1-Regular';
+    letter-spacing: 0.1px;
+}
+
+.res-team {
+    font-family: 'F1-Regular';
+    letter-spacing: 0.1px;
+}
+
+.res-time {
+    font-family: 'F1-Regular';
+    letter-spacing: 0.1px;
+}
+
+/* ---- NOTABLE MOMENTS TABLE ---- */
+.moments-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.moments-table thead tr {
+    background: rgb(25, 25, 35);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.moments-table th {
+    height: 64px;
+    padding: 0 20px;
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    background: rgb(30,30,40);
+}
+
+.moments-table td {
+    height: 48px;
+    padding: 0 20px;
+    text-transform: none;
+    color: var(--text-light);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    letter-spacing: 0.1px;
+}
+
+.moments-table tbody tr:last-child td { border-bottom: none; }
+
+.moments-table tbody tr:hover td {
+    background: rgba(255,255,255,0.025);
+}
+
+.mt-time {
+    font-family: 'F1-Regular';
+    color: var(--text-dim);
+    white-space: nowrap;
+    width: 80px;
+}
+
+.mt-event {
+    font-family: 'F1-Regular';
+    color: var(--text-dim);
+}
+
+.mt-involved {
+    color: var(--text-dim);
+}
+
+.mt-action {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.1px;
+    background: rgba(225, 6, 0, 0.1);
+    color: var(--primary-red);
+    border: 1px solid rgba(225, 6, 0, 0.2);
+    white-space: nowrap;
+}
+
+.mt-action.neutral {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-dim);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+    /* ---- HISTORY TABLE ---- */
+    .race-table-wrap {
+        max-height: 593px;
+        overflow-y: auto;
+        background: rgb(20,20,30);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 16px;
+    }
+
+
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.history-table thead tr {
+    background: rgb(25,25,35);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.history-table th {
+    height: 64px;
+    padding: 0 20px;
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    background: rgb(30,30,40);
+}
+
+.history-table td {
+    height: 48px;
+    font-family: 'F1-Regular';
+    padding: 0 20px;
+    text-transform: none;
+    color: var(--text-light);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    letter-spacing: 0.1px;
+}
+
+.history-table tbody tr:last-child td { border-bottom: none; }
+
+.history-table tbody tr:hover td {
+    background: rgba(255,255,255,0.025);
+}
+
+    .ht-year {
+        font-family: 'F1-Bold', sans-serif;
+        color: var(--text-dim);
+        width: 70px;
+    }
+
+    .ht-winner { font-family: 'F1-Bold', sans-serif; color: var(--text-dim); }
+
+    .ht-team-badge {
+        display: inline-block;
+        font-size: 0.6rem;
+        padding: 2px 7px;
+        border-radius: 4px;
+        background: rgba(255,255,255,0.06);
+        color: var(--text-dim);
+        letter-spacing: 0.1px;
+        text-transform: uppercase;
+        font-family: 'F1-Regular', sans-serif;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+        .race-content { max-width: 80%; }
+    }
+
+    @media (max-width: 900px) {
+        .race-content {
+            max-width: 90%;
+            margin: 80px auto;
+            gap: 80px;
+        }
+
+        /* Hero */
+        .race-hero { min-height: 520px; }
+        .race-hero-name { font-size: clamp(36px, 10vw, 80px); }
+        .race-hero-bottom { padding: 0 5% 2.5rem; }
+        .race-sprint-badge { top: 72px; }
+
+        /* Circuit overview */
+        .circuit-overview { grid-template-columns: 1fr; }
+        .track-layout-card { grid-row: span 1; }
+        .circuit-stats-card { grid-template-columns: 1fr 1fr; }
+
+        /* Tables */
+        .race-table-wrap { max-height: 420px; }
+        .result-table th,
+        .result-table td { padding: 0 12px; }
+        .moments-table th,
+        .moments-table td { padding: 0 12px; }
+        .history-table th,
+        .history-table td { padding: 0 12px; }
+
+        /* Weather */
+        .weather-grid { grid-template-columns: 1fr; gap: 12px; }
+        .weather-day-card { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .weather-day-label { width: 100%; margin-bottom: 0; }
+
+        /* Lap record */
+        .lap-record-banner { flex-direction: column; gap: 1rem; }
+
+        /* Characteristics */
+        .characteristics-card { padding: 1.5rem; }
+    }
+
+    @media (max-width: 600px) {
+        .race-content {
+            max-width: 100%;
+            padding: 2rem 5%;
+            gap: 56px;
+        }
+
+        /* Hero */
+        .race-hero { min-height: 480px; }
+        .race-hero-name { font-size: clamp(32px, 12vw, 64px); margin-bottom: 1rem; }
+        .race-hero-circuit { letter-spacing: 4px; }
+        .race-quick-stats { gap: 1rem; }
+        .rqs-divider { display: none; }
+        .rqs-val { font-size: 1rem; }
+        .race-sprint-badge { top: 64px; right: 4%; }
+
+        /* Circuit overview */
+        .circuit-stats-card { grid-template-columns: 1fr; gap: 10px; padding: 1.25rem; }
+        .circuit-stats-card .rc-section-subtitle { grid-column: 1 / -1; }
+        .track-layout-card { padding: 1.25rem; }
+        .characteristics-card { padding: 1.25rem; }
+        .cs-stat { padding: 0.75rem; }
+        .cs-stat-val { font-size: 18px; }
+
+        /* Tables — hide less important columns */
+        .result-table .res-team { display: none; }
+        .result-table th:nth-child(3) { display: none; }
+        .moments-table th:nth-child(3),
+        .moments-table td:nth-child(3) { display: none; }
+        .history-table td:last-child,
+        .history-table th:last-child { display: none; }
+
+        /* Section titles */
+        .rc-section-title { letter-spacing: 2px; }
+        .rc-section-subtitle { font-size: 12px; }
+
+        /* Facts */
+        .facts-grid { grid-template-columns: 1fr; }
+
+        /* Weather */
+        .weather-grid { grid-template-columns: 1fr; }
+
+        /* Lap record */
+        .lr-time { font-size: 18px; }
+    }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="../index.html" class="logo-container">
+            <img src="../img/logo.png" alt="F1 Hub Logo" class="nav-logo">
+        </a>
+        <button class="hamburger" id="hamburger-btn" aria-label="Open menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+        <nav>
+            <ul id="nav-menu" class="nav-menu">
+                <li><a href="../index.html#calendar">Calendar</a></li>
+                <li><a href="../championship.html">Championship</a></li>
+                <li><a href="../drivers.html">Drivers</a></li>
+                <li><a href="../teams.html">Teams</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- HERO -->
+        <section class="race-hero">
+            <video id="race-hero-video" class="race-hero-video" autoplay muted loop playsinline></video>
+            <img id="race-hero-img" class="race-hero-img" src="" alt="" style="display:none">
+            <div class="race-hero-overlay"></div>
+
+            <div id="hero-sprint-badge" class="race-sprint-badge" style="display:none">
+                <span class="race-sprint-badge-dot"></span>
+                Sprint Weekend
+            </div>
+
+            <div class="race-hero-bottom">
+                <p class="race-hero-circuit" id="hero-circuit-name">-</p>
+                <h1 class="race-hero-name">
+                    <span id="hero-name">-</span>
+                    <span class="race-hero-name-prefix">Grand Prix</span>
+                </h1>
+                <div class="race-quick-stats">
+                    <div class="rqs-item">
+                        <span class="rqs-val" id="stat-length">-</span>
+                        <span class="rqs-label">Circuit Length</span>
+                    </div>
+                    <div class="rqs-divider"></div>
+                    <div class="rqs-item">
+                        <span class="rqs-val" id="stat-laps">-</span>
+                        <span class="rqs-label">Race Laps</span>
+                    </div>
+                    <div class="rqs-divider"></div>
+                    <div class="rqs-item">
+                        <span class="rqs-val" id="stat-corners">-</span>
+                        <span class="rqs-label">Corners</span>
+                    </div>
+                    <div class="rqs-divider"></div>
+                    <div class="rqs-item">
+                        <span class="rqs-val" id="stat-overtake">-</span>
+                        <span class="rqs-label">Overtake Zones</span>
+                    </div>
+                    <div class="rqs-divider"></div>
+                    <div class="rqs-item">
+                        <span class="rqs-val" id="stat-first">-</span>
+                        <span class="rqs-label">First GP</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="race-content">
+
+            <!-- CIRCUIT OVERVIEW -->
+            <section>
+                <p class="rc-section-title">Circuit Overview</p>
+                <div class="circuit-overview">
+
+                    <!-- Track layout -->
+                    <div class="track-layout-card">
+                        <p class="rc-section-subtitle" style="margin-bottom:0.5rem">Layout</p>
+                        <div class="track-layout-placeholder" id="track-layout-container">
+                            <img id="track-layout-img" src=""
+                                style="width:100%;height:auto;display:block;border-radius:8px">
+                        </div>
+                        <!-- Lap record inline -->
+                        <div class="lap-record-banner" style="margin-top:0">
+                            <div>
+                                <p class="lr-label">Current Lap Record</p>
+                                <p class="lr-time" id="lr-time">-</p>
+                                <p class="lr-meta" id="lr-meta">-</p>
+                            </div>
+                            <div style="text-align:right">
+                                <p class="lr-label">Top Speed</p>
+                                <p class="lr-time" id="lr-topspeed">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats grid -->
+                    <div class="circuit-stats-card">
+                        <p class="rc-section-subtitle" style="margin-bottom:0.5rem">Stats</p>
+                        <div class="cs-stat">
+                            <span class="cs-stat-val" id="cs-length">-</span>
+                            <span class="cs-stat-label">km per lap</span>
+                        </div>
+                        <div class="cs-stat">
+                            <span class="cs-stat-val" id="cs-distance">-</span>
+                            <span class="cs-stat-label">total km</span>
+                        </div>
+                        <div class="cs-stat">
+                            <span class="cs-stat-val" id="cs-laps">-</span>
+                            <span class="cs-stat-label">race laps</span>
+                        </div>
+                        <div class="cs-stat">
+                            <span class="cs-stat-val" id="cs-corners">-</span>
+                            <span class="cs-stat-label">corners</span>
+                        </div>
+                        <div class="cs-stat">
+                            <span class="cs-stat-val" id="cs-overtake">-</span>
+                            <span class="cs-stat-label">Overtake zones</span>
+                        </div>
+                        <div class="cs-stat">
+                            <span class="cs-stat-val" id="cs-editions">-</span>
+                            <span class="cs-stat-label">editions held</span>
+                        </div>
+                    </div>
+
+                    <!-- Characteristics -->
+                    <div class="characteristics-card">
+                        <p class="rc-section-subtitle" style="margin-bottom:0.5rem">Characteristics</p>
+                        <div class="char-row">
+                            <div class="char-label-row">
+                                <span class="char-label">Downforce</span>
+                                <span class="char-val" id="char-downforce">-</span>
+                            </div>
+                            <div class="char-bar"><div class="char-bar-fill" id="bar-downforce" style="width:0%"></div></div>
+                        </div>
+                        <div class="char-row">
+                            <div class="char-label-row">
+                                <span class="char-label">Overtaking</span>
+                                <span class="char-val" id="char-overtaking">-</span>
+                            </div>
+                            <div class="char-bar"><div class="char-bar-fill" id="bar-overtaking" style="width:0%"></div></div>
+                        </div>
+                        <div class="char-row">
+                            <div class="char-label-row">
+                                <span class="char-label">Tyre Degradation</span>
+                                <span class="char-val" id="char-tiredeg">-</span>
+                            </div>
+                            <div class="char-bar"><div class="char-bar-fill" id="bar-tiredeg" style="width:0%"></div></div>
+                        </div>
+                        <div class="char-row" style="margin-top:0.5rem; padding-top:0.75rem; border-top:1px solid rgba(255,255,255,0.06)">
+                            <div class="char-label-row">
+                                <span class="char-label">Track Type</span>
+                                <span class="char-val" id="char-tracktype">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- FUN FACTS -->
+            <section>
+                <p class="rc-section-title">Did You Know?</p>
+                <div class="facts-grid" id="facts-grid"></div>
+            </section>
+
+            <!-- 2026 WEEKEND -->
+            <section>
+                <p class="rc-section-title">2026 Race</p>
+                <div class="result-card" id="result-card"></div>
+                <div class="moments-card" id="moments-card"></div>
+            </section>
+
+            <section>
+                <p class="rc-section-title">Weekend Weather</p>
+                <div class="weather-grid" id="weather-card">
+                    <div class="weather-day-card" id="weather-friday">
+                        <p class="weather-day-label">Friday</p>
+                        <div class="weather-day-icon" id="weather-icon-friday">-</div>
+                        <p class="weather-day-condition" id="weather-condition-friday">-</p>
+                        <p class="weather-day-temp" id="weather-temp-friday">-</p>
+                        <p class="weather-day-notes" id="weather-notes-friday">-</p>
+                        <span class="weather-day-rain" id="weather-rain-friday">-</span>
+                    </div>
+                    <div class="weather-day-card" id="weather-saturday">
+                        <p class="weather-day-label">Saturday</p>
+                        <div class="weather-day-icon" id="weather-icon-saturday">-</div>
+                        <p class="weather-day-condition" id="weather-condition-saturday">-</p>
+                        <p class="weather-day-temp" id="weather-temp-saturday">-</p>
+                        <p class="weather-day-notes" id="weather-notes-saturday">-</p>
+                        <span class="weather-day-rain" id="weather-rain-saturday">-</span>
+                    </div>
+                    <div class="weather-day-card weather-day-card" id="weather-sunday">
+                        <p class="weather-day-label">Sunday <span class="race-badge">Race Day</span></p>
+                        <div class="weather-day-icon" id="weather-icon-sunday">-</div>
+                        <p class="weather-day-condition" id="weather-condition-sunday">-</p>
+                        <p class="weather-day-temp" id="weather-temp-sunday">-</p>
+                        <p class="weather-day-notes" id="weather-notes-sunday">-</p>
+                        <span class="weather-day-rain" id="weather-rain-sunday">-</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- HISTORY TABLE -->
+            <section>
+                <p class="rc-section-title">Race History</p>
+                <div class="history-card" id="history-card"></div>
+            </section>
+        
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="../index.html" class="footer-logo">
+                    <img src="../img/logo.png" alt="F1 Hub Logo" class="footer-logo-img">
+                </a>
+                <p class="footer-tagline">
+                    Your go-to source for F1 schedules, standings,<br>
+                    and race data — all in your local time.
+                </p>
+                <div class="footer-social">
+                    <a href="#" class="social-btn" aria-label="X / Twitter">X</a>
+                    <a href="#" class="social-btn" aria-label="Instagram">IG</a>
+                    <a href="#" class="social-btn" aria-label="YouTube">YT</a>
+                    <a href="https://www.formula1.com" target="_blank" class="social-btn" aria-label="F1 Official">F1</a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <p class="footer-col-title">Navigate</p>
+                <ul>
+                    <li><a href="../index.html#calendar">Calendar</a></li>
+                    <li><a href="../championship.html">Championship</a></li>
+                    <li><a href="../drivers.html">Drivers</a></li>
+                    <li><a href="../teams.html">Teams</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <p class="footer-col-title">External</p>
+                <ul>
+                    <li><a href="https://www.formula1.com" target="_blank">Formula 1 Official</a></li>
+                    <li><a href="https://www.fia.com" target="_blank">FIA</a></li>
+                    <li><a href="https://f1-dash.com/dashboard" target="_blank">F1 Dash</a></li>
+                    <li><a href="https://ergast.com/mrd/" target="_blank">Ergast API</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span class="footer-copy">&copy; 2026 F1 Hub &mdash; Unofficial fan project. Not affiliated with Formula 1.</span>
+            <span class="footer-tz">All times shown in your local timezone</span>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,1618 @@
+{
+  "albert-park-circuit": {
+    "name": "Albert Park Circuit",
+    "media": {
+      "image": "../img/circuits/albert-park-circuit.png",
+      "layout": "../img/circuits/albert-park-circuit-layout.png"
+    },
+    "stats": {
+      "length": "5.278",
+      "laps": 58,
+      "turns": 16,
+      "overtakeZones": 5
+    },
+    "topSpeed": {
+      "speed": "343 km/h"
+    },
+    "lapRecord": {
+      "time": "1:19.813",
+      "driver": "Charles Leclerc",
+      "year": 2024
+    },
+    "characteristics": {
+      "downforce": 60,
+      "overtaking": 85,
+      "tyreDeg": 60,
+      "trackType": "semi-urban"
+    },
+    "funFacts": [
+      "It is a semi-street circuit: during the year it functions as a regular public park.",
+      "The asphalt grip changes a lot over the weekend because it starts off 'green'.",
+      "Albert Park Lake sits right next to the circuit and is part of its iconic scenery.",
+      "Before Albert Park, the Australian Grand Prix was held in Adelaide.",
+      "Melbourne weather is very unpredictable: it can go from sunshine to rain within hours.",
+      "It is not one of the best tracks for overtaking, but it does have some clear passing zones.",
+      "The layout was modified in 2022 to make it faster and improve overtaking."
+    ],
+    "history": [
+      { "year": 1996, "pole": "Jacques Villenueve", "winner": "Damon Hill"},
+      { "year": 1997, "pole": "Jacques Villenueve","winner": "Heinz-Harald Frentzen" },
+      { "year": 1998, "pole": "Mika Hakkinen", "winner": "Mika Hakkinen"},
+      { "year": 1999, "pole": "Mika Hakkinen", "winner": "Michael Schumacher" },
+      { "year": 2000, "pole": "Mika Hakkinen", "winner": "Rubens Barrichello" },
+      { "year": 2001, "pole": "Michael Schumacher", "winner": "Michael Schumacher"},
+      { "year": 2002, "pole": "Rubens Barrichello","winner": "Kimi Raikkonen" },
+      { "year": 2003, "pole": "Michael Schumacher", "winner": "Kimi Raikkonen"},
+      { "year": 2004, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+      { "year": 2005, "pole": "Michael Schumacher", "winner": "Fernando Alonso" },
+      { "year": 2006, "pole": "Jenson Button", "winner": "Kimi Raikkonen"},
+      { "year": 2007, "pole": "Kimi Raikkonen","winner": "Kimi Raikkonen" },
+      { "year": 2008, "pole": "Lewis Hamilton", "winner": "Heikki Kovalainen"},
+      { "year": 2009, "pole": "Jenson Button", "winner": "Nico Rosberg" },
+      { "year": 2010, "pole": "Sebastian Vettel", "winner": "Mark Webber" },
+      { "year": 2011, "pole": "Sebastian Vettel", "winner": "Felipe Massa"},
+      { "year": 2012, "pole": "Lewis Hamilton","winner": "Jenson Button" },
+      { "year": 2013, "pole": "Sebastian Vettel", "winner": "Kimi Raikkonen"},
+      { "year": 2014, "pole": "Lewis Hamilton", "winner": "Nico Rosberg" },
+      { "year": 2015, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+      { "year": 2016, "pole": "Lewis Hamilton", "winner": "Daniel Ricciardo"},
+      { "year": 2017, "pole": "Lewis Hamilton","winner": "Kimi Raikkonen" },
+      { "year": 2018, "pole": "Lewis Hamilton", "winner": "Daniel Ricciardo"},
+      { "year": 2019, "pole": "Lewis Hamilton", "winner": "Valtteri Bottas" },
+      { "year": 2022, "pole": "Charles Leclerc", "winner": "Charles Leclerc" },
+      { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen"},
+      { "year": 2024, "pole": "Max Verstappen", "winner": "Carlos Sainz" },
+      { "year": 2025, "pole": "Lando Norris", "winner": "Lando Norris" },
+      { "year": 2026, "pole": "George Russell", "winner": "George Russell"}
+    ]
+  },
+
+  "shanghai-international-circuit": {
+    "name": "Shanghai International Circuit",
+    "media": {
+      "image": "../img/circuits/china.png",
+      "layout": "../img/circuits/china-layout.png"
+    },
+    "stats": {
+      "length": "5.451",
+      "laps": 56,
+      "turns": 16,
+      "overtakeZones": 4
+    },
+    "topSpeed": {
+      "speed": "354 km/h"
+    },
+    "lapRecord": {
+      "time": "1:32.238",
+      "driver": "Michael Schumacher",
+      "year": 2004
+    },
+    "characteristics": {
+      "downforce": 50,
+      "overtaking": 75,
+      "tyreDeg": 70,
+      "trackType": "permanent"
+    },
+    "funFacts": [
+      "The Shanghai circuit is known for its unique snail-shaped layout, inspired by the Chinese character for 'Shang'.",
+      "The long back straight is one of the best overtaking opportunities on the calendar.",
+      "China returned to the calendar in 2024 after a five-year absence due to COVID-19.",
+      "The final sector features a very slow and technical hairpin section that puts heavy stress on tyres.",
+      "Shanghai is one of the widest circuits on the calendar, giving drivers more room to race.",
+      "The circuit was designed by Hermann Tilke, the architect behind many modern F1 tracks.",
+      "High tyre degradation is a key strategic factor here, often leading to multi-stop races."
+    ],
+    "history": [
+      { "year": 2004, "pole": "Rubens Barrichello", "winner": "Rubens Barrichello" },
+      { "year": 2005, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
+      { "year": 2006, "pole": "Fernando Alonso", "winner": "Michael Schumacher"},
+      { "year": 2007, "pole": "Lewis Hamilton","winner": "Kimi Raikkonen" },
+      { "year": 2008, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton"},
+      { "year": 2009, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+      { "year": 2010, "pole": "Sebastian Vettel", "winner": "Jenson Button" },
+      { "year": 2011, "pole": "Sebastian Vettel", "winner": "Lewis Hamilton"},
+      { "year": 2012, "pole": "Nico Rosberg","winner": "Nico Rosberg" },
+      { "year": 2013, "pole": "Lewis Hamilton", "winner": "Fernando Alonso"},
+      { "year": 2014, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+      { "year": 2015, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+      { "year": 2016, "pole": "Nico Rosberg", "winner": "Nico Rosberg"},
+      { "year": 2017, "pole": "Lewis Hamilton","winner": "Lewis Hamilton" },
+      { "year": 2018, "pole": "Sebastian Vettel", "winner": "Daniel Ricciardo"},
+      { "year": 2019, "pole": "Valtteri Bottas", "winner": "Lewis Hamilton" },
+      { "year": 2024, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+      { "year": 2025, "pole": "Oscar Piastri", "winner": "Oscar Piastri" },
+      { "year": 2026, "pole": "Kimi Antonelli", "winner": "Kimi Antonelli" }
+    ]
+  },
+
+  "suzuka-international-racing-course": {
+    "name": "Suzuka International Racing Course",
+    "media": {
+      "image": "../img/circuits/japan.png",
+      "layout": "../img/circuits/japan-layout.png"
+    },
+    "stats": {
+      "length": "5.807",
+      "laps": 53,
+      "turns": 18,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "349 km/h"
+    },
+    "lapRecord": {
+      "time": "1:30.983",
+      "driver": "Lewis Hamilton",
+      "year": 2019
+    },
+    "characteristics": {
+      "downforce": 75,
+      "overtaking": 30,
+      "tyreDeg": 45,
+      "trackType": "permanent"
+    },
+    "funFacts": [
+      "Suzuka is the only figure-of-eight circuit on the F1 calendar, where the track crosses over itself via a bridge.",
+      "It is widely considered one of the greatest and most challenging circuits in the world by drivers.",
+      "The high-speed 130R corner is one of the most iconic and demanding corners in all of motorsport.",
+      "Suzuka has hosted some of the most memorable championship-deciding moments in F1 history.",
+      "The Esses section in the first sector requires extreme precision and rhythm from the driver.",
+      "Japanese fans are renowned for being among the most passionate and knowledgeable in Formula 1.",
+      "The circuit was originally built in 1962 by Honda as a test track before hosting its first GP in 1987."
+    ],
+    "history": [
+      { "year": 1987, "pole": "Gerhard Berger", "winner": "Gerhard Berger" },
+      { "year": 1988, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
+      { "year": 1989, "pole": "Ayrton Senna", "winner": "Alessandro Nannini" },
+      { "year": 1990, "pole": "Ayrton Senna", "winner": "Nelson Piquet" },
+      { "year": 1991, "pole": "Gerhard Berger","winner": "Gerhard Berger" },
+      { "year": 1992, "pole": "Nigel Mansell", "winner": "Riccardo Patrese"},
+      { "year": 1993, "pole": "Alain Prost", "winner": "Ayrton Senna" },
+      { "year": 1994, "pole": "Michael Schumacher", "winner": "Damon Hill" },
+      { "year": 1995, "pole": "Michael Schumacher", "winner": "Michael Schumacher"},
+      { "year": 1996, "pole": "Jacques Villenueve", "winner": "Damon Hill"},
+      { "year": 1997, "pole": "Jacques Villenueve","winner": "Michael Schumacher" },
+      { "year": 1998, "pole": "Michael Schumacher", "winner": "Mika Hakkinen"},
+      { "year": 1999, "pole": "Michael Schumacher", "winner": "Mika Hakkinen" },
+      { "year": 2000, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+      { "year": 2001, "pole": "Michael Schumacher", "winner": "Michael Schumacher"},
+      { "year": 2002, "pole": "Michael Schumacher","winner": "Michael Schumacher" },
+      { "year": 2003, "pole": "Rubens Barrichello", "winner": "Rubens Barrichello"},
+      { "year": 2004, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+      { "year": 2005, "pole": "Ralf Schumacher", "winner": "Kimi Raikkonen" },
+      { "year": 2006, "pole": "Felipe Massa", "winner": "Fernando Alonso"},
+      { "year": 2009, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+      { "year": 2010, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+      { "year": 2011, "pole": "Sebastian Vettel", "winner": "Jenson Button"},
+      { "year": 2012, "pole": "Sebastian Vettel","winner": "Sebastian Vettel" },
+      { "year": 2013, "pole": "Mark Webber", "winner": "Sebastian Vettel"},
+      { "year": 2014, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
+      { "year": 2015, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
+      { "year": 2016, "pole": "Nico Rosberg", "winner": "Nico Rosberg"},
+      { "year": 2017, "pole": "Lewis Hamilton","winner": "Lewis Hamilton" },
+      { "year": 2018, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton"},
+      { "year": 2019, "pole": "Sebastian Vettel", "winner": "Valtteri Bottas" },
+      { "year": 2022, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+      { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen"},
+      { "year": 2024, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+      { "year": 2025, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+      { "year": 2026, "pole": "Kimi Antonelli", "winner": "Kimi Antonelli"}
+    ]
+  },
+  "bahrain-internatinal-circuit": {
+    "name": "Bahrain International Circuit",
+    "media": {
+      "image": "../img/circuits/bahrain.png",
+      "layout": "../img/circuits/bahrain-layout.png"
+    },
+    "stats": {
+      "length": "5.412",
+      "laps": 57,
+      "turns": 15,
+      "overtakeZones": 3
+    },
+    "topSpeed": {
+      "speed": "322 km/h"
+    },
+    "lapRecord": {
+      "time": "1:31.447",
+      "driver": "Pedro de la Rosa",
+      "year": 2005
+    },
+    "characteristics": {
+      "downforce": 55,
+      "overtaking": 70,
+      "tyreDeg": 75,
+      "trackType": "permanent"
+    },
+    "funFacts": [
+      "Bahrain was the first F1 race to be held in the Middle East, debuting in 2004.",
+      "The race takes place under floodlights, making it one of the most visually stunning events on the calendar.",
+      "The desert sand blown onto the track can significantly affect grip levels throughout the weekend.",
+      "Bahrain has three DRS zones, making it one of the better circuits for overtaking.",
+      "The circuit has an alternative 'Endurance' layout used for testing but never for a Grand Prix.",
+      "Tyre degradation is very high due to the abrasive surface and extreme temperatures.",
+      "The circuit sits in the middle of the desert, with sand dunes visible from the track."
+    ],
+    "history": [
+      { "year": 2004, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+      { "year": 2005, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
+      { "year": 2006, "pole": "Michael Schumacher", "winner": "Fernando Alonso" },
+      { "year": 2007, "pole": "Felipe Massa", "winner": "Felipe Massa" },
+      { "year": 2008, "pole": "Robert Kubica", "winner": "Felipe Massa" },
+      { "year": 2009, "pole": "Jarno Trulli", "winner": "Jenson Button" },
+      { "year": 2010, "pole": "Sebastian Vettel", "winner": "Fernando Alonso" },
+      { "year": 2012, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+      { "year": 2013, "pole": "Nico Rosberg", "winner": "Sebastian Vettel" },
+      { "year": 2014, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
+      { "year": 2015, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+      { "year": 2016, "pole": "Lewis Hamilton", "winner": "Nico Rosberg" },
+      { "year": 2017, "pole": "Valtteri Bottas", "winner": "Sebastian Vettel" },
+      { "year": 2018, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+      { "year": 2019, "pole": "Charles Leclerc", "winner": "Lewis Hamilton" },
+      { "year": 2020, "pole": "Lewis Hamilton", "winner": "Sergio Pérez" },
+      { "year": 2021, "pole": "Max Verstappen", "winner": "Lewis Hamilton" },
+      { "year": 2022, "pole": "Charles Leclerc", "winner": "Charles Leclerc" },
+      { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+      { "year": 2024, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+      { "year": 2025, "pole": "Oscar Piastri", "winner": "Oscar Piastri" }
+    ]
+  },
+
+  "jeddah-corniche-circuit": {
+    "name": "Jeddah Corniche Circuit",
+    "media": {
+      "image": "../img/circuits/saudi-arabia.png",
+      "layout": "../img/circuits/saudiarabia-layout.png"
+    },
+    "stats": {
+      "length": "6.174",
+      "laps": 50,
+      "turns": 27,
+      "overtakeZones": 3
+    },
+    "topSpeed": {
+      "speed": "342 km/h"
+    },
+    "lapRecord": {
+      "time": "1:30.734",
+      "driver": "Lewis Hamilton",
+      "year": 2021
+    },
+    "characteristics": {
+      "downforce": 40,
+      "overtaking": 50,
+      "tyreDeg": 45,
+      "trackType": "street"
+    },
+    "funFacts": [
+      "Jeddah is the second fastest street circuit in F1 history, with average speeds exceeding 250 km/h.",
+      "The circuit runs along the Red Sea corniche, with the water visible from several sections of the track.",
+      "With 27 corners, it is one of the most complex layouts on the calendar.",
+      "The walls are extremely close to the racing line, leaving almost no margin for error.",
+      "It debuted on the calendar in 2021 and immediately produced dramatic and controversial racing.",
+      "The high-speed nature of the circuit means safety car periods are very common.",
+      "Visibility through the blind corners is extremely limited, requiring drivers to commit fully on instinct."
+    ],
+      "history": [
+        { "year": 2021, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+        { "year": 2022, "pole": "Sergio Pérez", "winner": "Max Verstappen" },
+        { "year": 2023, "pole": "Sergio Pérez", "winner": "Sergio Pérez" },
+        { "year": 2024, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+        { "year": 2025, "pole": "Max Verstappen", "winner": "Oscar Piastri" }
+      ]
+  },
+
+  "miami-international-autodrome": {
+    "name": "Miami International Autodrome",
+    "media": {
+      "image": "../img/circuits/miami.png",
+      "layout": "../img/circuits/miami-layout.png"
+    },
+    "stats": {
+      "length": "5.412",
+      "laps": 57,
+      "turns": 19,
+      "overtakeZones": 3
+    },
+    "topSpeed": {
+      "speed": "320 km/h"
+    },
+    "lapRecord": {
+      "time": "1:29.708",
+      "driver": "Max Verstappen",
+      "year": 2023
+    },
+    "characteristics": {
+      "downforce": 45,
+      "overtaking": 70,
+      "tyreDeg": 40,
+      "trackType": "street"
+    },
+    "funFacts": [
+      "The Miami International Autodrome is built around the Hard Rock Stadium, home of the Miami Dolphins NFL team.",
+      "The circuit features a fake marina and beach area in the paddock zone for the celebrity-heavy event.",
+      "Miami joined the calendar in 2022 and immediately became one of the most glamorous events of the year.",
+      "The track surface heats up significantly due to the Florida sun, making tyre management crucial.",
+      "It is one of two US rounds on the calendar alongside Austin and Las Vegas.",
+      "The DRS zones are long and effective, producing some of the best overtaking opportunities of the season.",
+      "Miami is known for its electric atmosphere, with huge crowds and a festival-like environment."
+    ],
+    "history": [
+      { "year": 2022, "pole": "Charles Leclerc", "winner": "Max Verstappen", "winnerTeam": "Red Bull" },
+      { "year": 2023, "pole": "Sergio Pérez", "winner": "Max Verstappen", "winnerTeam": "Red Bull" },
+      { "year": 2024, "pole": "Max Verstappen", "winner": "Lando Norris", "winnerTeam": "McLaren" },
+      { "year": 2025, "pole": "Max Verstappen", "winner": "Oscar Piastri", "winnerTeam": "McLaren" }
+    ]
+  },
+
+  "circuit-gilles-villeneuve": {
+
+    "name": "Circuit Gilles Villeneuve",
+    "media": {
+      "image": "../img/circuits/canada.png",
+      "layout": "../img/circuits/canada-layout.png"
+    },
+    "stats": {
+      "length": "4.361",
+      "laps": 70,
+      "turns": 14,
+      "overtakeZones": 4
+    },
+    "topSpeed": {
+      "speed": "328 km/h"
+    },
+    "lapRecord": {
+      "time": "1:13.078",
+      "driver": "Valtteri Bottas",
+      "year": 2019
+    },
+    "characteristics": {
+      "downforce": 35,
+      "overtaking": 75,
+      "tyreDeg": 40,
+      "trackType": "semi-urban"
+    },
+    "funFacts": [
+      "The circuit is named after Canadian F1 hero Gilles Villeneuve, who won the first Canadian GP held here in 1978.",
+      "The track is built on Île Notre-Dame, an artificial island in the Saint Lawrence River in Montreal.",
+      "The infamous 'Wall of Champions' at the final chicane has claimed many title contenders over the years.",
+      "Canada is known for producing some of the most unpredictable and entertaining races on the calendar.",
+      "The low-downforce setup required here puts extreme stress on the brakes throughout the race.",
+      "The circuit is only used for the Grand Prix weekend — the rest of the year it hosts other events.",
+      "Montreal's weather is notoriously unpredictable in June, making strategy calls particularly complex."
+    ],
+  "history": [
+    { "year": 1978, "pole": "Jean-Pierre Jarier", "winner": "Gilles Villeneuve" },
+    { "year": 1979, "pole": "Alan Jones", "winner": "Alan Jones" },
+    { "year": 1980, "pole": "Nelson Piquet", "winner": "Alan Jones" },
+    { "year": 1981, "pole": "Nelson Piquet", "winner": "John Watson" },
+    { "year": 1982, "pole": "Didier Pironi", "winner": "Didier Pironi" },
+    { "year": 1983, "pole": "René Arnoux", "winner": "Patrick Tambay" },
+    { "year": 1984, "pole": "Nelson Piquet", "winner": "Nelson Piquet" },
+    { "year": 1985, "pole": "Elio de Angelis", "winner": "Ayrton Senna" },
+    { "year": 1986, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
+    { "year": 1988, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
+    { "year": 1989, "pole": "Alain Prost", "winner": "Jonathan Palmer" },
+    { "year": 1990, "pole": "Ayrton Senna", "winner": "Gerhard Berger" },
+    { "year": 1994, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+    { "year": 1995, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+    { "year": 1996, "pole": "Damon Hill", "winner": "Damon Hill" },
+    { "year": 1997, "pole": "Michael Schumacher", "winner": "David Coulthard" },
+    { "year": 1998, "pole": "David Coulthard", "winner": "Michael Schumacher" },
+    { "year": 1999, "pole": "Michael Schumacher", "winner": "Eddie Irvine" },
+    { "year": 2000, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+    { "year": 2001, "pole": "Michael Schumacher", "winner": "Ralf Schumacher" },
+    { "year": 2002, "pole": "Juan Pablo Montoya", "winner": "Juan Pablo Montoya" },
+    { "year": 2003, "pole": "Ralf Schumacher", "winner": "Fernando Alonso" },
+    { "year": 2004, "pole": "Ralf Schumacher", "winner": "Rubens Barrichello" },
+    { "year": 2005, "pole": "Jenson Button", "winner": "Kimi Räikkönen" },
+    { "year": 2006, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
+    { "year": 2007, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2008, "pole": "Lewis Hamilton", "winner": "Robert Kubica" },
+    { "year": 2010, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2011, "pole": "Sebastian Vettel", "winner": "Jenson Button" },
+    { "year": 2012, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+    { "year": 2013, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+    { "year": 2014, "pole": "Nico Rosberg", "winner": "Daniel Ricciardo" },
+    { "year": 2015, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2017, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2018, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+    { "year": 2019, "pole": "Sebastian Vettel", "winner": "Lewis Hamilton" },
+    { "year": 2022, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+    { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+    { "year": 2024, "pole": "George Russell", "winner": "Max Verstappen" },
+    { "year": 2025, "pole": "George Russell", "winner": "George Russell" }
+  ]
+  },
+  "circuit-de-monaco": {
+  "name": "Circuit de Monaco",
+  "media": {
+    "image": "../img/circuits/monaco.png",
+    "layout": "../img/circuits/monaco-layout.png"
+  },
+  "stats": {
+    "length": "3.337",
+    "laps": 78,
+    "turns": 19,
+    "overtakeZones": 2
+  },
+  "topSpeed": {
+    "speed": "293 km/h"
+  },
+  "lapRecord": {
+    "time": "1:12.909",
+    "driver": "Lewis Hamilton",
+    "year": 2021
+  },
+  "characteristics": {
+    "downforce": 95,
+    "overtaking": 10,
+    "tyreDeg": 30,
+    "trackType": "street"
+  },
+  "funFacts": [
+    "Monaco is the shortest circuit on the F1 calendar but one of the most challenging.",
+    "Overtaking is extremely difficult, making qualifying the most important session of the weekend.",
+    "The race is often described as 'driving a car around a living room'.",
+    "The famous tunnel section creates a dramatic change in lighting conditions for drivers.",
+    "Monaco has the slowest average speed of any track in Formula 1.",
+    "The Grand Prix has been held since 1929 and is part of the Triple Crown of Motorsport.",
+    "Barriers are very close, so even a small mistake usually ends in a crash."
+  ],
+
+  "history": [
+    { "year": 1950, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
+    { "year": 1955, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
+    { "year": 1956, "pole": "Juan Manuel Fangio", "winner": "Stirling Moss" },
+    { "year": 1957, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
+    { "year": 1958, "pole": "Tony Brooks", "winner": "Mike Hawthorn" },
+    { "year": 1959, "pole": "Stirling Moss", "winner": "Jack Brabham" },
+    { "year": 1960, "pole": "Stirling Moss", "winner": "Bruce McLaren" },
+    { "year": 1961, "pole": "Stirling Moss", "winner": "Richie Ginther" },
+    { "year": 1962, "pole": "Jim Clark", "winner": "Bruce McLaren" },
+    { "year": 1963, "pole": "Jim Clark", "winner": "John Surtees" },
+    { "year": 1964, "pole": "Jim Clark", "winner": "Graham Hill" },
+    { "year": 1965, "pole": "Graham Hill", "winner": "Graham Hill" },
+    { "year": 1966, "pole": "Jim Clark", "winner": "Lorenzo Bandini" },
+    { "year": 1967, "pole": "Jack Brabham", "winner": "Denny Hulme" },
+    { "year": 1968, "pole": "Graham Hill", "winner": "Graham Hill" },
+    { "year": 1969, "pole": "Jackie Stewart", "winner": "Jackie Stewart" },
+    { "year": 1970, "pole": "Jackie Stewart", "winner": "Jochen Rindt" },
+    { "year": 1971, "pole": "Jackie Stewart", "winner": "Jackie Stewart" },
+    { "year": 1972, "pole": "Emerson Fittipaldi", "winner": "Jean-Pierre Beltoise" },
+    { "year": 1973, "pole": "Jackie Stewart", "winner": "Jackie Stewart" },
+    { "year": 1974, "pole": "Niki Lauda", "winner": "Ronnie Peterson" },
+    { "year": 1975, "pole": "Niki Lauda", "winner": "Niki Lauda" },
+    { "year": 1976, "pole": "Niki Lauda", "winner": "Clay Regazzoni" },
+    { "year": 1977, "pole": "John Watson", "winner": "Jody Scheckter" },
+    { "year": 1978, "pole": "Carlos Reutemann", "winner": "Patrick Depailler" },
+    { "year": 1979, "pole": "Jody Scheckter", "winner": "Jody Scheckter" },
+    { "year": 1980, "pole": "Didier Pironi", "winner": "Carlos Reutemann" },
+    { "year": 1981, "pole": "Nelson Piquet", "winner": "Gilles Villeneuve" },
+    { "year": 1982, "pole": "René Arnoux", "winner": "Riccardo Patrese" },
+    { "year": 1983, "pole": "Alain Prost", "winner": "Nelson Piquet" },
+    { "year": 1984, "pole": "Alain Prost", "winner": "Alain Prost" },
+    { "year": 1985, "pole": "Ayrton Senna", "winner": "Alain Prost" },
+    { "year": 1986, "pole": "Alain Prost", "winner": "Alain Prost" },
+    { "year": 1987, "pole": "Nigel Mansell", "winner": "Ayrton Senna" },
+    { "year": 1988, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
+    { "year": 1989, "pole": "Ayrton Senna", "winner": "Alain Prost" },
+    { "year": 1990, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
+    { "year": 1991, "pole": "Ayrton Senna", "winner": "Alain Prost" },
+    { "year": 1992, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
+    { "year": 1993, "pole": "Alain Prost", "winner": "Alain Prost" },
+    { "year": 1994, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+    { "year": 1995, "pole": "Damon Hill", "winner": "Jean Alesi" },
+    { "year": 1996, "pole": "Michael Schumacher", "winner": "Olivier Panis" },
+    { "year": 1997, "pole": "Heinz-Harald Frentzen", "winner": "Michael Schumacher" },
+    { "year": 1998, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
+    { "year": 1999, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
+    { "year": 2000, "pole": "Michael Schumacher", "winner": "David Coulthard" },
+    { "year": 2001, "pole": "David Coulthard", "winner": "David Coulthard" },
+    { "year": 2002, "pole": "Juan Pablo Montoya", "winner": "David Coulthard" },
+    { "year": 2003, "pole": "Ralf Schumacher", "winner": "Juan Pablo Montoya" },
+    { "year": 2004, "pole": "Jarno Trulli", "winner": "Jarno Trulli" },
+    { "year": 2005, "pole": "Kimi Räikkönen", "winner": "Kimi Räikkönen" },
+    { "year": 2006, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
+    { "year": 2007, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
+    { "year": 2008, "pole": "Felipe Massa", "winner": "Lewis Hamilton" },
+    { "year": 2009, "pole": "Jenson Button", "winner": "Jenson Button" },
+    { "year": 2010, "pole": "Mark Webber", "winner": "Mark Webber" },
+    { "year": 2011, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+    { "year": 2012, "pole": "Mark Webber", "winner": "Mark Webber" },
+    { "year": 2013, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
+    { "year": 2014, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
+    { "year": 2015, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Daniel Ricciardo" },
+    { "year": 2017, "pole": "Kimi Räikkönen", "winner": "Sebastian Vettel" },
+    { "year": 2018, "pole": "Daniel Ricciardo", "winner": "Daniel Ricciardo" },
+    { "year": 2019, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2021, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
+    { "year": 2022, "pole": "Charles Leclerc", "winner": "Sergio Pérez" },
+    { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+    { "year": 2024, "pole": "Charles Leclerc", "winner": "Lewis Hamilton" },
+    { "year": 2025, "pole": "Lando Norris", "winner": "Lando Norris" }
+  ]
+  },
+  "circuit-de-barcelona-catalunya": {
+  "name": "Circuit de Barcelona-Catalunya",
+  "media": {
+    "image": "../img/circuits/barcelona.png",
+    "layout": "../img/circuits/barcelona-layout.png"
+  },
+  "stats": {
+    "length": "4.657",
+    "laps": 66,
+    "turns": 14,
+    "overtakeZones": 2
+  },
+  "topSpeed": {
+    "speed": "320 km/h"
+  },
+  "lapRecord": {
+    "time": "1:16.330",
+    "driver": "Max Verstappen",
+    "year": 2023
+  },
+  "characteristics": {
+    "downforce": 70,
+    "overtaking": 55,
+    "tyreDeg": 75,
+    "trackType": "permanent"
+  },
+  "funFacts": [
+    "The circuit is one of the most used for pre-season testing due to its balanced layout.",
+    "It features a mix of high-speed corners and technical sections, making it a complete track.",
+    "Tyre degradation is usually high, which plays a key role in race strategy.",
+    "The long main straight combined with DRS creates good overtaking opportunities into Turn 1.",
+    "The final chicane was removed in 2023, restoring the original fast last sector.",
+    "Teams know this track extremely well, so performance differences are often very tight.",
+    "Wind conditions can significantly affect car balance throughout the lap."
+  ],
+  "history": [
+    { "year": 1991, "pole": "Gerhard Berger", "winner": "Nigel Mansell" },
+    { "year": 1992, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
+    { "year": 1993, "pole": "Alain Prost", "winner": "Alain Prost" },
+    { "year": 1994, "pole": "Michael Schumacher", "winner": "Damon Hill" },
+    { "year": 1995, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+    { "year": 1996, "pole": "Damon Hill", "winner": "Michael Schumacher" },
+    { "year": 1997, "pole": "Jacques Villeneuve", "winner": "Jacques Villeneuve" },
+    { "year": 1998, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
+    { "year": 1999, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
+    { "year": 2000, "pole": "Michael Schumacher", "winner": "Mika Häkkinen" },
+    { "year": 2001, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+    { "year": 2002, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+    { "year": 2003, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+    { "year": 2004, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+    { "year": 2005, "pole": "Kimi Räikkönen", "winner": "Kimi Räikkönen" },
+    { "year": 2006, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
+    { "year": 2007, "pole": "Felipe Massa", "winner": "Felipe Massa" },
+    { "year": 2008, "pole": "Kimi Räikkönen", "winner": "Kimi Räikkönen" },
+    { "year": 2009, "pole": "Jenson Button", "winner": "Jenson Button" },
+    { "year": 2010, "pole": "Mark Webber", "winner": "Mark Webber" },
+    { "year": 2011, "pole": "Mark Webber", "winner": "Mark Webber" },
+    { "year": 2012, "pole": "Pastor Maldonado", "winner": "Pastor Maldonado" },
+    { "year": 2013, "pole": "Nico Rosberg", "winner": "Fernando Alonso" },
+    { "year": 2014, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2015, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
+    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Max Verstappen" },
+    { "year": 2017, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2018, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2019, "pole": "Valtteri Bottas", "winner": "Lewis Hamilton" },
+    { "year": 2020, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2021, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2022, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
+    { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+    { "year": 2024, "pole": "Lando Norris", "winner": "Max Verstappen" },
+    { "year": 2025, "pole": "Oscar Piastri", "winner": "Oscar Piastri" }
+  ]
+  },
+
+  "red-bull-ring": {
+  "name": "Red Bull Ring",
+  "media": {
+    "image": "../img/circuits/austria.png",
+    "layout": "../img/circuits/austria-layout.png"
+  },
+  "stats": {
+    "length": "4.318",
+    "laps": 71,
+    "turns": 10,
+    "overtakeZones": 3
+  },
+  "topSpeed": {
+    "speed": "322 km/h"
+  },
+  "lapRecord": {
+    "time": "1:05.619",
+    "driver": "Carlos Sainz",
+    "year": 2020
+  },
+  "characteristics": {
+    "downforce": 60,
+    "overtaking": 80,
+    "tyreDeg": 50,
+    "trackType": "permanent"
+  },
+  "funFacts": [
+    "The Red Bull Ring is one of the shortest lap times on the calendar.",
+    "Despite having only 10 corners, it produces exciting racing and many overtakes.",
+    "The track is located in the Styrian mountains, offering big elevation changes.",
+    "Heavy braking zones into Turns 1, 3 and 4 create prime overtaking opportunities.",
+    "Track limits are a constant issue, especially at the final two corners.",
+    "It used to be known as the A1-Ring before being renovated and renamed.",
+    "The circuit often hosts Sprint weekends in the modern F1 format."
+  ],
+  "history": [
+    { "year": 1997, "pole": "Jacques Villeneuve", "winner": "Jacques Villeneuve" },
+    { "year": 1998, "pole": "Giancarlo Fisichella", "winner": "Mika Häkkinen" },
+    { "year": 1999, "pole": "Mika Häkkinen", "winner": "Eddie Irvine" },
+    { "year": 2000, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
+    { "year": 2001, "pole": "Michael Schumacher", "winner": "David Coulthard" },
+    { "year": 2002, "pole": "Rubens Barrichello", "winner": "Michael Schumacher" },
+    { "year": 2003, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+    { "year": 2014, "pole": "Felipe Massa", "winner": "Nico Rosberg" },
+    { "year": 2015, "pole": "Lewis Hamilton", "winner": "Nico Rosberg" },
+    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2017, "pole": "Valtteri Bottas", "winner": "Lewis Hamilton" },
+    { "year": 2018, "pole": "Valtteri Bottas", "winner": "Max Verstappen" },
+    { "year": 2019, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
+    { "year": 2020, "pole": "Valtteri Bottas", "winner": "Lando Norris" },
+    { "year": 2020, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton", "note": "Styrian GP" },
+    { "year": 2021, "pole": "Max Verstappen", "winner": "Max Verstappen", "note": "Styrian GP" },
+    { "year": 2021, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+    { "year": 2022, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
+    { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+    { "year": 2024, "pole": "George Russell", "winner": "Max Verstappen" },
+    { "year": 2025, "pole": "Lando Norris", "winner": "Lando Norris" }
+  ]
+  },
+
+  "silverstone-circuit": {
+  "name": "Silverstone Circuit",
+  "media": {
+    "image": "../img/circuits/silverstone.png",
+    "layout": "../img/circuits/silverstone-layout.png"
+  },
+  "stats": {
+    "length": "5.891",
+    "laps": 52,
+    "turns": 18,
+    "overtakeZones": 2
+  },
+  "topSpeed": {
+    "speed": "335 km/h"
+  },
+  "lapRecord": {
+    "time": "1:27.097",
+    "driver": "Max Verstappen",
+    "year": 2020
+  },
+  "characteristics": {
+    "downforce": 60,
+    "overtaking": 70,
+    "tyreDeg": 80,
+    "trackType": "permanent"
+  },
+  "funFacts": [
+    "Silverstone hosted the first ever Formula 1 World Championship race in 1950.",
+    "Corners like Maggotts, Becketts and Copse are among the fastest and most iconic in F1.",
+    "The track was originally a World War II airfield before being converted into a circuit.",
+    "High-speed corners put extreme stress on tyres, especially the front-left.",
+    "British weather is famously unpredictable, often impacting race strategy.",
+    "It is considered one of the purest high-speed circuits on the calendar.",
+    "Drivers experience very high lateral G-forces through the fast sequences."
+  ],
+  "history": [
+    { "year": 1950, "pole": "Giuseppe Farina", "winner": "Giuseppe Farina" },
+    { "year": 1951, "pole": "José Froilán González", "winner": "José Froilán González" },
+    { "year": 1952, "pole": "Giuseppe Farina", "winner": "Alberto Ascari" },
+    { "year": 1953, "pole": "Alberto Ascari", "winner": "Alberto Ascari" },
+    { "year": 1954, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
+    { "year": 1956, "pole": "Stirling Moss", "winner": "Juan Manuel Fangio" },
+    { "year": 1958, "pole": "Stirling Moss", "winner": "Peter Collins" },
+    { "year": 1960, "pole": "Jack Brabham", "winner": "Jack Brabham" },
+    { "year": 1963, "pole": "Jim Clark", "winner": "Jim Clark" },
+    { "year": 1965, "pole": "Jim Clark", "winner": "Jim Clark" },
+    { "year": 1967, "pole": "Jim Clark", "winner": "Jim Clark" },
+    { "year": 1969, "pole": "Jochen Rindt", "winner": "Jackie Stewart" },
+    { "year": 1971, "pole": "Clay Regazzoni", "winner": "Jackie Stewart" },
+    { "year": 1973, "pole": "Ronnie Peterson", "winner": "James Hunt" },
+    { "year": 1975, "pole": "Tom Pryce", "winner": "Emerson Fittipaldi" },
+    { "year": 1977, "pole": "James Hunt", "winner": "James Hunt" },
+    { "year": 1979, "pole": "Alan Jones", "winner": "Clay Regazzoni" },
+    { "year": 1981, "pole": "René Arnoux", "winner": "John Watson" },
+    { "year": 1983, "pole": "René Arnoux", "winner": "Alain Prost" },
+    { "year": 1985, "pole": "Keke Rosberg", "winner": "Alain Prost" },
+    { "year": 1987, "pole": "Nelson Piquet", "winner": "Nigel Mansell" },
+    { "year": 1988, "pole": "Gerhard Berger", "winner": "Ayrton Senna" },
+    { "year": 1989, "pole": "Ayrton Senna", "winner": "Nigel Mansell" },
+    { "year": 1990, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
+    { "year": 1991, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
+    { "year": 1992, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
+    { "year": 1993, "pole": "Alain Prost", "winner": "Damon Hill" },
+    { "year": 1994, "pole": "Damon Hill", "winner": "Damon Hill" },
+    { "year": 1995, "pole": "Damon Hill", "winner": "Damon Hill" },
+    { "year": 1996, "pole": "Damon Hill", "winner": "Jacques Villeneuve" },
+    { "year": 1997, "pole": "Jacques Villeneuve", "winner": "Jacques Villeneuve" },
+    { "year": 1998, "pole": "Mika Häkkinen", "winner": "Michael Schumacher" },
+    { "year": 1999, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
+    { "year": 2000, "pole": "Rubens Barrichello", "winner": "David Coulthard" },
+    { "year": 2001, "pole": "Michael Schumacher", "winner": "Mika Häkkinen" },
+    { "year": 2002, "pole": "Juan Pablo Montoya", "winner": "Rubens Barrichello" },
+    { "year": 2003, "pole": "Rubens Barrichello", "winner": "Rubens Barrichello" },
+    { "year": 2004, "pole": "Kimi Räikkönen", "winner": "Michael Schumacher" },
+    { "year": 2005, "pole": "Fernando Alonso", "winner": "Juan Pablo Montoya" },
+    { "year": 2006, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
+    { "year": 2007, "pole": "Lewis Hamilton", "winner": "Kimi Räikkönen" },
+    { "year": 2008, "pole": "Heikki Kovalainen", "winner": "Kimi Räikkönen" },
+    { "year": 2009, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+    { "year": 2010, "pole": "Sebastian Vettel", "winner": "Mark Webber" },
+    { "year": 2011, "pole": "Mark Webber", "winner": "Fernando Alonso" },
+    { "year": 2012, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
+    { "year": 2013, "pole": "Lewis Hamilton", "winner": "Nico Rosberg" },
+    { "year": 2014, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
+    { "year": 2015, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2017, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2018, "pole": "Lewis Hamilton", "winner": "Sebastian Vettel" },
+    { "year": 2019, "pole": "Valtteri Bottas", "winner": "Lewis Hamilton" },
+    { "year": 2020, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2020, "pole": "Valtteri Bottas", "winner": "Lewis Hamilton", "note": "70th Anniversary GP" },
+    { "year": 2021, "pole": "Max Verstappen", "winner": "Lewis Hamilton" },
+    { "year": 2022, "pole": "Carlos Sainz", "winner": "Carlos Sainz" },
+    { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+    { "year": 2024, "pole": "George Russell", "winner": "Lewis Hamilton" },
+    { "year": 2025, "pole": "Max Verstappen", "winner": "Lando Norris" }
+  ]
+  },
+
+  "circuit-de-spa-francorchamps": {
+  "Name": "Circuit de Spa-Francorchamps",
+  "media": {
+    "image": "../img/circuits/spa.png",
+    "layout": "../img/circuits/spa-layout.png"
+  },
+  "stats": {
+    "length": "7.004",
+    "laps": 44,
+    "turns": 19,
+    "overtakeZones": 3
+  },
+  "topSpeed": {
+    "speed": "335 km/h"
+  },
+  "lapRecord": {
+    "time": "1:46.286",
+    "driver": "Valtteri Bottas",
+    "year": 2018
+  },
+  "characteristics": {
+    "downforce": 65,
+    "overtaking": 80,
+    "tyreDeg": 60,
+    "trackType": "permanent"
+  },
+  "funFacts": [
+    "Spa is the longest circuit on the Formula 1 calendar.",
+    "The famous Eau Rouge–Raidillon sequence is one of the most iconic corners in motorsport.",
+    "Weather can vary drastically across different parts of the track at the same time.",
+    "Long straights combined with high-speed corners make setup a compromise.",
+    "Slipstream battles on the Kemmel Straight often lead to overtakes into Les Combes.",
+    "It is one of the drivers' favorite tracks due to its fast and flowing nature.",
+    "The circuit is located in the Ardennes forest and has significant elevation changes."
+  ],
+  "history": [
+    { "year": 1950, "pole": "Giuseppe Farina", "winner": "Giuseppe Farina" },
+    { "year": 1951, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
+    { "year": 1952, "pole": "Alberto Ascari", "winner": "Alberto Ascari" },
+    { "year": 1953, "pole": "Juan Manuel Fangio", "winner": "Alberto Ascari" },
+    { "year": 1954, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
+    { "year": 1955, "pole": "Eugenio Castellotti", "winner": "Juan Manuel Fangio" },
+    { "year": 1956, "pole": "Juan Manuel Fangio", "winner": "Stirling Moss" },
+    { "year": 1958, "pole": "Mike Hawthorn", "winner": "Mike Hawthorn" },
+    { "year": 1960, "pole": "Jack Brabham", "winner": "Jack Brabham" },
+    { "year": 1961, "pole": "Phil Hill", "winner": "Phil Hill" },
+    { "year": 1962, "pole": "Graham Hill", "winner": "Jim Clark" },
+    { "year": 1963, "pole": "Graham Hill", "winner": "Jim Clark" },
+    { "year": 1964, "pole": "Dan Gurney", "winner": "Dan Gurney" },
+    { "year": 1965, "pole": "Graham Hill", "winner": "Jim Clark" },
+    { "year": 1966, "pole": "John Surtees", "winner": "John Surtees" },
+    { "year": 1967, "pole": "Jim Clark", "winner": "Dan Gurney" },
+    { "year": 1968, "pole": "Chris Amon", "winner": "Bruce McLaren" },
+    { "year": 1970, "pole": "Jackie Stewart", "winner": "Pedro Rodríguez" },
+    { "year": 1983, "pole": "Alain Prost", "winner": "Alain Prost" },
+    { "year": 1985, "pole": "Alain Prost", "winner": "Alain Prost" },
+    { "year": 1986, "pole": "Nelson Piquet", "winner": "Nigel Mansell" },
+    { "year": 1987, "pole": "Nigel Mansell", "winner": "Alain Prost" },
+    { "year": 1988, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
+    { "year": 1989, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
+    { "year": 1990, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
+    { "year": 1991, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
+    { "year": 1992, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
+    { "year": 1993, "pole": "Alain Prost", "winner": "Alain Prost" },
+    { "year": 1994, "pole": "Rubens Barrichello", "winner": "Damon Hill" },
+    { "year": 1995, "pole": "Gerhard Berger", "winner": "Michael Schumacher" },
+    { "year": 1996, "pole": "Jacques Villeneuve", "winner": "Michael Schumacher" },
+    { "year": 1997, "pole": "Jacques Villeneuve", "winner": "Jacques Villeneuve" },
+    { "year": 1998, "pole": "Mika Häkkinen", "winner": "Damon Hill" },
+    { "year": 1999, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
+    { "year": 2000, "pole": "Mika Häkkinen", "winner": "Rubens Barrichello" },
+    { "year": 2001, "pole": "Juan Pablo Montoya", "winner": "Michael Schumacher" },
+    { "year": 2002, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+    { "year": 2004, "pole": "Jarno Trulli", "winner": "Kimi Räikkönen" },
+    { "year": 2005, "pole": "Juan Pablo Montoya", "winner": "Kimi Räikkönen" },
+    { "year": 2007, "pole": "Kimi Räikkönen", "winner": "Kimi Räikkönen" },
+    { "year": 2008, "pole": "Lewis Hamilton", "winner": "Felipe Massa" },
+    { "year": 2009, "pole": "Giancarlo Fisichella", "winner": "Kimi Räikkönen" },
+    { "year": 2010, "pole": "Mark Webber", "winner": "Lewis Hamilton" },
+    { "year": 2011, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+    { "year": 2012, "pole": "Jenson Button", "winner": "Jenson Button" },
+    { "year": 2013, "pole": "Lewis Hamilton", "winner": "Sebastian Vettel" },
+    { "year": 2014, "pole": "Nico Rosberg", "winner": "Daniel Ricciardo" },
+    { "year": 2015, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2016, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
+    { "year": 2017, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2018, "pole": "Lewis Hamilton", "winner": "Sebastian Vettel" },
+    { "year": 2019, "pole": "Charles Leclerc", "winner": "Charles Leclerc" },
+    { "year": 2020, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2021, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+    { "year": 2022, "pole": "Carlos Sainz", "winner": "Max Verstappen" },
+    { "year": 2023, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
+    { "year": 2024, "pole": "Charles Leclerc", "winner": "Lewis Hamilton" },
+    { "year": 2025, "pole": "Lando Norris", "winner": "Oscar Piastri" }
+  ]
+  },
+
+  "hungaroring": {
+  "name": "Hungaroring",
+  "media": {
+    "image": "../img/circuits/hungary.png",
+    "layout": "../img/circuits/hungary-layout.png"
+  },
+  "stats": {
+    "length": "4.381",
+    "laps": 70,
+    "turns": 14,
+    "overtakeZones": 1
+  },
+  "topSpeed": {
+    "speed": "315 km/h"
+  },
+  "lapRecord": {
+    "time": "1:16.627",
+    "driver": "Lewis Hamilton",
+    "year": 2020
+  },
+  "characteristics": {
+    "downforce": 85,
+    "overtaking": 20,
+    "tyreDeg": 70,
+    "trackType": "permanent"
+  },
+  "funFacts": [
+    "The Hungaroring is often compared to Monaco without walls due to its tight layout.",
+    "Overtaking is very difficult, making qualifying extremely important.",
+    "It was the first Formula 1 race held behind the Iron Curtain in 1986.",
+    "The track is twisty and technical with very few long straights.",
+    "High temperatures usually make tyre management a key factor.",
+    "Dusty conditions off the racing line reduce grip significantly.",
+    "Drivers are constantly turning, making it one of the most physically demanding circuits."
+  ],
+
+  "history": [
+    { "year": 1986, "pole": "Ayrton Senna", "winner": "Nelson Piquet" },
+    { "year": 1987, "pole": "Nigel Mansell", "winner": "Nelson Piquet" },
+    { "year": 1988, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
+    { "year": 1989, "pole": "Riccardo Patrese", "winner": "Nigel Mansell" },
+    { "year": 1990, "pole": "Thierry Boutsen", "winner": "Thierry Boutsen" },
+    { "year": 1991, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
+    { "year": 1992, "pole": "Riccardo Patrese", "winner": "Riccardo Patrese" },
+    { "year": 1993, "pole": "Alain Prost", "winner": "Alain Prost" },
+    { "year": 1994, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+    { "year": 1995, "pole": "Damon Hill", "winner": "Damon Hill" },
+    { "year": 1996, "pole": "Michael Schumacher", "winner": "Damon Hill" },
+    { "year": 1997, "pole": "Michael Schumacher", "winner": "Heinz-Harald Frentzen" },
+    { "year": 1998, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
+    { "year": 1999, "pole": "Mika Häkkinen", "winner": "David Coulthard" },
+    { "year": 2000, "pole": "Michael Schumacher", "winner": "Mika Häkkinen" },
+    { "year": 2001, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+    { "year": 2002, "pole": "Rubens Barrichello", "winner": "Rubens Barrichello" },
+    { "year": 2003, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
+    { "year": 2004, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+    { "year": 2005, "pole": "Michael Schumacher", "winner": "Kimi Räikkönen" },
+    { "year": 2006, "pole": "Kimi Räikkönen", "winner": "Jenson Button" },
+    { "year": 2007, "pole": "Lewis Hamilton", "winner": "Kimi Räikkönen" },
+    { "year": 2008, "pole": "Lewis Hamilton", "winner": "Kimi Räikkönen" },
+    { "year": 2009, "pole": "Fernando Alonso", "winner": "Mark Webber" },
+    { "year": 2010, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+    { "year": 2011, "pole": "Sebastian Vettel", "winner": "Jenson Button" },
+    { "year": 2012, "pole": "Lewis Hamilton", "winner": "Sebastian Vettel" },
+    { "year": 2013, "pole": "Lewis Hamilton", "winner": "Mark Webber" },
+    { "year": 2014, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
+    { "year": 2015, "pole": "Lewis Hamilton", "winner": "Daniel Ricciardo" },
+    { "year": 2016, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
+    { "year": 2017, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+    { "year": 2018, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2019, "pole": "Max Verstappen", "winner": "Lewis Hamilton" },
+    { "year": 2020, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2021, "pole": "Lewis Hamilton", "winner": "Esteban Ocon" },
+    { "year": 2022, "pole": "George Russell", "winner": "Max Verstappen" },
+    { "year": 2023, "pole": "Lewis Hamilton", "winner": "Max Verstappen" },
+    { "year": 2024, "pole": "Lando Norris", "winner": "Oscar Piastri" },
+    { "year": 2025, "pole": "Charles Leclerc", "winner": "Lando Norris" }
+  ]
+  },
+
+  "circuit-zandvoort": {
+  "name": "Circuit Zandvoort",
+  "media": {
+    "image": "../img/circuits/zandvoort.png",
+    "layout": "../img/circuits/zandvoort-layout.png"
+  },
+  "stats": {
+    "length": "4.259",
+    "laps": 72,
+    "turns": 14,
+    "overtakeZones": 1
+  },
+  "topSpeed": {
+    "speed": "338 km/h"
+  },
+  "lapRecord": {
+    "time": "1:11.097",
+    "driver": "Lewis Hamilton",
+    "year": 2021
+  },
+  "characteristics": {
+    "downforce": 80,
+    "overtaking": 20,
+    "tyreDeg": 65,
+    "trackType": "permanent"
+  },
+  "funFacts": [
+    "Zandvoort features unique banked corners, especially Turns 3 and 14.",
+    "The track runs through sand dunes near the North Sea coast.",
+    "Wind and sand can reduce grip and change track conditions quickly.",
+    "Overtaking is difficult due to the narrow and flowing layout.",
+    "The Dutch Grand Prix returned to Formula 1 in 2021 after a long absence.",
+    "High downforce setups are used to maximize performance in fast corners.",
+    "The atmosphere is one of the most vibrant thanks to passionate Dutch fans."
+  ],
+  "history": [
+    { "year": 1952, "pole": "Alberto Ascari", "winner": "Alberto Ascari" },
+    { "year": 1953, "pole": "Alberto Ascari", "winner": "Alberto Ascari" },
+    { "year": 1955, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
+    { "year": 1958, "pole": "Stuart Lewis-Evans", "winner": "Stirling Moss" },
+    { "year": 1959, "pole": "Jo Bonnier", "winner": "Jo Bonnier" },
+    { "year": 1960, "pole": "Stirling Moss", "winner": "Stirling Moss" },
+    { "year": 1961, "pole": "Phil Hill", "winner": "Jim Clark" },
+    { "year": 1962, "pole": "John Surtees", "winner": "Bruce McLaren" },
+    { "year": 1963, "pole": "Jim Clark", "winner": "Jim Clark" },
+    { "year": 1964, "pole": "Dan Gurney", "winner": "Jim Clark" },
+    { "year": 1965, "pole": "Graham Hill", "winner": "Jim Clark" },
+    { "year": 1966, "pole": "Jack Brabham", "winner": "Jack Brabham" },
+    { "year": 1967, "pole": "Graham Hill", "winner": "Jim Clark" },
+    { "year": 1968, "pole": "Chris Amon", "winner": "Jackie Stewart" },
+    { "year": 1969, "pole": "Jochen Rindt", "winner": "Jackie Stewart" },
+    { "year": 1970, "pole": "Jochen Rindt", "winner": "Jochen Rindt" },
+    { "year": 1971, "pole": "Jacky Ickx", "winner": "Jacky Ickx" },
+    { "year": 1973, "pole": "Ronnie Peterson", "winner": "Jackie Stewart" },
+    { "year": 1974, "pole": "Niki Lauda", "winner": "Niki Lauda" },
+    { "year": 1975, "pole": "Niki Lauda", "winner": "James Hunt" },
+    { "year": 1976, "pole": "Ronnie Peterson", "winner": "James Hunt" },
+    { "year": 1977, "pole": "Mario Andretti", "winner": "Niki Lauda" },
+    { "year": 1978, "pole": "Mario Andretti", "winner": "Mario Andretti" },
+    { "year": 1979, "pole": "René Arnoux", "winner": "Gilles Villeneuve" },
+    { "year": 1980, "pole": "René Arnoux", "winner": "René Arnoux" },
+    { "year": 1981, "pole": "Alain Prost", "winner": "Alan Jones" },
+    { "year": 1982, "pole": "René Arnoux", "winner": "Derek Warwick" },
+    { "year": 1983, "pole": "Nelson Piquet", "winner": "René Arnoux" },
+    { "year": 1984, "pole": "Alain Prost", "winner": "Niki Lauda" },
+    { "year": 1985, "pole": "Nelson Piquet", "winner": "Alain Prost" },
+    { "year": 2021, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+    { "year": 2022, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+    { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+    { "year": 2024, "pole": "Lando Norris", "winner": "Lando Norris" },
+    { "year": 2025, "pole": "Oscar Piastri", "winner": "Oscar Piastri" }
+  ]
+  },
+
+  "autodromo-nazionale-di-monza": {
+  "name": "Autodromo Nazionale di Monza",
+  "media": {
+    "image": "../img/circuits/monza.png",
+    "layout": "../img/circuits/monza-layout.png"
+  },
+  "stats": {
+    "length": "5.793",
+    "laps": 53,
+    "turns": 11,
+    "overtakeZones": 2
+  },
+  "topSpeed": {
+    "speed": "372 km/h"
+  },
+  "lapRecord": {
+    "time": "1:21.046",
+    "driver": "Rubens Barrichello",
+    "year": 2004
+  },
+  "characteristics": {
+    "downforce": 15,
+    "overtaking": 85,
+    "tyreDeg": 40,
+    "trackType": "permanent"
+  },
+  "funFacts": [
+    "Monza is known as the Temple of Speed due to its extremely high average speeds.",
+    "It is one of the oldest and most historic circuits in Formula 1.",
+    "Cars run ultra-low downforce setups to maximize straight-line speed.",
+    "The circuit features famous corners like Parabolica, Ascari and Variante Rettifilo.",
+    "Slipstreaming plays a huge role during qualifying and races.",
+    "Monza has hosted more Formula 1 Grands Prix than any other circuit.",
+    "The passionate Ferrari fans are known worldwide as the Tifosi."
+  ],
+  "history": [
+    { "year": 1950, "pole": "Juan Manuel Fangio", "winner": "Giuseppe Farina" },
+    { "year": 1951, "pole": "Juan Manuel Fangio", "winner": "Alberto Ascari" },
+    { "year": 1952, "pole": "Alberto Ascari", "winner": "Alberto Ascari" },
+    { "year": 1953, "pole": "Alberto Ascari", "winner": "Juan Manuel Fangio" },
+    { "year": 1954, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
+    { "year": 1955, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
+    { "year": 1956, "pole": "Juan Manuel Fangio", "winner": "Stirling Moss" },
+    { "year": 1957, "pole": "Stuart Lewis-Evans", "winner": "Stirling Moss" },
+    { "year": 1958, "pole": "Stirling Moss", "winner": "Tony Brooks" },
+    { "year": 1959, "pole": "Stirling Moss", "winner": "Stirling Moss" },
+    { "year": 1960, "pole": "Phil Hill", "winner": "Phil Hill" },
+    { "year": 1961, "pole": "Wolfgang von Trips", "winner": "Phil Hill" },
+    { "year": 1962, "pole": "Jim Clark", "winner": "Graham Hill" },
+    { "year": 1963, "pole": "John Surtees", "winner": "Jim Clark" },
+    { "year": 1964, "pole": "John Surtees", "winner": "John Surtees" },
+    { "year": 1965, "pole": "Jim Clark", "winner": "Jim Clark" },
+    { "year": 1966, "pole": "Mike Parkes", "winner": "Ludovico Scarfiotti" },
+    { "year": 1967, "pole": "Jim Clark", "winner": "John Surtees" },
+    { "year": 1968, "pole": "John Surtees", "winner": "Denny Hulme" },
+    { "year": 1969, "pole": "Jochen Rindt", "winner": "Jackie Stewart" },
+    { "year": 1970, "pole": "Jacky Ickx", "winner": "Clay Regazzoni" },
+    { "year": 1971, "pole": "Chris Amon", "winner": "Peter Gethin" },
+    { "year": 1972, "pole": "Jacky Ickx", "winner": "Emerson Fittipaldi" },
+    { "year": 1973, "pole": "Ronnie Peterson", "winner": "Ronnie Peterson" },
+    { "year": 1974, "pole": "Niki Lauda", "winner": "Carlos Pace" },
+    { "year": 1975, "pole": "Niki Lauda", "winner": "Clay Regazzoni" },
+    { "year": 1976, "pole": "Jacques Laffite", "winner": "Ronnie Peterson" },
+    { "year": 1977, "pole": "James Hunt", "winner": "Mario Andretti" },
+    { "year": 1978, "pole": "Mario Andretti", "winner": "Mario Andretti" },
+    { "year": 1979, "pole": "Jean-Pierre Jabouille", "winner": "Jody Scheckter" },
+    { "year": 1981, "pole": "René Arnoux", "winner": "Carlos Reutemann" },
+    { "year": 1982, "pole": "Mario Andretti", "winner": "René Arnoux" },
+    { "year": 1983, "pole": "Riccardo Patrese", "winner": "Nelson Piquet" },
+    { "year": 1984, "pole": "Nelson Piquet", "winner": "Niki Lauda" },
+    { "year": 1985, "pole": "Ayrton Senna", "winner": "Alain Prost" },
+    { "year": 1986, "pole": "Teo Fabi", "winner": "Nelson Piquet" },
+    { "year": 1987, "pole": "Nelson Piquet", "winner": "Nelson Piquet" },
+    { "year": 1988, "pole": "Ayrton Senna", "winner": "Gerhard Berger" },
+    { "year": 1989, "pole": "Ayrton Senna", "winner": "Alain Prost" },
+    { "year": 1990, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
+    { "year": 1991, "pole": "Ayrton Senna", "winner": "Nigel Mansell" },
+    { "year": 1992, "pole": "Nigel Mansell", "winner": "Ayrton Senna" },
+    { "year": 1993, "pole": "Alain Prost", "winner": "Damon Hill" },
+    { "year": 1994, "pole": "Jean Alesi", "winner": "Damon Hill" },
+    { "year": 1995, "pole": "David Coulthard", "winner": "Gerhard Berger" },
+    { "year": 1996, "pole": "Damon Hill", "winner": "Michael Schumacher" },
+    { "year": 1997, "pole": "Jean Alesi", "winner": "Michael Schumacher" },
+    { "year": 1998, "pole": "Michael Schumacher", "winner": "Mika Häkkinen" },
+    { "year": 1999, "pole": "Mika Häkkinen", "winner": "Heinz-Harald Frentzen" },
+    { "year": 2000, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+    { "year": 2001, "pole": "Juan Pablo Montoya", "winner": "Juan Pablo Montoya" },
+    { "year": 2002, "pole": "Juan Pablo Montoya", "winner": "Rubens Barrichello" },
+    { "year": 2003, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+    { "year": 2004, "pole": "Rubens Barrichello", "winner": "Rubens Barrichello" },
+    { "year": 2005, "pole": "Juan Pablo Montoya", "winner": "Juan Pablo Montoya" },
+    { "year": 2006, "pole": "Kimi Räikkönen", "winner": "Michael Schumacher" },
+    { "year": 2007, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
+    { "year": 2008, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+    { "year": 2009, "pole": "Lewis Hamilton", "winner": "Rubens Barrichello" },
+    { "year": 2010, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
+    { "year": 2011, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+    { "year": 2012, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2013, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+    { "year": 2014, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2015, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2017, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2018, "pole": "Kimi Räikkönen", "winner": "Lewis Hamilton" },
+    { "year": 2019, "pole": "Charles Leclerc", "winner": "Charles Leclerc" },
+    { "year": 2020, "pole": "Lewis Hamilton", "winner": "Pierre Gasly" },
+    { "year": 2021, "pole": "Max Verstappen", "winner": "Daniel Ricciardo" },
+    { "year": 2022, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
+    { "year": 2023, "pole": "Carlos Sainz", "winner": "Max Verstappen" },
+    { "year": 2024, "pole": "Lando Norris", "winner": "Lando Norris" },
+    { "year": 2025, "pole": "Max Verstappen", "winner": "Max Verstappen" }
+  ]
+  },
+
+"madring": {
+    "name": "Madring",
+    "media": {
+      "image": "../img/circuits/madring.png",
+      "layout": "../img/circuits/madring-layout.png"
+    },
+    "stats": {
+      "length": "5.416",
+      "laps": 57,
+      "turns": 22,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "N/A"
+    },
+    "lapRecord": {
+      "time": "1:32.026 (Est.)",
+      "driver": "N/A",
+      "year": 2026
+    },
+    "characteristics": {
+      "downforce": 0,
+      "overtaking": 0,
+      "tyreDeg": 0,
+      "trackType": "semi-urban"
+    },
+    "funFacts": [
+      "The IFEMA Madrid circuit is a 'hybrid' track, combining street sections on public roads with a purpose-built permanent track area.",
+      "It marks the return of Formula 1 to the city of Madrid for the first time since 1981, when the race was held at Jarama.",
+      "The track features a spectacular steep banked corner in the Valdebebas section, designed to challenge drivers and increase speeds.",
+      "It includes a unique section where the track passes closely alongside (and partially through) the IFEMA exhibition pavilions.",
+      "Sustainability is a key focus: the venue is highly connected, with an estimated 90% of fans expected to arrive via the Madrid Metro and public transport.",
+      "Because it's a new circuit for 2026, the official F1 simulations estimate a qualifying lap time of around 1 minute and 32 seconds.",
+      "The circuit is located just five minutes away from the Adolfo Suárez Madrid-Barajas Airport, making it one of the most logistically accessible tracks on the calendar."
+    ],
+
+    "history": [
+      { "year": 2026, "pole": "N/A", "winner": "N/A" }
+    ]
+  },
+
+  "baku-city-circuit": {
+    "name": "Baku City Circuit",
+    "media": {
+      "image": "../img/circuits/baku-street-circuit.png",
+      "layout": "../img/circuits/baku-street-circuit-layout.png"
+    },
+    "stats": {
+      "length": "6.003",
+      "laps": 51,
+      "turns": 20,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "378 km/h"
+    },
+    "lapRecord": {
+      "time": "1:43.009",
+      "driver": "Charles Leclerc",
+      "year": 2019
+    },
+    "characteristics": {
+      "downforce": 40,
+      "overtaking": 85,
+      "tyreDeg": 40,
+      "trackType": "street"
+    },
+    "funFacts": [
+      "The 'Old Town' complex (Turns 8, 9 and 10) passing the historic Maiden Tower is the narrowest section on the F1 calendar, measuring just 7.6 metres wide.",
+      "Despite being a tight street circuit, Valtteri Bottas set the unofficial all-time F1 top speed record here in 2016, hitting a massive 378 km/h (234.9 mph) in his Williams.",
+      "The track features a massive 2.2 km full-throttle section along the Caspian Sea coastline, allowing for incredible slipstreaming and overtaking.",
+      "The circuit sits completely below sea level, as the capital city of Baku is situated 28 metres below the world's ocean level.",
+      "The run from pole position to the Turn 1 braking point is a mere 141 metres, making it the shortest run down to Turn 1 of any track on the calendar.",
+      "The circuit made its F1 debut in 2016 under the title of the 'European Grand Prix', before being officially renamed the Azerbaijan Grand Prix in 2017.",
+      "Charles Leclerc holds an extraordinary qualifying record at this track, having taken four consecutive pole positions from 2021 to 2024."
+    ],
+  "history": [
+    { "year": 2016, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
+    { "year": 2017, "pole": "Lewis Hamilton", "winner": "Daniel Ricciardo" },
+    { "year": 2018, "pole": "Sebastian Vettel", "winner": "Lewis Hamilton" },
+    { "year": 2019, "pole": "Valtteri Bottas", "winner": "Valtteri Bottas" },
+    { "year": 2021, "pole": "Charles Leclerc", "winner": "Sergio Pérez" },
+    { "year": 2022, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
+    { "year": 2023, "pole": "Charles Leclerc", "winner": "Sergio Pérez" },
+    { "year": 2024, "pole": "Charles Leclerc", "winner": "Oscar Piastri" },
+    { "year": 2025, "pole": "Max Verstappen", "winner": "Max Verstappen" }
+  ]
+  },
+
+  "marina-bay-street-circuit": {
+    "name": "Marina Bay Street Circuit",
+    "media": {
+      "image": "../img/circuits/marina-bay-street-circuit.png",
+      "layout": "../img/circuits/marina-bay-street-circuit-layout.png"
+    },
+    "stats": {
+      "length": "4.940",
+      "laps": 62,
+      "turns": 19,
+      "overtakeZones": 4
+    },
+    "topSpeed": {
+      "speed": "320 km/h"
+    },
+    "lapRecord": {
+      "time": "1:34.486",
+      "driver": "Daniel Ricciardo",
+      "year": 2024
+    },
+    "characteristics": {
+      "downforce": 80,
+      "overtaking": 40,
+      "tyreDeg": 70,
+      "trackType": "street"
+    },
+    "funFacts": [
+      "It hosted the first-ever night race in Formula 1 history, making its debut in 2008.",
+      "Due to extreme heat and humidity, drivers can lose up to 3 kg of body weight in sweat during the race.",
+      "The Safety Car has an incredible 100% deployment record at this circuit since it first joined the calendar.",
+      "The layout was significantly modified in 2023, removing the old Turns 16 to 19 to create a new straight and reduce lap times.",
+      "Nearly 1,600 custom-made lighting projectors illuminate the track to completely mimic daylight conditions for the drivers.",
+      "In 2024, the FIA added a fourth DRS zone between Turns 14 and 16 to help improve the notoriously difficult overtaking.",
+      "Because of the relentless corners, heavy braking zones, and brutal climate, it is widely considered the most physically demanding race of the entire season."
+    ],
+  "history": [
+    { "year": 2008, "pole": "Felipe Massa", "winner": "Fernando Alonso" },
+    { "year": 2009, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2010, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
+    { "year": 2011, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+    { "year": 2012, "pole": "Lewis Hamilton", "winner": "Sebastian Vettel" },
+    { "year": 2013, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+    { "year": 2014, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2015, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+    { "year": 2016, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
+    { "year": 2017, "pole": "Sebastian Vettel", "winner": "Lewis Hamilton" },
+    { "year": 2018, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2019, "pole": "Charles Leclerc", "winner": "Sebastian Vettel" },
+    { "year": 2022, "pole": "Charles Leclerc", "winner": "Sergio Perez" },
+    { "year": 2023, "pole": "Carlos Sainz", "winner": "Carlos Sainz" },
+    { "year": 2024, "pole": "Lando Norris", "winner": "Lando Norris" },
+    { "year": 2025, "pole": "George Russell", "winner": "George Russell" }
+  ]
+  },
+
+"cota": {
+    "name": "Circuit of The Americas",
+    "media": {
+      "image": "../img/circuits/cota.png",
+      "layout": "../img/circuits/cota-layout.png"
+    },
+    "stats": {
+      "length": "5.513",
+      "laps": 56,
+      "turns": 20,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "335 km/h"
+    },
+    "lapRecord": {
+      "time": "1:36.169",
+      "driver": "Charles Leclerc",
+      "year": 2019
+    },
+    "characteristics": {
+      "downforce": 75,
+      "overtaking": 80,
+      "tyreDeg": 85,
+      "trackType": "permanent"
+    },
+    "funFacts": [
+      "The signature Turn 1 features a spectacular 11% gradient, creating a steep, blind uphill braking zone.",
+      "The track's design was heavily inspired by iconic sections of other F1 circuits, such as Silverstone's Maggotts-Becketts and Hockenheim's stadium section.",
+      "It is one of the few circuits on the F1 calendar that runs counter-clockwise, putting extra physical strain on the drivers' necks.",
+      "The track is notoriously bumpy because it was built on shifting, expansive clay soil, requiring frequent resurfacing work over the years.",
+      "The observation tower sitting inside the track stands 77 meters (251 feet) tall and offers a panoramic view of the entire layout.",
+      "It was the first purpose-built Formula 1 facility in the United States, officially opening its doors in 2012.",
+      "The event is famous for its massive festival atmosphere and concerts, regularly attracting over 400,000 fans throughout the weekend."
+    ],
+  "history": [
+    { "year": 2012, "pole": "Sebastian Vettel", "winner": "Lewis Hamilton" },
+    { "year": 2013, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+    { "year": 2014, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
+    { "year": 2015, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
+    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2017, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2018, "pole": "Lewis Hamilton", "winner": "Kimi Räikkönen" },
+    { "year": 2019, "pole": "Valtteri Bottas", "winner": "Valtteri Bottas" },
+    { "year": 2021, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+    { "year": 2022, "pole": "Carlos Sainz", "winner": "Max Verstappen" },
+    { "year": 2023, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
+    { "year": 2024, "pole": "Lando Norris", "winner": "Charles Leclerc" },
+    { "year": 2025, "pole": "Max Verstappen", "winner": "Max Verstappen" }
+  ]
+  },
+
+"hermanos-rodriguez": {
+    "name": "Autódromo Hermanos Rodríguez",
+    "media": {
+      "image": "../img/circuits/hermanos-rodriguez.png",
+      "layout": "../img/circuits/hermanos-rodriguez-layout.png"
+    },
+    "stats": {
+      "length": "4.304",
+      "laps": 71,
+      "turns": 17,
+      "overtakeZones": 3
+    },
+    "topSpeed": {
+      "speed": "372 km/h"
+    },
+    "lapRecord": {
+      "time": "1:17.774",
+      "driver": "Valtteri Bottas",
+      "year": 2021
+    },
+    "characteristics": {
+      "downforce": 100,
+      "overtaking": 60,
+      "tyreDeg": 50,
+      "trackType": "permanent"
+    },
+    "funFacts": [
+      "The circuit is situated at a massive 2,285 meters (7,500 feet) above sea level, making the air 25% thinner than at sea level.",
+      "Because of the thin air, teams run their maximum downforce setups (similar to Monaco), yet the cars produce less actual downforce than at Monza.",
+      "The thin air also drastically reduces drag, which allowed Valtteri Bottas to hit an astonishing top speed of 372.5 km/h here in 2016.",
+      "The track uniquely weaves right through the Foro Sol (now Estadio GNP Seguros), a former baseball stadium packed with over 30,000 cheering fans.",
+      "Unlike any other race, the podium ceremony doesn't happen on the main straight; it takes place right inside the stadium section for an incredible atmosphere.",
+      "Cooling the cars is a nightmare here: the lack of dense air forces teams to open up the car's bodywork to maximum capacity to cool engines and brakes.",
+      "The circuit is named after the legendary Mexican racing brothers Pedro and Ricardo Rodríguez, who were instrumental in bringing motorsport to the country."
+    ],
+  "history": [
+    { "year": 1963, "pole": "Jim Clark", "winner": "Jim Clark" },
+    { "year": 1964, "pole": "Jim Clark", "winner": "Dan Gurney" },
+    { "year": 1965, "pole": "Jim Clark", "winner": "Richie Ginther" },
+    { "year": 1966, "pole": "John Surtees", "winner": "John Surtees" },
+    { "year": 1967, "pole": "Jim Clark", "winner": "Jim Clark" },
+    { "year": 1968, "pole": "Jo Siffert", "winner": "Graham Hill" },
+    { "year": 1969, "pole": "Jack Brabham", "winner": "Denny Hulme" },
+    { "year": 1970, "pole": "Clay Regazzoni", "winner": "Jacky Ickx" },
+    { "year": 1986, "pole": "Ayrton Senna", "winner": "Gerhard Berger" },
+    { "year": 1987, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
+    { "year": 1988, "pole": "Ayrton Senna", "winner": "Alain Prost" },
+    { "year": 1989, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
+    { "year": 1990, "pole": "Gerhard Berger", "winner": "Alain Prost" },
+    { "year": 1991, "pole": "Riccardo Patrese", "winner": "Riccardo Patrese" },
+    { "year": 1992, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
+    { "year": 2015, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
+    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2017, "pole": "Sebastian Vettel", "winner": "Max Verstappen" },
+    { "year": 2018, "pole": "Daniel Ricciardo", "winner": "Max Verstappen" },
+    { "year": 2019, "pole": "Charles Leclerc", "winner": "Lewis Hamilton" },
+    { "year": 2021, "pole": "Valtteri Bottas", "winner": "Max Verstappen" },
+    { "year": 2022, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+    { "year": 2023, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
+    { "year": 2024, "pole": "Carlos Sainz", "winner": "Carlos Sainz" },
+    { "year": 2025, "pole": "Lando Norris", "winner": "Lando Norris" }
+  ]
+  },
+
+"autodromo-jose-carlos-pace": {
+    "name": "Autódromo José Carlos Pace",
+    "media": {
+      "image": "../img/circuits/autodromo-jose-carlos-pace.png",
+      "layout": "../img/circuits/autodromo-jose-carlos-pace-layout.png"
+    },
+    "stats": {
+      "length": "4.309",
+      "laps": 71,
+      "turns": 15,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "338 km/h"
+    },
+    "lapRecord": {
+      "time": "1:10.540",
+      "driver": "Valtteri Bottas",
+      "year": 2018
+    },
+    "characteristics": {
+      "downforce": 70,
+      "overtaking": 85,
+      "tyreDeg": 65,
+      "trackType": "permanent"
+    },
+    "funFacts": [
+      "It is one of the few circuits on the F1 calendar that runs counter-clockwise, putting extra physical strain on the left side of the drivers' necks.",
+      "The circuit was originally called 'Interlagos' because it was built on a piece of land situated between two large artificial lakes.",
+      "The iconic sweeping first sequence of corners, known as the 'Senna S' (Turns 1 and 2), was proposed by Ayrton Senna himself during the track's 1990 redesign.",
+      "The starting grid is situated on an uphill slope, forcing drivers to hold the brake pedal firmly while waiting for the lights to go out.",
+      "Interlagos is famous for its dramatic elevation changes, with a massive 43-meter drop from its highest point to its lowest point.",
+      "The weather in São Paulo is notoriously unpredictable, often bringing sudden and intense tropical downpours that completely turn the race upside down.",
+      "It has hosted some of the most historic championship deciders in F1 history, including Lewis Hamilton's famous last-corner title win in 2008."
+    ],
+  "history": [
+    { "year": 1973, "pole": "Ronnie Peterson", "winner": "Emerson Fittipaldi" },
+    { "year": 1974, "pole": "Emerson Fittipaldi", "winner": "Emerson Fittipaldi" },
+    { "year": 1975, "pole": "Jean-Pierre Jarier", "winner": "Carlos Pace" },
+    { "year": 1976, "pole": "James Hunt", "winner": "Niki Lauda" },
+    { "year": 1977, "pole": "James Hunt", "winner": "Carlos Reutemann" },
+    { "year": 1979, "pole": "Jacques Laffite", "winner": "Jacques Laffite" },
+    { "year": 1980, "pole": "Jean-Pierre Jabouille", "winner": "René Arnoux" },
+    { "year": 1990, "pole": "Ayrton Senna", "winner": "Alain Prost" },
+    { "year": 1991, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
+    { "year": 1992, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
+    { "year": 1993, "pole": "Alain Prost", "winner": "Ayrton Senna" },
+    { "year": 1994, "pole": "Ayrton Senna", "winner": "Michael Schumacher" },
+    { "year": 1995, "pole": "Damon Hill", "winner": "Michael Schumacher" },
+    { "year": 1996, "pole": "Damon Hill", "winner": "Damon Hill" },
+    { "year": 1997, "pole": "Jacques Villeneuve", "winner": "Jacques Villeneuve" },
+    { "year": 1998, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
+    { "year": 1999, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
+    { "year": 2000, "pole": "Mika Häkkinen", "winner": "Michael Schumacher" },
+    { "year": 2001, "pole": "Michael Schumacher", "winner": "David Coulthard" },
+    { "year": 2002, "pole": "Juan Pablo Montoya", "winner": "Michael Schumacher" },
+    { "year": 2003, "pole": "Rubens Barrichello", "winner": "Giancarlo Fisichella" },
+    { "year": 2004, "pole": "Rubens Barrichello", "winner": "Juan Pablo Montoya" },
+    { "year": 2005, "pole": "Fernando Alonso", "winner": "Juan Pablo Montoya" },
+    { "year": 2006, "pole": "Felipe Massa", "winner": "Felipe Massa" },
+    { "year": 2007, "pole": "Felipe Massa", "winner": "Kimi Räikkönen" },
+    { "year": 2008, "pole": "Felipe Massa", "winner": "Felipe Massa" },
+    { "year": 2009, "pole": "Rubens Barrichello", "winner": "Mark Webber" },
+    { "year": 2010, "pole": "Nico Hülkenberg", "winner": "Sebastian Vettel" },
+    { "year": 2011, "pole": "Sebastian Vettel", "winner": "Mark Webber" },
+    { "year": 2012, "pole": "Lewis Hamilton", "winner": "Jenson Button" },
+    { "year": 2013, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+    { "year": 2014, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
+    { "year": 2015, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
+    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2017, "pole": "Valtteri Bottas", "winner": "Sebastian Vettel" },
+    { "year": 2018, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2019, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+    { "year": 2021, "pole": "Valtteri Bottas", "winner": "Lewis Hamilton" },
+    { "year": 2022, "pole": "Kevin Magnussen", "winner": "George Russell" },
+    { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+    { "year": 2024, "pole": "Lando Norris", "winner": "Max Verstappen" },
+    { "year": 2025, "pole": "Lando Norris", "winner": "Lando Norris" }
+  ]
+  },
+
+"las-vegas-strip-circuit": {
+    "name": "Las Vegas Strip Circuit",
+    "media": {
+      "image": "../img/circuits/las-vegas-strip-circuit.png",
+      "layout": "../img/circuits/las-vegas-strip-circuit-layout.png"
+    },
+    "stats": {
+      "length": "6.201",
+      "laps": 50,
+      "turns": 17,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "369 km/h"
+    },
+    "lapRecord": {
+      "time": "1:35.490",
+      "driver": "Oscar Piastri",
+      "year": 2023
+    },
+    "characteristics": {
+      "downforce": 15,
+      "overtaking": 90,
+      "tyreDeg": 30,
+      "trackType": "street"
+    },
+    "funFacts": [
+      "The track features a massive 1.9 km (1.18 miles) flat-out section directly down the world-famous Las Vegas Strip.",
+      "The race uniquely takes place on a Saturday night at 10:00 PM local time to better accommodate global television audiences.",
+      "It is the first and only Formula 1 race to be directly promoted by F1 and Liberty Media themselves, rather than a local promoter.",
+      "Because it's held in the Nevada desert in late November, track temperatures are extremely low, making tyre warm-up a massive challenge.",
+      "Formula 1 purchased a 39-acre plot of land for $240 million just to build the permanent 300,000-square-foot pit and paddock complex.",
+      "The layout sweeps past world-renowned landmarks, including the MSG Sphere, the Bellagio Fountains, and the Eiffel Tower at Paris Las Vegas.",
+      "Despite being a street track with 90-degree corners, cars reach top speeds of 350 km/h (217 mph), making it second only to Monza in average speed."
+    ],
+  "history": [
+    { "year": 2023, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
+    { "year": 2024, "pole": "George Russell", "winner": "George Russell" },
+    { "year": 2025, "pole": "Lando Norris", "winner": "Max Verstappen" }
+  ]
+  },
+
+"lusail-international-circuit": {
+    "name": "Lusail International Circuit",
+    "media": {
+      "image": "../img/circuits/lusail-international-circuit.png",
+      "layout": "../img/circuits/lusail-international-circuit-layout.png"
+    },
+    "stats": {
+      "length": "5.419",
+      "laps": 57,
+      "turns": 16,
+      "overtakeZones": 1
+    },
+    "topSpeed": {
+      "speed": "337 km/h"
+    },
+    "lapRecord": {
+      "time": "1:24.319",
+      "driver": "Max Verstappen",
+      "year": 2023
+    },
+    "characteristics": {
+      "downforce": 65,
+      "overtaking": 40,
+      "tyreDeg": 80,
+      "trackType": "permanent"
+    },
+    "funFacts": [
+      "The circuit was originally built in 2004 primarily for MotoGP, and F1 first raced here in 2021 as a replacement race during the COVID-19 pandemic.",
+      "It features a continuous flow of medium and high-speed corners, making it extremely demanding on the cars' aerodynamics and the drivers' necks.",
+      "The 2023 race was held under such extreme heat and humidity that multiple drivers required medical attention for severe dehydration and heat exhaustion.",
+      "Due to safety concerns over tyre structural failures caused by the aggressive 'pyramid' kerbs, the FIA mandated a strict maximum of 18 laps per set of tyres during the 2023 Grand Prix.",
+      "It is a full night race, illuminated by massive floodlights that underwent a massive LED upgrade in 2023 to consume significantly less energy.",
+      "The track is surrounded by artificial grass to help prevent the desert sand from blowing onto the racing line, though dust still heavily affects grip during early practice sessions.",
+      "Max Verstappen secured his third consecutive World Drivers' Championship here in 2023 during the Saturday Sprint race, a highly unusual occurrence in F1 history."
+    ],
+  "history": [
+    { "year": 2021, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+    { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+    { "year": 2024, "pole": "George Russell", "winner": "Max Verstappen" },
+    { "year": 2025, "pole": "Oscar Piastri", "winner": "Max Verstappen" }
+  ]
+  },
+
+  "yas-marina-circuit": {
+    "name": "Yas Marina Circuit",
+    "media": {
+      "image": "../img/circuits/yas-marina-circuit.png",
+      "layout": "../img/circuits/yas-marina-circuit-layout.png"
+    },
+    "stats": {
+      "length": "5.281",
+      "laps": 58,
+      "turns": 16,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "335 km/h"
+    },
+    "lapRecord": {
+      "time": "1:26.103",
+      "driver": "Max Verstappen",
+      "year": 2021
+    },
+    "characteristics": {
+      "downforce": 70,
+      "overtaking": 60,
+      "tyreDeg": 50,
+      "trackType": "permanent"
+    },
+    "funFacts": [
+      "It is Formula 1's first-ever twilight race, starting in the late afternoon sunlight and finishing entirely under artificial floodlights.",
+      "The pit exit is completely unique in motorsport, as it safely funnels cars through a narrow tunnel that runs directly underneath the circuit.",
+      "The track layout was significantly modified in 2021, removing several slow chicanes to increase speeds and improve overtaking opportunities.",
+      "The circuit passes directly underneath and through the iconic W Abu Dhabi Hotel, which is covered in LED panels that change colors throughout the night.",
+      "Built on a spectacular man-made island at an estimated cost of $1 billion, it is widely considered the most expensive Formula 1 facility ever constructed.",
+      "It has become the traditional season finale, crowning the World Champion on several dramatic occasions since its debut in 2009.",
+      "The track was the setting for the historic and highly controversial 2021 championship showdown between Max Verstappen and Lewis Hamilton."
+    ],
+    "history": [
+      { "year": 2009, "pole": "Lewis Hamilton", "winner": "Sebastian Vettel" },
+      { "year": 2010, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+      { "year": 2011, "pole": "Sebastian Vettel", "winner": "Lewis Hamilton" },
+      { "year": 2012, "pole": "Lewis Hamilton", "winner": "Kimi Räikkönen" },
+      { "year": 2013, "pole": "Mark Webber", "winner": "Sebastian Vettel" },
+      { "year": 2014, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
+      { "year": 2015, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
+      { "year": 2016, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+      { "year": 2017, "pole": "Valtteri Bottas", "winner": "Valtteri Bottas" },
+      { "year": 2018, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+      { "year": 2019, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+      { "year": 2020, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+      { "year": 2021, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+      { "year": 2022, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+      { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
+      { "year": 2024, "pole": "Lando Norris", "winner": "Lando Norris" },
+      { "year": 2025, "pole": "Max Verstappen", "winner": "Max Verstappen" }
+    ]
+  }
+}

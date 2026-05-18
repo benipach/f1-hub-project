@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drivers | F1 Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap">
+    <script src="./js/twemoji.js"></script>
+    <script src="./js/navbar.js" defer></script>
+</head>
+<body>
+    
+    <header class="navbar">
+        <a href="./index.html" class="logo-container">
+            <img src="img/logo.png" alt="F1 Hub Logo" class="nav-logo">
+        </a>
+
+        <button class="hamburger" id="hamburger-btn" aria-label="Abrir menú">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+
+        <nav>
+            <ul id="nav-menu" class="nav-menu">
+                <li><a href="./index.html#calendar">Calendar</a></li>
+                <li><a href="./championship.html">Championship</a></li>
+                <li><a href="./drivers.html">Drivers</a></li>
+                <li><a href="./teams.html">Teams</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="drivers-hero">
+            <div class="drivers-hero-content">
+                <h1>2026 F1 Grid</h1>
+                <p>A list of the 22 drivers competing in the pinnacle of motorsport.</p>
+            </div>
+        </section>
+
+<section class="drivers-grid">
+
+    <!-- MERCEDES -->
+    <a href="./drivers/driver.html?driver=george-russell" class="drivercard team-mercedes" style="--dc-color: var(--f1-mercedes)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">63</div>
+        <img class="driver-img" src="./img/drivers/russell.png" alt="Russell">
+        <div class="driver-details">
+            <span class="dc-label">Mercedes-AMG</span>
+            <h3>Russell</h3>
+            <p>🇬🇧 George</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+    <a href="./drivers/driver.html?driver=kimi-antonelli" class="drivercard team-mercedes" style="--dc-color: var(--f1-mercedes)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">12</div>
+        <img class="driver-img" src="./img/drivers/antonelli.png" alt="Antonelli">
+        <div class="driver-details">
+            <span class="dc-label">Mercedes-AMG</span>
+            <h3>Antonelli</h3>
+            <p>🇮🇹 Kimi</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+
+    <!-- FERRARI -->
+    <a href="./drivers/driver.html?driver=lewis-hamilton" class="drivercard team-ferrari" style="--dc-color: var(--f1-ferrari)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">44</div>
+        <img class="driver-img" src="./img/drivers/hamilton.png" alt="Hamilton">
+        <div class="driver-details">
+            <span class="dc-label">Scuderia Ferrari</span>
+            <h3>Hamilton</h3>
+            <p>🇬🇧 Lewis</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+    <a href="./drivers/driver.html?driver=charles-leclerc" class="drivercard team-ferrari" style="--dc-color: var(--f1-ferrari)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">16</div>
+        <img class="driver-img" src="./img/drivers/leclerc.png" alt="Leclerc">
+        <div class="driver-details">
+            <span class="dc-label">Scuderia Ferrari</span>
+            <h3>Leclerc</h3>
+            <p>🇲🇨 Charles</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+
+    <!-- MCLAREN -->
+    <a href="./drivers/driver.html?driver=lando-norris" class="drivercard team-mclaren" style="--dc-color: var(--f1-mclaren)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number champion">1</div>
+        <img class="driver-img" src="./img/drivers/norris.png" alt="Norris">
+        <div class="driver-details">
+            <span class="dc-label">McLaren</span>
+            <h3>Norris</h3>
+            <p>🇬🇧 Lando</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+    <a href="./drivers/driver.html?driver=oscar-piastri" class="drivercard team-mclaren" style="--dc-color: var(--f1-mclaren)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">81</div>
+        <img class="driver-img" src="./img/drivers/piastri.png" alt="Piastri">
+        <div class="driver-details">
+            <span class="dc-label">McLaren</span>
+            <h3>Piastri</h3>
+            <p>🇦🇺 Oscar</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+
+    <!-- HAAS -->
+    <a href="./drivers/driver.html?driver=esteban-ocon" class="drivercard team-haas" style="--dc-color: var(--f1-haas)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">31</div>
+        <img class="driver-img" src="./img/drivers/ocon.png" alt="Ocon">
+        <div class="driver-details">
+            <span class="dc-label">Haas F1 Team</span>
+            <h3>Ocon</h3>
+            <p>🇫🇷 Esteban</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+    <a href="./drivers/driver.html?driver=oliver-bearman" class="drivercard team-haas" style="--dc-color: var(--f1-haas)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">87</div>
+        <img class="driver-img" src="./img/drivers/bearman.png" alt="Bearman">
+        <div class="driver-details">
+            <span class="dc-label">Haas F1 Team</span>
+            <h3>Bearman</h3>
+            <p>🇬🇧 Oliver</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+
+    <!-- ALPINE -->
+    <a href="./drivers/driver.html?driver=pierre-gasly" class="drivercard team-alpine" style="--dc-color: var(--f1-alpine)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">10</div>
+        <img class="driver-img" src="./img/drivers/gasly.png" alt="Gasly">
+        <div class="driver-details">
+            <span class="dc-label">Alpine</span>
+            <h3>Gasly</h3>
+            <p>🇫🇷 Pierre</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+    <a href="./drivers/driver.html?driver=franco-colapinto" class="drivercard team-alpine" style="--dc-color: var(--f1-alpine)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">43</div>
+        <img class="driver-img" src="./img/drivers/colapinto.png" alt="Colapinto">
+        <div class="driver-details">
+            <span class="dc-label">Alpine</span>
+            <h3>Colapinto</h3>
+            <p>🇦🇷 Franco</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+
+    <!-- RED BULL -->
+    <a href="./drivers/driver.html?driver=max-verstappen" class="drivercard team-red-bull" style="--dc-color: var(--f1-red-bull)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">3</div>
+        <img class="driver-img" src="./img/drivers/verstappen.png" alt="Verstappen">
+        <div class="driver-details">
+            <span class="dc-label">Red Bull Racing</span>
+            <h3>Verstappen</h3>
+            <p>🇳🇱 Max</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+    <a href="./drivers/driver.html?driver=isack-hadjar" class="drivercard team-red-bull" style="--dc-color: var(--f1-red-bull)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">6</div>
+        <img class="driver-img" src="./img/drivers/hadjar.png" alt="Hadjar">
+        <div class="driver-details">
+            <span class="dc-label">Red Bull Racing</span>
+            <h3>Hadjar</h3>
+            <p>🇫🇷 Isack</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+
+    <!-- RACING BULLS -->
+    <a href="./drivers/driver.html?driver=arvid-lindblad" class="drivercard team-racing-bulls" style="--dc-color: var(--f1-racing-bulls)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">45</div>
+        <img class="driver-img" src="./img/drivers/lindblad.png" alt="Lindblad">
+        <div class="driver-details">
+            <span class="dc-label">Racing Bulls</span>
+            <h3>Lindblad</h3>
+            <p>🇬🇧 Arvid</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+    <a href="./drivers/driver.html?driver=liam-lawson" class="drivercard team-racing-bulls" style="--dc-color: var(--f1-racing-bulls)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">30</div>
+        <img class="driver-img" src="./img/drivers/lawson.png" alt="Lawson">
+        <div class="driver-details">
+            <span class="dc-label">Racing Bulls</span>
+            <h3>Lawson</h3>
+            <p>🇳🇿 Liam</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+
+    <!-- AUDI -->
+    <a href="./drivers/driver.html?driver=nico-hulkenberg" class="drivercard team-audi" style="--dc-color: var(--f1-audi)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">27</div>
+        <img class="driver-img" src="./img/drivers/hulkenberg.png" alt="Hülkenberg">
+        <div class="driver-details">
+            <span class="dc-label">Audi</span>
+            <h3>Hülkenberg</h3>
+            <p>🇩🇪 Nico</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+    <a href="./drivers/driver.html?driver=gabriel-bortoleto" class="drivercard team-audi" style="--dc-color: var(--f1-audi)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">5</div>
+        <img class="driver-img" src="./img/drivers/bortoleto.png" alt="Bortoleto">
+        <div class="driver-details">
+            <span class="dc-label">Audi</span>
+            <h3>Bortoleto</h3>
+            <p>🇧🇷 Gabriel</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+
+    <!-- WILLIAMS -->
+    <a href="./drivers/driver.html?driver=alexander-albon" class="drivercard team-williams" style="--dc-color: var(--f1-williams)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">23</div>
+        <img class="driver-img" src="./img/drivers/albon.png" alt="Albon">
+        <div class="driver-details">
+            <span class="dc-label">Williams</span>
+            <h3>Albon</h3>
+            <p>🇹🇭 Alexander</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+    <a href="./drivers/driver.html?driver=carlos-sainz" class="drivercard team-williams" style="--dc-color: var(--f1-williams)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">55</div>
+        <img class="driver-img" src="./img/drivers/sainz.png" alt="Sainz">
+        <div class="driver-details">
+            <span class="dc-label">Williams</span>
+            <h3>Sainz</h3>
+            <p>🇪🇸 Carlos</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+
+    <!-- CADILLAC -->
+    <a href="./drivers/driver.html?driver=sergio-perez" class="drivercard team-cadillac" style="--dc-color: var(--f1-cadillac)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">11</div>
+        <img class="driver-img" src="./img/drivers/perez.png" alt="Pérez">
+        <div class="driver-details">
+            <span class="dc-label">Cadillac</span>
+            <h3>Pérez</h3>
+            <p>🇲🇽 Sergio</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+    <a href="./drivers/driver.html?driver=valtteri-bottas" class="drivercard team-cadillac" style="--dc-color: var(--f1-cadillac)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">77</div>
+        <img class="driver-img" src="./img/drivers/bottas.png" alt="Bottas">
+        <div class="driver-details">
+            <span class="dc-label">Cadillac</span>
+            <h3>Bottas</h3>
+            <p>🇫🇮 Valtteri</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+
+    <!-- ASTON MARTIN -->
+    <a href="./drivers/driver.html?driver=fernando-alonso" class="drivercard team-aston-martin" style="--dc-color: var(--f1-aston-martin)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">14</div>
+        <img class="driver-img" src="./img/drivers/alonso.png" alt="Alonso">
+        <div class="driver-details">
+            <span class="dc-label">Aston Martin</span>
+            <h3>Alonso</h3>
+            <p>🇪🇸 Fernando</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+    <a href="lance-stroll" class="drivercard team-aston-martin" style="--dc-color: var(--f1-aston-martin)">
+        <div class="dc-stripe-left"></div>
+        <div class="driver-number">18</div>
+        <img class="driver-img" src="./img/drivers/stroll.png" alt="Stroll">
+        <div class="driver-details">
+            <span class="dc-label">Aston Martin</span>
+            <h3>Stroll</h3>
+            <p>🇨🇦 Lance</p>
+            <span class="dc-cta">View Profile →</span>
+        </div>
+    </a>
+
+</section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-grid">
+
+            <div class="footer-brand">
+                <a href="#" class="footer-logo">
+                    <img src="img/logo.png" alt="F1 Hub Logo" class="footer-logo-img">
+                </a>
+                <p class="footer-tagline">
+                    Your go-to source for F1 schedules, standings,<br>
+                    and race data — all in your local time.
+                </p>
+                <div class="footer-social">
+                    <a href="#" class="social-btn" aria-label="X / Twitter">X</a>
+                    <a href="#" class="social-btn" aria-label="Instagram">IG</a>
+                    <a href="#" class="social-btn" aria-label="YouTube">YT</a>
+                    <a href="https://www.formula1.com" target="_blank" class="social-btn" aria-label="F1 Official">F1</a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <p class="footer-col-title">Navigate</p>
+                <ul>
+                    <li><a href="#calendar">Calendar</a></li>
+                    <li><a href="./championship.html">Championship</a></li>
+                    <li><a href="./drivers.html">Drivers</a></li>
+                    <li><a href="./teams.html">Teams</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <p class="footer-col-title">External</p>
+                <ul>
+                    <li><a href="https://www.formula1.com" target="_blank">Formula 1 Official</a></li>
+                    <li><a href="https://www.fia.com" target="_blank">FIA</a></li>
+                    <li><a href="https://f1-dash.com/dashboard" target="_blank">F1 Dash</a></li>
+                    <li><a href="https://ergast.com/mrd/" target="_blank">Ergast API</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <span class="footer-copy">
+                &copy; 2026 F1 Hub &mdash; Unofficial fan project. Not affiliated with Formula 1.
+            </span>
+            <span class="footer-tz">
+                All times shown in your local timezone
+            </span>
+        </div>
+    </footer>
+
+    <script>
+        const dcards = document.querySelectorAll('.drivercard');
+const dcObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const card = entry.target;
+            const index = [...dcards].indexOf(card);
+            setTimeout(() => card.classList.add('visible'), index * 60);
+            dcObserver.unobserve(card);
+        }
+    });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+dcards.forEach(card => dcObserver.observe(card));
+    </script>
+
+</body>
+</html>

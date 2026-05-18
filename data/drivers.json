@@ -1,0 +1,463 @@
+{
+  "drivers": [
+    {
+      "id": "alexander-albon",
+      "firstName": "Alexander",
+      "lastName": "Albon",
+      "nationality": "Thailand",
+      "dateOfBirth": "1996-03-23",
+      "number": 23,
+      "image": "albon.png",
+      "logo": "albon_logo.png",
+      "helmet": "albon_helmet.png",
+      "history": [
+        { "year": 2019, "teamId": "Toro Rosso", "points": 92, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 1, "position": 8 },
+        { "year": 2020, "teamId": "Red Bull", "points": 105, "poles": 0, "podiums": 2, "wins": 0, "starts": 17, "dnfs": 2, "position": 7 },
+        { "year": 2022, "teamId": "Williams", "points": 4, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 5, "position": 19 },
+        { "year": 2023, "teamId": "Williams", "points": 27, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 4, "position": 13 },
+        { "year": 2024, "teamId": "Williams", "points": 12, "poles": 0, "podiums": 0, "wins": 0, "starts": 23, "dnfs": 6, "position": 16 },
+        { "year": 2025, "teamId": "Williams", "points": 73, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 4, "position": 8 }
+      ]
+    },
+    {
+      "id": "fernando-alonso",
+      "firstName": "Fernando",
+      "lastName": "Alonso",
+      "nationality": "Spain",
+      "dateOfBirth": "1981-07-29",
+      "number": 14,
+      "image": "alonso.png",
+      "logo": "alonso_logo.png",
+      "helmet": "alonso_helmet.png",
+      "history": [
+        { "year": 2001, "teamId": "Minardi", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 16, "dnfs": 4, "position": 23 },
+        { "year": 2003, "teamId": "Renault", "points": 55, "poles": 1, "podiums": 4, "wins": 1, "starts": 16, "dnfs": 3, "position": 6 },
+        { "year": 2004, "teamId": "Renault", "points": 59, "poles": 0, "podiums": 4, "wins": 0, "starts": 18, "dnfs": 2, "position": 4 },
+        { "year": 2005, "teamId": "Renault", "points": 133, "poles": 6, "podiums": 15, "wins": 7, "starts": 18, "dnfs": 2, "position": 1 },
+        { "year": 2006, "teamId": "Renault", "points": 134, "poles": 7, "podiums": 14, "wins": 7, "starts": 18, "dnfs": 1, "position": 1 },
+        { "year": 2007, "teamId": "McLaren", "points": 109, "poles": 2, "podiums": 12, "wins": 4, "starts": 17, "dnfs": 2, "position": 3 },
+        { "year": 2008, "teamId": "Renault", "points": 61, "poles": 0, "podiums": 2, "wins": 2, "starts": 18, "dnfs": 3, "position": 5 },
+        { "year": 2009, "teamId": "Renault", "points": 26, "poles": 1, "podiums": 1, "wins": 0, "starts": 17, "dnfs": 3, "position": 9 },
+        { "year": 2010, "teamId": "Ferrari", "points": 252, "poles": 2, "podiums": 10, "wins": 5, "starts": 19, "dnfs": 3, "position": 2 },
+        { "year": 2011, "teamId": "Ferrari", "points": 257, "poles": 1, "podiums": 10, "wins": 1, "starts": 19, "dnfs": 1, "position": 4 },
+        { "year": 2012, "teamId": "Ferrari", "points": 278, "poles": 2, "podiums": 13, "wins": 3, "starts": 20, "dnfs": 2, "position": 2 },
+        { "year": 2013, "teamId": "Ferrari", "points": 242, "poles": 0, "podiums": 9, "wins": 2, "starts": 19, "dnfs": 2, "position": 2 },
+        { "year": 2014, "teamId": "Ferrari", "points": 161, "poles": 0, "podiums": 2, "wins": 0, "starts": 19, "dnfs": 2, "position": 6 },
+        { "year": 2015, "teamId": "McLaren", "points": 11, "poles": 0, "podiums": 0, "wins": 0, "starts": 18, "dnfs": 6, "position": 17 },
+        { "year": 2016, "teamId": "McLaren", "points": 54, "poles": 0, "podiums": 0, "wins": 0, "starts": 20, "dnfs": 5, "position": 10 },
+        { "year": 2017, "teamId": "McLaren", "points": 17, "poles": 0, "podiums": 0, "wins": 0, "starts": 18, "dnfs": 7, "position": 15 },
+        { "year": 2018, "teamId": "McLaren", "points": 50, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 5, "position": 11 },
+        { "year": 2021, "teamId": "Alpine", "points": 81, "poles": 0, "podiums": 1, "wins": 0, "starts": 22, "dnfs": 2, "position": 10 },
+        { "year": 2022, "teamId": "Alpine", "points": 81, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 6, "position": 9 },
+        { "year": 2023, "teamId": "Aston Martin", "points": 206, "poles": 0, "podiums": 8, "wins": 0, "starts": 22, "dnfs": 2, "position": 4 },
+        { "year": 2024, "teamId": "Aston Martin", "points": 70, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 2, "position": 9 },
+        { "year": 2025, "teamId": "Aston Martin", "points": 56, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 3, "position": 10 }
+      ]
+    },
+    {
+      "id": "kimi-antonelli",
+      "firstName": "Kimi",
+      "lastName": "Antonelli",
+      "nationality": "Italy",
+      "dateOfBirth": "2006-08-25",
+      "number": 12,
+      "image": "antonelli.png",
+      "logo": "antonelli_logo.png",
+      "helmet": "antonelli_helmet.png",
+      "history": [
+        { "year": 2025, "teamId": "Mercedes", "points": 150, "poles": 1, "podiums": 3, "wins": 0, "starts": 24, "dnfs": 4, "position": 7 }
+      ]
+    },
+    {
+      "id": "oliver-bearman",
+      "firstName": "Oliver",
+      "lastName": "Bearman",
+      "nationality": "United Kingdom",
+      "dateOfBirth": "2005-05-08",
+      "number": 87,
+      "image": "bearman.png",
+      "logo": "bearman_logo.png",
+      "helmet": "bearman_helmet.png",
+      "history": [
+        { "year": 2024, "teamId": "Ferrari / Haas", "points": 7, "poles": 0, "podiums": 0, "wins": 0, "starts": 3, "dnfs": 0, "position": 18 },
+        { "year": 2025, "teamId": "Haas", "points": 41, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 3, "position": 13 }
+      ]
+    },
+    {
+      "id": "gabriel-bortoleto",
+      "firstName": "Gabriel",
+      "lastName": "Bortoleto",
+      "nationality": "Brazil",
+      "dateOfBirth": "2004-10-14",
+      "number": 5,
+      "image": "bortoleto.png",
+      "logo": "bortoleto_logo.png",
+      "helmet": "bortoleto_helmet.png",
+      "history": [
+        { "year": 2025, "teamId": "Sauber", "points": 19, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 5, "position": 19 }
+      ]
+    },
+    {
+      "id": "valtteri-bottas",
+      "firstName": "Valtteri",
+      "lastName": "Bottas",
+      "nationality": "Finland",
+      "dateOfBirth": "1989-08-28",
+      "number": 77,
+      "image": "bottas.png",
+      "logo": "bottas_logo.png",
+      "helmet": "bottas_helmet.png",
+      "history": [
+        { "year": 2013, "teamId": "Williams", "points": 4, "poles": 0, "podiums": 0, "wins": 0, "starts": 19, "dnfs": 1, "position": 17 },
+        { "year": 2014, "teamId": "Williams", "points": 186, "poles": 0, "podiums": 6, "wins": 0, "starts": 19, "dnfs": 1, "position": 4 },
+        { "year": 2015, "teamId": "Williams", "points": 136, "poles": 0, "podiums": 2, "wins": 0, "starts": 18, "dnfs": 1, "position": 5 },
+        { "year": 2016, "teamId": "Williams", "points": 85, "poles": 0, "podiums": 1, "wins": 0, "starts": 21, "dnfs": 2, "position": 8 },
+        { "year": 2017, "teamId": "Mercedes", "points": 305, "poles": 4, "podiums": 13, "wins": 3, "starts": 20, "dnfs": 1, "position": 3 },
+        { "year": 2018, "teamId": "Mercedes", "points": 247, "poles": 2, "podiums": 8, "wins": 0, "starts": 21, "dnfs": 1, "position": 5 },
+        { "year": 2019, "teamId": "Mercedes", "points": 326, "poles": 5, "podiums": 15, "wins": 4, "starts": 21, "dnfs": 2, "position": 2 },
+        { "year": 2020, "teamId": "Mercedes", "points": 223, "poles": 5, "podiums": 11, "wins": 2, "starts": 17, "dnfs": 1, "position": 2 },
+        { "year": 2021, "teamId": "Mercedes", "points": 226, "poles": 4, "podiums": 11, "wins": 1, "starts": 22, "dnfs": 4, "position": 3 },
+        { "year": 2022, "teamId": "Alfa Romeo", "points": 49, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 6, "position": 10 },
+        { "year": 2023, "teamId": "Alfa Romeo", "points": 10, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 3, "position": 15 },
+        { "year": 2024, "teamId": "Sauber", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 1, "position": 22 }
+      ]
+    },
+    {
+      "id": "franco-colapinto",
+      "firstName": "Franco",
+      "lastName": "Colapinto",
+      "nationality": "Argentina",
+      "dateOfBirth": "2003-05-27",
+      "number": 43,
+      "image": "colapinto.png",
+      "logo": "colapinto_logo.png",
+      "helmet": "colapinto_helmet.png",
+      "history": [
+        { "year": 2024, "teamId": "Williams", "points": 5, "poles": 0, "podiums": 0, "wins": 0, "starts": 9, "dnfs": 2, "position": 19 },
+        { "year": 2025, "teamId": "Alpine", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 0, "position": 20 }
+      ]
+    },
+    {
+      "id": "pierre-gasly",
+      "firstName": "Pierre",
+      "lastName": "Gasly",
+      "nationality": "France",
+      "dateOfBirth": "1996-02-07",
+      "number": 10,
+      "image": "gasly.png",
+      "logo": "gasly_logo.png",
+      "helmet": "gasly_helmet.png",
+      "history": [
+        { "year": 2017, "teamId": "Toro Rosso", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 5, "dnfs": 0, "position": 21 },
+        { "year": 2018, "teamId": "Toro Rosso", "points": 29, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 5, "position": 15 },
+        { "year": 2019, "teamId": "Red Bull / Toro Rosso", "points": 95, "poles": 0, "podiums": 1, "wins": 0, "starts": 21, "dnfs": 1, "position": 7 },
+        { "year": 2020, "teamId": "AlphaTauri", "points": 75, "poles": 0, "podiums": 1, "wins": 1, "starts": 17, "dnfs": 3, "position": 10 },
+        { "year": 2021, "teamId": "AlphaTauri", "points": 110, "poles": 0, "podiums": 1, "wins": 0, "starts": 22, "dnfs": 3, "position": 9 },
+        { "year": 2022, "teamId": "AlphaTauri", "points": 23, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 3, "position": 14 },
+        { "year": 2023, "teamId": "Alpine", "points": 62, "poles": 0, "podiums": 1, "wins": 0, "starts": 22, "dnfs": 3, "position": 11 },
+        { "year": 2024, "teamId": "Alpine", "points": 42, "poles": 0, "podiums": 1, "wins": 0, "starts": 23, "dnfs": 3, "position": 10 },
+        { "year": 2025, "teamId": "Alpine", "points": 22, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 3, "position": 18 }
+      ]
+    },
+    {
+      "id": "isack-hadjar",
+      "firstName": "Isack",
+      "lastName": "Hadjar",
+      "nationality": "France",
+      "dateOfBirth": "2004-09-28",
+      "number": 6,
+      "image": "hadjar.png",
+      "logo": "hadjar_logo.png",
+      "helmet": "hadjar_helmet.png",
+      "history": [
+        { "year": 2024, "teamId": "Red Bull", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 0, "dnfs": 0, "position": 0 },
+        { "year": 2025, "teamId": "Racing Bulls", "points": 51, "poles": 0, "podiums": 1, "wins": 0, "starts": 24, "dnfs": 2, "position": 12 }
+      ]
+    },
+    {
+      "id": "lewis-hamilton",
+      "firstName": "Lewis",
+      "lastName": "Hamilton",
+      "nationality": "United Kingdom",
+      "dateOfBirth": "1985-01-07",
+      "number": 44,
+      "image": "hamilton.png",
+      "logo": "hamilton_logo.png",
+      "helmet": "hamilton_helmet.png",
+      "history": [
+        { "year": 2007, "teamId": "McLaren", "points": 109, "poles": 6, "podiums": 12, "wins": 4, "starts": 17, "dnfs": 1, "position": 2 },
+        { "year": 2008, "teamId": "McLaren", "points": 98, "poles": 7, "podiums": 10, "wins": 5, "starts": 18, "dnfs": 1, "position": 1 },
+        { "year": 2009, "teamId": "McLaren", "points": 49, "poles": 4, "podiums": 5, "wins": 2, "starts": 17, "dnfs": 2, "position": 5 },
+        { "year": 2010, "teamId": "McLaren", "points": 240, "poles": 1, "podiums": 9, "wins": 3, "starts": 19, "dnfs": 3, "position": 4 },
+        { "year": 2011, "teamId": "McLaren", "points": 227, "poles": 1, "podiums": 6, "wins": 3, "starts": 19, "dnfs": 3, "position": 5 },
+        { "year": 2012, "teamId": "McLaren", "points": 190, "poles": 7, "podiums": 7, "wins": 4, "starts": 20, "dnfs": 6, "position": 4 },
+        { "year": 2013, "teamId": "Mercedes", "points": 189, "poles": 5, "podiums": 5, "wins": 1, "starts": 19, "dnfs": 1, "position": 4 },
+        { "year": 2014, "teamId": "Mercedes", "points": 384, "poles": 7, "podiums": 16, "wins": 11, "starts": 19, "dnfs": 3, "position": 1 },
+        { "year": 2015, "teamId": "Mercedes", "points": 381, "poles": 11, "podiums": 17, "wins": 10, "starts": 19, "dnfs": 1, "position": 1 },
+        { "year": 2016, "teamId": "Mercedes", "points": 380, "poles": 12, "podiums": 17, "wins": 10, "starts": 21, "dnfs": 2, "position": 2 },
+        { "year": 2017, "teamId": "Mercedes", "points": 363, "poles": 11, "podiums": 13, "wins": 9, "starts": 20, "dnfs": 0, "position": 1 },
+        { "year": 2018, "teamId": "Mercedes", "points": 408, "poles": 11, "podiums": 17, "wins": 11, "starts": 21, "dnfs": 1, "position": 1 },
+        { "year": 2019, "teamId": "Mercedes", "points": 413, "poles": 5, "podiums": 17, "wins": 11, "starts": 21, "dnfs": 0, "position": 1 },
+        { "year": 2020, "teamId": "Mercedes", "points": 347, "poles": 10, "podiums": 14, "wins": 11, "starts": 16, "dnfs": 0, "position": 1 },
+        { "year": 2021, "teamId": "Mercedes", "points": 387.5, "poles": 5, "podiums": 17, "wins": 8, "starts": 22, "dnfs": 1, "position": 2 },
+        { "year": 2022, "teamId": "Mercedes", "points": 240, "poles": 0, "podiums": 9, "wins": 0, "starts": 22, "dnfs": 2, "position": 6 },
+        { "year": 2023, "teamId": "Mercedes", "points": 234, "poles": 1, "podiums": 6, "wins": 0, "starts": 22, "dnfs": 1, "position": 3 },
+        { "year": 2024, "teamId": "Mercedes", "points": 190, "poles": 0, "podiums": 4, "wins": 2, "starts": 24, "dnfs": 2, "position": 7 },
+        { "year": 2025, "teamId": "Ferrari", "points": 156, "poles": 0, "podiums": 1, "wins": 0, "starts": 24, "dnfs": 3, "position": 6 }
+      ]
+    },
+    {
+      "id": "nico-hulkenberg",
+      "firstName": "Nico",
+      "lastName": "Hulkenberg",
+      "nationality": "Germany",
+      "dateOfBirth": "1987-08-19",
+      "number": 27,
+      "image": "hulkenberg.png",
+      "logo": "hulkenberg_logo.png",
+      "helmet": "hulkenberg_helmet.png",
+      "history": [
+        { "year": 2010, "teamId": "Williams", "points": 22, "poles": 1, "podiums": 0, "wins": 0, "starts": 19, "dnfs": 4, "position": 14 },
+        { "year": 2012, "teamId": "Force India", "points": 63, "poles": 0, "podiums": 0, "wins": 0, "starts": 20, "dnfs": 2, "position": 11 },
+        { "year": 2013, "teamId": "Sauber", "points": 51, "poles": 0, "podiums": 0, "wins": 0, "starts": 18, "dnfs": 1, "position": 10 },
+        { "year": 2014, "teamId": "Force India", "points": 96, "poles": 0, "podiums": 0, "wins": 0, "starts": 19, "dnfs": 2, "position": 9 },
+        { "year": 2015, "teamId": "Force India", "points": 58, "poles": 0, "podiums": 0, "wins": 0, "starts": 18, "dnfs": 5, "position": 10 },
+        { "year": 2016, "teamId": "Force India", "points": 72, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 4, "position": 9 },
+        { "year": 2017, "teamId": "Renault", "points": 43, "poles": 0, "podiums": 0, "wins": 0, "starts": 20, "dnfs": 6, "position": 10 },
+        { "year": 2018, "teamId": "Renault", "points": 69, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 7, "position": 7 },
+        { "year": 2019, "teamId": "Renault", "points": 37, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 3, "position": 14 },
+        { "year": 2020, "teamId": "Racing Point", "points": 10, "poles": 0, "podiums": 0, "wins": 0, "starts": 2, "dnfs": 0, "position": 15 },
+        { "year": 2022, "teamId": "Aston Martin", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 2, "dnfs": 0, "position": 22 },
+        { "year": 2023, "teamId": "Haas", "points": 9, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 1, "position": 16 },
+        { "year": 2024, "teamId": "Haas", "points": 41, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 2, "position": 11 },
+        { "year": 2025, "teamId": "Sauber", "points": 51, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 2, "position": 11 }
+      ]
+    },
+    {
+      "id": "liam-lawson",
+      "firstName": "Liam",
+      "lastName": "Lawson",
+      "nationality": "New Zealand",
+      "dateOfBirth": "2002-02-11",
+      "number": 30,
+      "image": "lawson.png",
+      "logo": "lawson_logo.png",
+      "helmet": "lawson_helmet.png",
+      "history": [
+        { "year": 2023, "teamId": "AlphaTauri", "points": 2, "poles": 0, "podiums": 0, "wins": 0, "starts": 5, "dnfs": 0, "position": 20 },
+        { "year": 2024, "teamId": "Racing Bulls", "points": 9, "poles": 0, "podiums": 0, "wins": 0, "starts": 6, "dnfs": 0, "position": 16 },
+        { "year": 2025, "teamId": "Red Bull", "points": 150, "poles": 0, "podiums": 1, "wins": 0, "starts": 24, "dnfs": 4, "position": 7 }
+      ]
+    },
+    {
+      "id": "charles-leclerc",
+      "firstName": "Charles",
+      "lastName": "Leclerc",
+      "nationality": "Monaco",
+      "dateOfBirth": "1997-10-16",
+      "number": 16,
+      "image": "leclerc.png",
+      "logo": "leclerc_logo.png",
+      "helmet": "leclerc_helmet.png",
+      "history": [
+        { "year": 2018, "teamId": "Sauber", "points": 39, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 6, "position": 13 },
+        { "year": 2019, "teamId": "Ferrari", "points": 264, "poles": 7, "podiums": 10, "wins": 2, "starts": 21, "dnfs": 3, "position": 4 },
+        { "year": 2020, "teamId": "Ferrari", "points": 98, "poles": 0, "podiums": 2, "wins": 0, "starts": 17, "dnfs": 4, "position": 8 },
+        { "year": 2021, "teamId": "Ferrari", "points": 159, "poles": 2, "podiums": 1, "wins": 0, "starts": 21, "dnfs": 1, "position": 7 },
+        { "year": 2022, "teamId": "Ferrari", "points": 308, "poles": 9, "podiums": 11, "wins": 3, "starts": 22, "dnfs": 3, "position": 2 },
+        { "year": 2023, "teamId": "Ferrari", "points": 206, "poles": 5, "podiums": 6, "wins": 0, "starts": 21, "dnfs": 3, "position": 5 },
+        { "year": 2024, "teamId": "Ferrari", "points": 345, "poles": 3, "podiums": 12, "wins": 3, "starts": 24, "dnfs": 1, "position": 3 },
+        { "year": 2025, "teamId": "Ferrari", "points": 289, "poles": 0, "podiums": 10, "wins": 4, "starts": 24, "dnfs": 3, "position": 2 }
+      ]
+    },
+    {
+      "id": "arvid-lindblad",
+      "firstName": "Arvid",
+      "lastName": "Lindblad",
+      "nationality": "United Kingdom",
+      "dateOfBirth": "2007-08-08",
+      "number": 41,
+      "image": "lindblad.png",
+      "logo": "lindblad_logo.png",
+      "helmet": "lindblad_helmet.png",
+      "history": [
+      ]
+    },
+    {
+      "id": "lando-norris",
+      "firstName": "Lando",
+      "lastName": "Norris",
+      "nationality": "United Kingdom",
+      "dateOfBirth": "1999-11-13",
+      "number": 1,
+      "image": "norris.png",
+      "logo": "norris_logo.png",
+      "helmet": "norris_helmet.png",
+      "history": [
+        { "year": 2019, "teamId": "McLaren", "points": 49, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 5, "position": 11 },
+        { "year": 2020, "teamId": "McLaren", "points": 97, "poles": 0, "podiums": 1, "wins": 0, "starts": 17, "dnfs": 1, "position": 9 },
+        { "year": 2021, "teamId": "McLaren", "points": 160, "poles": 1, "podiums": 4, "wins": 0, "starts": 22, "dnfs": 1, "position": 6 },
+        { "year": 2022, "teamId": "McLaren", "points": 122, "poles": 0, "podiums": 1, "wins": 0, "starts": 22, "dnfs": 2, "position": 7 },
+        { "year": 2023, "teamId": "McLaren", "points": 205, "poles": 0, "podiums": 7, "wins": 0, "starts": 22, "dnfs": 1, "position": 6 },
+        { "year": 2024, "teamId": "McLaren", "points": 331, "poles": 8, "podiums": 12, "wins": 3, "starts": 24, "dnfs": 1, "position": 2 },
+        { "year": 2025, "teamId": "McLaren", "points": 348, "poles": 7, "podiums": 18, "wins": 10, "starts": 24, "dnfs": 0, "position": 1 }
+      ]
+    },
+    {
+      "id": "esteban-ocon",
+      "firstName": "Esteban",
+      "lastName": "Ocon",
+      "nationality": "France",
+      "dateOfBirth": "1996-09-17",
+      "number": 31,
+      "image": "ocon.png",
+      "logo": "ocon_logo.png",
+      "helmet": "ocon_helmet.png",
+      "history": [
+        { "year": 2016, "teamId": "Manor", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 9, "dnfs": 0, "position": 24 },
+        { "year": 2017, "teamId": "Force India", "points": 87, "poles": 0, "podiums": 0, "wins": 0, "starts": 20, "dnfs": 1, "position": 8 },
+        { "year": 2018, "teamId": "Force India", "points": 49, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 5, "position": 12 },
+        { "year": 2020, "teamId": "Renault", "points": 62, "poles": 0, "podiums": 1, "wins": 0, "starts": 17, "dnfs": 4, "position": 12 },
+        { "year": 2021, "teamId": "Alpine", "points": 74, "poles": 0, "podiums": 1, "wins": 1, "starts": 22, "dnfs": 3, "position": 11 },
+        { "year": 2022, "teamId": "Alpine", "points": 92, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 2, "position": 8 },
+        { "year": 2023, "teamId": "Alpine", "points": 58, "poles": 0, "podiums": 1, "wins": 0, "starts": 22, "dnfs": 7, "position": 12 },
+        { "year": 2024, "teamId": "Alpine", "points": 23, "poles": 0, "podiums": 1, "wins": 0, "starts": 24, "dnfs": 2, "position": 14 },
+        { "year": 2025, "teamId": "Haas", "points": 38, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 1, "position": 15 }
+      ]
+    },
+    {
+      "id": "sergio-perez",
+      "firstName": "Sergio",
+      "lastName": "Perez",
+      "nationality": "Mexico",
+      "dateOfBirth": "1990-01-26",
+      "number": 11,
+      "image": "perez.png",
+      "logo": "perez_logo.png",
+      "helmet": "perez_helmet.png",
+      "history": [
+        { "year": 2011, "teamId": "Sauber", "points": 14, "poles": 0, "podiums": 0, "wins": 0, "starts": 17, "dnfs": 3, "position": 16 },
+        { "year": 2012, "teamId": "Sauber", "points": 66, "poles": 0, "podiums": 3, "wins": 0, "starts": 20, "dnfs": 6, "position": 10 },
+        { "year": 2013, "teamId": "McLaren", "points": 49, "poles": 0, "podiums": 0, "wins": 0, "starts": 19, "dnfs": 0, "position": 11 },
+        { "year": 2014, "teamId": "Force India", "points": 59, "poles": 0, "podiums": 1, "wins": 0, "starts": 18, "dnfs": 3, "position": 10 },
+        { "year": 2015, "teamId": "Force India", "points": 78, "poles": 0, "podiums": 1, "wins": 0, "starts": 19, "dnfs": 1, "position": 9 },
+        { "year": 2016, "teamId": "Force India", "points": 101, "poles": 0, "podiums": 2, "wins": 0, "starts": 21, "dnfs": 0, "position": 7 },
+        { "year": 2017, "teamId": "Force India", "points": 100, "poles": 0, "podiums": 0, "wins": 0, "starts": 20, "dnfs": 1, "position": 7 },
+        { "year": 2018, "teamId": "Force India", "points": 62, "poles": 0, "podiums": 1, "wins": 0, "starts": 21, "dnfs": 2, "position": 8 },
+        { "year": 2019, "teamId": "Racing Point", "points": 52, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 2, "position": 10 },
+        { "year": 2020, "teamId": "Racing Point", "points": 125, "poles": 0, "podiums": 2, "wins": 1, "starts": 15, "dnfs": 2, "position": 4 },
+        { "year": 2021, "teamId": "Red Bull", "points": 190, "poles": 0, "podiums": 5, "wins": 1, "starts": 22, "dnfs": 3, "position": 4 },
+        { "year": 2022, "teamId": "Red Bull", "points": 305, "poles": 1, "podiums": 11, "wins": 2, "starts": 22, "dnfs": 3, "position": 3 },
+        { "year": 2023, "teamId": "Red Bull", "points": 285, "poles": 2, "podiums": 9, "wins": 2, "starts": 22, "dnfs": 2, "position": 2 },
+        { "year": 2024, "teamId": "Red Bull", "points": 152, "poles": 0, "podiums": 4, "wins": 0, "starts": 24, "dnfs": 3, "position": 8 },
+        { "year": 2025, "teamId": "Red Bull", "points": 150, "poles": 0, "podiums": 2, "wins": 0, "starts": 24, "dnfs": 3, "position": 8 }
+      ]
+    },
+    {
+      "id": "oscar-piastri",
+      "firstName": "Oscar",
+      "lastName": "Piastri",
+      "nationality": "Australia",
+      "dateOfBirth": "2001-04-06",
+      "number": 81,
+      "image": "piastri.png",
+      "logo": "piastri_logo.png",
+      "helmet": "piastri_helmet.png",
+      "history": [
+        { "year": 2023, "teamId": "McLaren", "points": 97, "poles": 0, "podiums": 2, "wins": 0, "starts": 22, "dnfs": 3, "position": 9 },
+        { "year": 2024, "teamId": "McLaren", "points": 292, "poles": 0, "podiums": 8, "wins": 2, "starts": 24, "dnfs": 0, "position": 4 },
+        { "year": 2025, "teamId": "McLaren", "points": 410, "poles": 6, "podiums": 16, "wins": 7, "starts": 24, "dnfs": 1, "position": 3 }
+      ]
+    },
+    {
+      "id": "george-russell",
+      "firstName": "George",
+      "lastName": "Russell",
+      "nationality": "United Kingdom",
+      "dateOfBirth": "1998-02-15",
+      "number": 63,
+      "image": "russell.png",
+      "logo": "russell_logo.png",
+      "helmet": "russell_helmet.png",
+      "history": [
+        { "year": 2019, "teamId": "Williams", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "fastestLaps": 0, "starts": 21, "dnfs": 2, "position": 20 },
+        { "year": 2020, "teamId": "Williams", "points": 3, "poles": 0, "podiums": 0, "wins": 0, "fastestLaps": 1, "starts": 17, "dnfs": 4, "position": 18 },
+        { "year": 2021, "teamId": "Williams", "points": 16, "poles": 0, "podiums": 1, "wins": 0, "fastestLaps": 0, "starts": 22, "dnfs": 6, "position": 15 },
+        { "year": 2022, "teamId": "Mercedes", "points": 275, "poles": 1, "podiums": 8, "wins": 1, "fastestLaps": 4, "starts": 22, "dnfs": 1, "position": 4 },
+        { "year": 2023, "teamId": "Mercedes", "points": 175, "poles": 0, "podiums": 2, "wins": 0, "fastestLaps": 1, "starts": 22, "dnfs": 3, "position": 8 },
+        { "year": 2024, "teamId": "Mercedes", "points": 245, "poles": 3, "podiums": 4, "wins": 2, "fastestLaps": 2, "starts": 24, "dnfs": 3, "position": 6 },
+        { "year": 2025, "teamId": "Mercedes", "points": 319, "poles": 2, "podiums": 9, "wins": 2, "fastestLaps": 3, "starts": 24, "dnfs": 0, "position": 4 }
+      ]
+    },
+    {
+      "id": "carlos-sainz",
+      "firstName": "Carlos",
+      "lastName": "Sainz",
+      "nationality": "Spain",
+      "dateOfBirth": "1994-09-01",
+      "number": 55,
+      "image": "sainz.png",
+      "logo": "sainz_logo.png",
+      "helmet": "sainz_helmet.png",
+      "history": [
+        { "year": 2015, "teamId": "Toro Rosso", "points": 18, "poles": 0, "podiums": 0, "wins": 0, "starts": 19, "dnfs": 7, "position": 15 },
+        { "year": 2016, "teamId": "Toro Rosso", "points": 46, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 4, "position": 12 },
+        { "year": 2017, "teamId": "Toro Rosso / Renault", "points": 54, "poles": 0, "podiums": 0, "wins": 0, "starts": 20, "dnfs": 7, "position": 9 },
+        { "year": 2018, "teamId": "Renault", "points": 53, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 2, "position": 10 },
+        { "year": 2019, "teamId": "McLaren", "points": 96, "poles": 0, "podiums": 1, "wins": 0, "starts": 21, "dnfs": 3, "position": 6 },
+        { "year": 2020, "teamId": "McLaren", "points": 105, "poles": 0, "podiums": 1, "wins": 0, "starts": 16, "dnfs": 1, "position": 6 },
+        { "year": 2021, "teamId": "Ferrari", "points": 164.5, "poles": 0, "podiums": 4, "wins": 0, "starts": 22, "dnfs": 0, "position": 5 },
+        { "year": 2022, "teamId": "Ferrari", "points": 246, "poles": 3, "podiums": 9, "wins": 1, "starts": 22, "dnfs": 6, "position": 5 },
+        { "year": 2023, "teamId": "Ferrari", "points": 200, "poles": 2, "podiums": 3, "wins": 1, "starts": 21, "dnfs": 3, "position": 7 },
+        { "year": 2024, "teamId": "Ferrari", "points": 290, "poles": 1, "podiums": 7, "wins": 2, "starts": 23, "dnfs": 2, "position": 5 },
+        { "year": 2025, "teamId": "Williams", "points": 66, "poles": 0, "podiums": 1, "wins": 0, "starts": 24, "dnfs": 2, "position": 9 }
+      ]
+    },
+    {
+      "id": "lance-stroll",
+      "firstName": "Lance",
+      "lastName": "Stroll",
+      "nationality": "Canada",
+      "dateOfBirth": "1998-10-29",
+      "number": 18,
+      "image": "stroll.png",
+      "logo": "stroll_logo.png",
+      "helmet": "stroll_helmet.png",
+      "history": [
+        { "year": 2017, "teamId": "Williams", "points": 40, "poles": 0, "podiums": 1, "wins": 0, "starts": 20, "dnfs": 5, "position": 12 },
+        { "year": 2018, "teamId": "Williams", "points": 6, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 2, "position": 18 },
+        { "year": 2019, "teamId": "Racing Point", "points": 21, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 1, "position": 15 },
+        { "year": 2020, "teamId": "Racing Point", "points": 75, "poles": 1, "podiums": 2, "wins": 0, "starts": 16, "dnfs": 5, "position": 11 },
+        { "year": 2021, "teamId": "Aston Martin", "points": 34, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 3, "position": 13 },
+        { "year": 2022, "teamId": "Aston Martin", "points": 18, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 2, "position": 15 },
+        { "year": 2023, "teamId": "Aston Martin", "points": 74, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 3, "position": 10 },
+        { "year": 2024, "teamId": "Aston Martin", "points": 24, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 2, "position": 15 },
+        { "year": 2025, "teamId": "Aston Martin", "points": 48, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 1, "position": 14 }
+      ]
+    },
+    {
+      "id": "max-verstappen",
+      "firstName": "Max",
+      "lastName": "Verstappen",
+      "nationality": "Netherlands",
+      "dateOfBirth": "1997-09-30",
+      "number": 3,
+      "image": "verstappen.png",
+      "logo": "verstappen_logo.png",
+      "helmet": "verstappen_helmet.png",
+      "history": [
+        { "year": 2015, "teamId": "Toro Rosso", "points": 49, "poles": 0, "podiums": 0, "wins": 0, "starts": 19, "dnfs": 4, "position": 12 },
+        { "year": 2016, "teamId": "Toro Rosso / Red Bull", "points": 204, "poles": 0, "podiums": 7, "wins": 1, "starts": 21, "dnfs": 3, "position": 5 },
+        { "year": 2017, "teamId": "Red Bull", "points": 168, "poles": 0, "podiums": 4, "wins": 2, "starts": 20, "dnfs": 7, "position": 6 },
+        { "year": 2018, "teamId": "Red Bull", "points": 249, "poles": 0, "podiums": 11, "wins": 2, "starts": 21, "dnfs": 3, "position": 4 },
+        { "year": 2019, "teamId": "Red Bull", "points": 278, "poles": 2, "podiums": 9, "wins": 3, "starts": 21, "dnfs": 2, "position": 3 },
+        { "year": 2020, "teamId": "Red Bull", "points": 214, "poles": 1, "podiums": 11, "wins": 2, "starts": 17, "dnfs": 5, "position": 3 },
+        { "year": 2021, "teamId": "Red Bull", "points": 395.5, "poles": 10, "podiums": 18, "wins": 10, "starts": 22, "dnfs": 3, "position": 1 },
+        { "year": 2022, "teamId": "Red Bull", "points": 454, "poles": 7, "podiums": 17, "wins": 15, "starts": 22, "dnfs": 2, "position": 1 },
+        { "year": 2023, "teamId": "Red Bull", "points": 575, "poles": 12, "podiums": 21, "wins": 19, "starts": 22, "dnfs": 0, "position": 1 },
+        { "year": 2024, "teamId": "Red Bull", "points": 437, "poles": 8, "podiums": 15, "wins": 9, "starts": 24, "dnfs": 1, "position": 1 },
+        { "year": 2025, "teamId": "Red Bull", "points": 421, "poles": 5, "podiums": 15, "wins": 6, "starts": 24, "dnfs": 2, "position": 2 }
+      ]
+    }
+  ]
+}

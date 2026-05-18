@@ -1,0 +1,1901 @@
+/* ========================= */
+/*           FONTS           */
+/* ========================= */
+
+/* Fonts */
+@font-face {
+    font-family: 'F1-Regular';
+    src: url('fonts/Formula1-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'F1-Bold';
+    src: url('fonts/Formula1-Bold.ttf') format('truetype');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'F1-Black';
+    src: url('fonts/Formula1-Black.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'F1-Wide';
+    src: url('fonts/Formula1-Wide.ttf') format('truetype');
+}
+
+/* NAVBAR */
+.navbar * {
+    font-family: 'F1-Regular';
+    letter-spacing: 0.1px;
+}
+
+/* FOOTER */
+footer * {
+    font-family: 'F1-Regular';
+    letter-spacing: 0.1px;
+}
+
+/* INDEX */
+/* Hero */
+.hero-content * {
+    font-family: 'F1-Regular';
+    letter-spacing: 0.1px;
+}
+.hero-content h1 {
+    font-family: 'F1-Black';
+}
+
+.time-box span {
+    font-family: 'F1-Bold';
+}
+
+.show-more-btn{
+    font-family: 'F1-Wide';
+}
+
+.schedule-table-hero {
+    font-family: 'F1-Regular';
+    letter-spacing: 0.1px;
+}
+
+.day-header {
+    font-weight: 1000;
+}
+
+.session-name {
+    font-weight: 0;
+}
+
+/* Calendar */
+.calendar-title {
+    font-family: 'F1-Black';
+}
+
+
+
+/* DRIVERS */
+/* Hero */
+.drivers-hero-content h1 {
+    font-family: 'F1-Black';
+}
+
+.drivers-hero-content p {
+    font-family: 'F1-Regular';
+    letter-spacing: 0.1px;
+}
+
+/* Drivercards */
+.driver-details h3 {
+    font-family: 'F1-Regular';
+}
+
+.driver-details p {
+    font-family: 'F1-Regular';
+}
+
+.driver-number {
+    font-family: 'F1-Black';
+}
+
+/* ========================= */
+/*           BASES           */
+/* ========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+:root {
+    /* Principal Colors */
+    --primary-red: rgb(225, 6, 0);
+    --dark-bg: rgb(20, 20, 30);
+    --text-light: rgb(255, 255, 255);
+    --text-dim: rgb(160, 160, 160);
+    /* Team Colors */
+    --f1-mercedes: rgb(43, 255, 219);
+    --f1-ferrari: rgb(255, 0, 25);
+    --f1-mclaren: rgb(255, 127, 0);
+    --f1-haas: rgb(222, 225, 226);
+    --f1-alpine: rgb(0, 178, 255);
+    --f1-red-bull: rgb(34, 71, 122);
+    --f1-racing-bulls: rgb(102, 125, 255);
+    --f1-audi: rgb(255, 46, 46);
+    --f1-williams: rgb(28, 122, 255);
+    --f1-cadillac: rgb(170, 170, 173);
+    --f1-aston-martin: rgb(34, 153, 113);
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+/* =================================== */
+/*           TWEMOJI SUPPORT           */
+/* =================================== */
+
+img.emoji {
+    height: 1.2em;
+    width: auto;
+    margin: 0 0.2em;
+    vertical-align: -0.2em;
+}
+
+/* ========================== */
+/*           NAVBAR           */
+/* ========================== */
+
+.navbar {
+    position: sticky;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    padding: 0.8rem 5%;
+    background-color: rgba(10, 10, 20, 0.75); /* light: saturate; */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    top: 0;
+    z-index: 1;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    transition: all 0.2s ease;
+}
+
+.navbar:hover {
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+}
+
+.nav-logo {
+    height: 40px;
+    width: auto;
+    display: block;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+}
+
+nav ul li a {
+    color: var(--text-light);
+    text-decoration: none;
+    margin-left: 2rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: var(--primary-red);
+}
+
+/* Hamburguer button */
+.hamburger {
+    display: none;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    padding: 0;
+    z-index: 101;
+    margin-left: auto;
+}
+
+.bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    transition: all 0.3s ease-in-out;
+    background-color: var(--text-light);
+    border-radius: 3px;
+}
+
+/* ========================== */
+/*           FOOTER           */
+/* ========================== */
+
+.footer {
+    position: relative;
+    background: rgb(10, 10, 20);
+    padding: 48px 5% 0;
+    font-family: 'F1-Regular';
+}
+
+/* Línea roja — espejo del navbar */
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(232, 0, 45, 0.5) 25%,
+        rgba(232, 0, 45, 0.85) 50%,
+        rgba(232, 0, 45, 0.5) 75%,
+        transparent 100%
+    );
+}
+
+/* Grid principal */
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 48px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Columna brand */
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.footer-logo {
+    display: inline-block;
+    margin-bottom: 14px;
+    transition: opacity 0.2s;
+}
+
+.footer-logo:hover { opacity: 0.75; }
+
+.footer-logo-img {
+    height: 32px;
+    width: auto;
+}
+
+.footer-tagline {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.3);
+    line-height: 1.7;
+    margin-bottom: 20px;
+    max-width: 260px;
+}
+
+/* Botones sociales */
+.footer-social {
+    display: flex;
+    gap: 8px;
+}
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.4);
+    text-decoration: none;
+    font-size: 0.65rem;
+    font-family: 'F1-Bold';
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+}
+
+.social-btn:hover {
+    background: rgba(232, 0, 45, 0.12);
+    border-color: rgba(232, 0, 45, 0.3);
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* Columnas de links */
+.footer-col-title {
+    font-size: 0.65rem;
+    font-family: 'F1-Bold';
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.22);
+    margin-bottom: 16px;
+}
+
+.footer-links ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.footer-links ul li a {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.42);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    padding-left: 14px;
+    transition: color 0.2s ease, padding-left 0.2s ease;
+}
+
+/* Flechita con pseudo-elemento */
+.footer-links ul li a::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: rgba(232, 0, 45, 0.5);
+    transition: color 0.2s ease;
+}
+
+.footer-links ul li a:hover {
+    color: rgba(255, 255, 255, 0.85);
+    padding-left: 18px;
+}
+
+.footer-links ul li a:hover::before {
+    color: var(--primary-red);
+}
+
+/* Barra inferior */
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.footer-copy,
+.footer-tz {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.18);
+    letter-spacing: 0.3px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+    }
+
+    .footer-brand {
+        grid-column: 1 / -1;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ============================================ */
+/*           INDEX: NEXT RACE SECTION           */
+/* ============================================ */
+
+.next-race {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 5% 5rem;
+    gap: 3rem;
+}
+
+.next-race-bg {
+    position: absolute;
+    top: -60px;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        rgba(15,15,22,0.1) 0%,
+        rgba(15,15,22,0.3) 40%,
+        rgba(15,15,22,0.85) 75%,
+        rgba(15,15,22,1) 100%
+    );
+    z-index: 2;
+}
+
+/* ── LEFT CONTENT ── */
+.hero-content {
+    position: relative;
+    z-index: 3;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Top meta row */
+.hero-top-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.hero-round-badge {
+    font-family: 'F1-Bold';
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--primary-red);
+    background: rgba(128, 6, 0, 0.5);
+    border: 1px solid rgba(225,6,0,0.5);
+    padding: 3px 10px;
+    border-radius: 4px;
+}
+
+.hero-sprint-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #ff6ec7;
+    background: rgba(255,110,199,0.08);
+    border: 1px solid rgba(255,110,199,0.2);
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.sprint-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #ff6ec7;
+    animation: pulse 2s infinite;
+}
+
+/* GP Name block */
+.hero-gp-name {
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-circuit-label {
+    font-family: 'F1-Regular', sans-serif;
+    font-size: clamp(0.4rem, 1.5vw, 1.2rem);
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+
+.hero-content h1 {
+    font-family: 'F1-Black', sans-serif;
+    font-size: clamp(64px, 9vw, 128px);
+    text-transform: uppercase;
+    line-height: 0.8;
+    color: var(--text-light);
+}
+
+.hero-grand-prix-word {
+    text-transform: uppercase;
+    display: block;
+    font-family: 'F1-Black', sans-serif;
+    font-size: clamp(1.4rem, 4.5vw, 3.2rem);
+    color: var(--text-light);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    margin-top: -24px;   /* ← agregá esto, ajustá el valor a ojo */
+}
+
+/* Countdown */
+.hero-countdown-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.hero-countdown-label {
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.countdown {
+    display: flex;
+    gap: 1rem;
+}
+
+.time-box {
+    text-align: center;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-top: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    width: 96px;
+    transition: all 0.3s ease;
+}
+
+.time-box:hover {
+    backdrop-filter: blur(60px);
+    -webkit-backdrop-filter: blur(60px);
+    cursor: default;
+    border-color: rgba(255,255,255,0.2);
+}
+
+.time-box span {
+    display: block;
+    font-family: 'F1-Black', sans-serif;
+    font-size: 1.8rem;
+    line-height: 1;
+    background: var(--text-light);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.time-box small {
+    color: var(--text-dim);
+    text-transform: uppercase;
+    font-size: 0.55rem;
+    letter-spacing: 1.5px;
+    font-family: 'F1-Regular', sans-serif;
+    margin-top: 4px;
+    display: block;
+}
+
+/* Show more button */
+.show-more-btn {
+    display: inline-block;
+    width: fit-content;
+    padding: 12px 28px;
+    color: white;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-top: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.show-more-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--race-gradient);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.show-more-btn:hover::before { opacity: 0.15; }
+.show-more-btn:hover {
+    border-color: rgba(255,255,255,0.25);
+    backdrop-filter: blur(60px);
+    -webkit-backdrop-filter: blur(60px);
+}
+
+/* ── RIGHT: SCHEDULE TABLE ── */
+.schedule-table-hero {
+    position: sticky;
+    top: 100px;
+    z-index: 3;
+    width: 360px;
+    flex-shrink: 0;
+    height: fit-content;
+}
+
+.table-inner {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-top: 1px solid rgba(255,255,255,0.18);
+    padding: 1.75rem;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    transition: all 0.2s ease;
+}
+
+.table-inner:hover {
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+}
+
+.table-title {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.day-block { margin-bottom: 1.25rem; }
+.day-block:last-of-type { margin-bottom: 0; }
+
+.day-header {
+    background: var(--race-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    letter-spacing: 1px;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 0.72rem;
+}
+
+.session-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.session-row:last-child { border-bottom: none; }
+
+.session-name {
+    color: var(--text-light);
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.5px;
+}
+
+.session-time {
+    color: var(--text-dim);
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 0.82rem;
+}
+
+.table-footer {
+    border-top: 1px solid rgba(255,255,255,0.07);
+    margin: 1.25rem -1.75rem -1.75rem;
+    padding: 1rem 1.75rem;
+    text-align: center;
+    color: var(--text-dim);
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    border-radius: 0 0 16px 16px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+    .next-race {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-end;
+        padding-bottom: 3rem;
+        min-height: 100vh;
+    }
+
+    .hero-content { width: 100%; }
+
+    .schedule-table-hero {
+        position: relative;
+        top: 0;
+        width: 100%;
+    }
+
+    .hero-grand-prix-word {
+    margin-top: -8px;   /* ← agregá esto, ajustá el valor a ojo */
+}
+}
+
+@media (max-width: 500px) {
+    .hero-content h1 { font-size: 64px; }
+    .time-box { min-width: 60px; padding: 10px 12px; }
+    .time-box span { font-size: 1.4rem; }
+    .show-more-btn { width: 100%; text-align: center; }
+}
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ================================================== */
+/*           INDEX: SEASON CALENDAR SECTION           */
+/* ================================================== */
+
+/* Container */
+.calendar {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin: 128px auto;
+    max-width: 60%;
+}
+
+/* Title */
+.calendar-title {
+    margin-left: 15%;
+    margin-bottom: 2rem;
+    font-size: 3rem;
+    border-left: 5px solid var(--primary-red);
+    padding-left: 15px;
+    text-transform: uppercase;
+}
+
+/* Racecards */
+/* ─── Calendar grid ─────────────────────────────── */
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+/* ─── Racecard base ──────────────────────────────── */
+.racecard {
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    position: relative;
+}
+
+/* Franja superior — el gran cambio visual */
+.racecard::before {
+    content: '';
+    display: block;
+    height: 3px;
+    width: 100%;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.07);
+    transition: opacity 0.3s ease;
+}
+
+.racecard:hover {
+    transform: translateY(-4px);
+    cursor: default;
+}
+
+/* ─── Round badge ────────────────────────────────── */
+.round-badge {
+    font-family: 'F1-Regular';
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 4px;
+}
+
+/* ─── Card info ──────────────────────────────────── */
+.card-info {
+    padding: 1rem 1.1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 0;
+}
+
+.card-info h3 {
+    font-family: 'F1-Bold';
+    font-size: 1rem;
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+.date {
+    font-family: 'F1-Regular';
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+    letter-spacing: 0.3px;
+    margin-bottom: 0;
+}
+
+/* ─── Status pill ────────────────────────────────── */
+.status-tag {
+    font-family: 'F1-Regular';
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    width: fit-content;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 10px;
+    margin-bottom: 12px;
+    border: 1px solid transparent;
+}
+
+/* Dot dentro del pill — agregalo via JS con createElement o innerHTML */
+.status-tag::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+
+.status-ended {
+    color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: transparent;
+}
+
+.status-ended::before { opacity: 0.4; }
+
+.status-next {
+    color: #ff7070;
+    background: rgba(232, 0, 45, 0.1);
+    border-color: rgba(232, 0, 45, 0.25);
+    text-shadow: none;
+}
+
+.status-next::before {
+    background: #e8002d;
+    animation: pulse 1.5s infinite;
+}
+
+.status-upcoming {
+    color: #5dade2;
+    background: rgba(52, 152, 219, 0.1);
+    border-color: rgba(52, 152, 219, 0.2);
+    text-shadow: none;
+}
+
+.status-cancelled {
+    color: #ff6666;
+    background: rgba(255, 77, 77, 0.08);
+    border-color: rgba(255, 77, 77, 0.2);
+    text-shadow: none;
+}
+
+/* ─── Button ─────────────────────────────────────── */
+.btn-schedule {
+    font-family: 'F1-Regular';
+    width: 100%;
+    padding: 8px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.45);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+    margin-top: auto;
+}
+
+.btn-schedule:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.85);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ─── ENDED ──────────────────────────────────────── */
+.racecard-ended {
+    background-color: rgb(22, 22, 32);
+}
+
+.racecard-ended::before {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.racecard-ended .card-info h3 {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* ─── NEXT ───────────────────────────────────────── */
+.racecard-next {
+    background-color: rgb(18, 18, 28);
+}
+
+.racecard-next::before {
+    background: linear-gradient(90deg, #e8002d, #ff6b6b, #e8002d);
+}
+
+.racecard-next:hover {
+    box-shadow: 0 8px 32px rgba(232, 0, 45, 0.18);
+}
+
+.racecard-next h3 {
+    color: #ffffff;
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    color: #ffffff;
+}
+
+.racecard-next .round-badge {
+    color: rgba(255, 120, 120, 0.5);
+}
+
+.racecard-next .btn-schedule {
+    border-color: rgba(232, 0, 45, 0.3);
+    color: #ff8a8a;
+}
+
+.racecard-next .btn-schedule:hover {
+    background: rgba(232, 0, 45, 0.15);
+    border-color: rgba(232, 0, 45, 0.5);
+    color: #fff;
+}
+
+/* ─── UPCOMING ───────────────────────────────────── */
+.racecard-upcoming {
+    background-color: rgb(20, 20, 30);
+}
+
+.racecard-upcoming::before {
+    background: linear-gradient(90deg, #3498db 0%, rgba(52, 152, 219, 0.4) 50%, rgba(52, 152, 219, 0) 100%);
+}
+
+.racecard-upcoming:hover {
+    background-color: rgb(22, 22, 34);
+}
+
+/* ─── CANCELLED ──────────────────────────────────── */
+.racecard-cancelled {
+    background-color: rgb(18, 8, 8);
+    opacity: 0.65;
+}
+
+.racecard-cancelled::before {
+    background: linear-gradient(90deg, #ff4d4d 0%, rgba(255, 77, 77, 0.4) 50%, rgba(255, 77, 77, 0) 100%);
+}
+
+.racecard-cancelled h3,
+.racecard-cancelled .date {
+    text-decoration: line-through;
+}
+
+.racecard-cancelled:hover {
+    opacity: 0.9;
+}
+
+/* ─── Animación ──────────────────────────────────── */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.25; }
+}
+
+
+/* ================================= */
+/*           DRIVERS: HERO           */
+/* ================================= */
+
+/* Container */
+.drivers-hero {
+    backdrop-filter: blur(100px);
+    width: 100%;
+    min-height: 105vh; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(
+        to bottom,
+        rgba(15, 15, 22, 0.0) 0%,
+        rgba(15, 15, 22, 0.0) 67%,
+        rgba(15, 15, 22, 1) 100%
+    ), 
+                url('./img/drivers/drivers.png') no-repeat center center/cover;
+    margin-top: -80px;
+}
+
+/* Title */
+.drivers-hero-content h1 {
+    font-size: 5rem;
+    color: #ffffff;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+/* Subtitle */
+.drivers-hero-content p {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ======================================== */
+/*           DRIVERS: DRIVERCARDS           */
+/* ======================================== */
+
+.drivers-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 128px auto;
+    max-width: 60%;
+}
+
+.drivercard {
+    position: relative;
+    height: 280px;
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: all 0.5s ease;
+}
+
+.drivercard.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.drivercard:hover {
+    transform: translateY(-6px);
+}
+
+/* Número de fondo */
+.driver-number {
+    position: absolute;
+    bottom: 0;
+    left: 12px;
+    font-family: 'F1-Black', sans-serif;
+    font-size: 3rem;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--dc-color);
+    opacity: 0.25;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1;
+    transition: all 0.5s ease;
+    text-shadow: var(--dc-color) 0 0 75px;
+}
+
+.drivercard:hover .driver-number {
+    opacity: 1;
+    transform: translateY(-150%) translateX(50%) scale(2);
+}
+
+.driver-number.champion {
+    background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    opacity: 0.6;
+    shadow: 0 0 8px rgba(191, 149, 63, 0.4);
+}
+
+/* Foto del piloto */
+.driver-img {
+    position: absolute;
+    bottom: 0;
+    right: -10px;
+    height: 90%;
+    object-fit: contain;
+    z-index: 2;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+    transform: translateY(67%) scale(2.5);
+    transition: transform 0.5s ease;
+}
+
+.drivercard:hover .driver-img {
+    transform: translateY(130%) translateX(-50%) scale(3.5);
+}
+
+/* Stripe izquierda */
+.dc-stripe-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--dc-color);
+    z-index: 4;
+}
+
+/* Info arriba a la izquierda */
+.driver-details {
+    position: relative;
+    z-index: 3;
+    padding: 1.2rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: transform 0.5s ease;
+}
+
+.drivercard:hover .driver-details {
+    transform: translateY(-65%);
+}
+
+.driver-details .dc-label {
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--dc-color);
+}
+
+.driver-details h3 {
+    font-family: 'F1-Black', sans-serif;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    line-height: 1;
+    color: #ffffff;
+    margin: 0;
+}
+
+.driver-details p {
+    font-family: 'F1-Regular';
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.driver-details .dc-cta {
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    margin-top: 6px;
+    transition: color 0.3s ease;
+}
+
+.drivercard:hover .dc-cta {
+    color: var(--dc-color);
+}
+
+/* Fondos por equipo */
+.team-mercedes      { background: rgb(4, 25, 21); }
+.team-ferrari       { background: rgb(25, 0, 2); }
+.team-mclaren       { background: rgb(25, 13, 0); }
+.team-red-bull      { background: rgb(3, 3, 18); }
+.team-aston-martin  { background: rgb(2, 14, 12); }
+.team-alpine        { background: rgb(2, 8, 18); }
+.team-williams      { background: rgb(2, 10, 18); }
+.team-racing-bulls  { background: rgb(5, 5, 18); }
+.team-haas          { background: rgb(14, 14, 14); }
+.team-audi          { background: rgb(18, 3, 3); }
+.team-cadillac      { background: rgb(14, 14, 5); }
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .drivers-grid { grid-template-columns: repeat(3, 1fr); max-width: 80%; }
+}
+
+@media (max-width: 768px) {
+    .drivers-grid { grid-template-columns: repeat(2, 1fr); max-width: 90%; }
+    .drivercard { height: 220px; }
+    .driver-number { font-size: 5rem; }
+}
+
+@media (max-width: 480px) {
+    .drivers-grid { grid-template-columns: 1fr; max-width: 95%; }
+}
+
+/* ================== */
+/*        TEAMS       */
+/* ================== */
+
+
+/* ====================== */
+/*        TEAM PAGE       */
+/* ====================== */
+/* --- HERO --- */
+        .team-hero {
+            position: relative;
+            height: 100vh;
+            min-height: 600px;
+            margin-top: -80px;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+        }
+
+        .team-hero-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            z-index: 1;
+        }
+
+        .team-hero-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            background: linear-gradient(
+                to bottom,
+                rgba(21,21,30,0.05) 0%,
+                rgba(21,21,30,0.15) 35%,
+                rgba(21,21,30,0.8) 70%,
+                rgba(21,21,30,1) 100%
+            );
+        }
+        .team-hero-content {
+            position: relative;
+            z-index: 3;
+            padding: 0 5% 4rem;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 2rem;
+        }
+
+        .team-hero-left {}
+
+        .team-hero-label {
+            font-family: 'F1-Regular', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--team-color);
+            margin-bottom: 0.75rem;
+        }
+
+        .team-hero-name {
+            font-family: 'F1-Black', sans-serif;
+            font-size: 5.5rem;
+            text-transform: uppercase;
+            line-height: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .team-hero-name .team-name-thin {
+            display: block;
+            font-family: 'F1-Regular', sans-serif;
+            font-size: 3rem;
+            color: var(--text-dim);
+        }
+
+        .team-hero-meta {
+            display: flex;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .team-hero-meta-item {
+            font-family: 'F1-Regular', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .team-hero-meta-item strong {
+            display: block;
+            font-family: 'F1-Bold', sans-serif;
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-top: 3px;
+        }
+
+        /* Championships badge on the right */
+        .team-hero-right {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .championships-badge {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-top: 2px solid var(--team-color);
+            border-radius: 12px;
+            padding: 1.2rem 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .championships-badge .champ-number {
+            font-family: 'F1-Black', sans-serif;
+            font-size: 3.5rem;
+            line-height: 1;
+            color: var(--team-color);
+        }
+
+        .championships-badge .champ-label {
+            font-family: 'F1-Regular', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        /* --- CONTENT --- */
+        .team-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 5%;
+        }
+
+        .section-title {
+            
+        }
+
+        /* --- SEASON STATS --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 4rem;
+        }
+
+        .stat-card {
+            
+        }
+
+        .stat-card:hover {
+            
+        }
+
+        .stat-label {
+            font-family: 'F1-Regular', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-family: 'F1-Black', sans-serif;
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+
+        .stat-sub {
+            font-family: 'F1-Regular', sans-serif;
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            margin-top: 5px;
+        }
+
+        /* --- DRIVERS --- */
+        .drivers-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 4rem;
+        }
+
+        .driver-link-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            height: 360px;
+            display: flex;
+            align-items: flex-end;
+            text-decoration: none;
+            color: var(--text-light);
+            border: 1px solid #333;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+            background: #1f1f27;
+        }
+
+        .driver-link-card:hover {
+            border-color: var(--team-color);
+            transform: translateY(-5px);
+        }
+
+        .driver-link-card img.driver-card-photo {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            transition: transform 0.4s ease;
+        }
+
+        .driver-link-card:hover img.driver-card-photo {
+            transform: scale(1.04);
+        }
+
+        .driver-link-card .driver-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(21,21,30,0.95) 0%, rgba(21,21,30,0.4) 50%, transparent 100%);
+            z-index: 1;
+        }
+
+        .driver-link-card .driver-card-info {
+            position: relative;
+            z-index: 2;
+            padding: 1.5rem;
+            width: 100%;
+        }
+
+        .driver-card-number {
+            font-family: 'F1-Black', sans-serif;
+            font-size: 4rem;
+            line-height: 1;
+            color: rgba(255,255,255,0.12);
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            z-index: 2;
+        }
+
+        .driver-card-name {
+            font-family: 'F1-Black', sans-serif;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            line-height: 0.95;
+        }
+
+        .driver-card-name span {
+            display: block;
+            font-family: 'F1-Regular', sans-serif;
+            font-size: 1.1rem;
+            color: var(--text-dim);
+        }
+
+        .driver-card-flag {
+            font-size: 1.3rem;
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        .driver-card-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 0.75rem;
+            font-family: 'F1-Regular', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--team-color);
+            transition: gap 0.2s ease;
+        }
+
+        .driver-link-card:hover .driver-card-cta {
+            gap: 10px;
+        }
+
+        .driver-card-cta::after {
+            content: '→';
+        }
+
+        /* --- INFO + CHART --- */
+        .info-chart-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
+            margin-bottom: 4rem;
+            align-items: start;
+        }
+
+        .info-card {
+            
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #2a2a35;
+            font-size: 0.85rem;
+        }
+
+        .info-row:last-child { border-bottom: none; }
+
+        .info-key {
+            font-family: 'F1-Regular', sans-serif;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.72rem;
+        }
+
+        .info-val {
+            font-family: 'F1-Bold', sans-serif;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            text-align: right;
+        }
+
+        .chart-label {
+            font-family: 'F1-Regular', sans-serif;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 1.2rem;
+        }
+
+        /* --- GALLERY --- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 4rem;
+        }
+
+        .gallery-item {
+            border-radius: 2rem;
+            overflow: hidden;
+            aspect-ratio: 16/10;
+            background: #1f1f27;
+            border: 1px solid #333;
+        }
+
+        .gallery-item.featured {
+            grid-column: span 2;
+            aspect-ratio: 16/9;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+            display: block;
+        }
+
+        .gallery-item:hover img { transform: scale(1.04); }
+
+/* ============================== */
+/*           RESPONSIVE           */
+/* ============================== */
+
+/* Tablets or smaller laptops */
+@media (max-width: 1100px) {
+
+    /* INDEX */
+    /* Hero */
+    .next-race {
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        text-align: center;
+        min-height: 200vh;
+    }
+
+    .next-race-bg, 
+    .hero-overlay {
+        height: 100%;
+    }
+
+    .hero-content {
+        width: 100%;
+        position: relative;
+        top: 0;
+        transform: none;
+        padding-top: 140px;
+        padding-bottom: 0;
+    }
+
+    .countdown {
+        justify-content: center;
+    }
+
+    .time-box {
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    }
+
+    .schedule-table-hero {
+        width: 100%;
+        position: sticky;
+        top: 80px; /* Ajustado para que no choque con el navbar */
+        padding-bottom: 0;
+    }
+
+    /* Racecards */
+    .racecards-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Calendar */
+    #calendar {
+        max-width: 95%;
+    }
+
+    /* DRIVERS */
+    /* Drivercards */
+    .drivers-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 800px;
+    }
+
+    /* DRIVER PAGE */
+    .driver-hero-first-name { font-size: 3.5rem; }
+    .driver-hero-last-name { font-size: 2rem; }
+    .driver-number-bg { font-size: 10rem; }
+    .info-chart-row { grid-template-columns: 1fr; }
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    .gallery-item.featured { grid-column: span 2; }
+}
+
+/* Phones */
+@media (max-width: 500px) {
+
+    /* NAVBAR */
+    .navbar {
+        width: 100%;
+        position: fixed;
+        height: 50px;
+        padding: 0.5rem 5%;
+    }
+
+    main{
+        padding-top: 50px;
+    }
+
+    .nav-logo {
+        height: 25px;
+        width: auto;
+    }
+
+    .hamburger {
+        padding: 5px;
+        margin-left: auto;
+    }
+
+    /* INDEX */
+    /* Hero */
+    .next-race {
+        min-height: 175vh;
+    }
+
+    .hero-content h1 {
+        font-size: 48px;
+        word-break: break-word;
+    }
+
+    .hero-content {
+        width: 100%;
+        padding-top: 100px;
+        margin-bottom: 75px;
+        overflow: hidden;
+    }   
+
+    .countdown {
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        }
+
+    .time-box {
+        -webkit-backdrop-filter: blur(5px);
+        backdrop-filter: blur(5px);
+        min-width: 0;
+        flex: 1 1 60px; /* crecen y se encogen según el espacio disponible */
+        padding: 8px;
+    }
+
+    .time-box:hover {
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+    }
+    
+    .time-box span {
+        font-size: 1.5rem;
+    }
+
+    .show-more-btn {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    }
+
+    .show-more-btn:hover {
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+    }
+
+    .schedule-table-hero {
+        margin-left: 0;
+        margin-right: 0;
+        top: calc(50% - 194px);
+    }
+
+    .table-footer {
+        margin-left: -1.5rem;
+        margin-right: -1.5rem;
+    }
+
+    /* Racecards */
+    .racecards-container {
+        grid-template-columns: 1fr;
+    }
+
+    /* Calendar */
+    #calendar {
+        max-width: 100%;
+    }
+
+    /* DRIVERS */
+    /* Hero */
+    .drivers-hero-content h1 {
+        font-size: 3.5rem;
+    }
+
+    .drivers-hero-content p {
+        font-size: 0.8rem;
+    }
+
+    /* Drivercards */
+
+    .driver-details h3 { font-size: 1.25rem; }
+    .driver-details p { margin: 0.25rem 0 0.5rem 0; font-size: 0.75rem; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; }
+    .driver-number{ margin: auto; font-size: 7rem; }
+    .drivers-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 10px; }
+    .drivercard:hover .driver-img { transform: translate3d(-50%, 10%, 0); }
+    .drivercard:hover .driver-number { transform: translateY(10%); }
+    .drivercard:hover .driver-details { transform: translateY(100%); }
+
+    /* DRIVER PAGE */
+    .driver-img { left: 50%; transform: translateX(-50%); }
+    .driver-hero-name { font-size: 2.5rem; }
+    .driver-hero-name span { font-size: 1.4rem; }
+    .driver-number-bg { display: none; }
+    .gallery-grid { grid-template-columns: 1fr; }
+    .gallery-item.featured { grid-column: span 1; }
+
+    /* --- CONTENT SECTIONS --- */
+.driver-content {
+    width: 100%;
+    margin: 0 auto;
+    padding: 4rem 5%;
+}
+}
+
+/* Navbar in phones */
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+
+    .navbar{
+        background-color: var(--dark-bg);
+        opacity: 1;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    .navbar:hover{
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    .nav-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(21, 21, 30, 0.75);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #333333;
+        transform: translateY(-125%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+    }
+
+    .nav-menu.active {
+        transform: translateY(1px);
+    }
+
+    .nav-menu li {
+        margin: 0.7rem 0;
+    }
+
+    nav ul li a {
+        margin-left: 0;
+        font-size: 1.1rem;
+        display: block;
+        padding: 0.5rem 0;
+    }
+
+    /* Hamburguer animation */
+    .hamburger.active .bar:nth-child(2) { opacity: 0; }
+    .hamburger.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .hamburger.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+}
+
+
+
+
+
+
+
+
+
+
+
+@keyframes smoothEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Entrance animations */
+main { animation: smoothEntrance 0.8s ease-out forwards; }

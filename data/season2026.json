@@ -1,0 +1,923 @@
+{
+  "australian-gp": {
+    "round": 1,
+    "name": "Australian Grand Prix",
+    "sprint": false,
+    "color": "#00843D, #FFD700",
+    "horarios": {
+      "fp1Date": "2026-03-13T01:30:00",
+      "fp1EndDate": "2026-03-13T02:30:00",
+      "fp2Date": "2026-03-13T05:00:00",
+      "fp2EndDate": "2026-03-13T06:00:00",
+      "fp3Date": "2026-03-14T01:30:00",
+      "fp3EndDate": "2026-03-14T02:30:00",
+      "qualyDate": "2026-03-14T05:00:00",
+      "qualyEndDate": "2026-03-14T06:00:00",
+      "raceStartDate": "2026-03-15T02:00:00",
+      "raceEndDate": "2026-03-15T04:00:00"
+    },
+    "results": [
+      { "pos": 1, "driver": "George Russell", "team": "Mercedes", "laps": "58", "time": "1:23:06.801", "pts": 25 },
+      { "pos": 2, "driver": "Kimi Antonelli", "team": "Mercedes", "laps": "58", "time": "+2.974s", "pts": 18 },
+      { "pos": 3, "driver": "Charles Leclerc", "team": "Ferrari", "laps": "58", "time": "+15.519s", "pts": 15 },
+      { "pos": 4, "driver": "Lewis Hamilton", "team": "Ferrari", "laps": "58", "time": "+16.144s", "pts": 12 },
+      { "pos": 5, "driver": "Lando Norris", "team": "McLaren", "laps": "58", "time": "+51.741s", "pts": 10 },
+      { "pos": 6, "driver": "Max Verstappen", "team": "Red Bull Racing", "laps": "58", "time": "+54.617s", "pts": 8 },
+      { "pos": 7, "driver": "Oliver Bearman", "team": "Haas F1 Team", "laps": "57", "time": "+1 Lap", "pts": 6 },
+      { "pos": 8, "driver": "Arvid Lindblad", "team": "Racing Bulls", "laps": "57", "time": "+1 Lap", "pts": 4 },
+      { "pos": 9, "driver": "Gabriel Bortoleto", "team": "Audi", "laps": "57", "time": "+1 Lap", "pts": 2 },
+      { "pos": 10, "driver": "Pierre Gasly", "team": "Alpine", "laps": "57", "time": "+1 Lap", "pts": 1 },
+      { "pos": 11, "driver": "Esteban Ocon", "team": "Haas F1 Team", "laps": "57", "time": "+1 Lap", "pts": 0 },
+      { "pos": 12, "driver": "Alexander Albon", "team": "Williams", "laps": "57", "time": "+1 Lap", "pts": 0 },
+      { "pos": 13, "driver": "Liam Lawson", "team": "Racing Bulls", "laps": "57", "time": "+1 Lap", "pts": 0 },
+      { "pos": 14, "driver": "Franco Colapinto", "team": "Alpine", "laps": "56", "time": "+2 Laps", "pts": 0 },
+      { "pos": 15, "driver": "Carlos Sainz", "team": "Williams", "laps": "56", "time": "+2 Laps", "pts": 0 },
+      { "pos": 16, "driver": "Sergio Perez", "team": "Cadillac", "laps": "55", "time": "+3 Laps", "pts": 0 },
+      { "pos": "NC", "driver": "Lance Stroll", "team": "Aston Martin", "laps": "43", "time": "+15 Laps", "pts": 0 },
+      { "pos": "NC", "driver": "Fernando Alonso", "team": "Aston Martin", "laps": "21", "time": "DNF", "pts": 0 },
+      { "pos": "NC", "driver": "Valtteri Bottas", "team": "Cadillac", "laps": "15", "time": "DNF", "pts": 0 },
+      { "pos": "NC", "driver": "Isack Hadjar", "team": "Red Bull Racing", "laps": "10", "time": "DNF", "pts": 0 },
+      { "pos": "NC", "driver": "Oscar Piastri", "team": "McLaren", "laps": "0", "time": "DNS", "pts": 0 },
+      { "pos": "NC", "driver": "Nico Hulkenberg", "team": "Audi", "laps": "0", "time": "DNS", "pts": 0 }
+    ],
+    "notableMoments": [
+      {
+        "time": "Pre-race",
+        "event": "Crash",
+        "involved": "PIA",
+        "action": ""
+      },
+      {
+        "time": "Lap 11",
+        "event": "Retirement",
+        "involved": "HAD",
+        "action": ""
+      },
+      {
+        "time": "Laps 11 to 13",
+        "event": "Virtual Safety Car",
+        "involved": "",
+        "action": ""
+      },
+      {
+        "time": "Lap 16",
+        "event": "Retirement",
+        "involved": "BOT",
+        "action": ""
+      },
+      {
+        "time": "Lap 16 to 18",
+        "event": "Virtual Safety Car",
+        "involved": "",
+        "action": ""
+      },
+      {
+        "time": "Laps 34 to 36",
+        "event": "Virtual Safety Car",
+        "involved": "",
+        "action": ""
+      }
+    ],
+    "weather": {
+      "friday": {
+        "condition": "Mild & Sunny",
+        "notes": "Practice sessions, stable conditions",
+        "rainChance": "10%",
+        "temp": "26°C",
+        "icon": "☀️"
+      },
+      "saturday": {
+        "condition": "Partly Cloudy",
+        "notes": "Qualifying day, light clouds",
+        "rainChance": "10%",
+        "temp": "25°C",
+        "icon": "⛅"
+      },
+      "sunday": {
+        "condition": "Partly Cloudy",
+        "notes": "Race day, dry and stable",
+        "rainChance": "9%",
+        "temp": "25°C",
+        "icon": "⛅"
+      }
+    }
+  },
+
+  "chinese-gp": {
+    "round": 2,
+    "name": "Chinese Grand Prix",
+    "sprint": true,
+    "color": "#e20000 40%, #FFDE00",
+    "horarios": {
+      "fp1Date": "2026-03-20T00:30:00",
+      "fp1EndDate": "2026-03-20T01:30:00",
+      "fp2Date": "2026-03-20T04:00:00",
+      "fp2EndDate": "2026-03-20T05:00:00",
+      "fp3Date": "2026-03-21T00:30:00",
+      "fp3EndDate": "2026-03-21T01:30:00",
+      "qualyDate": "2026-03-21T04:00:00",
+      "qualyEndDate": "2026-03-21T05:00:00",
+      "raceStartDate": "2026-03-22T04:00:00",
+      "raceEndDate": "2026-03-22T06:00:00"
+    },
+    "results": [
+      { "pos": 1, "driver": "Kimi Antonelli", "team": "Mercedes", "laps": "56", "time": "1:33:15.607", "pts": 25 },
+      { "pos": 2, "driver": "George Russell", "team": "Mercedes", "laps": "56", "time": "+5.515s", "pts": 18 },
+      { "pos": 3, "driver": "Lewis Hamilton", "team": "Ferrari", "laps": "56", "time": "+25.267s", "pts": 15 },
+      { "pos": 4, "driver": "Charles Leclerc", "team": "Ferrari", "laps": "56", "time": "+28.894s", "pts": 12 },
+      { "pos": 5, "driver": "Oliver Bearman", "team": "Haas F1 Team", "laps": "56", "time": "+57.268s", "pts": 10 },
+      { "pos": 6, "driver": "Pierre Gasly", "team": "Alpine", "laps": "56", "time": "+59.647s", "pts": 8 },
+      { "pos": 7, "driver": "Liam Lawson", "team": "Racing Bulls", "laps": "56", "time": "+80.588s", "pts": 6 },
+      { "pos": 8, "driver": "Isack Hadjar", "team": "Red Bull Racing", "laps": "56", "time": "+87.247s", "pts": 4 },
+      { "pos": 9, "driver": "Carlos Sainz", "team": "Williams", "laps": "55", "time": "+1 Lap", "pts": 2 },
+      { "pos": 10, "driver": "Franco Colapinto", "team": "Alpine", "laps": "55", "time": "+1 Lap", "pts": 1 },
+      { "pos": 11, "driver": "Nico Hulkenberg", "team": "Audi", "laps": "55", "time": "+1 Lap", "pts": 0 },
+      { "pos": 12, "driver": "Arvid Lindblad", "team": "Racing Bulls", "laps": "55", "time": "+1 Lap", "pts": 0 },
+      { "pos": 13, "driver": "Valtteri Bottas", "team": "Cadillac", "laps": "55", "time": "+1 Lap", "pts": 0 },
+      { "pos": 14, "driver": "Esteban Ocon", "team": "Haas F1 Team", "laps": "55", "time": "+1 Lap", "pts": 0 },
+      { "pos": 15, "driver": "Sergio Perez", "team": "Cadillac", "laps": "55", "time": "+1 Lap", "pts": 0 },
+      { "pos": "NC", "driver": "Max Verstappen", "team": "Red Bull Racing", "laps": "45", "time": "DNF", "pts": 0 },
+      { "pos": "NC", "driver": "Fernando Alonso", "team": "Aston Martin", "laps": "32", "time": "DNF", "pts": 0 },
+      { "pos": "NC", "driver": "Lance Stroll", "team": "Aston Martin", "laps": "9", "time": "DNF", "pts": 0 },
+      { "pos": "NC", "driver": "Oscar Piastri", "team": "McLaren", "laps": "0", "time": "DNS", "pts": 0 },
+      { "pos": "NC", "driver": "Lando Norris", "team": "McLaren", "laps": "0", "time": "DNS", "pts": 0 },
+      { "pos": "NC", "driver": "Gabriel Bortoleto", "team": "Audi", "laps": "0", "time": "DNS", "pts": 0 },
+      { "pos": "NC", "driver": "Alexander Albon", "team": "Williams", "laps": "0", "time": "DNS", "pts": 0 }
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+      "friday": {
+        "condition": "Cool & Overcast",
+        "notes": "Practice sessions, mild temperatures",
+        "rainChance": "20%",
+        "temp": "18°C",
+        "icon": "🌥️"
+      },
+      "saturday": {
+        "condition": "Partly Cloudy",
+        "notes": "Sprint & Qualifying day",
+        "rainChance": "15%",
+        "temp": "19°C",
+        "icon": "⛅"
+      },
+      "sunday": {
+        "condition": "Mild & Dry",
+        "notes": "Race day, stable conditions",
+        "rainChance": "10%",
+        "temp": "20°C",
+        "icon": "🌤️"
+      }
+    }
+  },
+
+  "japanese-gp": {
+    "round": 3,
+    "name": "Japanese Grand Prix",
+    "sprint": false,
+    "color": "#BC002D, #ffffff",
+    "horarios": {
+      "fp1Date": "2026-04-03T23:30:00",
+      "fp1EndDate": "2026-04-04T00:30:00",
+      "fp2Date": "2026-04-04T03:00:00",
+      "fp2EndDate": "2026-04-04T04:00:00",
+      "fp3Date": "2026-04-04T23:30:00",
+      "fp3EndDate": "2026-04-05T00:30:00",
+      "qualyDate": "2026-04-05T03:00:00",
+      "qualyEndDate": "2026-04-05T04:00:00",
+      "raceStartDate": "2026-04-06T02:00:00",
+      "raceEndDate": "2026-04-06T04:00:00"
+    },
+    "results": [
+      { "pos": 1, "driver": "Kimi Antonelli", "team": "Mercedes", "laps": "53", "time": "1:28:03.403", "pts": 25 },
+      { "pos": 2, "driver": "Oscar Piastri", "team": "McLaren", "laps": "53", "time": "+13.722s", "pts": 18 },
+      { "pos": 3, "driver": "Charles Leclerc", "team": "Ferrari", "laps": "53", "time": "+15.270s", "pts": 15 },
+      { "pos": 4, "driver": "George Russell", "team": "Mercedes", "laps": "53", "time": "+15.754s", "pts": 12 },
+      { "pos": 5, "driver": "Lando Norris", "team": "McLaren", "laps": "53", "time": "+23.479s", "pts": 10 },
+      { "pos": 6, "driver": "Lewis Hamilton", "team": "Ferrari", "laps": "53", "time": "+25.037s", "pts": 8 },
+      { "pos": 7, "driver": "Pierre Gasly", "team": "Alpine", "laps": "53", "time": "+32.340s", "pts": 6 },
+      { "pos": 8, "driver": "Max Verstappen", "team": "Red Bull Racing", "laps": "53", "time": "+32.677s", "pts": 4 },
+      { "pos": 9, "driver": "Liam Lawson", "team": "Racing Bulls", "laps": "53", "time": "+50.180s", "pts": 2 },
+      { "pos": 10, "driver": "Esteban Ocon", "team": "Haas F1 Team", "laps": "53", "time": "+51.216s", "pts": 1 },
+      { "pos": 11, "driver": "Nico Hulkenberg", "team": "Audi", "laps": "53", "time": "+52.280s", "pts": 0 },
+      { "pos": 12, "driver": "Isack Hadjar", "team": "Red Bull Racing", "laps": "53", "time": "+56.154s", "pts": 0 },
+      { "pos": 13, "driver": "Gabriel Bortoleto", "team": "Audi", "laps": "53", "time": "+59.078s", "pts": 0 },
+      { "pos": 14, "driver": "Arvid Lindblad", "team": "Racing Bulls", "laps": "53", "time": "+59.848s", "pts": 0 },
+      { "pos": 15, "driver": "Carlos Sainz", "team": "Williams", "laps": "53", "time": "+65.008s", "pts": 0 },
+      { "pos": 16, "driver": "Franco Colapinto", "team": "Alpine", "laps": "53", "time": "+65.773s", "pts": 0 },
+      { "pos": 17, "driver": "Sergio Perez", "team": "Cadillac", "laps": "53", "time": "+92.453s", "pts": 0 },
+      { "pos": 18, "driver": "Fernando Alonso", "team": "Aston Martin", "laps": "52", "time": "+1 Lap", "pts": 0 },
+      { "pos": 19, "driver": "Valtteri Bottas", "team": "Cadillac", "laps": "52", "time": "+1 Lap", "pts": 0 },
+      { "pos": 20, "driver": "Alexander Albon", "team": "Williams", "laps": "51", "time": "+2 Laps", "pts": 0 },
+      { "pos": "NC", "driver": "Lance Stroll", "team": "Aston Martin", "laps": "30", "time": "DNF", "pts": 0 },
+      { "pos": "NC", "driver": "Oliver Bearman", "team": "Haas F1 Team", "laps": "20", "time": "DNF", "pts": 0 }
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+      "friday": {
+        "condition": "Cool & Humid",
+        "notes": "Practice sessions, changeable conditions",
+        "rainChance": "30%",
+        "temp": "17°C",
+        "icon": "🌦️"
+      },
+      "saturday": {
+        "condition": "Partly Cloudy",
+        "notes": "Qualifying day, mild temperatures",
+        "rainChance": "20%",
+        "temp": "18°C",
+        "icon": "⛅"
+      },
+      "sunday": {
+        "condition": "Mild & Dry",
+        "notes": "Race day, typically stable",
+        "rainChance": "15%",
+        "temp": "19°C",
+        "icon": "🌤️"
+      }
+    }
+  },
+
+  "bahrain-gp": {
+    "round": 4,
+    "name": "Bahrain Grand Prix",
+    "sprint": false,
+    "color": "#CD1127 45%, #ffffff 70%",
+    "horarios": {
+      "fp1Date": "2026-03-27T08:30:00",
+      "fp1EndDate": "2026-03-27T09:30:00",
+      "fp2Date": "2026-03-27T12:00:00",
+      "fp2EndDate": "2026-03-27T13:00:00",
+      "fp3Date": "2026-03-28T09:30:00",
+      "fp3EndDate": "2026-03-28T10:30:00",
+      "qualyDate": "2026-03-28T13:00:00",
+      "qualyEndDate": "2026-03-28T14:00:00",
+      "raceStartDate": "2026-03-29T12:00:00",
+      "raceEndDate": "2026-03-29T14:00:00"
+    },
+    "results": [
+
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+      "friday": {
+        "condition": "Hot & Dry",
+        "notes": "Practice sessions, desert heat",
+        "rainChance": "0%",
+        "temp": "28°C",
+        "icon": "☀️"
+      },
+      "saturday": {
+        "condition": "Warm & Clear",
+        "notes": "Qualifying at dusk, temperatures dropping",
+        "rainChance": "0%",
+        "temp": "26°C",
+        "icon": "🌅"
+      },
+      "sunday": {
+        "condition": "Warm Night Race",
+        "notes": "Race under floodlights, cooler desert air",
+        "rainChance": "0%",
+        "temp": "24°C",
+        "icon": "🌙"
+      }
+    }
+  },
+
+  "saudi-arabian-gp": {
+    "round": 5,
+    "name": "Saudi Arabian Grand Prix",
+    "sprint": false,
+    "color": "#006C35 45%, #ffffff 70%",
+    "horarios": {
+      "fp1Date": "2026-04-10T10:30:00",
+      "fp1EndDate": "2026-04-10T11:30:00",
+      "fp2Date": "2026-04-10T14:00:00",
+      "fp2EndDate": "2026-04-10T15:00:00",
+      "fp3Date": "2026-04-11T10:30:00",
+      "fp3EndDate": "2026-04-11T11:30:00",
+      "qualyDate": "2026-04-11T14:00:00",
+      "qualyEndDate": "2026-04-11T15:00:00",
+      "raceStartDate": "2026-04-12T14:00:00",
+      "raceEndDate": "2026-04-12T16:00:00"
+    },
+    "results": [
+
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+      "friday": {
+        "condition": "Hot & Humid",
+        "notes": "Practice sessions, coastal heat",
+        "rainChance": "0%",
+        "temp": "30°C",
+        "icon": "☀️"
+      },
+      "saturday": {
+        "condition": "Warm & Clear",
+        "notes": "Qualifying at night, sea breeze",
+        "rainChance": "0%",
+        "temp": "27°C",
+        "icon": "🌙"
+      },
+      "sunday": {
+        "condition": "Warm Night Race",
+        "notes": "Race under lights along the corniche",
+        "rainChance": "0%",
+        "temp": "26°C",
+        "icon": "🌙"
+      }
+    }
+  },
+
+  "miami-gp": {
+    "round": 6,
+    "name": "Miami Grand Prix",
+    "sprint": false,
+    "color": "#00d4ff, #ff6ec7, #a855f7",
+    "horarios": {
+      "fp1Date": "2026-05-01T14:30:00",
+      "fp1EndDate": "2026-05-01T15:30:00",
+      "sprintQualyDate": "2026-05-01T18:30:00",
+      "sprintQualyEndDate": "2026-05-01T19:15:00",
+      "sprintRaceDate": "2026-05-02T14:00:00",
+      "sprintRaceEndDate": "2026-05-02T15:00:00",
+      "qualyDate": "2026-05-02T18:00:00",
+      "qualyEndDate": "2026-05-02T19:00:00",
+      "raceStartDate": "2026-05-03T16:00:00",
+      "raceEndDate": "2026-05-03T18:00:00"
+    },
+    "results": [
+      { "pos": 1, "driver": "Kimi Antonelli", "team": "Mercedes", "laps": "57", "time": "1:33:19.273", "pts": 25 },
+      { "pos": 2, "driver": "Lando Norris", "team": "McLaren", "laps": "57", "time": "+3.264s", "pts": 18 },
+      { "pos": 3, "driver": "Oscar Piastri", "team": "McLaren", "laps": "57", "time": "+27.092s", "pts": 15 },
+      { "pos": 4, "driver": "George Russell", "team": "Mercedes", "laps": "57", "time": "+43.051s", "pts": 12 },
+      { "pos": 5, "driver": "Max Verstappen", "team": "Red Bull Racing", "laps": "57", "time": "+48.949s", "pts": 10 },
+      { "pos": 6, "driver": "Lewis Hamilton", "team": "Ferrari", "laps": "57", "time": "+53.753s", "pts": 8 },
+      { "pos": 7, "driver": "Franco Colapinto", "team": "Alpine", "laps": "57", "time": "+61.871s", "pts": 6 },
+      { "pos": 8, "driver": "Charles Leclerc", "team": "Ferrari", "laps": "57", "time": "+64.245s", "pts": 4 },
+      { "pos": 9, "driver": "Carlos Sainz", "team": "Williams", "laps": "57", "time": "+82.072s", "pts": 2 },
+      { "pos": 10, "driver": "Alexander Albon", "team": "Williams", "laps": "57", "time": "+90.972s", "pts": 1 },
+      { "pos": 11, "driver": "Oliver Bearman", "team": "Haas F1 Team", "laps": "56", "time": "+1 Lap", "pts": 0 },
+      { "pos": 12, "driver": "Gabriel Bortoleto", "team": "Audi", "laps": "56", "time": "+1 Lap", "pts": 0 },
+      { "pos": 13, "driver": "Esteban Ocon", "team": "Haas F1 Team", "laps": "56", "time": "+1 Lap", "pts": 0 },
+      { "pos": 14, "driver": "Arvid Lindblad", "team": "Racing Bulls", "laps": "56", "time": "+1 Lap", "pts": 0 },
+      { "pos": 15, "driver": "Fernando Alonso", "team": "Aston Martin", "laps": "56", "time": "+1 Lap", "pts": 0 },
+      { "pos": 16, "driver": "Sergio Perez", "team": "Cadillac", "laps": "56", "time": "+1 Lap", "pts": 0 },
+      { "pos": 17, "driver": "Lance Stroll", "team": "Aston Martin", "laps": "56", "time": "+1 Lap", "pts": 0 },
+      { "pos": 18, "driver": "Valtteri Bottas", "team": "Cadillac", "laps": "55", "time": "+2 Laps", "pts": 0 },
+      { "pos": "NC", "driver": "Nico Hulkenberg", "team": "Audi", "laps": "7", "time": "DNF", "pts": 0 },
+      { "pos": "NC", "driver": "Liam Lawson", "team": "Racing Bulls", "laps": "6", "time": "DNF", "pts": 0 },
+      { "pos": "NC", "driver": "Pierre Gasly", "team": "Alpine", "laps": "4", "time": "DNF", "pts": 0 },
+      { "pos": "NC", "driver": "Isack Hadjar", "team": "Red Bull Racing", "laps": "4", "time": "DNF", "pts": 0 }
+    ],
+    "notableMoments": [
+      { "time": "Lap 3", "event": "Collision", "involved": "COL, HAM", "action": "No further action" },
+      { "time": "Lap 5", "event": "Crash", "involved": "HAD", "action": "" },
+      { "time": "Lap 5", "event": "Collision", "involved": "LAW, GAS", "action": "Will be investigated after the race" },
+      { "time": "Laps 6 to 11", "event": "Safety Car", "involved": "", "action": "" },
+      { "time": "Lap 16", "event": "Crossing Pit Exit Line", "involved": "VER", "action": "Will be investigated after the race" },
+      { "time": "Lap 30", "event": "Speeding in Pit Lane", "involved": "BOT", "action": "Drive Through Penalty" },
+      { "time": "Lap 57", "event": "Collision", "involved": "VER, RUS", "action": "No further action" },
+      { "time": "Lap 57", "event": "Collision", "involved": "LEC, RUS", "action": "No further action" },
+      { "time": "Lap 57", "event": "Unsafe Condition", "involved": "LEC", "action": "Will be investigated after the race" },
+      { "time": "2:15 hs after the race", "event": "Collision", "involved": "LAW, GAS", "action": "No further action" },
+      { "time": "2:38 hs after the race", "event": "Unsafe Condition", "involved": "LEC", "action": "Drive Through Penalty" },
+      { "time": "2:57 hs after the race", "event": "Crossing Pit Exit Line", "involved": "VER", "action": "+5s time penalty" }
+    ],
+    "weather": {
+      "friday": {
+        "condition": "Hot & Sunny",
+        "notes": "Sprint Qualifying, dry and hot conditions",
+        "rainChance": "10%",
+        "temp": "32°C",
+        "icon": "☀️"
+      },
+      "saturday": {
+        "condition": "Heatwave",
+        "notes": "Sprint Race & GP Qualifying, peak temperatures",
+        "rainChance": "10%",
+        "temp": "34°C",
+        "icon": "☀️"
+      },
+      "sunday": {
+        "condition": "Overcast",
+        "notes": "Race day, start advanced 3h due to lightning threat (low humidity, few drops)",
+        "rainChance": "15%",
+        "temp": "28°C",
+        "icon": "☁️"
+      }
+    }
+  },
+
+  "canadian-gp": {
+    "round": 7,
+    "name": "Canadian Grand Prix",
+    "sprint": false,
+    "color": "#FF0000 45%, #ffffff 70%",
+    "horarios": {
+      "fp1Date": "2026-05-22T10:30:00",
+      "fp1EndDate": "2026-05-22T11:30:00",
+      "sprintQualyDate": "2026-05-22T14:30:00",
+      "sprintQualyEndDate": "2026-05-22T15:15:00",
+      "sprintRaceDate": "2026-05-23T10:00:00",
+      "sprintRaceEndDate": "2026-05-23T11:00:00",
+      "qualyDate": "2026-05-23T14:00:00",
+      "qualyEndDate": "2026-05-23T15:00:00",
+      "raceStartDate": "2026-05-24T17:00:00",
+      "raceEndDate": "2026-05-24T19:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "monaco-gp": {
+    "round": 8,
+    "name": "Monaco Grand Prix",
+    "sprint": false,
+    "color": "#e10600 45%, #ffffff 70%",
+    "horarios": {
+      "fp1Date": "2026-06-05T08:30:00",
+      "fp1EndDate": "2026-06-05T09:30:00",
+      "fp2Date": "2026-06-05T12:00:00",
+      "fp2EndDate": "2026-06-05T13:00:00",
+      "fp3Date": "2026-06-06T07:30:00",
+      "fp3EndDate": "2026-06-06T08:30:00",
+      "qualyDate": "2026-06-06T11:00:00",
+      "qualyEndDate": "2026-06-06T12:00:00",
+      "raceStartDate": "2026-06-07T10:00:00",
+      "raceEndDate": "2026-06-07T12:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "barcelona-gp": {
+    "round": 9,
+    "name": "Barcelona-Catalunya Grand Prix",
+    "sprint": false,
+    "color": "#ffcc00 45%, #c60b1e 70%",
+    "horarios": {
+      "fp1Date": "2026-06-12T08:30:00",
+      "fp1EndDate": "2026-06-12T09:30:00",
+      "fp2Date": "2026-06-12T12:00:00",
+      "fp2EndDate": "2026-06-12T13:00:00",
+      "fp3Date": "2026-06-13T07:30:00",
+      "fp3EndDate": "2026-06-13T08:30:00",
+      "qualyDate": "2026-06-13T11:00:00",
+      "qualyEndDate": "2026-06-13T12:00:00",
+      "raceStartDate": "2026-06-14T10:00:00",
+      "raceEndDate": "2026-06-14T12:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "austrian-gp": {
+    "round": 10,
+    "name": "Austrian Grand Prix",
+    "sprint": true,
+    "color": "#ff0000 45%, #ffffff 70%",
+    "horarios": {
+      "fp1Date": "2026-06-26T08:30:00",
+      "fp1EndDate": "2026-06-26T09:30:00",
+      "sprintQualyDate": "2026-06-26T12:30:00",
+      "sprintQualyEndDate": "2026-06-26T13:15:00",
+      "sprintRaceDate": "2026-06-27T08:00:00",
+      "sprintRaceEndDate": "2026-06-27T09:00:00",
+      "qualyDate": "2026-06-27T12:00:00",
+      "qualyEndDate": "2026-06-27T13:00:00",
+      "raceStartDate": "2026-06-28T10:00:00",
+      "raceEndDate": "2026-06-28T12:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "british-gp": {
+    "round": 11,
+    "name": "British Grand Prix",
+    "sprint": false,
+    "color": "#00247d 40%, #cf142b 60%",
+    "horarios": {
+      "fp1Date": "2026-07-03T08:30:00",
+      "fp1EndDate": "2026-07-03T09:30:00",
+      "sprintQualyDate": "2026-07-03T12:30:00",
+      "sprintQualyEndDate": "2026-07-03T13:15:00",
+      "sprintRaceDate": "2026-07-04T08:00:00",
+      "sprintRaceEndDate": "2026-07-04T09:00:00",
+      "qualyDate": "2026-07-04T12:00:00",
+      "qualyEndDate": "2026-07-04T13:00:00",
+      "raceStartDate": "2026-07-05T11:00:00",
+      "raceEndDate": "2026-07-05T13:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "belgian-gp": {
+    "round": 12,
+    "name": "Belgian Grand Prix",
+    "sprint": true,
+    "color": "#E93E36 45%, #F0CE39 70%",
+    "horarios": {
+      "fp1Date": "2026-07-17T08:30:00",
+      "fp1EndDate": "2026-07-17T09:30:00",
+      "fp2Date": "2026-07-17T12:00:00",
+      "fp2EndDate": "2026-07-17T13:00:00",
+      "fp3Date": "2026-07-18T07:30:00",
+      "fp3EndDate": "2026-07-18T08:30:00",
+      "qualyDate": "2026-07-18T11:00:00",
+      "qualyEndDate": "2026-07-18T12:00:00",
+      "raceStartDate": "2026-07-19T10:00:00",
+      "raceEndDate": "2026-07-19T12:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "hungarian-gp": {
+    "round": 13,
+    "name": "Hungarian Grand Prix",
+    "sprint": false,
+    "color": "#436f4d 45%, #cd2a3e 70%",
+    "horarios": {
+      "fp1Date": "2026-07-31T08:30:00",
+      "fp1EndDate": "2026-07-31T09:30:00",
+      "fp2Date": "2026-07-31T12:00:00",
+      "fp2EndDate": "2026-07-31T13:00:00",
+      "fp3Date": "2026-08-01T07:30:00",
+      "fp3EndDate": "2026-08-01T08:30:00",
+      "qualyDate": "2026-08-01T11:00:00",
+      "qualyEndDate": "2026-08-01T12:00:00",
+      "raceStartDate": "2026-08-02T10:00:00",
+      "raceEndDate": "2026-08-02T12:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "dutch-gp": {
+    "round": 14,
+    "name": "Dutch Grand Prix",
+    "sprint": false,
+    "color": "#ff7900 45%, #ffffff 70%",
+    "horarios": {
+      "fp1Date": "2026-08-21T07:30:00",
+      "fp1EndDate": "2026-08-21T08:30:00",
+      "fp2Date": "2026-08-21T11:00:00",
+      "fp2EndDate": "2026-08-21T12:00:00",
+      "fp3Date": "2026-08-22T06:30:00",
+      "fp3EndDate": "2026-08-22T07:30:00",
+      "qualyDate": "2026-08-22T10:00:00",
+      "qualyEndDate": "2026-08-22T11:00:00",
+      "raceStartDate": "2026-08-23T10:00:00",
+      "raceEndDate": "2026-08-23T12:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "italian-gp": {
+    "round": 15,
+    "name": "Italian Grand Prix",
+    "sprint": false,
+    "color": "#d6001c 45%, #ffffff 70%",
+    "horarios": {
+      "fp1Date": "2026-09-04T08:30:00",
+      "fp1EndDate": "2026-09-04T09:30:00",
+      "fp2Date": "2026-09-04T12:00:00",
+      "fp2EndDate": "2026-09-04T13:00:00",
+      "fp3Date": "2026-09-05T07:30:00",
+      "fp3EndDate": "2026-09-05T08:30:00",
+      "qualyDate": "2026-09-05T11:00:00",
+      "qualyEndDate": "2026-09-05T12:00:00",
+      "raceStartDate": "2026-09-06T10:00:00",
+      "raceEndDate": "2026-09-06T12:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "spanish-gp": {
+    "round": 16,
+    "name": "Spanish Grand Prix",
+    "sprint": false,
+    "color": "#FFCC00 45%, #C60B1E 70%",
+    "horarios": {
+      "fp1Date": "2026-08-28T08:30:00",
+      "fp1EndDate": "2026-08-28T09:30:00",
+      "fp2Date": "2026-08-28T12:00:00",
+      "fp2EndDate": "2026-08-28T13:00:00",
+      "fp3Date": "2026-08-29T07:30:00",
+      "fp3EndDate": "2026-08-29T08:30:00",
+      "qualyDate": "2026-08-29T11:00:00",
+      "qualyEndDate": "2026-08-29T12:00:00",
+      "raceStartDate": "2026-08-30T10:00:00",
+      "raceEndDate": "2026-08-30T12:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "azerbaijan-gp": {
+    "round": 17,
+    "name": "Azerbaijan Grand Prix",
+    "sprint": false,
+    "color": "#0092BC 30%, #EF3340 40%, #EF3340 60%, #00AF66 80%",
+    "horarios": {
+      "fp1Date": "2026-09-18T06:30:00",
+      "fp1EndDate": "2026-09-18T07:30:00",
+      "fp2Date": "2026-09-18T10:00:00",
+      "fp2EndDate": "2026-09-18T11:00:00",
+      "fp3Date": "2026-09-19T05:30:00",
+      "fp3EndDate": "2026-09-19T06:30:00",
+      "qualyDate": "2026-09-19T09:00:00",
+      "qualyEndDate": "2026-09-19T10:00:00",
+      "raceStartDate": "2026-09-20T08:00:00",
+      "raceEndDate": "2026-09-20T10:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "singapore-gp": {
+    "round": 18,
+    "name": "Singapore Grand Prix",
+    "sprint": false,
+    "color": "#EF3340 45%, #ffffff 80%",
+    "horarios": {
+      "fp1Date": "2026-10-02T06:30:00",
+      "fp1EndDate": "2026-10-02T07:30:00",
+      "fp2Date": "2026-10-02T10:00:00",
+      "fp2EndDate": "2026-10-02T11:00:00",
+      "fp3Date": "2026-10-03T06:30:00",
+      "fp3EndDate": "2026-10-03T07:30:00",
+      "qualyDate": "2026-10-03T10:00:00",
+      "qualyEndDate": "2026-10-03T11:00:00",
+      "raceStartDate": "2026-10-04T09:00:00",
+      "raceEndDate": "2026-10-04T11:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "united-states-gp": {
+    "round": 19,
+    "name": "United States Grand Prix",
+    "sprint": false,
+    "color": "#bb1225 25%, #2c2b6b 35%, #2c2b6b 65%, #ffffff 75%",
+    "horarios": {
+      "fp1Date": "2026-10-23T14:30:00",
+      "fp1EndDate": "2026-10-23T15:30:00",
+      "sprintQualyDate": "2026-10-23T18:30:00",
+      "sprintQualyEndDate": "2026-10-23T19:15:00",
+      "sprintRaceDate": "2026-10-24T15:00:00",
+      "sprintRaceEndDate": "2026-10-24T16:00:00",
+      "qualyDate": "2026-10-24T19:00:00",
+      "qualyEndDate": "2026-10-24T20:00:00",
+      "raceStartDate": "2026-10-25T16:00:00",
+      "raceEndDate": "2026-10-25T18:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "mexican-gp": {
+    "round": 20,
+    "name": "Mexican Grand Prix",
+    "sprint": false,
+    "color": "#006847 30%, #ffffff 40%, #ffffff 60%, #CE1126 80%",
+    "horarios": {
+      "fp1Date": "2026-10-30T15:30:00",
+      "fp1EndDate": "2026-10-30T16:30:00",
+      "fp2Date": "2026-10-30T19:00:00",
+      "fp2EndDate": "2026-10-30T20:00:00",
+      "fp3Date": "2026-10-31T14:30:00",
+      "fp3EndDate": "2026-10-31T15:30:00",
+      "qualyDate": "2026-10-31T18:00:00",
+      "qualyEndDate": "2026-10-31T19:00:00",
+      "raceStartDate": "2026-11-01T17:00:00",
+      "raceEndDate": "2026-11-01T19:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "brazilian-gp": {
+    "round": 21,
+    "name": "Brazilian Grand Prix",
+    "sprint": false,
+    "color": "#009C3B 25%, #FFDF00 35%, #FFDF00 65%, #002776 75%",
+    "horarios": {
+      "fp1Date": "2026-11-06T11:30:00",
+      "fp1EndDate": "2026-11-06T12:30:00",
+      "sprintQualyDate": "2026-11-06T15:30:00",
+      "sprintQualyEndDate": "2026-11-06T16:15:00",
+      "sprintRaceDate": "2026-11-07T11:00:00",
+      "sprintRaceEndDate": "2026-11-07T12:00:00",
+      "qualyDate": "2026-11-07T15:00:00",
+      "qualyEndDate": "2026-11-07T16:00:00",
+      "raceStartDate": "2026-11-08T14:00:00",
+      "raceEndDate": "2026-11-08T16:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "las-vegas-gp": {
+    "round": 22,
+    "name": "Las Vegas Grand Prix",
+    "sprint": false,
+    "color": "#FFD700, #FF4500, #8B00FF",
+    "horarios": {
+      "fp1Date": "2026-11-20T00:30:00",
+      "fp1EndDate": "2026-11-20T01:30:00",
+      "fp2Date": "2026-11-20T04:00:00",
+      "fp2EndDate": "2026-11-20T05:00:00",
+      "fp3Date": "2026-11-21T00:30:00",
+      "fp3EndDate": "2026-11-21T01:30:00",
+      "qualyDate": "2026-11-21T04:00:00",
+      "qualyEndDate": "2026-11-21T05:00:00",
+      "raceStartDate": "2026-11-22T03:00:00",
+      "raceEndDate": "2026-11-22T05:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "qatar-gp": {
+    "round": 23,
+    "name": "Qatar Grand Prix",
+    "sprint": false,
+    "color": "#8D1B3D 45%, #ffffff 70%",
+    "horarios": {
+      "fp1Date": "2026-11-27T10:30:00",
+      "fp1EndDate": "2026-11-27T11:30:00",
+      "sprintQualyDate": "2026-11-27T14:30:00",
+      "sprintQualyEndDate": "2026-11-27T15:15:00",
+      "sprintRaceDate": "2026-11-28T11:00:00",
+      "sprintRaceEndDate": "2026-11-28T12:00:00",
+      "qualyDate": "2026-11-28T14:00:00",
+      "qualyEndDate": "2026-11-28T15:00:00",
+      "raceStartDate": "2026-11-29T13:00:00",
+      "raceEndDate": "2026-11-29T15:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  },
+
+  "abu-dhabi-gp": {
+    "round": 24,
+    "name": "Abu Dhabi Grand Prix",
+    "sprint": false,
+    "color": "#009a1a, #FFD100, #111111",
+    "horarios": {
+      "fp1Date": "2026-12-04T06:30:00",
+      "fp1EndDate": "2026-12-04T07:30:00",
+      "fp2Date": "2026-12-04T10:00:00",
+      "fp2EndDate": "2026-12-04T11:00:00",
+      "fp3Date": "2026-12-05T07:30:00",
+      "fp3EndDate": "2026-12-05T08:30:00",
+      "qualyDate": "2026-12-05T11:00:00",
+      "qualyEndDate": "2026-12-05T12:00:00",
+      "raceStartDate": "2026-12-06T10:00:00",
+      "raceEndDate": "2026-12-06T12:00:00"
+    },
+    "results": [
+      
+    ],
+    "notableMoments": [
+
+    ],
+    "weather": {
+
+    }
+  }
+}
