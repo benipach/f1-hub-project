@@ -18,67 +18,57 @@
     /* --- HERO --- */
     .race-hero {
         position: relative;
-        height: 100vh;
-        min-height: 620px;
-        margin-top: -80px;
+        min-height: 100vh;
         display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
+        align-items: flex-end;
         overflow: hidden;
     }
 
-    .race-hero-video,
-    .race-hero-img {
+    .race-hero-bg {
         position: absolute;
         inset: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
         object-position: center 35%;
-        z-index: 1;
+        z-index: 0;
+        filter: brightness(0.75) saturate(0.75);
+    }
+
+    .race-hero-video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 35%;
+        z-index: 0;
+        filter: brightness(0.75) saturate(0.75);
     }
 
     .race-hero-overlay {
         position: absolute;
         inset: 0;
-        z-index: 2;
         background: linear-gradient(
             to bottom,
             rgba(10,10,20,0) 40%,
             rgba(10,10,20,1) 100%
         );
+        z-index: 1;
     }
 
-    /* Top accent line */
-    .race-hero::after {
-        content: '';
+    /* Circuit name decorative background */
+    .race-hero-flag-bg {
         position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 3px;
-        background: var(--primary-red);
-        mask-image: linear-gradient(90deg, black 0%, black 60%, transparent 100%);
-        -webkit-mask-image: linear-gradient(90deg, black 0%, black 60%, transparent 100%);
-        z-index: 10;
-    }
-
-    .race-season-label {
-        font-family: 'F1-Regular', sans-serif;
-        font-size: 14px;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        color: var(--text-dim);
-    }
-
-    .race-round-num {
-        font-family: 'F1-Bold', sans-serif;
-        font-size: 14px;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        color: var(--primary-red);
-        background: rgba(225, 6, 0, 0.08);
-        border: 1px solid rgba(225, 6, 0, 0.2);
-        padding: 2px 9px;
-        border-radius: 4px;
+        right: 5%;
+        bottom: 0;
+        font-size: clamp(160px, 22vw, 320px);
+        line-height: 0.85;
+        opacity: 0.5;
+        z-index: 1;
+        user-select: none;
+        pointer-events: none;
+        filter: saturate(0.5) brightness(0.5);
     }
 
     /* Sprint badge */
@@ -107,71 +97,61 @@
         animation: pulse 2s infinite;
     }
 
-    /* Bottom hero content */
-    .race-hero-bottom {
+    /* Hero content */
+    .race-hero-content {
         position: relative;
-        z-index: 3;
-        padding: 0 5% 3.5rem;
+        z-index: 2;
+        padding: 0 5% 4rem;
+        width: 100%;
     }
+
+    .race-hero-title { margin-bottom: 24px; }
 
     .race-hero-circuit {
         font-family: 'F1-Regular', sans-serif;
-        font-size: clamp(0.4rem, 1.5vw, 1.2rem);
-        letter-spacing: 8px;
+        font-size: clamp(12px, 2.5vw, 32px);
+        letter-spacing: 6px;
         text-transform: uppercase;
-        color: var(--text-light);
+        color: rgba(255,255,255,0.25);
+        line-height: 0.85;
     }
 
     .race-hero-name {
         font-family: 'F1-Black', sans-serif;
-        font-size: clamp(48px, 9vw, 128px);
+        font-size: clamp(3rem, 10vw, 8rem);
         text-transform: uppercase;
-        line-height: 0.8;
+        line-height: 0.9;
         color: var(--text-light);
-        margin-bottom: 2rem;
+        margin: 0;
     }
 
-    .race-hero-name-prefix {
-        display: block;
-        font-family: 'F1-Black', sans-serif;
-        font-size: clamp(1.4rem, 4.5vw, 3.2rem);
-        color: var(--text-light);
-        letter-spacing: 2px;
-        margin-bottom: 4px;
-    }
-
-    /* Quick stats bar */
-    .race-quick-stats {
+    /* Meta row (mirrors driver-hero-meta) */
+    .race-hero-meta {
+        width: 55%;
         display: flex;
-        gap: 2rem;
         flex-wrap: wrap;
+        gap: 2.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255,255,255,0.1);
     }
 
-    .rqs-item {
+    .race-hero-meta-item {
         display: flex;
         flex-direction: column;
-        gap: 3px;
-    }
-
-    .rqs-val {
-        font-family: 'F1-Bold', sans-serif;
-        font-size: 1.3rem;
-        color: #fff;
-        line-height: 1;
-    }
-
-    .rqs-label {
-        font-family: 'F1-Regular', sans-serif;
+        gap: 5px;
+        font-family: 'F1-Regular';
         font-size: 0.6rem;
         letter-spacing: 1.5px;
         text-transform: uppercase;
-        color: var(--text-dim);
+        color: rgba(255,255,255,0.3);
     }
 
-    .rqs-divider {
-        width: 1px;
-        background: var(--text-dim);
-        align-self: stretch;
+    .race-hero-meta-item strong {
+        font-family: 'F1-Bold';
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        color: var(--text-light);
+        font-weight: normal;
     }
 
     /* ---- PAGE CONTENT ---- */
@@ -206,7 +186,7 @@
         /* Section subtitle */
     .rc-section-subtitle {
         font-family: 'F1-Regular';
-        font-size: clamp(8px, 3vw, 16px);
+        font-size: clamp(8px, 3vw, 24px);
         letter-spacing: 2px;
         text-transform: uppercase;
         color: var(--text-light);
@@ -887,7 +867,9 @@
         /* Hero */
         .race-hero { min-height: 520px; }
         .race-hero-name { font-size: clamp(36px, 10vw, 80px); }
-        .race-hero-bottom { padding: 0 5% 2.5rem; }
+        .race-hero-content { padding: 0 6% 3rem; }
+        .race-hero-meta { width: 75%; gap: 1.5rem; }
+        .race-hero-flag-bg { font-size: clamp(120px, 26vw, 240px); }
         .race-sprint-badge { top: 72px; }
 
         /* Circuit overview */
@@ -925,11 +907,10 @@
 
         /* Hero */
         .race-hero { min-height: 480px; }
-        .race-hero-name { font-size: clamp(32px, 12vw, 64px); margin-bottom: 1rem; }
+        .race-hero-name { font-size: clamp(32px, 12vw, 64px); margin-bottom: 0; }
         .race-hero-circuit { letter-spacing: 4px; }
-        .race-quick-stats { gap: 1rem; }
-        .rqs-divider { display: none; }
-        .rqs-val { font-size: 1rem; }
+        .race-hero-meta { width: 100%; gap: 1rem; }
+        .race-hero-flag-bg { display: none; }
         .race-sprint-badge { top: 64px; right: 4%; }
 
         /* Circuit overview */
@@ -992,45 +973,26 @@
         <!-- HERO -->
         <section class="race-hero">
             <video id="race-hero-video" class="race-hero-video" autoplay muted loop playsinline></video>
-            <img id="race-hero-img" class="race-hero-img" src="" alt="" style="display:none">
+            <img id="race-hero-img" class="race-hero-bg" src="" alt="" style="display:none">
             <div class="race-hero-overlay"></div>
+            <div id="hero-flag-bg" class="race-hero-flag-bg">🇨🇦</div>
 
             <div id="hero-sprint-badge" class="race-sprint-badge" style="display:none">
                 <span class="race-sprint-badge-dot"></span>
                 Sprint Weekend
             </div>
 
-            <div class="race-hero-bottom">
-                <p class="race-hero-circuit" id="hero-circuit-name">-</p>
-                <h1 class="race-hero-name">
-                    <span id="hero-name">-</span>
-                    <span class="race-hero-name-prefix">Grand Prix</span>
-                </h1>
-                <div class="race-quick-stats">
-                    <div class="rqs-item">
-                        <span class="rqs-val" id="stat-length">-</span>
-                        <span class="rqs-label">Circuit Length</span>
-                    </div>
-                    <div class="rqs-divider"></div>
-                    <div class="rqs-item">
-                        <span class="rqs-val" id="stat-laps">-</span>
-                        <span class="rqs-label">Race Laps</span>
-                    </div>
-                    <div class="rqs-divider"></div>
-                    <div class="rqs-item">
-                        <span class="rqs-val" id="stat-corners">-</span>
-                        <span class="rqs-label">Corners</span>
-                    </div>
-                    <div class="rqs-divider"></div>
-                    <div class="rqs-item">
-                        <span class="rqs-val" id="stat-overtake">-</span>
-                        <span class="rqs-label">Overtake Zones</span>
-                    </div>
-                    <div class="rqs-divider"></div>
-                    <div class="rqs-item">
-                        <span class="rqs-val" id="stat-first">-</span>
-                        <span class="rqs-label">First GP</span>
-                    </div>
+            <div class="race-hero-content">
+                <div class="race-hero-title">
+                    <p id="hero-circuit-name" class="race-hero-circuit">-</p>
+                    <h1 id="hero-name" class="race-hero-name">-</h1>
+                </div>
+                <div class="race-hero-meta">
+                    <div class="race-hero-meta-item">Circuit Length<strong id="stat-length">-</strong></div>
+                    <div class="race-hero-meta-item">Race Laps<strong id="stat-laps">-</strong></div>
+                    <div class="race-hero-meta-item">Corners<strong id="stat-corners">-</strong></div>
+                    <div class="race-hero-meta-item">Overtake Zones<strong id="stat-overtake">-</strong></div>
+                    <div class="race-hero-meta-item">First GP<strong id="stat-first">-</strong></div>
                 </div>
             </div>
         </section>
@@ -1135,13 +1097,12 @@
 
             <!-- 2026 WEEKEND -->
             <section>
-                <p class="rc-section-title">2026 Race</p>
+                <p class="rc-section-title">2026 Weekend</p>
+                <p class="rc-section-subtitle">Race results</p>
                 <div class="result-card" id="result-card"></div>
+                <p class="rc-section-subtitle">Notable moments of the race</p>
                 <div class="moments-card" id="moments-card"></div>
-            </section>
-
-            <section>
-                <p class="rc-section-title">Weekend Weather</p>
+                <p class="rc-section-subtitle">Weekend weather</p>
                 <div class="weather-grid" id="weather-card">
                     <div class="weather-day-card" id="weather-friday">
                         <p class="weather-day-label">Friday</p>
