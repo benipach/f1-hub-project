@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Drivers | F1 Hub</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/drivers.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap">
     <script src="./js/twemoji.js"></script>
     <script src="./js/navbar.js" defer></script>
+
 </head>
 <body>
     
@@ -34,9 +36,23 @@
 
     <main>
         <section class="drivers-hero">
+            <div class="drivers-hero-bg-img" style="background: url('./img/drivers/drivers.png') no-repeat center 35% / cover; filter: brightness(0.75) saturate(0.75); position: absolute; inset: 0; z-index: 0;"></div>
+            <div class="drivers-hero-overlay"></div>
+            <div class="drivers-hero-season-bg">&#x2019;26</div>
+
             <div class="drivers-hero-content">
-                <h1>2026 F1 Grid</h1>
-                <p>A list of the 22 drivers competing in the pinnacle of motorsport.</p>
+                <div class="drivers-hero-title">
+                    <p class="drivers-hero-season">Formula 1</p>
+                    <h1>The Grid</h1>
+                </div>
+                <div class="drivers-hero-meta">
+                    <div class="drivers-hero-meta-item">Drivers<strong>22</strong></div>
+                    <div class="drivers-hero-meta-item">Constructors<strong>11</strong></div>
+                    <div class="drivers-hero-meta-item">Rookies<strong>4</strong></div>
+                    <div class="drivers-hero-meta-item">World Champions<strong>3</strong></div>
+                    <div class="drivers-hero-meta-item">Combined Titles<strong>13</strong></div>
+                    <div class="drivers-hero-meta-item">Nationalities<strong>15</strong></div>
+                </div>
             </div>
         </section>
 
@@ -352,10 +368,10 @@
         </div>
 
         <div class="footer-bottom">
-            <span class="footer-copy">
+            <span class="footer-copyright">
                 &copy; 2026 F1 Hub &mdash; Unofficial fan project. Not affiliated with Formula 1.
             </span>
-            <span class="footer-tz">
+            <span class="footer-timezone">
                 All times shown in your local timezone
             </span>
         </div>
