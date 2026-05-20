@@ -57,28 +57,32 @@
 .race-sprint-badge {
     display: inline-flex;
     align-items: center;
-    padding: 3px 10px;
+    padding: 5px 14px;
     font-family: 'F1-Bold', sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 2px;
     text-transform: uppercase;
 }
 
 .race-round-badge {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-top: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 12px;
-    text-align: center;
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-top-color: rgba(255,255,255,0.28);
+    border-radius: 100px;
+    color: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(32px) saturate(1.4);
+    -webkit-backdrop-filter: blur(32px) saturate(1.4);
+    box-shadow:
+        0 2px 0 rgba(255,255,255,0.08) inset,
+        0 8px 24px rgba(0,0,0,0.4);
     transition: all 0.3s ease;
 }
 
 .race-round-badge:hover {
     cursor: default;
-    border-color: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(60px);
-    -webkit-backdrop-filter: blur(60px);
-    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.24);
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-1px);
 }
 
 .race-sprint-badge {
@@ -116,10 +120,11 @@
 
 .race-hero-content h1 {
     color: var(--text-light);
-    font-family: 'F1-Black', sans-serif;
+    font-family: 'F1-Black';
     font-size: clamp(64px, 9vw, 128px);
-    line-height: 0.8;
+    line-height: 0.85;
     text-transform: uppercase;
+    width: 150%;
 }
 
 .race-grand-prix-label {
@@ -142,11 +147,10 @@
 }
 
 .countdown-label {
-    color: var(--text-light);
-
+    color: rgba(255,255,255,0.45);
     font-family: 'F1-Regular', sans-serif;
-    font-size: 0.65rem;
-    letter-spacing: 2px;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
     text-transform: uppercase;
 }
 
@@ -156,73 +160,94 @@
 }
 
 .countdown-card {
-    width: 96px;
-    padding: 12px 18px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-top: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 12px;
+    position: relative;
+    width: 88px;
+    padding: 14px 10px 12px;
+    border-radius: 14px;
     text-align: center;
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-    transition: all 0.3s ease;
+    overflow: hidden;
+    /* Layered glass */
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-top-color: rgba(255,255,255,0.22);
+    backdrop-filter: blur(10px) saturate(2);
+    -webkit-backdrop-filter: blur(10px) saturate(2);
+    box-shadow:
+        0 1px 0 rgba(255,255,255,0.1) inset,
+        0 -1px 0 rgba(0,0,0,0.2) inset,
+        0 12px 36px rgba(0,0,0,0.5),
+        0 0 0 0.5px rgba(255,255,255,0.05);
+    transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+
+/* Inner glow strip at top */
+.countdown-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
 }
 
 .countdown-card:hover {
     cursor: default;
-    border-color: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(60px);
-    -webkit-backdrop-filter: blur(60px);
-    transform: translateY(-2px);
+    background: rgba(255,255,255,0.09);
+    border-top-color: rgba(255,255,255,0.35);
+    backdrop-filter: blur(20px) saturate(2.5);
+    -webkit-backdrop-filter: blur(20px) saturate(2.5);
+    transform: translateY(-3px);
+    box-shadow:
+        0 1px 0 rgba(255,255,255,0.15) inset,
+        0 20px 48px rgba(0,0,0,0.55),
+        0 0 0 0.5px rgba(255,255,255,0.08);
 }
 
 .countdown-card span {
     display: block;
-    background: var(--text-light);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
+    color: #ffffff;
     font-family: 'F1-Bold', sans-serif;
-    font-size: 32px;
+    font-size: 30px;
     line-height: 1;
+    letter-spacing: -1px;
 }
 
 .countdown-card small {
     display: block;
-    margin-top: 4px;
-    color: var(--text-dim);
+    margin-top: 6px;
+    color: rgba(255,255,255,0.38);
     font-family: 'F1-Regular', sans-serif;
-    font-size: 0.55rem;
-    letter-spacing: 1.5px;
+    font-size: 0.52rem;
+    letter-spacing: 2px;
     text-transform: uppercase;
 }
 
 /* Details button */
 
+/* ── Details button ── */
 .race-details-btn {
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
     overflow: hidden;
     width: fit-content;
-    padding: 12px 28px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    color: var(--text-light);
+    padding: 13px 28px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-top-color: rgba(255,255,255,0.24);
+    color: rgba(255,255,255,0.9);
     font-family: 'F1-Bold', sans-serif;
-    font-size: 0.75rem;
-    letter-spacing: 2px;
+    font-size: 0.68rem;
+    letter-spacing: 2.5px;
     text-decoration: none;
     text-transform: uppercase;
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-
-    transition:
-        border-color 0.3s ease,
-        backdrop-filter 0.3s ease,
-        transform 0.3s ease;
+    background: rgba(255,255,255,0.07);
+    backdrop-filter: blur(32px) saturate(1.4);
+    -webkit-backdrop-filter: blur(32px) saturate(1.4);
+    box-shadow:
+        0 1px 0 rgba(255,255,255,0.12) inset,
+        0 10px 32px rgba(0,0,0,0.45);
+    transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
 }
 
 .race-details-btn::before {
@@ -236,56 +261,93 @@
 }
 
 .race-details-btn:hover {
-    border-color: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(60px);
-    -webkit-backdrop-filter: blur(60px);
+    border-color: rgba(255,255,255,0.22);
+    color: #fff;
     transform: translateY(-2px);
+    box-shadow:
+        0 1px 0 rgba(255,255,255,0.18) inset,
+        0 18px 44px rgba(0,0,0,0.5),
+        0 0 40px rgba(232,0,45,0.2);
+    backdrop-filter: blur(60px) saturate(1.8);
+    -webkit-backdrop-filter: blur(60px) saturate(1.8);
 }
 
 .race-details-btn:hover::before {
-    opacity: 0.15;
+    opacity: 0.1;
 }
 
-/* Schedule card */
-
+/* ── Schedule card ── */
 .race-schedule {
     position: sticky;
     top: 100px;
-    z-index: 3;
+    z-index: 4;
     width: 360px;
     height: fit-content;
     flex-shrink: 0;
 }
 
 .race-schedule-card {
+    position: relative;
+    overflow: hidden;
     padding: 1.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-top: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 16px;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-    transition: backdrop-filter 0.2s ease;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-top-color: rgba(255,255,255,0.22);
+    background: rgba(12,12,22,0.45);
+    backdrop-filter: blur(48px) saturate(1.6);
+    -webkit-backdrop-filter: blur(48px) saturate(1.6);
+    box-shadow:
+        0 2px 0 rgba(255,255,255,0.1) inset,
+        0 24px 64px rgba(0,0,0,0.7),
+        0 0 0 0.5px rgba(255,255,255,0.06);
+    transition: all 0.3s ease;
+}
+
+/* Frosted inner glow */
+.race-schedule-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 15%; right: 15%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+    pointer-events: none;
+}
+
+/* Ambient gradient blob behind the card */
+.race-schedule-card::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; right: -40px;
+    width: 180px; height: 180px;
+    background: var(--race-gradient, linear-gradient(135deg, #e8002d, #ff6b00));
+    opacity: 0.06;
+    border-radius: 50%;
+    filter: blur(40px);
+    pointer-events: none;
 }
 
 .race-schedule-card:hover {
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
+    backdrop-filter: blur(64px) saturate(2);
+    -webkit-backdrop-filter: blur(64px) saturate(2);
+    box-shadow:
+        0 2px 0 rgba(255,255,255,0.2) inset,
+        0 32px 80px rgba(0,0,0,0.8),
+        0 0 0 0.5px rgba(255,255,255,0.15);
 }
 
 .race-schedule-title {
     margin-bottom: 1.25rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    color: var(--text-dim);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.38);
     font-family: 'F1-Bold', sans-serif;
-    font-size: 0.65rem;
-    letter-spacing: 2px;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
     text-transform: uppercase;
 }
 
 .schedule-day {
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.1rem;
 }
 
 .schedule-day:last-of-type {
@@ -293,14 +355,14 @@
 }
 
 .schedule-day-title {
-    margin-bottom: 0.6rem;
-    background: var(--race-gradient);
+    margin-bottom: 0.55rem;
+    background: var(--race-gradient, linear-gradient(90deg, #e8002d, #ff6b00));
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
     font-family: 'F1-Bold', sans-serif;
-    font-size: 0.72rem;
-    letter-spacing: 1px;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
     text-transform: uppercase;
 }
 
@@ -308,8 +370,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 4px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 
 .schedule-session:last-child {
@@ -319,28 +381,30 @@
 .schedule-session-name,
 .schedule-session-time {
     font-family: 'F1-Regular', sans-serif;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
 }
 
 .schedule-session-name {
-    color: var(--text-light);
-    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.82);
+    letter-spacing: 0.3px;
 }
 
 .schedule-session-time {
-    color: var(--text-dim);
+    color: rgba(255,255,255,0.38);
+    font-size: 0.75rem;
 }
 
 .race-schedule-footer {
     margin: 1.25rem -1.75rem -1.75rem;
     padding: 1rem 1.75rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 0 0 16px 16px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-radius: 0 0 20px 20px;
     text-align: center;
-    color: var(--text-dim);
+    color: rgba(255,255,255,0.3);
     font-family: 'F1-Regular', sans-serif;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     letter-spacing: 0.5px;
+    background: rgba(255,255,255,0.02);
 }
 
 /* Responsive */
