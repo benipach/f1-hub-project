@@ -17,6 +17,7 @@ function updateDashboard(season, circuits) {
     if (!nextEntry) return;
     const [nextId, nextGP] = nextEntry;
 
+    // Mantuve esta variable por si la usás para otra cosa (botones, bordes, etc.)
     document.documentElement.style.setProperty('--race-gradient', buildGradient(nextGP.color));
 
     const circuit = circuits[CIRCUIT_MAP[nextId]];
@@ -25,10 +26,7 @@ function updateDashboard(season, circuits) {
 
     const gpTitle = document.getElementById('hero-gp-title');
     gpTitle.textContent = nextGP.name.replace(' Grand Prix', '').trim();
-    gpTitle.style.background = buildGradient(nextGP.color);
-    gpTitle.style.webkitBackgroundClip = 'text';
-    gpTitle.style.backgroundClip = 'text';
-    gpTitle.style.color = 'transparent';
+    // (Líneas de gradiente y recorte de texto removidas)
 
     document.getElementById('hero-circuit-label').textContent = circuit?.name || '—';
     document.getElementById('hero-round').textContent = `Round ${String(nextGP.round).padStart(2, '0')}`;
@@ -65,13 +63,7 @@ function updateRacecards(season, nextId, now) {
             if (linkEl) linkEl.innerText = 'View Results';
 
         } else if (gpId === nextId) {
-            const h3 = card.querySelector('h3');
-            if (h3 && gp.color) {
-                h3.style.background = buildGradient(gp.color);
-                h3.style.webkitBackgroundClip = 'text';
-                h3.style.backgroundClip = 'text';
-                h3.style.color = 'transparent';
-            }
+            // (Líneas de gradiente en el <h3> removidas)
             card.classList.add('race-card-next');
             if (spanEl) { spanEl.classList.add('status-next'); spanEl.innerText = 'NEXT'; }
             if (linkEl) linkEl.innerText = 'Show More';
