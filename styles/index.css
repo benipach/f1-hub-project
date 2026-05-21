@@ -434,6 +434,15 @@
         padding-top: 140px;
         padding-bottom: 0;
         transform: none;
+        align-items: center;
+    }
+
+    .race-hero-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
     }
 
     .race-grand-prix-label {
@@ -467,12 +476,19 @@
         width: 100%;
         padding-top: 100px;
         margin-bottom: 75px;
-        overflow: hidden;
     }
 
     .race-hero-content h1 {
-        font-size: 48px;
+        font-size: clamp(40px, 10vw, 48px);
         word-break: break-word;
+        text-align: center;
+        width: 100%;
+    }
+
+    .countdown-label{
+        color: var(--text-light);
+        font-size: 16px;
+        letter-spacing: 6px;
     }
 
     .countdown-grid {
@@ -502,7 +518,7 @@
 
     .race-details-btn {
         width: 100%;
-        text-align: center;
+        justify-content: center;
         -webkit-backdrop-filter: blur(10px);
         backdrop-filter: blur(10px);
     }
