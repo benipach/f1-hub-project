@@ -179,7 +179,7 @@
     .rc-section-title::after {
         content: '';
         flex: 1;
-        height: 2px;
+        height: 1px;
         background: var(--primary-red);
     }
 
@@ -228,6 +228,16 @@
         object-fit: contain;
         filter: brightness(0.9);
         border-radius: 8px;
+    }
+
+    .track-layout-name {
+        font-family: 'F1-Regular', sans-serif;
+        font-size: clamp(8px, 3vw, 24px);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-light);
+        text-align: center;
+        margin-top: 0.75rem;
     }
 
     .track-layout-placeholder {
@@ -292,6 +302,14 @@
         letter-spacing: 1px;
         text-transform: uppercase;
         color: var(--text-dim);
+    }
+
+    .cs-stat-sub {
+        font-family: 'F1-Regular', sans-serif;
+        font-size: 0.65rem;
+        color: rgba(255,255,255,0.25);
+        letter-spacing: 0.3px;
+        margin-top: 2px;
     }
 
     /* Characteristics card */
@@ -390,27 +408,34 @@
     }
 
     /* ---- FUN FACTS ---- */
-    .facts-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    /* ---- FACTS CAROUSEL ---- */
+    .facts-carousel {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .facts-track {
+        display: flex;
         gap: 14px;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
     }
 
     .fact-card {
-        cursor: default;
+        flex: 0 0 calc(50% - 7px);
+        min-width: 0;
         background: rgb(20,20,30);
         border: 1px solid rgba(255,255,255,0.1);
         border-radius: 14px;
-        padding: 1.5rem;
+        padding: 1.75rem 1.75rem 1.5rem;
         position: relative;
         overflow: hidden;
-        transition: border-color 0.25s ease;
     }
 
     .fact-card::before {
         content: '"';
         position: absolute;
-        top: -10px; right: 12px;
+        top: -10px; right: 14px;
         font-size: 5rem;
         color: rgba(255,255,255,0.04);
         font-family: 'F1-Black';
@@ -418,16 +443,13 @@
         pointer-events: none;
     }
 
-    .fact-card:hover { border-color: rgba(255,255,255,0.2); }
-
     .fact-num {
         font-family: 'F1-Bold';
-        font-size: 20px;
-        letter-spacing: 2px;
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: var(--text-light);
-        margin-bottom: 10px;
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--primary-red);
+        margin-bottom: 0.75rem;
     }
 
     .fact-text {
@@ -435,7 +457,67 @@
         font-size: 0.82rem;
         color: var(--text-light);
         line-height: 1.7;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.3px;
+    }
+
+    .facts-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
+
+    .facts-dots {
+        display: flex;
+        gap: 6px;
+    }
+
+    .facts-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        cursor: pointer;
+        transition: background 0.2s, width 0.2s;
+        border: none;
+        padding: 0;
+    }
+
+    .facts-dot.active {
+        width: 20px;
+        border-radius: 3px;
+        background: var(--primary-red);
+    }
+
+    .facts-arrows {
+        display: flex;
+        gap: 8px;
+    }
+
+    .facts-arrow {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.04);
+        color: var(--text-light);
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s, border-color 0.2s;
+        font-family: sans-serif;
+    }
+
+    .facts-arrow:hover {
+        background: rgba(255,255,255,0.08);
+        border-color: rgba(255,255,255,0.2);
+    }
+
+    .facts-arrow:disabled {
+        opacity: 0.25;
+        cursor: default;
     }
 
     /* ---- WEATHER ---- */
@@ -473,18 +555,6 @@
     margin-bottom: 0.5rem;
 }
 
-.race-badge {
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 0.55rem;
-    letter-spacing: 1px;
-    background: rgba(225,6,0,0.1);
-    color: var(--primary-red);
-    border: 1px solid rgba(225,6,0,0.2);
-    padding: 2px 7px;
-    border-radius: 4px;
-    text-transform: uppercase;
-}
-
 .weather-day-icon {
     font-size: 2.5rem;
     line-height: 1;
@@ -492,7 +562,7 @@
 }
 
 .weather-day-condition {
-    font-family: 'F1-Bold', sans-serif;
+    font-family: 'F1-Regular', sans-serif;
     font-size: 1rem;
     color: var(--text-light);
     text-transform: uppercase;
@@ -500,10 +570,10 @@
 }
 
 .weather-day-temp {
-    font-family: 'F1-Black', sans-serif;
+    font-family: 'F1-Bold', sans-serif;
     font-size: 2rem;
     line-height: 1;
-    background: var(--gp-gradient);
+    background: var(--text-light);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -529,26 +599,52 @@
     .weather-grid { grid-template-columns: 1fr; }
 }
 
-/* ---- RACE RESULT 2026 ---- */
+/* ---- SEASON DIVIDER ---- */
+    .season-divider {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 2rem 0;
+    }
+
+    .season-divider::before {
+        content: '';
+        position: absolute;
+        left: 0; right: 0;
+        top: 50%;
+        height: 3px;
+        background: var(--primary-red);
+    }
+
+    .season-divider-label {
+        position: relative;
+        font-family: 'F1-Regular', sans-serif;
+        font-size: clamp(27px, 4vw, 48px);
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--text-light);
+        background: rgb(15,15,25);
+        padding: 0 1.5rem;
+    }
+
+    /* ---- RACE RESULT 2026 ---- */
 .result-card {
     background: rgb(15,15,25);
     border-radius: 16px;
     overflow: hidden;
-    margin-bottom: 96px;
 }
 
 .moments-card {
     background: rgb(15,15,25);
     border-radius: 16px;
     overflow: hidden;
-    margin-bottom: 96px;
 }
 
 .history-card {
     background: rgb(15,15,25);
     border-radius: 16px;
     overflow: hidden;
-    margin-bottom: 96px;
 }
 
 /* Estado de carga/vacío */
@@ -934,7 +1030,7 @@
         .rc-section-subtitle { font-size: 12px; }
 
         /* Facts */
-        .facts-grid { grid-template-columns: 1fr; }
+        .fact-card { flex: 0 0 100%; }
 
         /* Weather */
         .weather-grid { grid-template-columns: 1fr; }
@@ -999,6 +1095,10 @@
 
         <div class="race-content">
 
+            <!-- ═══════════════════════════════════ -->
+            <!--           CIRCUIT SECTION           -->
+            <!-- ═══════════════════════════════════ -->
+
             <!-- CIRCUIT OVERVIEW -->
             <section>
                 <p class="rc-section-title">Circuit Overview</p>
@@ -1011,18 +1111,7 @@
                             <img id="track-layout-img" src=""
                                 style="width:100%;height:auto;display:block;border-radius:8px">
                         </div>
-                        <!-- Lap record inline -->
-                        <div class="lap-record-banner" style="margin-top:0">
-                            <div>
-                                <p class="lr-label">Current Lap Record</p>
-                                <p class="lr-time" id="lr-time">-</p>
-                                <p class="lr-meta" id="lr-meta">-</p>
-                            </div>
-                            <div style="text-align:right">
-                                <p class="lr-label">Top Speed</p>
-                                <p class="lr-time" id="lr-topspeed">-</p>
-                            </div>
-                        </div>
+                        <p id="track-layout-name" class="track-layout-name"></p>
                     </div>
 
                     <!-- Stats grid -->
@@ -1051,6 +1140,14 @@
                         <div class="cs-stat">
                             <span class="cs-stat-val" id="cs-editions">-</span>
                             <span class="cs-stat-label">editions held</span>
+                        </div>
+                        <div class="cs-stat">
+                            <span class="cs-stat-val" id="lr-time">-</span>
+                            <span class="cs-stat-label">lap record</span>
+                        </div>
+                        <div class="cs-stat">
+                            <span class="cs-stat-val" id="lr-topspeed">-</span>
+                            <span class="cs-stat-label">top speed</span>
                         </div>
                     </div>
 
@@ -1092,17 +1189,48 @@
             <!-- FUN FACTS -->
             <section>
                 <p class="rc-section-title">Did You Know?</p>
-                <div class="facts-grid" id="facts-grid"></div>
+                <div class="facts-carousel" id="facts-carousel">
+                    <div class="facts-track" id="facts-track"></div>
+                    <div class="facts-nav">
+                        <div class="facts-dots" id="facts-dots"></div>
+                        <div class="facts-arrows">
+                            <button class="facts-arrow" id="facts-prev">&#8592;</button>
+                            <button class="facts-arrow" id="facts-next">&#8594;</button>
+                        </div>
+                    </div>
+                </div>
             </section>
 
-            <!-- 2026 WEEKEND -->
+            <!-- RACE HISTORY -->
             <section>
-                <p class="rc-section-title">2026 Weekend</p>
-                <p class="rc-section-subtitle">Race results</p>
+                <p class="rc-section-title">Race History</p>
+                <div class="history-card" id="history-card"></div>
+            </section>
+
+            <!-- ════════════════════════════════════ -->
+            <!--         2026 SEASON SECTION          -->
+            <!-- ════════════════════════════════════ -->
+
+            <!-- DIVIDER -->
+            <div class="season-divider">
+                <span class="season-divider-label">2026 Season</span>
+            </div>
+
+            <!-- RACE RESULTS -->
+            <section>
+                <p class="rc-section-title">Race Results</p>
                 <div class="result-card" id="result-card"></div>
-                <p class="rc-section-subtitle">Notable moments of the race</p>
+            </section>
+
+            <!-- NOTABLE MOMENTS -->
+            <section>
+                <p class="rc-section-title">Notable Moments</p>
                 <div class="moments-card" id="moments-card"></div>
-                <p class="rc-section-subtitle">Weekend weather</p>
+            </section>
+
+            <!-- WEATHER -->
+            <section>
+                <p class="rc-section-title">Weekend Weather</p>
                 <div class="weather-grid" id="weather-card">
                     <div class="weather-day-card" id="weather-friday">
                         <p class="weather-day-label">Friday</p>
@@ -1120,8 +1248,8 @@
                         <p class="weather-day-notes" id="weather-notes-saturday">-</p>
                         <span class="weather-day-rain" id="weather-rain-saturday">-</span>
                     </div>
-                    <div class="weather-day-card weather-day-card" id="weather-sunday">
-                        <p class="weather-day-label">Sunday <span class="race-badge">Race Day</span></p>
+                    <div class="weather-day-card" id="weather-sunday">
+                        <p class="weather-day-label">Sunday</p>
                         <div class="weather-day-icon" id="weather-icon-sunday">-</div>
                         <p class="weather-day-condition" id="weather-condition-sunday">-</p>
                         <p class="weather-day-temp" id="weather-temp-sunday">-</p>
@@ -1131,12 +1259,6 @@
                 </div>
             </section>
 
-            <!-- HISTORY TABLE -->
-            <section>
-                <p class="rc-section-title">Race History</p>
-                <div class="history-card" id="history-card"></div>
-            </section>
-        
         </div>
     </main>
 
