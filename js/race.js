@@ -39,6 +39,21 @@ async function loadCircuits(base = '.') {
     return res.json();
 }
 
+async function loadDrivers(base = '.') {
+    const res = await fetch(`${base}/data/drivers.json`);
+    if (!res.ok) throw new Error(`drivers.json — HTTP ${res.status}`);
+    const data = await res.json();
+    // Build a map: "First Last" -> teamId for 2026
+    const teamMap = {};
+    for (const d of data.drivers) {
+        const entry2026 = d.history?.find(h => h.year === 2026);
+        if (entry2026) {
+            teamMap[`${d.firstName} ${d.lastName}`] = entry2026.teamId;
+        }
+    }
+    return teamMap;
+}
+
 // ── HELPERS ───────────────────────────────────────────────────────
 function findNextRace(season) {
     const now = new Date();
@@ -75,9 +90,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!gpId) return;
 
     try {
-        const [season, circuits] = await Promise.all([
+        const [season, circuits, driverTeams] = await Promise.all([
             loadSeason('..'),
-            loadCircuits('..')
+            loadCircuits('..'),
+            loadDrivers('..')
         ]);
 
         const gp        = season[gpId];
@@ -90,7 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderHero(gp, circuit, circuitId);
         renderCircuitOverview(circuit, circuitId);
         renderFunFacts(circuit);
-        renderResult(gp);
+        renderResult(gp, driverTeams);
         renderNotableMoments(gp);
         renderWeather(gp);
         renderHistory(circuit);
@@ -171,8 +187,6 @@ function renderCircuitOverview(circuit, circuitId) {
 
     if (circuit.lapRecord) {
         document.getElementById('lr-time').textContent = circuit.lapRecord.time || '-';
-        document.getElementById('lr-meta').textContent =
-            `${circuit.lapRecord.driver || '-'} (${circuit.lapRecord.year || '-'})`;
     }
 
     if (circuit.topSpeed) {
@@ -189,6 +203,9 @@ function renderCircuitOverview(circuit, circuitId) {
         const trackEl = document.getElementById('char-tracktype');
         if (trackEl) trackEl.textContent = circuit.characteristics.trackType || '-';
     }
+
+    const nameEl = document.getElementById('track-layout-name');
+    if (nameEl && circuit.name) nameEl.textContent = circuit.name;
 }
 
 function setBar(id, value) {
@@ -208,22 +225,57 @@ function setBar(id, value) {
 
 // ── FUN FACTS ────────────────────────────────────────────────────
 function renderFunFacts(circuit) {
-    const grid = document.getElementById('facts-grid');
-    if (!grid || !circuit?.funFacts?.length) return;
-    grid.innerHTML = circuit.funFacts.map((fact, i) => `
+    const track   = document.getElementById('facts-track');
+    const dotsEl  = document.getElementById('facts-dots');
+    const prevBtn = document.getElementById('facts-prev');
+    const nextBtn = document.getElementById('facts-next');
+    if (!track || !circuit?.funFacts?.length) return;
+
+    const facts = circuit.funFacts;
+    const perPage = 2;
+    let current = 0;
+    const pages = Math.ceil(facts.length / perPage);
+
+    track.innerHTML = facts.map((fact, i) => `
         <div class="fact-card">
             <p class="fact-num">Fact ${String(i + 1).padStart(2, '0')}</p>
             <p class="fact-text">${fact}</p>
         </div>
     `).join('');
+
+    // dots
+    dotsEl.innerHTML = Array.from({ length: pages }, (_, i) =>
+        `<button class="facts-dot ${i === 0 ? 'active' : ''}" data-i="${i}"></button>`
+    ).join('');
+
+    function goTo(page) {
+        current = Math.max(0, Math.min(page, pages - 1));
+        const cardW = track.querySelector('.fact-card')?.offsetWidth || 0;
+        const gap = 14;
+        track.style.transform = `translateX(-${current * perPage * (cardW + gap)}px)`;
+        dotsEl.querySelectorAll('.facts-dot').forEach((d, i) =>
+            d.classList.toggle('active', i === current)
+        );
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current >= pages - 1;
+    }
+
+    prevBtn.addEventListener('click', () => goTo(current - 1));
+    nextBtn.addEventListener('click', () => goTo(current + 1));
+    dotsEl.addEventListener('click', e => {
+        const i = e.target.dataset.i;
+        if (i !== undefined) goTo(+i);
+    });
+
+    goTo(0);
 }
 
 // ── RESULT ───────────────────────────────────────────────────────
-function renderResult(gp) {
+function renderResult(gp, driverTeams = {}) {
     const container = document.getElementById('result-card');
     if (!container) return;
 
-    if (!gp.results?.length) {
+    if (!gp.results?.race?.length) {
         container.innerHTML = `
             <div class="result-pending">
                 <div class="result-pending-icon">🏁</div>
@@ -245,7 +297,8 @@ function renderResult(gp) {
                     </tr>
                 </thead>
                 <tbody>
-                    ${gp.results.map(res => {
+                    ${gp.results.race.map(res => {
+                        const team = driverTeams[res.driver] || '—';
                         const isDnf = res.time === 'DNF' || res.time === 'DNS';
                         const dim   = isDnf ? 'color:var(--text-dim)' : '';
                         return `
@@ -255,7 +308,7 @@ function renderResult(gp) {
                                     <span class="driver-fullname">${res.driver}</span>
                                     <span class="driver-lastname">${res.driver.split(' ').slice(1).join(' ').slice(0, 3).toUpperCase()}</span>
                                 </td>
-                                <td class="res-team" style="${dim}">${res.team}</td>
+                                <td class="res-team" style="${dim}">${team}</td>
                                 <td class="res-time" style="${dim}">${res.time}</td>
                                 <td class="res-pts" style="text-align:center;font-family:'F1-Regular';color:var(--text-light)">
                                     ${res.pts ?? 0}
