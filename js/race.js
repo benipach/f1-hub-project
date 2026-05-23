@@ -147,10 +147,7 @@ function renderHero(gp, circuit, circuitId) {
     if (gp.name) {
         const heroName = document.getElementById('hero-name');
         heroName.textContent = gp.name.replace(' Grand Prix', '').trim();
-        heroName.style.background = 'var(--gp-gradient)';
-        heroName.style.webkitBackgroundClip = 'text';
-        heroName.style.backgroundClip = 'text';
-        heroName.style.color = 'transparent';
+        // Se eliminaron las líneas que aplicaban el gradiente de color al texto
     }
 
     if (gp.sprint) {
@@ -232,7 +229,7 @@ function renderFunFacts(circuit) {
     if (!track || !circuit?.funFacts?.length) return;
 
     const facts = circuit.funFacts;
-    const perPage = 2;
+    const perPage = 1;
     let current = 0;
     const pages = Math.ceil(facts.length / perPage);
 
