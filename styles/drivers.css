@@ -74,7 +74,7 @@
     font-size: clamp(16px, 2.5vw, 48px);
     letter-spacing: 6px;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.5);
     line-height: 0.85;
 }
 
@@ -93,7 +93,7 @@
     flex-wrap: wrap;
     gap: 2.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    border-top: 1px solid rgba(255,255,255,0.2);
 }
 
 .drivers-hero-meta-item {
