@@ -186,7 +186,7 @@
 }
 
 .driver-number.champion {
-    background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+    background: linear-gradient(135deg, #B78E3F, #F5E0B5, #B78E3F);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -220,6 +220,10 @@
     width: 4px;
     background: var(--dc-color);
     z-index: 4;
+}
+
+.dc-stripe-left.champion{
+    background: linear-gradient(135deg, #B78E3F, #F5E0B5, #B78E3F);
 }
 
 /* Info arriba a la izquierda */
