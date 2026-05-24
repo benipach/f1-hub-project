@@ -15,7 +15,8 @@
         { "year": 2022, "teamId": "Williams", "points": 4, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 5, "position": 19 },
         { "year": 2023, "teamId": "Williams", "points": 27, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 4, "position": 13 },
         { "year": 2024, "teamId": "Williams", "points": 12, "poles": 0, "podiums": 0, "wins": 0, "starts": 23, "dnfs": 6, "position": 16 },
-        { "year": 2025, "teamId": "Williams", "points": 73, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 4, "position": 8 }
+        { "year": 2025, "teamId": "Williams", "points": 73, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 4, "position": 8 },
+        { "year": 2026, "teamId": "Williams" }
       ]
     },
     {
@@ -49,7 +50,8 @@
         { "year": 2022, "teamId": "Alpine", "points": 81, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 6, "position": 9 },
         { "year": 2023, "teamId": "Aston Martin", "points": 206, "poles": 0, "podiums": 8, "wins": 0, "starts": 22, "dnfs": 2, "position": 4 },
         { "year": 2024, "teamId": "Aston Martin", "points": 70, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 2, "position": 9 },
-        { "year": 2025, "teamId": "Aston Martin", "points": 56, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 3, "position": 10 }
+        { "year": 2025, "teamId": "Aston Martin", "points": 56, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 3, "position": 10 },
+        { "year": 2026, "teamId": "Aston Martin" }
       ]
     },
     {
@@ -62,7 +64,8 @@
       "image": "antonelli.png",
       "coverImage": "antonelli-2.png",
       "history": [
-        { "year": 2025, "teamId": "Mercedes", "points": 150, "poles": 1, "podiums": 3, "wins": 0, "starts": 24, "dnfs": 4, "position": 7 }
+        { "year": 2025, "teamId": "Mercedes", "points": 150, "poles": 0, "podiums": 3, "wins": 0, "starts": 24, "dnfs": 4, "position": 7 },
+        { "year": 2026, "teamId": "Mercedes" }
       ]
     },
     {
@@ -76,7 +79,8 @@
       "coverImage": "bearman-2.png",
       "history": [
         { "year": 2024, "teamId": "Ferrari / Haas", "points": 7, "poles": 0, "podiums": 0, "wins": 0, "starts": 3, "dnfs": 0, "position": 18 },
-        { "year": 2025, "teamId": "Haas", "points": 41, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 3, "position": 13 }
+        { "year": 2025, "teamId": "Haas", "points": 41, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 3, "position": 13 },
+        { "year": 2026, "teamId": "Haas" }
       ]
     },
     {
@@ -89,7 +93,8 @@
       "image": "bortoleto.png",
       "coverImage": "bortoleto-2.png",
       "history": [
-        { "year": 2025, "teamId": "Sauber", "points": 19, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 5, "position": 19 }
+        { "year": 2025, "teamId": "Sauber", "points": 19, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 5, "position": 19 },
+        { "year": 2026, "teamId": "Audi" }
       ]
     },
     {
@@ -113,7 +118,8 @@
         { "year": 2021, "teamId": "Mercedes", "points": 226, "poles": 4, "podiums": 11, "wins": 1, "starts": 22, "dnfs": 4, "position": 3 },
         { "year": 2022, "teamId": "Alfa Romeo", "points": 49, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 6, "position": 10 },
         { "year": 2023, "teamId": "Alfa Romeo", "points": 10, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 3, "position": 15 },
-        { "year": 2024, "teamId": "Sauber", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 1, "position": 22 }
+        { "year": 2024, "teamId": "Sauber", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 1, "position": 22 },
+        { "year": 2026, "teamId": "Williams" }
       ]
     },
     {
@@ -127,7 +133,8 @@
       "coverImage": "colapinto-2.png",
       "history": [
         { "year": 2024, "teamId": "Williams", "points": 5, "poles": 0, "podiums": 0, "wins": 0, "starts": 9, "dnfs": 2, "position": 19 },
-        { "year": 2025, "teamId": "Alpine", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 0, "position": 20 }
+        { "year": 2025, "teamId": "Alpine", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 0, "position": 20 },
+        { "year": 2026, "teamId": "Alpine" }
       ]
     },
     {
@@ -148,7 +155,8 @@
         { "year": 2022, "teamId": "AlphaTauri", "points": 23, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 3, "position": 14 },
         { "year": 2023, "teamId": "Alpine", "points": 62, "poles": 0, "podiums": 1, "wins": 0, "starts": 22, "dnfs": 3, "position": 11 },
         { "year": 2024, "teamId": "Alpine", "points": 42, "poles": 0, "podiums": 1, "wins": 0, "starts": 23, "dnfs": 3, "position": 10 },
-        { "year": 2025, "teamId": "Alpine", "points": 22, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 3, "position": 18 }
+        { "year": 2025, "teamId": "Alpine", "points": 22, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 3, "position": 18 },
+        { "year": 2026, "teamId": "Alpine" }
       ]
     },
     {
@@ -162,7 +170,8 @@
       "coverImage": "hadjar-2.png",
       "history": [
         { "year": 2024, "teamId": "Red Bull", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 0, "dnfs": 0, "position": 0 },
-        { "year": 2025, "teamId": "Racing Bulls", "points": 51, "poles": 0, "podiums": 1, "wins": 0, "starts": 24, "dnfs": 2, "position": 12 }
+        { "year": 2025, "teamId": "Racing Bulls", "points": 51, "poles": 0, "podiums": 1, "wins": 0, "starts": 24, "dnfs": 2, "position": 12 },
+        { "year": 2026, "teamId": "Red Bull" }
       ]
     },
     {
@@ -193,7 +202,8 @@
         { "year": 2022, "teamId": "Mercedes", "points": 240, "poles": 0, "podiums": 9, "wins": 0, "starts": 22, "dnfs": 2, "position": 6 },
         { "year": 2023, "teamId": "Mercedes", "points": 234, "poles": 1, "podiums": 6, "wins": 0, "starts": 22, "dnfs": 1, "position": 3 },
         { "year": 2024, "teamId": "Mercedes", "points": 190, "poles": 0, "podiums": 4, "wins": 2, "starts": 24, "dnfs": 2, "position": 7 },
-        { "year": 2025, "teamId": "Ferrari", "points": 156, "poles": 0, "podiums": 1, "wins": 0, "starts": 24, "dnfs": 3, "position": 6 }
+        { "year": 2025, "teamId": "Ferrari", "points": 156, "poles": 0, "podiums": 1, "wins": 0, "starts": 24, "dnfs": 3, "position": 6 },
+        { "year": 2026, "teamId": "Ferrari" }
       ]
     },
     {
@@ -219,7 +229,8 @@
         { "year": 2022, "teamId": "Aston Martin", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 2, "dnfs": 0, "position": 22 },
         { "year": 2023, "teamId": "Haas", "points": 9, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 1, "position": 16 },
         { "year": 2024, "teamId": "Haas", "points": 41, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 2, "position": 11 },
-        { "year": 2025, "teamId": "Sauber", "points": 51, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 2, "position": 11 }
+        { "year": 2025, "teamId": "Sauber", "points": 51, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 2, "position": 11 },
+        { "year": 2026, "teamId": "Audi" }
       ]
     },
     {
@@ -234,7 +245,8 @@
       "history": [
         { "year": 2023, "teamId": "AlphaTauri", "points": 2, "poles": 0, "podiums": 0, "wins": 0, "starts": 5, "dnfs": 0, "position": 20 },
         { "year": 2024, "teamId": "Racing Bulls", "points": 9, "poles": 0, "podiums": 0, "wins": 0, "starts": 6, "dnfs": 0, "position": 16 },
-        { "year": 2025, "teamId": "Red Bull", "points": 150, "poles": 0, "podiums": 1, "wins": 0, "starts": 24, "dnfs": 4, "position": 7 }
+        { "year": 2025, "teamId": "Red Bull", "points": 150, "poles": 0, "podiums": 1, "wins": 0, "starts": 24, "dnfs": 4, "position": 7 },
+        { "year": 2026, "teamId": "Racing Bulls" }
       ]
     },
     {
@@ -254,7 +266,8 @@
         { "year": 2022, "teamId": "Ferrari", "points": 308, "poles": 9, "podiums": 11, "wins": 3, "starts": 22, "dnfs": 3, "position": 2 },
         { "year": 2023, "teamId": "Ferrari", "points": 206, "poles": 5, "podiums": 6, "wins": 0, "starts": 21, "dnfs": 3, "position": 5 },
         { "year": 2024, "teamId": "Ferrari", "points": 345, "poles": 3, "podiums": 12, "wins": 3, "starts": 24, "dnfs": 1, "position": 3 },
-        { "year": 2025, "teamId": "Ferrari", "points": 289, "poles": 0, "podiums": 10, "wins": 4, "starts": 24, "dnfs": 3, "position": 2 }
+        { "year": 2025, "teamId": "Ferrari", "points": 289, "poles": 0, "podiums": 10, "wins": 4, "starts": 24, "dnfs": 3, "position": 2 },
+        { "year": 2026, "teamId": "Ferrari" }
       ]
     },
     {
@@ -267,6 +280,7 @@
       "image": "lindblad.png",
       "coverImage": "lindblad-2.png",
       "history": [
+        { "year": 2026, "teamId": "Racing Bulls" }
       ]
     },
     {
@@ -285,7 +299,8 @@
         { "year": 2022, "teamId": "McLaren", "points": 122, "poles": 0, "podiums": 1, "wins": 0, "starts": 22, "dnfs": 2, "position": 7 },
         { "year": 2023, "teamId": "McLaren", "points": 205, "poles": 0, "podiums": 7, "wins": 0, "starts": 22, "dnfs": 1, "position": 6 },
         { "year": 2024, "teamId": "McLaren", "points": 331, "poles": 8, "podiums": 12, "wins": 3, "starts": 24, "dnfs": 1, "position": 2 },
-        { "year": 2025, "teamId": "McLaren", "points": 348, "poles": 7, "podiums": 18, "wins": 10, "starts": 24, "dnfs": 0, "position": 1 }
+        { "year": 2025, "teamId": "McLaren", "points": 348, "poles": 7, "podiums": 18, "wins": 10, "starts": 24, "dnfs": 0, "position": 1 },
+        { "year": 2026, "teamId": "McLaren" }
       ]
     },
     {
@@ -306,7 +321,8 @@
         { "year": 2022, "teamId": "Alpine", "points": 92, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 2, "position": 8 },
         { "year": 2023, "teamId": "Alpine", "points": 58, "poles": 0, "podiums": 1, "wins": 0, "starts": 22, "dnfs": 7, "position": 12 },
         { "year": 2024, "teamId": "Alpine", "points": 23, "poles": 0, "podiums": 1, "wins": 0, "starts": 24, "dnfs": 2, "position": 14 },
-        { "year": 2025, "teamId": "Haas", "points": 38, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 1, "position": 15 }
+        { "year": 2025, "teamId": "Haas", "points": 38, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 1, "position": 15 },
+        { "year": 2026, "teamId": "Haas" }
       ]
     },
     {
@@ -333,7 +349,7 @@
         { "year": 2022, "teamId": "Red Bull", "points": 305, "poles": 1, "podiums": 11, "wins": 2, "starts": 22, "dnfs": 3, "position": 3 },
         { "year": 2023, "teamId": "Red Bull", "points": 285, "poles": 2, "podiums": 9, "wins": 2, "starts": 22, "dnfs": 2, "position": 2 },
         { "year": 2024, "teamId": "Red Bull", "points": 152, "poles": 0, "podiums": 4, "wins": 0, "starts": 24, "dnfs": 3, "position": 8 },
-        { "year": 2025, "teamId": "Red Bull", "points": 150, "poles": 0, "podiums": 2, "wins": 0, "starts": 24, "dnfs": 3, "position": 8 }
+        { "year": 2026, "teamId": "Cadillac" }
       ]
     },
     {
@@ -348,7 +364,8 @@
       "history": [
         { "year": 2023, "teamId": "McLaren", "points": 97, "poles": 0, "podiums": 2, "wins": 0, "starts": 22, "dnfs": 3, "position": 9 },
         { "year": 2024, "teamId": "McLaren", "points": 292, "poles": 0, "podiums": 8, "wins": 2, "starts": 24, "dnfs": 0, "position": 4 },
-        { "year": 2025, "teamId": "McLaren", "points": 410, "poles": 6, "podiums": 16, "wins": 7, "starts": 24, "dnfs": 1, "position": 3 }
+        { "year": 2025, "teamId": "McLaren", "points": 410, "poles": 6, "podiums": 16, "wins": 7, "starts": 24, "dnfs": 1, "position": 3 },
+        { "year": 2026, "teamId": "McLaren" }
       ]
     },
     {
@@ -366,8 +383,9 @@
         { "year": 2021, "teamId": "Williams", "points": 16, "poles": 0, "podiums": 1, "wins": 0, "fastestLaps": 0, "starts": 22, "dnfs": 6, "position": 15 },
         { "year": 2022, "teamId": "Mercedes", "points": 275, "poles": 1, "podiums": 8, "wins": 1, "fastestLaps": 4, "starts": 22, "dnfs": 1, "position": 4 },
         { "year": 2023, "teamId": "Mercedes", "points": 175, "poles": 0, "podiums": 2, "wins": 0, "fastestLaps": 1, "starts": 22, "dnfs": 3, "position": 8 },
-        { "year": 2024, "teamId": "Mercedes", "points": 245, "poles": 3, "podiums": 4, "wins": 2, "fastestLaps": 2, "starts": 24, "dnfs": 3, "position": 6 },
-        { "year": 2025, "teamId": "Mercedes", "points": 319, "poles": 2, "podiums": 9, "wins": 2, "fastestLaps": 3, "starts": 24, "dnfs": 0, "position": 4 }
+        { "year": 2024, "teamId": "Mercedes", "points": 245, "poles": 4, "podiums": 4, "wins": 2, "fastestLaps": 2, "starts": 24, "dnfs": 3, "position": 6 },
+        { "year": 2025, "teamId": "Mercedes", "points": 319, "poles": 2, "podiums": 9, "wins": 2, "fastestLaps": 3, "starts": 24, "dnfs": 0, "position": 4 },
+        { "year": 2026, "teamId": "Mercedes" }
       ]
     },
     {
@@ -390,7 +408,8 @@
         { "year": 2022, "teamId": "Ferrari", "points": 246, "poles": 3, "podiums": 9, "wins": 1, "starts": 22, "dnfs": 6, "position": 5 },
         { "year": 2023, "teamId": "Ferrari", "points": 200, "poles": 2, "podiums": 3, "wins": 1, "starts": 21, "dnfs": 3, "position": 7 },
         { "year": 2024, "teamId": "Ferrari", "points": 290, "poles": 1, "podiums": 7, "wins": 2, "starts": 23, "dnfs": 2, "position": 5 },
-        { "year": 2025, "teamId": "Williams", "points": 66, "poles": 0, "podiums": 1, "wins": 0, "starts": 24, "dnfs": 2, "position": 9 }
+        { "year": 2025, "teamId": "Williams", "points": 66, "poles": 0, "podiums": 1, "wins": 0, "starts": 24, "dnfs": 2, "position": 9 },
+        { "year": 2026, "teamId": "Williams" }
       ]
     },
     {
@@ -411,7 +430,8 @@
         { "year": 2022, "teamId": "Aston Martin", "points": 18, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 2, "position": 15 },
         { "year": 2023, "teamId": "Aston Martin", "points": 74, "poles": 0, "podiums": 0, "wins": 0, "starts": 21, "dnfs": 3, "position": 10 },
         { "year": 2024, "teamId": "Aston Martin", "points": 24, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 2, "position": 15 },
-        { "year": 2025, "teamId": "Aston Martin", "points": 48, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 1, "position": 14 }
+        { "year": 2025, "teamId": "Aston Martin", "points": 48, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 1, "position": 14 },
+        { "year": 2026, "teamId": "Aston Martin" }
       ]
     },
     {
@@ -434,7 +454,8 @@
         { "year": 2022, "teamId": "Red Bull", "points": 454, "poles": 7, "podiums": 17, "wins": 15, "starts": 22, "dnfs": 2, "position": 1 },
         { "year": 2023, "teamId": "Red Bull", "points": 575, "poles": 12, "podiums": 21, "wins": 19, "starts": 22, "dnfs": 0, "position": 1 },
         { "year": 2024, "teamId": "Red Bull", "points": 437, "poles": 8, "podiums": 15, "wins": 9, "starts": 24, "dnfs": 1, "position": 1 },
-        { "year": 2025, "teamId": "Red Bull", "points": 421, "poles": 5, "podiums": 15, "wins": 6, "starts": 24, "dnfs": 2, "position": 2 }
+        { "year": 2025, "teamId": "Red Bull", "points": 421, "poles": 5, "podiums": 15, "wins": 6, "starts": 24, "dnfs": 2, "position": 2 },
+        { "year": 2026, "teamId": "Red Bull" }
       ]
     }
   ]
