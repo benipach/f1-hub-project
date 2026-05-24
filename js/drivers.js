@@ -1,35 +1,34 @@
-// ── TEMPORADA ACTIVA — cambiá esto el año que viene ──────────────
 const CURRENT_SEASON_FILE = '../data/season2026.json';
 const CURRENT_SEASON_YEAR = 2026;
 
-// ── COLORES POR EQUIPO ────────────────────────────────────────────
+// ── EQUIPO → COLORES OFICIALES UNIFICADOS AL 90% DE INTENSIDAD (CON ALIAS) ──
+
 const TEAM_COLORS = {
-    'Mercedes':       '#00d2be',
-    'Ferrari':        '#ff1b2e',
-    'McLaren':        '#ff8800',
-    'Red Bull Racing':'#2723ad',
-    'Aston Martin':   '#006f62',
-    'Alpine':         '#0093cc',
-    'Williams':       '#00a0dc',
-    'Racing Bulls':   '#6692ff',
-    'Haas F1 Team':   '#b6babd',
-    'Audi':           '#f51941',
-    'Cadillac':       '#ffd139',
+    'Mercedes':        'rgba(43, 255, 219, 0.9)',  'mercedes':        'rgba(43, 255, 219, 0.9)',
+    'Ferrari':         'rgba(255, 0, 25, 0.9)',   'ferrari':         'rgba(255, 0, 25, 0.9)',
+    'McLaren':         'rgba(255, 127, 0, 0.9)',  'mclaren':         'rgba(255, 127, 0, 0.9)',
+    'Red Bull Racing': 'rgba(34, 71, 122, 0.9)',  'Red Bull': 'rgba(34, 71, 122, 0.9)', 'red-bull': 'rgba(34, 71, 122, 0.9)', 'red-bull-racing': 'rgba(34, 71, 122, 0.9)',
+    'Aston Martin':    'rgba(34, 153, 113, 0.9)', 'aston-martin':    'rgba(34, 153, 113, 0.9)',
+    'Alpine':          'rgba(0, 178, 255, 0.9)',  'alpine':          'rgba(0, 178, 255, 0.9)',
+    'Williams':        'rgba(28, 122, 255, 0.9)', 'williams':        'rgba(28, 122, 255, 0.9)',
+    'Racing Bulls':    'rgba(102, 125, 255, 0.9)','racing-bulls':    'rgba(102, 125, 255, 0.9)',
+    'Haas F1 Team':    'rgba(222, 225, 226, 0.9)', 'Haas': 'rgba(222, 225, 226, 0.9)', 'haas': 'rgba(222, 225, 226, 0.9)',
+    'Audi':            'rgba(255, 46, 46, 0.9)',   'audi':            'rgba(255, 46, 46, 0.9)',
+    'Cadillac':        'rgba(170, 170, 173, 0.9)','cadillac':        'rgba(170, 170, 173, 0.9)',
 };
 
-// ── EQUIPO → CSS VAR ──────────────────────────────────────────────
 const TEAM_CSS_VARS = {
-    'Mercedes':       '--f1-mercedes',
-    'Ferrari':        '--f1-ferrari',
-    'McLaren':        '--f1-mclaren',
-    'Red Bull Racing':'--f1-red-bull',
-    'Aston Martin':   '--f1-aston-martin',
-    'Alpine':         '--f1-alpine',
-    'Williams':       '--f1-williams',
-    'Racing Bulls':   '--f1-racing-bulls',
-    'Haas F1 Team':   '--f1-haas',
-    'Audi':           '--f1-audi',
-    'Cadillac':       '--f1-cadillac',
+    'Mercedes':       '--f1-mercedes',    'mercedes':       '--f1-mercedes',
+    'Ferrari':        '--f1-ferrari',     'ferrari':        '--f1-ferrari',
+    'McLaren':        '--f1-mclaren',     'mclaren':        '--f1-mclaren',
+    'Red Bull Racing':'--f1-red-bull',    'red-bull':       '--f1-red-bull', 'red-bull-racing':'--f1-red-bull', 'Red Bull':'--f1-red-bull',
+    'Aston Martin':   '--f1-aston-martin','aston-martin':   '--f1-aston-martin',
+    'Alpine':         '--f1-alpine',      'alpine':         '--f1-alpine',
+    'Williams':       '--f1-williams',    'williams':       '--f1-williams',
+    'Racing Bulls':   '--f1-racing-bulls','racing-bulls':   '--f1-racing-bulls',
+    'Haas F1 Team':   '--f1-haas',        'Haas': '--f1-haas', 'haas': '--f1-haas',
+    'Audi':           '--f1-audi',        'audi':           '--f1-audi',
+    'Cadillac':       '--f1-cadillac',    'cadillac':       '--f1-cadillac',
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -46,7 +45,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!driverInfo) { console.error('Piloto no encontrado:', driverId); return; }
 
         const fullName = `${driverInfo.firstName} ${driverInfo.lastName}`;
-        const history  = driverInfo.history || [];
+        const history    = driverInfo.history || [];
+        const entry2026  = history.find(h => h.year === CURRENT_SEASON_YEAR);
+        const currentTeam = entry2026?.teamId || '—';
 
         // ── STATS 2026 desde season2026.json ─────────────────────
         const races = Object.values(season)
@@ -56,39 +57,60 @@ document.addEventListener('DOMContentLoaded', async () => {
             })
             .sort((a, b) => a.round - b.round);
 
-        const raceLabels  = [];
-        const racePoints  = [];
-        const raceWins    = []; // índices donde ganó
+        const raceLabels    = [];
+        const raceFullNames = []; 
+        const racePoints    = [];
+        const raceWins      = []; 
+        const racePositions = []; 
+        
         let total2026 = 0, wins2026 = 0, podiums2026 = 0;
-        let dnfs2026 = 0, starts2026 = 0, currentTeam = '—';
+        let dnfs2026 = 0, starts2026 = 0, poles2026 = 0, fastest2026 = 0;
 
         races.forEach((gp, i) => {
             raceLabels.push(
                 gp.name.replace(' Grand Prix', '').replace('Grand Prix', '').trim().substring(0, 3).toUpperCase()
             );
+            raceFullNames.push(gp.name);
 
-            if (!gp.results?.length) { racePoints.push(null); return; }
+            if (!gp.results?.race?.length) { 
+                racePoints.push(null); 
+                racePositions.push(null);
+                return; 
+            }
 
-            const result = gp.results.find(r => r.driver === fullName);
-            if (!result) { racePoints.push(null); return; }
+            const result = gp.results.race.find(r => r.driver === fullName);
+            if (!result) { 
+                racePoints.push(null); 
+                racePositions.push(null);
+                return; 
+            }
 
             const pts   = result.pts || 0;
-            const pos   = parseInt(result.pos);
-            const isDNF = result.time === 'DNF' || result.time === 'DNS';
+            const pos   = result.pos;
+            const isDNF = result.time === 'DNF' || result.time === 'DNS' || pos === 'DNF' || pos === 'DNS';
+
+            let posDisplay = pos;
+            if (isDNF) posDisplay = 'DNF';
+            else if (!isNaN(parseInt(pos))) posDisplay = `P${pos}`;
 
             racePoints.push(pts);
-            total2026   += pts;
-            currentTeam  = result.team;
+            racePositions.push(posDisplay);
+            total2026 += pts;
+            
             if (!isDNF) starts2026++;
             if (isDNF)  dnfs2026++;
-            if (pos === 1) { wins2026++; raceWins.push(i); }
-            if (!isNaN(pos) && pos <= 3) podiums2026++;
+            if (parseInt(pos) === 1) { wins2026++; raceWins.push(i); }
+            if (!isNaN(parseInt(pos)) && parseInt(pos) <= 3) podiums2026++;
+            if (result.fastestLap) fastest2026++;
+
+            const qualy = gp.results?.qualifying;
+            if (qualy?.length && qualy[0].driver === fullName) poles2026++;
         });
 
         // ── POSICIÓN EN EL CAMPEONATO 2026 ───────────────────────
         const driverPoints = {};
         Object.values(season).forEach(gp => {
-            (gp.results || []).forEach(r => {
+            (gp.results?.race || []).forEach(r => {
                 driverPoints[r.driver] = (driverPoints[r.driver] || 0) + (r.pts || 0);
             });
         });
@@ -105,6 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             : CURRENT_SEASON_YEAR;
 
         history.forEach(s => {
+            if (s.year === CURRENT_SEASON_YEAR) return;
             totalWins        += s.wins        || 0;
             totalPodiums     += s.podiums     || 0;
             totalPoles       += s.poles       || 0;
@@ -114,6 +137,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (s.position === 1) worldTitles++;
         });
 
+        totalPoles += poles2026;
+
         // ── EDAD ──────────────────────────────────────────────────
         const dob   = new Date(driverInfo.dateOfBirth);
         const today = new Date();
@@ -122,15 +147,8 @@ document.addEventListener('DOMContentLoaded', async () => {
            (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())) age--;
 
         // ── COLOR DEL EQUIPO ──────────────────────────────────────
-        const teamColor  = TEAM_COLORS[currentTeam]   || '#e10600';
+        const teamColor  = TEAM_COLORS[currentTeam]   || 'rgba(225, 6, 0, 0.9)';
         const teamCssVar = TEAM_CSS_VARS[currentTeam] || '--primary-red';
-
-        const teamBadge = document.getElementById('hero-team-badge');
-        if (teamBadge) {
-            teamBadge.style.background = teamColor + '26';
-            teamBadge.style.color      = teamColor;
-            teamBadge.style.border     = `1px solid ${teamColor}66`;
-        }
 
         const driverContent = document.querySelector('.driver-content');
         if (driverContent) driverContent.style.setProperty('--team-color', `var(${teamCssVar})`);
@@ -141,7 +159,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('hero-number').textContent            = driverInfo.number;
         document.getElementById('driver-hero-first-name').textContent = driverInfo.firstName;
         document.getElementById('driver-hero-last-name').textContent  = driverInfo.lastName;
-        document.getElementById('hero-team-name').textContent         = currentTeam;
 
         document.getElementById('meta-nationality').textContent = driverInfo.nationality;
         document.getElementById('meta-dob').textContent         = driverInfo.dateOfBirth;
@@ -158,8 +175,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('stat-races').textContent       = starts2026;
         document.getElementById('stat-podiums').textContent     = podiums2026;
         document.getElementById('stat-podium-rate').textContent = `${podiumRate}%`;
-        document.getElementById('stat-poles').textContent       = '—';
-        document.getElementById('stat-fastest').textContent     = '—';
+        document.getElementById('stat-poles').textContent       = poles2026;
+        document.getElementById('stat-fastest').textContent     = fastest2026;
         document.getElementById('stat-dnfs').textContent        = dnfs2026;
 
         document.getElementById('info-team').textContent    = currentTeam;
@@ -177,15 +194,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         // ── GRÁFICOS ──────────────────────────────────────────────
         await document.fonts.ready;
 
-        // Estilos globales de Chart.js — igual que championship.js
         const dimColor = getComputedStyle(document.documentElement)
             .getPropertyValue('--text-dim').trim() || '#888888';
         Chart.defaults.font.family = "'F1-Regular', sans-serif";
         Chart.defaults.color       = dimColor;
         Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
 
-        initRaceChart(raceLabels, racePoints, raceWins, teamColor);
-        initCareerChart(history, total2026, teamColor);
+        initRaceChart(raceLabels, racePoints, raceWins, teamColor, racePositions, raceFullNames);
+        initCareerChart(history, total2026, currentTeam, champPos);
 
     } catch (err) {
         console.error('Error cargando datos del piloto:', err);
@@ -193,7 +209,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // ── GRÁFICO 1: Puntos por carrera (temporada activa) ─────────────
-function initRaceChart(labels, points, winIndexes, teamColor) {
+// ── RESPONSIVE ASPECT RATIO ──────────────────────────────────────
+function watchChartAspect(chart, breakpoint, normalRatio, mobileRatio) {
+    const observer = new ResizeObserver(entries => {
+        const width = entries[0].contentRect.width;
+        const newRatio = width <= breakpoint ? mobileRatio : normalRatio;
+        if (chart.options.aspectRatio !== newRatio) {
+            chart.options.aspectRatio = newRatio;
+            chart.resize();
+        }
+    });
+    observer.observe(chart.canvas.parentElement);
+}
+
+function initRaceChart(labels, points, winIndexes, teamColor, positions, fullNames) {
     const ctx = document.getElementById('raceChart')?.getContext('2d');
     if (!ctx) return;
 
@@ -209,40 +238,73 @@ function initRaceChart(labels, points, winIndexes, teamColor) {
 
     const winSet = new Set(winIndexes);
 
-    const trophyPlugin = {
-        id: 'raceTrophyPlugin',
+    const raceChartPlugin = {
+        id: 'raceChartPlugin',
         afterDatasetDraw(chart) {
             const { ctx: c, data } = chart;
-            // Solo aplica al dataset de barras (index 0)
-            const meta = chart.getDatasetMeta(0);
+            const meta = chart.getDatasetMeta(0); 
+            const zeroY = chart.scales.y.getPixelForValue(0);
+
             c.save();
-            c.font = '12px serif';
-            c.textAlign = 'center';
             data.labels.forEach((_, i) => {
-                if (!winSet.has(i)) return;
                 const bar = meta.data[i];
                 if (!bar) return;
-                c.fillText('🏆', bar.x, bar.y - 6);
+
+                const bw = bar.width;
+                const bx = bar.x;
+                const by = bar.y;
+                const ptsValue = completedPoints[i];
+                const posStr = positions[i];
+
+                if (winSet.has(i)) {
+                    c.font = '12px serif';
+                    c.textAlign = 'center';
+                    c.fillStyle = '#ffffff';
+                    c.fillText('🏆', bx, by - 6);
+                }
+
+                if (posStr !== null && posStr !== undefined) {
+                    const fontSize = Math.min(Math.floor(bw * 0.8), 32); 
+                    c.font = `${fontSize}px 'F1-Black', sans-serif`;
+                    c.fillStyle = ptsValue > 0 ? '#ffffff' : '#888888';
+
+                    const textWidth = c.measureText(posStr).width;
+                    let textY = by + 10;
+                    const bottomLimit = zeroY - 10; 
+
+                    if (textY + textWidth > bottomLimit) {
+                        textY = bottomLimit - textWidth;
+                    }
+
+                    c.save();
+                    c.translate(bx, textY);
+                    c.rotate(-Math.PI / 2);
+                    c.textAlign = 'right';
+                    c.textBaseline = 'middle';
+                    c.fillText(posStr, 0, 0);
+                    c.restore();
+                }
             });
             c.restore();
         }
     };
 
-    new Chart(ctx, {
+    const raceChart = new Chart(ctx, {
         type: 'bar',
-        plugins: [trophyPlugin],
+        plugins: [raceChartPlugin],
         data: {
             labels,
             datasets: [
                 {
                     label: 'Points',
                     data: completedPoints,
-                    backgroundColor: isCompleted.map(c => c ? teamColor + '99' : 'transparent'),
-                    borderColor:     isCompleted.map(c => c ? teamColor : 'transparent'),
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    hoverBackgroundColor: teamColor,
-                    order: 2
+                    backgroundColor: isCompleted.map(c => c ? teamColor : 'transparent'),
+                    hoverBackgroundColor: isCompleted.map(c => c ? teamColor.replace('0.9)', '1)') : 'transparent'),
+                    borderWidth: 0,           
+                    borderRadius: 0,          
+                    order: 2,
+                    barPercentage: 0.95,
+                    categoryPercentage: 0.95
                 },
                 {
                     label: 'Cumulative',
@@ -250,11 +312,11 @@ function initRaceChart(labels, points, winIndexes, teamColor) {
                     type: 'line',
                     borderColor: teamColor,
                     backgroundColor: 'transparent',
-                    borderWidth: 2,
-                    pointRadius: 4,
+                    borderWidth: 3,           
+                    pointRadius: 3,           
                     pointBackgroundColor: teamColor,
-                    pointHoverRadius: 7,
-                    tension: 0.3,
+                    pointHoverRadius: 6,      
+                    tension: 0,               
                     spanGaps: false,
                     order: 1
                 }
@@ -273,82 +335,167 @@ function initRaceChart(labels, points, winIndexes, teamColor) {
                     titleColor: '#ffffff',
                     bodyColor: 'rgba(255,255,255,0.5)',
                     padding: 12,
+                    displayColors: false,
+                    itemSort: (a, b) => a.datasetIndex - b.datasetIndex,
                     callbacks: {
+                        title: (context) => {
+                            return fullNames[context[0].dataIndex];
+                        },
                         label: ctx => ctx.dataset.label === 'Points'
-                            ? ` ${ctx.parsed.y} pts this race`
-                            : ` ${ctx.parsed.y} pts total`
+                            ? `Race: ${ctx.parsed.y} points`
+                            : `Total: ${ctx.parsed.y} points`
                     }
                 }
             },
             scales: {
-                x: { ticks: { maxRotation: 45 } },
+                x: { grid: { drawOnChartArea: false }, ticks: { maxRotation: 45 } },
                 y: { beginAtZero: true }
             }
         }
     });
+    watchChartAspect(raceChart, 500, 2.25, 1.2);
 }
 
 // ── GRÁFICO 2: Puntos por temporada (carrera completa) ────────────
-function initCareerChart(history, points2026, teamColor) {
+async function initCareerChart(history, points2026, currentTeam, currentChampPos) {
     const ctx = document.getElementById('pointsChart')?.getContext('2d');
     if (!ctx) return;
 
-    // Temporadas históricas de drivers.json
-    const historicalSeasons = [...history].sort((a, b) => a.year - b.year);
+    const TEAM_LOGO_MAP = {
+        'Mercedes': 'mercedes-logo',    'mercedes': 'mercedes-logo',
+        'Ferrari': 'ferrari-logo',      'ferrari': 'ferrari-logo',
+        'McLaren': 'mclaren-logo',      'mclaren': 'mclaren-logo',
+        'Red Bull Racing': 'redbull-logo', 'Red Bull': 'redbull-logo', 'red-bull': 'redbull-logo', 'red-bull-racing': 'redbull-logo',
+        'Aston Martin': 'astonmartin-logo', 'aston-martin': 'astonmartin-logo',
+        'Alpine': 'alpine-logo',        'alpine': 'alpine-logo',
+        'Williams': 'williams-logo',    'williams': 'williams-logo',
+        'Racing Bulls': 'racingbulls-logo', 'racing-bulls': 'racingbulls-logo',
+        'Haas F1 Team': 'haas-logo',    'Haas': 'haas-logo',    'haas': 'haas-logo',
+        'Audi': 'audi-logo',            'audi': 'audi-logo',
+        'Cadillac': 'cadillac-logo',    'cadillac': 'cadillac-logo',
+    };
 
-    // Añadir 2026 al final
-    const seasons = [
-        ...historicalSeasons.map(s => String(s.year)),
-        String(CURRENT_SEASON_YEAR)
+    // ── ACÁ ESTÁ LA MAGIA QUE EVITA DUPLICADOS A FUTURO ──
+    // Filtramos explícitamente el CURRENT_SEASON_YEAR del array del JSON (history)
+    const historicalSeasons = history
+        .filter(s => s.year !== CURRENT_SEASON_YEAR) 
+        .sort((a, b) => a.year - b.year);
+
+    const allSeasons = [
+        ...historicalSeasons.map(s => ({
+            year:     String(s.year),
+            points:   s.points  || 0,
+            teamId:   s.teamId  || '',
+            isWDC:    s.position === 1,
+            position: s.position
+        })),
+        {
+            year:     String(CURRENT_SEASON_YEAR),
+            points:   points2026,
+            teamId:   currentTeam,
+            isWDC:    false, 
+            position: currentChampPos 
+        }
     ];
-    const points = [
-        ...historicalSeasons.map(s => s.points || 0),
-        points2026
-    ];
 
-    // Años WDC — solo de historial (position === 1); 2026 aún no se sabe
-    const wdcYears = new Set(
-        historicalSeasons
-            .filter(s => s.position === 1)
-            .map(s => String(s.year))
-    );
+    const seasons = allSeasons.map(s => s.year);
+    const points  = allSeasons.map(s => s.points);
+    const colors  = allSeasons.map(s => TEAM_COLORS[s.teamId] || 'rgba(136, 136, 136, 0.9)');
 
-    const trophyPlugin = {
-        id: 'careerTrophyPlugin',
+    const logoCache = {};
+    await Promise.all(allSeasons.map(s => {
+        const name = TEAM_LOGO_MAP[s.teamId];
+        if (!name || logoCache[name]) return Promise.resolve();
+        return new Promise(resolve => {
+            const img = new Image();
+            img.onload  = () => { logoCache[name] = img; resolve(); };
+            img.onerror = resolve;
+            img.src = `../img/teams/${name}.png`;
+        });
+    }));
+
+    const careerPlugin = {
+        id: 'careerPlugin',
         afterDatasetDraw(chart) {
-            const { ctx: c, data } = chart;
+            const { ctx: c } = chart;
             const meta = chart.getDatasetMeta(0);
-            c.save();
-            c.font = '12px serif';
-            c.textAlign = 'center';
-            data.labels.forEach((label, i) => {
-                if (!wdcYears.has(label)) return;
+            const zeroY = chart.scales.y.getPixelForValue(0);
+
+            allSeasons.forEach((season, i) => {
                 const bar = meta.data[i];
                 if (!bar) return;
-                c.fillText('🏆', bar.x, bar.y - 6);
+
+                const bw  = bar.width;
+                const bx  = bar.x;
+                const by  = bar.y;
+
+                c.save();
+
+                const logoSize = Math.min(Math.floor(bw * 0.8), 32); 
+
+                if (season.points > 0) {
+                    const fontSize = Math.min(Math.floor(bw * 0.8), 32); 
+                    c.font = `${fontSize}px 'F1-Black', sans-serif`;
+
+                    const textStr = String(season.points);
+                    const textWidth = c.measureText(textStr).width;
+                    
+                    let textY = by + 10;
+                    const bottomLimit = zeroY - logoSize - 10;
+
+                    if (textY + textWidth > bottomLimit) {
+                        textY = bottomLimit - textWidth;
+                    }
+
+                    c.translate(bx, textY);
+                    c.rotate(-Math.PI / 2);
+                    c.textAlign = 'right';
+                    c.textBaseline = 'middle';
+
+                    if (season.isWDC) {
+                        // gradient in rotated coordinate space: text goes from 0 to -textWidth on x axis
+                        const grad = c.createLinearGradient(-textWidth, -fontSize/2, 0, fontSize/2);
+                        grad.addColorStop(0,    '#B78E3F');
+                        grad.addColorStop(0.35, '#F5E0B5');
+                        grad.addColorStop(1,    '#B78E3F');
+                        c.fillStyle = grad;
+                    } else {
+                        c.fillStyle = '#ffffff';
+                    }
+
+                    c.fillText(textStr, 0, 0);
+                }
+
+                c.restore();
+
+                const logoName = TEAM_LOGO_MAP[season.teamId];
+                if (logoName && logoCache[logoName]) {
+                    c.imageSmoothingEnabled = true;
+                    c.imageSmoothingQuality = 'high';
+                    c.drawImage(logoCache[logoName], bx - logoSize / 2, zeroY - logoSize - 4, logoSize, logoSize);
+                }
             });
-            c.restore();
         }
     };
 
-    new Chart(ctx, {
+    const careerChart = new Chart(ctx, {
         type: 'bar',
-        plugins: [trophyPlugin],
+        plugins: [careerPlugin],
         data: {
             labels: seasons,
             datasets: [{
                 data: points,
-                backgroundColor: seasons.map(y =>
-                    wdcYears.has(y) ? teamColor : teamColor + '59'),
-                borderColor: teamColor,
-                borderWidth: 1,
-                borderRadius: 4,
-                hoverBackgroundColor: teamColor
+                backgroundColor: colors,
+                hoverBackgroundColor: colors.map(color => color.replace('0.9)', '1)')),
+                borderWidth: 0,
+                borderRadius: 0,
+                barPercentage: 0.95,
+                categoryPercentage: 0.95,
             }]
         },
         options: {
             responsive: true,
-            layout: { padding: { top: 24 } },
+            layout: { padding: { top: 32, bottom: 8 } },
             plugins: {
                 legend: { display: false },
                 tooltip: {
@@ -358,17 +505,47 @@ function initCareerChart(history, points2026, teamColor) {
                     titleColor: '#ffffff',
                     bodyColor: 'rgba(255,255,255,0.5)',
                     padding: 12,
+                    displayColors: false, 
                     callbacks: {
-                        label: ctx => ` ${ctx.parsed.y} pts`,
-                        afterLabel: ctx => wdcYears.has(seasons[ctx.dataIndex])
-                            ? ' 🏆 World Champion' : ''
+                        title: (context) => {
+                            return `${context[0].label} Season`;
+                        },
+                        label: (context) => {
+                            const seasonData = allSeasons[context.dataIndex];
+                            
+                            const posText = seasonData.position === 1 
+                                ? '🏆 World Champion' 
+                                : `Position: P${seasonData.position || '-'}`;
+                            
+                            return [
+                                posText,
+                                `Points: ${context.parsed.y}`
+                            ];
+                        }
                     }
                 }
             },
             scales: {
-                x: { ticks: { maxRotation: 45 } },
-                y: { beginAtZero: true }
+                x: {
+                    grid: { color: 'rgba(255,255,255,0.04)', drawOnChartArea: false },
+                    ticks: {
+                        color: '#888',
+                        font: { size: 10 },
+                        maxRotation: 45,
+                        callback: function(value, index) {
+                            const label = seasons[index];
+                            const isMobile = this.chart.width <= 500;
+                            return isMobile ? `'${String(label).slice(-2)}` : label;
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    ticks: { display: false }
+                }
             }
         }
     });
+    watchChartAspect(careerChart, 500, 2.25, 1.2);
 }
