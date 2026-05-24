@@ -30,7 +30,7 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        object-position: top center;
+        object-position: center 35%;
         z-index: 0;
         filter: brightness(0.75) saturate(0.75);
     }
@@ -63,48 +63,20 @@
     .driver-hero-content {
         position: relative;
         z-index: 2;
-        padding: 0 8% 4rem;
+        padding: 0 5% 4rem;
         width: 100%;
     }
 
-    /* Team badge */
-    .driver-team-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 999px;
-        padding: 6px 14px 6px 10px;
-        margin-bottom: 1rem;
-    }
-
-    .badge-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--team-color, var(--primary-red));
-        flex-shrink: 0;
-    }
-
-    #hero-team-name {
-        font-family: 'F1-Regular', sans-serif;
-        font-size: 0.65rem;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        color: rgba(255,255,255,0.7);
-    }
-
     /* Driver name */
-    .driver-hero-title { margin-bottom: 2rem; }
+    .driver-hero-title { margin-bottom: 24px; }
 
     .driver-hero-first-name {
-        font-family: 'F1-Regular', sans-serif;
-        font-size: clamp(16px, 2.5vw, 32px);
+        font-family: 'F1-Regular';
+        font-size: clamp(16px, 2.5vw, 48px);
         letter-spacing: 6px;
         text-transform: uppercase;
-        color: rgba(255,255,255,0.4);
-        margin-bottom: 0.1rem;
+        color: rgba(255,255,255,0.25);
+        line-height: 0.85;
     }
 
     .driver-hero-last-name {
@@ -118,27 +90,27 @@
 
     /* Meta row */
     .driver-hero-meta {
-        width: 45%;
+        width: 55%;
         display: flex;
         flex-wrap: wrap;
         gap: 2.5rem;
         padding-top: 1.5rem;
-        border-top: 1px solid rgba(255,255,255,0.08);
+        border-top: 1px solid rgba(255,255,255,0.1);
     }
 
     .driver-hero-meta-item {
         display: flex;
         flex-direction: column;
         gap: 5px;
-        font-family: 'F1-Regular', sans-serif;
+        font-family: 'F1-Regular';
         font-size: 0.6rem;
         letter-spacing: 1.5px;
         text-transform: uppercase;
-        color: rgba(255,255,255,0.25);
+        color: rgba(255,255,255,0.3);
     }
 
     .driver-hero-meta-item strong {
-        font-family: 'F1-Bold', sans-serif;
+        font-family: 'F1-Bold';
         font-size: 0.9rem;
         letter-spacing: 0.5px;
         color: var(--text-light);
@@ -154,9 +126,9 @@
 
     /* Section title */
     .section-title {
-        font-family: 'F1-Regular', sans-serif;
-        font-size: clamp(18px, 4vw, 32px);
-        letter-spacing: 4px;
+        font-family: 'F1-Black';
+        font-size: clamp(27px, 4vw, 48px);
+        letter-spacing: 1px;
         text-transform: uppercase;
         color: var(--text-light);
         margin-bottom: 1.5rem;
@@ -205,7 +177,7 @@
     }
 
     .stat-value {
-        font-family: 'F1-Bold', sans-serif;
+        font-family: 'F1-Black', sans-serif;
         font-size: clamp(1.8rem, 3vw, 2.4rem);
         color: var(--text-light);
         line-height: 1.1;
@@ -267,7 +239,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0.75rem 0;
+        padding: 8px 0;
         border-bottom: 1px solid rgba(255,255,255,0.06);
     }
 
@@ -275,15 +247,15 @@
 
     .info-key {
         font-family: 'F1-Regular';
-        font-size: 12px;
+        font-size: 14px;
         letter-spacing: 1px;
         text-transform: uppercase;
         color: var(--text-dim);
     }
 
     .info-val {
-        font-family: 'F1-Bold';
-        font-size: 16px;
+        font-family: 'F1-Black';
+        font-size: 20px;
         color: var(--text-light);
         letter-spacing: 0.1px;
     }
@@ -323,55 +295,102 @@
     grid-column: span 2;
 }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 900px) {
-        .driver-hero-content { padding: 0 6% 3rem; }
-        .driver-content { padding: 3.5rem 6% 5rem; }
-        .stats-grid { grid-template-columns: repeat(2, 1fr); }
-        .info-chart-row { grid-template-columns: 1fr; }
-        .driver-number-bg { font-size: clamp(140px, 35vw, 260px); }
-        .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; }
-        .gallery-item { height: 180px; }
-        .gallery-item.featured { grid-column: span 2; }
+@media (max-width: 1100px) {
+
+    .driver-content {
+        max-width: 85%;
+        padding: 80px 0;
     }
 
-    @media (max-width: 600px) {
-        .driver-hero-content { padding: 0 5% 2.5rem; }
-        .driver-content { padding: 2.5rem 5% 4rem; }
-        .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-        .stat-value { font-size: 1.5rem; }
-        .stat-card { padding: 16px; }
-        .driver-hero-meta { gap: 1.2rem; }
-        .driver-number-bg { display: none; }
-        .gallery-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
-        .gallery-item { height: 200px; }
-        .gallery-item.featured { grid-column: span 1; }
-
-        .info-card {
-    overflow-x: auto;
-}
-
-.info-key {
-    font-size: 0.55rem;
-    letter-spacing: 0.5px;
-}
-
-.info-val {
-    font-size: 0.75rem;
-    max-width: 140px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.chart-card {
-    overflow-x: auto;
-}
-
-.chart-card canvas {
-    min-width: 320px;
-}
+    .driver-hero-meta {
+        width: 100%;
+        gap: 1.5rem;
     }
+
+    .info-chart-row {
+        grid-template-columns: 1fr;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
+    }
+
+    .gallery-item.featured {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 600px) {
+    canvas {
+        max-width: 100%;
+        min-height: 220px !important;
+    }
+
+    canvas {
+        max-width: 100%;
+        min-height: 220px !important;
+    }
+}
+
+@media (max-width: 500px) {
+
+    .driver-number-bg {
+        display: none;
+    }
+
+    .driver-hero-content {
+        padding: 0 5% 2.5rem;
+    }
+
+    .driver-hero-meta {
+        width: 100%;
+        gap: 1.25rem;
+    }
+
+    .driver-content {
+        max-width: 92%;
+        padding: 60px 0;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stat-card{
+        padding: 12px;
+    }
+
+    .info-card{
+        padding: 0 12px;
+    }
+
+    .chart-card{
+        padding: 12px;
+        min-height: 280px;
+    }
+
+    .info-chart-row {
+        grid-template-columns: 1fr;
+    }
+
+    .info-key { font-size: 12px; }
+    .info-val { font-size: 16px; }
+
+    .gallery-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+
+    .gallery-item.featured {
+        grid-column: span 1;
+    }
+
+    canvas {
+        max-width: 100%;
+        height: auto !important;
+    }
+}
     </style>
 </head>
 <body>
@@ -402,9 +421,6 @@
             <div id="hero-number" class="driver-number-bg"></div>
 
             <div class="driver-hero-content">
-                <div id="hero-team-badge" class="driver-team-badge">
-                    <span class="badge-dot"></span><span id="hero-team-name">Cargando...</span>
-                </div>
                 <div class="driver-hero-title">
                     <p id="driver-hero-first-name" class="driver-hero-first-name"></p>
                     <h1 id="driver-hero-last-name" class="driver-hero-last-name"></h1>
@@ -532,10 +548,10 @@
         </div>
 
         <div class="footer-bottom">
-            <span class="footer-copy">
+            <span class="footer-copyright">
                 &copy; 2026 F1 Hub &mdash; Unofficial fan project. Not affiliated with Formula 1.
             </span>
-            <span class="footer-tz">
+            <span class="footer-timezone">
                 All times shown in your local timezone
             </span>
         </div>
