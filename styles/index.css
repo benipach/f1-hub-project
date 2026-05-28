@@ -8,7 +8,7 @@
     align-items: flex-end;
     justify-content: space-between;
     gap: 3rem;
-    min-height: 105vh;
+    min-height: 100vh;
     padding: 0 5% 5rem;
 }
 
@@ -18,9 +18,9 @@
     left: 0;
     z-index: -1;
     width: 100%;
-    height: 105vh;
+    height: 110vh;
     object-fit: cover;
-    filter: brightness(0.9) saturate(0.75);
+    filter: brightness(0.8) ;
 }
 
 .race-hero-overlay {
@@ -29,11 +29,6 @@
     z-index: 2;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        to bottom,
-        rgba(10,10,20,0) 40%,
-        rgba(10,10,20,1) 93%
-    );
 }
 
 /* Left content */
@@ -71,8 +66,8 @@
     border-radius: 100px;
     color: rgba(255,255,255,0.85);
     background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(32px) saturate(3);
-    -webkit-backdrop-filter: blur(32px) saturate(3);
+    backdrop-filter: blur(8px) saturate(1.5);
+    -webkit-backdrop-filter: blur(8px) saturate(1.5);
     box-shadow:
         0 2px 0 rgba(255,255,255,0.08) inset,
         0 8px 24px rgba(0,0,0,0.4);
@@ -82,8 +77,8 @@
 .race-round-badge:hover {
     cursor: default;
     border-color: rgba(255,255,255,0.24);
-    background: rgba(255,255,255,0.1);
-    transform: translateY(-1px);
+    backdrop-filter: blur(16px) saturate(2);
+    -webkit-backdrop-filter: blur(16px) saturate(2);
 }
 
 .race-sprint-badge {
@@ -171,8 +166,8 @@
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.08);
     border-top-color: rgba(255,255,255,0.22);
-    backdrop-filter: blur(10px) saturate(3);
-    -webkit-backdrop-filter: blur(10px) saturate(3);
+    backdrop-filter: blur(10px) saturate(1.5);
+    -webkit-backdrop-filter: blur(10px) saturate(1.5);
     box-shadow:
         0 1px 0 rgba(255,255,255,0.1) inset,
         0 -1px 0 rgba(0,0,0,0.2) inset,
@@ -192,11 +187,10 @@
 
 .countdown-card:hover {
     cursor: default;
-    background: rgba(255,255,255,0.09);
+    background: rgba(255,255,255,0.06);
     border-top-color: rgba(255,255,255,0.35);
-    backdrop-filter: blur(20px) saturate(4);
-    -webkit-backdrop-filter: blur(20px) saturate(4);
-    transform: translateY(-3px);
+    backdrop-filter: blur(20px) saturate(2);
+    -webkit-backdrop-filter: blur(20px) saturate(2);
     box-shadow:
         0 1px 0 rgba(255,255,255,0.15) inset,
         0 20px 48px rgba(0,0,0,0.55),
@@ -237,14 +231,14 @@
     border: 1px solid rgba(255,255,255,0.12);
     border-top-color: rgba(255,255,255,0.24);
     color: rgba(255,255,255,0.9);
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 0.68rem;
-    letter-spacing: 2.5px;
+    font-family: 'F1-Bold';
+    font-size: 12px;
+    letter-spacing: 2px;
     text-decoration: none;
     text-transform: uppercase;
     background: rgba(255,255,255,0.07);
-    backdrop-filter: blur(32px) saturate(3);
-    -webkit-backdrop-filter: blur(32px) saturate(3);
+    backdrop-filter: blur(16px) saturate(3);
+    -webkit-backdrop-filter: blur(16px) saturate(3);
     box-shadow:
         0 1px 0 rgba(255,255,255,0.12) inset,
         0 10px 32px rgba(0,0,0,0.45);
@@ -256,7 +250,6 @@
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: var(--race-gradient);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -269,8 +262,8 @@
         0 1px 0 rgba(255,255,255,0.18) inset,
         0 18px 44px rgba(0,0,0,0.5),
         0 0 40px rgba(232,0,45,0.2);
-    backdrop-filter: blur(60px) saturate(4);
-    -webkit-backdrop-filter: blur(60px) saturate(4);
+    backdrop-filter: blur(32px) saturate(4);
+    -webkit-backdrop-filter: blur(32px) saturate(4);
 }
 
 .race-details-btn:hover::before {
@@ -342,7 +335,7 @@
     border-bottom: 1px solid rgba(255,255,255,0.07);
     color: rgba(255,255,255,0.38);
     font-family: 'F1-Bold', sans-serif;
-    font-size: 0.6rem;
+    font-size: 12px;
     letter-spacing: 3px;
     text-transform: uppercase;
 }
@@ -362,7 +355,7 @@
     -webkit-background-clip: text;
     color: transparent;
     font-family: 'F1-Bold', sans-serif;
-    font-size: 0.65rem;
+    font-size: 12px;
     letter-spacing: 2px;
     text-transform: uppercase;
 }
@@ -382,7 +375,7 @@
 .schedule-session-name,
 .schedule-session-time {
     font-family: 'F1-Regular', sans-serif;
-    font-size: 0.8rem;
+    font-size: 14px;
 }
 
 .schedule-session-name {
@@ -392,7 +385,7 @@
 
 .schedule-session-time {
     color: rgba(255,255,255,0.38);
-    font-size: 0.75rem;
+    font-size: 14px;
 }
 
 .race-schedule-footer {
@@ -475,6 +468,10 @@
 
     .race-hero {
         min-height: 125vh;
+    }
+
+    .race-hero-bg{
+        height: 1312px;
     }
 
     .race-hero-content {
