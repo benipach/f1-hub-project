@@ -1,6 +1,24 @@
 {
   "teams": [
     {
+      "id": "alfa-romeo",
+      "name": "Alfa Romeo Racing",
+      "country": "Switzerland",
+      "city": "Hinwil",
+      "color": "#9D2235",
+      "image": "alfa_romeo.png",
+      "logo": "alfa_romeo_logo.png"
+    },
+    {
+      "id": "alpha-tauri",
+      "name": "Scuderia AlphaTauri",
+      "country": "Italy",
+      "city": "Faenza",
+      "color": "#00283F",
+      "image": "alpha_tauri.png",
+      "logo": "alpha_tauri_logo.png"
+    },
+    {
       "id": "alpine",
       "name": "BWT Alpine F1 Team",
       "country": "France",
@@ -10,13 +28,13 @@
       "logo": "alpine_logo.png"
     },
     {
-    "id": "aston-martin",
-    "name": "Aston Martin Aramco F1 Team",
-    "country": "United Kingdom",
-    "city": "Silverstone",
-    "color": "#00594F",
-    "image": "aston_martin.png",
-    "logo": "aston_martin_logo.png"
+      "id": "aston-martin",
+      "name": "Aston Martin Aramco F1 Team",
+      "country": "United Kingdom",
+      "city": "Silverstone",
+      "color": "#00594F",
+      "image": "aston_martin.png",
+      "logo": "aston_martin_logo.png"
     },
     {
       "id": "audi",
@@ -46,6 +64,15 @@
       "logo": "ferrari_logo.png"
     },
     {
+      "id": "force-india",
+      "name": "Sahara Force India F1 Team",
+      "country": "India",
+      "city": "Silverstone",
+      "color": "#F07D00",
+      "image": "force_india.png",
+      "logo": "force_india_logo.png"
+    },
+    {
       "id": "haas",
       "name": "Haas F1 Team",
       "country": "United States",
@@ -55,8 +82,17 @@
       "logo": "haas_logo.png"
     },
     {
+      "id": "kick",
+      "name": "Kick Sauber F1 Team",
+      "country": "Switzerland",
+      "city": "Hinwil",
+      "color": "#5AFF21",
+      "image": "kick.png",
+      "logo": "kick_logo.png"
+    },
+    {
       "id": "mclaren",
-      "name": "McLaren Formula 1 Team",
+      "name": "McLaren F1 Team",
       "country": "United Kingdom",
       "city": "Woking",
       "color": "#FF8000",
@@ -82,13 +118,49 @@
       "logo": "racing_bulls_logo.png"
     },
     {
+      "id": "racing-point",
+      "name": "SportPesa Racing Point F1 Team",
+      "country": "United Kingdom",
+      "city": "Silverstone",
+      "color": "#FF8EBC",
+      "image": "racing_point.png",
+      "logo": "racing_point_logo.png"
+    },
+    {
       "id": "red-bull",
-      "name": "Oracle Red Bull Racing",
+      "name": "Red Bull Racing",
       "country": "Austria",
       "city": "Milton Keynes",
       "color": "#3671C6",
       "image": "red_bull.png",
       "logo": "red_bull_logo.png"
+    },
+    {
+      "id": "renault",
+      "name": "Renault F1 Team",
+      "country": "France",
+      "city": "Enstone",
+      "color": "#FFCD2C",
+      "image": "renault.png",
+      "logo": "renault_logo.png"
+    },
+    {
+      "id": "sauber",
+      "name": "Sauber F1 Team",
+      "country": "Switzerland",
+      "city": "Hinwil",
+      "color": "#DE3227",
+      "image": "sauber.png",
+      "logo": "sauber_logo.png"
+    },
+    {
+      "id": "toro-rosso",
+      "name": "Scuderia Toro Rosso",
+      "country": "Italy",
+      "city": "Faenza",
+      "color": "#161793",
+      "image": "toro_rosso.png",
+      "logo": "toro_rosso_logo.png"
     },
     {
       "id": "williams",

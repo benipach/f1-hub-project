@@ -538,14 +538,99 @@
       "raceStartDate": "2026-05-24T17:00:00",
       "raceEndDate": "2026-05-24T19:00:00"
     },
-    "results": [
-      
-    ],
+    "results": {
+      "qualifying": [
+        { "pos": 1, "driver": "George Russell", "lapTime": "1:12.578" },
+        { "pos": 2, "driver": "Kimi Antonelli", "lapTime": "1:12.646" },
+        { "pos": 3, "driver": "Lando Norris", "lapTime": "1:12.729" },
+        { "pos": 4, "driver": "Oscar Piastri", "lapTime": "1:12.781" },
+        { "pos": 5, "driver": "Lewis Hamilton", "lapTime": "1:12.868" },
+        { "pos": 6, "driver": "Max Verstappen", "lapTime": "1:12.907" },
+        { "pos": 7, "driver": "Isack Hadjar", "lapTime": "1:12.935" },
+        { "pos": 8, "driver": "Charles Leclerc", "lapTime": "1:12.976" },
+        { "pos": 9, "driver": "Arvid Lindblad", "lapTime": "1:13.280" },
+        { "pos": 10, "driver": "Franco Colapinto", "lapTime": "1:13.697" },
+        { "pos": 11, "driver": "Nico Hülkenberg", "lapTime": "1:13.886" },
+        { "pos": 12, "driver": "Liam Lawson", "lapTime": "1:13.897" },
+        { "pos": 13, "driver": "Gabriel Bortoleto", "lapTime": "1:14.071" },
+        { "pos": 14, "driver": "Pierre Gasly", "lapTime": "1:14.187" },
+        { "pos": 15, "driver": "Carlos Sainz Jr.", "lapTime": "1:14.273" },
+        { "pos": 16, "driver": "Oliver Bearman", "lapTime": "1:14.416" },
+        { "pos": 17, "driver": "Esteban Ocon", "lapTime": "1:14.845" },
+        { "pos": 18, "driver": "Alexander Albon", "lapTime": "1:14.851" },
+        { "pos": 19, "driver": "Fernando Alonso", "lapTime": "1:15.196" },
+        { "pos": 20, "driver": "Sergio Pérez", "lapTime": "1:15.429" },
+        { "pos": 21, "driver": "Lance Stroll", "lapTime": "1:16.195" },
+        { "pos": 22, "driver": "Valtteri Bottas", "lapTime": "1:16.272" }
+      ],
+      "race": [
+      { "pos": 1, "driver": "Kimi Antonelli", "laps": "68", "time": "1:28:15.758", "pts": 25 },
+      { "pos": 2, "driver": "Lewis Hamilton", "laps": "68", "time": "+10.768s", "pts": 18 },
+      { "pos": 3, "driver": "Max Verstappen", "laps": "68", "time": "+11.276s", "pts": 15 },
+      { "pos": 4, "driver": "Charles Leclerc", "laps": "68", "time": "+44.151s", "pts": 12 },
+      { "pos": 5, "driver": "Isack Hadjar", "laps": "67", "time": "+1 Lap", "pts": 10 },
+      { "pos": 6, "driver": "Franco Colapinto", "laps": "67", "time": "+1 Lap", "pts": 8 },
+      { "pos": 7, "driver": "Liam Lawson", "laps": "67", "time": "+1 Lap", "pts": 6 },
+      { "pos": 8, "driver": "Pierre Gasly", "laps": "67", "time": "+1 Lap", "pts": 4 },
+      { "pos": 9, "driver": "Carlos Sainz", "laps": "67", "time": "+1 Lap", "pts": 2 },
+      { "pos": 10, "driver": "Oliver Bearman", "laps": "67", "time": "+1 Lap", "pts": 1 },
+      { "pos": 11, "driver": "Oscar Piastri", "laps": "66", "time": "+2 Laps", "pts": 0 },
+      { "pos": 12, "driver": "Nico Hulkenberg", "laps": "66", "time": "+2 Laps", "pts": 0 },
+      { "pos": 13, "driver": "Gabriel Bortoleto", "laps": "66", "time": "+2 Laps", "pts": 0 },
+      { "pos": 14, "driver": "Esteban Ocon", "laps": "66", "time": "+2 Laps", "pts": 0 },
+      { "pos": 15, "driver": "Lance Stroll", "laps": "64", "time": "+4 Laps", "pts": 0 },
+      { "pos": 16, "driver": "Valtteri Bottas", "laps": "64", "time": "+4 Laps", "pts": 0 },
+      { "pos": "NC", "driver": "Sergio Perez", "laps": "39", "time": "DNF", "pts": 0 },
+      { "pos": "NC", "driver": "Lando Norris", "laps": "38", "time": "DNF", "pts": 0 },
+      { "pos": "NC", "driver": "George Russell", "laps": "29", "time": "DNF", "pts": 0 },
+      { "pos": "NC", "driver": "Fernando Alonso", "laps": "23", "time": "DNF", "pts": 0 },
+      { "pos": "NC", "driver": "Alexander Albon", "laps": "11", "time": "DNF", "pts": 0 },
+      { "pos": "NC", "driver": "Arvid Lindblad", "laps": "0", "time": "DNS", "pts": 0 }
+      ]
+    },
     "notableMoments": [
-
+    {"time": "Lap 1","event": "Failing to Follow Race Directors Instructions","involved": "BOR, BOT, GAS","action": "Will be investigated after the race"},
+    {"time": "Lap 1","event": "Starting Procedure Infringement","involved": "BOT, STR","action": "No further action"},
+    {"time": "Lap 3","event": "Starting Procedure Infringement","involved": "LAW, HUL","action": "Will be investigated after the race"},
+    {"time": "Lap 8","event": "Speeding in Pit Lane","involved": "HUL","action": "+5s time penalty"},
+    {"time": "Lap 11","event": "Leaving the Track and Gaining an Advantage","involved": "BOR","action": "No further action"},
+    {"time": "Lap 16","event": "Causing a Collision","involved": "PIA, ALB","action": "+10s time penalty PIA"},
+    {"time": "Lap 20","event": "Yellow Flag Infringement","involved": "BEA","action": "No further action"},
+    {"time": "Lap 20","event": "Yellow Flag Infringement","involved": "ALO","action": "No further action"},
+    {"time": "Lap 26","event": "Incident","involved": "ANT, RUS","action": "No further action"},
+    {"time": "Laps 31 to 32","event": "Virtual Safety Car","involved": "","action": ""},
+    {"time": "Lap 33","event": "Incident","involved": "RUS","action": "Will be investigated after the race"},
+    {"time": "Lap 36","event": "Yellow Flag Infringement","involved": "HAD","action": "Stop-and-Go Penalty"},
+    {"time": "Lap 39","event": "More Than One Change of Direction","involved": "HAD","action": "+10s time penalty"},
+    {"time": "Lap 44","event": "Ignoring Blue Flags","involved": "PER","action": "Will be investigated after the race"},
+    {"time": "Lap 46","event": "Virtual Safety Car","involved": "","action": ""},
+    {"time": "Lap 46","event": "Speeding in Pit Lane","involved": "BOT","action": "+5s time penalty"},{"time": "Lap 52","event": "Yellow Flag Infringement","involved": "GAS","action": "No further action"},
+    {"time": "Laps 53 to 54","event": "Virtual Safety Car","involved": "","action": ""},
+    {"time": "Lap 54","event": "VSC Infringement","involved": "BOR","action": "+5s time penalty"},
+    {"time": "Lap 68","event": "Failing to Follow Race Directors Instructions","involved": "LAW","action": "No further action"}
     ],
     "weather": {
-
+      "friday": {
+      "condition": "Fresco y seco",
+      "notes": "FP1 y Clasificación Sprint, condiciones agradables con pista seca",
+      "rainChance": "0%",
+      "temp": "18°C",
+      "icon": "⛅"
+    },
+    "saturday": {
+      "condition": "Soleado",
+      "notes": "Carrera Sprint y Clasificación, cielos despejados y clima ideal para correr",
+      "rainChance": "0%",
+      "temp": "19°C",
+      "icon": "☀️"
+    },
+    "sunday": {
+      "condition": "Lluvioso y ventoso",
+      "notes": "Día de carrera, fuerte descenso de temperatura con chubascos dispersos",
+      "rainChance": "60%",
+      "temp": "16°C",
+      "icon": "🌧️"
+    }
     }
   },
 
