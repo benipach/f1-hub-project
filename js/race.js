@@ -267,6 +267,63 @@ function renderFunFacts(circuit) {
     goTo(0);
 }
 
+// ── TEAM ID → LOGO FILENAME ──────────────────────────────────────
+const TEAM_LOGO_MAP = {
+    'Mercedes':        'mercedes-logo',
+    'Ferrari':         'ferrari-logo',
+    'McLaren':         'mclaren-logo',
+    'Red Bull':        'redbull-logo',
+    'Aston Martin':    'astonmartin-logo',
+    'Alpine':          'alpine-logo',
+    'Williams':        'williams-logo',
+    'Racing Bulls':    'racingbulls-logo',
+    'Haas':            'haas-logo',
+    'Audi':            'audi-logo',
+    'Cadillac':        'cadillac-logo',
+};
+
+// ── GRID DELTA HELPERS ───────────────────────────────────────────
+
+// Normaliza nombres para comparar entre qualifying y race
+// (maneja tildes, "Jr.", espacios extra, etc.)
+function normalizeName(name) {
+    return name
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita tildes
+        .replace(/\s+jr\.?$/i, '')                        // quita "Jr."
+        .trim()
+        .toLowerCase();
+}
+
+// Construye un mapa { nombreNormalizado → posición numérica } desde qualifying
+function buildQualiMap(qualifying = []) {
+    const map = {};
+    for (const entry of qualifying) {
+        const posNum = parseInt(entry.pos, 10);
+        if (!isNaN(posNum)) {
+            map[normalizeName(entry.driver)] = posNum;
+        }
+    }
+    return map;
+}
+
+// Devuelve el HTML del indicador de delta (flecha o barra)
+function gridDeltaHtml(racePos, qualiPos) {
+    const raceNum = parseInt(racePos, 10);
+    if (isNaN(raceNum) || qualiPos == null) {
+        // No hubo qualy (NC en qualy) o no hay dato → sin indicador
+        return `<span class="res-delta res-delta--none">—</span>`;
+    }
+
+    const delta = qualiPos - raceNum; // positivo = ganó puestos
+    if (delta > 0) {
+        return `<span class="res-delta res-delta--up">▲ ${delta}</span>`;
+    } else if (delta < 0) {
+        return `<span class="res-delta res-delta--down">▼ ${Math.abs(delta)}</span>`;
+    } else {
+        return `<span class="res-delta res-delta--same">—</span>`;
+    }
+}
+
 // ── RESULT ───────────────────────────────────────────────────────
 function renderResult(gp, driverTeams = {}) {
     const container = document.getElementById('result-card');
@@ -281,41 +338,51 @@ function renderResult(gp, driverTeams = {}) {
         return;
     }
 
+    const qualiMap = buildQualiMap(gp.results?.qualifying);
+    const hasQuali = Object.keys(qualiMap).length > 0;
+
     container.innerHTML = `
         <div class="race-table-wrap">
-            <table class="result-table">
+            <table class="data-table">
                 <thead>
                     <tr>
                         <th>Pos</th>
+                        ${hasQuali ? '<th class="res-delta-col"></th>' : ''}
                         <th>Driver</th>
-                        <th>Team</th>
                         <th>Time</th>
                         <th style="text-align:center">Pts</th>
                     </tr>
                 </thead>
                 <tbody>
                     ${gp.results.race.map(res => {
-                        const team = driverTeams[res.driver] || '—';
-                        const isDnf = res.time === 'DNF' || res.time === 'DNS';
-                        const dim   = isDnf ? 'color:var(--text-dim)' : '';
+                        const teamId   = driverTeams[res.driver] || '';
+                        const logoFile = TEAM_LOGO_MAP[teamId];
+                        const logoHtml = logoFile
+                            ? `<img class="res-team-logo" src="../img/teams/${logoFile}.png" alt="${teamId}">`
+                            : `<span class="res-team-logo-placeholder"></span>`;
+                        const isDnf  = res.time === 'DNF' || res.time === 'DNS';
+                        const dim    = isDnf ? 'opacity:0.4' : '';
+                        const posNum = parseInt(res.pos, 10);
+                        const isTop3 = posNum >= 1 && posNum <= 3;
+                        const qualiPos = qualiMap[normalizeName(res.driver)];
                         return `
                             <tr>
-                                <td class="res-pos" style="${dim}">${res.pos}</td>
+                                <td class="res-pos${isTop3 ? ' top3' : ''}" style="${dim}">${res.pos}</td>
+                                ${hasQuali ? `<td class="res-delta-cell" style="${dim}">${gridDeltaHtml(res.pos, qualiPos)}</td>` : ''}
                                 <td class="res-driver" style="${dim}">
+                                    ${logoHtml}
                                     <span class="driver-fullname">${res.driver}</span>
                                     <span class="driver-lastname">${res.driver.split(' ').slice(1).join(' ').slice(0, 3).toUpperCase()}</span>
                                 </td>
-                                <td class="res-team" style="${dim}">${team}</td>
                                 <td class="res-time" style="${dim}">${res.time}</td>
-                                <td class="res-pts" style="text-align:center;font-family:'F1-Regular';color:var(--text-light)">
-                                    ${res.pts ?? 0}
-                                </td>
+                                <td class="res-pts" style="${dim}">${res.pts ?? 0}</td>
                             </tr>`;
                     }).join('')}
                 </tbody>
             </table>
         </div>`;
 }
+
 
 // ── NOTABLE MOMENTS ──────────────────────────────────────────────
 function renderNotableMoments(gp) {
@@ -353,7 +420,7 @@ function renderNotableMoments(gp) {
 
     container.innerHTML = `
         <div class="race-table-wrap">
-            <table class="moments-table">
+            <table class="data-table">
                 <thead>
                     <tr>
                         <th>Time</th>
@@ -397,7 +464,7 @@ function renderHistory(circuit) {
 
     container.innerHTML = `
         <div class="race-table-wrap">
-            <table class="history-table">
+            <table class="data-table">
                 <thead>
                     <tr>
                         <th>Year</th>
