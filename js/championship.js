@@ -268,8 +268,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     Chart.defaults.borderColor = softGridColor;
 
     try {
-        const res = await fetch('./data/season2026.json');
+        const [res, driversRes] = await Promise.all([
+            fetch('./data/season2026.json'),
+            fetch('./data/drivers.json'),
+        ]);
         const season = await res.json();
+        const driversData = await driversRes.json();
+
+        // Lookup: "Nombre Apellido" → teamId del año 2026
+        const driverTeamLookup = {};
+        driversData.drivers.forEach(d => {
+            const entry2026 = d.history.find(h => h.year === 2026);
+            if (entry2026) {
+                const fullName = `${d.firstName} ${d.lastName}`;
+                driverTeamLookup[fullName] = entry2026.teamId;
+            }
+        });
 
         // 1. OBTENER CARRERAS Y FILTRAR LAS CANCELADAS
         const allRaces = Object.values(season)
@@ -284,22 +298,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             gp.name.replace(' Grand Prix', '').replace('Grand Prix', '').trim().substring(0, 3).toUpperCase()
         );
 
+        // ── Helper: extrae el array de resultados de carrera independientemente
+        //    de si gp.results es un objeto { qualifying, race } o un array vacío ──
+        const getRaceResults = gp => {
+            const r = gp.results;
+            if (!r) return [];
+            if (Array.isArray(r)) return r;          // array vacío []
+            if (Array.isArray(r.race)) return r.race; // objeto { qualifying, race }
+            return [];
+        };
+
         // ── Lógica de Pilotos ──
         const driverMap = {};
         allRaces.forEach(gp => {
-            gp.results?.forEach(r => {
+            getRaceResults(gp).forEach(r => {
                 if (!driverMap[r.driver]) {
-                    driverMap[r.driver] = { driver: r.driver, team: r.team, points: 0, racePoints: [] };
+                    const team = r.team || driverTeamLookup[r.driver] || 'Unknown';
+                    driverMap[r.driver] = { driver: r.driver, team, points: 0, racePoints: [] };
                 }
             });
         });
 
         allRaces.forEach(gp => {
+            const raceResults = getRaceResults(gp);
             Object.values(driverMap).forEach(d => {
-                if (!gp.results || gp.results.length === 0) {
+                if (raceResults.length === 0) {
                     d.racePoints.push(null);
                 } else {
-                    const result = gp.results.find(r => r.driver === d.driver);
+                    const result = raceResults.find(r => r.driver === d.driver);
                     const pts = result ? (result.pts ?? 0) : 0;
                     d.racePoints.push(pts);
                     d.points += pts; 
@@ -321,22 +347,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         makeFilteredChart('driverChart', 'driver-filter-items', 'driver-select-all', driverDatasets, raceLabels);
 
         // ── Lógica de Constructores ──
+        // Inicializar equipos a partir del driverTeamLookup (fuente de verdad)
         const constructorMap = {};
-        allRaces.forEach(gp => {
-            gp.results?.forEach(r => {
-                if (!constructorMap[r.team]) {
-                    constructorMap[r.team] = { team: r.team, points: 0, racePoints: [] };
-                }
-            });
+        Object.values(driverTeamLookup).forEach(team => {
+            if (!constructorMap[team]) {
+                constructorMap[team] = { team, points: 0, racePoints: [] };
+            }
         });
 
         allRaces.forEach(gp => {
+            const raceResults = getRaceResults(gp);
             Object.values(constructorMap).forEach(c => {
-                if (!gp.results || gp.results.length === 0) {
+                if (raceResults.length === 0) {
                     c.racePoints.push(null);
                 } else {
-                    const teamPoints = gp.results
-                        .filter(r => r.team === c.team)
+                    const teamPoints = raceResults
+                        .filter(r => (r.team || driverTeamLookup[r.driver]) === c.team)
                         .reduce((sum, r) => sum + (r.pts ?? 0), 0);
                     c.racePoints.push(teamPoints);
                     c.points += teamPoints;
