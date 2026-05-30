@@ -630,26 +630,23 @@
 
     /* ---- RACE RESULT 2026 ---- */
 .result-card {
-    background: rgb(15,15,25);
-    border-radius: 16px;
+    border-radius: 10px;
     overflow: hidden;
 }
 
 .moments-card {
-    background: rgb(15,15,25);
-    border-radius: 16px;
+    border-radius: 12px;
     overflow: hidden;
 }
 
 .history-card {
-    background: rgb(15,15,25);
-    border-radius: 16px;
+    border-radius: 12px;
     overflow: hidden;
 }
 
 /* Estado de carga/vacío */
 .result-pending {
-    padding: 3rem;
+    padding: 32px;
     text-align: center;
 }
 .result-pending-icon { font-size: 2.5rem; margin-bottom: 1rem; }
@@ -661,207 +658,154 @@
     color: var(--text-dim);
 }
 
-/* Estructura de la Tabla */
-.result-table {
+/* ---- SHARED TABLE SYSTEM ---- */
+.race-table-wrap {
+    overflow-y: auto;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.data-table {
     width: 100%;
     border-collapse: collapse;
     font-family: 'F1-Regular', sans-serif;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
+    font-size: 14px;
+    letter-spacing: 0.5px;
 }
 
-.result-table thead tr {
-    background: rgb(25, 25, 35);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+.data-table thead tr {
     position: sticky;
     top: 0;
     z-index: 1;
 }
 
-.result-table th {
-    height: 64px;
+.data-table th {
+    height: 36px;
     padding: 0 20px;
     text-align: left;
-    font-size: 12px;
-    letter-spacing: 1px;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--text-dim);
-    background: rgb(30,30,40);
+    color: rgba(255,255,255,0.35);
+    background: rgb(12,12,20);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    white-space: nowrap;
 }
 
-.result-table td {
-    height: 48px;
+.data-table td {
+    height: 52px;
     padding: 0 20px;
-    text-transform: none;
-    color: var(light);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--text-light);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
     letter-spacing: 0.1px;
+    background: rgb(18,18,28);
 }
 
-.result-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:last-child td { border-bottom: none; }
 
-.result-table tbody tr:hover td {
-    background: rgba(255,255,255,0.025);
+.data-table tbody tr:hover td {
+    background: rgba(255,255,255,0.03);
 }
 
+/* ---- RESULT TABLE SPECIFICS ---- */
 .res-pos {
-    font-family: 'F1-Regular', sans-serif;
-    width: 50px;
-}
-
-#result-card > div::-webkit-scrollbar {
-    width: 4px;
-}
-
-#result-card > div::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-#result-card > div::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.15);
-    border-radius: 3px;
-}
-
-#result-card > div::-webkit-scrollbar-thumb:hover {
-    background: rgba(255,255,255,0.3);
-}
-
-
-
-
-#moments-card > div::-webkit-scrollbar {
-    width: 4px;
-}
-
-#moments-card > div::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-#moments-card > div::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.15);
-    border-radius: 3px;
-}
-
-#moments-card > div::-webkit-scrollbar-thumb:hover {
-    background: rgba(255,255,255,0.3);
-}
-
-
-
-
-#history-card > div::-webkit-scrollbar {
-    width: 4px;
-}
-
-#history-card > div::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-#history-card > div::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.15);
-    border-radius: 3px;
-}
-
-#history-card > div::-webkit-scrollbar-thumb:hover {
-    background: rgba(255,255,255,0.3);
-}
-
-.driver-lastname { display: none; }
-
-@media (max-width: 600px) {
-    .driver-fullname { display: none; }
-    .driver-lastname { display: inline; }
-}
-
-/* Estilo para las posiciones */
-.res-pos {
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 16px;
-    width: 25px;
+    width: 40px;
     text-align: center;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
 }
+
+.res-pos.top3 { color: var(--text-light); }
 
 .res-driver {
-    font-family: 'F1-Regular';
-    letter-spacing: 0.1px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.res-team {
-    font-family: 'F1-Regular';
-    letter-spacing: 0.1px;
+.res-team-logo {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    flex-shrink: 0;
+    opacity: 0.9;
+}
+
+.res-team-logo-placeholder {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
 }
 
 .res-time {
     font-family: 'F1-Regular';
-    letter-spacing: 0.1px;
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
 }
 
-/* ---- NOTABLE MOMENTS TABLE ---- */
-.moments-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
-}
-
-.moments-table thead tr {
-    background: rgb(25, 25, 35);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    position: sticky;
-    top: 0;
-    z-index: 1;
-}
-
-.moments-table th {
-    height: 64px;
-    padding: 0 20px;
-    text-align: left;
-    font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    background: rgb(30,30,40);
-}
-
-.moments-table td {
-    height: 48px;
-    padding: 0 20px;
-    text-transform: none;
+.res-pts {
+    text-align: center;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 13px;
     color: var(--text-light);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    letter-spacing: 0.1px;
 }
 
-.moments-table tbody tr:last-child td { border-bottom: none; }
-
-.moments-table tbody tr:hover td {
-    background: rgba(255,255,255,0.025);
+/* ---- GRID DELTA ---- */
+.res-delta-col {
+    width: 52px;
+    padding: 0 !important;
 }
 
+.res-delta-cell {
+    width: 52px;
+    padding: 0 4px 0 0 !important;
+    text-align: right;
+}
+
+.res-delta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    min-width: 36px;
+}
+
+.res-delta--up   { color: #22c55e; }
+.res-delta--down { color: var(--primary-red); }
+
+.res-delta--same,
+.res-delta--none {
+    color: rgba(255,255,255,0.2);
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0;
+}
+
+/* ---- MOMENTS TABLE SPECIFICS ---- */
 .mt-time {
-    font-family: 'F1-Regular';
-    color: var(--text-dim);
+    color: rgba(255,255,255,0.35);
     white-space: nowrap;
     width: 80px;
+    font-size: 12px;
 }
 
-.mt-event {
-    font-family: 'F1-Regular';
-    color: var(--text-dim);
-}
-
-.mt-involved {
-    color: var(--text-dim);
-}
+.mt-event { color: var(--text-light); }
+.mt-involved { color: rgba(255,255,255,0.55); }
 
 .mt-action {
     display: inline-block;
     padding: 3px 10px;
     border-radius: 4px;
     font-family: 'F1-Bold', sans-serif;
-    font-size: 0.72rem;
-    letter-spacing: 0.1px;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
     background: rgba(225, 6, 0, 0.1);
     color: var(--primary-red);
     border: 1px solid rgba(225, 6, 0, 0.2);
@@ -874,79 +818,50 @@
     border: 1px solid rgba(255,255,255,0.05);
 }
 
-    /* ---- HISTORY TABLE ---- */
-    .race-table-wrap {
-        max-height: 593px;
-        overflow-y: auto;
-        background: rgb(20,20,30);
-        border: 1px solid rgba(255,255,255,0.05);
-        border-radius: 16px;
-    }
-
-
-
-.history-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
+/* ---- HISTORY TABLE SPECIFICS ---- */
+.ht-year {
+    font-family: 'F1-Bold', sans-serif;
+    color: rgba(255,255,255,0.4);
+    width: 70px;
 }
 
-.history-table thead tr {
-    background: rgb(25,25,35);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    position: sticky;
-    top: 0;
-    z-index: 1;
-}
+.current-year .ht-year { color: var(--primary-red); }
 
-.history-table th {
-    height: 64px;
-    padding: 0 20px;
-    text-align: left;
-    font-size: 12px;
-    letter-spacing: 1px;
+.ht-winner { font-family: 'F1-Regular', sans-serif; }
+
+.ht-team-badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.5px;
     text-transform: uppercase;
-    color: var(--text-dim);
-    background: rgb(30,30,40);
+    font-family: 'F1-Regular', sans-serif;
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
-.history-table td {
-    height: 48px;
-    font-family: 'F1-Regular';
-    padding: 0 20px;
-    text-transform: none;
-    color: var(--text-light);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    letter-spacing: 0.1px;
+.race-table-wrap::-webkit-scrollbar { width: 4px; }
+.race-table-wrap::-webkit-scrollbar-track { background: transparent; }
+.race-table-wrap::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+.race-table-wrap::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+.driver-lastname { display: none; }
+
+@media (max-width: 600px) {
+    .driver-fullname { display: none; }
+    .driver-lastname { display: inline; }
 }
 
-.history-table tbody tr:last-child td { border-bottom: none; }
-
-.history-table tbody tr:hover td {
-    background: rgba(255,255,255,0.025);
+/* Estilo para las posiciones */
+.res-pos {
+    font-family: 'F1-Regular', sans-serif;
+    width: 25px;
+    text-align: center;
 }
 
-    .ht-year {
-        font-family: 'F1-Bold', sans-serif;
-        color: var(--text-dim);
-        width: 70px;
-    }
 
-    .ht-winner { font-family: 'F1-Bold', sans-serif; color: var(--text-dim); }
-
-    .ht-team-badge {
-        display: inline-block;
-        font-size: 0.6rem;
-        padding: 2px 7px;
-        border-radius: 4px;
-        background: rgba(255,255,255,0.06);
-        color: var(--text-dim);
-        letter-spacing: 0.1px;
-        text-transform: uppercase;
-        font-family: 'F1-Regular', sans-serif;
-    }
 
     /* Responsive */
     @media (max-width: 1200px) {
@@ -975,12 +890,8 @@
 
         /* Tables */
         .race-table-wrap { max-height: 420px; }
-        .result-table th,
-        .result-table td { padding: 0 12px; }
-        .moments-table th,
-        .moments-table td { padding: 0 12px; }
-        .history-table th,
-        .history-table td { padding: 0 12px; }
+        .data-table th,
+        .data-table td { padding: 0 12px; }
 
         /* Weather */
         .weather-grid { grid-template-columns: 1fr; gap: 12px; }
@@ -1017,13 +928,13 @@
         .cs-stat { padding: 0.75rem; }
         .cs-stat-val { font-size: 18px; }
 
-        /* Tables — hide less important columns */
-        .result-table .res-team { display: none; }
-        .result-table th:nth-child(3) { display: none; }
-        .moments-table th:nth-child(3),
-        .moments-table td:nth-child(3) { display: none; }
-        .history-table td:last-child,
-        .history-table th:last-child { display: none; }
+        /* Tables — hide less important columns on mobile */
+        #result-card .data-table .res-team { display: none; }
+        #result-card .data-table th:nth-child(3) { display: none; }
+        #moments-card .data-table th:nth-child(3),
+        #moments-card .data-table td:nth-child(3) { display: none; }
+        #history-card .data-table td:last-child,
+        #history-card .data-table th:last-child { display: none; }
 
         /* Section titles */
         .rc-section-title { letter-spacing: 2px; }
