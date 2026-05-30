@@ -467,11 +467,11 @@
 @media (max-width: 500px) {
 
     .race-hero {
-        min-height: 125vh;
+        min-height: 140vh;
     }
 
     .race-hero-bg{
-        height: 1312px;
+        height: 100%;
     }
 
     .race-hero-content {
@@ -554,11 +554,16 @@
     gap: 16px;
     max-width: 60%;
     margin: 128px auto;
+    scroll-margin-top: 80px;
+}
+
+.calendar-header {
+    grid-column: 1 / -1;
+    margin-bottom: 0.5rem;
 }
 
 .calendar-title {
-    margin-bottom: 2rem;
-    margin-left: 15%;
+    font-family: 'F1-Black';
     padding-left: 15px;
     border-left: 5px solid var(--primary-red);
     font-size: 48px;
