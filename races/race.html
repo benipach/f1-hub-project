@@ -664,7 +664,7 @@
     background: transparent;
     border: 1px solid rgba(255,255,255,0.06);
     border-radius: 12px;
-    overflow: hidden;
+    max-height: 609px;
 }
 
 .data-table {
@@ -757,24 +757,27 @@
 /* ---- GRID DELTA ---- */
 .res-delta-col {
     width: 52px;
-    padding: 0 !important;
+    padding: 0;
 }
 
 .res-delta-cell {
     width: 52px;
-    padding: 0 4px 0 0 !important;
-    text-align: right;
+    padding: 0; /* o el valor que quieras */
+    text-align: left;
 }
 
 .res-delta {
     display: inline-flex;
-    align-items: center;
-    justify-content: flex-end;
+    align-items: left;
+    justify-content: flex-start;
     font-family: 'F1-Bold', sans-serif;
     font-size: 10px;
     letter-spacing: 0.5px;
     white-space: nowrap;
-    min-width: 36px;
+}
+
+.data-table td.res-delta-cell {
+    padding: 0;
 }
 
 .res-delta--up   { color: #22c55e; }
@@ -786,6 +789,30 @@
     font-family: 'F1-Regular', sans-serif;
     font-size: 13px;
     letter-spacing: 0;
+}
+
+/* ---- NATIONALITY ---- */
+.res-nat-col {
+    width: auto;
+    white-space: nowrap;
+}
+
+.data-table td.res-nat {
+    width: auto;
+    white-space: nowrap;
+    padding: 0 20px;
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    color: var(--text-light);
+}
+
+.data-table td.res-nat img {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin-right: 7px;
+    margin-bottom: 2px;
 }
 
 /* ---- MOMENTS TABLE SPECIFICS ---- */
