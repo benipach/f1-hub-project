@@ -645,12 +645,10 @@
 }
 
 /* Estado de carga/vacío */
-.result-pending {
+.result-pending-text {
+    display: block;
     padding: 32px;
     text-align: center;
-}
-.result-pending-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-.result-pending-text {
     font-family: 'F1-Bold', sans-serif;
     font-size: 0.8rem;
     letter-spacing: 2px;
@@ -712,14 +710,12 @@
 
 /* ---- RESULT TABLE SPECIFICS ---- */
 .res-pos {
-    width: 40px;
+    width: 25px;
     text-align: center;
-    font-family: 'F1-Bold', sans-serif;
+    font-family: 'F1-Regular';
     font-size: 13px;
     color: rgba(255,255,255,0.4);
 }
-
-.res-pos.top3 { color: var(--text-light); }
 
 .res-driver {
     display: flex;
@@ -749,7 +745,7 @@
 
 .res-pts {
     text-align: center;
-    font-family: 'F1-Bold', sans-serif;
+    font-family: 'F1-Regular';
     font-size: 13px;
     color: var(--text-light);
 }
@@ -770,8 +766,8 @@
     display: inline-flex;
     align-items: left;
     justify-content: flex-start;
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 10px;
+    font-family: 'F1-Bold';
+    font-size: 12px;
     letter-spacing: 0.5px;
     white-space: nowrap;
 }
@@ -879,13 +875,6 @@
 @media (max-width: 600px) {
     .driver-fullname { display: none; }
     .driver-lastname { display: inline; }
-}
-
-/* Estilo para las posiciones */
-.res-pos {
-    font-family: 'F1-Regular', sans-serif;
-    width: 25px;
-    text-align: center;
 }
 
 
@@ -1155,19 +1144,19 @@
             </div>
 
             <!-- RACE RESULTS -->
-            <section>
+            <section id="section-results">
                 <p class="rc-section-title">Race Results</p>
                 <div class="result-card" id="result-card"></div>
             </section>
 
             <!-- NOTABLE MOMENTS -->
-            <section>
+            <section id="section-moments">
                 <p class="rc-section-title">Notable Moments</p>
                 <div class="moments-card" id="moments-card"></div>
             </section>
 
             <!-- WEATHER -->
-            <section>
+            <section id="section-weather">
                 <p class="rc-section-title">Weekend Weather</p>
                 <div class="weather-grid" id="weather-card">
                     <div class="weather-day-card" id="weather-friday">
