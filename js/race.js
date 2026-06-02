@@ -332,11 +332,8 @@ function renderResult(gp, driverTeams = {}, driverNats = {}) {
     if (!container) return;
 
     if (!gp.results?.race?.length) {
-        container.innerHTML = `
-            <div class="result-pending">
-                <div class="result-pending-icon">🏁</div>
-                <p class="result-pending-text">Race not yet held</p>
-            </div>`;
+        const section = document.getElementById('section-results');
+        if (section) section.style.display = 'none';
         return;
     }
 
@@ -351,7 +348,7 @@ function renderResult(gp, driverTeams = {}, driverNats = {}) {
                         <th>Pos</th>
                         ${hasQuali ? '<th class="res-delta-col"></th>' : ''}
                         <th>Driver</th>
-                        <th class="res-nat-col">Nat.</th>
+                        <th class="res-nat-col">Nationality</th>
                         <th>Time</th>
                         <th style="text-align:center">Pts</th>
                     </tr>
@@ -396,9 +393,14 @@ function renderResult(gp, driverTeams = {}, driverNats = {}) {
 // ── NOTABLE MOMENTS ──────────────────────────────────────────────
 function renderNotableMoments(gp) {
     const container = document.getElementById('moments-card');
+    const section   = document.getElementById('section-moments');
     if (!container) return;
 
-    if (!gp.notableMoments?.length) { container.innerHTML = ''; return; }
+    if (!gp.notableMoments?.length) {
+        if (section) section.style.display = 'none';
+        return;
+    }
+    if (section) section.style.display = '';
 
     const rows = gp.notableMoments.map(m => {
         const hasPenalty  = m.action?.toLowerCase().includes('penalty') || m.action?.includes('+');
@@ -445,15 +447,25 @@ function renderNotableMoments(gp) {
 
 // ── WEATHER ──────────────────────────────────────────────────────
 function renderWeather(gp) {
-    if (!gp.weather) return;
-    ['friday', 'saturday', 'sunday'].forEach(day => {
-        const w = gp.weather[day];
-        if (!w) return;
-        document.getElementById(`weather-icon-${day}`).textContent      = w.icon      || '—';
-        document.getElementById(`weather-condition-${day}`).textContent  = w.condition || '—';
-        document.getElementById(`weather-temp-${day}`).textContent       = w.temp      || '—';
-        document.getElementById(`weather-notes-${day}`).textContent      = w.notes     || '—';
-        document.getElementById(`weather-rain-${day}`).textContent       = `💧 ${w.rainChance} rain chance`;
+    const section = document.getElementById('section-weather');
+    if (!Array.isArray(gp.weather) || !gp.weather.length) {
+        if (section) section.style.display = 'none';
+        return;
+    }
+    if (section) section.style.display = '';
+    gp.weather.forEach(w => {
+        const day = w.day;
+        if (!day) return;
+        const iconEl = document.getElementById(`weather-icon-${day}`);
+        const condEl = document.getElementById(`weather-condition-${day}`);
+        const tempEl = document.getElementById(`weather-temp-${day}`);
+        const noteEl = document.getElementById(`weather-notes-${day}`);
+        const rainEl = document.getElementById(`weather-rain-${day}`);
+        if (iconEl) iconEl.textContent = w.icon      || '—';
+        if (condEl) condEl.textContent = w.condition || '—';
+        if (tempEl) tempEl.textContent = w.temp      || '—';
+        if (noteEl) noteEl.textContent = w.notes     || '—';
+        if (rainEl) rainEl.textContent = `💧 ${w.rainChance} rain chance`;
     });
 }
 
