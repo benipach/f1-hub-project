@@ -43,15 +43,15 @@ async function loadDrivers(base = '.') {
     const res = await fetch(`${base}/data/drivers.json`);
     if (!res.ok) throw new Error(`drivers.json — HTTP ${res.status}`);
     const data = await res.json();
-    // Build a map: "First Last" -> teamId for 2026
     const teamMap = {};
+    const natMap  = {};
     for (const d of data.drivers) {
+        const key = `${d.firstName} ${d.lastName}`;
         const entry2026 = d.history?.find(h => h.year === 2026);
-        if (entry2026) {
-            teamMap[`${d.firstName} ${d.lastName}`] = entry2026.teamId;
-        }
+        if (entry2026) teamMap[key] = entry2026.teamId;
+        if (d.nationality) natMap[key] = d.nationality;
     }
-    return teamMap;
+    return { teamMap, natMap };
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!gpId) return;
 
     try {
-        const [season, circuits, driverTeams] = await Promise.all([
+        const [season, circuits, { teamMap: driverTeams, natMap: driverNats }] = await Promise.all([
             loadSeason('..'),
             loadCircuits('..'),
             loadDrivers('..')
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderHero(gp, circuit, circuitId);
         renderCircuitOverview(circuit, circuitId);
         renderFunFacts(circuit);
-        renderResult(gp, driverTeams);
+        renderResult(gp, driverTeams, driverNats);
         renderNotableMoments(gp);
         renderWeather(gp);
         renderHistory(circuit);
@@ -325,7 +325,9 @@ function gridDeltaHtml(racePos, qualiPos) {
 }
 
 // ── RESULT ───────────────────────────────────────────────────────
-function renderResult(gp, driverTeams = {}) {
+
+
+function renderResult(gp, driverTeams = {}, driverNats = {}) {
     const container = document.getElementById('result-card');
     if (!container) return;
 
@@ -349,6 +351,7 @@ function renderResult(gp, driverTeams = {}) {
                         <th>Pos</th>
                         ${hasQuali ? '<th class="res-delta-col"></th>' : ''}
                         <th>Driver</th>
+                        <th class="res-nat-col">Nat.</th>
                         <th>Time</th>
                         <th style="text-align:center">Pts</th>
                     </tr>
@@ -365,6 +368,7 @@ function renderResult(gp, driverTeams = {}) {
                         const posNum = parseInt(res.pos, 10);
                         const isTop3 = posNum >= 1 && posNum <= 3;
                         const qualiPos = qualiMap[normalizeName(res.driver)];
+                        const nat = driverNats[res.driver] || '—';
                         return `
                             <tr>
                                 <td class="res-pos${isTop3 ? ' top3' : ''}" style="${dim}">${res.pos}</td>
@@ -374,6 +378,7 @@ function renderResult(gp, driverTeams = {}) {
                                     <span class="driver-fullname">${res.driver}</span>
                                     <span class="driver-lastname">${res.driver.split(' ').slice(1).join(' ').slice(0, 3).toUpperCase()}</span>
                                 </td>
+                                <td class="res-nat" style="${dim}">${nat}</td>
                                 <td class="res-time" style="${dim}">${res.time}</td>
                                 <td class="res-pts" style="${dim}">${res.pts ?? 0}</td>
                             </tr>`;
@@ -381,6 +386,10 @@ function renderResult(gp, driverTeams = {}) {
                 </tbody>
             </table>
         </div>`;
+
+    if (typeof twemoji !== 'undefined') {
+        twemoji.parse(container, { folder: 'svg', ext: '.svg' });
+    }
 }
 
 
