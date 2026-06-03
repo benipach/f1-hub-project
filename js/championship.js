@@ -1,6 +1,23 @@
 // ── TEAM COLORS (Se llenan dinámicamente leyendo el CSS) ─────────
 const TEAM_COLORS = {};
 
+// ── TEAM ID → LOGO FILENAME ──────────────────────────────────────────────
+const TEAM_LOGO_MAP = {
+    'Mercedes':        'mercedes-logo',
+    'Ferrari':         'ferrari-logo',
+    'McLaren':         'mclaren-logo',
+    'Red Bull':        'redbull-logo',
+    'Aston Martin':    'astonmartin-logo',
+    'Alpine':          'alpine-logo',
+    'Williams':        'williams-logo',
+    'Racing Bulls':    'racingbulls-logo',
+    'Haas':            'haas-logo',
+    'Audi':            'audi-logo',
+    'Cadillac':        'cadillac-logo',
+};
+
+
+
 // ── HELPERS ───────────────────────────────────────────────────────────────
 function hexToRgba(hex, alpha) {
     // Si viene en formato RGB (como en tu CSS), lo transformamos a RGBA
@@ -146,100 +163,97 @@ function makeFilteredChart(canvasId, filterItemsId, selectAllId, datasets, label
 }
 
 // ── RENDER TABLES ────────────────────────────────────────────────────────
-function renderDriversTable(drivers) {
+function renderDriversTable(drivers, driverNats = {}) {
     const sorted = [...drivers].sort((a, b) => b.points - a.points);
     const leader = sorted[0].points;
     const wrap = document.getElementById('drivers-table-wrap');
-    wrap.innerHTML = ''; 
 
-    const scrollDiv = document.createElement('div');
-    const table = document.createElement('table');
-    table.className = 'standings-table';
-    table.innerHTML = `
-        <thead>
+    const rows = sorted.map((d, i) => {
+        const pos      = i + 1;
+        const gap      = pos === 1 ? '—' : `−${leader - d.points}`;
+        const code     = d.driver.split(' ').pop().slice(0, 3).toUpperCase();
+        const logoFile = TEAM_LOGO_MAP[d.team];
+        const logoHtml = logoFile
+            ? `<img class="st-team-logo" src="img/teams/${logoFile}.png" alt="${d.team}">`
+            : `<span class="st-team-logo-placeholder"></span>`;
+        const nat = driverNats[d.driver] || '—';
+
+        return `
             <tr>
-                <th>Pos</th>
-                <th>Driver</th>
-                <th>Team</th>
-                <th class="right">Points</th>
-                <th class="right">Gap</th>
-            </tr>
-        </thead>
-        <tbody id="drivers-tbody"></tbody>
-    `;
-    scrollDiv.appendChild(table);
-    wrap.appendChild(scrollDiv);
-    const tbody = document.getElementById('drivers-tbody');
-    sorted.forEach((d, i) => {
-        const pos = i + 1;
-        const gap = pos === 1 ? '—' : `−${leader - d.points}`;
-        const code = d.driver.split(' ').pop().slice(0, 3).toUpperCase();
-        const color = TEAM_COLORS[d.team] || '#ffffff';
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${pos}</td>
-            <td>
-                <div class="driver-cell">
-                    <span style="width:3px;height:28px;border-radius:2px;background:${color};flex-shrink:0"></span>
-                    <span class="driver-name">
+                <td class="st-pos">${pos}</td>
+                <td>
+                    <div class="st-driver">
+                        ${logoHtml}
                         <span class="driver-fullname">${d.driver}</span>
                         <span class="driver-code">${code}</span>
-                    </span>
-                </div>
-            </td>
-            <td class="team-name-cell">${d.team}</td>
-            <td class="right">${d.points}</td>
-            <td class="right">${gap}</td>
-        `;
-        tbody.appendChild(tr);
-    });
+                    </div>
+                </td>
+                <td class="st-nat">${nat}</td>
+                <td class="st-pts">${d.points}</td>
+                <td class="st-gap">${gap}</td>
+            </tr>`;
+    }).join('');
+
+    wrap.innerHTML = `
+        <table class="standings-table">
+            <thead>
+                <tr>
+                    <th>Pos</th>
+                    <th>Driver</th>
+                    <th>Nationality</th>
+                    <th style="text-align:center">Points</th>
+                    <th>Gap</th>
+                </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>`;
+
+    if (typeof twemoji !== 'undefined') {
+        twemoji.parse(wrap, { folder: 'svg', ext: '.svg' });
+    }
 }
 
 function renderConstructorsTable(constructors) {
     const sorted = [...constructors].sort((a, b) => b.points - a.points);
     const leader = sorted[0].points;
     const wrap = document.getElementById('constructors-table-wrap');
-    wrap.innerHTML = '';
 
-    const scrollDiv = document.createElement('div');
-    const table = document.createElement('table');
-    table.className = 'standings-table';
-    table.innerHTML = `
-        <thead>
-            <tr>
-                <th>Pos</th>
-                <th>Constructor</th>
-                <th class="right">Points</th>
-                <th class="right">Gap</th>
-            </tr>
-        </thead>
-        <tbody id="constructors-tbody"></tbody>
-    `;
-    scrollDiv.appendChild(table);
-    wrap.appendChild(scrollDiv);
-    const tbody = document.getElementById('constructors-tbody');
-    sorted.forEach((c, i) => {
-        const pos = i + 1;
-        const gap = pos === 1 ? '—' : `−${leader - c.points}`;
-        const color = TEAM_COLORS[c.team] || '#ffffff';
+    const rows = sorted.map((c, i) => {
+        const pos      = i + 1;
+        const gap      = pos === 1 ? '—' : `−${leader - c.points}`;
+        const logoFile = TEAM_LOGO_MAP[c.team];
+        const logoHtml = logoFile
+            ? `<img class="st-team-logo" src="img/teams/${logoFile}.png" alt="${c.team}">`
+            : `<span class="st-team-logo-placeholder"></span>`;
         const shortName = c.team.split(' ').slice(0, 2).join(' ');
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${pos}</td>
-            <td>
-                <div class="driver-cell">
-                    <span style="width:3px;height:28px;border-radius:2px;background:${color};flex-shrink:0"></span>
-                    <span>
+
+        return `
+            <tr>
+                <td class="st-pos">${pos}</td>
+                <td>
+                    <div class="st-driver">
+                        ${logoHtml}
                         <span class="constructor-fullname">${c.team}</span>
                         <span class="constructor-short">${shortName}</span>
-                    </span>
-                </div>
-            </td>
-            <td class="right">${c.points}</td>
-            <td class="right">${gap}</td>
-        `;
-        tbody.appendChild(tr);
-    });
+                    </div>
+                </td>
+                <td class="st-pts">${c.points}</td>
+                <td class="st-gap">${gap}</td>
+            </tr>`;
+    }).join('');
+
+    wrap.innerHTML = `
+        <table class="standings-table">
+            <thead>
+                <tr>
+                    <th>Pos</th>
+                    <th>Constructor</th>
+                    <th style="text-align:center">Pts</th>
+                    <th>Gap</th>
+                </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>`;
 }
 
 // ── MAIN LOADER ───────────────────────────────────────────────────────────
@@ -254,7 +268,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     TEAM_COLORS['Mercedes']        = rootStyles.getPropertyValue('--f1-mercedes').trim() || '#27F4D2';
     TEAM_COLORS['Ferrari']         = rootStyles.getPropertyValue('--f1-ferrari').trim() || '#E8002D';
     TEAM_COLORS['McLaren']         = rootStyles.getPropertyValue('--f1-mclaren').trim() || '#FF8000';
-    TEAM_COLORS['Red Bull Racing'] = rootStyles.getPropertyValue('--f1-red-bull').trim() || '#3671C6';
+    TEAM_COLORS['Red Bull'] = rootStyles.getPropertyValue('--f1-red-bull').trim() || '#3671C6';
     TEAM_COLORS['Aston Martin']    = rootStyles.getPropertyValue('--f1-aston-martin').trim() || '#229971';
     TEAM_COLORS['Alpine']          = rootStyles.getPropertyValue('--f1-alpine').trim() || '#FF87BC';
     TEAM_COLORS['Williams']        = rootStyles.getPropertyValue('--f1-williams').trim() || '#64C4FF';
@@ -277,12 +291,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Lookup: "Nombre Apellido" → teamId del año 2026
         const driverTeamLookup = {};
+        const driverNatLookup  = {};
         driversData.drivers.forEach(d => {
+            const fullName = `${d.firstName} ${d.lastName}`;
             const entry2026 = d.history.find(h => h.year === 2026);
-            if (entry2026) {
-                const fullName = `${d.firstName} ${d.lastName}`;
-                driverTeamLookup[fullName] = entry2026.teamId;
-            }
+            if (entry2026) driverTeamLookup[fullName] = entry2026.teamId;
+            if (d.nationality) driverNatLookup[fullName] = d.nationality;
         });
 
         // 1. OBTENER CARRERAS Y FILTRAR LAS CANCELADAS
@@ -333,7 +347,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         });
 
-        renderDriversTable(Object.values(driverMap));
+        renderDriversTable(Object.values(driverMap), driverNatLookup);
 
         const driverDatasets = Object.values(driverMap)
             .sort((a, b) => b.points - a.points)
