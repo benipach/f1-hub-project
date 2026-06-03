@@ -132,9 +132,8 @@
     padding: 0;
     border: none;
     color: var(--text-light);
-    font-family: 'F1-Regular';
-    font-size: clamp(16px, 4vw, 32px);
-    letter-spacing: 4px;
+    font-family: 'F1-Black';
+    font-size: clamp(24px, 4vw, 48px);
     text-transform: uppercase;
 }
 
@@ -293,7 +292,7 @@
 
 .chart-title {
     color: var(--text-dim);
-    font-family: 'F1-Bold', sans-serif;
+    font-family: 'F1-Bold';
     font-size: 12px;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -313,7 +312,7 @@
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.04);
     color: var(--text-light);
-    font-family: 'F1-Regular', sans-serif;
+    font-family: 'F1-Regular';
     font-size: 12px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
