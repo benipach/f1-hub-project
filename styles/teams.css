@@ -327,3 +327,17 @@
     .tc-car { right: 0; width: 75%; bottom: 16px;}
     .teamcard:hover .tc-car { transform: translateX(-15%) translateY(-50%) scale(1.25); }
 }
+/* ---- TEAM LOGO IN CARD ---- */
+.tc-name-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tc-logo {
+    width: 32px;
+    object-fit: contain;
+    flex-shrink: 0;
+    opacity: 0.92;
+    filter: drop-shadow(0 0 6px rgba(0,0,0,0.5));
+}
