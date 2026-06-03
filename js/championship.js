@@ -69,6 +69,7 @@ document.addEventListener('click', e => {
 
 // ── FILTERED CHART BUILDER ───────────────────────────────────────────────
 function makeFilteredChart(canvasId, filterItemsId, selectAllId, datasets, labels) {
+    const isMobile = window.matchMedia('(max-width: 500px)').matches;
     const visible = new Set(datasets.map(d => d.id));
     const chartDatasets = () => datasets
         .filter(d => visible.has(d.id))
@@ -77,10 +78,10 @@ function makeFilteredChart(canvasId, filterItemsId, selectAllId, datasets, label
             data: d.data,
             borderColor: d.color,
             backgroundColor: 'transparent',
-            borderWidth: 2,
-            pointRadius: 2,
+            borderWidth: isMobile ? 1.5 : 2,
+            pointRadius: isMobile ? 1 : 2,
             pointBackgroundColor: d.color,
-            pointHoverRadius: 5,
+            pointHoverRadius: isMobile ? 3 : 5,
             tension: 0,
             spanGaps: false,
         }));
@@ -91,6 +92,7 @@ function makeFilteredChart(canvasId, filterItemsId, selectAllId, datasets, label
         data: { labels, datasets: chartDatasets() },
         options: {
             responsive: true,
+            aspectRatio: isMobile ? 1.2 : 2,
             interaction: { mode: 'nearest', intersect: false }, 
             plugins: {
                 legend: { display: false },
