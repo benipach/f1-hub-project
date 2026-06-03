@@ -106,6 +106,24 @@ function makeFilteredChart(canvasId, filterItemsId, selectAllId, datasets, label
                     callbacks: {
                         label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y ?? '—'} pts`
                     }
+                },
+                zoom: {
+                    pan: {
+                        enabled: true,
+                        mode: 'x',
+                    },
+                    zoom: {
+                        wheel: { enabled: true },
+                        pinch: { enabled: true },
+                        mode: 'x',
+                    },
+                    limits: {
+                        x: { minRange: 2 },
+                    },
+                    animation: {
+                        duration: 300,
+                        easing: 'easeOutCubic',
+                    },
                 }
             },
             scales: {
@@ -120,6 +138,52 @@ function makeFilteredChart(canvasId, filterItemsId, selectAllId, datasets, label
         chart.data.datasets = chartDatasets();
         chart.update();
     }
+
+    // ── RESET ZOOM ────────────────────────────────────────────────
+    const chartCard = document.getElementById(canvasId).closest('.chart-card');
+    const resetBtn = document.createElement('button');
+    resetBtn.textContent = 'Reset zoom';
+    resetBtn.className = 'chart-reset-zoom';
+    resetBtn.style.cssText = [
+        'display:none',
+        'position:absolute',
+        'bottom:12px',
+        'right:12px',
+        'padding:5px 10px',
+        'border:1px solid rgba(255,255,255,0.12)',
+        'border-radius:6px',
+        'background:rgba(255,255,255,0.06)',
+        'color:rgba(255,255,255,0.5)',
+        "font-family:'F1-Regular',sans-serif",
+        'font-size:10px',
+        'letter-spacing:1.5px',
+        'text-transform:uppercase',
+        'cursor:pointer',
+    ].join(';');
+    chartCard.style.position = 'relative';
+    chartCard.appendChild(resetBtn);
+
+    resetBtn.addEventListener('click', () => {
+        chart.resetZoom();
+        resetBtn.style.display = 'none';
+    });
+
+    document.getElementById(canvasId).addEventListener('wheel', () => {
+        resetBtn.style.display = 'block';
+    }, { passive: true });
+
+    let lastTap = 0;
+    document.getElementById(canvasId).addEventListener('touchstart', e => {
+        if (e.touches.length > 1) { resetBtn.style.display = 'block'; return; }
+        const now = Date.now();
+        if (now - lastTap < 300) { chart.resetZoom(); resetBtn.style.display = 'none'; }
+        lastTap = now;
+    }, { passive: true });
+
+    document.getElementById(canvasId).addEventListener('dblclick', () => {
+        chart.resetZoom();
+        resetBtn.style.display = 'none';
+    });
 
     const container = document.getElementById(filterItemsId);
     datasets.forEach(d => {
