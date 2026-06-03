@@ -145,88 +145,134 @@
     background: var(--primary-red);
 }
 
-/* Standings table */
+/* ======================================== */
+/*           STANDINGS TABLE SYSTEM         */
+/* (ported from race.html data-table)       */
+/* ======================================== */
+
 .standings-table-wrap {
-    overflow: hidden;
-    background: rgb(20,20,30);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
-}
-
-.standings-table-wrap > div {
-    max-height: 592px;
     overflow-y: auto;
-}
-
-.standings-table-wrap > div::-webkit-scrollbar {
-    width: 4px;
-}
-
-.standings-table-wrap > div::-webkit-scrollbar-track {
     background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    max-height: 610px;
 }
 
-.standings-table-wrap > div::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 3px;
-}
-
-.standings-table-wrap > div::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
+.standings-table-wrap::-webkit-scrollbar { width: 4px; }
+.standings-table-wrap::-webkit-scrollbar-track { background: transparent; }
+.standings-table-wrap::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 3px; }
+.standings-table-wrap::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
 
 .standings-table {
     width: 100%;
     border-collapse: collapse;
     font-family: 'F1-Regular', sans-serif;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
+    font-size: 14px;
+    letter-spacing: 0.5px;
 }
 
 .standings-table thead tr {
     position: sticky;
     top: 0;
     z-index: 1;
-    background: rgb(30,30,40);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .standings-table th {
-    height: 64px;
+    height: 36px;
     padding: 0 20px;
-    background: rgb(30,30,40);
-    color: var(--text-dim);
-    font-size: 12px;
-    letter-spacing: 1px;
     text-align: left;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
     text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+    background: rgb(12, 12, 20);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    white-space: nowrap;
 }
 
 .standings-table td {
-    height: 48px;
+    height: 52px;
     padding: 0 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     color: var(--text-light);
-    font-family: 'F1-Regular', sans-serif;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     letter-spacing: 0.1px;
-    text-transform: none;
+    background: rgb(18, 18, 28);
 }
 
-.standings-table tbody tr:last-child td {
-    border-bottom: none;
-}
+.standings-table tbody tr:last-child td { border-bottom: none; }
 
 .standings-table tbody tr:hover td {
-    background: rgba(255, 255, 255, 0.025);
+    background: rgba(255, 255, 255, 0.03);
 }
 
-.driver-code {
-    display: none;
+/* ---- POS CELL ---- */
+.st-pos {
+    width: 25px;
+    text-align: center;
+    font-family: 'F1-Regular';
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.4);
 }
 
-.constructor-short {
-    display: none;
+/* ---- DRIVER CELL ---- */
+.st-driver {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
+
+.st-team-logo {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    flex-shrink: 0;
+    opacity: 0.9;
+}
+
+.st-team-logo-placeholder {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* ---- NATIONALITY CELL ---- */
+.standings-table td.st-nat {
+    width: auto;
+    white-space: nowrap;
+    padding: 0 20px;
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    color: var(--text-light);
+}
+
+.standings-table td.st-nat img {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin-right: 7px;
+    margin-bottom: 2px;
+}
+
+/* ---- POINTS CELL ---- */
+.st-pts {
+    text-align: center;
+    font-family: 'F1-Regular';
+    font-size: 14px;
+    color: var(--text-light);
+}
+
+/* ---- GAP CELL ---- */
+.st-gap {
+    font-family: 'F1-Regular';
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+}
+
+/* ---- VISIBILITY HELPERS ---- */
+.driver-code      { display: none; }
+.constructor-short { display: none; }
 
 
 /* Chart Card */
@@ -366,7 +412,7 @@
         max-width: 85%;
         padding: 128px 0;
     }
-    
+
     .standings-table td,
     .standings-table th {
         padding: 0 15px;
@@ -383,8 +429,8 @@
     }
 
     .standings-table th {
-        height: 50px;
-        font-size: 10px;
+        height: 28px;
+        font-size: 9px;
     }
 
     .standings-table td {
@@ -397,34 +443,27 @@
         padding: 0 10px;
     }
 
-    .standings-table-wrap > div {
-    max-height: 401px;
+    .standings-table-wrap {
+        max-height: 401px;
     }
 
-    .team-name-cell {
-        display: none;
-    }
-
+    /* Ocultar columna Team en drivers (col 3) */
     #tab-drivers .standings-table th:nth-child(3),
     #tab-drivers .standings-table td:nth-child(3) {
         display: none;
     }
 
-    .driver-fullname {
+    /* Ocultar Nationality en constructors (col 2) */
+    #tab-constructors .standings-table th:nth-child(2),
+    #tab-constructors .standings-table td:nth-child(2) {
         display: none;
     }
 
-    .driver-code {
-        display: inline;
-    }
+    .driver-fullname  { display: none; }
+    .driver-code      { display: inline; }
 
-    .constructor-fullname {
-        display: none;
-    }
-
-    .constructor-short {
-        display: inline;
-    }
+    .constructor-fullname { display: none; }
+    .constructor-short    { display: inline; }
 
     .chart-card {
         padding: 1.25rem 1rem 1rem;
