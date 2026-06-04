@@ -45,13 +45,15 @@ async function loadDrivers(base = '.') {
     const data = await res.json();
     const teamMap = {};
     const natMap  = {};
+    const numberMap = {};
     for (const d of data.drivers) {
         const key = `${d.firstName} ${d.lastName}`;
         const entry2026 = d.history?.find(h => h.year === 2026);
         if (entry2026) teamMap[key] = entry2026.teamId;
         if (d.nationality) natMap[key] = d.nationality;
+        if (d.number != null) numberMap[key] = d.number;
     }
-    return { teamMap, natMap };
+    return { teamMap, natMap, numberMap };
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────
@@ -90,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!gpId) return;
 
     try {
-        const [season, circuits, { teamMap: driverTeams, natMap: driverNats }] = await Promise.all([
+        const [season, circuits, { teamMap: driverTeams, natMap: driverNats, numberMap: driverNumbers }] = await Promise.all([
             loadSeason('..'),
             loadCircuits('..'),
             loadDrivers('..')
@@ -106,7 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderHero(gp, circuit, circuitId);
         renderCircuitOverview(circuit, circuitId);
         renderFunFacts(circuit);
-        renderResult(gp, driverTeams, driverNats);
+        renderResult(gp, driverTeams, driverNats, driverNumbers);
         renderNotableMoments(gp);
         renderWeather(gp);
         renderHistory(circuit);
@@ -282,6 +284,21 @@ const TEAM_LOGO_MAP = {
     'Cadillac':        'cadillac-logo',
 };
 
+// ── TEAM ID → PRIMARY COLOR ──────────────────────────────────────────────
+const TEAM_COLOR_MAP = {
+    'Mercedes':         '#2BFFDB',
+    'Ferrari':          '#FF0019',
+    'McLaren':          '#FF7F00',
+    'Red Bull':         '#22477A',
+    'Aston Martin':     '#229971',
+    'Alpine':           '#00B2FF',
+    'Williams':         '#1C7AFF',
+    'Racing Bulls':     '#667DFF',
+    'Haas':             '#DEE1E2',
+    'Audi':             '#FF2E2E',
+    'Cadillac':         '#AAAAAD',
+};
+
 // ── GRID DELTA HELPERS ───────────────────────────────────────────
 
 // Normaliza nombres para comparar entre qualifying y race
@@ -327,7 +344,7 @@ function gridDeltaHtml(racePos, qualiPos) {
 // ── RESULT ───────────────────────────────────────────────────────
 
 
-function renderResult(gp, driverTeams = {}, driverNats = {}) {
+function renderResult(gp, driverTeams = {}, driverNats = {}, driverNumbers = {}) {
     const container = document.getElementById('result-card');
     if (!container) return;
 
@@ -348,16 +365,18 @@ function renderResult(gp, driverTeams = {}, driverNats = {}) {
                         <th>Pos</th>
                         ${hasQuali ? '<th class="res-delta-col"></th>' : ''}
                         <th>Driver</th>
-                        <th class="res-nat-col">Nationality</th>
-                        <th>Time</th>
+                        <th class="res-team-col">Team</th>
+                        <th class="res-time-col">Time</th>
                         <th style="text-align:center">Pts</th>
                     </tr>
                 </thead>
                 <tbody>
                     ${gp.results.race.map(res => {
-                        const teamId   = driverTeams[res.driver] || '';
-                        const logoFile = TEAM_LOGO_MAP[teamId];
-                        const logoHtml = logoFile
+                        const teamId    = driverTeams[res.driver] || '';
+                        const logoFile  = TEAM_LOGO_MAP[teamId];
+                        const teamColor = TEAM_COLOR_MAP[teamId] || 'rgba(255,255,255,0.4)';
+                        const driverNum = driverNumbers[res.driver] ?? '';
+                        const logoHtml  = logoFile
                             ? `<img class="res-team-logo" src="../img/teams/${logoFile}.png" alt="${teamId}">`
                             : `<span class="res-team-logo-placeholder"></span>`;
                         const isDnf  = res.time === 'DNF' || res.time === 'DNS';
@@ -365,17 +384,21 @@ function renderResult(gp, driverTeams = {}, driverNats = {}) {
                         const posNum = parseInt(res.pos, 10);
                         const isTop3 = posNum >= 1 && posNum <= 3;
                         const qualiPos = qualiMap[normalizeName(res.driver)];
-                        const nat = driverNats[res.driver] || '—';
                         return `
                             <tr>
                                 <td class="res-pos${isTop3 ? ' top3' : ''}" style="${dim}">${res.pos}</td>
                                 ${hasQuali ? `<td class="res-delta-cell" style="${dim}">${gridDeltaHtml(res.pos, qualiPos)}</td>` : ''}
                                 <td class="res-driver" style="${dim}">
-                                    ${logoHtml}
+                                    <span class="res-driver-number" style="color:${teamColor}">#${driverNum}</span>
                                     <span class="driver-fullname">${res.driver}</span>
                                     <span class="driver-lastname">${res.driver.split(' ').slice(1).join(' ').slice(0, 3).toUpperCase()}</span>
                                 </td>
-                                <td class="res-nat" style="${dim}">${nat}</td>
+                                <td class="res-team-cell" style="${dim}">
+                                    <div class="res-team">
+                                        ${logoHtml}
+                                        <span class="res-team-name">${teamId || '—'}</span>
+                                    </div>
+                                </td>
                                 <td class="res-time" style="${dim}">${res.time}</td>
                                 <td class="res-pts" style="${dim}">${res.pts ?? 0}</td>
                             </tr>`;
@@ -434,7 +457,7 @@ function renderNotableMoments(gp) {
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Time</th>
+                        <th class="res-time-col">Time</th>
                         <th>Event</th>
                         <th>Drivers Involved</th>
                         <th>Action</th>
@@ -490,7 +513,7 @@ function renderHistory(circuit) {
                     <tr>
                         <th>Year</th>
                         <th>Winner</th>
-                        <th>Team</th>
+                        <th class="res-team-col">Team</th>
                         <th>Pole Position</th>
                     </tr>
                 </thead>
