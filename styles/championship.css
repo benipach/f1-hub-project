@@ -446,17 +446,12 @@
         max-height: 401px;
     }
 
-    /* Ocultar columna Team en drivers (col 3) */
     #tab-drivers .standings-table th:nth-child(3),
     #tab-drivers .standings-table td:nth-child(3) {
         display: none;
     }
 
-    /* Ocultar Nationality en constructors (col 2) */
-    #tab-constructors .standings-table th:nth-child(2),
-    #tab-constructors .standings-table td:nth-child(2) {
-        display: none;
-    }
+
 
     .driver-fullname  { display: none; }
     .driver-code      { display: inline; }
