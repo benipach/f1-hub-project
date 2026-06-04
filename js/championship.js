@@ -229,32 +229,41 @@ function makeFilteredChart(canvasId, filterItemsId, selectAllId, datasets, label
 }
 
 // ── RENDER TABLES ────────────────────────────────────────────────────────
-function renderDriversTable(drivers, driverNats = {}) {
+function renderDriversTable(drivers, driverNats = {}, driverNumbers = {}) {
     const sorted = [...drivers].sort((a, b) => b.points - a.points);
     const leader = sorted[0].points;
     const wrap = document.getElementById('drivers-table-wrap');
 
     const rows = sorted.map((d, i) => {
-        const pos      = i + 1;
-        const gap      = pos === 1 ? '—' : `−${leader - d.points}`;
-        const code     = d.driver.split(' ').pop().slice(0, 3).toUpperCase();
-        const logoFile = TEAM_LOGO_MAP[d.team];
-        const logoHtml = logoFile
+        const pos        = i + 1;
+        const gap        = pos === 1 ? '—' : `−${leader - d.points}`;
+        const code       = d.driver.split(' ').pop().slice(0, 3).toUpperCase();
+        const logoFile   = TEAM_LOGO_MAP[d.team];
+        const logoHtml   = logoFile
             ? `<img class="st-team-logo" src="img/teams/${logoFile}.png" alt="${d.team}">`
             : `<span class="st-team-logo-placeholder"></span>`;
-        const nat = driverNats[d.driver] || '—';
+        const num        = driverNumbers[d.driver] || '';
+        const teamColor  = TEAM_COLORS[d.team] || 'rgba(255,255,255,0.4)';
+        const numHtml    = num
+            ? `<span class="st-driver-num" style="color:${teamColor}">#${num}</span>`
+            : '';
 
         return `
             <tr>
                 <td class="st-pos">${pos}</td>
                 <td>
                     <div class="st-driver">
-                        ${logoHtml}
+                        ${numHtml}
                         <span class="driver-fullname">${d.driver}</span>
                         <span class="driver-code">${code}</span>
                     </div>
                 </td>
-                <td class="st-nat">${nat}</td>
+                <td>
+                    <div class="st-team-cell">
+                        ${logoHtml}
+                        <span class="team-name">${d.team}</span>
+                    </div>
+                </td>
                 <td class="st-pts">${d.points}</td>
                 <td class="st-gap">${gap}</td>
             </tr>`;
@@ -266,8 +275,8 @@ function renderDriversTable(drivers, driverNats = {}) {
                 <tr>
                     <th>Pos</th>
                     <th>Driver</th>
-                    <th>Nationality</th>
-                    <th style="text-align:center">Points</th>
+                    <th>Team</th>
+                    <th style="text-align:center">Pts</th>
                     <th>Gap</th>
                 </tr>
             </thead>
@@ -331,18 +340,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const softGridColor = 'rgba(255, 255, 255, 0.1)';
 
     // ── OBTENER COLORES DINÁMICAMENTE DESDE EL CSS ──
-    TEAM_COLORS['Mercedes']        = rootStyles.getPropertyValue('--f1-mercedes').trim() || '#27F4D2';
-    TEAM_COLORS['Ferrari']         = rootStyles.getPropertyValue('--f1-ferrari').trim() || '#E8002D';
-    TEAM_COLORS['McLaren']         = rootStyles.getPropertyValue('--f1-mclaren').trim() || '#FF8000';
-    TEAM_COLORS['Red Bull'] = rootStyles.getPropertyValue('--f1-red-bull').trim() || '#3671C6';
-    TEAM_COLORS['Aston Martin']    = rootStyles.getPropertyValue('--f1-aston-martin').trim() || '#229971';
-    TEAM_COLORS['Alpine']          = rootStyles.getPropertyValue('--f1-alpine').trim() || '#FF87BC';
-    TEAM_COLORS['Williams']        = rootStyles.getPropertyValue('--f1-williams').trim() || '#64C4FF';
-    TEAM_COLORS['Racing Bulls']    = rootStyles.getPropertyValue('--f1-racing-bulls').trim() || '#6692FF';
-    TEAM_COLORS['Haas F1 Team']    = rootStyles.getPropertyValue('--f1-haas').trim() || '#B6BABD';
-    TEAM_COLORS['Audi']            = rootStyles.getPropertyValue('--f1-audi').trim() || '#ffffff';
-    TEAM_COLORS['Cadillac']        = rootStyles.getPropertyValue('--f1-cadillac').trim() || '#C5003E';
-
+    TEAM_COLORS['Mercedes']     = rootStyles.getPropertyValue('--f1-mercedes');
+    TEAM_COLORS['Ferrari']      = rootStyles.getPropertyValue('--f1-ferrari');
+    TEAM_COLORS['McLaren']      = rootStyles.getPropertyValue('--f1-mclaren');
+    TEAM_COLORS['Red Bull']     = rootStyles.getPropertyValue('--f1-red-bull');
+    TEAM_COLORS['Aston Martin'] = rootStyles.getPropertyValue('--f1-aston-martin');
+    TEAM_COLORS['Alpine']       = rootStyles.getPropertyValue('--f1-alpine');
+    TEAM_COLORS['Williams']     = rootStyles.getPropertyValue('--f1-williams');
+    TEAM_COLORS['Racing Bulls'] = rootStyles.getPropertyValue('--f1-racing-bulls');
+    TEAM_COLORS['Haas']         = rootStyles.getPropertyValue('--f1-haas');
+    TEAM_COLORS['Audi']         = rootStyles.getPropertyValue('--f1-audi');
+    TEAM_COLORS['Cadillac']     = rootStyles.getPropertyValue('--f1-cadillac');
+    
     Chart.defaults.font.family = "'F1-Regular', sans-serif";
     Chart.defaults.color = dimColor;
     Chart.defaults.borderColor = softGridColor;
@@ -356,13 +365,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         const driversData = await driversRes.json();
 
         // Lookup: "Nombre Apellido" → teamId del año 2026
-        const driverTeamLookup = {};
-        const driverNatLookup  = {};
+        const driverTeamLookup   = {};
+        const driverNatLookup    = {};
+        const driverNumberLookup = {};
         driversData.drivers.forEach(d => {
-            const fullName = `${d.firstName} ${d.lastName}`;
+            const fullName  = `${d.firstName} ${d.lastName}`;
             const entry2026 = d.history.find(h => h.year === 2026);
             if (entry2026) driverTeamLookup[fullName] = entry2026.teamId;
             if (d.nationality) driverNatLookup[fullName] = d.nationality;
+            if (d.number)      driverNumberLookup[fullName] = d.number;
         });
 
         // 1. OBTENER CARRERAS Y FILTRAR LAS CANCELADAS
@@ -413,7 +424,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         });
 
-        renderDriversTable(Object.values(driverMap), driverNatLookup);
+        renderDriversTable(Object.values(driverMap), driverNatLookup, driverNumberLookup);
 
         const driverDatasets = Object.values(driverMap)
             .sort((a, b) => b.points - a.points)
