@@ -235,23 +235,28 @@
     flex-shrink: 0;
 }
 
-/* ---- NATIONALITY CELL ---- */
-.standings-table td.st-nat {
-    width: auto;
-    white-space: nowrap;
-    padding: 0 20px;
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 14px;
+/* ---- DRIVER NUMBER ---- */
+.st-driver-num {
+    font-family: 'F1-Bold';
+    font-size: 13px;
     letter-spacing: 0.5px;
-    color: var(--text-light);
+    transform: skewX(-15deg);
+    flex-shrink: 0;
+    min-width: 32px;
 }
 
-.standings-table td.st-nat img {
-    width: 18px;
-    height: 18px;
-    vertical-align: middle;
-    margin-right: 7px;
-    margin-bottom: 2px;
+/* ---- TEAM CELL ---- */
+.st-team-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.team-name {
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 14px;
+    color: var(--text-light);
+    white-space: nowrap;
 }
 
 /* ---- POINTS CELL ---- */
@@ -449,6 +454,16 @@
     #tab-drivers .standings-table th:nth-child(3),
     #tab-drivers .standings-table td:nth-child(3) {
         display: none;
+    }
+
+    /* Reduce driver number size on mobile */
+    .st-driver-num {
+        font-size: 11px;
+        min-width: 28px;
+    }
+
+    .team-name {
+        font-size: 0.75rem;
     }
 
 
