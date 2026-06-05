@@ -323,6 +323,7 @@
     .teams-hero-num-bg { display: none; }
     .tc-car { width: 85%; right: -10%; }
     .tc-bg-text { font-size: 3.5rem; }
+    .teamcard { height: 220px; }
     .teamcard:hover .tc-bg-text { transform: translateY(-5%); }
     .tc-car { right: 0; width: 75%; bottom: 16px;}
     .teamcard:hover .tc-car { transform: translateX(-15%) translateY(-50%) scale(1.25); }
