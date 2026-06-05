@@ -8,7 +8,7 @@
     align-items: flex-end;
     justify-content: space-between;
     gap: 3rem;
-    min-height: 100vh;
+    height: 100vh;
     padding: 0 5% 5rem;
 }
 
@@ -20,15 +20,7 @@
     width: 100%;
     height: 110vh;
     object-fit: cover;
-    filter: brightness(0.8) ;
-}
-
-.race-hero-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    width: 100%;
-    height: 100%;
+    filter: brightness(0.75) ;
 }
 
 /* Left content */
@@ -416,11 +408,6 @@
         text-align: center;
     }
 
-    .race-hero-bg,
-    .race-hero-overlay {
-        height: 100%;
-    }
-
     .race-hero-content {
         position: relative;
         top: 0;
@@ -568,6 +555,7 @@
     border-left: 5px solid var(--primary-red);
     font-size: 48px;
     text-transform: uppercase;
+    line-height: 0.9;
 }
 
 .race-card {
