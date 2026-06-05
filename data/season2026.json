@@ -1950,7 +1950,32 @@
     },
     "results": [],
     "notableMoments": [],
-    "weather": []
+    "weather": [
+      {
+        "day": "friday",
+        "condition": "Partly sunny",
+        "notes": "FP1 and Sprint Qualifying, pleasant conditions with partly sunny skies",
+        "rainChance": "15%",
+        "temp": "21°C",
+        "icon": "⛅"
+      },
+      {
+        "day": "saturday",
+        "condition": "Partly sunny",
+        "notes": "Sprint Race and Qualifying, great racing weather with partly sunny skies",
+        "rainChance": "10%",
+        "temp": "21°C",
+        "icon": "⛅"
+      },
+      {
+        "day": "sunday",
+        "condition": "Partly sunny",
+        "notes": "Race day, mostly dry and partly sunny with low risk of showers",
+        "rainChance": "10%",
+        "temp": "21°C",
+        "icon": "⛅"
+      }
+    ]
   },
   "barcelona-gp": {
     "round": 9,
