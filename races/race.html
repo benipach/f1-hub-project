@@ -757,6 +757,18 @@
     color: var(--text-light);
 }
 
+.res-gap-col { width: 90px; white-space: nowrap; }
+
+.res-gap {
+    font-family: 'F1-Regular';
+    font-size: 14px;
+    color: rgba(255,255,255,0.45);
+    white-space: nowrap;
+}
+
+.res-team-col { white-space: nowrap; }
+.res-time-col { white-space: nowrap; }
+
 /* ---- GRID DELTA ---- */
 .res-delta-col {
     width: 52px;
@@ -952,10 +964,27 @@
         .cs-stat-val { font-size: 18px; }
 
         /* Tables — result table */
-        #result-card .res-team-cell { display: none; }
-        #result-card .data-table td.res-time { display: none; }
+        #result-card .res-team-cell,
+        #sprint-race-card .res-team-cell,
+        #qualifying-card .res-team-cell,
+        #sprint-qualy-card .res-team-cell,
+        #fp1-card .res-team-cell,
+        #fp2-card .res-team-cell,
+        #fp3-card .res-team-cell { display: none; }
+
+        #result-card .data-table td.res-time,
+        #sprint-race-card .data-table td.res-time { display: none; }
+
         #result-card .data-table th.res-team-col,
-        #result-card .data-table th.res-time-col { display: none; }
+        #result-card .data-table th.res-time-col,
+        #sprint-race-card .data-table th.res-team-col,
+        #sprint-race-card .data-table th.res-time-col,
+        #qualifying-card .data-table th.res-team-col,
+        #sprint-qualy-card .data-table th.res-team-col,
+        #fp1-card .data-table th.res-team-col,
+        #fp2-card .data-table th.res-team-col,
+        #fp3-card .data-table th.res-team-col { display: none; }
+
         #moments-card .data-table th:nth-child(3),
         #moments-card .data-table td:nth-child(3) { display: none; }
         #history-card .data-table td:last-child,
@@ -976,6 +1005,54 @@
     }
 
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* ---- SESSION TABS ---- */
+    .session-tab-bar {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        margin-bottom: 0;
+        flex-wrap: wrap;
+    }
+
+    .session-tab-btn {
+        margin-bottom: -1px;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-bottom: 2px solid transparent;
+        background: none;
+        color: var(--text-dim);
+        font-family: 'F1-Regular', sans-serif;
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: color 0.2s, border-color 0.2s;
+        white-space: nowrap;
+    }
+
+    .session-tab-btn:hover {
+        color: var(--text-light);
+    }
+
+    .session-tab-btn.active {
+        border-bottom-color: var(--primary-red);
+        color: var(--text-light);
+    }
+
+    .session-tab-panel {
+        display: none;
+        padding-top: 2.5rem;
+    }
+
+    .session-tab-panel.active {
+        display: block;
+    }
+
+    /* Remove the section's own bottom margin when inside tab panel */
+    .session-tab-panel > section {
+        margin: 0;
+    }
 
     </style>
 </head>
@@ -1151,20 +1228,70 @@
                 <span class="season-divider-label">2026 Season</span>
             </div>
 
-            <!-- RACE RESULTS -->
-            <section id="section-results">
-                <p class="rc-section-title">Race Results</p>
-                <div class="result-card" id="result-card"></div>
-            </section>
+            <!-- SESSION TABS CONTAINER -->
+            <div id="session-tabs-container">
+                <!-- Tab bar — built dynamically by JS after sessions render -->
+                <nav class="session-tab-bar" id="session-tab-bar" aria-label="Session tabs"></nav>
 
-            <!-- NOTABLE MOMENTS -->
-            <section id="section-moments">
-                <p class="rc-section-title">Notable Moments</p>
-                <div class="moments-card" id="moments-card"></div>
-            </section>
+                <!-- FREE PRACTICE 1 -->
+                <div class="session-tab-panel" id="tab-panel-fp1" data-session="fp1" data-label="FP1">
+                    <section id="section-fp1">
+                        <p class="rc-section-title">Free Practice 1</p>
+                        <div class="result-card" id="fp1-card"></div>
+                    </section>
+                </div>
 
-            <!-- WEATHER -->
-            <section id="section-weather">
+                <!-- FREE PRACTICE 2 -->
+                <div class="session-tab-panel" id="tab-panel-fp2" data-session="fp2" data-label="FP2">
+                    <section id="section-fp2">
+                        <p class="rc-section-title">Free Practice 2</p>
+                        <div class="result-card" id="fp2-card"></div>
+                    </section>
+                </div>
+
+                <!-- FREE PRACTICE 3 -->
+                <div class="session-tab-panel" id="tab-panel-fp3" data-session="fp3" data-label="FP3">
+                    <section id="section-fp3">
+                        <p class="rc-section-title">Free Practice 3</p>
+                        <div class="result-card" id="fp3-card"></div>
+                    </section>
+                </div>
+
+                <!-- SPRINT QUALIFYING -->
+                <div class="session-tab-panel" id="tab-panel-sprint-qualy" data-session="sprint-qualy" data-label="Sprint Qualifying">
+                    <section id="section-sprint-qualy">
+                        <p class="rc-section-title">Sprint Qualifying</p>
+                        <div class="result-card" id="sprint-qualy-card"></div>
+                    </section>
+                </div>
+
+                <!-- SPRINT RACE -->
+                <div class="session-tab-panel" id="tab-panel-sprint-race" data-session="sprint-race" data-label="Sprint Race">
+                    <section id="section-sprint-race">
+                        <p class="rc-section-title">Sprint Race</p>
+                        <div class="result-card" id="sprint-race-card"></div>
+                    </section>
+                </div>
+
+                <!-- QUALIFYING -->
+                <div class="session-tab-panel" id="tab-panel-qualifying" data-session="qualifying" data-label="Qualifying">
+                    <section id="section-qualifying">
+                        <p class="rc-section-title">Qualifying</p>
+                        <div class="result-card" id="qualifying-card"></div>
+                    </section>
+                </div>
+
+                <!-- RACE RESULTS -->
+                <div class="session-tab-panel" id="tab-panel-race" data-session="race" data-label="Race">
+                    <section id="section-race">
+                        <p class="rc-section-title">Race</p>
+                        <div class="result-card" id="race-card"></div>
+                    </section>
+                </div>
+
+                <!-- WEATHER -->
+                <div class="session-tab-panel" id="tab-panel-weather" data-session="weather" data-label="Weather">
+                <section id="section-weather">
                 <p class="rc-section-title">Weather</p>
                 <div class="weather-grid" id="weather-card">
                     <div class="weather-day-card" id="weather-friday">
@@ -1192,9 +1319,12 @@
                         <span class="weather-day-rain" id="weather-rain-sunday">-</span>
                     </div>
                 </div>
-            </section>
+                </section>
+                </div><!-- /tab-panel-weather -->
 
-        </div>
+            </div><!-- /session-tabs-container -->
+
+        </div><!-- /race-content -->
     </main>
 
     <footer class="footer">
