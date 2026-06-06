@@ -940,7 +940,7 @@
         .characteristics-card { padding: 1.5rem; }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 500px) {
         .race-content {
             max-width: 100%;
             padding: 2rem 5%;
@@ -964,7 +964,9 @@
         .cs-stat-val { font-size: 18px; }
 
         /* Tables — result table */
-        #result-card .res-team-cell,
+        .session-tab-btn { padding: 0.6rem 1rem; font-size: 0.65rem; }
+
+        #race-card .res-team-cell,
         #sprint-race-card .res-team-cell,
         #qualifying-card .res-team-cell,
         #sprint-qualy-card .res-team-cell,
@@ -972,13 +974,13 @@
         #fp2-card .res-team-cell,
         #fp3-card .res-team-cell { display: none; }
 
-        #result-card .data-table td.res-time,
-        #sprint-race-card .data-table td.res-time { display: none; }
+        #race-card .data-table td.res-delta-cell,
+        #race-card .data-table th.res-delta-col,
+        #sprint-race-card .data-table td.res-delta-cell,
+        #sprint-race-card .data-table th.res-delta-col { display: none; }
 
-        #result-card .data-table th.res-team-col,
-        #result-card .data-table th.res-time-col,
+        #race-card .data-table th.res-team-col,
         #sprint-race-card .data-table th.res-team-col,
-        #sprint-race-card .data-table th.res-time-col,
         #qualifying-card .data-table th.res-team-col,
         #sprint-qualy-card .data-table th.res-team-col,
         #fp1-card .data-table th.res-team-col,
@@ -989,6 +991,31 @@
         #moments-card .data-table td:nth-child(3) { display: none; }
         #history-card .data-table td:last-child,
         #history-card .data-table th:last-child { display: none; }
+
+        /* Tables — shared data-table system */
+        .data-table th {
+            height: 28px;
+            font-size: 9px;
+        }
+
+        .data-table td {
+            height: 44px;
+            font-size: 0.75rem;
+        }
+
+        .data-table td,
+        .data-table th {
+            padding: 0 10px;
+        }
+
+        .race-table-wrap {
+            max-height: 401px;
+        }
+
+        .res-driver-number {
+            font-size: 11px;
+            min-width: 28px;
+        }
 
         /* Section titles */
         .rc-section-title { letter-spacing: 2px; }
