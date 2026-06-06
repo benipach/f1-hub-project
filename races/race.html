@@ -964,8 +964,6 @@
         .cs-stat-val { font-size: 18px; }
 
         /* Tables — result table */
-        .session-tab-btn { padding: 0.6rem 1rem; font-size: 0.65rem; }
-
         #race-card .res-team-cell,
         #sprint-race-card .res-team-cell,
         #qualifying-card .res-team-cell,
@@ -1018,7 +1016,6 @@
         }
 
         /* Section titles */
-        .rc-section-title { letter-spacing: 2px; }
         .rc-section-subtitle { font-size: 12px; }
 
         /* Facts */
@@ -1079,6 +1076,14 @@
     /* Remove the section's own bottom margin when inside tab panel */
     .session-tab-panel > section {
         margin: 0;
+    }
+
+    .tab-label-short { display: none; }
+
+    @media (max-width: 500px){
+        .session-tab-btn { padding: 0.6rem 12px; font-size: 0.65rem; flex: 1; text-align: center; white-space: normal; }
+        .tab-label-short { display: inline; }
+        .tab-label-full  { display: none; }
     }
 
     </style>
@@ -1285,7 +1290,7 @@
                 </div>
 
                 <!-- SPRINT QUALIFYING -->
-                <div class="session-tab-panel" id="tab-panel-sprint-qualy" data-session="sprint-qualy" data-label="Sprint Qualifying">
+                <div class="session-tab-panel" id="tab-panel-sprint-qualy" data-session="sprint-qualy" data-label="Sprint Qualifying" data-label-short="SQ">
                     <section id="section-sprint-qualy">
                         <p class="rc-section-title">Sprint Qualifying</p>
                         <div class="result-card" id="sprint-qualy-card"></div>
@@ -1293,7 +1298,7 @@
                 </div>
 
                 <!-- SPRINT RACE -->
-                <div class="session-tab-panel" id="tab-panel-sprint-race" data-session="sprint-race" data-label="Sprint Race">
+                <div class="session-tab-panel" id="tab-panel-sprint-race" data-session="sprint-race" data-label="Sprint Race" data-label-short="SR">
                     <section id="section-sprint-race">
                         <p class="rc-section-title">Sprint Race</p>
                         <div class="result-card" id="sprint-race-card"></div>
