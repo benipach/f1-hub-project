@@ -108,11 +108,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderHero(gp, circuit, circuitId);
         renderCircuitOverview(circuit, circuitId);
         renderFunFacts(circuit);
-        renderResult(gp, driverTeams, driverNats, driverNumbers);
-        renderNotableMoments(gp);
+
+        // ── Sesiones de práctica libre ──
+        renderSessionResult(gp.results?.fp1,  'fp1-card',           'Free Practice 1',     driverTeams, driverNats, driverNumbers);
+        renderSessionResult(gp.results?.fp2,  'fp2-card',           'Free Practice 2',     driverTeams, driverNats, driverNumbers);
+        renderSessionResult(gp.results?.fp3,  'fp3-card',           'Free Practice 3',     driverTeams, driverNats, driverNumbers);
+        // ── Clasificaciones ──
+        renderSessionResult(gp.results?.sprintQualy, 'sprint-qualy-card', 'Sprint Qualifying', driverTeams, driverNats, driverNumbers);
+        renderSessionResult(gp.results?.qualifying,  'qualifying-card',   'Qualifying',        driverTeams, driverNats, driverNumbers);
+        // ── Carreras ──
+        renderRaceResult(gp.results?.sprintRace, gp.results?.sprintQualy, 'sprint-race-card', driverTeams, driverNats, driverNumbers);
+        renderRaceResult(gp.results?.race,       gp.results?.qualifying,  'race-card',      driverTeams, driverNats, driverNumbers);
+
         renderWeather(gp);
         renderHistory(circuit);
         initScrollAnimations();
+        initSessionTabs();
 
         document.title = `F1 Hub | ${gp.name}`;
 
@@ -341,20 +352,45 @@ function gridDeltaHtml(racePos, qualiPos) {
     }
 }
 
-// ── RESULT ───────────────────────────────────────────────────────
+// ── LAP TIME PARSER / GAP CALCULATOR ────────────────────────────
+// Convierte "1:18.518" o "18.518" a milisegundos
+function lapTimeToMs(t) {
+    if (!t || typeof t !== 'string') return null;
+    const clean = t.trim();
+    const parts = clean.split(':');
+    if (parts.length === 2) {
+        const mins = parseInt(parts[0], 10);
+        const secs = parseFloat(parts[1]);
+        if (isNaN(mins) || isNaN(secs)) return null;
+        return (mins * 60 + secs) * 1000;
+    }
+    const secs = parseFloat(clean);
+    return isNaN(secs) ? null : secs * 1000;
+}
 
+// Devuelve el string de GAP respecto al líder ("+0.293s", "—" si no aplica)
+function calcGap(entries) {
+    const leaderMs = lapTimeToMs(entries[0]?.lapTime);
+    return entries.map(entry => {
+        if (parseInt(entry.pos, 10) === 1 || entry.pos === 1) return 'Leader';
+        const ms = lapTimeToMs(entry.lapTime);
+        if (ms == null || leaderMs == null) return '—';
+        const diff = (ms - leaderMs) / 1000;
+        return `+${diff.toFixed(3)}s`;
+    });
+}
 
-function renderResult(gp, driverTeams = {}, driverNats = {}, driverNumbers = {}) {
-    const container = document.getElementById('result-card');
+// ── RACE RESULT (Race + Sprint Race) ─────────────────────────────
+function renderRaceResult(raceEntries = [], prevSessionEntries = [], containerId, driverTeams = {}, driverNats = {}, driverNumbers = {}) {
+    const container = document.getElementById(containerId);
     if (!container) return;
 
-    if (!gp.results?.race?.length) {
-        const section = document.getElementById('section-results');
-        if (section) section.style.display = 'none';
+    if (!raceEntries?.length) {
+        container.closest('section')?.style && (container.closest('section').style.display = 'none');
         return;
     }
 
-    const qualiMap = buildQualiMap(gp.results?.qualifying);
+    const qualiMap = buildQualiMap(prevSessionEntries);
     const hasQuali = Object.keys(qualiMap).length > 0;
 
     container.innerHTML = `
@@ -371,7 +407,7 @@ function renderResult(gp, driverTeams = {}, driverNats = {}, driverNumbers = {})
                     </tr>
                 </thead>
                 <tbody>
-                    ${gp.results.race.map(res => {
+                    ${raceEntries.map(res => {
                         const teamId    = driverTeams[res.driver] || '';
                         const logoFile  = TEAM_LOGO_MAP[teamId];
                         const teamColor = TEAM_COLOR_MAP[teamId] || 'rgba(255,255,255,0.4)';
@@ -407,65 +443,70 @@ function renderResult(gp, driverTeams = {}, driverNats = {}, driverNumbers = {})
             </table>
         </div>`;
 
-    if (typeof twemoji !== 'undefined') {
-        twemoji.parse(container, { folder: 'svg', ext: '.svg' });
-    }
+    if (typeof twemoji !== 'undefined') twemoji.parse(container, { folder: 'svg', ext: '.svg' });
 }
 
-
-// ── NOTABLE MOMENTS ──────────────────────────────────────────────
-function renderNotableMoments(gp) {
-    const container = document.getElementById('moments-card');
-    const section   = document.getElementById('section-moments');
+// ── SESSION RESULT (FP1/FP2/FP3 + Qualifying + Sprint Qualifying) ─
+function renderSessionResult(entries = [], containerId, sessionLabel, driverTeams = {}, driverNats = {}, driverNumbers = {}) {
+    const container = document.getElementById(containerId);
     if (!container) return;
 
-    if (!gp.notableMoments?.length) {
-        if (section) section.style.display = 'none';
+    if (!entries?.length) {
+        container.closest('section')?.style && (container.closest('section').style.display = 'none');
         return;
     }
-    if (section) section.style.display = '';
 
-    const rows = gp.notableMoments.map(m => {
-        const hasPenalty  = m.action?.toLowerCase().includes('penalty') || m.action?.includes('+');
-        const isVSC       = m.event?.toLowerCase().includes('virtual safety car');
-        const isSafetyCar = !isVSC && m.event?.toLowerCase().includes('safety car');
-        const isRedFlag   = m.event?.toLowerCase().includes('red flag');
-
-        const eventDisplay = isVSC
-            ? `<span class="mt-action" style="background:rgba(255,220,0,0.1);color:#ffdc00;border-color:rgba(255,220,0,0.2);margin-right:8px">VSC</span>${m.event.replace(/virtual safety car/i, '').trim()}`
-            : isSafetyCar
-            ? `<span class="mt-action" style="background:rgba(255,165,0,0.1);color:#ffa500;border-color:rgba(255,165,0,0.2);margin-right:8px">Safety Car</span>${m.event.replace(/safety car/i, '').trim()}`
-            : isRedFlag
-            ? `<span class="mt-action" style="background:rgba(225,6,0,0.1);color:var(--primary-red);border-color:rgba(225,6,0,0.2);margin-right:8px">Red Flag</span>${m.event.replace(/red flag/i, '').trim()}`
-            : m.event;
-
-        const actionDisplay = hasPenalty
-            ? `<span class="mt-action">${m.action}</span>`
-            : (m.action ?? '');
-
-        return `
-            <tr>
-                <td class="mt-time">${m.time}</td>
-                <td class="mt-event">${eventDisplay}</td>
-                <td class="mt-involved">${m.involved ?? ''}</td>
-                <td>${actionDisplay}</td>
-            </tr>`;
-    }).join('');
+    const gaps = calcGap(entries);
 
     container.innerHTML = `
         <div class="race-table-wrap">
             <table class="data-table">
                 <thead>
                     <tr>
+                        <th>Pos</th>
+                        <th>Driver</th>
+                        <th class="res-team-col">Team</th>
                         <th class="res-time-col">Time</th>
-                        <th>Event</th>
-                        <th>Drivers Involved</th>
-                        <th>Action</th>
+                        <th class="res-gap-col">Gap</th>
                     </tr>
                 </thead>
-                <tbody>${rows}</tbody>
+                <tbody>
+                    ${entries.map((res, i) => {
+                        const teamId    = driverTeams[res.driver] || '';
+                        const logoFile  = TEAM_LOGO_MAP[teamId];
+                        const teamColor = TEAM_COLOR_MAP[teamId] || 'rgba(255,255,255,0.4)';
+                        const driverNum = driverNumbers[res.driver] ?? '';
+                        const logoHtml  = logoFile
+                            ? `<img class="res-team-logo" src="../img/teams/${logoFile}.png" alt="${teamId}">`
+                            : `<span class="res-team-logo-placeholder"></span>`;
+                        const noTime = !res.lapTime || res.lapTime === 'DNF' || res.lapTime === 'DNS' || res.lapTime === 'NC';
+                        const dim    = noTime ? 'opacity:0.4' : '';
+                        const posNum = parseInt(res.pos, 10);
+                        const isTop3 = posNum >= 1 && posNum <= 3;
+                        const gapStr = gaps[i];
+                        return `
+                            <tr>
+                                <td class="res-pos${isTop3 ? ' top3' : ''}" style="${dim}">${res.pos}</td>
+                                <td class="res-driver" style="${dim}">
+                                    <span class="res-driver-number" style="color:${teamColor}">#${driverNum}</span>
+                                    <span class="driver-fullname">${res.driver}</span>
+                                    <span class="driver-lastname">${res.driver.split(' ').slice(1).join(' ').slice(0, 3).toUpperCase()}</span>
+                                </td>
+                                <td class="res-team-cell" style="${dim}">
+                                    <div class="res-team">
+                                        ${logoHtml}
+                                        <span class="res-team-name">${teamId || '—'}</span>
+                                    </div>
+                                </td>
+                                <td class="res-time" style="${dim}">${res.lapTime || '—'}</td>
+                                <td class="res-gap" style="${dim}">${gapStr}</td>
+                            </tr>`;
+                    }).join('')}
+                </tbody>
             </table>
         </div>`;
+
+    if (typeof twemoji !== 'undefined') twemoji.parse(container, { folder: 'svg', ext: '.svg' });
 }
 
 // ── WEATHER ──────────────────────────────────────────────────────
@@ -520,6 +561,45 @@ function renderHistory(circuit) {
                 <tbody>${rows}</tbody>
             </table>
         </div>`;
+}
+
+// ── SESSION TABS ─────────────────────────────────────────────────
+function initSessionTabs() {
+    const tabBar    = document.getElementById('session-tab-bar');
+    const allPanels = document.querySelectorAll('.session-tab-panel');
+    if (!tabBar || !allPanels.length) return;
+
+    // A panel is "available" if its inner section was NOT hidden by a render function.
+    // render functions call `container.closest('section').style.display = 'none'` on empty data.
+    const availablePanels = [...allPanels].filter(panel => {
+        const section = panel.querySelector('section');
+        return !section || section.style.display !== 'none';
+    });
+
+    if (!availablePanels.length) {
+        const container = document.getElementById('session-tabs-container');
+        if (container) container.style.display = 'none';
+        return;
+    }
+
+    // Build tab buttons
+    availablePanels.forEach((panel, idx) => {
+        const label = panel.dataset.label || panel.dataset.session;
+        const btn   = document.createElement('button');
+        btn.className    = 'session-tab-btn' + (idx === 0 ? ' active' : '');
+        btn.textContent  = label;
+        btn.dataset.target = panel.id;
+        btn.addEventListener('click', () => {
+            tabBar.querySelectorAll('.session-tab-btn').forEach(b => b.classList.remove('active'));
+            allPanels.forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            panel.classList.add('active');
+        });
+        tabBar.appendChild(btn);
+    });
+
+    // Show first available tab
+    availablePanels[0].classList.add('active');
 }
 
 // ── SCROLL ANIMATIONS ────────────────────────────────────────────
