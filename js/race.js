@@ -584,10 +584,15 @@ function initSessionTabs() {
 
     // Build tab buttons
     availablePanels.forEach((panel, idx) => {
-        const label = panel.dataset.label || panel.dataset.session;
-        const btn   = document.createElement('button');
+        const label      = panel.dataset.label || panel.dataset.session;
+        const labelShort = panel.dataset.labelShort;
+        const btn        = document.createElement('button');
         btn.className    = 'session-tab-btn' + (idx === 0 ? ' active' : '');
-        btn.textContent  = label;
+        if (labelShort) {
+            btn.innerHTML = `<span class="tab-label-full">${label}</span><span class="tab-label-short">${labelShort}</span>`;
+        } else {
+            btn.textContent = label;
+        }
         btn.dataset.target = panel.id;
         btn.addEventListener('click', () => {
             tabBar.querySelectorAll('.session-tab-btn').forEach(b => b.classList.remove('active'));
