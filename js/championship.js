@@ -1,5 +1,4 @@
-// ── TEAM COLORS (Se llenan dinámicamente leyendo el CSS) ─────────
-const TEAM_COLORS = {};
+// TEAMS, teamColor() vienen de teams.js, que debe cargarse antes que este archivo.
 
 // ── TEAM ID → LOGO FILENAME ──────────────────────────────────────────────
 const TEAM_LOGO_MAP = {
@@ -17,18 +16,6 @@ const TEAM_LOGO_MAP = {
 };
 
 
-
-// ── HELPERS ───────────────────────────────────────────────────────────────
-function hexToRgba(hex, alpha) {
-    // Si viene en formato RGB (como en tu CSS), lo transformamos a RGBA
-    if (hex.startsWith('rgb')) {
-        return hex.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
-    }
-    const r = parseInt(hex.slice(1,3), 16);
-    const g = parseInt(hex.slice(3,5), 16);
-    const b = parseInt(hex.slice(5,7), 16);
-    return `rgba(${r},${g},${b},${alpha})`;
-}
 
 function buildCumulative(points) {
     let sum = 0;
@@ -201,9 +188,9 @@ function renderDriversTable(drivers, driverNats = {}, driverNumbers = {}) {
             ? `<img class="st-team-logo" src="img/teams/${logoFile}.png" alt="${d.team}">`
             : `<span class="st-team-logo-placeholder"></span>`;
         const num        = driverNumbers[d.driver] || '';
-        const teamColor  = TEAM_COLORS[d.team] || 'rgba(255,255,255,0.4)';
+        const driverTeamColor = teamColor(d.team) || 'rgba(255,255,255,0.4)';
         const numHtml    = num
-            ? `<span class="st-driver-num" style="color:${teamColor}">#${num}</span>`
+            ? `<span class="st-driver-num" style="color:${driverTeamColor}">#${num}</span>`
             : '';
 
         return `
@@ -297,19 +284,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const dimColor = rootStyles.getPropertyValue('--text-dim').trim() || '#ffffff';
     const softGridColor = 'rgba(255, 255, 255, 0.1)';
 
-    // ── OBTENER COLORES DINÁMICAMENTE DESDE EL CSS ──
-    TEAM_COLORS['Mercedes']     = rootStyles.getPropertyValue('--f1-mercedes');
-    TEAM_COLORS['Ferrari']      = rootStyles.getPropertyValue('--f1-ferrari');
-    TEAM_COLORS['McLaren']      = rootStyles.getPropertyValue('--f1-mclaren');
-    TEAM_COLORS['Red Bull']     = rootStyles.getPropertyValue('--f1-red-bull');
-    TEAM_COLORS['Aston Martin'] = rootStyles.getPropertyValue('--f1-aston-martin');
-    TEAM_COLORS['Alpine']       = rootStyles.getPropertyValue('--f1-alpine');
-    TEAM_COLORS['Williams']     = rootStyles.getPropertyValue('--f1-williams');
-    TEAM_COLORS['Racing Bulls'] = rootStyles.getPropertyValue('--f1-racing-bulls');
-    TEAM_COLORS['Haas']         = rootStyles.getPropertyValue('--f1-haas');
-    TEAM_COLORS['Audi']         = rootStyles.getPropertyValue('--f1-audi');
-    TEAM_COLORS['Cadillac']     = rootStyles.getPropertyValue('--f1-cadillac');
-    
     Chart.defaults.font.family = "'F1-Regular', sans-serif";
     Chart.defaults.color = dimColor;
     Chart.defaults.borderColor = softGridColor;
@@ -400,7 +374,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             .map(d => ({
                 id: d.driver,
                 label: d.driver.split(' ').slice(1).join(' ').toUpperCase() || d.driver.toUpperCase(),
-                color: TEAM_COLORS[d.team] || '#ffffff',
+                color: teamColor(d.team) || '#ffffff',
                 data: buildCumulative(d.racePoints),
             }));
 
@@ -442,7 +416,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             .map(c => ({
                 id: c.team,
                 label: c.team,
-                color: TEAM_COLORS[c.team] || '#ffffff',
+                color: teamColor(c.team) || '#ffffff',
                 data: buildCumulative(c.racePoints),
             }));
 

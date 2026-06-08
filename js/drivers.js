@@ -1,64 +1,9 @@
 const CURRENT_SEASON_FILE = '../data/season2026.json';
 const CURRENT_SEASON_YEAR = 2026;
 
-// ── EQUIPO → COLORES OFICIALES UNIFICADOS AL 90% DE INTENSIDAD (CON ALIAS) ──
+// TEAMS, teamColor(), teamCssVar() y la inyección de --f1-* vars
+// vienen de teams.js, que debe cargarse antes que este archivo.
 
-const TEAM_COLORS = {
-    'Mercedes':        'rgba(43, 255, 219, 0.9)',  'mercedes':        'rgba(43, 255, 219, 0.9)',
-    'Ferrari':         'rgba(255, 0, 25, 0.9)',    'ferrari':         'rgba(255, 0, 25, 0.9)',
-    'McLaren':         'rgba(255, 127, 0, 0.9)',   'mclaren':         'rgba(255, 127, 0, 0.9)',
-    'Red Bull Racing': 'rgba(34, 71, 122, 0.9)',   'Red Bull':        'rgba(34, 71, 122, 0.9)', 'red-bull': 'rgba(34, 71, 122, 0.9)', 'red-bull-racing': 'rgba(34, 71, 122, 0.9)',
-    'Aston Martin':    'rgba(34, 153, 113, 0.9)',  'aston-martin':    'rgba(34, 153, 113, 0.9)',
-    'Alpine':          'rgba(0, 111, 186, 0.9)',   'alpine':          'rgba(0, 111, 186, 0.9)',
-    'Williams':        'rgba(28, 122, 255, 0.9)',  'williams':        'rgba(28, 122, 255, 0.9)',
-    'Racing Bulls':    'rgba(102, 125, 255, 0.9)', 'racing-bulls':    'rgba(102, 125, 255, 0.9)',
-    'Haas F1 Team':    'rgba(222, 225, 226, 0.9)', 'Haas':            'rgba(222, 225, 226, 0.9)', 'haas': 'rgba(222, 225, 226, 0.9)',
-    'Audi':            'rgba(255, 46, 46, 0.9)',   'audi':            'rgba(255, 46, 46, 0.9)',
-    'Cadillac':        'rgba(170, 170, 173, 0.9)', 'cadillac':        'rgba(170, 170, 173, 0.9)',
-    // Historical teams — from style.css
-    'Renault':         'rgba(255, 205, 44, 0.9)',  'renault':         'rgba(255, 205, 44, 0.9)',
-    'Racing Point':    'rgba(255, 142, 188, 0.9)', 'racing-point':    'rgba(255, 142, 188, 0.9)',
-    'Force India':     'rgba(240, 125, 0, 0.9)',   'force-india':     'rgba(240, 125, 0, 0.9)',
-    'AlphaTauri':      'rgba(0, 40, 63, 0.9)',     'alpha-tauri':     'rgba(0, 40, 63, 0.9)',
-    'Toro Rosso':      'rgba(22, 23, 147, 0.9)',   'toro-rosso':      'rgba(22, 23, 147, 0.9)',
-    'Toro Rosso / Renault':  'rgba(22, 23, 147, 0.9)',
-    'Red Bull / Toro Rosso': 'rgba(34, 71, 122, 0.9)',
-    'Sauber':          'rgba(222, 50, 39, 0.9)',   'sauber':          'rgba(222, 50, 39, 0.9)',
-    'Alfa Romeo':      'rgba(157, 34, 53, 0.9)',   'alfa-romeo':      'rgba(157, 34, 53, 0.9)',
-    'Ferrari / Haas':  'rgba(255, 0, 25, 0.9)',
-    'Kick Sauber':     'rgba(90, 255, 33, 0.9)',   'kick-sauber':     'rgba(90, 255, 33, 0.9)',
-    'Manor':           'rgba(200, 0, 0, 0.9)',     'manor':           'rgba(200, 0, 0, 0.9)',
-    'Minardi':         'rgba(0, 0, 0, 0.9)',       'minardi':         'rgba(0, 0, 0, 0.9)',
-};
-
-const TEAM_CSS_VARS = {
-    'Mercedes':       '--f1-mercedes',      'mercedes':       '--f1-mercedes',
-    'Ferrari':        '--f1-ferrari',       'ferrari':        '--f1-ferrari',
-    'McLaren':        '--f1-mclaren',       'mclaren':        '--f1-mclaren',
-    'Red Bull Racing':'--f1-red-bull',      'red-bull':       '--f1-red-bull', 'red-bull-racing':'--f1-red-bull', 'Red Bull':'--f1-red-bull',
-    'Aston Martin':   '--f1-aston-martin',  'aston-martin':   '--f1-aston-martin',
-    'Alpine':         '--f1-alpine',        'alpine':         '--f1-alpine',
-    'Williams':       '--f1-williams',      'williams':       '--f1-williams',
-    'Racing Bulls':   '--f1-racing-bulls',  'racing-bulls':   '--f1-racing-bulls',
-    'Haas F1 Team':   '--f1-haas',          'Haas': '--f1-haas', 'haas': '--f1-haas',
-    'Audi':           '--f1-audi',          'audi':           '--f1-audi',
-    'Cadillac':       '--f1-cadillac',      'cadillac':       '--f1-cadillac',
-    // Historical teams
-    'Renault':        '--f1-renault',       'renault':        '--f1-renault',
-    'Racing Point':   '--f1-racing-point',  'racing-point':   '--f1-racing-point',
-    'Force India':    '--f1-force-india',   'force-india':    '--f1-force-india',
-    'AlphaTauri':     '--f1-alpha-tauri',   'alpha-tauri':    '--f1-alpha-tauri',
-    'Toro Rosso':     '--f1-toro-rosso',    'toro-rosso':     '--f1-toro-rosso',
-    'Toro Rosso / Red Bull': '--f1-toro-rosso',
-    'Toro Rosso / Renault':  '--f1-toro-rosso',
-    'Red Bull / Toro Rosso': '--f1-red-bull',
-    'Sauber':         '--f1-sauber',        'sauber':         '--f1-sauber',
-    'Alfa Romeo':     '--f1-alfa-romeo',    'alfa-romeo':     '--f1-alfa-romeo',
-    'Ferrari / Haas': '--f1-ferrari',
-    'Kick Sauber':    '--f1-kick',          'kick-sauber':    '--f1-kick',
-    'Manor':          '--f1-ferrari',       'manor':          '--f1-ferrari',
-    'Minardi':        '--f1-ferrari',       'minardi':        '--f1-ferrari',
-};
 
 document.addEventListener('DOMContentLoaded', async () => {
     const driverId = new URLSearchParams(window.location.search).get('driver');
@@ -184,13 +129,13 @@ document.addEventListener('DOMContentLoaded', async () => {
            (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())) age--;
 
         // ── COLOR DEL EQUIPO ──────────────────────────────────────
-        const teamCssVar = TEAM_CSS_VARS[currentTeam] || '--primary-red';
-        const teamColor  = getComputedStyle(document.documentElement)
-                           .getPropertyValue(teamCssVar)
-                           .trim() || '#e10600';
+        const _teamCssVar = teamCssVar(currentTeam);
+        const _teamColor  = getComputedStyle(document.documentElement)
+                            .getPropertyValue(_teamCssVar)
+                            .trim() || '#e10600';
 
         const driverContent = document.querySelector('.driver-content');
-        if (driverContent) driverContent.style.setProperty('--team-color', `var(${teamCssVar})`);
+        if (driverContent) driverContent.style.setProperty('--team-color', `var(${_teamCssVar})`);
 
         // ── INYECCIÓN EN EL DOM ───────────────────────────────────
         document.getElementById('page-title').textContent             = `F1 Hub | ${fullName}`;
@@ -239,7 +184,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         Chart.defaults.color       = dimColor;
         Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
 
-        initRaceChart(raceLabels, racePoints, raceWins, teamColor, racePositions, raceFullNames, raceSprintPts);
+        initRaceChart(raceLabels, racePoints, raceWins, _teamColor, racePositions, raceFullNames, raceSprintPts);
         initCareerChart(history, total2026, currentTeam, champPos);
 
     } catch (err) {
@@ -417,30 +362,7 @@ async function initCareerChart(history, points2026, currentTeam, currentChampPos
     const ctx = document.getElementById('pointsChart')?.getContext('2d');
     if (!ctx) return;
 
-    const TEAM_LOGO_MAP = {
-        'Mercedes': 'mercedes-logo',        'mercedes': 'mercedes-logo',
-        'Ferrari': 'ferrari-logo',          'ferrari': 'ferrari-logo',
-        'McLaren': 'mclaren-logo',          'mclaren': 'mclaren-logo',
-        'Red Bull Racing': 'redbull-logo',  'Red Bull': 'redbull-logo', 'red-bull': 'redbull-logo', 'red-bull-racing': 'redbull-logo',
-        'Aston Martin': 'astonmartin-logo', 'aston-martin': 'astonmartin-logo',
-        'Alpine': 'alpine-logo',            'alpine': 'alpine-logo',
-        'Williams': 'williams-logo',        'williams': 'williams-logo',
-        'Racing Bulls': 'racingbulls-logo', 'racing-bulls': 'racingbulls-logo',
-        'Haas F1 Team': 'haas-logo',        'Haas': 'haas-logo',    'haas': 'haas-logo',
-        'Audi': 'audi-logo',                'audi': 'audi-logo',
-        'Cadillac': 'cadillac-logo',        'cadillac': 'cadillac-logo',
-
-        'Renault': 'renault-logo',          'renault': 'renault-logo',
-        'Kick': 'kick-logo',                'kick': 'kick-logo',
-        'Racing Point': 'racing-point-logo', 'racing-point': 'racing-point-logo',
-        'Force India': 'force-india-logo',   'force-india': 'force-india-logo',
-        'Toro Rosso': 'toro-rosso-logo',     'toro-rosso': 'toro-rosso-logo',
-        'Sauber': 'sauber-logo',            'sauber': 'sauber-logo',
-        'Alfa Romeo': 'alfa-romeo-logo',     'alfa-romeo': 'alfa-romeo-logo',
-        'Minardi': 'minardi-logo',     'minardi': 'minardi-logo',
-        'Manor': 'Manor-logo',     'Manor': 'Manor-logo',
-        'AlphaTauri': 'alpha-tauri-logo',      'alpha-tauri': 'alpha-tauri-logo',
-    };
+    // TEAM_LOGO_MAP eliminado — se usa teamLogo() de teams.js
 
     // ── ACÁ ESTÁ LA MAGIA QUE EVITA DUPLICADOS A FUTURO ──
     // Filtramos explícitamente el CURRENT_SEASON_YEAR del array del JSON (history)
@@ -467,11 +389,11 @@ async function initCareerChart(history, points2026, currentTeam, currentChampPos
 
     const seasons = allSeasons.map(s => s.year);
     const points  = allSeasons.map(s => s.points);
-    const colors  = allSeasons.map(s => TEAM_COLORS[s.teamId] || 'rgba(136, 136, 136, 0.9)');
+    const colors  = allSeasons.map(s => teamColor(s.teamId));
 
     const logoCache = {};
     await Promise.all(allSeasons.map(s => {
-        const name = TEAM_LOGO_MAP[s.teamId];
+        const name = teamLogo(s.teamId);
         if (!name || logoCache[name]) return Promise.resolve();
         return new Promise(resolve => {
             const img = new Image();
@@ -540,7 +462,7 @@ async function initCareerChart(history, points2026, currentTeam, currentChampPos
 
                 c.restore();
 
-                const logoName = TEAM_LOGO_MAP[season.teamId];
+                const logoName = teamLogo(season.teamId);
                 if (logoName && logoCache[logoName]) {
                     c.imageSmoothingEnabled = true;
                     c.imageSmoothingQuality = 'high';
