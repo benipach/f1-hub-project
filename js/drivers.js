@@ -439,7 +439,7 @@ async function initCareerChart(history, points2026, currentTeam, currentChampPos
         'Alfa Romeo': 'alfa-romeo-logo',     'alfa-romeo': 'alfa-romeo-logo',
         'Minardi': 'minardi-logo',     'minardi': 'minardi-logo',
         'Manor': 'Manor-logo',     'Manor': 'Manor-logo',
-        'Alpha Tauri': 'alpha-tauri-logo',     'alpha-tauri': 'alpha-tauri-logo',
+        'AlphaTauri': 'alpha-tauri-logo',      'alpha-tauri': 'alpha-tauri-logo',
     };
 
     // ── ACÁ ESTÁ LA MAGIA QUE EVITA DUPLICADOS A FUTURO ──
