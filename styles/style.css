@@ -202,7 +202,7 @@ nav ul li a:hover::after {
 
 /* Responsive */
 
-@media (max-width: 768px) {
+@media (max-width: 500px) {
 
     /* Navbar */
 
@@ -219,8 +219,8 @@ nav ul li a:hover::after {
     }
 
     .nav-logo {
-    height: 25px;
-}
+        height: 25px;
+    }
 
     .nav-menu {
         position: absolute;
@@ -249,10 +249,8 @@ nav ul li a:hover::after {
 
     nav ul li a {
         display: block;
-
         margin-left: 0;
         padding: 0.5rem 0;
-
         font-size: 1.1rem;
     }
 
@@ -438,7 +436,7 @@ nav ul li a:hover::after {
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
     .footer-grid {
         grid-template-columns: 1fr 1fr;
         gap: 32px;
@@ -455,7 +453,7 @@ nav ul li a:hover::after {
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 500px) {
     .footer-grid {
         grid-template-columns: 1fr;
     }
