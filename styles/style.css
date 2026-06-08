@@ -10,26 +10,8 @@
     --text-light: rgb(255,255,255);
     --text-dim: rgb(170,170,170);
 
-    /* Team Colors */
-    --f1-mercedes: rgb(43,255,219);
-    --f1-ferrari: rgb(255,0,25);
-    --f1-mclaren: rgb(255,127,0);
-    --f1-haas: rgb(222,225,226);
-    --f1-alpine: rgb(0,178,255);
-    --f1-red-bull: rgb(34,71,122);
-    --f1-racing-bulls: rgb(102,125,255);
-    --f1-audi: rgb(255,46,46);
-    --f1-williams: rgb(28,122,255);
-    --f1-cadillac: rgb(170,170,173);
-    --f1-aston-martin: rgb(34,153,113);
-    --f1-renault: rgb(255, 205, 44);
-    --f1-kick: rgb(90, 255, 33);
-    --f1-racing-point: rgb(255, 142, 188);
-    --f1-force-india: rgb(240, 125, 0);
-    --f1-alpha-tauri: rgb(0, 40, 63);
-    --f1-toro-rosso: rgb(22, 23, 147);
-    --f1-sauber: rgb(222, 50, 39);
-    --f1-alfa-romeo: rgb(157, 34, 53);
+    /* Team Colors — inyectadas dinámicamente por drivers.js (TEAMS object) */
+    /* --f1-mercedes, --f1-ferrari, etc. se setean en runtime via JS */
 
     /* Scrollbar */
     --scrollbar-color: rgba(255,255,255,0.15);
