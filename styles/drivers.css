@@ -115,12 +115,12 @@
     font-weight: normal;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
     .drivers-hero-meta { width: 75%; gap: 1.5rem; }
     .drivers-hero-season-bg { font-size: clamp(120px, 26vw, 240px); }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 500px) {
     .drivers-hero-meta { width: 100%; gap: 1rem; }
     .drivers-hero-season-bg { display: none; }
 }
@@ -298,13 +298,9 @@
     .drivers-grid { grid-template-columns: repeat(3, 1fr); max-width: 80%; }
 }
 
-@media (max-width: 768px) {
-    .drivers-grid { grid-template-columns: repeat(2, 1fr); max-width: 90%; }
+@media (max-width: 500px) {
+    .drivers-grid { grid-template-columns: 1fr; max-width: 95%; }
     .drivercard { height: 220px; }
     .driver-number { font-size: 2.75rem; }
     .driver-img { right: 50px; }
-}
-
-@media (max-width: 480px) {
-    .drivers-grid { grid-template-columns: 1fr; max-width: 95%; }
 }

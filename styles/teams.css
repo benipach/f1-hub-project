@@ -299,35 +299,6 @@
 .tc-bg-text-audi         { text-shadow: var(--f1-audi) 0 0 75px; }
 .tc-bg-text-cadillac     { text-shadow: rgb(252,252,255) 0 0 75px; }
 
-/* ---- RESPONSIVE ---- */
-@media (max-width: 1200px) {
-    .teams-section { width: 80%; }
-}
-
-@media (max-width: 900px) {
-    .teams-section { width: 90%; }
-    .teams-hero-meta { width: 75%; gap: 1.5rem; }
-    .teams-hero-num-bg { font-size: clamp(140px, 26vw, 260px); }
-}
-
-@media (max-width: 768px) {
-    .teams-section { width: 100%; padding: 3rem 4%; box-sizing: border-box; }
-    .teams-grid { grid-template-columns: 1fr; gap: 12px; }
-    .tc-name { font-size: 2rem; }
-    .tc-bg-text { font-size: 5.5rem; }
-}
-
-@media (max-width: 600px) {
-    .teams-hero { min-height: 480px; }
-    .teams-hero-meta { width: 100%; gap: 1rem; }
-    .teams-hero-num-bg { display: none; }
-    .tc-car { width: 85%; right: -10%; }
-    .tc-bg-text { font-size: 3.5rem; }
-    .teamcard { height: 220px; }
-    .teamcard:hover .tc-bg-text { transform: translateY(-5%); }
-    .tc-car { right: 0; width: 75%; bottom: 16px;}
-    .teamcard:hover .tc-car { transform: translateX(-15%) translateY(-50%) scale(1.25); }
-}
 /* ---- TEAM LOGO IN CARD ---- */
 .tc-name-row {
     display: flex;
@@ -341,4 +312,25 @@
     flex-shrink: 0;
     opacity: 0.92;
     filter: drop-shadow(0 0 6px rgba(0,0,0,0.5));
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 1100px) {
+    .teams-section { width: 80%; }
+    .teams-hero-meta { width: 75%; gap: 1.5rem; }
+    .teams-hero-num-bg { font-size: clamp(140px, 26vw, 260px); }
+}
+
+@media (max-width: 500px) {
+    .teams-section { width: 100%; padding: 3rem 4%; box-sizing: border-box; }
+    .teams-grid { grid-template-columns: 1fr; gap: 12px; }
+    .tc-name { font-size: 2rem; }
+    .teams-hero { min-height: 480px; }
+    .teams-hero-meta { width: 100%; gap: 1rem; }
+    .teams-hero-num-bg { display: none; }
+    .tc-bg-text { font-size: 3.5rem; }
+    .teamcard { height: 220px; }
+    .teamcard:hover .tc-bg-text { transform: translateY(-5%); }
+    .tc-car { right: 0; width: 75%; bottom: 16px; }
+    .teamcard:hover .tc-car { transform: translateX(-15%) translateY(-50%) scale(1.25); }
 }
