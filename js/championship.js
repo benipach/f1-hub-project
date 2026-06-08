@@ -139,68 +139,24 @@ function makeFilteredChart(canvasId, filterItemsId, selectAllId, datasets, label
         chart.update();
     }
 
-    // ── RESET ZOOM ────────────────────────────────────────────────
-    const chartCard = document.getElementById(canvasId).closest('.chart-card');
-    const resetBtn = document.createElement('button');
-    resetBtn.textContent = 'Reset zoom';
-    resetBtn.className = 'chart-reset-zoom';
-    resetBtn.style.cssText = [
-        'display:none',
-        'position:absolute',
-        'bottom:12px',
-        'right:12px',
-        'padding:5px 10px',
-        'border:1px solid rgba(255,255,255,0.12)',
-        'border-radius:6px',
-        'background:rgba(255,255,255,0.06)',
-        'color:rgba(255,255,255,0.5)',
-        "font-family:'F1-Regular',sans-serif",
-        'font-size:10px',
-        'letter-spacing:1.5px',
-        'text-transform:uppercase',
-        'cursor:pointer',
-    ].join(';');
-    chartCard.style.position = 'relative';
-    chartCard.appendChild(resetBtn);
-
-    resetBtn.addEventListener('click', () => {
-        chart.resetZoom();
-        resetBtn.style.display = 'none';
-    });
-
-    document.getElementById(canvasId).addEventListener('wheel', () => {
-        resetBtn.style.display = 'block';
-    }, { passive: true });
-
-    let lastTap = 0;
-    document.getElementById(canvasId).addEventListener('touchstart', e => {
-        if (e.touches.length > 1) { resetBtn.style.display = 'block'; return; }
-        const now = Date.now();
-        if (now - lastTap < 300) { chart.resetZoom(); resetBtn.style.display = 'none'; }
-        lastTap = now;
-    }, { passive: true });
-
-    document.getElementById(canvasId).addEventListener('dblclick', () => {
-        chart.resetZoom();
-        resetBtn.style.display = 'none';
-    });
-
     const container = document.getElementById(filterItemsId);
     datasets.forEach(d => {
         const item = document.createElement('div');
         item.className = 'filter-item';
         item.innerHTML = `
-            <div class="filter-checkbox checked" id="chk-${canvasId}-${d.id}" style="background:${d.color};border-color:${d.color}"></div>
+            <div class="filter-checkbox checked" id="chk-${canvasId}-${d.id}" style="background:${d.color};border-color:${d.color}">✓</div>
             <span class="filter-label">${d.label}</span>
         `;
         item.addEventListener('click', () => {
             const chk = document.getElementById(`chk-${canvasId}-${d.id}`);
             if (visible.has(d.id)) {
                 visible.delete(d.id);
+                chk.textContent = '';
                 chk.style.background = 'transparent';
                 chk.style.borderColor = 'rgba(255,255,255,0.2)';
             } else {
                 visible.add(d.id);
+                chk.textContent = '✓';
                 chk.style.background = d.color;
                 chk.style.borderColor = d.color;
             }
@@ -215,10 +171,12 @@ function makeFilteredChart(canvasId, filterItemsId, selectAllId, datasets, label
             const chk = document.getElementById(`chk-${canvasId}-${d.id}`);
             if (allVisible) {
                 visible.delete(d.id);
+                chk.textContent = '';
                 chk.style.background = 'transparent';
                 chk.style.borderColor = 'rgba(255,255,255,0.2)';
             } else {
                 visible.add(d.id);
+                chk.textContent = '✓';
                 chk.style.background = d.color;
                 chk.style.borderColor = d.color;
             }
@@ -399,6 +357,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             return [];
         };
 
+        const getSprintResults = gp => {
+            const r = gp.results;
+            if (!r || Array.isArray(r)) return [];
+            if (Array.isArray(r.sprintRace)) return r.sprintRace;
+            return [];
+        };
+
         // ── Lógica de Pilotos ──
         const driverMap = {};
         allRaces.forEach(gp => {
@@ -411,15 +376,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         allRaces.forEach(gp => {
-            const raceResults = getRaceResults(gp);
+            const raceResults   = getRaceResults(gp);
+            const sprintResults = getSprintResults(gp);
             Object.values(driverMap).forEach(d => {
                 if (raceResults.length === 0) {
                     d.racePoints.push(null);
                 } else {
-                    const result = raceResults.find(r => r.driver === d.driver);
-                    const pts = result ? (result.pts ?? 0) : 0;
+                    const result     = raceResults.find(r => r.driver === d.driver);
+                    const racePts    = result ? (result.pts ?? 0) : 0;
+                    const sprintRes  = sprintResults.find(r => r.driver === d.driver);
+                    const sprintPts  = sprintRes ? (sprintRes.pts ?? 0) : 0;
+                    const pts        = racePts + sprintPts;
                     d.racePoints.push(pts);
-                    d.points += pts; 
+                    d.points += pts;
                 }
             });
         });
@@ -447,16 +416,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         allRaces.forEach(gp => {
-            const raceResults = getRaceResults(gp);
+            const raceResults   = getRaceResults(gp);
+            const sprintResults = getSprintResults(gp);
             Object.values(constructorMap).forEach(c => {
                 if (raceResults.length === 0) {
                     c.racePoints.push(null);
                 } else {
-                    const teamPoints = raceResults
+                    const teamRacePts = raceResults
                         .filter(r => (r.team || driverTeamLookup[r.driver]) === c.team)
                         .reduce((sum, r) => sum + (r.pts ?? 0), 0);
-                    c.racePoints.push(teamPoints);
-                    c.points += teamPoints;
+                    const teamSprintPts = sprintResults
+                        .filter(r => (r.team || driverTeamLookup[r.driver]) === c.team)
+                        .reduce((sum, r) => sum + (r.pts ?? 0), 0);
+                    const pts = teamRacePts + teamSprintPts;
+                    c.racePoints.push(pts);
+                    c.points += pts;
                 }
             });
         });
