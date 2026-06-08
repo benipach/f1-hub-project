@@ -9,7 +9,7 @@ const TEAM_COLORS = {
     'McLaren':         'rgba(255, 127, 0, 0.9)',   'mclaren':         'rgba(255, 127, 0, 0.9)',
     'Red Bull Racing': 'rgba(34, 71, 122, 0.9)',   'Red Bull':        'rgba(34, 71, 122, 0.9)', 'red-bull': 'rgba(34, 71, 122, 0.9)', 'red-bull-racing': 'rgba(34, 71, 122, 0.9)',
     'Aston Martin':    'rgba(34, 153, 113, 0.9)',  'aston-martin':    'rgba(34, 153, 113, 0.9)',
-    'Alpine':          'rgba(0, 178, 255, 0.9)',   'alpine':          'rgba(0, 178, 255, 0.9)',
+    'Alpine':          'rgba(0, 111, 186, 0.9)',   'alpine':          'rgba(0, 111, 186, 0.9)',
     'Williams':        'rgba(28, 122, 255, 0.9)',  'williams':        'rgba(28, 122, 255, 0.9)',
     'Racing Bulls':    'rgba(102, 125, 255, 0.9)', 'racing-bulls':    'rgba(102, 125, 255, 0.9)',
     'Haas F1 Team':    'rgba(222, 225, 226, 0.9)', 'Haas':            'rgba(222, 225, 226, 0.9)', 'haas': 'rgba(222, 225, 226, 0.9)',
@@ -476,8 +476,13 @@ async function initCareerChart(history, points2026, currentTeam, currentChampPos
         return new Promise(resolve => {
             const img = new Image();
             img.onload  = () => { logoCache[name] = img; resolve(); };
-            img.onerror = resolve;
-            img.src = `../img/teams/${name}.png`;
+            img.onerror = () => {
+                const fallback = new Image();
+                fallback.onload  = () => { logoCache[name] = fallback; resolve(); };
+                fallback.onerror = resolve;
+                fallback.src = `../img/teams/${name}.png`;
+            };
+            img.src = `../img/teams/${name}-2.png`;
         });
     }));
 
