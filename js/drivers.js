@@ -90,7 +90,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const raceFullNames = []; 
         const racePoints    = [];
         const raceWins      = []; 
-        const racePositions = []; 
+        const racePositions = []; // now stores total weekend pts (race + sprint) for bar label
+        const raceSprintPts = []; // sprint pts per race, null if no sprint or 0 pts
         
         let total2026 = 0, wins2026 = 0, podiums2026 = 0;
         let dnfs2026 = 0, starts2026 = 0, poles2026 = 0, fastest2026 = 0;
@@ -104,6 +105,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!gp.results?.race?.length) { 
                 racePoints.push(null); 
                 racePositions.push(null);
+                raceSprintPts.push(null);
                 return; 
             }
 
@@ -111,23 +113,26 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!result) { 
                 racePoints.push(null); 
                 racePositions.push(null);
+                raceSprintPts.push(null);
                 return; 
             }
 
-            const pts   = result.pts || 0;
-            const pos   = result.pos;
-            const isDNF = result.time === 'DNF' || result.time === 'DNS' || pos === 'DNF' || pos === 'DNS';
+            const racePts = result.pts || 0;
+            const pos     = result.pos;
+            const isDNF   = result.time === 'DNF' || result.time === 'DNS' || pos === 'DNF' || pos === 'DNS';
 
-            let posDisplay = pos;
-            if (isDNF) posDisplay = 'DNF';
-            else if (!isNaN(parseInt(pos))) posDisplay = `P${pos}`;
+            const sprintResult = (gp.results?.sprintRace || []).find(r => r.driver === fullName);
+            const sprintPts    = sprintResult?.pts || 0;
 
-            racePoints.push(pts);
-            racePositions.push(posDisplay);
-            total2026 += pts;
-            
-            if (!isDNF) starts2026++;
-            if (isDNF)  dnfs2026++;
+            const totalPts = racePts + sprintPts;
+
+            racePoints.push(totalPts);
+            racePositions.push(totalPts);
+            raceSprintPts.push(sprintPts > 0 ? sprintPts : null);
+            total2026 += totalPts;
+
+            starts2026++;
+            if (isDNF) dnfs2026++;
             if (parseInt(pos) === 1) { wins2026++; raceWins.push(i); }
             if (!isNaN(parseInt(pos)) && parseInt(pos) <= 3) podiums2026++;
             if (result.fastestLap) fastest2026++;
@@ -140,6 +145,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const driverPoints = {};
         Object.values(season).forEach(gp => {
             (gp.results?.race || []).forEach(r => {
+                driverPoints[r.driver] = (driverPoints[r.driver] || 0) + (r.pts || 0);
+            });
+            (gp.results?.sprintRace || []).forEach(r => {
                 driverPoints[r.driver] = (driverPoints[r.driver] || 0) + (r.pts || 0);
             });
         });
@@ -231,7 +239,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         Chart.defaults.color       = dimColor;
         Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
 
-        initRaceChart(raceLabels, racePoints, raceWins, teamColor, racePositions, raceFullNames);
+        initRaceChart(raceLabels, racePoints, raceWins, teamColor, racePositions, raceFullNames, raceSprintPts);
         initCareerChart(history, total2026, currentTeam, champPos);
 
     } catch (err) {
@@ -253,9 +261,11 @@ function watchChartAspect(chart, breakpoint, normalRatio, mobileRatio) {
     observer.observe(chart.canvas.parentElement);
 }
 
-function initRaceChart(labels, points, winIndexes, teamColor, positions, fullNames) {
+function initRaceChart(labels, points, winIndexes, teamColor, positions, fullNames, sprintPts) {
     const ctx = document.getElementById('raceChart')?.getContext('2d');
     if (!ctx) return;
+
+    const isMobile = window.matchMedia('(max-width: 500px)').matches;
 
     const isCompleted     = points.map(p => p !== null);
     const completedPoints = points.map(p => p ?? 0);
@@ -285,7 +295,7 @@ function initRaceChart(labels, points, winIndexes, teamColor, positions, fullNam
                 const bx = bar.x;
                 const by = bar.y;
                 const ptsValue = completedPoints[i];
-                const posStr = positions[i];
+                const posVal = positions[i];
 
                 if (winSet.has(i)) {
                     c.font = '12px serif';
@@ -294,12 +304,13 @@ function initRaceChart(labels, points, winIndexes, teamColor, positions, fullNam
                     c.fillText('🏆', bx, by - 6);
                 }
 
-                if (posStr !== null && posStr !== undefined) {
+                if (posVal !== null && posVal !== undefined) {
+                    const label = String(posVal);
                     const fontSize = Math.min(Math.floor(bw * 0.8), 32); 
                     c.font = `${fontSize}px 'F1-Black', sans-serif`;
                     c.fillStyle = ptsValue > 0 ? '#ffffff' : '#888888';
 
-                    const textWidth = c.measureText(posStr).width;
+                    const textWidth = c.measureText(label).width;
                     let textY = by + 10;
                     const bottomLimit = zeroY - 10; 
 
@@ -312,7 +323,7 @@ function initRaceChart(labels, points, winIndexes, teamColor, positions, fullNam
                     c.rotate(-Math.PI / 2);
                     c.textAlign = 'right';
                     c.textBaseline = 'middle';
-                    c.fillText(posStr, 0, 0);
+                    c.fillText(label, 0, 0);
                     c.restore();
                 }
             });
@@ -343,10 +354,10 @@ function initRaceChart(labels, points, winIndexes, teamColor, positions, fullNam
                     type: 'line',
                     borderColor: teamColor,
                     backgroundColor: 'transparent',
-                    borderWidth: 3,           
-                    pointRadius: 3,           
+                    borderWidth: isMobile ? 1.5 : 3,
+                    pointRadius: isMobile ? 1 : 3,
                     pointBackgroundColor: teamColor,
-                    pointHoverRadius: 6,      
+                    pointHoverRadius: isMobile ? 3 : 6,
                     tension: 0,               
                     spanGaps: false,
                     order: 1
@@ -372,9 +383,23 @@ function initRaceChart(labels, points, winIndexes, teamColor, positions, fullNam
                         title: (context) => {
                             return fullNames[context[0].dataIndex];
                         },
-                        label: ctx => ctx.dataset.label === 'Points'
-                            ? `Race: ${ctx.parsed.y} points`
-                            : `Total: ${ctx.parsed.y} points`
+                        label: ctx => {
+                            if (ctx.dataset.label === 'Points') {
+                                const i = ctx.dataIndex;
+                                const sprint = sprintPts?.[i];
+                                const racePts = sprint != null ? ctx.parsed.y - sprint : ctx.parsed.y;
+                                if (sprint != null) {
+                                    return [
+                                        `Race: ${racePts} points`,
+                                        `Sprint: ${sprint} points`,
+                                        `Weekend: ${ctx.parsed.y} points`,
+                                        '',
+                                    ];
+                                }
+                                return `Race: ${racePts} points`;
+                            }
+                            return `Total: ${ctx.parsed.y} points`;
+                        }
                     }
                 }
             },
