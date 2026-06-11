@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">F1 Hub | Team</title>
+    <link rel="icon" href="../img/icon.png">
+    <link rel="stylesheet" href="../styles/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="../js/teams.js"></script>
+    <script src="../js/team.js" defer></script>
+    <script src="../js/twemoji.js" defer></script>
+    <script src="../js/navbar.js" defer></script>
+    <style>
+    /* ================================================ */
+    /*                TEAM PAGE STYLES                  */
+    /* ================================================ */
+
+    /* ── HERO ── */
+    .team-hero {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: flex-end;
+        overflow: hidden;
+    }
+
+    .team-hero-bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 35%;
+        z-index: 0;
+        filter: brightness(0.75) saturate(0.75);
+    }
+
+    .team-hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to bottom,
+            rgba(10,10,20,0) 40%,
+            rgba(10,10,20,1) 100%
+        );
+        z-index: 1;
+    }
+
+    /* Team logo as big background image — mirrors driver-number-bg */
+    .team-year-bg {
+        position: absolute;
+        right: 5%;
+        bottom: 5%;
+        width: clamp(200px, 30vw, 380px);
+        height: auto;
+        opacity: 0.1;
+        z-index: 1;
+        user-select: none;
+        pointer-events: none;
+        object-fit: contain;
+        filter: grayscale(1);
+    }
+
+    .team-hero-content {
+        position: relative;
+        z-index: 2;
+        padding: 0 5% 4rem;
+        width: 100%;
+    }
+
+    /* Team name */
+    .team-hero-title { margin-bottom: 24px; }
+
+    .team-hero-label {
+        font-family: 'F1-Regular';
+        font-size: clamp(16px, 2.5vw, 48px);
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.25);
+        line-height: 0.85;
+    }
+
+    .team-hero-name {
+        font-family: 'F1-Black', sans-serif;
+        font-size: clamp(3rem, 10vw, 8rem);
+        text-transform: uppercase;
+        color: var(--text-light);
+        line-height: 0.9;
+        margin: 0;
+    }
+
+    /* Meta row */
+    .team-hero-meta {
+        width: 55%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .team-hero-meta-item {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        font-family: 'F1-Regular';
+        font-size: 0.6rem;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.3);
+    }
+
+    .team-hero-meta-item strong {
+        font-family: 'F1-Bold';
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        color: var(--text-light);
+        font-weight: normal;
+    }
+
+    /* ── CONTENT ── */
+    .team-content {
+        max-width: 60%;
+        margin: 0 auto;
+        padding: 128px 0;
+    }
+
+    /* Section title — identical to driver page */
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 2rem;
+        padding: 0;
+        border: none;
+        color: var(--text-light);
+        font-family: 'F1-Black';
+        font-size: clamp(24px, 4vw, 48px);
+        text-transform: uppercase;
+    }
+
+    .section-title::after {
+        content: '';
+        flex: 1;
+        height: 2px;
+        background: var(--primary-red);
+    }
+
+    /* ── STATS GRID ── */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+        background: rgb(20,20,30);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        transition: border-color 0.2s;
+    }
+
+    .stat-card:hover {
+        border-color: rgba(255,255,255,0.18);
+    }
+
+    .stat-label {
+        font-family: 'F1-Regular';
+        font-size: 12px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin: 0;
+    }
+
+    .stat-value {
+        font-family: 'F1-Black', sans-serif;
+        font-size: clamp(1.8rem, 3vw, 2.4rem);
+        color: var(--text-light);
+        line-height: 1.1;
+        margin: 0;
+    }
+
+    .stat-value.accent {
+        color: var(--team-color, var(--primary-red));
+    }
+
+    .stat-sub {
+        font-family: 'F1-Regular';
+        font-size: 12px;
+        color: var(--text-dim);
+        letter-spacing: 0.3px;
+        margin: 0;
+    }
+
+    /* ── CHART CARD ── */
+    .chart-card {
+        background: rgb(20,20,30);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        padding: 24px;
+    }
+
+    .chart-card canvas {
+        display: block;
+        width: 100% !important;
+    }
+
+    /* ── INFO / CHART ROW ── */
+    .info-chart-row {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 12px;
+        margin-bottom: 4rem;
+    }
+
+    .info-chart-row .chart-card {
+        height: 100%;
+        box-sizing: border-box;
+    }
+
+    .info-chart-row .chart-card canvas {
+        display: block;
+        width: 100%;
+        height: 90%;
+    }
+
+    .info-card {
+        background: rgb(20,20,30);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        padding: 8px 24px;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        transition: all 0.3s ease;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-key {
+        font-family: 'F1-Regular';
+        font-size: 14px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+    }
+
+    .info-val {
+        font-family: 'F1-Black';
+        font-size: 20px;
+        color: var(--text-light);
+        letter-spacing: 0.1px;
+        transition: all 0.3s ease;
+    }
+
+    /* ── DRIVERS ROW ── */
+    /* Two driver cards side by side, same card design as drivers.html */
+    .team-drivers-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 4rem;
+    }
+
+    .team-driver-card {
+        position: relative;
+        height: 280px;
+        border-radius: 16px;
+        overflow: hidden;
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,0.07);
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        cursor: pointer;
+        transition: transform 0.4s ease, border-color 0.3s ease;
+    }
+
+    .team-driver-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(255,255,255,0.15);
+    }
+
+    /* Stripe left — identical to drivercard */
+    .tdc-stripe {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--team-color, var(--primary-red));
+        z-index: 4;
+    }
+
+    /* Driver number in bg */
+    .tdc-number {
+        position: absolute;
+        bottom: 0;
+        left: 12px;
+        font-family: 'F1-Black', sans-serif;
+        font-size: 3rem;
+        line-height: 1;
+        color: var(--team-color, var(--primary-red));
+        opacity: 0.25;
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 1;
+        transition: all 0.5s ease;
+        text-shadow: var(--team-color) 0 0 75px;
+    }
+
+    .team-driver-card:hover .tdc-number {
+        opacity: 1;
+        transform: translateY(-150%) translateX(75%) scale(2);
+    }
+
+    /* Driver photo */
+    .tdc-img {
+        position: absolute;
+        bottom: 0;
+        right: -10px;
+        height: 90%;
+        object-fit: contain;
+        z-index: 2;
+        filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+        transform: translateY(67%) translateX(-75%) scale(2.5);
+        transition: transform 0.5s ease;
+    }
+
+    .team-driver-card:hover .tdc-img {
+        transform: translateY(130%) translateX(-125%) scale(3.5);
+    }
+
+    /* Info */
+    .tdc-info {
+        position: relative;
+        z-index: 3;
+        padding: 1.2rem 1.4rem;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        transition: transform 0.5s ease;
+    }
+
+    .team-driver-card:hover .tdc-info {
+        transform: translateY(-65%);
+    }
+
+    .tdc-label {
+        font-family: 'F1-Regular';
+        font-size: 0.6rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--team-color, var(--primary-red));
+    }
+
+    .tdc-name {
+        font-family: 'F1-Black';
+        font-size: 24px;
+        text-transform: uppercase;
+        line-height: 1;
+        color: #ffffff;
+        margin: 0;
+    }
+
+    .tdc-nat {
+        font-family: 'F1-Regular';
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        margin: 0;
+    }
+
+    .tdc-cta {
+        font-family: 'F1-Regular';
+        font-size: 0.6rem;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.25);
+        margin-top: 6px;
+        transition: color 0.3s ease;
+    }
+
+    .team-driver-card:hover .tdc-cta {
+        color: var(--team-color, var(--primary-red));
+    }
+
+    /* ── GALLERY ── */
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: 260px 260px;
+        gap: 8px;
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 4rem;
+        grid-auto-flow: dense;
+    }
+
+    .gallery-item {
+        overflow: hidden;
+        position: relative;
+        background: rgb(15,15,25);
+    }
+
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease, filter 0.4s ease;
+        filter: brightness(0.8) saturate(0.85);
+    }
+
+    .gallery-item:hover img {
+        transform: scale(1.04);
+        filter: brightness(1) saturate(1);
+    }
+
+    .gallery-item.featured {
+        grid-column: span 2;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1100px) {
+        .team-hero-meta { width: 100%; gap: 1.5rem; }
+        .team-year-bg { width: clamp(120px, 26vw, 240px); }
+
+        .team-content {
+            max-width: 85%;
+            padding: 80px 0;
+        }
+
+        .info-chart-row {
+            grid-template-columns: 1fr;
+        }
+
+        .gallery-grid {
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: auto;
+        }
+
+        .gallery-item.featured {
+            grid-column: span 2;
+        }
+    }
+
+    @media (max-width: 600px) {
+        canvas {
+            max-width: 100%;
+            min-height: 220px !important;
+        }
+    }
+
+    @media (max-width: 500px) {
+        .team-year-bg { display: none; }
+
+        .team-hero-content {
+            padding: 0 5% 2.5rem;
+        }
+
+        .team-hero-meta {
+            width: 100%;
+            gap: 1.25rem;
+        }
+
+        .team-content {
+            max-width: 92%;
+            padding: 60px 0;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .stat-card { padding: 12px; }
+        .info-card { padding: 0 12px; }
+
+        .chart-card {
+            padding: 12px;
+            min-height: 280px;
+        }
+
+        .info-chart-row {
+            grid-template-columns: 1fr;
+        }
+
+        .team-drivers-row {
+            grid-template-columns: 1fr;
+        }
+
+        .team-driver-card { height: 220px; }
+
+        .gallery-grid {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto;
+        }
+
+        .gallery-item.featured {
+            grid-column: span 1;
+        }
+
+        .info-key { font-size: 12px; }
+        .info-val { font-size: 16px; }
+
+        canvas {
+            max-width: 100%;
+            height: auto !important;
+        }
+    }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="../index.html" class="logo-container">
+            <img src="../img/logo.png" alt="F1 Hub Logo" class="nav-logo">
+        </a>
+        <button class="hamburger" id="hamburger-btn" aria-label="Abrir menú">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+        <nav>
+            <ul id="nav-menu" class="nav-menu">
+                <li><a href="../index.html#calendar">Calendar</a></li>
+                <li><a href="../championship.html">Championship</a></li>
+                <li><a href="../results.html">Results</a></li>
+                <li><a href="../drivers.html">Drivers</a></li>
+                <li><a href="../teams.html">Teams</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- ══ HERO ══ -->
+        <section class="team-hero">
+            <img id="hero-img" class="team-hero-bg" src="" alt="">
+            <div class="team-hero-overlay"></div>
+            <img id="hero-year" class="team-year-bg" src="" alt="">
+
+            <div class="team-hero-content">
+                <div class="team-hero-title">
+                    <p id="team-hero-label" class="team-hero-label">Constructor</p>
+                    <h1 id="team-hero-name" class="team-hero-name"></h1>
+                </div>
+                <div class="team-hero-meta">
+                    <div class="team-hero-meta-item">Country<strong id="meta-country">-</strong></div>
+                    <div class="team-hero-meta-item">Base<strong id="meta-base">-</strong></div>
+                    <div class="team-hero-meta-item">Founded<strong id="meta-founded">-</strong></div>
+                    <div class="team-hero-meta-item">Principal<strong id="meta-principal">-</strong></div>
+                    <div class="team-hero-meta-item">Championships<strong id="meta-titles">-</strong></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══ CONTENT ══ -->
+        <div class="team-content" id="team-content" style="--team-color: var(--primary-red)">
+
+            <!-- 2026 Season -->
+            <h2 class="section-title">2026 Season</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <p class="stat-label">Points</p>
+                    <p id="stat-points" class="stat-value accent">-</p>
+                    <p class="stat-sub">P<span id="stat-pos">-</span> constructors</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-label">Wins</p>
+                    <p id="stat-wins" class="stat-value">-</p>
+                    <p class="stat-sub">out of <span id="stat-races">-</span> races</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-label">Podiums</p>
+                    <p id="stat-podiums" class="stat-value">-</p>
+                    <p class="stat-sub"><span id="stat-podium-rate">-</span> rate</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-label">Poles</p>
+                    <p id="stat-poles" class="stat-value">-</p>
+                    <p class="stat-sub">season 2026</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-label">Fastest laps</p>
+                    <p id="stat-fastest" class="stat-value">-</p>
+                    <p class="stat-sub">season 2026</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-label">DNFs</p>
+                    <p id="stat-dnfs" class="stat-value">-</p>
+                    <p class="stat-sub">season 2026</p>
+                </div>
+            </div>
+
+            <div class="chart-card" style="margin-bottom: 4rem;">
+                <p style="font-family:'F1-Regular',sans-serif; font-size:0.75rem; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim); margin-bottom:1.2rem;">Points per race</p>
+                <canvas id="raceChart"></canvas>
+            </div>
+
+            <!-- Drivers -->
+            <h2 class="section-title">2026 Drivers</h2>
+            <div class="team-drivers-row" id="team-drivers-row">
+                <!-- JS populated -->
+                <a class="team-driver-card" id="driver-card-1" href="#">
+                    <div class="tdc-stripe"></div>
+                    <div class="tdc-number" id="tdc-number-1"></div>
+                    <img class="tdc-img" id="tdc-img-1" src="" alt="">
+                    <div class="tdc-info">
+                        <span class="tdc-label">Driver</span>
+                        <h3 class="tdc-name" id="tdc-name-1">-</h3>
+                        <p class="tdc-nat" id="tdc-nat-1">-</p>
+                        <span class="tdc-cta">View profile →</span>
+                    </div>
+                </a>
+                <a class="team-driver-card" id="driver-card-2" href="#">
+                    <div class="tdc-stripe"></div>
+                    <div class="tdc-number" id="tdc-number-2"></div>
+                    <img class="tdc-img" id="tdc-img-2" src="" alt="">
+                    <div class="tdc-info">
+                        <span class="tdc-label">Driver</span>
+                        <h3 class="tdc-name" id="tdc-name-2">-</h3>
+                        <p class="tdc-nat" id="tdc-nat-2">-</p>
+                        <span class="tdc-cta">View profile →</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Career / History -->
+            <h2 class="section-title">Constructor history</h2>
+            <div class="info-chart-row">
+                <div class="info-card">
+                    <div class="info-row"><span class="info-key">Full name</span><span id="info-fullname" class="info-val">-</span></div>
+                    <div class="info-row"><span class="info-key">Chassis</span><span id="info-chassis" class="info-val">-</span></div>
+                    <div class="info-row"><span class="info-key">Engine</span><span id="info-engine" class="info-val">-</span></div>
+                    <div class="info-row"><span class="info-key">Seasons</span><span id="info-seasons" class="info-val">-</span></div>
+                    <div class="info-row"><span class="info-key">Total races</span><span id="info-races" class="info-val">-</span></div>
+                    <div class="info-row"><span class="info-key">Total wins</span><span id="info-wins" class="info-val">-</span></div>
+                    <div class="info-row"><span class="info-key">Total podiums</span><span id="info-podiums" class="info-val">-</span></div>
+                    <div class="info-row"><span class="info-key">Championships</span><span id="info-titles" class="info-val">-</span></div>
+                </div>
+
+                <div class="chart-card">
+                    <p style="font-family:'F1-Regular',sans-serif; font-size:0.75rem; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim); margin-bottom:1.2rem;">Points per season</p>
+                    <canvas id="pointsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Gallery -->
+            <h2 class="section-title">Gallery</h2>
+            <div class="gallery-grid" id="team-gallery">
+                <!-- JS populated or static placeholders -->
+                <div class="gallery-item featured"><img src="" alt="" id="gallery-img-1"></div>
+                <div class="gallery-item"><img src="" alt="" id="gallery-img-2"></div>
+                <div class="gallery-item"><img src="" alt="" id="gallery-img-3"></div>
+                <div class="gallery-item"><img src="" alt="" id="gallery-img-4"></div>
+                <div class="gallery-item featured"><img src="" alt="" id="gallery-img-5"></div>
+                <div class="gallery-item"><img src="" alt="" id="gallery-img-6"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-grid">
+
+            <div class="footer-brand">
+                <a href="../index.html" class="footer-logo">
+                    <img src="../img/logo.png" alt="F1 Hub Logo" class="footer-logo-img">
+                </a>
+                <p class="footer-tagline">
+                    Your go-to source for F1 schedules, standings,<br>
+                    and race data — all in your local time.
+                </p>
+                <div class="footer-social">
+                    <a href="#" class="social-btn" aria-label="X / Twitter">X</a>
+                    <a href="#" class="social-btn" aria-label="Instagram">IG</a>
+                    <a href="#" class="social-btn" aria-label="YouTube">YT</a>
+                    <a href="https://www.formula1.com" target="_blank" class="social-btn" aria-label="F1 Official">F1</a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <p class="footer-col-title">Navigate</p>
+                <ul>
+                    <li><a href="../index.html#calendar">Calendar</a></li>
+                    <li><a href="../championship.html">Championship</a></li>
+                    <li><a href="../results.html">Results</a></li>
+                    <li><a href="../drivers.html">Drivers</a></li>
+                    <li><a href="../teams.html">Teams</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <p class="footer-col-title">External</p>
+                <ul>
+                    <li><a href="https://www.formula1.com" target="_blank">Formula 1 Official</a></li>
+                    <li><a href="https://www.fia.com" target="_blank">FIA</a></li>
+                    <li><a href="https://f1-dash.com/dashboard" target="_blank">F1 Dash</a></li>
+                    <li><a href="https://ergast.com/mrd/" target="_blank">Ergast API</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <span class="footer-copyright">
+                &copy; 2026 F1 Hub &mdash; Unofficial fan project. Not affiliated with Formula 1.
+            </span>
+            <span class="footer-timezone">
+                All times shown in your local timezone
+            </span>
+        </div>
+    </footer>
+
+</body>
+</html>
