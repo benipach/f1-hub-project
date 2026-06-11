@@ -163,10 +163,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         document.getElementById('team-hero-name').textContent = teamInfo.name;
 
+        const currentSeasonEntry = history.find(s => s.year === CURRENT_SEASON_YEAR);
+
         document.getElementById('meta-country').textContent   = teamInfo.country;
         document.getElementById('meta-base').textContent      = teamInfo.city;
         document.getElementById('meta-founded').textContent   = debutYear;
-        document.getElementById('meta-principal').textContent = teamInfo.principal || '—';
+        document.getElementById('meta-principal').textContent = currentSeasonEntry?.principal || teamInfo.principal || '—';
         document.getElementById('meta-titles').textContent    = championships;
 
         // ── DOM: STATS 2026 ───────────────────────────────────────
@@ -184,7 +186,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('stat-dnfs').textContent        = dnfs2026;
 
         // ── DOM: CONSTRUCTOR HISTORY ──────────────────────────────
-        const currentSeasonEntry = history.find(s => s.year === CURRENT_SEASON_YEAR);
         document.getElementById('info-fullname').textContent  = teamInfo.fullName || teamInfo.name;
         document.getElementById('info-chassis').textContent   = currentSeasonEntry?.chassis || '—';
         document.getElementById('info-engine').textContent    = currentSeasonEntry?.engine  || '—';
