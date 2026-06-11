@@ -521,6 +521,173 @@
             height: auto !important;
         }
     }
+    /* ── TEAM LINEAGE ── */
+    .lineage-timeline {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    /* Línea vertical conectora */
+    .lineage-timeline::before {
+        content: '';
+        position: absolute;
+        left: 31px;
+        top: 40px;
+        bottom: 40px;
+        width: 2px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.12), rgba(255,255,255,0.05));
+        z-index: 0;
+    }
+
+    .lineage-item {
+        display: grid;
+        grid-template-columns: 64px 1fr;
+        gap: 20px;
+        align-items: start;
+        padding: 16px 0;
+        position: relative;
+    }
+
+    /* Punto en la línea */
+    .lineage-dot {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: rgb(20,20,30);
+        border: 1px solid rgba(255,255,255,0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        flex-shrink: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .lineage-dot img {
+        width: 70%;
+        height: 70%;
+        object-fit: contain;
+        filter: brightness(0.85);
+    }
+
+    .lineage-body {
+        background: rgb(20,20,30);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        padding: 16px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .lineage-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .lineage-name {
+        font-family: 'F1-Black';
+        font-size: clamp(14px, 2vw, 20px);
+        text-transform: uppercase;
+        color: var(--text-light);
+        margin: 0;
+    }
+
+    .lineage-years {
+        font-family: 'F1-Regular';
+        font-size: 12px;
+        letter-spacing: 1.5px;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .lineage-stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }   
+
+    .lineage-stat {
+        cursor: default;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 8px;
+        padding: 6px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        min-width: 60px;
+        transition: all 0.3s ease;
+    }
+
+    .lineage-stat:hover{
+        border-color: rgba(255,255,255,0.15);
+    }
+
+    .lineage-stat-label {
+        font-family: 'F1-Regular';
+        font-size: 10px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+    }
+
+    .lineage-stat-value {
+        font-family: 'F1-Black';
+        font-size: 16px;
+        color: var(--text-light);
+        line-height: 1.1;
+    }
+
+    .lineage-stat-value.wcc {
+        background: linear-gradient(90deg, #B78E3F, #F5E0B5, #B78E3F);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .lineage-seasons-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .lineage-season-pill {
+        font-family: 'F1-Regular';
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        padding: 3px 8px;
+        border-radius: 4px;
+        border: 1px solid rgba(255,255,255,0.08);
+        color: var(--text-dim);
+        background: rgba(255,255,255,0.03);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .lineage-season-pill:hover{
+        border-color: rgba(255,255,255,0.15);
+    }
+
+    .lineage-season-pill.wcc {
+        border-color: rgba(183,142,63,0.5);
+        color: #F5E0B5;
+        background: rgba(183,142,63,0.08);
+    }
+
+    @media (max-width: 500px) {
+        .lineage-timeline::before { left: 23px; }
+        .lineage-dot { width: 48px; height: 48px; }
+        .lineage-item { grid-template-columns: 48px 1fr; gap: 12px; }
+        .lineage-stat-value { font-size: 14px; }
+    }
+
     </style>
 </head>
 <body>
@@ -647,10 +814,10 @@
                     <div class="info-row"><span class="info-key">Chassis</span><span id="info-chassis" class="info-val">-</span></div>
                     <div class="info-row"><span class="info-key">Engine</span><span id="info-engine" class="info-val">-</span></div>
                     <div class="info-row"><span class="info-key">Seasons</span><span id="info-seasons" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">Total races</span><span id="info-races" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">Total wins</span><span id="info-wins" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">Total podiums</span><span id="info-podiums" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">Championships</span><span id="info-titles" class="info-val">-</span></div>
+                    <div class="info-row"><span class="info-key">Race starts</span><span id="info-races" class="info-val">-</span></div>
+                    <div class="info-row"><span class="info-key">Wins</span><span id="info-wins" class="info-val">-</span></div>
+                    <div class="info-row"><span class="info-key">Podiums</span><span id="info-podiums" class="info-val">-</span></div>
+                    <div class="info-row"><span class="info-key">World titles</span><span id="info-titles" class="info-val">-</span></div>
                 </div>
 
                 <div class="chart-card">
@@ -658,6 +825,14 @@
                     <canvas id="pointsChart"></canvas>
                 </div>
             </div>
+
+            <!-- Team Lineage (solo se muestra si hay predecesores) -->
+            <section id="lineage-section" style="display:none; margin-bottom: 4rem;">
+                <h2 class="section-title">Team Lineage</h2>
+                <div class="lineage-timeline" id="lineage-timeline">
+                    <!-- JS populated -->
+                </div>
+            </section>
 
             <!-- Gallery -->
             <h2 class="section-title">Gallery</h2>
