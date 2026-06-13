@@ -518,8 +518,7 @@ function initLineage(currentTeamId, teamsData) {
         };
 
         const openDetail = (s) => {
-            const isChamp = s.position === 1;
-            const pos = isChamp ? '🏆 1' : (s.position ? `P${s.position}` : '—');
+            const pos = s.position === 1 ? '🏆 Champion' : (s.position ? `P${s.position}` : '—');
             const fields = [
                 { label: 'Chassis',  value: s.chassis  || '—' },
                 { label: 'Engine',   value: s.engine   || '—' },
@@ -528,14 +527,25 @@ function initLineage(currentTeamId, teamsData) {
                 { label: 'Wins',     value: s.wins     != null ? s.wins    : '—' },
                 { label: 'Podiums',  value: s.podiums  != null ? s.podiums : '—' },
                 { label: 'Poles',    value: s.poles    != null ? s.poles   : '—' },
-                { label: 'Position', value: pos, wcc: isChamp },
+                { label: 'Position', value: pos },
             ];
             detailBox.innerHTML = `
-                <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+                <div style="
+                    border-top: 1px solid rgba(255,255,255,0.06);
+                    padding-top: 12px;
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 6px;
+                ">
                     ${fields.map(f => `
-                        <div class="lineage-stat" style="width:auto;">
-                            <span class="lineage-stat-label">${f.label}</span>
-                            <span class="lineage-stat-value${f.wcc ? ' wcc' : ''}">${f.value}</span>
+                        <div style="
+                            background: rgba(255,255,255,0.03);
+                            border: 1px solid rgba(255,255,255,0.06);
+                            border-radius: 8px;
+                            padding: 6px 10px;
+                        ">
+                            <div style="font-family:'F1-Regular';font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:2px;">${f.label}</div>
+                            <div style="font-family:'F1-Black';font-size:14px;color:#fff;line-height:1.1;">${f.value}</div>
                         </div>
                     `).join('')}
                 </div>
@@ -583,6 +593,8 @@ function initLineage(currentTeamId, teamsData) {
     });
 }
 async function initCareerChart(history, points2026, currentTeamId, currentChampPos, teamsData) {
+
+
     const ctx = document.getElementById('pointsChart')?.getContext('2d');
     if (!ctx) return;
 
@@ -633,7 +645,7 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
         });
     }));
 
-    const WINDOW_SIZE = 15;
+    const WINDOW_SIZE = window.innerWidth <= 500 ? 8 : 15;
     const total = allSeasons.length;
 
     // winStart = índice en allSeasons del primer elemento visible
