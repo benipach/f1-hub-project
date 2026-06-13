@@ -362,35 +362,64 @@ async function initCareerChart(history, points2026, currentTeam, currentChampPos
     const ctx = document.getElementById('pointsChart')?.getContext('2d');
     if (!ctx) return;
 
-    // TEAM_LOGO_MAP eliminado — se usa teamLogo() de teams.js
-
-    // ── ACÁ ESTÁ LA MAGIA QUE EVITA DUPLICADOS A FUTURO ──
-    // Filtramos explícitamente el CURRENT_SEASON_YEAR del array del JSON (history)
     const historicalSeasons = history
-        .filter(s => s.year !== CURRENT_SEASON_YEAR) 
+        .filter(s => s.year !== CURRENT_SEASON_YEAR)
         .sort((a, b) => a.year - b.year);
 
     const allSeasons = [
         ...historicalSeasons.map(s => ({
             year:     String(s.year),
-            points:   s.points  || 0,
-            teamId:   s.teamId  || '',
+            points:   s.points   || 0,
+            teamId:   s.teamId   || '',
             isWDC:    s.position === 1,
-            position: s.position
+            position: s.position,
+            // datos extra para el info-card
+            wins:        s.wins        ?? null,
+            podiums:     s.podiums     ?? null,
+            poles:       s.poles       ?? null,
+            starts:      s.starts      ?? null,
+            fastestLaps: s.fastestLaps ?? null,
         })),
         {
             year:     String(CURRENT_SEASON_YEAR),
             points:   points2026,
             teamId:   currentTeam,
-            isWDC:    false, 
-            position: currentChampPos 
+            isWDC:    false,
+            position: currentChampPos,
+            wins: null, podiums: null, poles: null, starts: null, fastestLaps: null,
         }
     ];
 
-    const seasons = allSeasons.map(s => s.year);
-    const points  = allSeasons.map(s => s.points);
-    const colors  = allSeasons.map(s => teamColor(s.teamId));
+    const WINDOW_SIZE = screen.width <= 500 ? 8 : 15;
+    const total = allSeasons.length;
+    let winStart = Math.max(0, total - WINDOW_SIZE);
+    let view     = allSeasons.slice(winStart, winStart + WINDOW_SIZE);
 
+    // ── Estado de selección ───────────────────────────────────
+    let selectedGlobalIdx = null;
+    let careerSnap        = null;
+
+    // ── Info-card helpers ─────────────────────────────────────
+    const infoIds = ['team','debut','races','wins','podiums','poles','points','titles2','fastest'];
+
+    const snapInfo = () => Object.fromEntries(
+        infoIds.map(id => [id, document.getElementById(`info-${id}`)?.textContent ?? ''])
+    );
+
+    const setInfo = (vals) => {
+        infoIds.forEach(id => {
+            const el = document.getElementById(`info-${id}`);
+            if (!el) return;
+            el.style.transition = 'opacity 0.18s ease';
+            el.style.opacity    = '0';
+            setTimeout(() => {
+                el.textContent  = vals[id] ?? '';
+                el.style.opacity = '1';
+            }, 90);
+        });
+    };
+
+    // ── Logo cache ────────────────────────────────────────────
     const logoCache = {};
     await Promise.all(allSeasons.map(s => {
         const name = teamLogo(s.teamId);
@@ -408,46 +437,36 @@ async function initCareerChart(history, points2026, currentTeam, currentChampPos
         });
     }));
 
+    // ── Plugin: textos y logos sobre las barras ───────────────
     const careerPlugin = {
         id: 'careerPlugin',
         afterDatasetDraw(chart) {
             const { ctx: c } = chart;
-            const meta = chart.getDatasetMeta(0);
+            const meta  = chart.getDatasetMeta(0);
             const zeroY = chart.scales.y.getPixelForValue(0);
 
-            allSeasons.forEach((season, i) => {
+            view.forEach((season, i) => {
                 const bar = meta.data[i];
                 if (!bar) return;
-
-                const bw  = bar.width;
-                const bx  = bar.x;
-                const by  = bar.y;
+                const { width: bw, x: bx, y: by } = bar;
+                const logoSize = Math.min(Math.floor(bw * 0.8), 32);
 
                 c.save();
-
-                const logoSize = Math.min(Math.floor(bw * 0.8), 32); 
-
                 if (season.points > 0) {
-                    const fontSize = Math.min(Math.floor(bw * 0.8), 32); 
-                    c.font = `${fontSize}px 'F1-Black', sans-serif`;
-
-                    const textStr = String(season.points);
+                    const fontSize  = Math.min(Math.floor(bw * 0.8), 32);
+                    c.font          = `${fontSize}px 'F1-Black', sans-serif`;
+                    const textStr   = String(season.points);
                     const textWidth = c.measureText(textStr).width;
-                    
-                    let textY = by + 10;
+                    let textY       = by + 10;
                     const bottomLimit = zeroY - logoSize - 10;
-
-                    if (textY + textWidth > bottomLimit) {
-                        textY = bottomLimit - textWidth;
-                    }
+                    if (textY + textWidth > bottomLimit) textY = bottomLimit - textWidth;
 
                     c.translate(bx, textY);
                     c.rotate(-Math.PI / 2);
-                    c.textAlign = 'right';
+                    c.textAlign    = 'right';
                     c.textBaseline = 'middle';
 
                     if (season.isWDC) {
-                        // gradient in rotated coordinate space: text goes from 0 to -textWidth on x axis
                         const grad = c.createLinearGradient(-textWidth, -fontSize/2, 0, fontSize/2);
                         grad.addColorStop(0,    '#B78E3F');
                         grad.addColorStop(0.35, '#F5E0B5');
@@ -456,10 +475,8 @@ async function initCareerChart(history, points2026, currentTeam, currentChampPos
                     } else {
                         c.fillStyle = '#ffffff';
                     }
-
                     c.fillText(textStr, 0, 0);
                 }
-
                 c.restore();
 
                 const logoName = teamLogo(season.teamId);
@@ -472,18 +489,29 @@ async function initCareerChart(history, points2026, currentTeam, currentChampPos
         }
     };
 
+    // ── Helpers de color ──────────────────────────────────────
+    const barColors = (selGlobalIdx) =>
+        view.map(s => {
+            const base = teamColor(s.teamId);
+            if (selGlobalIdx === null) return base;
+            return allSeasons.indexOf(s) === selGlobalIdx
+                ? base.replace('0.9)', '1)')
+                : base.replace('0.9)', '0.5)');
+        });
+
+    // ── Chart ─────────────────────────────────────────────────
     const careerChart = new Chart(ctx, {
         type: 'bar',
         plugins: [careerPlugin],
         data: {
-            labels: seasons,
+            labels: view.map(s => s.year),
             datasets: [{
-                data: points,
-                backgroundColor: colors,
-                hoverBackgroundColor: colors.map(color => color.replace('0.9)', '1)')),
-                borderWidth: 0,
-                borderRadius: 0,
-                barPercentage: 0.95,
+                data:                 view.map(s => s.points),
+                backgroundColor:      barColors(null),
+                hoverBackgroundColor: view.map(s => teamColor(s.teamId).replace('0.9)', '1)')),
+                borderWidth:      0,
+                borderRadius:     0,
+                barPercentage:    0.95,
                 categoryPercentage: 0.95,
             }]
         },
@@ -494,27 +522,20 @@ async function initCareerChart(history, points2026, currentTeam, currentChampPos
                 legend: { display: false },
                 tooltip: {
                     backgroundColor: 'rgb(22,22,34)',
-                    borderColor: 'rgba(255,255,255,0.08)',
-                    borderWidth: 1,
-                    titleColor: '#ffffff',
-                    bodyColor: 'rgba(255,255,255,0.5)',
-                    padding: 12,
-                    displayColors: false, 
+                    borderColor:     'rgba(255,255,255,0.08)',
+                    borderWidth:     1,
+                    titleColor:      '#ffffff',
+                    bodyColor:       'rgba(255,255,255,0.5)',
+                    padding:         12,
+                    displayColors:   false,
                     callbacks: {
-                        title: (context) => {
-                            return `${context[0].label} Season`;
-                        },
+                        title: (context) => `${context[0].label} Season`,
                         label: (context) => {
-                            const seasonData = allSeasons[context.dataIndex];
-                            
-                            const posText = seasonData.position === 1 
-                                ? '🏆 World Champion' 
-                                : `Position: P${seasonData.position || '-'}`;
-                            
-                            return [
-                                posText,
-                                `Points: ${context.parsed.y}`
-                            ];
+                            const s   = view[context.dataIndex];
+                            const pos = s.position === 1
+                                ? '🏆 World Champion'
+                                : `Position: P${s.position || '-'}`;
+                            return [pos, `Points: ${context.parsed.y}`];
                         }
                     }
                 }
@@ -527,7 +548,7 @@ async function initCareerChart(history, points2026, currentTeam, currentChampPos
                         font: { size: 10 },
                         maxRotation: 45,
                         callback: function(value, index) {
-                            const label = seasons[index];
+                            const label    = view[index]?.year ?? '';
                             const isMobile = this.chart.width <= 500;
                             return isMobile ? `'${String(label).slice(-2)}` : label;
                         }
@@ -535,11 +556,124 @@ async function initCareerChart(history, points2026, currentTeam, currentChampPos
                 },
                 y: {
                     beginAtZero: true,
-                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    grid:  { color: 'rgba(255,255,255,0.05)' },
                     ticks: { display: false }
                 }
             }
         }
     });
+
+    // ── Selección por temporada ───────────────────────────────
+    const selectSeason = (seasonData) => {
+        if (!careerSnap) careerSnap = snapInfo();
+        const globalIdx = allSeasons.indexOf(seasonData);
+
+        if (selectedGlobalIdx === globalIdx) {
+            selectedGlobalIdx = null;
+            careerChart.data.datasets[0].backgroundColor = barColors(null);
+            careerChart.update('none');
+            setInfo(careerSnap);
+            return;
+        }
+
+        selectedGlobalIdx = globalIdx;
+        careerChart.data.datasets[0].backgroundColor = barColors(globalIdx);
+        careerChart.update('none');
+
+        const s   = seasonData;
+        const pos = s.position === 1 ? '1 🏆' : (s.position ? `P${s.position}` : '—');
+
+        setInfo({
+            team:     s.teamId   || '—',
+            debut:    careerSnap.debut,
+            races:    s.starts   != null ? String(s.starts)      : '—',
+            wins:     s.wins     != null ? String(s.wins)        : '—',
+            podiums:  s.podiums  != null ? String(s.podiums)     : '—',
+            poles:    s.poles    != null ? String(s.poles)       : '—',
+            points:   String(s.points),
+            titles2:  pos,
+            fastest:  s.fastestLaps != null ? String(s.fastestLaps) : '—',
+        });
+    };
+
+    // ── Click: solo si mousedown empezó en la misma barra ────
+    let mouseDownOnBar = false;
+    careerChart.canvas.addEventListener('mousedown', (e) => {
+        if (!careerSnap) careerSnap = snapInfo();
+        const hits = careerChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false);
+        mouseDownOnBar = hits.length > 0;
+    });
+    careerChart.canvas.addEventListener('click', (e) => {
+        if (!mouseDownOnBar) return;
+        mouseDownOnBar = false;
+        const hits = careerChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false);
+        if (!hits.length) return;
+        selectSeason(view[hits[0].index]);
+    });
+
+    // ── Cursor ────────────────────────────────────────────────
+    let isDragging = false;
+    careerChart.canvas.addEventListener('mousemove', (e) => {
+        if (isDragging) return;
+        const hits = careerChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false);
+        careerChart.canvas.style.cursor = hits.length ? 'pointer' : 'default';
+    });
+
+    // ── Drag to scroll ────────────────────────────────────────
+    if (total > WINDOW_SIZE) {
+        const canvas     = careerChart.canvas;
+        let dragStartX   = 0;
+        let dragStartWin = 0;
+
+        const pxPerBar = () => canvas.offsetWidth / WINDOW_SIZE;
+
+        const applyWindow = (rawStart) => {
+            const clamped = Math.max(0, Math.min(total - WINDOW_SIZE, rawStart));
+            const s = Math.round(clamped);
+            if (s === winStart) return;
+            winStart = s;
+            view     = allSeasons.slice(s, s + WINDOW_SIZE);
+
+            const ds = careerChart.data.datasets[0];
+            careerChart.data.labels   = view.map(v => v.year);
+            ds.data                   = view.map(v => v.points);
+            ds.backgroundColor        = barColors(selectedGlobalIdx);
+            ds.hoverBackgroundColor   = view.map(v => teamColor(v.teamId).replace('0.9)', '1)'));
+            careerChart.update('none');
+        };
+
+        // Mouse
+        canvas.addEventListener('mousedown', e => {
+            isDragging   = true;
+            dragStartX   = e.clientX;
+            dragStartWin = winStart;
+            if (!mouseDownOnBar) canvas.style.cursor = 'ew-resize';
+            e.preventDefault();
+        });
+        window.addEventListener('mousemove', e => {
+            if (!isDragging) return;
+            const delta = (dragStartX - e.clientX) / pxPerBar();
+            applyWindow(dragStartWin + delta);
+        });
+        window.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            canvas.style.cursor = 'default';
+        });
+
+        // Touch
+        canvas.addEventListener('touchstart', e => {
+            isDragging   = true;
+            dragStartX   = e.touches[0].clientX;
+            dragStartWin = winStart;
+        }, { passive: true });
+        canvas.addEventListener('touchmove', e => {
+            if (!isDragging) return;
+            const delta = (dragStartX - e.touches[0].clientX) / pxPerBar();
+            applyWindow(dragStartWin + delta);
+        }, { passive: true });
+        canvas.addEventListener('touchend', () => { isDragging = false; });
+    }
+
     watchChartAspect(careerChart, 500, 2.25, 1.2);
 }
