@@ -1,0 +1,497 @@
+/* ================================== */
+/*               HEADER               */
+/* ================================== */
+
+.champ-header {
+    position: relative;
+    padding: 140px 10% 3rem;
+}
+
+.champ-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.champ-header h1 {
+    margin-bottom: 0.5rem;
+    color: var(--text-light);
+    font-family: 'F1-Black';
+    font-size: clamp(1.5rem, 5vw, 4rem);
+    line-height: 1;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.champ-header p {
+    color: var(--text-dim);
+    font-family: 'F1-Regular';
+    font-size: clamp(0.5rem, 1.5vw, 0.9rem);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+/* Tab navigation */
+.tab-bar {
+    display: flex;
+    gap: 0;
+    padding: 2.5rem 10% 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.tab-btn {
+    margin-bottom: -1px;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: var(--text-dim);
+    font-family: 'F1-Regular';
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.tab-btn:hover {
+    color: var(--text-light);
+}
+
+.tab-btn.active {
+    border-bottom-color: var(--primary-red);
+    color: var(--text-light);
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+    .champ-header {
+        padding: 120px 6% 2.5rem;
+    }
+    
+    .tab-bar {
+        padding: 2rem 6% 0;
+    }
+}
+
+@media (max-width: 500px) {
+    .champ-header {
+        padding: 100px 5% 2rem;
+    }
+    
+    /* Permite scroll horizontal si hay muchas pestañas en móvil */
+    .tab-bar {
+        padding: 1.5rem 5% 0;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Oculta la barra en Firefox */
+    }
+    
+    /* Oculta la barra de scroll en navegadores WebKit (Chrome, Safari) */
+    .tab-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .tab-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.65rem;
+    }
+}
+
+/* ======================================== */
+/*               MAIN CONTENT               */
+/* ======================================== */
+
+.champ-content {
+    max-width: 60%;
+    margin: 0 auto;
+    padding: 128px 0;
+}
+
+/* Panels */
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* Section Titles */
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 2rem;
+    padding: 0;
+    border: none;
+    color: var(--text-light);
+    font-family: 'F1-Black';
+    font-size: clamp(24px, 4vw, 48px);
+    text-transform: uppercase;
+}
+
+.section-title::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--primary-red);
+}
+
+/* ================================================== */
+/*               STANDINGS TABLE SYSTEM               */
+/* ================================================== */
+
+.standings-table-wrap {
+    overflow-y: auto;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    max-height: 610px;
+}
+
+.standings-table-wrap::-webkit-scrollbar { width: 4px; }
+.standings-table-wrap::-webkit-scrollbar-track { background: transparent; }
+.standings-table-wrap::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 3px; }
+.standings-table-wrap::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+
+.standings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'F1-Regular';
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+
+.standings-table thead tr {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.standings-table th {
+    height: 36px;
+    padding: 0 20px;
+    text-align: left;
+    font-family: 'F1-Bold';
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+    background: rgb(12, 12, 20);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    white-space: nowrap;
+}
+
+.standings-table td {
+    height: 52px;
+    padding: 0 20px;
+    color: var(--text-light);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    letter-spacing: 0.1px;
+    background: rgb(18, 18, 28);
+}
+
+.standings-table tbody tr:last-child td { border-bottom: none; }
+
+.standings-table tbody tr:hover td {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* ---- POS CELL ---- */
+.st-pos {
+    width: 25px;
+    text-align: center;
+    font-family: 'F1-Regular';
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* ---- DRIVER CELL ---- */
+.st-driver {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.st-team-logo {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    flex-shrink: 0;
+    opacity: 0.9;
+}
+
+.st-team-logo-placeholder {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* ---- DRIVER NUMBER ---- */
+.st-driver-num {
+    font-family: 'F1-Bold';
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    transform: skewX(-15deg);
+    flex-shrink: 0;
+    min-width: 32px;
+}
+
+/* ---- TEAM CELL ---- */
+.st-team-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.team-name {
+    font-family: 'F1-Regular';
+    font-size: 14px;
+    color: var(--text-light);
+    white-space: nowrap;
+}
+
+/* ---- POINTS CELL ---- */
+.st-pts {
+    text-align: center;
+    font-family: 'F1-Regular';
+    font-size: 14px;
+    color: var(--text-light);
+}
+
+/* ---- GAP CELL ---- */
+.st-gap {
+    font-family: 'F1-Regular';
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+}
+
+/* ---- VISIBILITY HELPERS ---- */
+.driver-code      { display: none; }
+.constructor-short { display: none; }
+
+
+/* Chart Card */
+.chart-card {
+    margin-top: 2rem;
+    padding: 24px;
+    background: rgb(20,20,30);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+}
+
+.chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.chart-title {
+    color: var(--text-dim);
+    font-family: 'F1-Bold';
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* Filters */
+.filter-wrapper {
+    position: relative;
+}
+
+.filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-light);
+    font-family: 'F1-Regular';
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: var(--primary-red);
+}
+
+.filter-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 100;
+    width: 220px;
+    height: 373px;
+    padding: 8px;
+    overflow-y: auto;
+    background: rgb(18, 18, 28);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    scrollbar-width: thin rgba(255, 255, 255, 0.12) transparent;
+}
+
+.filter-dropdown.open {
+    display: block;
+}
+
+.filter-all-btn {
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 6px;
+    background: none;
+    color: var(--text-dim);
+    font-family: 'F1-Regular';
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+    text-align: left;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.filter-all-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-light);
+}
+
+.filter-divider {
+    height: 1px;
+    margin: 4px 0;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.filter-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.filter-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.filter-checkbox {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 12px;
+    height: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 10px;
+    line-height: 1;
+    transition: background 0.15s;
+}
+
+.filter-label {
+    overflow: hidden;
+    color: var(--text-dim);
+    font-family: 'F1-Regular';
+    font-size: 0.72rem;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 1100px) {
+    .champ-content {
+        max-width: 85%;
+        padding: 128px 0;
+    }
+
+    .standings-table td,
+    .standings-table th {
+        padding: 0 15px;
+    }
+}
+
+@media (max-width: 500px) {
+    .champ-content {
+        max-width: 95%;
+    }
+
+    .section-title {
+        margin-bottom: 1.5rem;
+    }
+
+    .standings-table th {
+        height: 28px;
+        font-size: 9px;
+    }
+
+    .standings-table td {
+        height: 44px;
+        font-size: 0.75rem;
+    }
+
+    .standings-table td,
+    .standings-table th {
+        padding: 0 10px;
+    }
+
+    .standings-table-wrap {
+        max-height: 401px;
+    }
+
+    #tab-drivers .standings-table th:nth-child(3),
+    #tab-drivers .standings-table td:nth-child(3) {
+        display: none;
+    }
+
+    /* Reduce driver number size on mobile */
+    .st-driver-num {
+        font-size: 11px;
+        min-width: 28px;
+    }
+
+    .team-name {
+        font-size: 0.75rem;
+    }
+
+
+
+    .driver-fullname  { display: none; }
+    .driver-code      { display: inline; }
+
+    .constructor-fullname { display: none; }
+    .constructor-short    { display: inline; }
+
+    .chart-card {
+        padding: 1.25rem 1rem 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 1.2rem;
+    }
+
+    .filter-wrapper {
+        align-self: flex-end;
+    }
+}
