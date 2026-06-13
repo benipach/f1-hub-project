@@ -518,7 +518,8 @@ function initLineage(currentTeamId, teamsData) {
         };
 
         const openDetail = (s) => {
-            const pos = s.position === 1 ? '🏆 Champion' : (s.position ? `P${s.position}` : '—');
+            const isChamp = s.position === 1;
+            const pos = isChamp ? '🏆 1' : (s.position ? `P${s.position}` : '—');
             const fields = [
                 { label: 'Chassis',  value: s.chassis  || '—' },
                 { label: 'Engine',   value: s.engine   || '—' },
@@ -527,25 +528,14 @@ function initLineage(currentTeamId, teamsData) {
                 { label: 'Wins',     value: s.wins     != null ? s.wins    : '—' },
                 { label: 'Podiums',  value: s.podiums  != null ? s.podiums : '—' },
                 { label: 'Poles',    value: s.poles    != null ? s.poles   : '—' },
-                { label: 'Position', value: pos },
+                { label: 'Position', value: pos, wcc: isChamp },
             ];
             detailBox.innerHTML = `
-                <div style="
-                    border-top: 1px solid rgba(255,255,255,0.06);
-                    padding-top: 12px;
-                    display: grid;
-                    grid-template-columns: repeat(4, 1fr);
-                    gap: 6px;
-                ">
+                <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
                     ${fields.map(f => `
-                        <div style="
-                            background: rgba(255,255,255,0.03);
-                            border: 1px solid rgba(255,255,255,0.06);
-                            border-radius: 8px;
-                            padding: 6px 10px;
-                        ">
-                            <div style="font-family:'F1-Regular';font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:2px;">${f.label}</div>
-                            <div style="font-family:'F1-Black';font-size:14px;color:#fff;line-height:1.1;">${f.value}</div>
+                        <div class="lineage-stat" style="width:auto;">
+                            <span class="lineage-stat-label">${f.label}</span>
+                            <span class="lineage-stat-value${f.wcc ? ' wcc' : ''}">${f.value}</span>
                         </div>
                     `).join('')}
                 </div>
