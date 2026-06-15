@@ -135,10 +135,10 @@
 }
 
 .countdown-label {
-    color: rgba(255,255,255,0.45);
+    color: var(--text-light);
     font-family: 'F1-Regular', sans-serif;
-    font-size: 0.6rem;
-    letter-spacing: 3px;
+    font-size: clamp(0.4rem, 1.5vw, 1.2rem);
+    letter-spacing: 8px;
     text-transform: uppercase;
 }
 
@@ -801,7 +801,7 @@
 @media (max-width: 500px) {
     .race-calendar {
         grid-template-columns: 1fr;
-        max-width: 90%;
+        max-width: 95%;
         margin: 60px auto;
     }
 }
@@ -817,5 +817,348 @@
 
     50% {
         opacity: 0.25;
+    }
+}
+/* ============================================ */
+/*             DRIVER STANDINGS                 */
+/* ============================================ */
+
+.standings-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    max-width: 60%;
+    margin: 0 auto 100px;
+    scroll-margin-top: 80px;
+}
+
+.standings-header {
+    width: 100%;
+    display: flex;
+    align-items: baseline;
+    gap: 1.25rem;
+}
+
+.standings-title {
+    font-family: 'F1-Black';
+    font-size: 48px;
+    text-transform: uppercase;
+    line-height: 0.9;
+    padding-left: 15px;
+    border-left: 5px solid var(--primary-red);
+}
+
+.standings-subtitle {
+    color: rgba(255, 255, 255, 0.35);
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* ── List ── */
+
+.standings-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* ── Row ── */
+
+.standing-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 56px 52px 1fr 140px auto auto;
+    align-items: center;
+    gap: 0 1rem;
+    padding: 0 20px 0 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.03);
+    transition: background 0.2s ease, transform 0.2s ease;
+    cursor: default;
+}
+
+.standing-row::before {
+    /* team-color left bar */
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    border-radius: 10px 0 0 10px;
+}
+
+.standing-row:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateX(3px);
+}
+
+/* ── Team accent colors ── */
+
+.team-mclaren::before   { background: #FF8000; }
+.team-redbull::before   { background: #3671C6; }
+.team-mercedes::before  { background: #27F4D2; }
+.team-ferrari::before   { background: #E8002D; }
+.team-williams::before  { background: #005AFF; }
+.team-rbracing::before  { background: #6692FF; }
+.team-alpine::before    { background: #FF69B4; }
+.team-haas::before      { background: #B6BABD; }
+.team-aston::before     { background: #229971; }
+.team-audi::before      { background: #C00001; }
+.team-cadillac::before  { background: #1C355E; }
+
+/* ── Position number ── */
+
+.standing-pos {
+    padding: 18px 0 18px 20px;
+    font-family: 'F1-Black', sans-serif;
+    font-size: 22px;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.15);
+}
+
+/* leader gets a brighter pos */
+.standing-row:first-child .standing-pos {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Driver avatar ── */
+
+.standing-avatar {
+    display: block;
+    width: 52px;
+    height: 52px;
+    object-fit: cover;
+    object-position: top center;
+    -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+    filter: saturate(0.9) contrast(1.05);
+    transition: filter 0.2s ease;
+}
+
+.standing-row:hover .standing-avatar {
+    filter: saturate(1.1) contrast(1.1);
+}
+
+/* ── Driver name ── */
+
+/* ── Driver info (number + flag + name) ── */
+
+.standing-driver {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.standing-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.standing-number {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.standing-flag {
+    font-size: 12px;
+    line-height: 1;
+}
+
+/* number color follows team accent */
+.team-mclaren   .standing-number { color: #FF8000; }
+.team-redbull   .standing-number { color: #3671C6; }
+.team-mercedes  .standing-number { color: #27F4D2; }
+.team-ferrari   .standing-number { color: #E8002D; }
+.team-williams  .standing-number { color: #005AFF; }
+.team-rbracing  .standing-number { color: #6692FF; }
+.team-alpine    .standing-number { color: #FF69B4; }
+.team-haas      .standing-number { color: #B6BABD; }
+.team-aston     .standing-number { color: #229971; }
+.team-audi      .standing-number { color: #C00001; }
+.team-cadillac  .standing-number { color: #1C355E; }
+
+.standing-name {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ── Team (logo + name) ── */
+
+.standing-team {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.standing-team-logo {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.standing-team-name {
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Points ── */
+
+.standing-pts {
+    font-family: 'F1-Black', sans-serif;
+    font-size: 20px;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+    min-width: 52px;
+    text-align: right;
+}
+
+/* suffix PTS label */
+.standing-pts::after {
+    content: ' pts';
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-left: 2px;
+}
+
+/* ── Delta ── */
+
+.standing-delta {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    min-width: 28px;
+    text-align: right;
+}
+
+.delta-neutral { color: rgba(255, 255, 255, 0.25); }
+.delta-up      { color: #2ecc71; }
+.delta-down    { color: #e8002d; }
+
+/* ── Leader bar (top-1 highlight) ── */
+
+.standing-row:first-child {
+    background: rgba(255, 255, 255, 0.055);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.standing-row:first-child .standing-name {
+    color: #ffffff;
+}
+
+/* ── CTA ── */
+
+.standings-cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 11px 24px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.25s ease;
+}
+
+.standings-cta:hover {
+    background: rgba(232, 0, 45, 0.12);
+    border-color: rgba(232, 0, 45, 0.35);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(232, 0, 45, 0.15);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 1100px) {
+    .standings-section {
+        max-width: 80%;
+    }
+}
+
+@media (max-width: 600px) {
+    .standings-section {
+        max-width: 95%;
+        gap: 1.25rem;
+    }
+
+    .standings-title {
+        font-size: 32px;
+    }
+
+    .standing-pos {
+        font-size: 16px;
+        padding-left: 16px;
+    }
+
+    .standing-name {
+        font-size: 12px;
+        letter-spacing: 1px;
+    }
+
+    .standing-pts {
+        font-size: 15px;
+        min-width: 40px;
+    }
+
+    .standing-pts::after {
+        display: none;
+    }
+
+    .standing-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .standing-team {
+        display: none;
+    }
+
+    .standing-meta {
+        gap: 4px;
+    }
+
+    .standing-number {
+        font-size: 9px;
+    }
+
+    .standing-flag {
+        font-size: 10px;
+    }
+
+    .standing-row {
+        grid-template-columns: 44px 40px 1fr auto auto;
+        gap: 0 0.6rem;
     }
 }

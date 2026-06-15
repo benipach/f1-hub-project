@@ -2,8 +2,7 @@
 
 .teams-hero {
     position: relative;
-    height: calc(100vh + 80px);
-    min-height: 680px;
+    height: 100vh;
     margin-top: -80px;
     display: flex;
     align-items: flex-end;
@@ -322,7 +321,8 @@
 }
 
 @media (max-width: 500px) {
-    .teams-section { width: 100%; padding: 3rem 4%; box-sizing: border-box; }
+    .teams-hero { height: 50vh; }
+    .teams-section { width: 95%; }
     .teams-grid { grid-template-columns: 1fr; gap: 12px; }
     .tc-name { font-size: 2rem; }
     .teams-hero { min-height: 480px; }

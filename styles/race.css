@@ -675,6 +675,7 @@ color: var(--text-light);
 border-bottom: 1px solid rgba(255,255,255,0.04);
 letter-spacing: 0.1px;
 background: rgb(18,18,28);
+transition: all 0.2s ease;
 }
 
 .data-table tbody tr:last-child td { border-bottom: none; }
@@ -893,7 +894,7 @@ border: 1px solid rgba(255,255,255,0.05);
     /* Circuit overview */
     .circuit-overview { grid-template-columns: 1fr; }
     .track-layout-card { grid-row: span 1; }
-    .circuit-stats-card { grid-template-columns: 1fr 1fr; }
+    .track-layout-placeholder { padding: 8px; }
 
     /* Tables */
     .race-table-wrap { max-height: 420px; }
@@ -913,9 +914,13 @@ border: 1px solid rgba(255,255,255,0.05);
 }
 
 @media (max-width: 500px) {
+
+    .race-hero {
+        height: 50vh;
+    }
+
     .race-content {
-        max-width: 100%;
-        padding: 2rem 5%;
+        max-width: 95%;
         gap: 56px;
     }
 
@@ -928,10 +933,10 @@ border: 1px solid rgba(255,255,255,0.05);
     .race-sprint-badge { top: 64px; right: 4%; }
 
     /* Circuit overview */
-    .circuit-stats-card { grid-template-columns: 1fr; gap: 10px; padding: 1.25rem; }
+    .circuit-stats-card { gap: 10px; padding: 1.25rem 8px; }
     .circuit-stats-card .rc-section-subtitle { grid-column: 1 / -1; }
-    .track-layout-card { padding: 1.25rem; }
-    .characteristics-card { padding: 1.25rem; }
+    .track-layout-card { padding: 1.25rem 8px; }
+    .characteristics-card { padding: 1.25rem 8px; }
     .cs-stat { padding: 0.75rem; }
     .cs-stat-val { font-size: 18px; }
 
