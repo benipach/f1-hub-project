@@ -121,6 +121,9 @@
 }
 
 @media (max-width: 500px) {
+    .drivers-hero {
+        min-height: 50vh;
+    }
     .drivers-hero-meta { width: 100%; gap: 1rem; }
     .drivers-hero-season-bg { display: none; }
 }

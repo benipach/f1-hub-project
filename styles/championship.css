@@ -20,7 +20,7 @@
 .champ-header h1 {
     margin-bottom: 0.5rem;
     color: var(--text-light);
-    font-family: 'F1-Black', sans-serif;
+    font-family: 'F1-Black';
     font-size: clamp(1.5rem, 5vw, 4rem);
     line-height: 1;
     letter-spacing: 1px;
@@ -29,7 +29,7 @@
 
 .champ-header p {
     color: var(--text-dim);
-    font-family: 'F1-Regular', sans-serif;
+    font-family: 'F1-Regular';
     font-size: clamp(0.5rem, 1.5vw, 0.9rem);
     letter-spacing: 3px;
     text-transform: uppercase;
@@ -50,7 +50,7 @@
     border-bottom: 2px solid transparent;
     background: none;
     color: var(--text-dim);
-    font-family: 'F1-Regular', sans-serif;
+    font-family: 'F1-Regular';
     font-size: 0.7rem;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -144,10 +144,9 @@
     background: var(--primary-red);
 }
 
-/* ======================================== */
-/*           STANDINGS TABLE SYSTEM         */
-/* (ported from race.html data-table)       */
-/* ======================================== */
+/* ================================================== */
+/*               STANDINGS TABLE SYSTEM               */
+/* ================================================== */
 
 .standings-table-wrap {
     overflow-y: auto;
@@ -165,7 +164,7 @@
 .standings-table {
     width: 100%;
     border-collapse: collapse;
-    font-family: 'F1-Regular', sans-serif;
+    font-family: 'F1-Regular';
     font-size: 14px;
     letter-spacing: 0.5px;
 }
@@ -180,7 +179,7 @@
     height: 36px;
     padding: 0 20px;
     text-align: left;
-    font-family: 'F1-Bold', sans-serif;
+    font-family: 'F1-Bold';
     font-size: 12px;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -253,7 +252,7 @@
 }
 
 .team-name {
-    font-family: 'F1-Regular', sans-serif;
+    font-family: 'F1-Regular';
     font-size: 14px;
     color: var(--text-light);
     white-space: nowrap;
@@ -358,7 +357,7 @@
     border-radius: 6px;
     background: none;
     color: var(--text-dim);
-    font-family: 'F1-Regular', sans-serif;
+    font-family: 'F1-Regular';
     font-size: 0.65rem;
     letter-spacing: 1px;
     text-align: left;
@@ -394,17 +393,23 @@
 
 .filter-checkbox {
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 12px;
     height: 12px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 3px;
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 10px;
+    line-height: 1;
     transition: background 0.15s;
 }
 
 .filter-label {
     overflow: hidden;
     color: var(--text-dim);
-    font-family: 'F1-Regular', sans-serif;
+    font-family: 'F1-Regular';
     font-size: 0.72rem;
     letter-spacing: 0.5px;
     white-space: nowrap;
@@ -425,7 +430,7 @@
 
 @media (max-width: 500px) {
     .champ-content {
-        max-width: 90%;
+        max-width: 95%;
     }
 
     .section-title {
