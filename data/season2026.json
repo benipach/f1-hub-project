@@ -4208,37 +4208,37 @@
         },
         {
           "pos": 3,
-          "driver": "Isack Hadjar",
+          "driver": "Pierre Gasly",
           "laps": "78",
-          "time": "+23.394s",
+          "time": "+20.369s",
           "pts": 15
         },
         {
           "pos": 4,
-          "driver": "Oscar Piastri",
+          "driver": "Isack Hadjar",
           "laps": "78",
-          "time": "+24.261s",
+          "time": "+23.394s",
           "pts": 12
         },
         {
           "pos": 5,
-          "driver": "Liam Lawson",
+          "driver": "Oscar Piastri",
           "laps": "78",
-          "time": "+26.553s",
+          "time": "+24.261s",
           "pts": 10
         },
         {
           "pos": 6,
-          "driver": "Arvid Lindblad",
+          "driver": "Liam Lawson",
           "laps": "78",
-          "time": "+29.010s",
+          "time": "+26.553s",
           "pts": 8
         },
         {
           "pos": 7,
-          "driver": "Pierre Gasly",
+          "driver": "Arvid Lindblad",
           "laps": "78",
-          "time": "+30.369s",
+          "time": "+29.010s",
           "pts": 6
         },
         {
@@ -4298,7 +4298,7 @@
           "pts": 0
         },
         {
-          "pos": "NC",
+          "pos": 16,
           "driver": "Carlos Sainz",
           "laps": "70",
           "time": "DNF",
@@ -4377,7 +4377,7 @@
   },
   "barcelona-gp": {
     "round": 9,
-    "name": "Barcelona-Catalunya Grand Prix",
+    "name": "Barcelona Grand Prix",
     "sprint": false,
     "color": "#ffcc00 45%, #c60b1e 70%",
     "horarios": {
@@ -4393,11 +4393,670 @@
       "raceEndDate": "2026-06-14T12:00:00"
     },
     "results": {
-      "fp1": [],
-      "fp2": [],
-      "fp3": [],
-      "qualifying": [],
-      "race": []
+      "fp1": [
+        {
+          "pos": 1,
+          "driver": "George Russell",
+          "lapTime": "1:16.363",
+          "laps": "27"
+        },
+        {
+          "pos": 2,
+          "driver": "Oscar Piastri",
+          "lapTime": "1:16.566",
+          "laps": "29"
+        },
+        {
+          "pos": 3,
+          "driver": "Charles Leclerc",
+          "lapTime": "1:16.883",
+          "laps": "29"
+        },
+        {
+          "pos": 4,
+          "driver": "Max Verstappen",
+          "lapTime": "1:17.047",
+          "laps": "29"
+        },
+        {
+          "pos": 5,
+          "driver": "Leonardo Fornaroli",
+          "lapTime": "1:17.216",
+          "laps": "22"
+        },
+        {
+          "pos": 6,
+          "driver": "Paul Aron",
+          "lapTime": "1:17.321",
+          "laps": "24"
+        },
+        {
+          "pos": 7,
+          "driver": "Liam Lawson",
+          "lapTime": "1:17.472",
+          "laps": "24"
+        },
+        {
+          "pos": 8,
+          "driver": "Dino Beganovic",
+          "lapTime": "1:17.778",
+          "laps": "30"
+        },
+        {
+          "pos": 9,
+          "driver": "Arvid Lindblad",
+          "lapTime": "1:17.804",
+          "laps": "29"
+        },
+        {
+          "pos": 10,
+          "driver": "Franco Colapinto",
+          "lapTime": "1:17.893",
+          "laps": "28"
+        },
+        {
+          "pos": 11,
+          "driver": "Oliver Bearman",
+          "lapTime": "1:18.172",
+          "laps": "25"
+        },
+        {
+          "pos": 12,
+          "driver": "Gabriel Bortoleto",
+          "lapTime": "1:18.209",
+          "laps": "28"
+        },
+        {
+          "pos": 13,
+          "driver": "Carlos Sainz",
+          "lapTime": "1:18.293",
+          "laps": "27"
+        },
+        {
+          "pos": 14,
+          "driver": "Ayumu Iwasa",
+          "lapTime": "1:18.298",
+          "laps": "21"
+        },
+        {
+          "pos": 15,
+          "driver": "Frederik Vesti",
+          "lapTime": "1:18.365",
+          "laps": "28"
+        },
+        {
+          "pos": 16,
+          "driver": "Esteban Ocon",
+          "lapTime": "1:18.372",
+          "laps": "27"
+        },
+        {
+          "pos": 17,
+          "driver": "Pierre Gasly",
+          "lapTime": "1:18.508",
+          "laps": "23"
+        },
+        {
+          "pos": 18,
+          "driver": "Valtteri Bottas",
+          "lapTime": "1:18.914",
+          "laps": "23"
+        },
+        {
+          "pos": 19,
+          "driver": "Fernando Alonso",
+          "lapTime": "1:20.067",
+          "laps": "23"
+        },
+        {
+          "pos": 20,
+          "driver": "Lance Stroll",
+          "lapTime": "1:20.318",
+          "laps": "21"
+        },
+        {
+          "pos": 21,
+          "driver": "Colton Herta",
+          "lapTime": "1:20.697",
+          "laps": "27"
+        }
+      ],
+      "fp2": [
+        {
+          "pos": 1,
+          "driver": "Lando Norris",
+          "lapTime": "1:15.426",
+          "laps": "30"
+        },
+        {
+          "pos": 2,
+          "driver": "George Russell",
+          "lapTime": "+0.009s",
+          "laps": "28"
+        },
+        {
+          "pos": 3,
+          "driver": "Oscar Piastri",
+          "lapTime": "+0.057s",
+          "laps": "24"
+        },
+        {
+          "pos": 4,
+          "driver": "Charles Leclerc",
+          "lapTime": "+0.373s",
+          "laps": "29"
+        },
+        {
+          "pos": 5,
+          "driver": "Kimi Antonelli",
+          "lapTime": "+0.589s",
+          "laps": "31"
+        },
+        {
+          "pos": 6,
+          "driver": "Max Verstappen",
+          "lapTime": "+0.895s",
+          "laps": "33"
+        },
+        {
+          "pos": 7,
+          "driver": "Arvid Lindblad",
+          "lapTime": "+0.985s",
+          "laps": "29"
+        },
+        {
+          "pos": 8,
+          "driver": "Gabriel Bortoleto",
+          "lapTime": "+1.185s",
+          "laps": "27"
+        },
+        {
+          "pos": 9,
+          "driver": "Lewis Hamilton",
+          "lapTime": "+1.205s",
+          "laps": "28"
+        },
+        {
+          "pos": 10,
+          "driver": "Isack Hadjar",
+          "lapTime": "+1.248s",
+          "laps": "30"
+        },
+        {
+          "pos": 11,
+          "driver": "Nico Hulkenberg",
+          "lapTime": "+1.508s",
+          "laps": "31"
+        },
+        {
+          "pos": 12,
+          "driver": "Oliver Bearman",
+          "lapTime": "+1.519s",
+          "laps": "31"
+        },
+        {
+          "pos": 13,
+          "driver": "Liam Lawson",
+          "lapTime": "+1.541s",
+          "laps": "8"
+        },
+        {
+          "pos": 14,
+          "driver": "Carlos Sainz",
+          "lapTime": "+1.594s",
+          "laps": "29"
+        },
+        {
+          "pos": 15,
+          "driver": "Franco Colapinto",
+          "lapTime": "+1.625s",
+          "laps": "30"
+        },
+        {
+          "pos": 16,
+          "driver": "Pierre Gasly",
+          "lapTime": "+1.834s",
+          "laps": "29"
+        },
+        {
+          "pos": 17,
+          "driver": "Esteban Ocon",
+          "lapTime": "+2.112s",
+          "laps": "29"
+        },
+        {
+          "pos": 18,
+          "driver": "Valtteri Bottas",
+          "lapTime": "+2.799s",
+          "laps": "6"
+        },
+        {
+          "pos": 19,
+          "driver": "Alexander Albon",
+          "lapTime": "+3.364s",
+          "laps": "29"
+        },
+        {
+          "pos": 20,
+          "driver": "Sergio Perez",
+          "lapTime": "+3.835s",
+          "laps": "34"
+        },
+        {
+          "pos": 21,
+          "driver": "Fernando Alonso",
+          "lapTime": "+3.860s",
+          "laps": "21"
+        },
+        {
+          "pos": 22,
+          "driver": "Lance Stroll",
+          "lapTime": "+4.033s",
+          "laps": "20"
+        }
+      ],
+      "fp3": [
+        {
+          "pos": 1,
+          "driver": "George Russell",
+          "lapTime": "1:15.679",
+          "laps": "11"
+        },
+        {
+          "pos": 2,
+          "driver": "Oscar Piastri",
+          "lapTime": "+0.214s",
+          "laps": "12"
+        },
+        {
+          "pos": 3,
+          "driver": "Charles Leclerc",
+          "lapTime": "+0.243s",
+          "laps": "17"
+        },
+        {
+          "pos": 4,
+          "driver": "Lando Norris",
+          "lapTime": "+0.246s",
+          "laps": "15"
+        },
+        {
+          "pos": 5,
+          "driver": "Lewis Hamilton",
+          "lapTime": "+0.702s",
+          "laps": "16"
+        },
+        {
+          "pos": 6,
+          "driver": "Max Verstappen",
+          "lapTime": "+0.755s",
+          "laps": "12"
+        },
+        {
+          "pos": 7,
+          "driver": "Kimi Antonelli",
+          "lapTime": "+0.821s",
+          "laps": "12"
+        },
+        {
+          "pos": 8,
+          "driver": "Isack Hadjar",
+          "lapTime": "+1.005s",
+          "laps": "15"
+        },
+        {
+          "pos": 9,
+          "driver": "Nico Hulkenberg",
+          "lapTime": "+1.282s",
+          "laps": "22"
+        },
+        {
+          "pos": 10,
+          "driver": "Arvid Lindblad",
+          "lapTime": "+1.341s",
+          "laps": "16"
+        },
+        {
+          "pos": 11,
+          "driver": "Gabriel Bortoleto",
+          "lapTime": "+1.348s",
+          "laps": "13"
+        },
+        {
+          "pos": 12,
+          "driver": "Liam Lawson",
+          "lapTime": "+1.645s",
+          "laps": "15"
+        },
+        {
+          "pos": 13,
+          "driver": "Pierre Gasly",
+          "lapTime": "+1.904s",
+          "laps": "15"
+        },
+        {
+          "pos": 14,
+          "driver": "Franco Colapinto",
+          "lapTime": "+1.946s",
+          "laps": "14"
+        },
+        {
+          "pos": 15,
+          "driver": "Carlos Sainz",
+          "lapTime": "+2.051s",
+          "laps": "19"
+        },
+        {
+          "pos": 16,
+          "driver": "Esteban Ocon",
+          "lapTime": "+2.361s",
+          "laps": "15"
+        },
+        {
+          "pos": 17,
+          "driver": "Oliver Bearman",
+          "lapTime": "+2.712s",
+          "laps": "13"
+        },
+        {
+          "pos": 18,
+          "driver": "Alexander Albon",
+          "lapTime": "+2.733s",
+          "laps": "15"
+        },
+        {
+          "pos": 19,
+          "driver": "Sergio Perez",
+          "lapTime": "+3.012s",
+          "laps": "21"
+        },
+        {
+          "pos": 20,
+          "driver": "Fernando Alonso",
+          "lapTime": "+3.817s",
+          "laps": "18"
+        },
+        {
+          "pos": 21,
+          "driver": "Valtteri Bottas",
+          "lapTime": "+4.283s",
+          "laps": "14"
+        },
+        {
+          "pos": 22,
+          "driver": "Lance Stroll",
+          "lapTime": "+4.424s",
+          "laps": "17"
+        }
+      ],
+      "qualifying": [
+        {
+          "pos": 1,
+          "driver": "George Russell",
+          "lapTime": "1:14.679"
+        },
+        {
+          "pos": 2,
+          "driver": "Lewis Hamilton",
+          "lapTime": "1:14.743"
+        },
+        {
+          "pos": 3,
+          "driver": "Kimi Antonelli",
+          "lapTime": "1:14.998"
+        },
+        {
+          "pos": 4,
+          "driver": "Lando Norris",
+          "lapTime": "1:15.001"
+        },
+        {
+          "pos": 5,
+          "driver": "Max Verstappen",
+          "lapTime": "1:15.021"
+        },
+        {
+          "pos": 6,
+          "driver": "Isack Hadjar",
+          "lapTime": "1:15.077"
+        },
+        {
+          "pos": 7,
+          "driver": "Oscar Piastri",
+          "lapTime": "1:15.090"
+        },
+        {
+          "pos": 8,
+          "driver": "Liam Lawson",
+          "lapTime": "1:15.585"
+        },
+        {
+          "pos": 9,
+          "driver": "Nico Hulkenberg",
+          "lapTime": "1:15.768"
+        },
+        {
+          "pos": 10,
+          "driver": "Charles Leclerc",
+          "lapTime": "DNF"
+        },
+        {
+          "pos": 11,
+          "driver": "Arvid Lindblad",
+          "lapTime": "1:15.840"
+        },
+        {
+          "pos": 12,
+          "driver": "Gabriel Bortoleto",
+          "lapTime": "1:16.001"
+        },
+        {
+          "pos": 13,
+          "driver": "Franco Colapinto",
+          "lapTime": "1:16.191"
+        },
+        {
+          "pos": 14,
+          "driver": "Pierre Gasly",
+          "lapTime": "1:16.261"
+        },
+        {
+          "pos": 15,
+          "driver": "Oliver Bearman",
+          "lapTime": "1:16.389"
+        },
+        {
+          "pos": 16,
+          "driver": "Carlos Sainz",
+          "lapTime": "1:16.881"
+        },
+        {
+          "pos": 17,
+          "driver": "Esteban Ocon",
+          "lapTime": "1:17.073"
+        },
+        {
+          "pos": 18,
+          "driver": "Alexander Albon",
+          "lapTime": "1:17.424"
+        },
+        {
+          "pos": 19,
+          "driver": "Sergio Perez",
+          "lapTime": "1:17.545"
+        },
+        {
+          "pos": 20,
+          "driver": "Valtteri Bottas",
+          "lapTime": "1:17.757"
+        },
+        {
+          "pos": 21,
+          "driver": "Lance Stroll",
+          "lapTime": "1:18.758"
+        },
+        {
+          "pos": 22,
+          "driver": "Fernando Alonso",
+          "lapTime": "1:18.815"
+        }
+      ],
+      "race": [
+        {
+          "pos": 1,
+          "driver": "Lewis Hamilton",
+          "laps": "66",
+          "time": "1:32:28.105",
+          "pts": 25
+        },
+        {
+          "pos": 2,
+          "driver": "George Russell",
+          "laps": "66",
+          "time": "+19.561s",
+          "pts": 18
+        },
+        {
+          "pos": 3,
+          "driver": "Lando Norris",
+          "laps": "66",
+          "time": "+23.719s",
+          "pts": 15
+        },
+        {
+          "pos": 4,
+          "driver": "Max Verstappen",
+          "laps": "66",
+          "time": "+40.497s",
+          "pts": 12
+        },
+        {
+          "pos": 5,
+          "driver": "Oscar Piastri",
+          "laps": "66",
+          "time": "+58.661s",
+          "pts": 10
+        },
+        {
+          "pos": 6,
+          "driver": "Isack Hadjar",
+          "laps": "65",
+          "time": "+1 lap",
+          "pts": 8
+        },
+        {
+          "pos": 7,
+          "driver": "Pierre Gasly",
+          "laps": "65",
+          "time": "+1 lap",
+          "pts": 6
+        },
+        {
+          "pos": 8,
+          "driver": "Liam Lawson",
+          "laps": "65",
+          "time": "+1 lap",
+          "pts": 4
+        },
+        {
+          "pos": 9,
+          "driver": "Arvid Lindblad",
+          "laps": "65",
+          "time": "+1 lap",
+          "pts": 2
+        },
+        {
+          "pos": 10,
+          "driver": "Franco Colapinto",
+          "laps": "65",
+          "time": "+1 lap",
+          "pts": 1
+        },
+        {
+          "pos": 11,
+          "driver": "Gabriel Bortoleto",
+          "laps": "64",
+          "time": "+2 laps",
+          "pts": 0
+        },
+        {
+          "pos": 12,
+          "driver": "Carlos Sainz",
+          "laps": "64",
+          "time": "+2 laps",
+          "pts": 0
+        },
+        {
+          "pos": 13,
+          "driver": "Esteban Ocon",
+          "laps": "64",
+          "time": "+2 laps",
+          "pts": 0
+        },
+        {
+          "pos": 14,
+          "driver": "Sergio Perez",
+          "laps": "63",
+          "time": "+3 laps",
+          "pts": 0
+        },
+        {
+          "pos": 15,
+          "driver": "Charles Leclerc",
+          "laps": "62",
+          "time": "DNF",
+          "pts": 0
+        },
+        {
+          "pos": 16,
+          "driver": "Kimi Antonelli",
+          "laps": "61",
+          "time": "DNF",
+          "pts": 0
+        },
+        {
+          "pos": 17,
+          "driver": "Oliver Bearman",
+          "laps": "60",
+          "time": "DNF",
+          "pts": 0
+        },
+        {
+          "pos": "NC",
+          "driver": "Alexander Albon",
+          "laps": "55",
+          "time": "+11 laps",
+          "pts": 0
+        },
+        {
+          "pos": "NC",
+          "driver": "Fernando Alonso",
+          "laps": "37",
+          "time": "DNF",
+          "pts": 0
+        },
+        {
+          "pos": "NC",
+          "driver": "Nico Hulkenberg",
+          "laps": "29",
+          "time": "DNF",
+          "pts": 0
+        },
+        {
+          "pos": "NC",
+          "driver": "Valtteri Bottas",
+          "laps": "15",
+          "time": "DNF",
+          "pts": 0
+        },
+        {
+          "pos": "NC",
+          "driver": "Lance Stroll",
+          "laps": "5",
+          "time": "DNF",
+          "pts": 0
+        }
+      ]
     },
     "weather": []
   },
@@ -4637,7 +5296,7 @@
   },
   "united-states-gp": {
     "round": 19,
-    "name": "United States Grand Prix",
+    "name": "US Grand Prix",
     "sprint": false,
     "color": "#bb1225 25%, #2c2b6b 35%, #2c2b6b 65%, #ffffff 75%",
     "horarios": {
