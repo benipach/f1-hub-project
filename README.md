@@ -68,14 +68,14 @@ A modern web portal for Formula 1 enthusiasts, covering the full 2026 season wit
 - **Weather section** — Friday/Saturday/Sunday cards with icon, condition, temp, notes, rain chance; hidden if no data
 - **Circuit history table** — past winners, teams, and pole sitters by year; current year highlighted
 
-### Drivers Grid (`drivers.html`)
+### Drivers Grid (`drivers.html` + `drivers.css`)
 - Fullscreen hero with background image, gradient overlay, and oversized "2026" watermark
 - Cards animate in on scroll (fade + slide up via `IntersectionObserver`)
 - Hover parallax: driver number scales and floats, photo slides and scales, info block rises to reveal a CTA
 - Champion driver card has a gold gradient on the number and left accent stripe
 - Per-team dark background color on each card
 
-### Teams Grid (`teams.html`)
+### Teams Grid (`teams.html` + `teams.css`)
 - Two-column card grid with per-team color accent stripe and team logo
 - On hover: car model name slides up from bottom with team-color glow, car image scales and shifts, info block rises to reveal CTA
 
