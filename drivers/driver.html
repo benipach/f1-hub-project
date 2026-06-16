@@ -489,14 +489,25 @@
             <h2 class="section-title">Career stats</h2>
             <div class="info-chart-row">
                 <div class="info-card">
-                    <div class="info-row"><span class="info-key">Team</span><span id="info-team" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">Debut</span><span id="info-debut" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">Race starts</span><span id="info-races" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">Wins</span><span id="info-wins" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">Podiums</span><span id="info-podiums" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">Poles</span><span id="info-poles" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">Points</span><span id="info-points" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">World titles</span><span id="info-titles2" class="info-val">-</span></div>
+                    <!-- Default state -->
+                    <div class="info-row" id="irow-name"><span class="info-key">Name</span><span id="info-name" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-team"><span class="info-key">Team</span><span id="info-team" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-debut"><span class="info-key">Debut</span><span id="info-debut" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-races"><span class="info-key">Race starts</span><span id="info-races" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-wins"><span class="info-key">Wins</span><span id="info-wins" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-podiums"><span class="info-key">Podiums</span><span id="info-podiums" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-poles"><span class="info-key">Poles</span><span id="info-poles" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-points"><span class="info-key">Points</span><span id="info-points" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-titles"><span class="info-key">World titles</span><span id="info-titles2" class="info-val">-</span></div>
+                    <!-- Season-selected state (hidden by default) -->
+                    <div class="info-row" id="irow-season" style="display:none"><span class="info-key">Season</span><span id="info-season" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-team-sel" style="display:none"><span class="info-key">Team</span><span id="info-team-sel" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-races-sel" style="display:none"><span class="info-key">Race starts</span><span id="info-races-sel" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-wins-sel" style="display:none"><span class="info-key">Wins</span><span id="info-wins-sel" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-podiums-sel" style="display:none"><span class="info-key">Podiums</span><span id="info-podiums-sel" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-poles-sel" style="display:none"><span class="info-key">Poles</span><span id="info-poles-sel" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-points-sel" style="display:none"><span class="info-key">Points</span><span id="info-points-sel" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-position" style="display:none"><span class="info-key">Position</span><span id="info-position" class="info-val">-</span></div>
                 </div>
 
                 <div class="chart-card">
