@@ -1,3 +1,72 @@
+// ── Team metadata ──────────────────────────────────────────────────────────
+// Maps the team name from the JSON to the CSS class and a display-friendly name.
+const TEAM_META = {
+    'Mercedes':        { cls: 'team-mercedes',  label: 'Mercedes' },
+    'Ferrari':         { cls: 'team-ferrari',   label: 'Ferrari' },
+    'McLaren':         { cls: 'team-mclaren',   label: 'McLaren' },
+    'Red Bull Racing': { cls: 'team-redbull',   label: 'Red Bull' },
+    'Williams':        { cls: 'team-williams',  label: 'Williams' },
+    'Racing Bulls':    { cls: 'team-rbracing',  label: 'Racing Bulls' },
+    'Alpine':          { cls: 'team-alpine',    label: 'Alpine' },
+    'Haas F1 Team':    { cls: 'team-haas',      label: 'Haas' },
+    'Aston Martin':    { cls: 'team-aston',     label: 'Aston Martin' },
+    'Audi':            { cls: 'team-audi',      label: 'Audi' },
+    'Cadillac':        { cls: 'team-cadillac',  label: 'Cadillac' },
+};
+
+// Maps full driver name → image filename (without extension).
+// Used to resolve avatars even for GPs that don't include the `team` field.
+const DRIVER_IMG = {
+    'Alexander Albon':   'albon',
+    'Arvid Lindblad':    'lindblad',
+    'Carlos Sainz':      'sainz',
+    'Charles Leclerc':   'leclerc',
+    'Esteban Ocon':      'ocon',
+    'Fernando Alonso':   'alonso',
+    'Franco Colapinto':  'colapinto',
+    'Gabriel Bortoleto': 'bortoleto',
+    'George Russell':    'russell',
+    'Isack Hadjar':      'hadjar',
+    'Kimi Antonelli':    'antonelli',
+    'Lance Stroll':      'stroll',
+    'Lando Norris':      'norris',
+    'Lewis Hamilton':    'hamilton',
+    'Liam Lawson':       'lawson',
+    'Max Verstappen':    'verstappen',
+    'Nico Hulkenberg':   'hulkenberg',
+    'Oliver Bearman':    'bearman',
+    'Oscar Piastri':     'piastri',
+    'Pierre Gasly':      'gasly',
+    'Sergio Perez':      'perez',
+    'Valtteri Bottas':   'bottas',
+};
+
+// Maps full driver name → team name (fallback for early GPs without team field).
+const DRIVER_TEAM = {
+    'Alexander Albon':   'Williams',
+    'Arvid Lindblad':    'Racing Bulls',
+    'Carlos Sainz':      'Williams',
+    'Charles Leclerc':   'Ferrari',
+    'Esteban Ocon':      'Haas F1 Team',
+    'Fernando Alonso':   'Aston Martin',
+    'Franco Colapinto':  'Alpine',
+    'Gabriel Bortoleto': 'Audi',
+    'George Russell':    'Mercedes',
+    'Isack Hadjar':      'Red Bull Racing',
+    'Kimi Antonelli':    'Mercedes',
+    'Lance Stroll':      'Aston Martin',
+    'Lando Norris':      'McLaren',
+    'Lewis Hamilton':    'Ferrari',
+    'Liam Lawson':       'Racing Bulls',
+    'Max Verstappen':    'Red Bull Racing',
+    'Nico Hulkenberg':   'Audi',
+    'Oliver Bearman':    'Haas F1 Team',
+    'Oscar Piastri':     'McLaren',
+    'Pierre Gasly':      'Alpine',
+    'Sergio Perez':      'Cadillac',
+    'Valtteri Bottas':   'Cadillac',
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         const [season, circuits] = await Promise.all([
@@ -5,6 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             loadCircuits('.')
         ]);
         updateDashboard(season, circuits);
+        buildStandings(season);
         setInterval(() => tickCountdown(season), 1000);
     } catch (err) {
         console.error('Error cargando datos:', err);
@@ -148,14 +218,35 @@ function tickCountdown(season) {
     const h = nextGP.horarios;
     if (!h) return;
 
-    const target = [
-        h.fp1Date, h.fp2Date, h.fp3Date,
-        h.sprintQualyDate, h.sprintRaceDate,
-        h.qualyDate, h.raceStartDate
-    ].filter(Boolean)
-     .map(parseDate)
-     .filter(d => d > now)
-     .sort((a, b) => a - b)[0] ?? parseDate(h.raceEndDate);
+    const sessions = [
+        { name: 'FP 1',           start: parseDate(h.fp1Date),         end: parseDate(h.fp1EndDate)         },
+        { name: 'FP 2',           start: parseDate(h.fp2Date),         end: parseDate(h.fp2EndDate)         },
+        { name: 'FP 3',           start: parseDate(h.fp3Date),         end: parseDate(h.fp3EndDate)         },
+        { name: 'Sprint Qualy',   start: parseDate(h.sprintQualyDate), end: parseDate(h.sprintQualyEndDate) },
+        { name: 'Sprint Race',    start: parseDate(h.sprintRaceDate),  end: parseDate(h.sprintRaceEndDate)  },
+        { name: 'Qualifying',     start: parseDate(h.qualyDate),       end: parseDate(h.qualyEndDate)       },
+        { name: 'Race',           start: parseDate(h.raceStartDate),   end: parseDate(h.raceEndDate)        },
+    ].filter(s => s.start && s.end);
+
+    // Sesión en curso (started pero no terminada)
+    const live = sessions.find(s => s.start <= now && s.end > now);
+    // Próxima sesión que aún no empezó
+    const next = sessions.filter(s => s.start > now).sort((a, b) => a.start - b.start)[0];
+
+    let target, label;
+    if (live) {
+        target = live.end;
+        label  = `${live.name} ends in`;
+    } else if (next) {
+        target = next.start;
+        label  = `${next.name} starts in`;
+    } else {
+        target = parseDate(h.raceEndDate);
+        label  = 'Race ends in';
+    }
+
+    const labelEl = document.getElementById('hero-countdown-label');
+    if (labelEl) labelEl.textContent = label;
 
     const diff = target - now;
     const pad  = n => String(Math.max(0, n)).padStart(2, '0');
@@ -164,4 +255,89 @@ function tickCountdown(season) {
     document.getElementById('time-hours').innerText = pad(Math.floor((diff / 3600000) % 24));
     document.getElementById('time-mins').innerText  = pad(Math.floor((diff / 60000) % 60));
     document.getElementById('time-secs').innerText  = pad(Math.floor((diff / 1000) % 60));
+}
+// ── Driver Standings ────────────────────────────────────────────────────────
+
+function buildStandings(season) {
+    // 1. Accumulate points from race + sprintRace across every GP.
+    const driverMap = {}; // { fullName: { pts, team, lastRound } }
+
+    for (const [, gp] of Object.entries(season)) {
+        if (!gp || typeof gp !== 'object') continue;
+        const results = gp.results;
+        if (!results || typeof results !== 'object' || Array.isArray(results)) continue;
+
+        for (const sessionKey of ['race', 'sprintRace']) {
+            const entries = results[sessionKey];
+            if (!Array.isArray(entries)) continue;
+
+            for (const entry of entries) {
+                const driver = entry.driver;
+                const pts    = Number(entry.pts) || 0;
+                const team   = entry.team || DRIVER_TEAM[driver] || '';
+                if (!driver) continue;
+
+                if (!driverMap[driver]) {
+                    driverMap[driver] = { pts: 0, team, lastRound: 0 };
+                }
+                driverMap[driver].pts += pts;
+                // Keep the most recent team name we see
+                if (team) driverMap[driver].team = team;
+                if (gp.round > driverMap[driver].lastRound) {
+                    driverMap[driver].lastRound = gp.round;
+                }
+            }
+        }
+    }
+
+    // 2. Sort by points desc, then by last round (more recent = better tiebreak)
+    const standings = Object.entries(driverMap)
+        .filter(([, d]) => d.pts > 0)
+        .sort(([, a], [, b]) => b.pts - a.pts || b.lastRound - a.lastRound);
+
+    if (!standings.length) return; // No results yet
+
+    // 3. Find the last completed round for the subtitle
+    const lastRound = Math.max(
+        ...Object.values(season)
+            .filter(gp => gp && typeof gp === 'object' && !Array.isArray(gp))
+            .filter(gp => {
+                const r = gp.results;
+                return r && typeof r === 'object' && !Array.isArray(r) && Array.isArray(r.race) && r.race.length > 0;
+            })
+            .map(gp => gp.round)
+    );
+    const lastGP = Object.values(season).find(gp =>
+        gp && typeof gp === 'object' && !Array.isArray(gp) && gp.round === lastRound
+    );
+
+    // 4. Update subtitle
+    const subtitleEl = document.querySelector('.standings-subtitle');
+    if (subtitleEl && lastGP) {
+        subtitleEl.textContent = `After ${lastGP.name.replace(' Grand Prix', ' GP')} · Round ${String(lastRound).padStart(2, '0')}`;
+    }
+
+    // 5. Render rows (top 10)
+    const list = document.querySelector('.standings-list');
+    if (!list) return;
+
+    list.innerHTML = standings.slice(0, 10).map(([driver, data], i) => {
+        const pos        = i + 1;
+        const teamName   = data.team;
+        const teamMeta   = TEAM_META[teamName] || { cls: '', label: teamName };
+        const imgSlug    = DRIVER_IMG[driver] || driver.split(' ').pop().toLowerCase();
+        const lastName   = driver.split(' ').slice(1).join(' ') || driver;
+
+        return `
+        <div class="standing-row ${teamMeta.cls}">
+            <span class="standing-pos">${pos}</span>
+            <img class="standing-avatar"
+                 src="./img/drivers/${imgSlug}.png"
+                 alt="${driver}"
+                 onerror="this.style.visibility='hidden'">
+            <span class="standing-name">${lastName}</span>
+            <span class="standing-pts">${data.pts}</span>
+            <span class="standing-delta delta-neutral">—</span>
+        </div>`;
+    }).join('');
 }
