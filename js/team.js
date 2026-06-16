@@ -187,12 +187,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // ── DOM: CONSTRUCTOR HISTORY ──────────────────────────────
         document.getElementById('info-fullname').textContent  = teamInfo.fullName || teamInfo.name;
-        document.getElementById('info-chassis').textContent   = currentSeasonEntry?.chassis || '—';
-        document.getElementById('info-engine').textContent    = currentSeasonEntry?.engine  || '—';
         document.getElementById('info-seasons').textContent   = history.length ? history.length + 1 : 1;
         document.getElementById('info-races').textContent     = totalStarts;
         document.getElementById('info-wins').textContent      = totalWins;
         document.getElementById('info-podiums').textContent   = totalPodiums;
+        document.getElementById('info-poles').textContent     = totalPoles;
         document.getElementById('info-titles').textContent    = championships;
 
         // ── DOM: DRIVER CARDS ─────────────────────────────────────
@@ -647,9 +646,6 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
 
     // ── Estado de selección por temporada ───────────────────────
     let selectedGlobalIdx = null;
-    // Snapshot de valores originales del info-card (carrera completa)
-    // Se captura después de que el DOM ya tiene los valores renderizados
-    let careerSnap = null;
 
     // ── Plugin: dibuja pts y logos sobre las barras ───────────────
     // Trabaja sobre `view` (siempre WINDOW_SIZE elementos), no sobre allSeasons,
@@ -767,31 +763,76 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
     });
 
     // ── Selección por temporada ───────────────────────────────────
-    const infoIds = ['fullname','chassis','engine','seasons','races','wins','podiums','titles'];
 
-    const snapInfo = () => Object.fromEntries(
-        infoIds.map(id => [id, document.getElementById(`info-${id}`)?.textContent ?? ''])
-    );
+    // Filas del estado DEFAULT (ninguna barra seleccionada)
+    const DEFAULT_ROWS = ['name', 'seasons', 'races', 'wins', 'podiums', 'poles', 'titles'];
+    // Filas del estado SELECTED (barra seleccionada)
+    const SELECTED_ROWS = ['season', 'chassis', 'engine', 'races-sel', 'wins-sel', 'podiums-sel', 'poles-sel', 'position'];
 
-    const setInfo = (vals) => {
-        infoIds.forEach(id => {
-            const el = document.getElementById(`info-${id}`);
-            if (!el) return;
-            el.style.transition = 'opacity 0.18s ease';
-            el.style.opacity = '0';
-            setTimeout(() => {
-                el.textContent = vals[id] ?? '';
-                el.style.opacity = '1';
-            }, 90);
+    const setRowsVisible = (ids, visible) => {
+        ids.forEach(id => {
+            const row = document.getElementById(`irow-${id}`);
+            if (row) row.style.display = visible ? '' : 'none';
         });
     };
 
-    // Exponer al scope global para que renderLineage pueda usarlos
+    const fadeVal = (id, text) => {
+        const el = document.getElementById(`info-${id}`);
+        if (!el) return;
+        el.style.transition = 'opacity 0.18s ease';
+        el.style.opacity = '0';
+        setTimeout(() => { el.textContent = text; el.style.opacity = '1'; }, 90);
+    };
+
+    // Snapshot de los valores default para restaurar al deseleccionar
+    let careerDefaultVals = null;
+
+    const snapDefault = () => {
+        careerDefaultVals = {
+            name:     document.getElementById('info-fullname')?.textContent ?? '',
+            seasons:  document.getElementById('info-seasons')?.textContent  ?? '',
+            races:    document.getElementById('info-races')?.textContent    ?? '',
+            wins:     document.getElementById('info-wins')?.textContent     ?? '',
+            podiums:  document.getElementById('info-podiums')?.textContent  ?? '',
+            poles:    document.getElementById('info-poles')?.textContent    ?? '',
+            titles:   document.getElementById('info-titles')?.textContent   ?? '',
+        };
+    };
+
+    const showDefault = () => {
+        setRowsVisible(SELECTED_ROWS, false);
+        setRowsVisible(DEFAULT_ROWS, true);
+        if (careerDefaultVals) {
+            fadeVal('fullname', careerDefaultVals.name);
+            fadeVal('seasons',  careerDefaultVals.seasons);
+            fadeVal('races',    careerDefaultVals.races);
+            fadeVal('wins',     careerDefaultVals.wins);
+            fadeVal('podiums',  careerDefaultVals.podiums);
+            fadeVal('poles',    careerDefaultVals.poles);
+            fadeVal('titles',   careerDefaultVals.titles);
+        }
+    };
+
+    const showSelected = (histEntry, yearNum) => {
+        setRowsVisible(DEFAULT_ROWS, false);
+        setRowsVisible(SELECTED_ROWS, true);
+        const pos = histEntry.position === 1 ? '1 🏆' : (histEntry.position ? `P${histEntry.position}` : '—');
+        fadeVal('season',      String(yearNum));
+        fadeVal('chassis',     histEntry.chassis  || '—');
+        fadeVal('engine',      histEntry.engine   || '—');
+        fadeVal('races-sel',   histEntry.starts  != null ? String(histEntry.starts)  : '—');
+        fadeVal('wins-sel',    histEntry.wins    != null ? String(histEntry.wins)    : '—');
+        fadeVal('podiums-sel', histEntry.podiums != null ? String(histEntry.podiums) : '—');
+        fadeVal('poles-sel',   histEntry.poles   != null ? String(histEntry.poles)   : '—');
+        fadeVal('position',    pos);
+    };
+
+    // Exponer al scope global para que renderLineage pueda usarlos (compatibilidad)
     window._f1InfoCard = {
-        setInfo,
-        snapInfo,
-        getSnap: () => careerSnap,
-        ensureSnap: () => { if (!careerSnap) careerSnap = snapInfo(); return careerSnap; },
+        setInfo: () => {},
+        snapInfo: () => careerDefaultVals ?? {},
+        getSnap: () => careerDefaultVals,
+        ensureSnap: () => { if (!careerDefaultVals) snapDefault(); return careerDefaultVals; },
     };
 
     const barColors = (selGlobalIdx) =>
@@ -804,8 +845,7 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
         });
 
     const selectSeason = (seasonData) => {
-        // Capturar snapshot la primera vez
-        if (!careerSnap) careerSnap = snapInfo();
+        if (!careerDefaultVals) snapDefault();
 
         const globalIdx = allSeasons.indexOf(seasonData);
         if (selectedGlobalIdx === globalIdx) {
@@ -813,7 +853,7 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
             selectedGlobalIdx = null;
             careerChart.data.datasets[0].backgroundColor = barColors(null);
             careerChart.update('none');
-            setInfo(careerSnap);
+            showDefault();
             return;
         }
 
@@ -821,7 +861,6 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
         careerChart.data.datasets[0].backgroundColor = barColors(globalIdx);
         careerChart.update('none');
 
-        // Buscar datos de esa temporada
         const yearNum   = Number(seasonData.year);
         const histEntry = history.find(s => s.year === yearNum)
             ?? (yearNum === CURRENT_SEASON_YEAR
@@ -829,25 +868,13 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
                 : null);
         if (!histEntry) return;
 
-        const pos = histEntry.position === 1 ? '1 🏆' : (histEntry.position ? `P${histEntry.position}` : '—');
-
-        setInfo({
-            fullname: careerSnap.fullname,
-            chassis:  histEntry.chassis || '—',
-            engine:   histEntry.engine  || '—',
-            seasons:  String(yearNum),
-            races:    histEntry.starts != null ? String(histEntry.starts) : '—',
-            wins:     histEntry.wins    != null ? String(histEntry.wins)   : '—',
-            podiums:  histEntry.podiums != null ? String(histEntry.podiums): '—',
-            titles:   pos,
-        });
+        showSelected(histEntry, yearNum);
     };
 
     // Click en barra — solo si mousedown y mouseup ocurrieron sobre la misma barra
     let mouseDownOnBar = false;
     careerChart.canvas.addEventListener('mousedown', (e) => {
-        // Capturar snapshot antes de la primera selección
-        if (!careerSnap) careerSnap = snapInfo();
+        if (!careerDefaultVals) snapDefault();
         const hits = careerChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false);
         mouseDownOnBar = hits.length > 0;
     });
