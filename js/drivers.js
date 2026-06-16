@@ -163,6 +163,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('stat-fastest').textContent     = fastest2026;
         document.getElementById('stat-dnfs').textContent        = dnfs2026;
 
+        document.getElementById('info-name').textContent    = fullName;
         document.getElementById('info-team').textContent    = currentTeam;
         document.getElementById('info-debut').textContent   = debutYear;
         document.getElementById('info-races').textContent   = totalStarts;
@@ -397,26 +398,70 @@ async function initCareerChart(history, points2026, currentTeam, currentChampPos
 
     // ── Estado de selección ───────────────────────────────────
     let selectedGlobalIdx = null;
-    let careerSnap        = null;
 
-    // ── Info-card helpers ─────────────────────────────────────
-    const infoIds = ['team','debut','races','wins','podiums','poles','points','titles2','fastest'];
+    // ── Info-card two-state helpers ───────────────────────────
+    const DEFAULT_ROWS  = ['name','team','debut','races','wins','podiums','poles','points','titles'];
+    const SELECTED_ROWS = ['season','team-sel','races-sel','wins-sel','podiums-sel','poles-sel','points-sel','position'];
 
-    const snapInfo = () => Object.fromEntries(
-        infoIds.map(id => [id, document.getElementById(`info-${id}`)?.textContent ?? ''])
-    );
-
-    const setInfo = (vals) => {
-        infoIds.forEach(id => {
-            const el = document.getElementById(`info-${id}`);
-            if (!el) return;
-            el.style.transition = 'opacity 0.18s ease';
-            el.style.opacity    = '0';
-            setTimeout(() => {
-                el.textContent  = vals[id] ?? '';
-                el.style.opacity = '1';
-            }, 90);
+    const setRowsVisible = (ids, visible) => {
+        ids.forEach(id => {
+            const row = document.getElementById(`irow-${id}`);
+            if (row) row.style.display = visible ? '' : 'none';
         });
+    };
+
+    const fadeVal = (id, text) => {
+        const el = document.getElementById(`info-${id}`);
+        if (!el) return;
+        el.style.transition = 'opacity 0.18s ease';
+        el.style.opacity = '0';
+        setTimeout(() => { el.textContent = text; el.style.opacity = '1'; }, 90);
+    };
+
+    let defaultVals = null;
+
+    const snapDefault = () => {
+        defaultVals = {
+            name:    document.getElementById('info-name')?.textContent    ?? '',
+            team:    document.getElementById('info-team')?.textContent    ?? '',
+            debut:   document.getElementById('info-debut')?.textContent   ?? '',
+            races:   document.getElementById('info-races')?.textContent   ?? '',
+            wins:    document.getElementById('info-wins')?.textContent    ?? '',
+            podiums: document.getElementById('info-podiums')?.textContent ?? '',
+            poles:   document.getElementById('info-poles')?.textContent   ?? '',
+            points:  document.getElementById('info-points')?.textContent  ?? '',
+            titles:  document.getElementById('info-titles2')?.textContent ?? '',
+        };
+    };
+
+    const showDefault = () => {
+        setRowsVisible(SELECTED_ROWS, false);
+        setRowsVisible(DEFAULT_ROWS, true);
+        if (defaultVals) {
+            fadeVal('name',    defaultVals.name);
+            fadeVal('team',    defaultVals.team);
+            fadeVal('debut',   defaultVals.debut);
+            fadeVal('races',   defaultVals.races);
+            fadeVal('wins',    defaultVals.wins);
+            fadeVal('podiums', defaultVals.podiums);
+            fadeVal('poles',   defaultVals.poles);
+            fadeVal('points',  defaultVals.points);
+            fadeVal('titles2', defaultVals.titles);
+        }
+    };
+
+    const showSelected = (s) => {
+        setRowsVisible(DEFAULT_ROWS, false);
+        setRowsVisible(SELECTED_ROWS, true);
+        const pos = s.position === 1 ? '1 🏆' : (s.position ? `P${s.position}` : '—');
+        fadeVal('season',     s.year);
+        fadeVal('team-sel',   s.teamId   || '—');
+        fadeVal('races-sel',  s.starts   != null ? String(s.starts)   : '—');
+        fadeVal('wins-sel',   s.wins     != null ? String(s.wins)     : '—');
+        fadeVal('podiums-sel',s.podiums  != null ? String(s.podiums)  : '—');
+        fadeVal('poles-sel',  s.poles    != null ? String(s.poles)    : '—');
+        fadeVal('points-sel', String(s.points));
+        fadeVal('position',   pos);
     };
 
     // ── Logo cache ────────────────────────────────────────────
@@ -520,25 +565,7 @@ async function initCareerChart(history, points2026, currentTeam, currentChampPos
             layout: { padding: { top: 32, bottom: 8 } },
             plugins: {
                 legend: { display: false },
-                tooltip: {
-                    backgroundColor: 'rgb(22,22,34)',
-                    borderColor:     'rgba(255,255,255,0.08)',
-                    borderWidth:     1,
-                    titleColor:      '#ffffff',
-                    bodyColor:       'rgba(255,255,255,0.5)',
-                    padding:         12,
-                    displayColors:   false,
-                    callbacks: {
-                        title: (context) => `${context[0].label} Season`,
-                        label: (context) => {
-                            const s   = view[context.dataIndex];
-                            const pos = s.position === 1
-                                ? '🏆 World Champion'
-                                : `Position: P${s.position || '-'}`;
-                            return [pos, `Points: ${context.parsed.y}`];
-                        }
-                    }
-                }
+                tooltip: { enabled: false }
             },
             scales: {
                 x: {
@@ -565,41 +592,27 @@ async function initCareerChart(history, points2026, currentTeam, currentChampPos
 
     // ── Selección por temporada ───────────────────────────────
     const selectSeason = (seasonData) => {
-        if (!careerSnap) careerSnap = snapInfo();
+        if (!defaultVals) snapDefault();
         const globalIdx = allSeasons.indexOf(seasonData);
 
         if (selectedGlobalIdx === globalIdx) {
             selectedGlobalIdx = null;
             careerChart.data.datasets[0].backgroundColor = barColors(null);
             careerChart.update('none');
-            setInfo(careerSnap);
+            showDefault();
             return;
         }
 
         selectedGlobalIdx = globalIdx;
         careerChart.data.datasets[0].backgroundColor = barColors(globalIdx);
         careerChart.update('none');
-
-        const s   = seasonData;
-        const pos = s.position === 1 ? '1 🏆' : (s.position ? `P${s.position}` : '—');
-
-        setInfo({
-            team:     s.teamId   || '—',
-            debut:    careerSnap.debut,
-            races:    s.starts   != null ? String(s.starts)      : '—',
-            wins:     s.wins     != null ? String(s.wins)        : '—',
-            podiums:  s.podiums  != null ? String(s.podiums)     : '—',
-            poles:    s.poles    != null ? String(s.poles)       : '—',
-            points:   String(s.points),
-            titles2:  pos,
-            fastest:  s.fastestLaps != null ? String(s.fastestLaps) : '—',
-        });
+        showSelected(seasonData);
     };
 
     // ── Click: solo si mousedown empezó en la misma barra ────
     let mouseDownOnBar = false;
     careerChart.canvas.addEventListener('mousedown', (e) => {
-        if (!careerSnap) careerSnap = snapInfo();
+        if (!defaultVals) snapDefault();
         const hits = careerChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false);
         mouseDownOnBar = hits.length > 0;
     });
