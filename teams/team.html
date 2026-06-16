@@ -813,14 +813,23 @@
             <h2 class="section-title">Constructor history</h2>
             <div class="info-chart-row">
                 <div class="info-card">
-                    <div class="info-row"><span class="info-key">Full name</span><span id="info-fullname" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">Chassis</span><span id="info-chassis" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">Engine</span><span id="info-engine" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">Seasons</span><span id="info-seasons" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">Race starts</span><span id="info-races" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">Wins</span><span id="info-wins" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">Podiums</span><span id="info-podiums" class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-key">World titles</span><span id="info-titles" class="info-val">-</span></div>
+                    <!-- Default state rows -->
+                    <div class="info-row" id="irow-name"><span class="info-key">Name</span><span id="info-fullname" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-seasons"><span class="info-key">Seasons</span><span id="info-seasons" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-races"><span class="info-key">Race starts</span><span id="info-races" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-wins"><span class="info-key">Wins</span><span id="info-wins" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-podiums"><span class="info-key">Podiums</span><span id="info-podiums" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-poles"><span class="info-key">Poles</span><span id="info-poles" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-titles"><span class="info-key">World titles</span><span id="info-titles" class="info-val">-</span></div>
+                    <!-- Season-selected state rows (hidden by default) -->
+                    <div class="info-row" id="irow-season" style="display:none"><span class="info-key">Season</span><span id="info-season" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-chassis" style="display:none"><span class="info-key">Chassis</span><span id="info-chassis" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-engine" style="display:none"><span class="info-key">Engine</span><span id="info-engine" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-races-sel" style="display:none"><span class="info-key">Race starts</span><span id="info-races-sel" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-wins-sel" style="display:none"><span class="info-key">Wins</span><span id="info-wins-sel" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-podiums-sel" style="display:none"><span class="info-key">Podiums</span><span id="info-podiums-sel" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-poles-sel" style="display:none"><span class="info-key">Poles</span><span id="info-poles-sel" class="info-val">-</span></div>
+                    <div class="info-row" id="irow-position" style="display:none"><span class="info-key">Position</span><span id="info-position" class="info-val">-</span></div>
                 </div>
 
                 <div class="chart-card">
