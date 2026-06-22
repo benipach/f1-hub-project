@@ -44,85 +44,35 @@
         <section class="race-hero">
             
             <img src="img/hero-bg.jpg" id="hero-image" class="race-hero-bg">
-        
-            <div class="race-hero-content">
-            
-                <div class="race-hero-meta">
-                    <span class="race-round-badge" id="hero-round">Round —</span>
-                
-                    <span id="hero-sprint-pill" class="race-sprint-badge" style="display:none">
-                        <span class="race-sprint-dot"></span>
-                        Sprint Weekend
-                    </span>
+
+            <div class="race-hero-left">
+                <canvas id="hero-city-canvas" class="hero-city-canvas" aria-hidden="true"></canvas>
+                <span id="hero-city-fallback" class="hero-city-fallback">Loading...</span>
+            </div>
+
+            <div class="race-hero-right">
+                <div class="hero-title-row">
+                    <h1 class="hero-gp-name" id="hero-gp-name">–</h1>
+                    <span class="hero-gp-flag" id="hero-gp-flag" aria-hidden="true"></span>
                 </div>
-            
-                <div class="race-title-group">
-                    <p class="race-circuit-name" id="hero-circuit-label">—</p>
-                
-                    <h1 id="hero-gp-title">-</h1>
-                
-                    <p class="race-grand-prix-label">Grand Prix</p>
+                <p class="hero-underline" id="hero-circuit-label">–</p>
+
+                <div class="hero-divider"></div>
+                <p class="hero-schedule-label">Race Weekend</p>
+
+                <div class="hero-schedule" id="hero-schedule">
+                    <!-- Populated by JS -->
                 </div>
-            
-                <div class="countdown-section">
-                    <p class="countdown-label" id="hero-countdown-label">
-                        starts in
-                    </p>
-                
-                    <div class="countdown-grid">
-                        <div class="countdown-card">
-                            <span id="time-days">-</span>
-                            <small>Days</small>
-                        </div>
-                    
-                        <div class="countdown-card">
-                            <span id="time-hours">-</span>
-                            <small>Hours</small>
-                        </div>
-                    
-                        <div class="countdown-card">
-                            <span id="time-mins">-</span>
-                            <small>Min</small>
-                        </div>
-                    
-                        <div class="countdown-card">
-                            <span id="time-secs">00</span>
-                            <small>Sec</small>
-                        </div>
-                    </div>
-                </div>
-            
-                <a href="#" class="race-details-btn" id="show-more-btn">
-                    View Race Details →
+
+                <a class="hero-circuit-btn" id="hero-circuit-btn" href="#">
+                    <span>View Circuit</span>
+                    <span class="hero-circuit-btn-arrow">→</span>
                 </a>
-            
             </div>
         
-            <div class="race-schedule">
-                <div class="race-schedule-card">
-                
-                    <p class="race-schedule-title" id="table-gp-name">
-                        Schedule
-                    </p>
-                
-                    <div class="schedule-day">
-                    
-                        <p class="schedule-day-title">—</p>
-                    
-                        <div class="schedule-session">
-                            <span class="schedule-session-name">FP 1</span>
-                            <span class="schedule-session-time">—</span>
-                        </div>
-                    
-                    </div>
-                
-                    <div class="race-schedule-footer">
-                        <p>Local time in Buenos Aires, Argentina</p>
-                    </div>
-                
-                </div>
-            </div>
         </section>
+
+        <!-- Section race calendar -->
 
         <section id="calendar" class="race-calendar">
 
@@ -372,6 +322,168 @@
             
         </section>
     </main>
+
+
+    <script>
+        (() => {
+            const canvas = document.getElementById('hero-city-canvas');
+            const fallback = document.getElementById('hero-city-fallback');
+            const heroLeft = document.querySelector('.race-hero-left');
+            const heroBg = document.getElementById('hero-image');
+
+            if (!canvas || !heroLeft || !heroBg) return;
+
+            const ctx = canvas.getContext('2d');
+            const offscreenSupported = typeof OffscreenCanvas !== 'undefined';
+
+            let bgCanvas;
+            let blurCanvas;
+            let maskCanvas;
+            let compCanvas;
+            let bgCtx;
+            let blurCtx;
+            let maskCtx;
+            let compCtx;
+            let currentText = '';
+            let lastWidth = 0;
+            let lastHeight = 0;
+            const BLUR = 10;
+            const TEXT_TINT_OPACITY = 0.67;
+
+            // Set by index.js once the next GP is determined
+            const getHeroCity = () => window._heroCity || '';
+
+            const makeCanvas = (w, h) => offscreenSupported
+                ? new OffscreenCanvas(w, h)
+                : Object.assign(document.createElement('canvas'), { width: w, height: h });
+
+            const setupCanvases = (w, h) => {
+                bgCanvas = makeCanvas(w, h);
+                blurCanvas = makeCanvas(w, h);
+                maskCanvas = makeCanvas(w, h);
+                compCanvas = makeCanvas(w, h);
+
+                bgCtx = bgCanvas.getContext('2d');
+                blurCtx = blurCanvas.getContext('2d');
+                maskCtx = maskCanvas.getContext('2d');
+                compCtx = compCanvas.getContext('2d');
+            };
+
+            const drawHeroBackgroundCrop = (w, h) => {
+                bgCtx.clearRect(0, 0, w, h);
+
+                if (!heroBg.complete || !heroBg.naturalWidth) return;
+
+                const imgW = heroBg.naturalWidth;
+                const imgH = heroBg.naturalHeight;
+                const heroRect = document.querySelector('.race-hero').getBoundingClientRect();
+                const leftRect = heroLeft.getBoundingClientRect();
+
+                const renderedW = heroRect.width;
+                const renderedH = heroRect.height;
+                const scale = Math.max(renderedW / imgW, renderedH / imgH);
+                const scaledW = imgW * scale;
+                const scaledH = imgH * scale;
+                const offsetX = (renderedW - scaledW) / 2;
+                const offsetY = (renderedH - scaledH) / 2;
+
+                const cropX = (leftRect.left - heroRect.left - offsetX) / scale;
+                const cropY = (leftRect.top - heroRect.top - offsetY) / scale;
+                const cropW = leftRect.width / scale;
+                const cropH = leftRect.height / scale;
+
+                bgCtx.drawImage(heroBg, cropX, cropY, cropW, cropH, 0, 0, w, h);
+                bgCtx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+                bgCtx.fillRect(0, 0, w, h);
+            };
+
+            const drawMask = (w, h, text) => {
+                maskCtx.clearRect(0, 0, w, h);
+
+                const maxTextWidth = w * 0.8;
+
+                let fontSize = Math.min(h * 0.18, w / Math.max(text.length * 0.56, 4));
+                fontSize = Math.max(42, Math.min(fontSize, 150));
+
+                maskCtx.font = `900 ${fontSize}px F1-Black`;
+                // No artificial floor here on purpose: a short name like "Baku"
+                // can stay big, but "Silverstone" or "Mexico City" must keep
+                // shrinking — in steps of 1px near the end — until it actually
+                // fits, instead of giving up and overflowing past maxTextWidth.
+                while (maskCtx.measureText(text).width > maxTextWidth && fontSize > 12) {
+                    fontSize -= fontSize > 40 ? 4 : 1;
+                    maskCtx.font = `900 ${fontSize}px F1-Black`;
+                }
+
+                maskCtx.textAlign = 'center';
+                maskCtx.textBaseline = 'middle';
+                maskCtx.fillStyle = 'rgb(10,10,20)';
+                maskCtx.fillText(text.toUpperCase(), w / 2, h / 2);
+            };
+
+            const draw = () => {
+                const rect = heroLeft.getBoundingClientRect();
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                const w = Math.max(1, Math.round(rect.width * dpr));
+                const h = Math.max(1, Math.round(rect.height * dpr));
+                const text = getHeroCity();
+
+                if (w !== lastWidth || h !== lastHeight) {
+                    canvas.width = w;
+                    canvas.height = h;
+                    canvas.style.width = `${rect.width}px`;
+                    canvas.style.height = `${rect.height}px`;
+                    setupCanvases(w, h);
+                    lastWidth = w;
+                    lastHeight = h;
+                    currentText = '';
+                }
+
+                fallback.textContent = text;
+                drawHeroBackgroundCrop(w, h);
+
+                blurCtx.clearRect(0, 0, w, h);
+                blurCtx.filter = `blur(${BLUR * dpr}px)`;
+                blurCtx.drawImage(bgCanvas, 0, 0);
+                blurCtx.filter = 'none';
+
+                if (text !== currentText) {
+                    drawMask(w, h, text);
+                    currentText = text;
+                }
+
+                compCtx.clearRect(0, 0, w, h);
+                compCtx.drawImage(maskCanvas, 0, 0);
+                compCtx.globalCompositeOperation = 'source-in';
+                compCtx.drawImage(blurCanvas, 0, 0);
+                compCtx.globalCompositeOperation = 'source-over';
+
+                ctx.clearRect(0, 0, w, h);
+                ctx.drawImage(compCanvas, 0, 0);
+
+                ctx.save();
+                ctx.globalAlpha = TEXT_TINT_OPACITY;
+                ctx.drawImage(maskCanvas, 0, 0);
+                ctx.restore();
+
+            };
+
+            const scheduleDraw = () => requestAnimationFrame(draw);
+
+            window.addEventListener('resize', scheduleDraw);
+            window.addEventListener('load', scheduleDraw);
+            heroBg.addEventListener('load', scheduleDraw);
+
+            const observer = new MutationObserver(scheduleDraw);
+            observer.observe(document.querySelector('.race-calendar'), {
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['class']
+            });
+
+            scheduleDraw();
+        })();
+    </script>
 
     <footer class="footer">
         <div class="footer-grid">
