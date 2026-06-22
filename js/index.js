@@ -67,6 +67,62 @@ const DRIVER_TEAM = {
     'Valtteri Bottas':   'Cadillac',
 };
 
+// Maps GP id → host city (shown in the blurred canvas text on the hero left)
+const GP_CITY = {
+    'australian-gp':    'Melbourne',
+    'chinese-gp':       'Shanghai',
+    'japanese-gp':      'Suzuka',
+    'bahrain-gp':       'Sakhir',
+    'saudi-arabian-gp': 'Jeddah',
+    'miami-gp':         'Miami',
+    'canadian-gp':      'Montréal',
+    'monaco-gp':        'Monaco',
+    'barcelona-gp':     'Barcelona',
+    'austrian-gp':      'Spielberg',
+    'british-gp':       'Silverstone',
+    'belgian-gp':       'Spa',
+    'hungarian-gp':     'Budapest',
+    'dutch-gp':         'Zandvoort',
+    'italian-gp':       'Monza',
+    'spanish-gp':       'Madrid',
+    'azerbaijan-gp':    'Baku',
+    'singapore-gp':     'Singapore',
+    'united-states-gp': 'Austin',
+    'mexican-gp':       'Mexico City',
+    'brazilian-gp':     'São Paulo',
+    'las-vegas-gp':     'Las Vegas',
+    'qatar-gp':         'Lusail',
+    'abu-dhabi-gp':     'Abu Dhabi',
+};
+
+// Maps GP id → country flag emoji (shown next to the GP title in the hero)
+const GP_FLAG = {
+    'australian-gp':    '🇦🇺',
+    'chinese-gp':       '🇨🇳',
+    'japanese-gp':      '🇯🇵',
+    'bahrain-gp':       '🇧🇭',
+    'saudi-arabian-gp': '🇸🇦',
+    'miami-gp':         '🇺🇸',
+    'canadian-gp':      '🇨🇦',
+    'monaco-gp':        '🇲🇨',
+    'barcelona-gp':     '🇪🇸',
+    'austrian-gp':      '🇦🇹',
+    'british-gp':       '🇬🇧',
+    'belgian-gp':       '🇧🇪',
+    'hungarian-gp':     '🇭🇺',
+    'dutch-gp':         '🇳🇱',
+    'italian-gp':       '🇮🇹',
+    'spanish-gp':       '🇪🇸',
+    'azerbaijan-gp':    '🇦🇿',
+    'singapore-gp':     '🇸🇬',
+    'united-states-gp': '🇺🇸',
+    'mexican-gp':       '🇲🇽',
+    'brazilian-gp':     '🇧🇷',
+    'las-vegas-gp':     '🇺🇸',
+    'qatar-gp':         '🇶🇦',
+    'abu-dhabi-gp':     '🇦🇪',
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         const [season, circuits] = await Promise.all([
@@ -75,7 +131,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         ]);
         updateDashboard(season, circuits);
         buildStandings(season);
-        setInterval(() => tickCountdown(season), 1000);
     } catch (err) {
         console.error('Error cargando datos:', err);
     }
@@ -87,26 +142,38 @@ function updateDashboard(season, circuits) {
     if (!nextEntry) return;
     const [nextId, nextGP] = nextEntry;
 
-    // Mantuve esta variable por si la usás para otra cosa (botones, bordes, etc.)
     document.documentElement.style.setProperty('--race-gradient', buildGradient(nextGP.color));
 
-    const circuit = circuits[CIRCUIT_MAP[nextId]];
+    const circuitKey = CIRCUIT_MAP[nextId];
+    const circuit = circuits[circuitKey];
+
+    // Set hero background image
     const heroImg = document.getElementById('hero-image');
-    if (heroImg) heroImg.src = `./img/circuits/${CIRCUIT_MAP[nextId]}.png`;
+    if (heroImg) heroImg.src = `./img/circuits/${circuitKey}.png`;
 
-    const gpTitle = document.getElementById('hero-gp-title');
-    gpTitle.textContent = nextGP.name.replace(' Grand Prix', '').trim();
-    // (Líneas de gradiente y recorte de texto removidas)
+    // Set city for the canvas blurred text (inline script reads window._heroCity)
+    window._heroCity = GP_CITY[nextId] || '';
 
-    document.getElementById('hero-circuit-label').textContent = circuit?.name || '—';
-    document.getElementById('hero-round').textContent = `Round ${String(nextGP.round).padStart(2, '0')}`;
-    document.getElementById('show-more-btn').href = `./races/race.html?gp=${nextId}`;
+    // GP name (full name, e.g. "AUSTRIAN GRAND PRIX")
+    const gpNameEl = document.getElementById('hero-gp-name');
+    if (gpNameEl) gpNameEl.textContent = nextGP.name.toUpperCase();
 
+    // Country flag next to the GP title
+    const flagEl = document.getElementById('hero-gp-flag');
+    if (flagEl) flagEl.textContent = GP_FLAG[nextId] || '';
+
+    // Circuit name below the GP title
+    const circuitLabelEl = document.getElementById('hero-circuit-label');
+    if (circuitLabelEl) circuitLabelEl.textContent = circuit?.name || circuit?.Name || '—';
+
+    // Sprint pill
     const sprintPill = document.getElementById('hero-sprint-pill');
     if (sprintPill) sprintPill.style.display = nextGP.sprint ? 'inline-flex' : 'none';
 
-    renderHeroTable(nextGP);
-    tickCountdown(season);
+    const circuitBtn = document.getElementById('hero-circuit-btn');
+    if (circuitBtn) circuitBtn.href = `/races/race.html?gp=${nextId}`;
+
+    renderHeroSchedule(nextGP, nextId);
     updateRacecards(season, nextId, now);
 }
 
@@ -146,116 +213,142 @@ function updateRacecards(season, nextId, now) {
     });
 }
 
-function renderHeroTable(gp) {
-    const tableCard = document.querySelector('.race-schedule-card');
-    if (!tableCard || !gp.horarios) return;
+function renderHeroSchedule(gp, gpId) {
+    const container = document.getElementById('hero-schedule');
+    if (!container || !gp.horarios) return;
 
-    const h        = gp.horarios;
+    const h       = gp.horarios;
+    const now     = new Date();
     const isSprint = !!h.sprintQualyDate;
 
-    const fp1Start   = parseDate(h.fp1Date);
-    const fp1End     = parseDate(h.fp1EndDate);
-    const qualyStart = parseDate(h.qualyDate);
-    const qualyEnd   = parseDate(h.qualyEndDate);
-    const raceStart  = parseDate(h.raceStartDate);
-    const raceEnd    = parseDate(h.raceEndDate);
-
-    const sessionRow = (name, start, end) => `
-        <div class="schedule-session">
-            <span class="schedule-session-name">${name}</span>
-            <span class="schedule-session-time">${formatRange(start, end)}</span>
-        </div>`;
-
-    const dayBlock = (date, ...sessions) => `
-        <div class="schedule-day">
-            <p class="schedule-day-title">${formatDate(date)}</p>
-            ${sessions.join('')}
-        </div>`;
-
-    let html = '';
-
+    // Build session list depending on weekend format
+    let sessions;
     if (isSprint) {
-        const sqStart = parseDate(h.sprintQualyDate);
-        const sqEnd   = parseDate(h.sprintQualyEndDate);
-        const srStart = parseDate(h.sprintRaceDate);
-        const srEnd   = parseDate(h.sprintRaceEndDate);
-        html =
-            dayBlock(fp1Start,
-                sessionRow('FP 1', fp1Start, fp1End),
-                sessionRow('Sprint Qualy', sqStart, sqEnd)) +
-            dayBlock(srStart,
-                sessionRow('Sprint Race', srStart, srEnd),
-                sessionRow('Qualifying', qualyStart, qualyEnd)) +
-            dayBlock(raceStart,
-                sessionRow('Race', raceStart, raceEnd));
+        sessions = [
+            { name: 'Free practice 1',      start: parseDate(h.fp1Date),         end: parseDate(h.fp1EndDate)         },
+            { name: 'Sprint Qualifying',    start: parseDate(h.sprintQualyDate), end: parseDate(h.sprintQualyEndDate) },
+            { name: 'Sprint Race',          start: parseDate(h.sprintRaceDate),  end: parseDate(h.sprintRaceEndDate)  },
+            { name: 'Qualifying',           start: parseDate(h.qualyDate),       end: parseDate(h.qualyEndDate)       },
+            { name: 'Race',                 start: parseDate(h.raceStartDate),   end: parseDate(h.raceEndDate)        },
+        ];
     } else {
-        const fp2Start = parseDate(h.fp2Date);
-        const fp2End   = parseDate(h.fp2EndDate);
-        const fp3Start = parseDate(h.fp3Date);
-        const fp3End   = parseDate(h.fp3EndDate);
-        html =
-            dayBlock(fp1Start,
-                sessionRow('FP 1', fp1Start, fp1End),
-                sessionRow('FP 2', fp2Start, fp2End)) +
-            dayBlock(fp3Start,
-                sessionRow('FP 3', fp3Start, fp3End),
-                sessionRow('Qualifying', qualyStart, qualyEnd)) +
-            dayBlock(raceStart,
-                sessionRow('Race', raceStart, raceEnd));
+        sessions = [
+            { name: 'Free practice 1',      start: parseDate(h.fp1Date),       end: parseDate(h.fp1EndDate)   },
+            { name: 'Free practice 2',      start: parseDate(h.fp2Date),       end: parseDate(h.fp2EndDate)   },
+            { name: 'Free practice 3',      start: parseDate(h.fp3Date),       end: parseDate(h.fp3EndDate)   },
+            { name: 'Qualifying',           start: parseDate(h.qualyDate),     end: parseDate(h.qualyEndDate) },
+            { name: 'Race',                 start: parseDate(h.raceStartDate), end: parseDate(h.raceEndDate)  },
+        ];
     }
 
-    tableCard.innerHTML = `
-        <p class="race-schedule-title">${gp.name}</p>
-        ${html}
-        <div class="race-schedule-footer"><p>Local time in Buenos Aires, Argentina</p></div>`;
-}
-
-function tickCountdown(season) {
-    const now       = new Date();
-    const nextEntry = findNextRace(season);
-    if (!nextEntry) return;
-    const [, nextGP] = nextEntry;
-    const h = nextGP.horarios;
-    if (!h) return;
-
-    const sessions = [
-        { name: 'FP 1',           start: parseDate(h.fp1Date),         end: parseDate(h.fp1EndDate)         },
-        { name: 'FP 2',           start: parseDate(h.fp2Date),         end: parseDate(h.fp2EndDate)         },
-        { name: 'FP 3',           start: parseDate(h.fp3Date),         end: parseDate(h.fp3EndDate)         },
-        { name: 'Sprint Qualy',   start: parseDate(h.sprintQualyDate), end: parseDate(h.sprintQualyEndDate) },
-        { name: 'Sprint Race',    start: parseDate(h.sprintRaceDate),  end: parseDate(h.sprintRaceEndDate)  },
-        { name: 'Qualifying',     start: parseDate(h.qualyDate),       end: parseDate(h.qualyEndDate)       },
-        { name: 'Race',           start: parseDate(h.raceStartDate),   end: parseDate(h.raceEndDate)        },
-    ].filter(s => s.start && s.end);
-
-    // Sesión en curso (started pero no terminada)
-    const live = sessions.find(s => s.start <= now && s.end > now);
-    // Próxima sesión que aún no empezó
-    const next = sessions.filter(s => s.start > now).sort((a, b) => a.start - b.start)[0];
-
-    let target, label;
-    if (live) {
-        target = live.end;
-        label  = `${live.name} ends in`;
-    } else if (next) {
-        target = next.start;
-        label  = `${next.name} starts in`;
-    } else {
-        target = parseDate(h.raceEndDate);
-        label  = 'Race ends in';
+    // Group sessions by calendar day (using local date string as key)
+    const dayMap = new Map();
+    for (const s of sessions) {
+        if (!s.start) continue;
+        const dayKey = s.start.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' });
+        if (!dayMap.has(dayKey)) dayMap.set(dayKey, []);
+        dayMap.get(dayKey).push(s);
     }
 
-    const labelEl = document.getElementById('hero-countdown-label');
-    if (labelEl) labelEl.textContent = label;
+    const fmt = (d) => d
+        ? d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+        : '—';
 
-    const diff = target - now;
-    const pad  = n => String(Math.max(0, n)).padStart(2, '0');
+    const sessionHTML = (s) => {
+        const ended   = s.end   && s.end   <= now;
+        const live    = s.start && s.start <= now && s.end > now;
+        const future  = !ended && !live;
+        const tag     = live ? 'Live' : ended ? 'Ended' : 'Upcoming';
+        const classes = ['schedule-session',
+            ended ? 'schedule-session-ended' : live ? 'schedule-session-live' : ''
+        ].filter(Boolean).join(' ');
+        const dataAttr = future && s.start ? ` data-start="${s.start.getTime()}"` : '';
 
-    document.getElementById('time-days').innerText  = pad(Math.floor(diff / 86400000));
-    document.getElementById('time-hours').innerText = pad(Math.floor((diff / 3600000) % 24));
-    document.getElementById('time-mins').innerText  = pad(Math.floor((diff / 60000) % 60));
-    document.getElementById('time-secs').innerText  = pad(Math.floor((diff / 1000) % 60));
+        // Ended sessions get the "View Session Details" CTA.
+        // Live sessions get a "Tune in Live" anchor styled the same way but in red.
+        // Future sessions get neither — hover shows countdown via JS instead.
+        const cta = ended
+            ? `<button type="button" class="schedule-session-cta" tabindex="-1">
+                <span>View Session Details</span>
+                <span class="schedule-session-cta-arrow">→</span>
+               </button>`
+            : live
+            ? `<a href="/f1-hub-project/races/race.html?gp=${gpId}" class="schedule-session-cta schedule-session-cta-live">
+                <span>Tune in Live</span>
+                <span class="schedule-session-cta-arrow">→</span>
+               </a>`
+            : '';
+
+        return `
+        <div class="${classes}"${dataAttr}>
+            <span class="schedule-session-name">${s.name}</span>
+            <span class="schedule-session-time">${fmt(s.start)} – ${fmt(s.end)}</span>
+            <span class="schedule-session-tag">${tag}</span>
+            ${cta}
+        </div>`;
+    };
+
+    const dayHTML = (dayLabel, sessions) => {
+        const [weekday, ...rest] = dayLabel.split(' ');
+        const allEnded = sessions.every(s => s.end && s.end <= now);
+        return `
+        <div class="schedule-day${allEnded ? ' schedule-day-ended' : ''}">
+            <p class="schedule-day-title">
+                <span class="day-weekday">${weekday}</span>
+                <span class="day-date">${rest.join(' ')}</span>
+            </p>
+            ${sessions.map(sessionHTML).join('')}
+        </div>`;
+    };
+
+    container.innerHTML = [...dayMap.entries()].map(([k, ss]) => dayHTML(k, ss)).join('');
+
+    // ── Hover: show countdown to session start (future sessions only) ────────
+    container.querySelectorAll('.schedule-session[data-start]').forEach(row => {
+        const timeEl   = row.querySelector('.schedule-session-time');
+        const original = timeEl.textContent;
+        const startMs  = Number(row.dataset.start);
+        let interval   = null;
+
+        const fmtRemaining = () => {
+            const diff = startMs - Date.now();
+            if (diff <= 0) return original;
+            const d = Math.floor(diff / 86400000);
+            const h = Math.floor((diff % 86400000) / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+            const parts = [
+                d > 0 && `${d}d`,
+                h > 0 && `${h}h`,
+                m > 0 && `${m}m`,
+                `${s}s`,
+            ].filter(Boolean);
+            return parts.slice(0, 2).join(' ');
+        };
+
+        const setTime = (text) => {
+            timeEl.style.transition = 'opacity 0.15s ease';
+            timeEl.style.opacity = '0';
+            setTimeout(() => {
+                timeEl.textContent = text;
+                timeEl.style.opacity = '1';
+            }, 150);
+        };
+
+        row.addEventListener('mouseenter', () => {
+            setTime(fmtRemaining());
+            interval = setInterval(() => { timeEl.textContent = fmtRemaining(); }, 1000);
+        });
+
+        row.addEventListener('mouseleave', () => {
+            clearInterval(interval);
+            setTime(original);
+        });
+    });
 }
+
+
+
 // ── Driver Standings ────────────────────────────────────────────────────────
 
 function buildStandings(season) {
