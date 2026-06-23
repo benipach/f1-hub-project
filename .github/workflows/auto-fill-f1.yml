@@ -1,0 +1,33 @@
+name: Auto fill F1 sessions
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-season:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run OpenF1 auto fill
+        run: node auto-fill-missing.js data/season2026.json --year=2026 --once --weather --skip=bahrain-gp,saudi-arabian-gp
+
+      - name: Commit changes if JSON changed
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add data/season2026.json
+          git diff --cached --quiet || git commit -m "Auto update F1 session data"
+          git push
