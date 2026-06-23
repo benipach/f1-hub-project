@@ -171,7 +171,7 @@ function updateDashboard(season, circuits) {
     if (sprintPill) sprintPill.style.display = nextGP.sprint ? 'inline-flex' : 'none';
 
     const circuitBtn = document.getElementById('hero-circuit-btn');
-    if (circuitBtn) circuitBtn.href = `/races/race.html?gp=${nextId}`;
+    if (circuitBtn) circuitBtn.href = `./races/race.html?gp=${nextId}`;
 
     renderHeroSchedule(nextGP, nextId);
     updateRacecards(season, nextId, now);
