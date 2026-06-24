@@ -6,11 +6,13 @@ const TEAM_LOGO_MAP = {
     'Ferrari':         'ferrari-logo',
     'McLaren':         'mclaren-logo',
     'Red Bull':        'redbull-logo',
+    'Red Bull Racing': 'redbull-logo',
     'Aston Martin':    'astonmartin-logo',
     'Alpine':          'alpine-logo',
     'Williams':        'williams-logo',
     'Racing Bulls':    'racingbulls-logo',
     'Haas':            'haas-logo',
+    'Haas F1 Team':    'haas-logo',
     'Audi':            'audi-logo',
     'Cadillac':        'cadillac-logo',
 };
@@ -55,121 +57,416 @@ document.addEventListener('click', e => {
 });
 
 // ── FILTERED CHART BUILDER ───────────────────────────────────────────────
-function makeFilteredChart(canvasId, filterItemsId, selectAllId, datasets, labels) {
-    const isMobile = window.matchMedia('(max-width: 500px)').matches;
+function makeFilteredChart(containerId, filterItemsId, selectAllId, datasets, labels) {
+    const container = document.getElementById(containerId);
+    const filterContainer = document.getElementById(filterItemsId);
+    const selectAllBtn = document.getElementById(selectAllId);
+
     const visible = new Set(datasets.map(d => d.id));
-    const chartDatasets = () => datasets
-        .filter(d => visible.has(d.id))
-        .map(d => ({
-            label: d.label,
-            data: d.data,
-            borderColor: d.color,
-            backgroundColor: 'transparent',
-            borderWidth: isMobile ? 1.5 : 2,
-            pointRadius: isMobile ? 1 : 2,
-            pointBackgroundColor: d.color,
-            pointHoverRadius: isMobile ? 3 : 5,
-            tension: 0,
-            spanGaps: false,
-        }));
 
-    const ctx = document.getElementById(canvasId).getContext('2d');
-    const chart = new Chart(ctx, {
-        type: 'line',
-        data: { labels, datasets: chartDatasets() },
-        options: {
-            responsive: true,
-            aspectRatio: isMobile ? 1.2 : 2,
-            interaction: { mode: 'nearest', intersect: false }, 
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    backgroundColor: 'rgb(22,22,34)',
-                    borderColor: 'rgba(255,255,255,0.08)',
-                    borderWidth: 1,
-                    titleColor: '#ffffff',
-                    bodyColor: 'rgba(255,255,255,0.5)',
-                    padding: 12,
-                    callbacks: {
-                        label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y ?? '—'} pts`
-                    }
-                },
-                zoom: {
-                    pan: {
-                        enabled: true,
-                        mode: 'x',
-                    },
-                    zoom: {
-                        wheel: { enabled: true },
-                        pinch: { enabled: true },
-                        mode: 'x',
-                    },
-                    limits: {
-                        x: { minRange: 2 },
-                    },
-                    animation: {
-                        duration: 300,
-                        easing: 'easeOutCubic',
-                    },
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+    const width = 1000;
+    const height = 420;
 
-    function redraw() {
-        chart.data.datasets = chartDatasets();
-        chart.update();
+    const padding = {
+        top: 28,
+        right: 88,
+        bottom: 52,
+        left: 52
+    };
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
     }
 
-    const container = document.getElementById(filterItemsId);
-    datasets.forEach(d => {
-        const item = document.createElement('div');
-        item.className = 'filter-item';
-        item.innerHTML = `
-            <div class="filter-checkbox checked" id="chk-${canvasId}-${d.id}" style="background:${d.color};border-color:${d.color}">✓</div>
-            <span class="filter-label">${d.label}</span>
-        `;
-        item.addEventListener('click', () => {
-            const chk = document.getElementById(`chk-${canvasId}-${d.id}`);
-            if (visible.has(d.id)) {
-                visible.delete(d.id);
-                chk.textContent = '';
-                chk.style.background = 'transparent';
-                chk.style.borderColor = 'rgba(255,255,255,0.2)';
-            } else {
-                visible.add(d.id);
-                chk.textContent = '✓';
-                chk.style.background = d.color;
-                chk.style.borderColor = d.color;
-            }
-            redraw();
-        });
-        container.appendChild(item);
-    });
+    function getAllValues() {
+        return datasets
+            .flatMap(d => d.data)
+            .filter(v => typeof v === 'number' && !Number.isNaN(v));
+    }
 
-    document.getElementById(selectAllId).addEventListener('click', () => {
-        const allVisible = datasets.every(d => visible.has(d.id));
-        datasets.forEach(d => {
-            const chk = document.getElementById(`chk-${canvasId}-${d.id}`);
-            if (allVisible) {
-                visible.delete(d.id);
-                chk.textContent = '';
-                chk.style.background = 'transparent';
-                chk.style.borderColor = 'rgba(255,255,255,0.2)';
+    function niceMax(value) {
+        if (!value || value <= 0) return 10;
+
+        const magnitude = Math.pow(10, Math.floor(Math.log10(value)));
+        const normalized = value / magnitude;
+
+        let niceNormalized;
+
+        if (normalized <= 1) niceNormalized = 1;
+        else if (normalized <= 2) niceNormalized = 2;
+        else if (normalized <= 5) niceNormalized = 5;
+        else niceNormalized = 10;
+
+        return niceNormalized * magnitude;
+    }
+
+    const allValues = getAllValues();
+    const maxY = niceMax(Math.max(...allValues, 10));
+
+    const plotWidth = width - padding.left - padding.right;
+    const plotHeight = height - padding.top - padding.bottom;
+
+    function xForIndex(index) {
+        if (labels.length <= 1) return padding.left;
+        return padding.left + (index / (labels.length - 1)) * plotWidth;
+    }
+
+    function yForValue(value) {
+        return padding.top + plotHeight - (value / maxY) * plotHeight;
+    }
+
+    function buildPath(data) {
+        let path = '';
+        let drawing = false;
+
+        data.forEach((value, index) => {
+            if (value === null || value === undefined || Number.isNaN(value)) {
+                drawing = false;
+                return;
+            }
+
+            const x = xForIndex(index);
+            const y = yForValue(value);
+
+            if (!drawing) {
+                path += `M ${x} ${y} `;
+                drawing = true;
             } else {
-                visible.add(d.id);
-                chk.textContent = '✓';
-                chk.style.background = d.color;
-                chk.style.borderColor = d.color;
+                path += `L ${x} ${y} `;
             }
         });
-        document.getElementById(selectAllId).textContent = allVisible ? 'Select all' : 'Deselect all';
-        redraw();
+
+        return path.trim();
+    }
+
+    function getLastPoint(data) {
+        for (let i = data.length - 1; i >= 0; i--) {
+            const value = data[i];
+
+            if (typeof value === 'number' && !Number.isNaN(value)) {
+                return {
+                    index: i,
+                    value,
+                    x: xForIndex(i),
+                    y: yForValue(value)
+                };
+            }
+        }
+
+        return null;
+    }
+
+    function makeGrid() {
+        const tickCount = 5;
+        const ticks = [];
+
+        for (let i = 0; i <= tickCount; i++) {
+            const value = Math.round((maxY / tickCount) * i);
+            const y = yForValue(value);
+
+            ticks.push(`
+                <line
+                    class="chart-grid-line"
+                    x1="${padding.left}"
+                    y1="${y}"
+                    x2="${width - padding.right}"
+                    y2="${y}"
+                />
+                <text
+                    class="chart-y-label"
+                    x="${padding.left - 12}"
+                    y="${y + 4}"
+                    text-anchor="end"
+                >${value}</text>
+            `);
+        }
+
+        return ticks.join('');
+    }
+
+    function makeXAxisLabels() {
+        const maxLabelsOnMobile = 8;
+        const isMobile = window.matchMedia('(max-width: 500px)').matches;
+        const step = isMobile
+            ? Math.ceil(labels.length / maxLabelsOnMobile)
+            : 1;
+
+        return labels.map((label, index) => {
+            if (isMobile && index % step !== 0 && index !== labels.length - 1) {
+                return '';
+            }
+
+            return `
+                <text
+                    class="chart-x-label"
+                    x="${xForIndex(index)}"
+                    y="${height - 18}"
+                    text-anchor="middle"
+                >${escapeHtml(label)}</text>
+            `;
+        }).join('');
+    }
+
+    function render() {
+        const activeDatasets = datasets.filter(d => visible.has(d.id));
+
+        const lines = activeDatasets.map(d => {
+            const path = buildPath(d.data);
+
+            if (!path) return '';
+
+            return `
+                <path
+                    class="chart-line"
+                    d="${path}"
+                    style="stroke:${d.color}; color:${d.color};"
+                    data-series="${escapeHtml(d.id)}"
+                />
+            `;
+        }).join('');
+
+        const points = activeDatasets.map(d => {
+            return d.data.map((value, index) => {
+                if (value === null || value === undefined || Number.isNaN(value)) {
+                    return '';
+                }
+
+                return `
+                    <circle
+                        class="chart-point"
+                        cx="${xForIndex(index)}"
+                        cy="${yForValue(value)}"
+                        r="3.25"
+                        style="fill:${d.color}; color:${d.color};"
+                        data-series="${escapeHtml(d.id)}"
+                        data-label="${escapeHtml(d.label)}"
+                        data-race="${escapeHtml(labels[index])}"
+                        data-value="${value}"
+                    />
+                `;
+            }).join('');
+        }).join('');
+
+        const endLabels = activeDatasets.length <= 12
+            ? activeDatasets.map(d => {
+                const lastPoint = getLastPoint(d.data);
+
+                if (!lastPoint) return '';
+
+                return `
+                    <text
+                        class="chart-end-label"
+                        x="${lastPoint.x + 8}"
+                        y="${lastPoint.y + 4}"
+                        style="fill:${d.color};"
+                        data-series="${escapeHtml(d.id)}"
+                    >${escapeHtml(d.label)}</text>
+                `;
+            }).join('')
+            : '';
+
+        container.innerHTML = `
+            <svg
+                class="f1-chart-svg"
+                viewBox="0 0 ${width} ${height}"
+                role="img"
+                aria-label="Cumulative championship points chart"
+            >
+                <rect class="chart-bg" x="0" y="0" width="${width}" height="${height}" />
+
+                <g class="chart-grid">
+                    ${makeGrid()}
+                    <line
+                        class="chart-axis-line"
+                        x1="${padding.left}"
+                        y1="${padding.top + plotHeight}"
+                        x2="${width - padding.right}"
+                        y2="${padding.top + plotHeight}"
+                    />
+                    <line
+                        class="chart-axis-line"
+                        x1="${padding.left}"
+                        y1="${padding.top}"
+                        x2="${padding.left}"
+                        y2="${padding.top + plotHeight}"
+                    />
+                </g>
+
+                <g class="chart-lines">
+                    ${lines}
+                </g>
+
+                <g class="chart-points">
+                    ${points}
+                </g>
+
+                <g class="chart-end-labels">
+                    ${endLabels}
+                </g>
+
+                <g class="chart-x-labels">
+                    ${makeXAxisLabels()}
+                </g>
+            </svg>
+
+            <div class="f1-chart-tooltip" hidden></div>
+        `;
+
+        attachChartInteractions();
+    }
+
+    function updateFilterUI() {
+        filterContainer.querySelectorAll('.filter-item').forEach(item => {
+            const id = item.dataset.id;
+            const checkbox = item.querySelector('.filter-checkbox');
+            const dataset = datasets.find(d => d.id === id);
+
+            if (!dataset || !checkbox) return;
+
+            if (visible.has(id)) {
+                checkbox.textContent = '✓';
+                checkbox.style.background = dataset.color;
+                checkbox.style.borderColor = dataset.color;
+            } else {
+                checkbox.textContent = '';
+                checkbox.style.background = 'transparent';
+                checkbox.style.borderColor = 'rgba(255,255,255,0.2)';
+            }
+        });
+
+        const allVisible = datasets.every(d => visible.has(d.id));
+        selectAllBtn.textContent = allVisible ? 'Deselect all' : 'Select all';
+    }
+
+    function attachChartInteractions() {
+        const svg = container.querySelector('.f1-chart-svg');
+        const tooltip = container.querySelector('.f1-chart-tooltip');
+
+        if (!svg || !tooltip) return;
+
+        function activateSeries(seriesId) {
+            svg.classList.add('is-hovering');
+
+            svg.querySelectorAll(`[data-series="${CSS.escape(seriesId)}"]`).forEach(el => {
+                if (el.classList.contains('chart-line')) {
+                    el.classList.add('is-active-line');
+                }
+
+                if (el.classList.contains('chart-point')) {
+                    el.classList.add('is-active-point');
+                }
+
+                if (el.classList.contains('chart-end-label')) {
+                    el.classList.add('is-active-label');
+                }
+            });
+        }
+
+        function clearActiveSeries() {
+            svg.classList.remove('is-hovering');
+
+            svg.querySelectorAll('.is-active-line').forEach(el => {
+                el.classList.remove('is-active-line');
+            });
+
+            svg.querySelectorAll('.is-active-point').forEach(el => {
+                el.classList.remove('is-active-point');
+            });
+
+            svg.querySelectorAll('.is-active-label').forEach(el => {
+                el.classList.remove('is-active-label');
+            });
+
+            tooltip.hidden = true;
+        }
+
+        svg.querySelectorAll('.chart-line, .chart-point').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                activateSeries(el.dataset.series);
+            });
+
+            el.addEventListener('mouseleave', clearActiveSeries);
+        });
+
+        svg.querySelectorAll('.chart-point').forEach(point => {
+            point.addEventListener('mouseenter', () => {
+                tooltip.hidden = false;
+                tooltip.innerHTML = `
+                    <strong>${escapeHtml(point.dataset.label)}</strong>
+                    <span>${escapeHtml(point.dataset.race)}</span>
+                    <span>${escapeHtml(point.dataset.value)} pts</span>
+                `;
+            });
+
+            point.addEventListener('mousemove', e => {
+                const rect = container.getBoundingClientRect();
+
+                tooltip.style.left = `${e.clientX - rect.left}px`;
+                tooltip.style.top = `${e.clientY - rect.top}px`;
+            });
+
+            point.addEventListener('mouseleave', () => {
+                tooltip.hidden = true;
+            });
+        });
+    }
+
+    function buildFilters() {
+        filterContainer.innerHTML = '';
+
+        datasets.forEach(d => {
+            const item = document.createElement('div');
+            item.className = 'filter-item';
+            item.dataset.id = d.id;
+
+            item.innerHTML = `
+                <div
+                    class="filter-checkbox checked"
+                    style="background:${d.color};border-color:${d.color}"
+                >✓</div>
+                <span class="filter-label">${escapeHtml(d.label)}</span>
+            `;
+
+            item.addEventListener('click', () => {
+                if (visible.has(d.id)) {
+                    visible.delete(d.id);
+                } else {
+                    visible.add(d.id);
+                }
+
+                updateFilterUI();
+                render();
+            });
+
+            filterContainer.appendChild(item);
+        });
+
+        selectAllBtn.addEventListener('click', () => {
+            const allVisible = datasets.every(d => visible.has(d.id));
+
+            if (allVisible) {
+                visible.clear();
+            } else {
+                datasets.forEach(d => visible.add(d.id));
+            }
+
+            updateFilterUI();
+            render();
+        });
+
+        updateFilterUI();
+    }
+
+    buildFilters();
+    render();
+
+    window.addEventListener('resize', () => {
+        render();
     });
 }
 
@@ -279,15 +576,6 @@ function renderConstructorsTable(constructors) {
 // ── MAIN LOADER ───────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
     await document.fonts.ready;
-
-    const rootStyles = getComputedStyle(document.documentElement);
-    const dimColor = rootStyles.getPropertyValue('--text-dim').trim() || '#ffffff';
-    const softGridColor = 'rgba(255, 255, 255, 0.1)';
-
-    Chart.defaults.font.family = "'F1-Regular', sans-serif";
-    Chart.defaults.color = dimColor;
-    Chart.defaults.borderColor = softGridColor;
-
     try {
         const [res, driversRes] = await Promise.all([
             fetch('./data/season2026.json'),
@@ -321,29 +609,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             gp.name.replace(' Grand Prix', '').replace('Grand Prix', '').trim().substring(0, 3).toUpperCase()
         );
 
-        // ── Helper: extrae el array de resultados de carrera independientemente
-        //    de si gp.results es un objeto { qualifying, race } o un array vacío ──
-        const getRaceResults = gp => {
-            const r = gp.results;
-            if (!r) return [];
-            if (Array.isArray(r)) return r;          // array vacío []
-            if (Array.isArray(r.race)) return r.race; // objeto { qualifying, race }
-            return [];
+        // ── Helpers: extraen resultados desde la nueva estructura por sesión ──
+        // Nuevo JSON:
+        // gp.sessions.race.results
+        // gp.sessions.sprintRace.results
+        const getSessionResults = (gp, sessionKey) => {
+            const results = gp?.sessions?.[sessionKey]?.results;
+            return Array.isArray(results) ? results : [];
         };
 
-        const getSprintResults = gp => {
-            const r = gp.results;
-            if (!r || Array.isArray(r)) return [];
-            if (Array.isArray(r.sprintRace)) return r.sprintRace;
-            return [];
+        const getRaceResults = gp => getSessionResults(gp, 'race');
+        const getSprintResults = gp => getSessionResults(gp, 'sprintRace');
+
+        const raceHasAnyResult = gp => {
+            return getRaceResults(gp).length > 0 || getSprintResults(gp).length > 0;
         };
+
+        const resultTeam = r => r.team || driverTeamLookup[r.driver] || 'Unknown';
 
         // ── Lógica de Pilotos ──
         const driverMap = {};
+
+        // Inicializamos pilotos desde carrera y sprint. Esto permite que el campeonato
+        // muestre puntos de Sprint aunque la carrera principal todavía no esté cargada.
         allRaces.forEach(gp => {
-            getRaceResults(gp).forEach(r => {
+            [...getRaceResults(gp), ...getSprintResults(gp)].forEach(r => {
+                if (!r?.driver) return;
                 if (!driverMap[r.driver]) {
-                    const team = r.team || driverTeamLookup[r.driver] || 'Unknown';
+                    const team = resultTeam(r);
                     driverMap[r.driver] = { driver: r.driver, team, points: 0, racePoints: [] };
                 }
             });
@@ -352,17 +645,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         allRaces.forEach(gp => {
             const raceResults   = getRaceResults(gp);
             const sprintResults = getSprintResults(gp);
+            const hasAnyResult  = raceHasAnyResult(gp);
+
             Object.values(driverMap).forEach(d => {
-                if (raceResults.length === 0) {
+                if (!hasAnyResult) {
                     d.racePoints.push(null);
-                } else {
-                    const result     = raceResults.find(r => r.driver === d.driver);
-                    const racePts    = result ? (result.pts ?? 0) : 0;
-                    const sprintRes  = sprintResults.find(r => r.driver === d.driver);
-                    const sprintPts  = sprintRes ? (sprintRes.pts ?? 0) : 0;
-                    const pts        = racePts + sprintPts;
-                    d.racePoints.push(pts);
-                    d.points += pts;
+                    return;
+                }
+
+                const raceRes   = raceResults.find(r => r.driver === d.driver);
+                const sprintRes = sprintResults.find(r => r.driver === d.driver);
+                const racePts   = raceRes ? (raceRes.pts ?? 0) : 0;
+                const sprintPts = sprintRes ? (sprintRes.pts ?? 0) : 0;
+                const pts       = racePts + sprintPts;
+
+                d.racePoints.push(pts);
+                d.points += pts;
+
+                // Si OpenF1/JSON trae team en resultados, lo usamos para mantenerlo actualizado.
+                if (raceRes?.team || sprintRes?.team) {
+                    d.team = raceRes?.team || sprintRes?.team || d.team;
                 }
             });
         });
@@ -381,31 +683,43 @@ document.addEventListener('DOMContentLoaded', async () => {
         makeFilteredChart('driverChart', 'driver-filter-items', 'driver-select-all', driverDatasets, raceLabels);
 
         // ── Lógica de Constructores ──
-        // Inicializar equipos a partir del driverTeamLookup (fuente de verdad)
+        // Inicializar equipos desde drivers.json y también desde resultados,
+        // porque algunos resultados ya traen nombres OpenF1 como "Red Bull Racing".
         const constructorMap = {};
-        Object.values(driverTeamLookup).forEach(team => {
+        const ensureConstructor = team => {
+            if (!team) return;
             if (!constructorMap[team]) {
                 constructorMap[team] = { team, points: 0, racePoints: [] };
             }
+        };
+
+        Object.values(driverTeamLookup).forEach(ensureConstructor);
+        allRaces.forEach(gp => {
+            [...getRaceResults(gp), ...getSprintResults(gp)].forEach(r => ensureConstructor(resultTeam(r)));
         });
 
         allRaces.forEach(gp => {
             const raceResults   = getRaceResults(gp);
             const sprintResults = getSprintResults(gp);
+            const hasAnyResult  = raceHasAnyResult(gp);
+
             Object.values(constructorMap).forEach(c => {
-                if (raceResults.length === 0) {
+                if (!hasAnyResult) {
                     c.racePoints.push(null);
-                } else {
-                    const teamRacePts = raceResults
-                        .filter(r => (r.team || driverTeamLookup[r.driver]) === c.team)
-                        .reduce((sum, r) => sum + (r.pts ?? 0), 0);
-                    const teamSprintPts = sprintResults
-                        .filter(r => (r.team || driverTeamLookup[r.driver]) === c.team)
-                        .reduce((sum, r) => sum + (r.pts ?? 0), 0);
-                    const pts = teamRacePts + teamSprintPts;
-                    c.racePoints.push(pts);
-                    c.points += pts;
+                    return;
                 }
+
+                const teamRacePts = raceResults
+                    .filter(r => resultTeam(r) === c.team)
+                    .reduce((sum, r) => sum + (r.pts ?? 0), 0);
+
+                const teamSprintPts = sprintResults
+                    .filter(r => resultTeam(r) === c.team)
+                    .reduce((sum, r) => sum + (r.pts ?? 0), 0);
+
+                const pts = teamRacePts + teamSprintPts;
+                c.racePoints.push(pts);
+                c.points += pts;
             });
         });
 
