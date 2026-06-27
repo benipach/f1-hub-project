@@ -12,7 +12,7 @@
           "air_temperature": 22.6,
           "track_temperature": 34.5,
           "humidity": 46,
-          "wind_speed": 2.0,
+          "wind_speed": 2,
           "rainfall": 0
         },
         "results": [
@@ -296,7 +296,7 @@
           "air_temperature": 20.9,
           "track_temperature": 24.8,
           "humidity": 69,
-          "wind_speed": 3.0,
+          "wind_speed": 3,
           "rainfall": 0
         },
         "results": [
@@ -432,7 +432,7 @@
         "date": "2026-03-14T05:00:00",
         "endDate": "2026-03-14T06:00:00",
         "weather": {
-          "air_temperature": 21.0,
+          "air_temperature": 21,
           "track_temperature": 25.6,
           "humidity": 69,
           "wind_speed": 3.2,
@@ -993,7 +993,7 @@
         "date": "2026-03-21T00:30:00",
         "endDate": "2026-03-21T01:30:00",
         "weather": {
-          "air_temperature": 19.0,
+          "air_temperature": 19,
           "track_temperature": 24.1,
           "humidity": 63,
           "wind_speed": 2.6,
@@ -2016,7 +2016,7 @@
         "date": "2026-04-06T02:00:00",
         "endDate": "2026-04-06T04:00:00",
         "weather": {
-          "air_temperature": 19.0,
+          "air_temperature": 19,
           "track_temperature": 27.9,
           "humidity": 45,
           "wind_speed": 2.8,
@@ -2252,7 +2252,7 @@
           "air_temperature": 28.9,
           "track_temperature": 35.8,
           "humidity": 61,
-          "wind_speed": 2.0,
+          "wind_speed": 2,
           "rainfall": 0
         },
         "results": []
@@ -2293,7 +2293,7 @@
         "date": "2026-04-10T14:00:00",
         "endDate": "2026-04-10T15:00:00",
         "weather": {
-          "air_temperature": 31.0,
+          "air_temperature": 31,
           "track_temperature": 40.1,
           "humidity": 59,
           "wind_speed": 2.5,
@@ -2352,7 +2352,7 @@
           "air_temperature": 32.3,
           "track_temperature": 42.2,
           "humidity": 53,
-          "wind_speed": 2.0,
+          "wind_speed": 2,
           "rainfall": 0
         },
         "results": [
@@ -2615,7 +2615,7 @@
           "air_temperature": 34.1,
           "track_temperature": 47.8,
           "humidity": 58,
-          "wind_speed": 2.0,
+          "wind_speed": 2,
           "rainfall": 0
         },
         "results": [
@@ -4533,8 +4533,8 @@
         "date": "2026-06-12T08:30:00",
         "endDate": "2026-06-12T09:30:00",
         "weather": {
-          "air_temperature": 25.0,
-          "track_temperature": 32.0,
+          "air_temperature": 25,
+          "track_temperature": 32,
           "humidity": 58,
           "wind_speed": 2.1,
           "rainfall": 0
@@ -4820,7 +4820,7 @@
           "air_temperature": 24.7,
           "track_temperature": 32.2,
           "humidity": 59,
-          "wind_speed": 2.0,
+          "wind_speed": 2,
           "rainfall": 0
         },
         "results": [
@@ -4963,7 +4963,7 @@
         "endDate": "2026-06-13T12:00:00",
         "weather": {
           "air_temperature": 28.3,
-          "track_temperature": 35.0,
+          "track_temperature": 35,
           "humidity": 60,
           "wind_speed": 2.9,
           "rainfall": 0
@@ -5085,8 +5085,8 @@
         "date": "2026-06-14T10:00:00",
         "endDate": "2026-06-14T12:00:00",
         "weather": {
-          "air_temperature": 26.0,
-          "track_temperature": 34.0,
+          "air_temperature": 26,
+          "track_temperature": 34,
           "humidity": 55,
           "wind_speed": 1.8,
           "rainfall": 0
@@ -5266,13 +5266,146 @@
         "date": "2026-06-26T12:30:00",
         "endDate": "2026-06-26T13:15:00",
         "weather": {
-          "air_temperature": 25.0,
+          "air_temperature": 25,
           "track_temperature": 31.8,
           "humidity": 57,
           "wind_speed": 2.5,
           "rainfall": 0
         },
-        "results": []
+        "results": [
+          {
+            "pos": 1,
+            "driver": "Kimi Antonelli",
+            "lapTime": "1:07.014",
+            "laps": "32"
+          },
+          {
+            "pos": 2,
+            "driver": "Oscar Piastri",
+            "lapTime": "1:07.251",
+            "laps": "32"
+          },
+          {
+            "pos": 3,
+            "driver": "Lando Norris",
+            "lapTime": "1:07.339",
+            "laps": "32"
+          },
+          {
+            "pos": 4,
+            "driver": "Max Verstappen",
+            "lapTime": "1:07.564",
+            "laps": "29"
+          },
+          {
+            "pos": 5,
+            "driver": "Lewis Hamilton",
+            "lapTime": "1:07.611",
+            "laps": "33"
+          },
+          {
+            "pos": 6,
+            "driver": "George Russell",
+            "lapTime": "1:07.637",
+            "laps": "25"
+          },
+          {
+            "pos": 7,
+            "driver": "Isack Hadjar",
+            "lapTime": "1:07.758",
+            "laps": "28"
+          },
+          {
+            "pos": 8,
+            "driver": "Charles Leclerc",
+            "lapTime": "1:07.855",
+            "laps": "35"
+          },
+          {
+            "pos": 9,
+            "driver": "Liam Lawson",
+            "lapTime": "1:08.235",
+            "laps": "34"
+          },
+          {
+            "pos": 10,
+            "driver": "Gabriel Bortoleto",
+            "lapTime": "1:08.300",
+            "laps": "30"
+          },
+          {
+            "pos": 11,
+            "driver": "Pierre Gasly",
+            "lapTime": "1:08.376",
+            "laps": "33"
+          },
+          {
+            "pos": 12,
+            "driver": "Arvid Lindblad",
+            "lapTime": "1:08.378",
+            "laps": "29"
+          },
+          {
+            "pos": 13,
+            "driver": "Oliver Bearman",
+            "lapTime": "1:08.532",
+            "laps": "33"
+          },
+          {
+            "pos": 14,
+            "driver": "Nico Hulkenberg",
+            "lapTime": "1:08.559",
+            "laps": "32"
+          },
+          {
+            "pos": 15,
+            "driver": "Esteban Ocon",
+            "lapTime": "1:08.830",
+            "laps": "33"
+          },
+          {
+            "pos": 16,
+            "driver": "Franco Colapinto",
+            "lapTime": "1:08.831",
+            "laps": "30"
+          },
+          {
+            "pos": 17,
+            "driver": "Alexander Albon",
+            "lapTime": "1:08.838",
+            "laps": "34"
+          },
+          {
+            "pos": 18,
+            "driver": "Carlos Sainz",
+            "lapTime": "1:09.131",
+            "laps": "30"
+          },
+          {
+            "pos": 19,
+            "driver": "Fernando Alonso",
+            "lapTime": "1:10.544",
+            "laps": "27"
+          },
+          {
+            "pos": 20,
+            "driver": "Lance Stroll",
+            "lapTime": "1:10.698",
+            "laps": "32"
+          },
+          {
+            "pos": 21,
+            "driver": "Valtteri Bottas",
+            "lapTime": "1:11.307",
+            "laps": "6"
+          },
+          {
+            "pos": 22,
+            "driver": "Sergio Perez",
+            "lapTime": "No time",
+            "laps": "2"
+          }
+        ]
       },
       "fp3": {
         "date": "2026-06-27T08:00:00",
@@ -5506,7 +5639,7 @@
         "date": "2026-08-29T07:30:00",
         "endDate": "2026-08-29T08:30:00",
         "weather": {
-          "air_temperature": 27.0,
+          "air_temperature": 27,
           "track_temperature": 33.9,
           "humidity": 57,
           "wind_speed": 2.6,
@@ -5557,7 +5690,7 @@
         "endDate": "2026-09-19T10:00:00",
         "weather": {
           "air_temperature": 25.1,
-          "track_temperature": 33.0,
+          "track_temperature": 33,
           "humidity": 54,
           "wind_speed": 2.2,
           "rainfall": 0
