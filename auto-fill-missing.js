@@ -10,9 +10,9 @@ import {
   fetchSessionWeather,
   fillGPSession,
   findMeeting,
+  getJSON,
 } from "./openf1-fill-adapted.js";
 
-const OPENF1_BASE = "https://api.openf1.org/v1";
 const DEFAULT_SKIP_GP_KEYS = new Set(["bahrain-gp", "saudi-arabian-gp"]);
 
 function parseArgs(argv) {
@@ -49,15 +49,6 @@ function parseArgs(argv) {
   return { seasonPath, ...flags };
 }
 
-async function getJSON(path, params = {}) {
-  const qs = new URLSearchParams(params).toString();
-  const url = `${OPENF1_BASE}${path}${qs ? `?${qs}` : ""}`;
-  const res = await fetch(url);
-  if (res.status === 404) return [];
-  if (!res.ok) throw new Error(`OpenF1 ${res.status} ${res.statusText} (${url})`);
-  return res.json();
-}
-
 async function openf1HasResults(sessionKey) {
   const data = await getJSON("/session_result", { session_key: sessionKey });
   return Array.isArray(data) && data.length > 0;
@@ -77,10 +68,17 @@ function sessionEnded(session, openf1Session) {
   const end = parseDate(openf1Session?.date_end) ?? parseDate(session?.endDate);
   return end ? end.getTime() < Date.now() : false;
 }
+function isEmptyWeather(weather) {
+  return (
+    weather === null ||
+    weather === undefined ||
+    (typeof weather === "object" && Object.keys(weather).length === 0)
+  );
+}
 function shouldUpdateWeather(session, openf1Session) {
   if (!sessionStarted(session, openf1Session)) return false;
   if (!sessionEnded(session, openf1Session)) return true;
-  return session.weather === null || session.weather === undefined;
+  return isEmptyWeather(session.weather);
 }
 function ensureSessionShape(session) {
   if (!Array.isArray(session.results)) session.results = [];
