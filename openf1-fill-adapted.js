@@ -62,15 +62,82 @@ const MEETING_CACHE = new Map();
 const SESSION_INFO_MAP_CACHE = new Map();
 const DRIVER_CACHE = new Map();
 
+const MAX_RETRIES = 5;
+const BASE_DELAY_MS = 1000;
+const MAX_CONCURRENT_REQUESTS = 4;
+const MIN_REQUEST_GAP_MS = 250;
+
+let activeRequests = 0;
+let lastRequestAt = 0;
+const requestQueue = [];
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function runNextQueued() {
+  if (activeRequests >= MAX_CONCURRENT_REQUESTS) return;
+  const next = requestQueue.shift();
+  if (!next) return;
+  activeRequests += 1;
+  next();
+}
+
+// Serializa y limita la concurrencia de llamadas a OpenF1 para no disparar 429s.
+function withThrottle(task) {
+  return new Promise((resolve, reject) => {
+    const run = async () => {
+      const wait = Math.max(0, lastRequestAt + MIN_REQUEST_GAP_MS - Date.now());
+      if (wait > 0) await sleep(wait);
+      lastRequestAt = Date.now();
+      try {
+        resolve(await task());
+      } catch (err) {
+        reject(err);
+      } finally {
+        activeRequests -= 1;
+        runNextQueued();
+      }
+    };
+    requestQueue.push(run);
+    runNextQueued();
+  });
+}
+
+function retryDelay(attempt, retryAfterHeader) {
+  const headerSeconds = Number(retryAfterHeader);
+  if (Number.isFinite(headerSeconds) && headerSeconds > 0) return headerSeconds * 1000;
+  const exponential = BASE_DELAY_MS * 2 ** attempt;
+  const jitter = Math.random() * BASE_DELAY_MS;
+  return exponential + jitter;
+}
+
+async function fetchWithRetry(url) {
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    const res = await fetch(url);
+    if (res.status === 404) return { empty: true };
+    if (res.status === 429 || res.status >= 500) {
+      if (attempt === MAX_RETRIES) {
+        throw new OpenF1Error(`OpenF1 ${res.status} ${res.statusText} tras ${MAX_RETRIES} reintentos (${url})`);
+      }
+      const delay = retryDelay(attempt, res.headers.get("retry-after"));
+      console.warn(`⏳ OpenF1 ${res.status} en ${url} — reintento ${attempt + 1}/${MAX_RETRIES} en ${Math.round(delay)}ms`);
+      await sleep(delay);
+      continue;
+    }
+    if (!res.ok) throw new OpenF1Error(`OpenF1 ${res.status} ${res.statusText} (${url})`);
+    return { empty: false, data: await res.json() };
+  }
+  throw new OpenF1Error(`OpenF1: reintentos agotados (${url})`);
+}
+
 async function getJSON(path, params = {}) {
   const qs = new URLSearchParams(
     Object.entries(params).filter(([, value]) => value !== undefined && value !== null)
   ).toString();
   const url = `${OPENF1_BASE}${path}${qs ? `?${qs}` : ""}`;
-  const res = await fetch(url);
-  if (res.status === 404) return [];
-  if (!res.ok) throw new OpenF1Error(`OpenF1 ${res.status} ${res.statusText} (${url})`);
-  return res.json();
+  const result = await withThrottle(() => fetchWithRetry(url));
+  return result.empty ? [] : result.data;
 }
 
 function normalizeText(value) {
@@ -369,4 +436,5 @@ export {
   findMeetingKey,
   findSessionInfo,
   findSessionKey,
+  getJSON,
 };
