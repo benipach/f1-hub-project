@@ -85,6 +85,28 @@ function ensureSessionShape(session) {
   if (!("weather" in session)) session.weather = null;
 }
 
+// Evita pegarle a OpenF1 por GPs que todavía no arrancaron: nada que buscar ahí.
+function gpHasStartedSession(gp) {
+  const sessions = Object.values(gp.sessions ?? {});
+  return sessions.some((session) => {
+    const start = parseDate(session?.date);
+    return start ? start.getTime() <= Date.now() : true; // sin fecha: no arriesgar, procesar igual
+  });
+}
+
+// Evita pegarle a OpenF1 por GPs cuyas sesiones pasadas ya están completas.
+function gpNeedsWork(gp, weatherEnabled) {
+  return Object.values(gp.sessions ?? {}).some((session) => {
+    if (!session || typeof session !== "object") return false;
+    const start = parseDate(session.date);
+    const hasStarted = start ? start.getTime() <= Date.now() : true;
+    if (!hasStarted) return false;
+    if (!sessionHasResults(session)) return true;
+    if (weatherEnabled && isEmptyWeather(session.weather)) return true;
+    return false;
+  });
+}
+
 async function runOnce(args) {
   const season = JSON.parse(await readFile(args.seasonPath, "utf8"));
   const knownDriverNames = buildKnownDriverNamesFromSeason(season);
@@ -99,6 +121,14 @@ async function runOnce(args) {
     }
     if (!gp?.sessions || typeof gp.sessions !== "object" || Array.isArray(gp.sessions)) {
       console.warn(`⚠️ ${gpKey}: no tiene gp.sessions; ignorado`);
+      continue;
+    }
+    if (!gpHasStartedSession(gp)) {
+      console.log(`⏭️ ${gpKey}: todavía no arrancó, se saltea sin consultar OpenF1`);
+      continue;
+    }
+    if (!gpNeedsWork(gp, args.weather)) {
+      console.log(`⏭️ ${gpKey}: ya está completo, se saltea sin consultar OpenF1`);
       continue;
     }
 
