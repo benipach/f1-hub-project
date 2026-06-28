@@ -152,7 +152,7 @@
 
 .hero-circuit-btn-arrow {
     font-size: 16px;
-    transition: transform 0.2s ease;
+    transition: transform 0.15s ease;
 }
 
 .hero-circuit-btn:hover .hero-circuit-btn-arrow {
@@ -212,7 +212,7 @@
     font-size: 14px;
     letter-spacing: 0.1px;
     color: rgba(255, 255, 255, 0.75);
-    transition: color 0.2s ease, opacity 0.2s ease;
+    transition: color 0.15s ease, opacity 0.15s ease;
 }
 
 .schedule-session-time {
@@ -220,7 +220,7 @@
     font-size: 14px;
     font-variant-numeric: tabular-nums;
     color: #ffffff;
-    transition: color 0.2s ease, opacity 0.2s ease;
+    transition: color 0.15s ease, opacity 0.15s ease;
 }   
 
 .schedule-session-tag {
@@ -233,6 +233,7 @@
     font-size: 12px;
     letter-spacing: 1.2px;
     text-transform: uppercase;
+    transition: opacity 0.15s ease;
 }
 
 .schedule-session-ended .schedule-session-name,
@@ -297,18 +298,25 @@
     letter-spacing: 1.4px;
     text-transform: uppercase;
     color: #ffffff;
+    text-decoration: none;
     opacity: 0;
     transform: translateY(3px);
     pointer-events: none;
     cursor: pointer;
-    transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 
 .schedule-session-cta-arrow {
-    transition: transform 0.2s ease;
+    transition: transform 0.15s ease;
 }
 
-.schedule-session-ended:hover .schedule-session-cta {
+.schedule-session-content-hidden .schedule-session-name,
+.schedule-session-content-hidden .schedule-session-time,
+.schedule-session-content-hidden .schedule-session-tag {
+    opacity: 0;
+}
+
+.schedule-session-cta-visible .schedule-session-cta {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
@@ -321,12 +329,6 @@
 
 .schedule-session-cta:hover .schedule-session-cta-arrow {
     transform: translateX(3px);
-}
-
-.schedule-session-live:hover .schedule-session-cta-live {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
 }
 
 .schedule-session-cta-live {
@@ -597,7 +599,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     background: transparent;
-    color: rgba(255, 255, 255, 0.45);
+    color: var(--text-dim);
     font-family: 'F1-Regular';
     font-size: 12px;
     letter-spacing: 1px;
@@ -608,13 +610,19 @@
 }
 
 .race-link:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.2);
     color: rgba(255, 255, 255, 0.85);
 }
 
 .race-card-ended {
-    background-color: rgb(15, 15, 25);
+    background-color: var(--base-700);
+    opacity: 0.67;
+}
+
+.race-card-ended:hover {
+    background-color: var(--base-600);
+    opacity: 1;
 }
 
 .race-card-ended::before {
@@ -622,11 +630,11 @@
 }
 
 .race-card-ended .race-card-content h3 {
-    color: var(--text-dim);
+    color: var(--text-light);
 }
 
 .race-card-next {
-    background-color: rgb(20,20,30);
+    background-color: var(--base-700);
 }
 
 .race-card-next::before {
@@ -664,7 +672,7 @@
 }
 
 .race-card-upcoming {
-    background-color: rgb(20,20,30);
+    background-color: var(--base-700);
 }
 
 .race-card-upcoming::before {
@@ -677,7 +685,7 @@
 }
 
 .race-card-upcoming:hover {
-    background-color: rgb(25, 25, 35);
+    background-color: var(--base-600);
 }
 
 .race-card-cancelled {
