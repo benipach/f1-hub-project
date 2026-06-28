@@ -5817,8 +5817,191 @@
       "race": {
         "date": "2026-06-28T10:00:00",
         "endDate": "2026-06-28T12:00:00",
-        "weather": {},
-        "results": []
+        "weather": {
+          "air_temperature": 34.5,
+          "track_temperature": 50.2,
+          "humidity": 30,
+          "wind_speed": 1.5,
+          "rainfall": 0
+        },
+        "results": [
+          {
+            "pos": 0,
+            "driver": "Lance Stroll",
+            "laps": "45",
+            "time": "DNF",
+            "pts": 0,
+            "team": "Aston Martin"
+          },
+          {
+            "pos": 0,
+            "driver": "Carlos Sainz",
+            "laps": "23",
+            "time": "DNF",
+            "pts": 0,
+            "team": "Williams"
+          },
+          {
+            "pos": 0,
+            "driver": "Sergio Perez",
+            "laps": "4",
+            "time": "DNF",
+            "pts": 0,
+            "team": "Cadillac"
+          },
+          {
+            "pos": 0,
+            "driver": "Valtteri Bottas",
+            "laps": "2",
+            "time": "DNF",
+            "pts": 0,
+            "team": "Cadillac"
+          },
+          {
+            "pos": 1,
+            "driver": "George Russell",
+            "laps": "71",
+            "time": "1:26:37.979",
+            "pts": 25,
+            "team": "Mercedes"
+          },
+          {
+            "pos": 2,
+            "driver": "Max Verstappen",
+            "laps": "71",
+            "time": "+1.611s",
+            "pts": 18,
+            "team": "Red Bull Racing"
+          },
+          {
+            "pos": 3,
+            "driver": "Kimi Antonelli",
+            "laps": "71",
+            "time": "+1.986s",
+            "pts": 15,
+            "team": "Mercedes"
+          },
+          {
+            "pos": 4,
+            "driver": "Oscar Piastri",
+            "laps": "71",
+            "time": "+21.809s",
+            "pts": 12,
+            "team": "McLaren"
+          },
+          {
+            "pos": 5,
+            "driver": "Lewis Hamilton",
+            "laps": "71",
+            "time": "+26.393s",
+            "pts": 10,
+            "team": "Ferrari"
+          },
+          {
+            "pos": 6,
+            "driver": "Isack Hadjar",
+            "laps": "71",
+            "time": "+29.399s",
+            "pts": 8,
+            "team": "Red Bull Racing"
+          },
+          {
+            "pos": 7,
+            "driver": "Lando Norris",
+            "laps": "71",
+            "time": "+31.505s",
+            "pts": 6,
+            "team": "McLaren"
+          },
+          {
+            "pos": 8,
+            "driver": "Charles Leclerc",
+            "laps": "71",
+            "time": "+45.659s",
+            "pts": 4,
+            "team": "Ferrari"
+          },
+          {
+            "pos": 9,
+            "driver": "Liam Lawson",
+            "laps": "70",
+            "time": "+1 Lap",
+            "pts": 2,
+            "team": "Racing Bulls"
+          },
+          {
+            "pos": 10,
+            "driver": "Arvid Lindblad",
+            "laps": "70",
+            "time": "+1 Lap",
+            "pts": 1,
+            "team": "Racing Bulls"
+          },
+          {
+            "pos": 11,
+            "driver": "Gabriel Bortoleto",
+            "laps": "70",
+            "time": "+1 Lap",
+            "pts": 0,
+            "team": "Audi"
+          },
+          {
+            "pos": 12,
+            "driver": "Nico Hulkenberg",
+            "laps": "70",
+            "time": "+1 Lap",
+            "pts": 0,
+            "team": "Audi"
+          },
+          {
+            "pos": 13,
+            "driver": "Pierre Gasly",
+            "laps": "70",
+            "time": "+1 Lap",
+            "pts": 0,
+            "team": "Alpine"
+          },
+          {
+            "pos": 14,
+            "driver": "Oliver Bearman",
+            "laps": "70",
+            "time": "+1 Lap",
+            "pts": 0,
+            "team": "Haas F1 Team"
+          },
+          {
+            "pos": 15,
+            "driver": "Franco Colapinto",
+            "laps": "70",
+            "time": "+1 Lap",
+            "pts": 0,
+            "team": "Alpine"
+          },
+          {
+            "pos": 16,
+            "driver": "Esteban Ocon",
+            "laps": "69",
+            "time": "+2 Laps",
+            "pts": 0,
+            "team": "Haas F1 Team"
+          },
+          {
+            "pos": 17,
+            "driver": "Alexander Albon",
+            "laps": "69",
+            "time": "+2 Laps",
+            "pts": 0,
+            "team": "Williams"
+          },
+          {
+            "pos": 18,
+            "driver": "Fernando Alonso",
+            "laps": "68",
+            "time": "+3 Laps",
+            "pts": 0,
+            "team": "Aston Martin"
+          }
+        ]
       }
     }
   },
