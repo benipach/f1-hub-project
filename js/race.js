@@ -59,11 +59,10 @@ async function loadDrivers(base = '.') {
 // ── HELPERS ───────────────────────────────────────────────────────
 function findNextRace(season) {
     const now = new Date();
-    return Object.entries(season).find(([, gp]) =>
-        gp.horarios?.raceEndDate &&
-        new Date(gp.horarios.raceEndDate) > now &&
-        !gp.cancelled
-    );
+    return Object.entries(season).find(([, gp]) => {
+        const raceEnd = getSessionEnd(gp, 'race');
+        return raceEnd && raceEnd > now && !gp.cancelled;
+    });
 }
 
 function buildGradient(colors) {
@@ -73,6 +72,28 @@ function buildGradient(colors) {
 
 function parseDate(str) {
     return str ? new Date(str) : null;
+}
+
+function getSession(gp, sessionKey) {
+    return gp?.sessions?.[sessionKey] || null;
+}
+
+function getSessionStart(gp, sessionKey) {
+    return parseDate(getSession(gp, sessionKey)?.date);
+}
+
+function getSessionEnd(gp, sessionKey) {
+    return parseDate(getSession(gp, sessionKey)?.endDate);
+}
+
+function getSessionResults(gp, sessionKey) {
+    const results = getSession(gp, sessionKey)?.results;
+    return Array.isArray(results) ? results : [];
+}
+
+function getSessionWeather(gp, sessionKey) {
+    const weather = getSession(gp, sessionKey)?.weather;
+    return weather && typeof weather === 'object' && !Array.isArray(weather) ? weather : null;
 }
 
 function formatRange(start, end) {
@@ -110,15 +131,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderFunFacts(circuit);
 
         // ── Sesiones de práctica libre ──
-        renderSessionResult(gp.results?.fp1,  'fp1-card',           'Free Practice 1',     driverTeams, driverNats, driverNumbers);
-        renderSessionResult(gp.results?.fp2,  'fp2-card',           'Free Practice 2',     driverTeams, driverNats, driverNumbers);
-        renderSessionResult(gp.results?.fp3,  'fp3-card',           'Free Practice 3',     driverTeams, driverNats, driverNumbers);
+        renderSessionResult(getSessionResults(gp, 'fp1'), 'fp1-card', 'Free Practice 1', driverTeams, driverNats, driverNumbers);
+        renderSessionResult(getSessionResults(gp, 'fp2'), 'fp2-card', 'Free Practice 2', driverTeams, driverNats, driverNumbers);
+        renderSessionResult(getSessionResults(gp, 'fp3'), 'fp3-card', 'Free Practice 3', driverTeams, driverNats, driverNumbers);
         // ── Clasificaciones ──
-        renderSessionResult(gp.results?.sprintQualy, 'sprint-qualy-card', 'Sprint Qualifying', driverTeams, driverNats, driverNumbers);
-        renderSessionResult(gp.results?.qualifying,  'qualifying-card',   'Qualifying',        driverTeams, driverNats, driverNumbers);
+        renderSessionResult(getSessionResults(gp, 'sprintQualy'), 'sprint-qualy-card', 'Sprint Qualifying', driverTeams, driverNats, driverNumbers);
+        renderSessionResult(getSessionResults(gp, 'qualifying'), 'qualifying-card', 'Qualifying', driverTeams, driverNats, driverNumbers);
         // ── Carreras ──
-        renderRaceResult(gp.results?.sprintRace, gp.results?.sprintQualy, 'sprint-race-card', driverTeams, driverNats, driverNumbers);
-        renderRaceResult(gp.results?.race,       gp.results?.qualifying,  'race-card',      driverTeams, driverNats, driverNumbers);
+        renderRaceResult(getSessionResults(gp, 'sprintRace'), getSessionResults(gp, 'sprintQualy'), 'sprint-race-card', driverTeams, driverNats, driverNumbers);
+        renderRaceResult(getSessionResults(gp, 'race'), getSessionResults(gp, 'qualifying'), 'race-card', driverTeams, driverNats, driverNumbers);
 
         renderWeather(gp);
         renderHistory(circuit);
@@ -286,11 +307,13 @@ const TEAM_LOGO_MAP = {
     'Ferrari':         'ferrari-logo',
     'McLaren':         'mclaren-logo',
     'Red Bull':        'redbull-logo',
+    'Red Bull Racing': 'redbull-logo',
     'Aston Martin':    'astonmartin-logo',
     'Alpine':          'alpine-logo',
     'Williams':        'williams-logo',
     'Racing Bulls':    'racingbulls-logo',
     'Haas':            'haas-logo',
+    'Haas F1 Team':    'haas-logo',
     'Audi':            'audi-logo',
     'Cadillac':        'cadillac-logo',
 };
@@ -301,11 +324,13 @@ const TEAM_COLOR_MAP = {
     'Ferrari':          '#FF0019',
     'McLaren':          '#FF7F00',
     'Red Bull':         '#22477A',
+    'Red Bull Racing':  '#22477A',
     'Aston Martin':     '#229971',
     'Alpine':           '#00B2FF',
     'Williams':         '#1C7AFF',
     'Racing Bulls':     '#667DFF',
     'Haas':             '#DEE1E2',
+    'Haas F1 Team':     '#DEE1E2',
     'Audi':             '#FF2E2E',
     'Cadillac':         '#AAAAAD',
 };
@@ -408,7 +433,7 @@ function renderRaceResult(raceEntries = [], prevSessionEntries = [], containerId
                 </thead>
                 <tbody>
                     ${raceEntries.map(res => {
-                        const teamId    = driverTeams[res.driver] || '';
+                        const teamId    = res.team || driverTeams[res.driver] || '';
                         const logoFile  = TEAM_LOGO_MAP[teamId];
                         const teamColor = TEAM_COLOR_MAP[teamId] || 'rgba(255,255,255,0.4)';
                         const driverNum = driverNumbers[res.driver] ?? '';
@@ -472,7 +497,7 @@ function renderSessionResult(entries = [], containerId, sessionLabel, driverTeam
                 </thead>
                 <tbody>
                     ${entries.map((res, i) => {
-                        const teamId    = driverTeams[res.driver] || '';
+                        const teamId    = res.team || driverTeams[res.driver] || '';
                         const logoFile  = TEAM_LOGO_MAP[teamId];
                         const teamColor = TEAM_COLOR_MAP[teamId] || 'rgba(255,255,255,0.4)';
                         const driverNum = driverNumbers[res.driver] ?? '';
@@ -510,26 +535,75 @@ function renderSessionResult(entries = [], containerId, sessionLabel, driverTeam
 }
 
 // ── WEATHER ──────────────────────────────────────────────────────
+function formatWeatherNumber(value, suffix = '') {
+    return Number.isFinite(Number(value)) ? `${Number(value).toFixed(1).replace('.0', '')}${suffix}` : '—';
+}
+
+function sessionDisplayName(sessionKey) {
+    const labels = {
+        fp1: 'FP1',
+        fp2: 'FP2',
+        fp3: 'FP3',
+        sprintQualy: 'Sprint Qualy',
+        sprintRace: 'Sprint',
+        qualifying: 'Qualifying',
+        race: 'Race',
+    };
+    return labels[sessionKey] || sessionKey;
+}
+
+function weatherDayFromSession(session) {
+    const date = parseDate(session?.date);
+    return date
+        ? date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
+        : null;
+}
+
 function renderWeather(gp) {
     const section = document.getElementById('section-weather');
-    if (!Array.isArray(gp.weather) || !gp.weather.length) {
+    const sessionEntries = Object.entries(gp?.sessions || {})
+        .map(([sessionKey, session]) => ({ sessionKey, session, weather: getSessionWeather(gp, sessionKey) }))
+        .filter(item => item.weather);
+
+    if (!sessionEntries.length) {
         if (section) section.style.display = 'none';
         return;
     }
+
     if (section) section.style.display = '';
-    gp.weather.forEach(w => {
-        const day = w.day;
-        if (!day) return;
+
+    const byDay = new Map();
+    for (const item of sessionEntries) {
+        const day = weatherDayFromSession(item.session);
+        if (!day) continue;
+        if (!byDay.has(day)) byDay.set(day, []);
+        byDay.get(day).push(item);
+    }
+
+    byDay.forEach((items, day) => {
+        const samples = items.map(item => item.weather);
+        const avg = key => {
+            const nums = samples.map(w => Number(w?.[key])).filter(Number.isFinite);
+            return nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : null;
+        };
+        const rainfall = samples.some(w => Number(w?.rainfall || 0) > 0) ? 1 : 0;
+        const air = avg('air_temperature');
+        const track = avg('track_temperature');
+        const humidity = avg('humidity');
+        const wind = avg('wind_speed');
+        const sessionsLabel = items.map(item => sessionDisplayName(item.sessionKey)).join(' / ');
+
         const iconEl = document.getElementById(`weather-icon-${day}`);
         const condEl = document.getElementById(`weather-condition-${day}`);
         const tempEl = document.getElementById(`weather-temp-${day}`);
         const noteEl = document.getElementById(`weather-notes-${day}`);
         const rainEl = document.getElementById(`weather-rain-${day}`);
-        if (iconEl) iconEl.textContent = w.icon      || '—';
-        if (condEl) condEl.textContent = w.condition || '—';
-        if (tempEl) tempEl.textContent = w.temp      || '—';
-        if (noteEl) noteEl.textContent = w.notes     || '—';
-        if (rainEl) rainEl.textContent = `💧 ${w.rainChance} rain chance`;
+
+        if (iconEl) iconEl.textContent = rainfall ? '🌧️' : '🌤️';
+        if (condEl) condEl.textContent = rainfall ? 'Rain recorded' : 'Dry session data';
+        if (tempEl) tempEl.textContent = `${formatWeatherNumber(air, '°C')} air · ${formatWeatherNumber(track, '°C')} track`;
+        if (noteEl) noteEl.textContent = `${sessionsLabel} · wind ${formatWeatherNumber(wind, ' m/s')} · humidity ${formatWeatherNumber(humidity, '%')}`;
+        if (rainEl) rainEl.textContent = rainfall ? '💧 Rainfall detected' : '💧 No rainfall detected';
     });
 }
 

@@ -193,8 +193,7 @@ function updateRacecards(season, nextId, now) {
             card.classList.add('race-card-cancelled');
             if (spanEl) { spanEl.classList.add('status-cancelled'); spanEl.innerText = 'CANCELLED'; }
             if (linkEl) linkEl.innerText = 'Cancelled';
-
-        } else if (gp.horarios?.raceEndDate && new Date(gp.horarios.raceEndDate) < now) {
+        } else if (getSessionEnd(gp, 'race') && getSessionEnd(gp, 'race') < now) {
             card.classList.add('race-card-ended');
             if (spanEl) { spanEl.classList.add('status-ended'); spanEl.innerText = 'ENDED'; }
             if (linkEl) linkEl.innerText = 'View Results';
@@ -213,35 +212,60 @@ function updateRacecards(season, nextId, now) {
     });
 }
 
+function getSession(gp, sessionKey) {
+    return gp?.sessions?.[sessionKey] || null;
+}
+
+function getSessionStart(gp, sessionKey) {
+    return parseDate(getSession(gp, sessionKey)?.date);
+}
+
+function getSessionEnd(gp, sessionKey) {
+    return parseDate(getSession(gp, sessionKey)?.endDate);
+}
+
+function getSessionResults(gp, sessionKey) {
+    const results = getSession(gp, sessionKey)?.results;
+    return Array.isArray(results) ? results : [];
+}
+
+function hasSession(gp, sessionKey) {
+    const session = getSession(gp, sessionKey);
+    return !!session && (session.date || session.endDate || Array.isArray(session.results));
+}
+
 function renderHeroSchedule(gp, gpId) {
     const container = document.getElementById('hero-schedule');
-    if (!container || !gp.horarios) return;
+    if (!container || !gp?.sessions) return;
 
-    const h       = gp.horarios;
-    const now     = new Date();
-    const isSprint = !!h.sprintQualyDate;
+    const now = new Date();
+    const isSprint = !!getSession(gp, 'sprintQualy') || !!getSession(gp, 'sprintRace') || !!gp.sprint;
 
-    // Build session list depending on weekend format
-    let sessions;
-    if (isSprint) {
-        sessions = [
-            { name: 'Free practice 1',      start: parseDate(h.fp1Date),         end: parseDate(h.fp1EndDate)         },
-            { name: 'Sprint Qualifying',    start: parseDate(h.sprintQualyDate), end: parseDate(h.sprintQualyEndDate) },
-            { name: 'Sprint Race',          start: parseDate(h.sprintRaceDate),  end: parseDate(h.sprintRaceEndDate)  },
-            { name: 'Qualifying',           start: parseDate(h.qualyDate),       end: parseDate(h.qualyEndDate)       },
-            { name: 'Race',                 start: parseDate(h.raceStartDate),   end: parseDate(h.raceEndDate)        },
+    const sessionDefs = isSprint
+        ? [
+            ['fp1',          'Free practice 1'],
+            ['sprintQualy',  'Sprint Qualifying'],
+            ['sprintRace',   'Sprint Race'],
+            ['qualifying',   'Qualifying'],
+            ['race',         'Race'],
+        ]
+        : [
+            ['fp1',          'Free practice 1'],
+            ['fp2',          'Free practice 2'],
+            ['fp3',          'Free practice 3'],
+            ['qualifying',   'Qualifying'],
+            ['race',         'Race'],
         ];
-    } else {
-        sessions = [
-            { name: 'Free practice 1',      start: parseDate(h.fp1Date),       end: parseDate(h.fp1EndDate)   },
-            { name: 'Free practice 2',      start: parseDate(h.fp2Date),       end: parseDate(h.fp2EndDate)   },
-            { name: 'Free practice 3',      start: parseDate(h.fp3Date),       end: parseDate(h.fp3EndDate)   },
-            { name: 'Qualifying',           start: parseDate(h.qualyDate),     end: parseDate(h.qualyEndDate) },
-            { name: 'Race',                 start: parseDate(h.raceStartDate), end: parseDate(h.raceEndDate)  },
-        ];
-    }
 
-    // Group sessions by calendar day (using local date string as key)
+    const sessions = sessionDefs
+        .filter(([key]) => hasSession(gp, key))
+        .map(([key, name]) => ({
+            key,
+            name,
+            start: getSessionStart(gp, key),
+            end: getSessionEnd(gp, key),
+        }));
+
     const dayMap = new Map();
     for (const s of sessions) {
         if (!s.start) continue;
@@ -264,14 +288,11 @@ function renderHeroSchedule(gp, gpId) {
         ].filter(Boolean).join(' ');
         const dataAttr = future && s.start ? ` data-start="${s.start.getTime()}"` : '';
 
-        // Ended sessions get the "View Session Details" CTA.
-        // Live sessions get a "Tune in Live" anchor styled the same way but in red.
-        // Future sessions get neither — hover shows countdown via JS instead.
         const cta = ended
-            ? `<button type="button" class="schedule-session-cta" tabindex="-1">
+            ? `<a href="/f1-hub-project/races/race.html?gp=${gpId}" class="schedule-session-cta">
                 <span>View Session Details</span>
                 <span class="schedule-session-cta-arrow">→</span>
-               </button>`
+               </a>`
             : live
             ? `<a href="/f1-hub-project/races/race.html?gp=${gpId}" class="schedule-session-cta schedule-session-cta-live">
                 <span>Tune in Live</span>
@@ -303,7 +324,31 @@ function renderHeroSchedule(gp, gpId) {
 
     container.innerHTML = [...dayMap.entries()].map(([k, ss]) => dayHTML(k, ss)).join('');
 
-    // ── Hover: show countdown to session start (future sessions only) ────────
+    container.querySelectorAll('.schedule-session-ended, .schedule-session-live').forEach(row => {
+        const cta = row.querySelector('.schedule-session-cta');
+        if (!cta) return;
+
+        let ctaTimeout = null;
+
+        row.addEventListener('mouseenter', () => {
+            clearTimeout(ctaTimeout);
+            row.classList.add('schedule-session-content-hidden');
+
+            ctaTimeout = setTimeout(() => {
+                row.classList.add('schedule-session-cta-visible');
+            }, 150);
+        });
+
+        row.addEventListener('mouseleave', () => {
+            clearTimeout(ctaTimeout);
+            row.classList.remove('schedule-session-cta-visible');
+
+            ctaTimeout = setTimeout(() => {
+                row.classList.remove('schedule-session-content-hidden');
+            }, 150);
+        });
+    });
+
     container.querySelectorAll('.schedule-session[data-start]').forEach(row => {
         const timeEl   = row.querySelector('.schedule-session-time');
         const original = timeEl.textContent;
@@ -347,21 +392,16 @@ function renderHeroSchedule(gp, gpId) {
     });
 }
 
-
-
 // ── Driver Standings ────────────────────────────────────────────────────────
 
 function buildStandings(season) {
-    // 1. Accumulate points from race + sprintRace across every GP.
     const driverMap = {}; // { fullName: { pts, team, lastRound } }
 
     for (const [, gp] of Object.entries(season)) {
         if (!gp || typeof gp !== 'object') continue;
-        const results = gp.results;
-        if (!results || typeof results !== 'object' || Array.isArray(results)) continue;
 
         for (const sessionKey of ['race', 'sprintRace']) {
-            const entries = results[sessionKey];
+            const entries = getSessionResults(gp, sessionKey);
             if (!Array.isArray(entries)) continue;
 
             for (const entry of entries) {
@@ -373,8 +413,8 @@ function buildStandings(season) {
                 if (!driverMap[driver]) {
                     driverMap[driver] = { pts: 0, team, lastRound: 0 };
                 }
+
                 driverMap[driver].pts += pts;
-                // Keep the most recent team name we see
                 if (team) driverMap[driver].team = team;
                 if (gp.round > driverMap[driver].lastRound) {
                     driverMap[driver].lastRound = gp.round;
@@ -383,34 +423,29 @@ function buildStandings(season) {
         }
     }
 
-    // 2. Sort by points desc, then by last round (more recent = better tiebreak)
     const standings = Object.entries(driverMap)
         .filter(([, d]) => d.pts > 0)
         .sort(([, a], [, b]) => b.pts - a.pts || b.lastRound - a.lastRound);
 
-    if (!standings.length) return; // No results yet
+    if (!standings.length) return;
 
-    // 3. Find the last completed round for the subtitle
-    const lastRound = Math.max(
-        ...Object.values(season)
-            .filter(gp => gp && typeof gp === 'object' && !Array.isArray(gp))
-            .filter(gp => {
-                const r = gp.results;
-                return r && typeof r === 'object' && !Array.isArray(r) && Array.isArray(r.race) && r.race.length > 0;
-            })
-            .map(gp => gp.round)
-    );
+    const completedRaceGPs = Object.values(season)
+        .filter(gp => gp && typeof gp === 'object' && !Array.isArray(gp))
+        .filter(gp => getSessionResults(gp, 'race').length > 0);
+
+    const lastRound = completedRaceGPs.length
+        ? Math.max(...completedRaceGPs.map(gp => gp.round))
+        : 0;
+
     const lastGP = Object.values(season).find(gp =>
         gp && typeof gp === 'object' && !Array.isArray(gp) && gp.round === lastRound
     );
 
-    // 4. Update subtitle
     const subtitleEl = document.querySelector('.standings-subtitle');
     if (subtitleEl && lastGP) {
         subtitleEl.textContent = `After ${lastGP.name.replace(' Grand Prix', ' GP')} · Round ${String(lastRound).padStart(2, '0')}`;
     }
 
-    // 5. Render rows (top 10)
     const list = document.querySelector('.standings-list');
     if (!list) return;
 

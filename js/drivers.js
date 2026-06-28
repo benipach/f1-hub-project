@@ -31,11 +31,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             })
             .sort((a, b) => a.round - b.round);
 
+        const getSessionResults = (gp, sessionKey) => {
+            const results = gp?.sessions?.[sessionKey]?.results;
+            return Array.isArray(results) ? results : [];
+        };
+
+        const getRaceResults   = gp => getSessionResults(gp, 'race');
+        const getSprintResults = gp => getSessionResults(gp, 'sprintRace');
+        const getQualyResults  = gp => getSessionResults(gp, 'qualifying');
+
         const raceLabels    = [];
         const raceFullNames = []; 
         const racePoints    = [];
         const raceWins      = []; 
-        const racePositions = []; // now stores total weekend pts (race + sprint) for bar label
+        const racePositions = []; // stores total weekend pts (race + sprint) for bar label
         const raceSprintPts = []; // sprint pts per race, null if no sprint or 0 pts
         
         let total2026 = 0, wins2026 = 0, podiums2026 = 0;
@@ -47,59 +56,64 @@ document.addEventListener('DOMContentLoaded', async () => {
             );
             raceFullNames.push(gp.name);
 
-            if (!gp.results?.race?.length) { 
+            const raceResults   = getRaceResults(gp);
+            const sprintResults = getSprintResults(gp);
+            const qualyResults  = getQualyResults(gp);
+
+            const result       = raceResults.find(r => r.driver === fullName);
+            const sprintResult = sprintResults.find(r => r.driver === fullName);
+
+            // Si no hay carrera ni sprint para este piloto, el GP queda como pendiente.
+            if (!result && !sprintResult) {
                 racePoints.push(null); 
                 racePositions.push(null);
                 raceSprintPts.push(null);
+
+                if (qualyResults?.length && qualyResults[0].driver === fullName) poles2026++;
                 return; 
             }
 
-            const result = gp.results.race.find(r => r.driver === fullName);
-            if (!result) { 
-                racePoints.push(null); 
-                racePositions.push(null);
-                raceSprintPts.push(null);
-                return; 
-            }
-
-            const racePts = result.pts || 0;
-            const pos     = result.pos;
-            const isDNF   = result.time === 'DNF' || result.time === 'DNS' || pos === 'DNF' || pos === 'DNS';
-
-            const sprintResult = (gp.results?.sprintRace || []).find(r => r.driver === fullName);
-            const sprintPts    = sprintResult?.pts || 0;
-
-            const totalPts = racePts + sprintPts;
+            const racePts   = result ? (result.pts || 0) : 0;
+            const sprintPts = sprintResult ? (sprintResult.pts || 0) : 0;
+            const totalPts  = racePts + sprintPts;
 
             racePoints.push(totalPts);
             racePositions.push(totalPts);
             raceSprintPts.push(sprintPts > 0 ? sprintPts : null);
             total2026 += totalPts;
 
-            starts2026++;
-            if (isDNF) dnfs2026++;
-            if (parseInt(pos) === 1) { wins2026++; raceWins.push(i); }
-            if (!isNaN(parseInt(pos)) && parseInt(pos) <= 3) podiums2026++;
-            if (result.fastestLap) fastest2026++;
+            // Starts/wins/podiums/DNFs cuentan sobre la carrera principal, no sobre sprint.
+            if (result) {
+                const pos   = result.pos;
+                const time  = String(result.time || '').toUpperCase();
+                const isDNF = time === 'DNF' || time === 'DNS' || pos === 'DNF' || pos === 'DNS';
 
-            const qualy = gp.results?.qualifying;
-            if (qualy?.length && qualy[0].driver === fullName) poles2026++;
+                starts2026++;
+                if (isDNF) dnfs2026++;
+                if (parseInt(pos) === 1) { wins2026++; raceWins.push(i); }
+                if (!isNaN(parseInt(pos)) && parseInt(pos) <= 3) podiums2026++;
+                if (result.fastestLap) fastest2026++;
+            }
+
+            if (qualyResults?.length && qualyResults[0].driver === fullName) poles2026++;
         });
 
         // ── POSICIÓN EN EL CAMPEONATO 2026 ───────────────────────
         const driverPoints = {};
         Object.values(season).forEach(gp => {
-            (gp.results?.race || []).forEach(r => {
+            getRaceResults(gp).forEach(r => {
                 driverPoints[r.driver] = (driverPoints[r.driver] || 0) + (r.pts || 0);
             });
-            (gp.results?.sprintRace || []).forEach(r => {
+            getSprintResults(gp).forEach(r => {
                 driverPoints[r.driver] = (driverPoints[r.driver] || 0) + (r.pts || 0);
             });
         });
-        const champPos = Object.entries(driverPoints)
+        const champIndex = Object.entries(driverPoints)
             .sort((a, b) => b[1] - a[1])
-            .findIndex(([name]) => name === fullName) + 1;
+            .findIndex(([name]) => name === fullName);
+        const champPos = champIndex >= 0 ? champIndex + 1 : 0;
 
+        
         // ── CAREER STATS desde drivers.json ──────────────────────
         let totalWins = wins2026, totalPodiums = podiums2026;
         let totalPoles = 0, totalPoints = total2026;
