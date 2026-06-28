@@ -1,8 +1,13 @@
+name: Auto fill F1 sessions
+
 on:
   schedule:
-    # Corre cada 15 min solo vie/sab/dom
+    # Corre cada 30 min solo vie/sab/dom
     - cron: "0,30 * * * 5,6,0"
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   update-season:
@@ -13,22 +18,26 @@ jobs:
         with:
           node-version: 20
 
-      - name: Check if any session ended in the last 15 min
+      - name: Check if there is pending work
         id: check
         run: |
           node -e "
             const data = require('./data/season2026.json');
             const now = Date.now();
-            const window = 15 * 60 * 1000;
-            const grace = 45 * 60 * 1000; // 45 min después del endDate
+            const grace = 45 * 60 * 1000; // 45 min después del endDate, le da tiempo a OpenF1 a publicar
+            const isEmptyWeather = (w) => w === null || w === undefined || (typeof w === 'object' && Object.keys(w).length === 0);
             const shouldRun = Object.values(data).some(gp =>
-              Object.values(gp.sessions).some(s => {
-                const end = new Date(s.endDate).getTime() + grace;
-                return end > now - window && end <= now;
+              gp && typeof gp.sessions === 'object' && Object.values(gp.sessions).some(s => {
+                if (!s || !s.endDate) return false;
+                const ended = new Date(s.endDate).getTime() + grace <= now;
+                if (!ended) return false;
+                const missingResults = !Array.isArray(s.results) || s.results.length === 0;
+                const missingWeather = isEmptyWeather(s.weather);
+                return missingResults || missingWeather;
               })
             );
             console.log('should_run=' + shouldRun);
-          " >> $GITHUB_OUTPUT
+          " >> "$GITHUB_OUTPUT"
 
       - name: Run OpenF1 auto fill
         if: steps.check.outputs.should_run == 'true'
