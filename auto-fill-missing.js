@@ -23,6 +23,7 @@ function parseArgs(argv) {
     weather: false,
     dryRun: false,
     backup: true,
+    fixPositions: false,
     skip: new Set(DEFAULT_SKIP_GP_KEYS),
   };
 
@@ -37,6 +38,7 @@ function parseArgs(argv) {
     else if (arg === "--dry-run") flags.dryRun = true;
     else if (arg === "--no-backup") flags.backup = false;
     else if (arg === "--once") { /* no-op */ }
+    else if (arg === "--fix-positions") flags.fixPositions = true;
     else if (arg.startsWith("--interval=")) console.warn("⚠️ --interval ignorado: GitHub Actions agenda las ejecuciones.");
     else positional.push(arg);
   }
@@ -107,10 +109,40 @@ function gpNeedsWork(gp, weatherEnabled) {
   });
 }
 
+// Migración: results ya guardados con pos:0 (bug viejo) deberían ser "NC".
+// 0 nunca es una posición real de carrera, así que es seguro reescribirla.
+function migrateZeroPositions(season) {
+  let fixedCount = 0;
+  for (const [gpKey, gp] of Object.entries(season)) {
+    if (!gp?.sessions || typeof gp.sessions !== "object") continue;
+    for (const [resultKey, session] of Object.entries(gp.sessions)) {
+      if (!Array.isArray(session?.results)) continue;
+      for (const row of session.results) {
+        if (row && row.pos === 0) {
+          row.pos = "NC";
+          fixedCount += 1;
+          console.log(`🔧 ${gpKey}/${resultKey}: ${row.driver ?? "?"} pos 0 → NC`);
+        }
+      }
+    }
+  }
+  return fixedCount;
+}
+
 async function runOnce(args) {
   const season = JSON.parse(await readFile(args.seasonPath, "utf8"));
   const knownDriverNames = buildKnownDriverNamesFromSeason(season);
   let updatesCount = 0;
+
+  if (args.fixPositions) {
+    const fixed = migrateZeroPositions(season);
+    if (fixed > 0) {
+      console.log(`🔧 Migración pos:0 → NC: ${fixed} fila(s) corregida(s)`);
+      updatesCount += fixed;
+    } else {
+      console.log("🔧 Migración pos:0 → NC: nada para corregir");
+    }
+  }
 
   console.log(`🏁 Auto-fill OpenF1 ${args.year}`);
 
