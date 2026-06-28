@@ -5826,38 +5826,6 @@
         },
         "results": [
           {
-            "pos": 0,
-            "driver": "Lance Stroll",
-            "laps": "45",
-            "time": "DNF",
-            "pts": 0,
-            "team": "Aston Martin"
-          },
-          {
-            "pos": 0,
-            "driver": "Carlos Sainz",
-            "laps": "23",
-            "time": "DNF",
-            "pts": 0,
-            "team": "Williams"
-          },
-          {
-            "pos": 0,
-            "driver": "Sergio Perez",
-            "laps": "4",
-            "time": "DNF",
-            "pts": 0,
-            "team": "Cadillac"
-          },
-          {
-            "pos": 0,
-            "driver": "Valtteri Bottas",
-            "laps": "2",
-            "time": "DNF",
-            "pts": 0,
-            "team": "Cadillac"
-          },
-          {
             "pos": 1,
             "driver": "George Russell",
             "laps": "71",
@@ -6000,6 +5968,38 @@
             "time": "+3 Laps",
             "pts": 0,
             "team": "Aston Martin"
+          },
+                    {
+            "pos": "NC",
+            "driver": "Lance Stroll",
+            "laps": "45",
+            "time": "DNF",
+            "pts": 0,
+            "team": "Aston Martin"
+          },
+          {
+            "pos": "NC",
+            "driver": "Carlos Sainz",
+            "laps": "23",
+            "time": "DNF",
+            "pts": 0,
+            "team": "Williams"
+          },
+          {
+            "pos": "NC",
+            "driver": "Sergio Perez",
+            "laps": "4",
+            "time": "DNF",
+            "pts": 0,
+            "team": "Cadillac"
+          },
+          {
+            "pos": "NC",
+            "driver": "Valtteri Bottas",
+            "laps": "2",
+            "time": "DNF",
+            "pts": 0,
+            "team": "Cadillac"
           }
         ]
       }
