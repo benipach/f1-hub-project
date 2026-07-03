@@ -5969,7 +5969,7 @@
             "pts": 0,
             "team": "Aston Martin"
           },
-                    {
+          {
             "pos": "NC",
             "driver": "Lance Stroll",
             "laps": "45",
@@ -6014,8 +6014,147 @@
       "fp1": {
         "date": "2026-07-03T08:30:00",
         "endDate": "2026-07-03T09:30:00",
-        "weather": {},
-        "results": []
+        "weather": {
+          "air_temperature": 22,
+          "track_temperature": 40.7,
+          "humidity": 48,
+          "wind_speed": 1.7,
+          "rainfall": 0
+        },
+        "results": [
+          {
+            "pos": 1,
+            "driver": "Lewis Hamilton",
+            "lapTime": "1:29.260",
+            "laps": "32"
+          },
+          {
+            "pos": 2,
+            "driver": "Kimi Antonelli",
+            "lapTime": "1:29.473",
+            "laps": "29"
+          },
+          {
+            "pos": 3,
+            "driver": "Charles Leclerc",
+            "lapTime": "1:29.859",
+            "laps": "31"
+          },
+          {
+            "pos": 4,
+            "driver": "George Russell",
+            "lapTime": "1:29.938",
+            "laps": "31"
+          },
+          {
+            "pos": 5,
+            "driver": "Oscar Piastri",
+            "lapTime": "1:30.147",
+            "laps": "25"
+          },
+          {
+            "pos": 6,
+            "driver": "Max Verstappen",
+            "lapTime": "1:30.240",
+            "laps": "27"
+          },
+          {
+            "pos": 7,
+            "driver": "Lando Norris",
+            "lapTime": "1:30.288",
+            "laps": "27"
+          },
+          {
+            "pos": 8,
+            "driver": "Isack Hadjar",
+            "lapTime": "1:30.338",
+            "laps": "28"
+          },
+          {
+            "pos": 9,
+            "driver": "Nico Hulkenberg",
+            "lapTime": "1:30.743",
+            "laps": "29"
+          },
+          {
+            "pos": 10,
+            "driver": "Liam Lawson",
+            "lapTime": "1:30.850",
+            "laps": "28"
+          },
+          {
+            "pos": 11,
+            "driver": "Franco Colapinto",
+            "lapTime": "1:30.966",
+            "laps": "28"
+          },
+          {
+            "pos": 12,
+            "driver": "Gabriel Bortoleto",
+            "lapTime": "1:31.035",
+            "laps": "28"
+          },
+          {
+            "pos": 13,
+            "driver": "Arvid Lindblad",
+            "lapTime": "1:31.339",
+            "laps": "32"
+          },
+          {
+            "pos": 14,
+            "driver": "Oliver Bearman",
+            "lapTime": "1:31.373",
+            "laps": "27"
+          },
+          {
+            "pos": 15,
+            "driver": "Carlos Sainz",
+            "lapTime": "1:31.684",
+            "laps": "33"
+          },
+          {
+            "pos": 16,
+            "driver": "Esteban Ocon",
+            "lapTime": "1:31.684",
+            "laps": "27"
+          },
+          {
+            "pos": 17,
+            "driver": "Alexander Albon",
+            "lapTime": "1:31.697",
+            "laps": "30"
+          },
+          {
+            "pos": 18,
+            "driver": "Valtteri Bottas",
+            "lapTime": "1:32.150",
+            "laps": "22"
+          },
+          {
+            "pos": 19,
+            "driver": "Sergio Perez",
+            "lapTime": "1:32.241",
+            "laps": "23"
+          },
+          {
+            "pos": 20,
+            "driver": "Fernando Alonso",
+            "lapTime": "1:32.957",
+            "laps": "25"
+          },
+          {
+            "pos": 21,
+            "driver": "Pierre Gasly",
+            "lapTime": "1:33.019",
+            "laps": "25"
+          },
+          {
+            "pos": 22,
+            "driver": "Lance Stroll",
+            "lapTime": "1:33.130",
+            "laps": "26"
+          }
+        ]
       },
       "sprintQualy": {
         "date": "2026-07-03T12:30:00",
