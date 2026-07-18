@@ -552,59 +552,39 @@ function sessionDisplayName(sessionKey) {
     return labels[sessionKey] || sessionKey;
 }
 
-function weatherDayFromSession(session) {
-    const date = parseDate(session?.date);
-    return date
-        ? date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
-        : null;
-}
-
 function renderWeather(gp) {
-    const section = document.getElementById('section-weather');
+    const container = document.getElementById('weather-card');
+    const section   = document.getElementById('section-weather');
+
     const sessionEntries = Object.entries(gp?.sessions || {})
         .map(([sessionKey, session]) => ({ sessionKey, session, weather: getSessionWeather(gp, sessionKey) }))
-        .filter(item => item.weather);
+        .filter(item => item.weather)
+        .sort((a, b) => (parseDate(a.session.date) ?? 0) - (parseDate(b.session.date) ?? 0));
 
-    if (!sessionEntries.length) {
+    if (!container || !sessionEntries.length) {
         if (section) section.style.display = 'none';
         return;
     }
 
     if (section) section.style.display = '';
 
-    const byDay = new Map();
-    for (const item of sessionEntries) {
-        const day = weatherDayFromSession(item.session);
-        if (!day) continue;
-        if (!byDay.has(day)) byDay.set(day, []);
-        byDay.get(day).push(item);
-    }
+    container.innerHTML = sessionEntries.map(({ sessionKey, weather }) => {
+        const rainfall = Number(weather.rainfall || 0) > 0;
+        const air      = formatWeatherNumber(weather.air_temperature, '°C');
+        const track    = formatWeatherNumber(weather.track_temperature, '°C');
+        const humidity = formatWeatherNumber(weather.humidity, '%');
+        const wind     = formatWeatherNumber(weather.wind_speed, ' m/s');
 
-    byDay.forEach((items, day) => {
-        const samples = items.map(item => item.weather);
-        const avg = key => {
-            const nums = samples.map(w => Number(w?.[key])).filter(Number.isFinite);
-            return nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : null;
-        };
-        const rainfall = samples.some(w => Number(w?.rainfall || 0) > 0) ? 1 : 0;
-        const air = avg('air_temperature');
-        const track = avg('track_temperature');
-        const humidity = avg('humidity');
-        const wind = avg('wind_speed');
-        const sessionsLabel = items.map(item => sessionDisplayName(item.sessionKey)).join(' / ');
-
-        const iconEl = document.getElementById(`weather-icon-${day}`);
-        const condEl = document.getElementById(`weather-condition-${day}`);
-        const tempEl = document.getElementById(`weather-temp-${day}`);
-        const noteEl = document.getElementById(`weather-notes-${day}`);
-        const rainEl = document.getElementById(`weather-rain-${day}`);
-
-        if (iconEl) iconEl.textContent = rainfall ? '🌧️' : '🌤️';
-        if (condEl) condEl.textContent = rainfall ? 'Rain recorded' : 'Dry session data';
-        if (tempEl) tempEl.textContent = `${formatWeatherNumber(air, '°C')} air · ${formatWeatherNumber(track, '°C')} track`;
-        if (noteEl) noteEl.textContent = `${sessionsLabel} · wind ${formatWeatherNumber(wind, ' m/s')} · humidity ${formatWeatherNumber(humidity, '%')}`;
-        if (rainEl) rainEl.textContent = rainfall ? '💧 Rainfall detected' : '💧 No rainfall detected';
-    });
+        return `
+            <div class="weather-day-card" id="weather-${sessionKey}">
+                <p class="weather-day-label">${sessionDisplayName(sessionKey)}</p>
+                <div class="weather-day-icon">${rainfall ? '🌧️' : '🌤️'}</div>
+                <p class="weather-day-condition">${rainfall ? 'Rain recorded' : 'Dry session data'}</p>
+                <p class="weather-day-temp">${air} air · ${track} track</p>
+                <p class="weather-day-notes">wind ${wind} · humidity ${humidity}</p>
+                <span class="weather-day-rain">${rainfall ? '💧 Rainfall detected' : '💧 No rainfall detected'}</span>
+            </div>`;
+    }).join('');
 }
 
 // ── HISTORY ──────────────────────────────────────────────────────
