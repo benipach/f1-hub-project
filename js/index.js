@@ -289,12 +289,12 @@ function renderHeroSchedule(gp, gpId) {
         const dataAttr = future && s.start ? ` data-start="${s.start.getTime()}"` : '';
 
         const cta = ended
-            ? `<a href="/f1-hub-project/races/race.html?gp=${gpId}" class="schedule-session-cta">
+            ? `<a href="./races/race.html?gp=${gpId}" class="schedule-session-cta">
                 <span>View Session Details</span>
                 <span class="schedule-session-cta-arrow">→</span>
                </a>`
             : live
-            ? `<a href="/f1-hub-project/races/race.html?gp=${gpId}" class="schedule-session-cta schedule-session-cta-live">
+            ? `<a href="./races/race.html?gp=${gpId}" class="schedule-session-cta schedule-session-cta-live">
                 <span>Tune in Live</span>
                 <span class="schedule-session-cta-arrow">→</span>
                </a>`
