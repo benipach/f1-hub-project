@@ -226,10 +226,7 @@
 .schedule-session-tag {
     display: none;
     align-items: center;
-    gap: 5px;
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-family: 'F1-Wide', sans-serif;
+    font-family: 'F1-Regular';
     font-size: 12px;
     letter-spacing: 1.2px;
     text-transform: uppercase;
@@ -244,7 +241,6 @@
 .schedule-session-ended .schedule-session-tag {
     display: inline-flex;
     color: rgba(255, 255, 255, 0.4);
-    background: rgba(255, 255, 255, 0.06);
 }
 
 .schedule-session-live .schedule-session-name,
@@ -266,19 +262,6 @@
     background: currentColor;
     animation: pulse 1.5s infinite;
 }
-
-/* A day where every session has already happened reads as "done" as a
-   whole, not just its individual rows. */
-.schedule-day-ended {
-    opacity: 0.55;
-}
-
-/* ── Hover reveal: "View Session Details" ──────────────────────────
-   Sits in every session row (so it works the moment JS marks a future
-   session as ended too) but only ever surfaces over rows that are
-   currently -ended, covering the dimmed name/time/tag underneath.
-   No href/onclick yet on purpose — wire it up when the results page
-   exists, and drop the tabindex="-1" once it actually does something. */
 
 .schedule-session-cta {
     position: absolute;
