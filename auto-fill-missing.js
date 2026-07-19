@@ -21,6 +21,7 @@ function parseArgs(argv) {
     year: new Date().getFullYear(),
     out: null,
     weather: false,
+    forceWeather: false,
     dryRun: false,
     backup: true,
     fixPositions: false,
@@ -35,6 +36,9 @@ function parseArgs(argv) {
       flags.skip = new Set([...DEFAULT_SKIP_GP_KEYS, ...keys]);
     }
     else if (arg === "--weather") flags.weather = true;
+    // Backfill manual: re-pide weather aunque la sesión ya tenga datos guardados
+    // (útil para sesiones viejas a las que les falta un campo nuevo, ej. wind_direction).
+    else if (arg === "--force-weather") { flags.weather = true; flags.forceWeather = true; }
     else if (arg === "--dry-run") flags.dryRun = true;
     else if (arg === "--no-backup") flags.backup = false;
     else if (arg === "--once") { /* no-op */ }
@@ -77,9 +81,10 @@ function isEmptyWeather(weather) {
     (typeof weather === "object" && Object.keys(weather).length === 0)
   );
 }
-function shouldUpdateWeather(session, openf1Session) {
+function shouldUpdateWeather(session, openf1Session, forceWeather = false) {
   if (!sessionStarted(session, openf1Session)) return false;
   if (!sessionEnded(session, openf1Session)) return true;
+  if (forceWeather) return true; // backfill manual: repisa aunque ya tenga weather
   return isEmptyWeather(session.weather);
 }
 function ensureSessionShape(session) {
@@ -97,14 +102,15 @@ function gpHasStartedSession(gp) {
 }
 
 // Evita pegarle a OpenF1 por GPs cuyas sesiones pasadas ya están completas.
-function gpNeedsWork(gp, weatherEnabled) {
+// Con forceWeather=true no saltea nada que ya haya arrancado (backfill manual).
+function gpNeedsWork(gp, weatherEnabled, forceWeather = false) {
   return Object.values(gp.sessions ?? {}).some((session) => {
     if (!session || typeof session !== "object") return false;
     const start = parseDate(session.date);
     const hasStarted = start ? start.getTime() <= Date.now() : true;
     if (!hasStarted) return false;
     if (!sessionHasResults(session)) return true;
-    if (weatherEnabled && isEmptyWeather(session.weather)) return true;
+    if (weatherEnabled && (isEmptyWeather(session.weather) || forceWeather)) return true;
     return false;
   });
 }
@@ -145,6 +151,7 @@ async function runOnce(args) {
   }
 
   console.log(`🏁 Auto-fill OpenF1 ${args.year}`);
+  if (args.forceWeather) console.log("🔁 --force-weather activo: se re-pide weather aunque ya exista (backfill)");
 
   for (const [gpKey, gp] of Object.entries(season)) {
     if (args.skip.has(gpKey)) {
@@ -159,7 +166,7 @@ async function runOnce(args) {
       console.log(`⏭️ ${gpKey}: todavía no arrancó, se saltea sin consultar OpenF1`);
       continue;
     }
-    if (!gpNeedsWork(gp, args.weather)) {
+    if (!gpNeedsWork(gp, args.weather, args.forceWeather)) {
       console.log(`⏭️ ${gpKey}: ya está completo, se saltea sin consultar OpenF1`);
       continue;
     }
@@ -195,7 +202,7 @@ async function runOnce(args) {
 
       let changed = false;
 
-      if (args.weather && shouldUpdateWeather(session, openf1Session)) {
+      if (args.weather && shouldUpdateWeather(session, openf1Session, args.forceWeather)) {
         try {
           const weather = await fetchSessionWeather(sessionKey);
           if (weather) {
