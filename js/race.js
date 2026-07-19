@@ -601,13 +601,13 @@ function renderSessionWeatherCard(weather) {
                 </div>
                 <div class="swc-stat">
                     <span class="swc-stat-value">${wind}</span>
-                    <span class="swc-stat-label">Wind</span>
+                    <span class="swc-stat-label">Wind Speed</span>
                 </div>
                 ${hasWindDir ? `
                 <div class="swc-stat">
                     <span class="swc-stat-value swc-wind-dir-value">
-                        ${compassSvg}
                         ${compassLabel(windDirDeg)}
+                        ${compassSvg}
                     </span>
                     <span class="swc-stat-label">Wind Dir</span>
                 </div>` : ''}
