@@ -570,19 +570,33 @@ function renderWeather(gp) {
 
     container.innerHTML = sessionEntries.map(({ sessionKey, weather }) => {
         const rainfall = Number(weather.rainfall || 0) > 0;
-        const air      = formatWeatherNumber(weather.air_temperature, '°C');
-        const track    = formatWeatherNumber(weather.track_temperature, '°C');
+        const air      = formatWeatherNumber(weather.air_temperature, '°');
+        const track    = formatWeatherNumber(weather.track_temperature, '°');
         const humidity = formatWeatherNumber(weather.humidity, '%');
         const wind     = formatWeatherNumber(weather.wind_speed, ' m/s');
 
         return `
             <div class="weather-day-card" id="weather-${sessionKey}">
-                <p class="weather-day-label">${sessionDisplayName(sessionKey)}</p>
-                <div class="weather-day-icon">${rainfall ? '🌧️' : '🌤️'}</div>
-                <p class="weather-day-condition">${rainfall ? 'Rain recorded' : 'Dry session data'}</p>
-                <p class="weather-day-temp">${air} air · ${track} track</p>
-                <p class="weather-day-notes">wind ${wind} · humidity ${humidity}</p>
-                <span class="weather-day-rain">${rainfall ? '💧 Rainfall detected' : '💧 No rainfall detected'}</span>
+                <div class="weather-card-header">
+                    <p class="weather-day-label">${sessionDisplayName(sessionKey)}</p>
+                    <span class="weather-condition-badge ${rainfall ? 'is-wet' : 'is-dry'}">
+                        <span class="weather-day-icon">${rainfall ? '🌧️' : '☀️'}</span>${rainfall ? 'Rain' : 'Dry'}
+                    </span>
+                </div>
+                <div class="weather-temp-row">
+                    <div class="weather-temp-stat">
+                        <span class="weather-temp-value">${air}</span>
+                        <span class="weather-temp-label">Air</span>
+                    </div>
+                    <div class="weather-temp-stat">
+                        <span class="weather-temp-value">${track}</span>
+                        <span class="weather-temp-label">Track</span>
+                    </div>
+                </div>
+                <div class="weather-meta-row">
+                    <span class="weather-meta-item">💨 ${wind}</span>
+                    <span class="weather-meta-item">💧 ${humidity}</span>
+                </div>
             </div>`;
     }).join('');
 }
