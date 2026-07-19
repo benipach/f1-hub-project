@@ -704,11 +704,18 @@ gap: 4px;
     gap: 4px;
 }
 
-.swc-wind-arrow {
-    display: inline-block;
-    font-size: 0.75rem;
-    color: var(--text-dim);
+.swc-wind-dir-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.swc-wind-compass-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--text-light);
     transition: transform 0.3s ease;
+    flex-shrink: 0;
 }
 
 @media (max-width: 1100px) {
