@@ -612,6 +612,132 @@ align-items: center;
 gap: 4px;
 }
 
+/* ---- SESSION WEATHER (per-session card, shown above each result table) ---- */
+.session-weather {
+    margin-bottom: 1.5rem;
+}
+
+.session-weather-card {
+    background: rgb(20,20,30);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    transition: border-color 0.25s ease;
+}
+
+.session-weather-card:hover {
+    border-color: rgba(255,255,255,0.14);
+}
+
+.swc-condition {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-right: 32px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    white-space: nowrap;
+}
+
+.swc-condition-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.swc-condition-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.swc-condition-label {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.swc-condition.is-dry .swc-condition-label { color: #f5b74a; }
+.swc-condition.is-wet .swc-condition-label { color: #4ab3f5; }
+
+.swc-condition-sub {
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.swc-stats {
+    display: flex;
+    flex: 1;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.swc-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 74px;
+}
+
+.swc-stat-value {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 1.6rem;
+    color: var(--text-light);
+    line-height: 1;
+}
+
+.swc-stat-label {
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.swc-wind-arrow {
+    display: inline-block;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    transition: transform 0.3s ease;
+}
+
+@media (max-width: 1100px) {
+    .session-weather-card { padding: 22px 24px; gap: 24px; }
+    .swc-stats { gap: 28px; }
+}
+
+@media (max-width: 500px) {
+    .session-weather-card {
+        padding: 20px;
+        gap: 18px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .swc-condition {
+        width: 100%;
+        padding-right: 0;
+        padding-bottom: 16px;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .swc-stats {
+        width: 100%;
+        gap: 18px;
+    }
+    .swc-stat { min-width: calc(50% - 9px); }
+    .swc-stat-value { font-size: 1.3rem; }
+}
+
 /* ---- SEASON DIVIDER ---- */
 .season-divider {
     position: relative;
