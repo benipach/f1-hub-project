@@ -562,7 +562,8 @@ function renderSessionWeatherCard(weather) {
     const air      = formatWeatherNumber(weather.air_temperature, '°');
     const track    = formatWeatherNumber(weather.track_temperature, '°');
     const humidity = formatWeatherNumber(weather.humidity, '%');
-    const wind     = formatWeatherNumber(weather.wind_speed, ' m/s');
+    // Se guarda en m/s (unidad nativa de OpenF1); se muestra en km/h.
+    const wind     = formatWeatherNumber(Number(weather.wind_speed) * 3.6, ' km/h');
     const pressure = formatWeatherNumber(weather.pressure, ' hPa');
     const hasPressure = Number.isFinite(Number(weather.pressure));
     const hasWindDir  = Number.isFinite(Number(weather.wind_direction));
