@@ -539,66 +539,87 @@ function formatWeatherNumber(value, suffix = '') {
     return Number.isFinite(Number(value)) ? `${Number(value).toFixed(1).replace('.0', '')}${suffix}` : '—';
 }
 
-function sessionDisplayName(sessionKey) {
-    const labels = {
-        fp1: 'FP1',
-        fp2: 'FP2',
-        fp3: 'FP3',
-        sprintQualy: 'Sprint Qualy',
-        sprintRace: 'Sprint',
-        qualifying: 'Qualifying',
-        race: 'Race',
-    };
-    return labels[sessionKey] || sessionKey;
+// Data key (as stored in season2026.json) → DOM id suffix (as built in race.html)
+const WEATHER_SESSION_MAP = {
+    fp1:         'fp1',
+    fp2:         'fp2',
+    fp3:         'fp3',
+    sprintQualy: 'sprint-qualy',
+    sprintRace:  'sprint-race',
+    qualifying:  'qualifying',
+    race:        'race',
+};
+
+function renderSessionWeatherCard(weather) {
+    const rainfall = Number(weather.rainfall || 0) > 0;
+    const air      = formatWeatherNumber(weather.air_temperature, '°');
+    const track    = formatWeatherNumber(weather.track_temperature, '°');
+    const humidity = formatWeatherNumber(weather.humidity, '%');
+    const wind     = formatWeatherNumber(weather.wind_speed, ' m/s');
+    const pressure = formatWeatherNumber(weather.pressure, ' hPa');
+    const hasPressure = Number.isFinite(Number(weather.pressure));
+    const hasWindDir  = Number.isFinite(Number(weather.wind_direction));
+    const windDirDeg  = hasWindDir ? Number(weather.wind_direction) : 0;
+
+    return `
+        <div class="session-weather-card">
+            <div class="swc-condition ${rainfall ? 'is-wet' : 'is-dry'}">
+                <span class="swc-condition-icon">${rainfall ? '🌧️' : '☀️'}</span>
+                <div class="swc-condition-text">
+                    <span class="swc-condition-label">${rainfall ? 'Wet' : 'Dry'}</span>
+                    <span class="swc-condition-sub">Track Conditions</span>
+                </div>
+            </div>
+            <div class="swc-stats">
+                <div class="swc-stat">
+                    <span class="swc-stat-value">${air}</span>
+                    <span class="swc-stat-label">Air Temp</span>
+                </div>
+                <div class="swc-stat">
+                    <span class="swc-stat-value">${track}</span>
+                    <span class="swc-stat-label">Track Temp</span>
+                </div>
+                <div class="swc-stat">
+                    <span class="swc-stat-value">${humidity}</span>
+                    <span class="swc-stat-label">Humidity</span>
+                </div>
+                <div class="swc-stat">
+                    <span class="swc-stat-value">${wind}</span>
+                    <span class="swc-stat-label">
+                        Wind
+                        ${hasWindDir ? `<span class="swc-wind-arrow" style="transform:rotate(${windDirDeg}deg)">&#8593;</span>` : ''}
+                    </span>
+                </div>
+                ${hasPressure ? `
+                <div class="swc-stat">
+                    <span class="swc-stat-value">${pressure}</span>
+                    <span class="swc-stat-label">Pressure</span>
+                </div>` : ''}
+            </div>
+        </div>`;
 }
 
 function renderWeather(gp) {
-    const container = document.getElementById('weather-card');
-    const section   = document.getElementById('section-weather');
+    Object.entries(WEATHER_SESSION_MAP).forEach(([dataKey, domSuffix]) => {
+        const container = document.getElementById(`weather-${domSuffix}`);
+        if (!container) return;
 
-    const sessionEntries = Object.entries(gp?.sessions || {})
-        .map(([sessionKey, session]) => ({ sessionKey, session, weather: getSessionWeather(gp, sessionKey) }))
-        .filter(item => item.weather)
-        .sort((a, b) => (parseDate(a.session.date) ?? 0) - (parseDate(b.session.date) ?? 0));
+        const weather = getSessionWeather(gp, dataKey);
+        if (!weather) {
+            container.style.display = 'none';
+            container.innerHTML = '';
+            return;
+        }
 
-    if (!container || !sessionEntries.length) {
-        if (section) section.style.display = 'none';
-        return;
+        container.style.display = '';
+        container.innerHTML = renderSessionWeatherCard(weather);
+    });
+
+    if (typeof twemoji !== 'undefined') {
+        document.querySelectorAll('.session-weather').forEach(el => {
+            twemoji.parse(el, { folder: 'svg', ext: '.svg' });
+        });
     }
-
-    if (section) section.style.display = '';
-
-    container.innerHTML = sessionEntries.map(({ sessionKey, weather }) => {
-        const rainfall = Number(weather.rainfall || 0) > 0;
-        const air      = formatWeatherNumber(weather.air_temperature, '°');
-        const track    = formatWeatherNumber(weather.track_temperature, '°');
-        const humidity = formatWeatherNumber(weather.humidity, '%');
-        const wind     = formatWeatherNumber(weather.wind_speed, ' m/s');
-
-        return `
-            <div class="weather-day-card" id="weather-${sessionKey}">
-                <div class="weather-card-header">
-                    <p class="weather-day-label">${sessionDisplayName(sessionKey)}</p>
-                    <span class="weather-condition-badge ${rainfall ? 'is-wet' : 'is-dry'}">
-                        <span class="weather-day-icon">${rainfall ? '🌧️' : '☀️'}</span>${rainfall ? 'Rain' : 'Dry'}
-                    </span>
-                </div>
-                <div class="weather-temp-row">
-                    <div class="weather-temp-stat">
-                        <span class="weather-temp-value">${air}</span>
-                        <span class="weather-temp-label">Air</span>
-                    </div>
-                    <div class="weather-temp-stat">
-                        <span class="weather-temp-value">${track}</span>
-                        <span class="weather-temp-label">Track</span>
-                    </div>
-                </div>
-                <div class="weather-meta-row">
-                    <span class="weather-meta-item">💨 ${wind}</span>
-                    <span class="weather-meta-item">💧 ${humidity}</span>
-                </div>
-            </div>`;
-    }).join('');
 }
 
 // ── HISTORY ──────────────────────────────────────────────────────
