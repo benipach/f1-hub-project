@@ -550,6 +550,13 @@ const WEATHER_SESSION_MAP = {
     race:        'race',
 };
 
+// 8 puntos cardinales a partir de los grados (0°=N, 90°=E, 180°=S, 270°=W)
+function compassLabel(deg) {
+    const points = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+    const idx = Math.round(deg / 45) % 8;
+    return points[idx];
+}
+
 function renderSessionWeatherCard(weather) {
     const rainfall = Number(weather.rainfall || 0) > 0;
     const air      = formatWeatherNumber(weather.air_temperature, '°');
@@ -560,6 +567,14 @@ function renderSessionWeatherCard(weather) {
     const hasPressure = Number.isFinite(Number(weather.pressure));
     const hasWindDir  = Number.isFinite(Number(weather.wind_direction));
     const windDirDeg  = hasWindDir ? Number(weather.wind_direction) : 0;
+
+    // Ícono de flecha/brújula: apunta hacia arriba (Norte) por defecto y rota
+    // según wind_direction. Se dibuja como triángulo + línea, prolijo y nítido a cualquier tamaño.
+    const compassSvg = `
+        <svg class="swc-wind-compass-icon" viewBox="0 0 24 24" style="transform:rotate(${windDirDeg}deg)" aria-hidden="true">
+            <line x1="12" y1="20" x2="12" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M7 10 L12 4 L17 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`;
 
     return `
         <div class="session-weather-card">
@@ -585,11 +600,16 @@ function renderSessionWeatherCard(weather) {
                 </div>
                 <div class="swc-stat">
                     <span class="swc-stat-value">${wind}</span>
-                    <span class="swc-stat-label">
-                        Wind
-                        ${hasWindDir ? `<span class="swc-wind-arrow" style="transform:rotate(${windDirDeg}deg)">&#8593;</span>` : ''}
-                    </span>
+                    <span class="swc-stat-label">Wind</span>
                 </div>
+                ${hasWindDir ? `
+                <div class="swc-stat">
+                    <span class="swc-stat-value swc-wind-dir-value">
+                        ${compassSvg}
+                        ${compassLabel(windDirDeg)}
+                    </span>
+                    <span class="swc-stat-label">Wind Dir</span>
+                </div>` : ''}
                 ${hasPressure ? `
                 <div class="swc-stat">
                     <span class="swc-stat-value">${pressure}</span>
