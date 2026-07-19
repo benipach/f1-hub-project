@@ -511,10 +511,10 @@ cursor: default;
 background: rgb(20,20,30);
 border: 1px solid rgba(255,255,255,0.05);
 border-radius: 16px;
-padding: 24px;
+padding: 20px;
 display: flex;
 flex-direction: column;
-gap: 6px;
+gap: 16px;
 transition: border-color 0.25s ease;
 }
 
@@ -522,56 +522,94 @@ transition: border-color 0.25s ease;
 border-color: rgba(255,255,255,0.14);
 }
 
+.weather-card-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 8px;
+}
+
 .weather-day-label {
 font-family: 'F1-Regular', sans-serif;
 font-size: 0.65rem;
 letter-spacing: 2px;
 text-transform: uppercase;
-color: rgba(255,255,255,0.25);
-display: flex;
+color: rgba(255,255,255,0.35);
+}
+
+.weather-condition-badge {
+font-family: 'F1-Regular', sans-serif;
+font-size: 0.65rem;
+letter-spacing: 0.5px;
+text-transform: uppercase;
+display: inline-flex;
 align-items: center;
-gap: 8px;
-margin-bottom: 0.5rem;
+gap: 4px;
+padding: 4px 10px;
+border-radius: 999px;
+white-space: nowrap;
+}
+
+.weather-condition-badge.is-dry {
+color: #f5b74a;
+background: rgba(245,183,74,0.1);
+border: 1px solid rgba(245,183,74,0.25);
+}
+
+.weather-condition-badge.is-wet {
+color: #4ab3f5;
+background: rgba(74,179,245,0.1);
+border: 1px solid rgba(74,179,245,0.25);
 }
 
 .weather-day-icon {
-font-size: 2.5rem;
+font-size: 0.9rem;
 line-height: 1;
-margin-bottom: 4px;
 }
 
-.weather-day-condition {
-font-family: 'F1-Regular', sans-serif;
-font-size: 1rem;
-color: var(--text-light);
-text-transform: uppercase;
-letter-spacing: 0.5px;
+.weather-temp-row {
+display: flex;
+gap: 16px;
 }
 
-.weather-day-temp {
+.weather-temp-stat {
+flex: 1;
+display: flex;
+flex-direction: column;
+gap: 2px;
+padding-left: 12px;
+border-left: 2px solid rgba(255,255,255,0.08);
+}
+
+.weather-temp-value {
 font-family: 'F1-Bold', sans-serif;
-font-size: 2rem;
-line-height: 1;
-background: var(--text-light);
--webkit-background-clip: text;
-background-clip: text;
-color: transparent;
+font-size: 1.75rem;
+line-height: 1.1;
+color: var(--text-light);
 }
 
-.weather-day-notes {
-font-family: 'F1-Regular', sans-serif;
-font-size: 0.75rem;
-color: var(--text-dim);
-line-height: 1.5;
-margin-top: 4px;
-}
-
-.weather-day-rain {
+.weather-temp-label {
 font-family: 'F1-Regular', sans-serif;
 font-size: 0.65rem;
 letter-spacing: 1px;
-color: rgba(255,255,255,0.3);
-margin-top: 4px;
+text-transform: uppercase;
+color: var(--text-dim);
+}
+
+.weather-meta-row {
+display: flex;
+gap: 16px;
+padding-top: 12px;
+border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.weather-meta-item {
+font-family: 'F1-Regular', sans-serif;
+font-size: 0.75rem;
+color: var(--text-dim);
+display: inline-flex;
+align-items: center;
+gap: 4px;
 }
 
 /* ---- SEASON DIVIDER ---- */
@@ -903,8 +941,6 @@ border: 1px solid rgba(255,255,255,0.05);
 
     /* Weather */
     .weather-grid { grid-template-columns: 1fr; gap: 12px; }
-    .weather-day-card { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 12px; }
-    .weather-day-label { width: 100%; margin-bottom: 0; }
 
     /* Lap record */
     .lap-record-banner { flex-direction: column; gap: 1rem; }
