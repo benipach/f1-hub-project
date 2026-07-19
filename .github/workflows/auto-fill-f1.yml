@@ -5,6 +5,12 @@ on:
     # Corre cada 30 min solo vie/sab/dom
     - cron: "0,30 * * * 5,6,0"
   workflow_dispatch:
+    inputs:
+      force_weather:
+        description: "Backfill: re-pedir weather aunque ya exista (ej. para agregar wind_direction a sesiones viejas)"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -21,27 +27,36 @@ jobs:
       - name: Check if there is pending work
         id: check
         run: |
-          node -e "
-            const data = require('./data/season2026.json');
-            const now = Date.now();
-            const grace = 45 * 60 * 1000; // 45 min después del endDate, le da tiempo a OpenF1 a publicar
-            const isEmptyWeather = (w) => w === null || w === undefined || (typeof w === 'object' && Object.keys(w).length === 0);
-            const shouldRun = Object.values(data).some(gp =>
-              gp && typeof gp.sessions === 'object' && Object.values(gp.sessions).some(s => {
-                if (!s || !s.endDate) return false;
-                const ended = new Date(s.endDate).getTime() + grace <= now;
-                if (!ended) return false;
-                const missingResults = !Array.isArray(s.results) || s.results.length === 0;
-                const missingWeather = isEmptyWeather(s.weather);
-                return missingResults || missingWeather;
-              })
-            );
-            console.log('should_run=' + shouldRun);
-          " >> "$GITHUB_OUTPUT"
+          if [ "${{ github.event.inputs.force_weather }}" = "true" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          else
+            node -e "
+              const data = require('./data/season2026.json');
+              const now = Date.now();
+              const grace = 45 * 60 * 1000; // 45 min después del endDate, le da tiempo a OpenF1 a publicar
+              const isEmptyWeather = (w) => w === null || w === undefined || (typeof w === 'object' && Object.keys(w).length === 0);
+              const shouldRun = Object.values(data).some(gp =>
+                gp && typeof gp.sessions === 'object' && Object.values(gp.sessions).some(s => {
+                  if (!s || !s.endDate) return false;
+                  const ended = new Date(s.endDate).getTime() + grace <= now;
+                  if (!ended) return false;
+                  const missingResults = !Array.isArray(s.results) || s.results.length === 0;
+                  const missingWeather = isEmptyWeather(s.weather);
+                  return missingResults || missingWeather;
+                })
+              );
+              console.log('should_run=' + shouldRun);
+            " >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Run OpenF1 auto fill
         if: steps.check.outputs.should_run == 'true'
-        run: node auto-fill-missing.js data/season2026.json --year=2026 --once --weather --skip=bahrain-gp,saudi-arabian-gp
+        run: |
+          FLAGS="data/season2026.json --year=2026 --once --weather --skip=bahrain-gp,saudi-arabian-gp"
+          if [ "${{ github.event.inputs.force_weather }}" = "true" ]; then
+            FLAGS="$FLAGS --force-weather"
+          fi
+          node auto-fill-missing.js $FLAGS
 
       - name: Commit changes
         if: steps.check.outputs.should_run == 'true'
