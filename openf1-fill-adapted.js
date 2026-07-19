@@ -398,6 +398,18 @@ function average(samples, key) {
   const nums = samples.map((x) => Number(x?.[key])).filter(Number.isFinite);
   return nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : null;
 }
+// Promedio angular: para wind_direction, promediar 350° y 10° a lo bruto da 180°
+// (mal); esto da ~0° (bien), tratando los grados como vectores en un círculo.
+function circularMeanDegrees(samples, key) {
+  const degrees = samples.map((x) => Number(x?.[key])).filter(Number.isFinite);
+  if (!degrees.length) return null;
+  const radians = degrees.map((d) => (d * Math.PI) / 180);
+  const sinSum = radians.reduce((a, r) => a + Math.sin(r), 0);
+  const cosSum = radians.reduce((a, r) => a + Math.cos(r), 0);
+  const avgRad = Math.atan2(sinSum, cosSum);
+  const avgDeg = (avgRad * 180) / Math.PI;
+  return avgDeg >= 0 ? avgDeg : avgDeg + 360;
+}
 function roundOrNull(value, digits = 1) {
   if (value === null || value === undefined || !Number.isFinite(Number(value))) return null;
   return Number(Number(value).toFixed(digits));
@@ -411,6 +423,7 @@ async function fetchSessionWeather(sessionKey) {
   const trackTemperature = average(samples, "track_temperature");
   const humidity = average(samples, "humidity");
   const windSpeed = average(samples, "wind_speed");
+  const windDirection = circularMeanDegrees(samples, "wind_direction");
   const rainfall = samples.some((x) => Number(x?.rainfall ?? 0) > 0) ? 1 : 0;
 
   return {
@@ -418,6 +431,7 @@ async function fetchSessionWeather(sessionKey) {
     track_temperature: roundOrNull(trackTemperature, 1),
     humidity: roundOrNull(humidity, 0),
     wind_speed: roundOrNull(windSpeed, 1),
+    wind_direction: roundOrNull(windDirection, 0),
     rainfall,
   };
 }
