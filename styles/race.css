@@ -958,6 +958,18 @@ white-space: nowrap;
 }
 
 .res-team-col { white-space: nowrap; }
+
+.qualy-divider td {
+height: 30px;
+padding: 0 20px;
+background: rgba(255,255,255,0.03);
+border-bottom: 1px solid rgba(255,255,255,0.06);
+font-family: 'F1-Bold', sans-serif;
+font-size: 11px;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: rgba(255,255,255,0.4);
+}
 .res-time-col { white-space: nowrap; }
 
 /* ---- GRID DELTA ---- */
