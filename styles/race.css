@@ -776,17 +776,17 @@ gap: 4px;
 
 /* ---- RACE RESULT 2026 ---- */
 .result-card {
-border-radius: 10px;
+border-radius: 16px;
 overflow: hidden;
 }
 
 .moments-card {
-border-radius: 12px;
+border-radius: 16px;
 overflow: hidden;
 }
 
 .history-card {
-border-radius: 12px;
+border-radius: 16px;
 overflow: hidden;
 }
 
@@ -805,15 +805,21 @@ color: var(--text-dim);
 /* ---- SHARED TABLE SYSTEM ---- */
 .race-table-wrap {
 overflow-y: auto;
-background: transparent;
-border: 1px solid rgba(255,255,255,0.06);
-border-radius: 12px;
+background: rgb(20,20,30);
+border: 1px solid rgba(255,255,255,0.05);
+border-radius: 16px;
 max-height: 609px;
+transition: border-color 0.25s ease;
+}
+
+.race-table-wrap:hover {
+border-color: rgba(255,255,255,0.14);
 }
 
 .data-table {
 width: 100%;
-border-collapse: collapse;
+border-collapse: separate;
+border-spacing: 0;
 font-family: 'F1-Regular', sans-serif;
 font-size: 14px;
 letter-spacing: 0.5px;
@@ -826,33 +832,34 @@ z-index: 1;
 }
 
 .data-table th {
-height: 36px;
+height: 44px;
 padding: 0 20px;
 text-align: left;
 font-family: 'F1-Bold', sans-serif;
-font-size: 12px;
+font-size: 11px;
 letter-spacing: 2px;
 text-transform: uppercase;
 color: rgba(255,255,255,0.35);
-background: rgb(12,12,20);
+background: rgba(20,20,30,0.96);
+backdrop-filter: blur(6px);
 border-bottom: 1px solid rgba(255,255,255,0.07);
 white-space: nowrap;
 }
 
 .data-table td {
-height: 52px;
+height: 56px;
 padding: 0 20px;
 color: var(--text-light);
 border-bottom: 1px solid rgba(255,255,255,0.04);
 letter-spacing: 0.1px;
-background: rgb(18,18,28);
-transition: all 0.2s ease;
+background: transparent;
+transition: background 0.15s ease;
 }
 
 .data-table tbody tr:last-child td { border-bottom: none; }
 
 .data-table tbody tr:hover td {
-background: rgba(255,255,255,0.03);
+background: rgba(255,255,255,0.035);
 }
 
 /* ---- RESULT TABLE SPECIFICS ---- */
@@ -862,6 +869,26 @@ text-align: center;
 font-family: 'F1-Regular';
 font-size: 14px;
 color: rgba(255,255,255,0.4);
+}
+
+#race-card .res-pos.top3,
+#sprint-race-card .res-pos.top3 {
+font-family: 'F1-Bold';
+}
+
+#race-card .data-table tbody tr:nth-child(1) .res-pos.top3,
+#sprint-race-card .data-table tbody tr:nth-child(1) .res-pos.top3 {
+color: #f7d774;
+}
+
+#race-card .data-table tbody tr:nth-child(2) .res-pos.top3,
+#sprint-race-card .data-table tbody tr:nth-child(2) .res-pos.top3 {
+color: #d6d6d6;
+}
+
+#race-card .data-table tbody tr:nth-child(3) .res-pos.top3,
+#sprint-race-card .data-table tbody tr:nth-child(3) .res-pos.top3 {
+color: #cd9a63;
 }
 
 .res-driver {
@@ -880,8 +907,8 @@ min-width: 32px;
 }
 
 .res-team {
-display: flex;        /* ← faltaba esto */
-align-items: center;  /* ← y esto */
+display: flex;
+align-items: center;
 gap: 8px;
 }
 
@@ -932,13 +959,13 @@ padding: 0;
 
 .res-delta-cell {
 width: 52px;
-padding: 0; /* o el valor que quieras */
+padding: 0;
 text-align: left;
 }
 
 .res-delta {
 display: inline-flex;
-align-items: left;
+align-items: center;
 justify-content: flex-start;
 font-family: 'F1-Bold';
 font-size: 12px;
