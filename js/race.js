@@ -482,6 +482,7 @@ function renderSessionResult(entries = [], containerId, sessionLabel, driverTeam
     }
 
     const gaps = calcGap(entries);
+    const isFreePractice = sessionLabel.startsWith('Free Practice');
 
     container.innerHTML = `
         <div class="race-table-wrap">
@@ -492,6 +493,7 @@ function renderSessionResult(entries = [], containerId, sessionLabel, driverTeam
                         <th>Driver</th>
                         <th class="res-team-col">Team</th>
                         <th class="res-time-col">Time</th>
+                        ${isFreePractice ? '<th class="res-laps-col" style="text-align:center">Laps</th>' : ''}
                         <th class="res-gap-col">Gap</th>
                     </tr>
                 </thead>
@@ -524,6 +526,7 @@ function renderSessionResult(entries = [], containerId, sessionLabel, driverTeam
                                     </div>
                                 </td>
                                 <td class="res-time" style="${dim}">${res.lapTime || '—'}</td>
+                                ${isFreePractice ? `<td class="res-laps" style="${dim}">${res.laps ?? '—'}</td>` : ''}
                                 <td class="res-gap" style="${dim}">${gapStr}</td>
                             </tr>`;
                     }).join('')}
