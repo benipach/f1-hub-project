@@ -483,6 +483,23 @@ function renderSessionResult(entries = [], containerId, sessionLabel, driverTeam
 
     const gaps = calcGap(entries);
     const isFreePractice = sessionLabel.startsWith('Free Practice');
+    const isQualy = sessionLabel === 'Qualifying' || sessionLabel === 'Sprint Qualifying';
+    const qPrefix = sessionLabel === 'Sprint Qualifying' ? 'SQ' : 'Q';
+    const colspan = 5;
+
+    const qualyStageDivider = (posNum) => {
+        if (!isQualy) return '';
+        if (posNum === 1) {
+            return `<tr class="qualy-divider"><td colspan="${colspan}">${qPrefix}3</td></tr>`;
+        }
+        if (posNum === 11) {
+            return `<tr class="qualy-divider"><td colspan="${colspan}">${qPrefix}2 &mdash; Eliminated</td></tr>`;
+        }
+        if (posNum === 16 && entries.length > 15) {
+            return `<tr class="qualy-divider"><td colspan="${colspan}">${qPrefix}1 &mdash; Eliminated</td></tr>`;
+        }
+        return '';
+    };
 
     container.innerHTML = `
         <div class="race-table-wrap">
@@ -512,6 +529,7 @@ function renderSessionResult(entries = [], containerId, sessionLabel, driverTeam
                         const isTop3 = posNum >= 1 && posNum <= 3;
                         const gapStr = gaps[i];
                         return `
+                            ${entries.length > 10 ? qualyStageDivider(posNum) : ''}
                             <tr>
                                 <td class="res-pos${isTop3 ? ' top3' : ''}" style="${dim}">${res.pos}</td>
                                 <td class="res-driver" style="${dim}">
@@ -677,6 +695,13 @@ function renderHistory(circuit) {
 }
 
 // ── SESSION TABS ─────────────────────────────────────────────────
+function resetQualyScroll(panel) {
+    if (!panel) return;
+    panel.querySelectorAll('.race-table-wrap').forEach(wrap => {
+        if (wrap.querySelector('.qualy-divider')) wrap.scrollTop = 30;
+    });
+}
+
 function initSessionTabs() {
     const tabBar    = document.getElementById('session-tab-bar');
     const allPanels = document.querySelectorAll('.session-tab-panel');
@@ -712,12 +737,14 @@ function initSessionTabs() {
             allPanels.forEach(p => p.classList.remove('active'));
             btn.classList.add('active');
             panel.classList.add('active');
+            resetQualyScroll(panel);
         });
         tabBar.appendChild(btn);
     });
 
     // Show first available tab
     availablePanels[0].classList.add('active');
+    resetQualyScroll(availablePanels[0]);
 }
 
 // ── SCROLL ANIMATIONS ────────────────────────────────────────────
