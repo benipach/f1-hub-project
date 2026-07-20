@@ -941,6 +941,16 @@ color: var(--text-light);
 
 .res-gap-col { width: 90px; white-space: nowrap; }
 
+.res-laps-col { width: 70px; white-space: nowrap; }
+
+.res-laps {
+text-align: center;
+font-family: 'F1-Regular';
+font-size: 14px;
+color: rgba(255,255,255,0.55);
+white-space: nowrap;
+}
+
 .res-gap {
 font-family: 'F1-Regular';
 font-size: 14px;
