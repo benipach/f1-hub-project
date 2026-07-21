@@ -182,44 +182,43 @@
     background: rgba(255,255,255,0.1);
 }
 
-/* ---- CIRCUIT OVERVIEW GRID ---- */
-.circuit-overview {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    gap: 20px;
-}
-
-/* Track layout card */
-.track-layout-card {
+/* ---- CIRCUIT OVERVIEW ---- */
+.circuit-overview-card {
     background: rgb(20,20,30);
     border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 12px;
-    padding: 24px;
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    gap: 32px;
+    transition: border-color 0.25s ease;
+}
+
+.circuit-overview-card:hover {
+    border-color: rgba(255,255,255,0.14);
+}
+
+/* Track layout pane */
+.track-layout-pane {
+    flex: 0 0 360px;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    grid-row: span 2;
-}
-
-.track-layout-card img {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    filter: brightness(0.9);
-    border-radius: 8px;
+    padding-right: 32px;
+    border-right: 1px solid rgba(255,255,255,0.06);
 }
 
 .track-layout-name {
     font-family: 'F1-Regular', sans-serif;
-    font-size: clamp(8px, 3vw, 24px);
+    font-size: clamp(8px, 3vw, 20px);
     letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--text-light);
     text-align: center;
-    margin-top: 0.75rem;
+    margin-top: 0.25rem;
 }
 
 .track-layout-placeholder {
+    position: relative;
     width: 100%;
     background: rgb(10,10,20);
     border: 1px solid rgba(255,255,255,0.05);
@@ -228,42 +227,215 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    padding: 24px;
+    padding: 28px;
     color: var(--text-dim);
     font-family: 'F1-Regular', sans-serif;
     font-size: 0.7rem;
     letter-spacing: 1px;
 }
 
-/* Circuit stats card */
-.circuit-stats-card {
-    background: rgb(20,20,30);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 12px;
-    padding: 24px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
+/* Wraps just the image so the zoom button anchors to the image's own corner,
+   not the padded placeholder box */
+.track-layout-img-wrap {
+    position: relative;
+    width: 100%;
+    display: block;
+    line-height: 0;
 }
 
-.circuit-stats-card .rc-section-subtitle {
-grid-column: 1 / -1;
-margin-bottom: 0.5rem;
+/* SVG track outline, shown as the thumbnail when one exists for this circuit */
+.track-layout-svg {
+    display: none;
+    width: 100%;
+}
+
+.track-layout-svg.is-active {
+    display: block;
+}
+
+.track-layout-svg svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* The source SVGs are drawn with a near-black fill (#15151E), which disappears
+   against the card's dark background. Recolor to a fixed light tone instead. */
+.track-layout-svg svg path {
+    fill: var(--text-light);
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+}
+
+.track-layout-placeholder:hover .track-layout-svg svg path {
+    opacity: 1;
+}
+
+#track-layout-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+}
+
+/* Hidden as a thumbnail once the SVG version takes over, but still kept
+   in the DOM so its src can be reused as the full-size image in the zoom modal */
+#track-layout-img.is-hidden-thumb {
+    display: none;
+}
+
+/* Zoom button — hidden until the user hovers the card, but always tappable on touch devices.
+   Anchored to the outer padded placeholder (not the image itself) so it sits near the
+   card's real edge instead of floating off the image's corner. */
+.track-zoom-btn {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    z-index: 5;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10,10,20,0.85);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 50%;
+    color: var(--text-light);
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0.85);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.track-layout-placeholder:hover .track-zoom-btn,
+.track-zoom-btn:focus-visible {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+.track-zoom-btn:hover,
+.track-zoom-btn:focus-visible {
+    background: var(--primary-red);
+    border-color: var(--primary-red);
+}
+
+.track-zoom-btn svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    flex-shrink: 0;
+    pointer-events: none;
+}
+
+/* Touch devices have no hover — keep the button visible so it stays reachable */
+@media (hover: none) {
+    .track-zoom-btn {
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+    }
+}
+
+/* Fullscreen modal opened by tapping/clicking the zoom button */
+.track-zoom-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(5,5,10,0.85);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 999;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.track-zoom-modal.is-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.track-zoom-modal img {
+    box-sizing: border-box;
+    max-width: min(90vw, 800px);
+    max-height: 85vh;
+    width: auto;
+    height: auto;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    background: rgb(10,10,20);
+    transform: scale(0.94);
+    transition: transform 0.2s ease;
+}
+
+.track-zoom-modal.is-active img {
+    transform: scale(1);
+}
+
+.track-zoom-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(10,10,20,0.85);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: var(--text-light);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.track-zoom-modal-close:hover {
+    background: var(--primary-red);
+    border-color: var(--primary-red);
+}
+
+/* Stats + characteristics pane */
+.circuit-info-pane {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    justify-content: center;
+}
+
+.circuit-stats-pane {
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.circuit-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px 16px;
 }
 
 .cs-stat {
-    background: rgba(10,10,20);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 8px;
-    padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
 .cs-stat-val {
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 24px;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 22px;
     color: var(--text-light);
     line-height: 1;
 }
@@ -277,26 +449,13 @@ margin-bottom: 0.5rem;
 
 .cs-stat-label {
     font-family: 'F1-Regular', sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: 1px;
     text-transform: uppercase;
     color: var(--text-dim);
 }
 
-.cs-stat-sub {
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 0.65rem;
-    color: rgba(255,255,255,0.25);
-    letter-spacing: 0.3px;
-    margin-top: 2px;
-}
-
-/* Characteristics card */
-.characteristics-card {
-    background: rgb(20,20,30);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 16px;
-    padding: 24px;
+.circuit-characteristics {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -328,7 +487,6 @@ margin-bottom: 0.5rem;
     letter-spacing: 1px;
     text-transform: uppercase;
     color: var(--text-dim);
-    margin-bottom: -15px;
 }
 
 .char-bar {
@@ -343,6 +501,27 @@ margin-bottom: 0.5rem;
     border-radius: 2px;
     background: var(--text-light);
     transition: width 1s ease;
+}
+
+.track-type-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.25rem;
+}
+
+.track-type-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 6px;
+    background: rgba(225,6,0,0.1);
+    border: 1px solid rgba(225,6,0,0.2);
+    color: var(--primary-red);
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 /* ---- LAP RECORD ---- */
@@ -1111,8 +1290,8 @@ border: 1px solid rgba(255,255,255,0.05);
     .race-sprint-badge { top: 72px; }
 
     /* Circuit overview */
-    .circuit-overview { grid-template-columns: 1fr; }
-    .track-layout-card { grid-row: span 1; }
+    .circuit-overview-card { flex-direction: column; gap: 24px; }
+    .track-layout-pane { flex: none; padding-right: 0; padding-bottom: 24px; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.06); }
     .track-layout-placeholder { padding: 8px; }
 
     /* Tables */
@@ -1125,9 +1304,6 @@ border: 1px solid rgba(255,255,255,0.05);
 
     /* Lap record */
     .lap-record-banner { flex-direction: column; gap: 1rem; }
-
-    /* Characteristics */
-    .characteristics-card { padding: 1.5rem; }
 }
 
 @media (max-width: 500px) {
@@ -1150,11 +1326,8 @@ border: 1px solid rgba(255,255,255,0.05);
     .race-sprint-badge { top: 64px; right: 4%; }
 
     /* Circuit overview */
-    .circuit-stats-card { gap: 10px; padding: 1.25rem 8px; }
-    .circuit-stats-card .rc-section-subtitle { grid-column: 1 / -1; }
-    .track-layout-card { padding: 1.25rem 8px; }
-    .characteristics-card { padding: 1.25rem 8px; }
-    .cs-stat { padding: 0.75rem; }
+    .circuit-overview-card { padding: 1.25rem; gap: 20px; }
+    .circuit-stats-row { grid-template-columns: repeat(2, 1fr); gap: 18px 12px; }
     .cs-stat-val { font-size: 18px; }
 
     /* Tables — result table */
