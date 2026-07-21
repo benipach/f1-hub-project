@@ -225,7 +225,30 @@ function renderCircuitOverview(circuit, circuitId) {
     }
 
     const trackLayoutImg = document.getElementById('track-layout-img');
-    if (trackLayoutImg) trackLayoutImg.src = `../img/circuits/${circuitId}-layout.png`;
+    const trackLayoutSvg = document.getElementById('track-layout-svg');
+    if (trackLayoutImg) {
+        // The raster PNG is always kept as the source for the enlarged (modal) view
+        trackLayoutImg.src = `../img/circuits/${circuitId}-layout.png`;
+    }
+
+    if (trackLayoutSvg) {
+        fetch(`../img/circuits/${circuitId}-layout.svg`)
+            .then(res => {
+                if (!res.ok) throw new Error('no svg layout for this circuit');
+                return res.text();
+            })
+            .then(svgMarkup => {
+                trackLayoutSvg.innerHTML = svgMarkup;
+                trackLayoutSvg.classList.add('is-active');
+                if (trackLayoutImg) trackLayoutImg.classList.add('is-hidden-thumb');
+            })
+            .catch(() => {
+                // No SVG yet for this circuit — keep showing the PNG as the thumbnail
+                trackLayoutSvg.classList.remove('is-active');
+                trackLayoutSvg.innerHTML = '';
+                if (trackLayoutImg) trackLayoutImg.classList.remove('is-hidden-thumb');
+            });
+    }
 
     if (circuit.characteristics) {
         setBar('downforce', circuit.characteristics.downforce);
@@ -762,3 +785,34 @@ function initScrollAnimations() {
     }, { threshold: 0.1 });
     items.forEach(el => obs.observe(el));
 }
+// ── TRACK LAYOUT ZOOM MODAL ─────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    const zoomBtn   = document.getElementById('track-zoom-btn');
+    const trackImg  = document.getElementById('track-layout-img');
+    const modal     = document.getElementById('track-zoom-modal');
+    const modalImg  = document.getElementById('track-zoom-modal-img');
+    const modalClose = document.getElementById('track-zoom-modal-close');
+
+    if (!zoomBtn || !trackImg || !modal || !modalImg || !modalClose) return;
+
+    function openModal() {
+        modalImg.src = trackImg.src;
+        modalImg.alt = trackImg.alt;
+        modal.classList.add('is-active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        modal.classList.remove('is-active');
+        document.body.style.overflow = '';
+    }
+
+    zoomBtn.addEventListener('click', openModal);
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('is-active')) closeModal();
+    });
+});
