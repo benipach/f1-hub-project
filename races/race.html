@@ -144,85 +144,95 @@
             <!-- CIRCUIT OVERVIEW -->
             <section>
                 <p class="rc-section-title">Circuit Overview</p>
-                <div class="circuit-overview">
+                <div class="circuit-overview-card">
 
                     <!-- Track layout -->
-                    <div class="track-layout-card">
-                        <p class="rc-section-subtitle" style="margin-bottom:0.5rem">Layout</p>
+                    <div class="track-layout-pane">
                         <div class="track-layout-placeholder" id="track-layout-container">
-                            <img id="track-layout-img" src=""
-                                style="width:100%;height:auto;display:block;border-radius:8px">
+                            <div class="track-layout-img-wrap" id="track-layout-img-wrap">
+                                <div class="track-layout-svg" id="track-layout-svg"></div>
+                                <img id="track-layout-img" src="" alt="">
+                            </div>
+                            <button class="track-zoom-btn" id="track-zoom-btn" type="button" aria-label="Ampliar imagen del circuito">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
                         </div>
                         <p id="track-layout-name" class="track-layout-name"></p>
                     </div>
 
-                    <!-- Stats grid -->
-                    <div class="circuit-stats-card">
-                        <p class="rc-section-subtitle" style="margin-bottom:0.5rem">Stats</p>
-                        <div class="cs-stat">
-                            <span class="cs-stat-val" id="cs-length">-</span>
-                            <span class="cs-stat-label">km per lap</span>
-                        </div>
-                        <div class="cs-stat">
-                            <span class="cs-stat-val" id="cs-distance">-</span>
-                            <span class="cs-stat-label">total km</span>
-                        </div>
-                        <div class="cs-stat">
-                            <span class="cs-stat-val" id="cs-laps">-</span>
-                            <span class="cs-stat-label">race laps</span>
-                        </div>
-                        <div class="cs-stat">
-                            <span class="cs-stat-val" id="cs-corners">-</span>
-                            <span class="cs-stat-label">corners</span>
-                        </div>
-                        <div class="cs-stat">
-                            <span class="cs-stat-val" id="cs-overtake">-</span>
-                            <span class="cs-stat-label">OT zones</span>
-                        </div>
-                        <div class="cs-stat">
-                            <span class="cs-stat-val" id="cs-editions">-</span>
-                            <span class="cs-stat-label">editions held</span>
-                        </div>
-                        <div class="cs-stat">
-                            <span class="cs-stat-val" id="lr-time">-</span>
-                            <span class="cs-stat-label">lap record</span>
-                        </div>
-                        <div class="cs-stat">
-                            <span class="cs-stat-val" id="lr-topspeed">-</span>
-                            <span class="cs-stat-label">top speed</span>
-                        </div>
-                    </div>
+                    <!-- Stats + Characteristics -->
+                    <div class="circuit-info-pane">
 
-                    <!-- Characteristics -->
-                    <div class="characteristics-card">
-                        <p class="rc-section-subtitle" style="margin-bottom:0.5rem">Characteristics</p>
-                        <div class="char-row">
-                            <div class="char-label-row">
-                                <span class="char-label">Downforce</span>
-                                <span class="char-val" id="char-downforce">-</span>
+                        <div class="circuit-stats-pane">
+                            <div class="circuit-stats-row">
+                                <div class="cs-stat">
+                                    <span class="cs-stat-val" id="cs-length">-</span>
+                                    <span class="cs-stat-label">km per lap</span>
+                                </div>
+                                <div class="cs-stat">
+                                    <span class="cs-stat-val" id="cs-distance">-</span>
+                                    <span class="cs-stat-label">total km</span>
+                                </div>
+                                <div class="cs-stat">
+                                    <span class="cs-stat-val" id="cs-laps">-</span>
+                                    <span class="cs-stat-label">race laps</span>
+                                </div>
+                                <div class="cs-stat">
+                                    <span class="cs-stat-val" id="cs-corners">-</span>
+                                    <span class="cs-stat-label">corners</span>
+                                </div>
+                                <div class="cs-stat">
+                                    <span class="cs-stat-val" id="cs-overtake">-</span>
+                                    <span class="cs-stat-label">OT zones</span>
+                                </div>
+                                <div class="cs-stat">
+                                    <span class="cs-stat-val" id="cs-editions">-</span>
+                                    <span class="cs-stat-label">editions held</span>
+                                </div>
+                                <div class="cs-stat">
+                                    <span class="cs-stat-val" id="lr-time">-</span>
+                                    <span class="cs-stat-label">lap record</span>
+                                </div>
+                                <div class="cs-stat">
+                                    <span class="cs-stat-val" id="lr-topspeed">-</span>
+                                    <span class="cs-stat-label">top speed</span>
+                                </div>
                             </div>
-                            <div class="char-bar"><div class="char-bar-fill" id="bar-downforce" style="width:0%"></div></div>
                         </div>
-                        <div class="char-row">
-                            <div class="char-label-row">
-                                <span class="char-label">Overtaking</span>
-                                <span class="char-val" id="char-overtaking">-</span>
+
+                        <div class="circuit-characteristics-pane">
+                            <div class="circuit-characteristics">
+                                <div class="char-row">
+                                    <div class="char-label-row">
+                                        <span class="char-label">Downforce</span>
+                                        <span class="char-val" id="char-downforce">-</span>
+                                    </div>
+                                    <div class="char-bar"><div class="char-bar-fill" id="bar-downforce" style="width:0%"></div></div>
+                                </div>
+                                <div class="char-row">
+                                    <div class="char-label-row">
+                                        <span class="char-label">Overtaking</span>
+                                        <span class="char-val" id="char-overtaking">-</span>
+                                    </div>
+                                    <div class="char-bar"><div class="char-bar-fill" id="bar-overtaking" style="width:0%"></div></div>
+                                </div>
+                                <div class="char-row">
+                                    <div class="char-label-row">
+                                        <span class="char-label">Tyre Degradation</span>
+                                        <span class="char-val" id="char-tiredeg">-</span>
+                                    </div>
+                                    <div class="char-bar"><div class="char-bar-fill" id="bar-tiredeg" style="width:0%"></div></div>
+                                </div>
+                                <div class="track-type-row">
+                                    <span class="char-label">Track Type</span>
+                                    <span class="track-type-badge" id="char-tracktype">-</span>
+                                </div>
                             </div>
-                            <div class="char-bar"><div class="char-bar-fill" id="bar-overtaking" style="width:0%"></div></div>
                         </div>
-                        <div class="char-row">
-                            <div class="char-label-row">
-                                <span class="char-label">Tyre Degradation</span>
-                                <span class="char-val" id="char-tiredeg">-</span>
-                            </div>
-                            <div class="char-bar"><div class="char-bar-fill" id="bar-tiredeg" style="width:0%"></div></div>
-                        </div>
-                        <div class="char-row" style="margin-top:0.5rem; padding-top:0.75rem; border-top:1px solid rgba(255,255,255,0.06)">
-                            <div class="char-label-row">
-                                <span class="char-label">Track Type</span>
-                                <span class="char-val" id="char-tracktype">-</span>
-                            </div>
-                        </div>
+
                     </div>
 
                 </div>
@@ -305,6 +315,12 @@
             </span>
         </div>
     </footer>
+
+    <!-- TRACK LAYOUT ZOOM MODAL -->
+    <div class="track-zoom-modal" id="track-zoom-modal">
+        <button class="track-zoom-modal-close" id="track-zoom-modal-close" type="button" aria-label="Cerrar">&times;</button>
+        <img id="track-zoom-modal-img" src="" alt="">
+    </div>
 
 </body>
 </html>
