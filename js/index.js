@@ -189,6 +189,19 @@ function updateRacecards(season, nextId, now) {
         if (spanEl) spanEl.className = 'race-status';
         if (linkEl) linkEl.href = `./races/race.html?gp=${gpId}`;
 
+        // Sprint weekends get a gold accent + badge regardless of status,
+        // so the calendar isn't just red/blue/grey everywhere
+        const isSprint = !!getSession(gp, 'sprintQualy') || !!getSession(gp, 'sprintRace') || !!gp.sprint;
+        card.classList.toggle('race-card-sprint', isSprint);
+
+        const roundEl = card.querySelector('.race-round');
+        if (roundEl) {
+            if (!roundEl.dataset.baseText) roundEl.dataset.baseText = roundEl.textContent.trim();
+            roundEl.innerHTML = isSprint
+                ? `${roundEl.dataset.baseText} <span class="sprint-chip">SPRINT</span>`
+                : roundEl.dataset.baseText;
+        }
+
         if (gp.cancelled) {
             card.classList.add('race-card-cancelled');
             if (spanEl) { spanEl.classList.add('status-cancelled'); spanEl.innerText = 'CANCELLED'; }
