@@ -735,7 +735,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         driversData.drivers.forEach(d => {
             const fullName  = `${d.firstName} ${d.lastName}`;
             const entry2026 = d.history.find(h => h.year === 2026);
-            if (entry2026) driverTeamLookup[fullName] = entry2026.teamId;
+            if (entry2026) driverTeamLookup[fullName] = teamCanonicalName(entry2026.teamId);
             if (d.nationality) driverNatLookup[fullName] = d.nationality;
             if (d.number)      driverNumberLookup[fullName] = d.number;
         });
@@ -767,7 +767,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return getRaceResults(gp).length > 0 || getSprintResults(gp).length > 0;
         };
 
-        const resultTeam = r => r.team || driverTeamLookup[r.driver] || 'Unknown';
+        const resultTeam = r => teamCanonicalName(r.team || driverTeamLookup[r.driver] || 'Unknown');
 
         // ── Lógica de Pilotos ──
         const driverMap = {};
@@ -806,7 +806,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 // Si OpenF1/JSON trae team en resultados, lo usamos para mantenerlo actualizado.
                 if (raceRes?.team || sprintRes?.team) {
-                    d.team = raceRes?.team || sprintRes?.team || d.team;
+                    d.team = teamCanonicalName(raceRes?.team || sprintRes?.team || d.team);
                 }
             });
         });

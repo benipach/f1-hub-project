@@ -77,6 +77,7 @@ const TEAMS = {
 const _TEAM_LOOKUP = (() => {
     const map = {};
     for (const [canonical, def] of Object.entries(TEAMS)) {
+        if (!def.ref && !def.name) def.name = canonical;
         const resolved = def.ref ? TEAMS[def.ref] : def;
         map[canonical.toLowerCase()] = resolved;
         if (def.aliases) def.aliases.forEach(a => { map[a.toLowerCase()] = resolved; });
@@ -96,6 +97,14 @@ function teamColor(teamId) {
 /** Devuelve el nombre de la CSS var, ej: '--f1-mercedes' */
 function teamCssVar(teamId) {
     return _TEAM_LOOKUP[teamId?.toLowerCase()]?.cssVar || '--primary-red';
+}
+
+/** Devuelve el nombre oficial/canónico del equipo dado cualquier alias,
+ *  ej: teamCanonicalName('Red Bull') → 'Red Bull Racing'.
+ *  Útil para evitar que el mismo equipo se cuente dos veces cuando distintas
+ *  fuentes de datos (drivers.json, resultados OpenF1, etc.) usan nombres distintos. */
+function teamCanonicalName(teamId) {
+    return _TEAM_LOOKUP[teamId?.toLowerCase()]?.name || teamId;
 }
 
 /** Devuelve el filename del logo sin extensión, ej: 'mercedes-logo' */
