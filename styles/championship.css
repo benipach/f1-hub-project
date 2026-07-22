@@ -150,10 +150,15 @@
 
 .standings-table-wrap {
     overflow-y: auto;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 12px;
-    max-height: 610px;
+    background: var(--base-700);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    max-height: 605px;
+    transition: border-color 0.25s ease;
+}
+
+.standings-table-wrap:hover {
+    border-color: rgba(255, 255, 255, 0.14);
 }
 
 .standings-table-wrap::-webkit-scrollbar { width: 4px; }
@@ -163,7 +168,8 @@
 
 .standings-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     font-family: 'F1-Regular';
     font-size: 14px;
     letter-spacing: 0.5px;
@@ -176,32 +182,33 @@
 }
 
 .standings-table th {
-    height: 36px;
+    height: 44px;
     padding: 0 20px;
     text-align: left;
     font-family: 'F1-Bold';
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.35);
-    background: rgb(12, 12, 20);
+    background: var(--base-700);
     border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     white-space: nowrap;
 }
 
 .standings-table td {
-    height: 52px;
+    height: 56px;
     padding: 0 20px;
     color: var(--text-light);
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     letter-spacing: 0.1px;
-    background: rgb(18, 18, 28);
+    background: transparent;
+    transition: background 0.15s ease;
 }
 
 .standings-table tbody tr:last-child td { border-bottom: none; }
 
 .standings-table tbody tr:hover td {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.035);
 }
 
 /* ---- POS CELL ---- */
@@ -269,7 +276,7 @@
 /* ---- GAP CELL ---- */
 .st-gap {
     font-family: 'F1-Regular';
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.45);
     font-size: 14px;
 }
 
@@ -282,7 +289,7 @@
 .chart-card {
     margin-top: 2rem;
     padding: 24px;
-    background: rgb(20,20,30);
+    background: var(--base-700);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 16px;
 }
@@ -340,7 +347,7 @@
     height: 373px;
     padding: 8px;
     overflow-y: auto;
-    background: rgb(18, 18, 28);
+    background: var(--base-600);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     scrollbar-width: thin rgba(255, 255, 255, 0.12) transparent;
@@ -506,7 +513,7 @@
     overflow: hidden;
     border-radius: 18px;
     border: 1px solid rgba(255,255,255,0.075);
-    background: rgb(16,16,24);
+    background: var(--base-700);
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.045),
         0 24px 70px rgba(0,0,0,0.22);
@@ -698,7 +705,7 @@
 }
 
 .chart-point {
-    stroke: rgb(20,20,30);
+    stroke: var(--base-700);
     stroke-width: 1;
     pointer-events: none;
     transition: all 0.3s ease;
@@ -710,7 +717,7 @@
     font-size: 10px;
     letter-spacing: 0.8px;
     paint-order: stroke;
-    stroke: rgb(20,20,30);
+    stroke: var(--base-700);
     stroke-width: 4px;
     stroke-linejoin: round;
     pointer-events: none;
@@ -742,7 +749,7 @@
 }
 
 .f1-chart-svg.is-hovering .is-active-point {
-    fill: rgb(20,20,30);
+    fill: var(--base-700);
     stroke-width: 2.5;
     filter: drop-shadow(0 0 7px currentColor);
 }
