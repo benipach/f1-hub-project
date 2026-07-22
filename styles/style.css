@@ -6,12 +6,12 @@
 
     /* Main Colors */
     --primary-red: rgb(225,6,0);
-    --dark-bg: rgb(10,10,20);
-    --text-light: rgb(255,255,255);
+    --base-900: rgb(6,6,9); /* navbar, footer */
+    --base-800: rgb(10,10,15); /* background */
+    --base-700: rgb(19,19,28); /* containers */
+    --base-600: rgb(30,30,42); /* sub-containers */
+    --text-light: rgb(220,220,220);
     --text-dim: rgb(170,170,170);
-
-    /* Team Colors — inyectadas dinámicamente por drivers.js (TEAMS object) */
-    /* --f1-mercedes, --f1-ferrari, etc. se setean en runtime via JS */
 
     /* Scrollbar */
     --scrollbar-color: rgba(255,255,255,0.15);
@@ -38,11 +38,6 @@
     src: url('../fonts/Formula1-Black.ttf') format('truetype');
 }
 
-@font-face {
-    font-family: 'F1-Wide';
-    src: url('../fonts/Formula1-Wide.ttf') format('truetype');
-}
-
 /* ======================================= */
 /*               RESET / BASE              */
 /* ======================================= */
@@ -58,7 +53,7 @@ html {
 }
 
 body {
-    background-color: var(--dark-bg);
+    background-color: var(--base-800);
     color: var(--text-light);
     line-height: 1.6;
 }
@@ -111,7 +106,7 @@ img.emoji {
     height: 60px;
     padding: 0 10%;
     font-family: 'F1-Regular';
-    background-color: rgba(10, 10, 20, 0.75);
+    background-color: rgba(10,10,15,0.75);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
@@ -189,7 +184,7 @@ nav ul li a:hover::after {
     /* Navbar */
 
     .navbar {
-        background-color: rgb(10,10,20);
+        background-color: var(--base-900);
         height: 50px;
         -webkit-backdrop-filter: none;
         backdrop-filter: none;
@@ -213,7 +208,7 @@ nav ul li a:hover::after {
         width: 100%;
         padding: 0 10%;
         text-align: right;
-        background: rgb(10,10,20,0.5);
+        background: rgb(10,10,15,0.75);
         border-bottom: 1px solid rgb(10,10,20);
         -webkit-backdrop-filter: blur(10px);
         backdrop-filter: blur(10px);
@@ -263,7 +258,7 @@ nav ul li a:hover::after {
     position: relative;
     padding: 48px 5% 0;
     font-family: 'F1-Regular';
-    background: rgb(10, 10, 20);
+    background: var(--base-900);
 }
 
 /* Top red line */

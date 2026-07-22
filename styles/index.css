@@ -500,12 +500,44 @@
 }
 
 .race-round {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     margin-bottom: 4px;
     color: rgba(255, 255, 255, 0.5);
     font-family: 'F1-Regular';
     font-size: 10px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
+}
+
+.sprint-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    border: 1px solid rgba(245, 166, 35, 0.35);
+    border-radius: 20px;
+    background: rgba(245, 166, 35, 0.12);
+    color: #f5a623;
+    font-family: 'F1-Bold';
+    font-size: 8px;
+    letter-spacing: 1px;
+}
+
+/* Sprint weekends get a gold top accent so the calendar isn't only red/blue/grey.
+   Left out of race-card-next so the "NEXT" red highlight still wins there. */
+.race-card-ended.race-card-sprint::before,
+.race-card-upcoming.race-card-sprint::before {
+    background: linear-gradient(
+        90deg,
+        #f5a623 0%,
+        rgba(245, 166, 35, 0.35) 60%,
+        rgba(245, 166, 35, 0) 100%
+    );
+}
+
+.race-card-ended.race-card-sprint {
+    border-color: rgba(245, 166, 35, 0.12);
 }
 
 .race-date {
