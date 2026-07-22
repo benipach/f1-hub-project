@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="./styles/results.css">
     <script src="./js/twemoji.js" defer></script>
     <script src="./js/navbar.js" defer></script>
+    <script src="./js/results.js" defer></script>
 
 </head>
 <body>
@@ -35,6 +36,37 @@
         </nav>
     </header>
 
+    <main class="results-page">
+        <div class="results-header">
+            <h1 class="results-title">2026 Race Results</h1>
+        </div>
+
+        <div id="results-tabs-container">
+            <nav class="session-tab-bar" id="results-tab-bar" aria-label="Session tabs"></nav>
+
+            <div class="session-tab-panel" id="tab-panel-fp1">
+                <div id="results-table-fp1"></div>
+            </div>
+            <div class="session-tab-panel" id="tab-panel-fp2">
+                <div id="results-table-fp2"></div>
+            </div>
+            <div class="session-tab-panel" id="tab-panel-fp3">
+                <div id="results-table-fp3"></div>
+            </div>
+            <div class="session-tab-panel" id="tab-panel-sprintQualy">
+                <div id="results-table-sprintQualy"></div>
+            </div>
+            <div class="session-tab-panel" id="tab-panel-sprintRace">
+                <div id="results-table-sprintRace"></div>
+            </div>
+            <div class="session-tab-panel" id="tab-panel-qualifying">
+                <div id="results-table-qualifying"></div>
+            </div>
+            <div class="session-tab-panel" id="tab-panel-race">
+                <div id="results-table-race"></div>
+            </div>
+        </div>
+    </main>
 
 
     <footer class="footer">
