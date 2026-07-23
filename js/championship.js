@@ -580,7 +580,6 @@ function renderDriversTable(drivers, driverNats = {}, driverNumbers = {}) {
     const rows = sorted.map((d, i) => {
         const pos        = i + 1;
         const gap        = pos === 1 ? '—' : `−${leader - d.points}`;
-        const code       = d.driver.split(' ').pop().slice(0, 3).toUpperCase();
         const logoFile   = TEAM_LOGO_MAP[d.team];
         const logoHtml   = logoFile
             ? `<img class="st-team-logo" src="img/teams/${logoFile}.png" alt="${d.team}">`
@@ -597,8 +596,7 @@ function renderDriversTable(drivers, driverNats = {}, driverNumbers = {}) {
                 <td>
                     <div class="st-driver">
                         ${numHtml}
-                        <span class="driver-fullname">${d.driver}</span>
-                        <span class="driver-code">${code}</span>
+                        <span class="driver-lastname">${d.driver.split(' ').slice(1).join(' ').toUpperCase() || d.driver.toUpperCase()}</span>
                     </div>
                 </td>
                 <td>
