@@ -28,9 +28,16 @@
     background: rgb(20,20,30);
     border: 1px solid rgba(255,255,255,0.05);
     border-radius: 16px;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
     transition: border-color 0.25s ease;
 }
+
+.results-table-wrap::-webkit-scrollbar { height: 4px; }
+.results-table-wrap::-webkit-scrollbar-track { background: transparent; }
+.results-table-wrap::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+.results-table-wrap::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
 
 .results-table-wrap:hover {
     border-color: rgba(255,255,255,0.14);
@@ -150,8 +157,13 @@
 }
 
 /* ---- RESPONSIVE ---- */
-@media (max-width: 700px) {
-    .results-page { padding: 32px 16px 60px; }
+@media (max-width: 1100px) {
+    .results-page { max-width: 80%; margin: 80px auto; }
+}
+
+@media (max-width: 500px) {
+    .results-page { max-width: 95%; }
+
     .results-table th,
     .results-table td { padding: 0 12px; }
     .results-round,
