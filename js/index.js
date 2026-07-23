@@ -199,18 +199,24 @@ function updateDashboard(season, circuits) {
     if (circuitBtn) circuitBtn.href = `./races/race.html?gp=${nextId}`;
 
     renderHeroSchedule(nextGP, nextId);
-    updateRacecards(season, nextId, now);
+    updateRacecards(season, nextId, now, circuits);
 }
 
-function updateRacecards(season, nextId, now) {
+function updateRacecards(season, nextId, now, circuits) {
     document.querySelectorAll('.race-card').forEach(card => {
-        const gpId   = card.dataset.id;
-        const gp     = season[gpId];
-        const spanEl = card.querySelector('.race-status');
-        const linkEl = card.querySelector('.race-link');
+        const gpId = card.dataset.id;
+        const gp   = season[gpId];
         if (!gp) return;
 
-        card.classList.remove('race-card-ended', 'race-card-next', 'race-card-upcoming', 'race-card-cancelled');
+        // Always start from the pristine, originally-shipped markup for this card.
+        if (!card.dataset.originalContent) card.dataset.originalContent = card.innerHTML;
+        card.innerHTML = card.dataset.originalContent;
+
+        const dateText = card.querySelector('.race-date')?.textContent || '';
+        const spanEl   = card.querySelector('.race-status');
+        const linkEl   = card.querySelector('.race-link');
+
+        card.classList.remove('race-card-ended', 'race-card-next', 'race-card-next-expanded', 'race-card-upcoming', 'race-card-cancelled');
         if (spanEl) spanEl.className = 'race-status';
         if (linkEl) linkEl.href = `./races/race.html?gp=${gpId}`;
 
@@ -237,10 +243,8 @@ function updateRacecards(season, nextId, now) {
             if (linkEl) linkEl.innerText = 'View Results';
 
         } else if (gpId === nextId) {
-            // (Líneas de gradiente en el <h3> removidas)
             card.classList.add('race-card-next');
-            if (spanEl) { spanEl.classList.add('status-next'); spanEl.innerText = 'NEXT'; }
-            if (linkEl) linkEl.innerText = 'Show More';
+            renderNextCard(card, gp, gpId, circuits, dateText, isSprint);
 
         } else {
             card.classList.add('race-card-upcoming');
@@ -248,6 +252,52 @@ function updateRacecards(season, nextId, now) {
             if (linkEl) linkEl.innerText = 'Show More';
         }
     });
+}
+
+// Replaces the compact "next" card with a full-width, detail-rich version:
+// circuit photo, flag + GP name, dates, full weekend schedule and the track layout.
+function renderNextCard(card, gp, gpId, circuits, dateText, isSprint) {
+    const circuitKey = CIRCUIT_MAP[gpId];
+    const circuit    = circuits?.[circuitKey];
+    const flag       = GP_FLAG[gpId] || '';
+    const scheduleId = `next-card-schedule-${gpId}`;
+
+    const now = new Date();
+    const isLive = Object.keys(gp.sessions || {}).some(key => {
+        const start = getSessionStart(gp, key);
+        const end   = getSessionEnd(gp, key);
+        return start && end && start <= now && end > now;
+    });
+
+    card.classList.add('race-card-next-expanded');
+    card.classList.toggle('race-card-live', isLive);
+    card.innerHTML = `
+        <div class="race-card-next-top-row">
+            <div class="race-card-next-photo">
+                <img src="./img/circuits/${circuitKey}.png" alt="" onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="race-card-next-info">
+                <div class="race-card-next-top">
+                    <span class="race-status status-next">${isLive ? 'LIVE' : 'NEXT'}</span>
+                    ${isSprint ? '<span class="sprint-chip">SPRINT</span>' : ''}
+                    <span class="race-round">Round ${gp.round}</span>
+                </div>
+                <h3 class="race-card-next-title">${flag} ${gp.name}</h3>
+                <p class="race-card-next-circuit">${circuit?.name || circuit?.Name || ''}</p>
+                <p class="race-card-next-date">${dateText}</p>
+                <a class="race-link race-card-next-cta${isLive ? ' race-card-next-cta-live' : ''}" href="./races/race.html?gp=${gpId}">
+                    <span>${isLive ? 'Tune in Live' : 'Show More'}</span><span class="race-card-next-cta-arrow">→</span>
+                </a>
+            </div>
+            <div class="race-card-next-layout">
+                <img class="race-card-next-layout-svg" src="./img/circuits/${circuitKey}-layout.svg" alt="Track layout" loading="lazy"
+                     onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='./img/circuits/${circuitKey}-layout.png';this.classList.remove('race-card-next-layout-svg');}else{this.parentElement.style.display='none';}">
+            </div>
+        </div>
+        <div class="race-card-next-schedule" id="${scheduleId}"></div>`;
+
+    renderHeroSchedule(gp, gpId, scheduleId);
+    if (typeof twemoji !== 'undefined') twemoji.parse(card, { folder: 'svg', ext: '.svg' });
 }
 
 function getSession(gp, sessionKey) {
@@ -272,8 +322,8 @@ function hasSession(gp, sessionKey) {
     return !!session && (session.date || session.endDate || Array.isArray(session.results));
 }
 
-function renderHeroSchedule(gp, gpId) {
-    const container = document.getElementById('hero-schedule');
+function renderHeroSchedule(gp, gpId, containerId = 'hero-schedule') {
+    const container = document.getElementById(containerId);
     if (!container || !gp?.sessions) return;
 
     const now = new Date();
