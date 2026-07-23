@@ -287,6 +287,10 @@ function updateRacecards(season, nextId, now, circuits) {
             if (spanEl) { spanEl.classList.add('status-upcoming'); spanEl.innerText = 'UPCOMING'; }
             if (linkEl) linkEl.innerText = 'Show More';
         }
+
+        if (!card.classList.contains('race-card-next-expanded') && typeof twemoji !== 'undefined') {
+            twemoji.parse(card, { folder: 'svg', ext: '.svg' });
+        }
     });
 }
 
