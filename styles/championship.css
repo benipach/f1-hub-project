@@ -186,7 +186,6 @@
     border-spacing: 0;
     font-family: 'F1-Regular';
     font-size: 14px;
-    letter-spacing: 0.5px;
 }
 
 .standings-table thead tr {
@@ -199,9 +198,9 @@
     height: 44px;
     padding: 0 20px;
     text-align: left;
-    font-family: 'F1-Bold';
+    font-family: 'F1-Regular';
     font-size: 11px;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.35);
     background: var(--base-700);
@@ -214,7 +213,6 @@
     padding: 0 20px;
     color: var(--text-light);
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    letter-spacing: 0.1px;
     background: transparent;
     transition: background 0.15s ease;
 }
@@ -295,8 +293,12 @@
 }
 
 /* ---- VISIBILITY HELPERS ---- */
-.driver-code      { display: none; }
 .constructor-short { display: none; }
+
+.driver-lastname {
+    font-family: 'F1-Regular';
+    color: var(--text-light);
+}
 
 
 /* Chart Card */
@@ -458,15 +460,7 @@
         margin-bottom: 1.5rem;
     }
 
-    .standings-table th {
-        height: 28px;
-        font-size: 9px;
-    }
-
-    .standings-table td {
-        height: 44px;
-        font-size: 0.75rem;
-    }
+    .standings-table { font-size: 13px; }
 
     .standings-table td,
     .standings-table th {
