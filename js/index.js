@@ -131,10 +131,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         ]);
         updateDashboard(season, circuits);
         buildStandings(season);
+        initRaceCardReveal();
     } catch (err) {
         console.error('Error cargando datos:', err);
     }
 });
+
+// ── SCROLL REVEAL ─────────────────────────────────────────────────
+function initRaceCardReveal() {
+    const cards = [...document.querySelectorAll('.race-card')];
+    const title = document.querySelector('.calendar-title');
+    if (!cards.length) return;
+
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const idx   = cards.indexOf(entry.target);
+            const delay = idx === -1 ? 0 : (idx % 4) * 40; // left-to-right per row (4-col grid)
+            setTimeout(() => entry.target.classList.add('in-view'), delay);
+            obs.unobserve(entry.target);
+        });
+    }, { threshold: 0.1 });
+
+    // Wait two frames so the browser paints the initial hidden state first —
+    // otherwise cards already visible on load (past sessions) skip the animation.
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        cards.forEach(el => obs.observe(el));
+        if (title) obs.observe(title);
+    }));
+}
 
 function updateDashboard(season, circuits) {
     const now = new Date();
