@@ -105,6 +105,13 @@
     margin-right: 10px;
 }
 
+.results-flag img {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-bottom: 2px;
+}
+
 .results-gp-short {
     display: none;
 }
