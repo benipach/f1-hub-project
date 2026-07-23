@@ -269,6 +269,9 @@ function renderNextCard(card, gp, gpId, circuits, dateText, isSprint) {
         return start && end && start <= now && end > now;
     });
 
+    const isThisWeekend = !isLive && isRaceThisWeekend(gp);
+    const badgeText = isLive ? 'LIVE' : isThisWeekend ? 'THIS WEEKEND' : 'NEXT';
+
     card.classList.add('race-card-next-expanded');
     card.classList.toggle('race-card-live', isLive);
     card.innerHTML = `
@@ -278,7 +281,7 @@ function renderNextCard(card, gp, gpId, circuits, dateText, isSprint) {
             </div>
             <div class="race-card-next-info">
                 <div class="race-card-next-top">
-                    <span class="race-status status-next">${isLive ? 'LIVE' : 'NEXT'}</span>
+                    <span class="race-status status-next">${badgeText}</span>
                     ${isSprint ? '<span class="sprint-chip">SPRINT</span>' : ''}
                     <span class="race-round">Round ${gp.round}</span>
                 </div>
@@ -298,6 +301,26 @@ function renderNextCard(card, gp, gpId, circuits, dateText, isSprint) {
 
     renderHeroSchedule(gp, gpId, scheduleId);
     if (typeof twemoji !== 'undefined') twemoji.parse(card, { folder: 'svg', ext: '.svg' });
+}
+
+// Returns true if the race session falls on the current (or immediately upcoming) Sat/Sun.
+function isRaceThisWeekend(gp) {
+    const raceStart = getSessionStart(gp, 'race');
+    if (!raceStart) return false;
+
+    const now = new Date();
+    const day = now.getDay(); // 0=Sun ... 6=Sat
+    const satOffset = day === 6 ? 0 : day === 0 ? -1 : 6 - day;
+
+    const weekendStart = new Date(now);
+    weekendStart.setHours(0, 0, 0, 0);
+    weekendStart.setDate(weekendStart.getDate() + satOffset);
+
+    const weekendEnd = new Date(weekendStart);
+    weekendEnd.setDate(weekendEnd.getDate() + 1);
+    weekendEnd.setHours(23, 59, 59, 999);
+
+    return raceStart >= weekendStart && raceStart <= weekendEnd;
 }
 
 function getSession(gp, sessionKey) {
