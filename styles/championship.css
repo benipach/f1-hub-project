@@ -494,9 +494,6 @@
 
 
 
-    .driver-fullname  { display: none; }
-    .driver-code      { display: inline; }
-
     .constructor-fullname { display: none; }
     .constructor-short    { display: inline; }
 
