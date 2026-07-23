@@ -59,9 +59,9 @@
     border-bottom: 2px solid transparent;
     background: none;
     color: var(--text-dim);
-    font-family: 'F1-Regular';
-    font-size: 0.7rem;
-    letter-spacing: 2px;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1px;
     text-transform: uppercase;
     cursor: pointer;
     transition: color 0.2s, border-color 0.2s;
