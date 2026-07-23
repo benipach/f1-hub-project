@@ -533,8 +533,8 @@ function renderSessionResult(entries = [], containerId, sessionLabel, driverTeam
                         <th>Driver</th>
                         <th class="res-team-col">Team</th>
                         <th class="res-time-col">Time</th>
-                        ${isFreePractice ? '<th class="res-laps-col" style="text-align:center">Laps</th>' : ''}
                         <th class="res-gap-col">Gap</th>
+                        ${isFreePractice ? '<th class="res-laps-col" style="text-align:center">Laps</th>' : ''}
                     </tr>
                 </thead>
                 <tbody>
@@ -567,8 +567,8 @@ function renderSessionResult(entries = [], containerId, sessionLabel, driverTeam
                                     </div>
                                 </td>
                                 <td class="res-time" style="${dim}">${res.lapTime || '—'}</td>
-                                ${isFreePractice ? `<td class="res-laps" style="${dim}">${res.laps ?? '—'}</td>` : ''}
                                 <td class="res-gap" style="${dim}">${gapStr}</td>
+                                ${isFreePractice ? `<td class="res-laps" style="${dim}">${res.laps ?? '—'}</td>` : ''}
                             </tr>`;
                     }).join('')}
                 </tbody>
@@ -725,6 +725,11 @@ function resetQualyScroll(panel) {
     });
 }
 
+function moveIndicator(indicator, btn) {
+    indicator.style.left  = `${btn.offsetLeft}px`;
+    indicator.style.width = `${btn.offsetWidth}px`;
+}
+
 function initSessionTabs() {
     const tabBar    = document.getElementById('session-tab-bar');
     const allPanels = document.querySelectorAll('.session-tab-panel');
@@ -742,6 +747,10 @@ function initSessionTabs() {
         if (container) container.style.display = 'none';
         return;
     }
+
+    const indicator = document.createElement('div');
+    indicator.className = 'session-tab-indicator';
+    tabBar.appendChild(indicator);
 
     // Build tab buttons
     availablePanels.forEach((panel, idx) => {
@@ -761,6 +770,7 @@ function initSessionTabs() {
             btn.classList.add('active');
             panel.classList.add('active');
             resetQualyScroll(panel);
+            moveIndicator(indicator, btn);
         });
         tabBar.appendChild(btn);
     });
@@ -768,6 +778,26 @@ function initSessionTabs() {
     // Show first available tab
     availablePanels[0].classList.add('active');
     resetQualyScroll(availablePanels[0]);
+
+    const firstBtn = tabBar.querySelector('.session-tab-btn');
+    if (firstBtn) moveIndicator(indicator, firstBtn);
+    window.addEventListener('resize', () => {
+        const activeBtn = tabBar.querySelector('.session-tab-btn.active');
+        if (activeBtn) moveIndicator(indicator, activeBtn);
+    });
+
+    const tabsContainer = document.getElementById('session-tabs-container');
+    if (tabsContainer) {
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        requestAnimationFrame(() => requestAnimationFrame(() => obs.observe(tabsContainer)));
+    }
 }
 
 // ── SCROLL ANIMATIONS ────────────────────────────────────────────
