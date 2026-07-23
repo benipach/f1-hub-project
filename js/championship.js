@@ -29,14 +29,36 @@ function buildCumulative(points) {
 }
 
 // ── TAB SWITCHING ────────────────────────────────────────────────────────
-document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+function moveTabIndicator(indicator, btn) {
+    indicator.style.left  = `${btn.offsetLeft}px`;
+    indicator.style.width = `${btn.offsetWidth}px`;
+}
+
+(() => {
+    const tabBar = document.querySelector('.tab-bar');
+    if (!tabBar) return;
+
+    const indicator = document.createElement('div');
+    indicator.className = 'tab-indicator';
+    tabBar.appendChild(indicator);
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+            moveTabIndicator(indicator, btn);
+        });
     });
-});
+
+    const activeBtn = tabBar.querySelector('.tab-btn.active') || tabBar.querySelector('.tab-btn');
+    if (activeBtn) moveTabIndicator(indicator, activeBtn);
+    window.addEventListener('resize', () => {
+        const current = tabBar.querySelector('.tab-btn.active');
+        if (current) moveTabIndicator(indicator, current);
+    });
+})();
 
 // ── CLOSE DROPDOWNS ON OUTSIDE CLICK ─────────────────────────────────────
 document.addEventListener('click', e => {
