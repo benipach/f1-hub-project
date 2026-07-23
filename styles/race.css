@@ -844,9 +844,9 @@ gap: 4px;
 .swc-condition.is-wet .swc-condition-label { color: #4ab3f5; }
 
 .swc-condition-sub {
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 0.62rem;
-    letter-spacing: 1.5px;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
     color: var(--text-dim);
 }
@@ -873,9 +873,9 @@ gap: 4px;
 }
 
 .swc-stat-label {
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 0.62rem;
-    letter-spacing: 1.5px;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
     color: var(--text-dim);
     display: inline-flex;
@@ -890,8 +890,8 @@ gap: 4px;
 }
 
 .swc-wind-compass-icon {
-    width: 18px;
-    height: 18px;
+    width: 0.85em;
+    height: 0.85em;
     color: var(--text-light);
     transition: transform 0.3s ease;
     flex-shrink: 0;
@@ -1162,17 +1162,25 @@ text-align: left;
 }
 
 .res-delta {
-display: inline-flex;
+display: flex;
 align-items: center;
 justify-content: flex-start;
+gap: 4px;
 font-family: 'F1-Bold';
 font-size: 12px;
 letter-spacing: 0.5px;
 white-space: nowrap;
 }
 
+.res-delta-arrow {
+width: 16px;
+height: 16px;
+flex-shrink: 0;
+}
+
 .data-table td.res-delta-cell {
 padding: 0;
+vertical-align: middle;
 }
 
 .res-delta--up   { color: #22c55e; }
