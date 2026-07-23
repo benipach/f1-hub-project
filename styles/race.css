@@ -1001,7 +1001,6 @@ border-collapse: separate;
 border-spacing: 0;
 font-family: 'F1-Regular', sans-serif;
 font-size: 14px;
-letter-spacing: 0.5px;
 }
 
 .data-table thead tr {
@@ -1014,8 +1013,9 @@ z-index: 1;
 height: 44px;
 padding: 0 20px;
 text-align: left;
-font-family: 'F1-Bold', sans-serif;
+font-family: 'F1-Regular', sans-serif;
 font-size: 11px;
+letter-spacing: 1px;
 text-transform: uppercase;
 color: rgba(255,255,255,0.35);
 background: rgb(20,20,30);
@@ -1028,7 +1028,6 @@ height: 56px;
 padding: 0 20px;
 color: var(--text-light);
 border-bottom: 1px solid rgba(255,255,255,0.04);
-letter-spacing: 0.1px;
 background: transparent;
 transition: background 0.15s ease;
 }
@@ -1356,20 +1355,19 @@ border: 1px solid rgba(255,255,255,0.05);
     #history-card .data-table td:last-child,
     #history-card .data-table th:last-child { display: none; }
 
-    .data-table th {
-        height: 28px;
-        font-size: 9px;
-    }
-
-    .data-table td {
-        height: 44px;
-        font-size: 0.75rem;
-    }
+    .data-table { font-size: 13px; }
 
     .data-table td,
     .data-table th {
         padding: 0 10px;
     }
+
+    #fp1-card .res-laps-col,
+    #fp1-card .res-laps,
+    #fp2-card .res-laps-col,
+    #fp2-card .res-laps,
+    #fp3-card .res-laps-col,
+    #fp3-card .res-laps { display: none; }
 
     .race-table-wrap {
         max-height: 401px;
@@ -1403,12 +1401,32 @@ border: 1px solid rgba(255,255,255,0.05);
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
 /* ---- SESSION TABS ---- */
+#session-tabs-container {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+#session-tabs-container.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .session-tab-bar {
+    position: relative;
     display: flex;
     gap: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     margin-bottom: 0;
     flex-wrap: wrap;
+}
+
+.session-tab-indicator {
+    position: absolute;
+    bottom: -1px;
+    height: 2px;
+    background: var(--primary-red);
+    transition: left 0.25s ease, width 0.25s ease;
 }
 
 .session-tab-btn {
@@ -1418,9 +1436,9 @@ border: 1px solid rgba(255,255,255,0.05);
     border-bottom: 2px solid transparent;
     background: none;
     color: var(--text-dim);
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 0.7rem;
-    letter-spacing: 2px;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1px;
     text-transform: uppercase;
     cursor: pointer;
     transition: color 0.2s, border-color 0.2s;
@@ -1432,7 +1450,6 @@ border: 1px solid rgba(255,255,255,0.05);
 }
 
 .session-tab-btn.active {
-    border-bottom-color: var(--primary-red);
     color: var(--text-light);
 }
 
@@ -1443,6 +1460,12 @@ border: 1px solid rgba(255,255,255,0.05);
 
 .session-tab-panel.active {
     display: block;
+    animation: tabFadeIn 0.3s ease;
+}
+
+@keyframes tabFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 .session-tab-panel > section {
