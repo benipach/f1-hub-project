@@ -370,6 +370,16 @@ function normalizeName(name) {
         .toLowerCase();
 }
 
+// Devuelve el nombre completo con el apellido en mayúscula (el nombre de pila queda igual)
+function formatDriverName(fullName) {
+    if (!fullName) return fullName;
+    const parts = fullName.trim().split(' ');
+    if (parts.length < 2) return fullName.toUpperCase();
+    const firstName = parts.slice(0, -1).join(' ');
+    const lastName  = parts[parts.length - 1];
+    return `${firstName} ${lastName.toUpperCase()}`;
+}
+
 // Construye un mapa { nombreNormalizado → posición numérica } desde qualifying
 function buildQualiMap(qualifying = []) {
     const map = {};
@@ -382,6 +392,12 @@ function buildQualiMap(qualifying = []) {
     return map;
 }
 
+// Ícono de chevron (mismo estilo que la flecha de viento, sin el asta)
+function deltaArrowSvg(direction) {
+    const rotate = direction === 'down' ? 180 : 0;
+    return `<svg class="res-delta-arrow" viewBox="0 0 24 24" style="transform:rotate(${rotate}deg)" aria-hidden="true"><path d="M3.5 16 L12 7 L20.5 16" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+
 // Devuelve el HTML del indicador de delta (flecha o barra)
 function gridDeltaHtml(racePos, qualiPos) {
     const raceNum = parseInt(racePos, 10);
@@ -392,9 +408,9 @@ function gridDeltaHtml(racePos, qualiPos) {
 
     const delta = qualiPos - raceNum; // positivo = ganó puestos
     if (delta > 0) {
-        return `<span class="res-delta res-delta--up">▲ ${delta}</span>`;
+        return `<span class="res-delta res-delta--up">${deltaArrowSvg('up')}${delta}</span>`;
     } else if (delta < 0) {
-        return `<span class="res-delta res-delta--down">▼ ${Math.abs(delta)}</span>`;
+        return `<span class="res-delta res-delta--down">${deltaArrowSvg('down')}${Math.abs(delta)}</span>`;
     } else {
         return `<span class="res-delta res-delta--same">—</span>`;
     }
@@ -474,7 +490,7 @@ function renderRaceResult(raceEntries = [], prevSessionEntries = [], containerId
                                 ${hasQuali ? `<td class="res-delta-cell" style="${dim}">${gridDeltaHtml(res.pos, qualiPos)}</td>` : ''}
                                 <td class="res-driver" style="${dim}">
                                     <span class="res-driver-number" style="color:${teamColor}">#${driverNum}</span>
-                                    <span class="driver-fullname">${res.driver}</span>
+                                    <span class="driver-fullname">${formatDriverName(res.driver)}</span>
                                     <span class="driver-lastname">${res.driver.split(' ').slice(1).join(' ').slice(0, 3).toUpperCase()}</span>
                                 </td>
                                 <td class="res-team-cell" style="${dim}">
@@ -557,7 +573,7 @@ function renderSessionResult(entries = [], containerId, sessionLabel, driverTeam
                                 <td class="res-pos${isTop3 ? ' top3' : ''}" style="${dim}">${res.pos}</td>
                                 <td class="res-driver" style="${dim}">
                                     <span class="res-driver-number" style="color:${teamColor}">#${driverNum}</span>
-                                    <span class="driver-fullname">${res.driver}</span>
+                                    <span class="driver-fullname">${formatDriverName(res.driver)}</span>
                                     <span class="driver-lastname">${res.driver.split(' ').slice(1).join(' ').slice(0, 3).toUpperCase()}</span>
                                 </td>
                                 <td class="res-team-cell" style="${dim}">
@@ -617,8 +633,8 @@ function renderSessionWeatherCard(weather) {
     // según wind_direction. Se dibuja como triángulo + línea, prolijo y nítido a cualquier tamaño.
     const compassSvg = `
         <svg class="swc-wind-compass-icon" viewBox="0 0 24 24" style="transform:rotate(${windDirDeg}deg)" aria-hidden="true">
-            <line x1="12" y1="20" x2="12" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M7 10 L12 4 L17 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="12" y1="22.5" x2="12" y2="3.5" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+            <path d="M3.5 11 L12 2 L20.5 11" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>`;
 
     return `
@@ -695,9 +711,9 @@ function renderHistory(circuit) {
     const rows = [...circuit.history].reverse().map(h => `
         <tr class="${h.year === 2026 ? 'current-year' : ''}">
             <td class="ht-year">${h.year}</td>
-            <td class="ht-winner">${h.winner || '—'}</td>
+            <td class="ht-winner">${h.winner ? formatDriverName(h.winner) : '—'}</td>
             <td><span class="ht-team-badge">${h.winnerTeam || '—'}</span></td>
-            <td>${h.pole || '—'}</td>
+            <td>${h.pole ? formatDriverName(h.pole) : '—'}</td>
         </tr>
     `).join('');
 
