@@ -202,6 +202,40 @@ function updateDashboard(season, circuits) {
     updateRacecards(season, nextId, now, circuits);
 }
 
+function ordinalSuffix(day) {
+    if (day >= 11 && day <= 13) return 'th';
+    switch (day % 10) {
+        case 1: return 'st';
+        case 2: return 'nd';
+        case 3: return 'rd';
+        default: return 'th';
+    }
+}
+
+function formatOrdinalDay(date) {
+    return `${String(date.getDate()).padStart(2, '0')}${ordinalSuffix(date.getDate())}`;
+}
+
+// Weekend range = earliest session start → latest session end, straight from the JSON.
+function getWeekendRange(gp) {
+    const keys   = Object.keys(gp.sessions || {});
+    const starts = keys.map(key => getSessionStart(gp, key)).filter(Boolean);
+    const ends   = keys.map(key => getSessionEnd(gp, key)).filter(Boolean);
+    if (!starts.length || !ends.length) return null;
+    return { start: new Date(Math.min(...starts)), end: new Date(Math.max(...ends)) };
+}
+
+function formatWeekendDateRange(gp) {
+    const range = getWeekendRange(gp);
+    if (!range) return '';
+    const { start, end } = range;
+    const startMonth = start.toLocaleDateString('en-US', { month: 'short' });
+    const endMonth   = end.toLocaleDateString('en-US', { month: 'short' });
+    return startMonth === endMonth
+        ? `${formatOrdinalDay(start)} - ${formatOrdinalDay(end)} ${endMonth}`
+        : `${formatOrdinalDay(start)} ${startMonth} - ${formatOrdinalDay(end)} ${endMonth}`;
+}
+
 function updateRacecards(season, nextId, now, circuits) {
     document.querySelectorAll('.race-card').forEach(card => {
         const gpId = card.dataset.id;
@@ -212,9 +246,11 @@ function updateRacecards(season, nextId, now, circuits) {
         if (!card.dataset.originalContent) card.dataset.originalContent = card.innerHTML;
         card.innerHTML = card.dataset.originalContent;
 
-        const dateText = card.querySelector('.race-date')?.textContent || '';
+        const dateText = formatWeekendDateRange(gp);
+        const dateEl   = card.querySelector('.race-date');
         const spanEl   = card.querySelector('.race-status');
         const linkEl   = card.querySelector('.race-link');
+        if (dateEl && dateText) dateEl.textContent = dateText;
 
         card.classList.remove('race-card-ended', 'race-card-next', 'race-card-next-expanded', 'race-card-upcoming', 'race-card-cancelled');
         if (spanEl) spanEl.className = 'race-status';
