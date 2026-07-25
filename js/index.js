@@ -454,7 +454,7 @@ function renderHeroSchedule(gp, gpId, containerId = 'hero-schedule') {
         return `
         <div class="${classes}"${dataAttr}>
             <span class="schedule-session-name">${s.name}</span>
-            <span class="schedule-session-time">${fmt(s.start)} – ${fmt(s.end)}</span>
+            ${ended ? '' : `<span class="schedule-session-time">${fmt(s.start)} – ${fmt(s.end)}</span>`}
             <span class="schedule-session-tag">${tag}</span>
             ${cta}
         </div>`;
