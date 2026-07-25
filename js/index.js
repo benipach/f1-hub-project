@@ -445,7 +445,7 @@ function renderHeroSchedule(gp, gpId, containerId = 'hero-schedule') {
                 <span class="schedule-session-cta-arrow">→</span>
                </a>`
             : live
-            ? `<a href="./races/race.html?gp=${gpId}" class="schedule-session-cta schedule-session-cta-live">
+            ? `<a href="./live.html" class="schedule-session-cta schedule-session-cta-live">
                 <span>Tune in Live</span>
                 <span class="schedule-session-cta-arrow">→</span>
                </a>`
