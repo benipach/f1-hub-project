@@ -209,8 +209,8 @@
 
 .track-layout-name {
     font-family: 'F1-Regular', sans-serif;
-    font-size: clamp(8px, 3vw, 20px);
-    letter-spacing: 2px;
+    font-size: clamp(8px, 3vw, 24px);
+    line-height: 1.25;
     text-transform: uppercase;
     color: var(--text-light);
     text-align: center;
@@ -435,7 +435,7 @@
 
 .cs-stat-val {
     font-family: 'F1-Bold', sans-serif;
-    font-size: 22px;
+    font-size: 26px;
     color: var(--text-light);
     line-height: 1;
 }
@@ -448,8 +448,8 @@
 }
 
 .cs-stat-label {
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 11px;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 12px;
     letter-spacing: 1px;
     text-transform: uppercase;
     color: var(--text-dim);
@@ -474,7 +474,7 @@
 }
 
 .char-label {
-    font-family: 'F1-Regular', sans-serif;
+    font-family: 'F1-Bold', sans-serif;
     font-size: 12px;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -482,7 +482,7 @@
 }
 
 .char-val {
-    font-family: 'F1-Regular', sans-serif;
+    font-family: 'F1-Bold', sans-serif;
     font-size: 12px;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -834,7 +834,7 @@ gap: 4px;
 
 .swc-condition-label {
     font-family: 'F1-Bold', sans-serif;
-    font-size: 1.1rem;
+    font-size: 26px;
     letter-spacing: 1px;
     text-transform: uppercase;
     line-height: 1;
@@ -845,7 +845,7 @@ gap: 4px;
 
 .swc-condition-sub {
     font-family: 'F1-Bold', sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     color: var(--text-dim);
@@ -867,14 +867,14 @@ gap: 4px;
 
 .swc-stat-value {
     font-family: 'F1-Bold', sans-serif;
-    font-size: 1.6rem;
+    font-size: 26px;
     color: var(--text-light);
     line-height: 1;
 }
 
 .swc-stat-label {
     font-family: 'F1-Bold', sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     color: var(--text-dim);
@@ -1444,8 +1444,8 @@ border: 1px solid rgba(255,255,255,0.05);
     border-bottom: 2px solid transparent;
     background: none;
     color: var(--text-dim);
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 11px;
+    font-family: 'F1-Bold';
+    font-size: 12px;
     letter-spacing: 1px;
     text-transform: uppercase;
     cursor: pointer;
