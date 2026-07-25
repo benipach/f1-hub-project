@@ -7,15 +7,37 @@
 // easy to get subtly wrong.
 
 import { HubConnectionBuilder, HttpTransportType, LogLevel } from "@microsoft/signalr";
-import WebSocket from "ws";
+import WebSocket, { WebSocketServer } from "ws";
 
 const URL = "wss://livetiming.formula1.com/signalrcore";
+const LOCAL_PORT = 8080; // your frontend connects here: ws://localhost:8080
 
 // Same topic list as before — nothing changed on this end.
 const TOPICS = ["TimingData", "TimingAppData", "DriverList"];
 
 // Local, persistent state built from merged deltas. One key per topic.
 const state = {};
+
+// Local WS server for the frontend. Browsers can't reach F1's feed directly
+// (this is exactly the "backend relays to its own WebSocket" architecture
+// we talked about — same as f1-dash and friends).
+const localServer = new WebSocketServer({ port: LOCAL_PORT });
+console.log(`[local] escuchando en ws://localhost:${LOCAL_PORT}`);
+
+localServer.on("connection", (client) => {
+  console.log("[local] frontend conectado");
+  // Catch the new client up with everything we have so far.
+  client.send(JSON.stringify({ type: "snapshot", state }));
+
+  client.on("close", () => console.log("[local] frontend desconectado"));
+});
+
+function broadcast(topic) {
+  const payload = JSON.stringify({ type: "update", topic, data: state[topic] });
+  for (const client of localServer.clients) {
+    if (client.readyState === WebSocket.OPEN) client.send(payload);
+  }
+}
 
 /**
  * Recursively merges a partial update into the local state.
@@ -43,7 +65,9 @@ function mergeState(target, patch) {
 }
 
 function onUpdate(topic) {
-  // Placeholder hook for step 4 (broadcasting to a local WS server).
+  broadcast(topic);
+
+  // Sanity check in the console: current gap of the first car in the list.
   const line = state.TimingData?.Lines;
   if (topic === "TimingData" && line) {
     const sample = Object.entries(line)[0];
