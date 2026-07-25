@@ -1,0 +1,94 @@
+/* ---- PAGE LAYOUT (mirrors .results-page) ---- */
+.live-page {
+    max-width: 60%;
+    margin: 128px auto;
+}
+
+.live-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+/* ---- CONNECTION STATUS PILL ---- */
+.live-status {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.live-status--off {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text-dim);
+}
+
+.live-status--on {
+    background: rgba(225,6,0,0.1);
+    border: 1px solid rgba(225,6,0,0.25);
+    color: var(--primary-red);
+}
+
+/* ---- TABLE-SPECIFIC TWEAKS ---- */
+.live-col-pos {
+    width: 50px;
+}
+
+.live-driver {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.live-team-bar {
+    display: inline-block;
+    width: 4px;
+    height: 16px;
+    border-radius: 1px;
+    flex-shrink: 0;
+}
+
+/* Lap time convention: purple = session fastest, green = personal best */
+.live-lap--fastest {
+    color: rgb(190,110,255);
+}
+
+.live-lap--pb {
+    color: rgb(60,210,140);
+}
+
+.live-tag {
+    display: inline-flex;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+}
+
+.live-tag--pit {
+    background: rgba(225,6,0,0.1);
+    border: 1px solid rgba(225,6,0,0.25);
+    color: var(--primary-red);
+}
+
+.live-row--retired {
+    opacity: 0.35;
+    text-decoration: line-through;
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 1100px) {
+    .live-page { max-width: 80%; margin: 80px auto; }
+}
+
+@media (max-width: 500px) {
+    .live-page { max-width: 95%; }
+    .results-table th,
+    .results-table td { padding: 0 12px; }
+}

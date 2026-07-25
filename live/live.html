@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 Hub | Live Timing</title>
+    <link rel="icon" href="img/icon.png">
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/live.css">
+    <script src="./js/twemoji.js" defer></script>
+    <script src="./js/navbar.js" defer></script>
+    <script src="./js/live.js" defer></script>
+</head>
+<body>
+
+<header class="navbar">
+    <a href="./index.html" class="logo-container">
+        <img src="img/logo.png" alt="F1 Hub Logo" class="nav-logo">
+    </a>
+
+    <button class="hamburger" id="hamburger-btn" aria-label="Open Menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </button>
+
+    <nav>
+        <ul id="nav-menu" class="nav-menu">
+            <li><a href="./index.html#calendar">Calendar</a></li>
+            <li><a href="./championship.html">Championship</a></li>
+            <li><a href="./results.html">Results</a></li>
+            <li><a href="./drivers.html">Drivers</a></li>
+            <li><a href="./teams.html">Teams</a></li>
+            <li><a href="./live.html">Live</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main class="live-page">
+    <div class="live-header">
+        <h1 class="results-title">Live Timing</h1>
+        <span id="live-status" class="live-status live-status--off">Connecting…</span>
+    </div>
+
+    <div class="results-table-wrap">
+        <table class="results-table live-table">
+            <thead>
+                <tr>
+                    <th class="live-col-pos">Pos</th>
+                    <th>Driver</th>
+                    <th>Gap</th>
+                    <th>Interval</th>
+                    <th>Last Lap</th>
+                    <th>Tyre</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="live-rows">
+                <tr><td colspan="7" class="results-empty">Waiting for session data…</td></tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <a href="./index.html" class="footer-logo">
+                <img src="img/logo.png" alt="F1 Hub Logo" class="footer-logo-img">
+            </a>
+            <p class="footer-tagline">
+                Your go-to source for F1 schedules, standings,<br>
+                and race data — all in your local time.
+            </p>
+        </div>
+
+        <div class="footer-links">
+            <p class="footer-col-title">Navigate</p>
+            <ul>
+                <li><a href="./index.html#calendar">Calendar</a></li>
+                <li><a href="./championship.html">Championship</a></li>
+                <li><a href="./results.html">Results</a></li>
+                <li><a href="./drivers.html">Drivers</a></li>
+                <li><a href="./teams.html">Teams</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-links">
+            <p class="footer-col-title">External</p>
+            <ul>
+                <li><a href="https://www.formula1.com" target="_blank">Formula 1 Official</a></li>
+                <li><a href="https://www.fia.com" target="_blank">FIA</a></li>
+                <li><a href="https://openf1.org" target="_blank">OpenF1 API</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-links">
+            <p class="footer-col-title">Developer</p>
+            <ul>
+                <li><a href="https://benipach.github.io/portfolio" target="_blank">Portfolio</a></li>
+                <li><a href="https://github.com/benipach" target="_blank">GitHub</a></li>
+                <li><a href="https://linkedin.com/in/benicio-pacheco" target="_blank">LinkedIn</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <span class="footer-copyright">
+            &copy; 2026 F1 Hub &mdash; Unofficial fan project. Not affiliated with Formula 1.
+        </span>
+        <span class="footer-timezone">
+            All times shown in your local timezone
+        </span>
+    </div>
+</footer>
+</body>
+</html>
