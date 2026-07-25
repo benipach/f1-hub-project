@@ -9,7 +9,7 @@
 import { HubConnectionBuilder, HttpTransportType, LogLevel } from "@microsoft/signalr";
 import WebSocket, { WebSocketServer } from "ws";
 
-const URL = "wss://livetiming.formula1.com/signalrcore";
+const URL = "https://livetiming.formula1.com/signalrcore";
 const LOCAL_PORT = 8080; // your frontend connects here: ws://localhost:8080
 
 // Same topic list as before — nothing changed on this end.
