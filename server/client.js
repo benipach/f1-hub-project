@@ -1,109 +1,21 @@
-// Step 2: connect to the F1 SignalR feed and keep a merged local state
-// (snapshot + incremental deltas), instead of just logging raw messages.
+// Step 3: connect using the real protocol F1's own site uses — SignalR Core
+// over a raw WebSocket, skipping the HTTP negotiate step entirely (confirmed
+// via browser DevTools: no negotiate request, no auth token, no cookies).
 //
-// Classic SignalR protocol (ASP.NET, not SignalR Core):
-//   1. GET /negotiate  -> gives you a connectionToken
-//   2. Open a WebSocket to /connect with that token
-//   3. Send a "Subscribe" message with the topics you want
-//   4. The server starts sending "M" messages with [topic, data, timestamp]
+// The handshake and framing are handled by @microsoft/signalr instead of
+// hand-rolled, since the wire format (record-separated JSON messages) is
+// easy to get subtly wrong.
 
+import { HubConnectionBuilder, HttpTransportType, LogLevel } from "@microsoft/signalr";
 import WebSocket from "ws";
 
-const HOST = "livetiming.formula1.com";
-const HUB = "Streaming";
+const URL = "wss://livetiming.formula1.com/signalrcore";
 
-// Available topics: Heartbeat, TimingData, TimingAppData, TimingStats,
-// WeatherData, TrackStatus, RaceControlMessages, SessionInfo, DriverList,
-// CarData.z, Position.z (the last two are deflate-compressed)
+// Same topic list as before — nothing changed on this end.
 const TOPICS = ["TimingData", "TimingAppData", "DriverList"];
 
-async function negotiate() {
-  const connectionData = encodeURIComponent(JSON.stringify([{ name: HUB }]));
-  const url = `https://${HOST}/signalr/negotiate?connectionData=${connectionData}&clientProtocol=1.5`;
-
-  const res = await fetch(url, {
-    headers: { "User-Agent": "BestHTTP" }, // server rejects requests without a "normal" UA
-  });
-  if (!res.ok) {
-    throw new Error(`negotiate falló: ${res.status} ${res.statusText}`);
-  }
-  const json = await res.json();
-  return { token: json.ConnectionToken, connectionData };
-}
-
-// Local, persistent state built from the initial snapshot + merged deltas.
-// One key per subscribed topic, e.g. state.TimingData, state.DriverList.
+// Local, persistent state built from merged deltas. One key per topic.
 const state = {};
-
-function onUpdate(topic) {
-  // Placeholder hook for step 3 (broadcasting to a local WS server).
-  // For now, just print the driver's current gap as a sanity check.
-  const line = state.TimingData?.Lines;
-  if (topic === "TimingData" && line) {
-    const sample = Object.entries(line)[0];
-    if (sample) {
-      const [num, data] = sample;
-      console.log(`  car #${num} -> gap: ${data.GapToLeader ?? "?"}`);
-    }
-  }
-}
-
-function connect({ token, connectionData }) {
-  const wsUrl =
-    `wss://${HOST}/signalr/connect?transport=webSockets` +
-    `&connectionToken=${encodeURIComponent(token)}` +
-    `&connectionData=${connectionData}&clientProtocol=1.5`;
-
-  const ws = new WebSocket(wsUrl, {
-    headers: { "User-Agent": "BestHTTP" },
-  });
-
-  ws.on("open", () => {
-    console.log("[ws] conectado, suscribiendo a:", TOPICS.join(", "));
-    ws.send(JSON.stringify({ H: HUB, M: "Subscribe", A: [TOPICS], I: 1 }));
-  });
-
-  ws.on("message", (raw) => {
-    let msg;
-    try {
-      msg = JSON.parse(raw.toString());
-    } catch {
-      console.warn("[ws] mensaje no-JSON, ignorado");
-      return;
-    }
-
-    // Response to the initial subscription: R is an object keyed by topic,
-    // e.g. { TimingData: {...}, DriverList: {...} }. Seeds our local state.
-    if (msg.R) {
-      Object.assign(state, msg.R);
-      console.log("[state] estado inicial cargado:", Object.keys(state));
-      return;
-    }
-
-    // Live updates: M is an array of [topic, patch, timestamp] messages.
-    // Merge each patch onto the existing topic state instead of overwriting it.
-    if (Array.isArray(msg.M)) {
-      for (const item of msg.M) {
-        const [topic, patch, ts] = item.A ?? [];
-        if (!state[topic]) state[topic] = {};
-        mergeState(state[topic], patch);
-        console.log(`[${ts}] ${topic} updated`);
-        onUpdate(topic);
-      }
-    }
-  });
-
-  ws.on("close", (code, reason) => {
-    console.log(`[ws] cerrado (${code}) ${reason}. Reintentando en 5s...`);
-    setTimeout(main, 5000);
-  });
-
-  ws.on("error", (err) => {
-    console.error("[ws] error:", err.message);
-  });
-
-  return ws;
-}
 
 /**
  * Recursively merges a partial update into the local state.
@@ -130,10 +42,55 @@ function mergeState(target, patch) {
   return target;
 }
 
+function onUpdate(topic) {
+  // Placeholder hook for step 4 (broadcasting to a local WS server).
+  const line = state.TimingData?.Lines;
+  if (topic === "TimingData" && line) {
+    const sample = Object.entries(line)[0];
+    if (sample) {
+      const [num, data] = sample;
+      console.log(`  car #${num} -> gap: ${data.GapToLeader ?? "?"}`);
+    }
+  }
+}
+
+const connection = new HubConnectionBuilder()
+  .withUrl(URL, {
+    skipNegotiation: true,
+    transport: HttpTransportType.WebSockets,
+    WebSocket,
+  })
+  .withAutomaticReconnect([0, 2000, 5000, 10000, 10000]) // retry backoff, ms
+  .configureLogging(LogLevel.Warning)
+  .build();
+
+// The server invokes a client-side method called "feed" for every update.
+// Args are positional: (topic, data, timestamp). The first call for each
+// topic after subscribing is the full snapshot; after that, deltas.
+connection.on("feed", (topic, patch, timestamp) => {
+  if (!state[topic]) {
+    state[topic] = patch; // first message for this topic: seed as-is
+    console.log(`[state] ${topic} seeded`);
+  } else {
+    mergeState(state[topic], patch);
+    console.log(`[${timestamp}] ${topic} updated`);
+  }
+  onUpdate(topic);
+});
+
+connection.onreconnecting((err) => {
+  console.log("[ws] reconectando...", err?.message ?? "");
+});
+
+connection.onclose((err) => {
+  console.log("[ws] conexión cerrada.", err?.message ?? "");
+});
+
 async function main() {
   try {
-    const negotiated = await negotiate();
-    connect(negotiated);
+    await connection.start();
+    console.log("[ws] conectado, suscribiendo a:", TOPICS.join(", "));
+    await connection.invoke("Subscribe", TOPICS);
   } catch (err) {
     console.error("[main] error de conexión:", err.message);
     console.log("Reintentando en 5s...");
