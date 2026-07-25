@@ -218,7 +218,7 @@
 .schedule-session-time {
     font-family: 'F1-Regular';
     font-size: 14px;
-    font-variant-numeric: tabular-nums;
+    letter-spacing: 1px;
     color: #ffffff;
     transition: color 0.15s ease, opacity 0.15s ease;
 }   
@@ -227,8 +227,8 @@
     display: none;
     align-items: center;
     font-family: 'F1-Regular';
-    font-size: 12px;
-    letter-spacing: 1.2px;
+    font-size: 14px;
+    letter-spacing: 1px;
     text-transform: uppercase;
     transition: opacity 0.15s ease;
 }
@@ -275,10 +275,10 @@
     gap: 7px;
     border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 8px;
-    background: rgba(14, 14, 20, 0.92);
+    background: rgba(14, 14, 20, 0.25);
     font-family: 'F1-Regular';
     font-size: 12px;
-    letter-spacing: 1.4px;
+    letter-spacing: 1px;
     text-transform: uppercase;
     color: #ffffff;
     text-decoration: none;
