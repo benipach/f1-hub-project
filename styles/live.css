@@ -192,12 +192,12 @@
    OUT LAP: cyan — a "cold tyres, still warming up" transitional feel,
    distinct from the violet/green/yellow already used for lap times. */
 .live-status-inpit {
-    color: rgb(255,102,0);
+    color: rgb(227,37,37);
     font-weight: bold;
 }
 
 .live-status-outlap {
-    color: rgb(236,72,196);
+    color: rgb(255,102,0);
     font-weight: bold;
 }
 
