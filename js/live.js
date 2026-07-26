@@ -60,6 +60,23 @@ const TEAM_LOGO_MAP = {
     'Cadillac':        'cadillac-logo',
 };
 
+// ── TEAM ID → COLOR (from TEAMS in the site's shared color config) ───────
+const TEAM_COLOR_MAP = {
+    'Mercedes':        'rgb(43, 255, 219)',
+    'Ferrari':         'rgb(255, 0, 25)',
+    'McLaren':         'rgb(255, 127, 0)',
+    'Red Bull':        'rgb(34, 71, 122)',
+    'Red Bull Racing': 'rgb(34, 71, 122)',
+    'Aston Martin':    'rgb(34, 153, 113)',
+    'Alpine':          'rgb(0, 111, 186)',
+    'Williams':        'rgb(28, 122, 255)',
+    'Racing Bulls':    'rgb(102, 125, 255)',
+    'Haas':            'rgb(222, 225, 226)',
+    'Haas F1 Team':    'rgb(222, 225, 226)',
+    'Audi':            'rgb(255, 46, 46)',
+    'Cadillac':        'rgb(170, 170, 173)',
+};
+
 // Tyre compound → PNG filename in img/tyres/
 const COMPOUND_META = {
     SOFT:         { code: 'S', file: 'soft' },
@@ -84,8 +101,10 @@ function connect() {
     const statusEl = document.getElementById('live-status');
 
     ws.onopen = () => {
-        statusEl.textContent = 'Live';
-        statusEl.className = 'live-status live-status--on';
+        if (statusEl) {
+            statusEl.textContent = 'Live';
+            statusEl.className = 'live-status live-status--on';
+        }
     };
 
     ws.onmessage = (event) => {
@@ -99,8 +118,10 @@ function connect() {
     };
 
     ws.onclose = () => {
-        statusEl.textContent = 'Reconnecting…';
-        statusEl.className = 'live-status live-status--off';
+        if (statusEl) {
+            statusEl.textContent = 'Reconnecting…';
+            statusEl.className = 'live-status live-status--off';
+        }
         setTimeout(connect, 2000);
     };
 
@@ -109,15 +130,60 @@ function connect() {
 
 // --- Rendering helpers ---
 
-// Shows the current/next GP name in the banner at the top of the page,
-// from state.CurrentGP (sent by the backend, computed from season2026.json
-// — see refreshCurrentGP() there). Falls back quietly if it hasn't arrived
-// yet (first snapshot might land before the backend's own startup calc).
+// ── GP → FLAG EMOJI (rendered as an image by twemoji.js, same as the rest
+// of the site — the span just needs the raw unicode flag character) ──────
+const FLAG_EMOJI_MAP = {
+    'australian-gp':    '🇦🇺',
+    'chinese-gp':        '🇨🇳',
+    'japanese-gp':       '🇯🇵',
+    'bahrain-gp':        '🇧🇭',
+    'saudi-arabian-gp':  '🇸🇦',
+    'miami-gp':          '🇺🇸',
+    'canadian-gp':       '🇨🇦',
+    'monaco-gp':         '🇲🇨',
+    'barcelona-gp':      '🇪🇸',
+    'austrian-gp':       '🇦🇹',
+    'british-gp':        '🇬🇧',
+    'belgian-gp':        '🇧🇪',
+    'hungarian-gp':      '🇭🇺',
+    'dutch-gp':          '🇳🇱',
+    'italian-gp':        '🇮🇹',
+    'spanish-gp':        '🇪🇸',
+    'azerbaijan-gp':     '🇦🇿',
+    'singapore-gp':      '🇸🇬',
+    'united-states-gp':  '🇺🇸',
+    'mexican-gp':        '🇲🇽',
+    'brazilian-gp':      '🇧🇷',
+    'las-vegas-gp':      '🇺🇸',
+    'qatar-gp':          '🇶🇦',
+    'abu-dhabi-gp':      '🇦🇪',
+};
+
+// Fills in the GP name and country flag in the hero row — same
+// markup/classes as index.html's hero, so it reuses that exact look.
 function updateGPName() {
-    const el = document.getElementById('live-gp-name');
-    if (!el) return;
+    const nameEl = document.getElementById('hero-gp-name');
+    const flagEl = document.getElementById('hero-gp-flag');
+    if (!nameEl) return;
+
     const gp = state.CurrentGP;
-    el.textContent = gp && gp.name ? gp.name : 'Loading Grand Prix…';
+    if (!gp || !gp.name) {
+        nameEl.textContent = 'Loading Grand Prix…';
+        return;
+    }
+
+    nameEl.textContent = gp.name;
+
+    if (flagEl) {
+        const flag = FLAG_EMOJI_MAP[gp.slug];
+        if (flag && flagEl.textContent !== flag) {
+            flagEl.textContent = flag;
+            // twemoji.js is already loaded site-wide (see the <script> tag
+            // in live.html) — this swaps the raw emoji character for its
+            // image, same as every other flag on the site.
+            if (window.twemoji) window.twemoji.parse(flagEl);
+        }
+    }
 }
 
 // Circuit map for the Map View section. Just swaps the layout image when
@@ -329,6 +395,53 @@ function render() {
     }
 
     syncMapHeight();
+    updatePositionOverlay();
+}
+
+// Rough bounding box for X/Y, expanded as data comes in. Not calibrated
+// per circuit yet — good enough tonight to confirm dots move in roughly
+// the right place; a real per-circuit calibration is a "polish later" job.
+const posBounds = { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity };
+
+// Teams whose dot needs white text instead of the default black
+// (their team color reads better with a light label on top).
+const WHITE_TEXT_TEAMS = new Set(['Red Bull', 'Red Bull Racing', 'Alpine', 'McLaren', 'Audi', 'Ferrari', 'Williams', 'Racing Bulls', 'Aston Martin', 'Cadillac']);
+
+function updatePositionOverlay() {
+    const overlay = document.getElementById('circuit-position-overlay');
+    if (!overlay) return;
+
+    const posArray = state['Position.z'] && state['Position.z'].Position;
+    const latest = posArray && posArray[posArray.length - 1];
+    const entries = latest && latest.Entries;
+    if (!entries) return;
+
+    for (const num of Object.keys(entries)) {
+        const { X, Y } = entries[num];
+        if (typeof X !== 'number' || typeof Y !== 'number') continue;
+        if (X < posBounds.minX) posBounds.minX = X;
+        if (X > posBounds.maxX) posBounds.maxX = X;
+        if (Y < posBounds.minY) posBounds.minY = Y;
+        if (Y > posBounds.maxY) posBounds.maxY = Y;
+    }
+
+    const driverList = state.DriverList || {};
+    const spanX = posBounds.maxX - posBounds.minX || 1;
+    const spanY = posBounds.maxY - posBounds.minY || 1;
+
+    overlay.innerHTML = Object.keys(entries).map((num) => {
+        const { X, Y, Status } = entries[num];
+        if (typeof X !== 'number' || typeof Y !== 'number' || Status === 'OFF') return '';
+
+        const pctX = ((X - posBounds.minX) / spanX) * 100;
+        // F1's Y axis grows upward, CSS grows downward — flip it.
+        const pctY = 100 - ((Y - posBounds.minY) / spanY) * 100;
+
+        const driver = driverList[num] || {};
+        const teamColor = TEAM_COLOR_MAP[driver.TeamName] || 'rgba(255,255,255,0.9)';
+        const textColor = WHITE_TEXT_TEAMS.has(driver.TeamName) ? '#fff' : '#000';
+        return `<div class="pos-dot" style="left:${pctX}%; top:${pctY}%; background:${teamColor}; color:${textColor};"><span class="pos-dot-label">${driverCode(driver, num)}</span></div>`;
+    }).join('');
 }
 
 // Matches the circuit map container's height to the Map View table's real

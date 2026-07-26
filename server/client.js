@@ -11,13 +11,14 @@ import WebSocket, { WebSocketServer } from "ws";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import zlib from "node:zlib";
 
 const URL = "https://livetiming.formula1.com/signalrcore";
 const LOCAL_PORT = 8080; // your frontend connects here: ws://localhost:8080
 
-// Same topic list as before — the GP name/date matching is handled
-// locally now (see getCurrentGP below), not through F1's feed.
-const TOPICS = ["TimingData", "TimingAppData", "DriverList"];
+// Position.z carries live X/Y car coordinates for the map overlay.
+// Compressed topics (".z" suffix) need inflating before use — see decodeIfCompressed().
+const TOPICS = ["TimingData", "TimingAppData", "DriverList", "Position.z"];
 
 // Local, persistent state built from merged deltas. One key per topic.
 const state = {};
@@ -155,6 +156,22 @@ function onUpdate(topic) {
   }
 }
 
+/**
+ * Compressed topics (".z" suffix, e.g. "Position.z") arrive as a
+ * base64-encoded, raw-deflate-compressed JSON string instead of a plain
+ * object. Everything else passes through unchanged.
+ */
+function decodeIfCompressed(topic, patch) {
+  if (!topic.endsWith(".z") || typeof patch !== "string") return patch;
+  try {
+    const buf = Buffer.from(patch, "base64");
+    return JSON.parse(zlib.inflateRawSync(buf).toString("utf-8"));
+  } catch (err) {
+    console.error(`[decompress] failed for ${topic}:`, err.message);
+    return null;
+  }
+}
+
 const connection = new HubConnectionBuilder()
   .withUrl(URL, {
     skipNegotiation: true,
@@ -168,7 +185,10 @@ const connection = new HubConnectionBuilder()
 // The server invokes a client-side method called "feed" for every update.
 // Args are positional: (topic, data, timestamp). The first call for each
 // topic after subscribing is the full snapshot; after that, deltas.
-connection.on("feed", (topic, patch, timestamp) => {
+connection.on("feed", (topic, rawPatch, timestamp) => {
+  const patch = decodeIfCompressed(topic, rawPatch);
+  if (patch == null) return;
+
   if (!state[topic]) {
     state[topic] = patch; // first message for this topic: seed as-is
     console.log(`[state] ${topic} seeded`);

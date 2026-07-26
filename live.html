@@ -38,13 +38,9 @@
 </header>
 
 <main class="live-page">
-    <div class="live-gp-banner">
-        <span id="live-gp-name">—</span>
-    </div>
-
-    <div class="live-header">
-        <h1 class="results-title">Live Timing</h1>
-        <span id="live-status" class="live-status live-status--off">Connecting…</span>
+    <div class="hero-title-row">
+        <h1 class="hero-gp-name" id="hero-gp-name">–</h1>
+        <span class="hero-gp-flag" id="hero-gp-flag" aria-hidden="true"></span>
     </div>
 
     <div class="results-table-wrap">
@@ -70,10 +66,6 @@
 </main>
 
 <section class="map-view-section">
-    <div class="live-header">
-        <h2 class="results-title">Map View</h2>
-    </div>
-
     <div class="map-view-content">
         <div class="results-table-wrap">
             <table class="results-table live-table live-table--compact">
@@ -95,6 +87,7 @@
 
         <div class="circuit-map-wrap" id="circuit-map-wrap">
             <img id="circuit-map-img" class="circuit-map-img" alt="">
+            <div id="circuit-position-overlay" class="circuit-position-overlay"></div>
         </div>
     </div>
 </section>

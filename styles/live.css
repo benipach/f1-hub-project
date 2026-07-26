@@ -31,6 +31,7 @@
    Same asset convention as race.js: prefer the inline SVG layout, fall
    back to the PNG if that circuit doesn't have one yet. */
 .circuit-map-wrap {
+    position: relative;
     flex: 1 1 0;
     min-width: 0;
     display: flex;
@@ -47,53 +48,78 @@
     border-color: rgba(255,255,255,0.14);
 }
 
+/* Rough first pass, not calibrated per circuit yet — inset matches the
+   wrap's own padding so dots line up with the image area beneath them. */
+.circuit-position-overlay {
+    position: absolute;
+    inset: 24px;
+    pointer-events: none;
+}
+
+.pos-dot {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.9);
+    color: #000;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    transition: left 0.2s linear, top 0.2s linear;
+}
+
 .circuit-map-img {
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
 
+/* Just the driver code text, nudged 1px down — separate from .pos-dot's
+   own transform (which anchors the circle to its X/Y position and
+   shouldn't be touched by this cosmetic tweak). */
+.pos-dot-label {
+    transform: translate(-1px, 1px);
+}
+
 /* ---- GP NAME BANNER (top of the page) ---- */
-.live-gp-banner {
-    margin-bottom: 12px;
-}
-
-.live-gp-banner #live-gp-name {
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 13px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--primary-red);
-}
-
-.live-header {
+/* ---- GP NAME + FLAG + CIRCUIT (copied from index.css's .hero-title-row /
+   .hero-gp-name / .hero-gp-flag / .hero-underline — same markup, same
+   classes, same look as the homepage hero) ---- */
+.hero-title-row {
     display: flex;
-    align-items: baseline;
+    align-items: center;
+    justify-content: space-between;
     gap: 16px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
+    margin: 0 0 4px 0;
 }
 
-/* ---- CONNECTION STATUS PILL ---- */
-.live-status {
-    padding: 4px 12px;
-    border-radius: 6px;
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.5px;
+.hero-gp-name {
+    font-size: 48px;
+    margin: 0;
+    line-height: 1;
+    font-family: 'F1-Black';
     text-transform: uppercase;
 }
 
-.live-status--off {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    color: var(--text-dim);
+.hero-gp-flag {
+    flex-shrink: 0;
+    font-size: 72px;
+    line-height: 0;
 }
 
-.live-status--on {
-    background: rgba(225,6,0,0.1);
-    border: 1px solid rgba(225,6,0,0.25);
-    color: var(--primary-red);
+@media (max-width: 1100px) {
+    .hero-gp-name { font-size: 28px; }
+    .hero-gp-flag { font-size: 28px; }
+}
+
+@media (max-width: 600px) {
+    .hero-gp-name { font-size: 22px; }
+    .hero-gp-flag { font-size: 22px; }
 }
 
 /* ---- ROW HEIGHT (overrides results.css's 56px, since live.css loads after it) ---- */
