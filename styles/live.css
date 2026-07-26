@@ -1,6 +1,6 @@
-/* ---- PAGE LAYOUT (mirrors .results-page) ---- */
+/* ---- PAGE LAYOUT ---- */
 .live-page {
-    max-width: 60%;
+    max-width: 80%;
     margin: 128px auto;
 }
 
@@ -34,61 +34,183 @@
     color: var(--primary-red);
 }
 
-/* ---- TABLE-SPECIFIC TWEAKS ---- */
-.live-col-pos {
-    width: 50px;
+/* ---- ROW HEIGHT (overrides results.css's 56px, since live.css loads after it) ---- */
+.live-table td {
+    height: 32px;
 }
 
-.live-driver {
+.live-table th,
+.live-table td {
+    letter-spacing: 0.1px;
+}
+
+.live-table td {
+    font-size: 16px;
+}
+
+/* ---- DELTA INDICATOR (copied from race.css) ---- */
+.res-delta-col {
+    width: 40px;
+    padding: 0;
+}
+
+.res-delta-cell {
+    width: 40px;
+    padding: 0;
+    text-align: left;
+}
+
+.res-delta {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: flex-start;
+    gap: 4px;
+    font-family: 'F1-Bold';
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
-.live-team-bar {
-    display: inline-block;
-    width: 4px;
+.res-delta-arrow {
+    width: 16px;
     height: 16px;
-    border-radius: 1px;
     flex-shrink: 0;
 }
 
-/* Lap time convention: purple = session fastest, green = personal best */
-.live-lap--fastest {
-    color: rgb(190,110,255);
+.res-delta--up   { color: #22c55e; }
+.res-delta--down { color: var(--primary-red); }
+
+.res-delta--same,
+.res-delta--none {
+    color: rgba(255,255,255,0.2);
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0;
 }
 
-.live-lap--pb {
-    color: rgb(60,210,140);
+/* ---- TEAM LOGO (copied from race.css — live.html doesn't link that file) ---- */
+.res-team {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.live-tag {
-    display: inline-flex;
-    padding: 3px 8px;
-    border-radius: 5px;
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.5px;
+.res-team-logo {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    flex-shrink: 0;
+    opacity: 0.9;
 }
 
-.live-tag--pit {
-    background: rgba(225,6,0,0.1);
-    border: 1px solid rgba(225,6,0,0.25);
-    color: var(--primary-red);
+.res-team-logo-placeholder {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* ---- PODIUM COLORS (same convention as race.css .res-pos.top3) ---- */
+#live-rows tr:nth-child(1) .res-pos.top3 { font-family: 'F1-Bold'; color: #f7d774; }
+#live-rows tr:nth-child(2) .res-pos.top3 { font-family: 'F1-Bold'; color: #d6d6d6; }
+#live-rows tr:nth-child(3) .res-pos.top3 { font-family: 'F1-Bold'; color: #cd9a63; }
+
+/* Lap time convention (official F1 timing colors): purple = session
+   fastest, green = personal best, yellow = neither (normal lap).
+   Selectors are scoped to `.live-table td` (not just the bare class)
+   so they win specificity over whatever sets the base cell text color. */
+.live-table td.live-lap--fastest {
+    color: rgb(176,56,216);
+}
+
+.live-table td.live-lap--pb {
+    color: rgb(0, 212, 96);
+}
+
+.live-table td.live-lap--normal {
+    color: rgb(255,212,0);
 }
 
 .live-row--retired {
     opacity: 0.35;
-    text-decoration: line-through;
+}
+
+/* ---- TYRE HISTORY ICONS ---- */
+/* Flat flex row — icon, laps text, arrow, icon, laps text, arrow... all as
+   direct children, same pattern as .res-team (logo + surname). */
+/* Same pattern as .res-team (logo + surname): plain flex, no height or
+   vertical-align tricks — that's the structure that actually centers
+   correctly inside a table cell. */
+.tyre-history {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.tyre-history img {
+    display: block;
+    object-fit: contain;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.tyre-icon-fallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #0b0d10;
+    border: 2.5px solid #888;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.tyre-laps {
+    align-self: center;
+    font-size: 12px;
+    line-height: 20px;
+    color: #ffffff;
+    letter-spacing: normal;
+    margin-left: -2px;
+}
+
+.tyre-sep-arrow {
+    width: 16px;
+    height: 16px;
+    color: #ffffff;
+    flex-shrink: 0;
+}
+
+/* ---- STATUS COLORS ----
+   IN PIT: red — matches the site's alert/focus accent, fits the
+   "danger zone" feel of the pit lane.
+   OUT LAP: cyan — a "cold tyres, still warming up" transitional feel,
+   distinct from the violet/green/yellow already used for lap times. */
+.live-status-inpit {
+    color: rgb(255,102,0);
+    font-weight: bold;
+}
+
+.live-status-outlap {
+    color: rgb(236,72,196);
+    font-weight: bold;
 }
 
 /* ---- RESPONSIVE ---- */
 @media (max-width: 1100px) {
-    .live-page { max-width: 80%; margin: 80px auto; }
+    .live-page { max-width: 90%; margin: 80px auto; }
 }
 
 @media (max-width: 500px) {
     .live-page { max-width: 95%; }
     .results-table th,
     .results-table td { padding: 0 12px; }
+    .tyre-history img { width: 17px; height: 17px; }
+    .tyre-icon-fallback { width: 17px; height: 17px; font-size: 10px; }
+    .tyre-sep-arrow { width: 14px; height: 14px; }
 }
