@@ -1,0 +1,542 @@
+[local] escuchando en ws://localhost:8080
+[gp] ahora es: Hungarian Grand Prix (round 13)
+[local] frontend conectado
+[local] frontend conectado
+[ws] conectado, suscribiendo a: TimingData, TimingAppData, DriverList, Position.z
+[state] TimingData seeded
+  car #3 -> gap: ?
+[2026-07-26T13:46:53.14Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:53.248Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:53.296Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:53.301Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:53.301Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:53.471Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:53.791Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:53.845Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:54.018Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:54.056Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:54.14Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:54.156Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:54.187Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:54.208Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:54.335Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:54.34Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:54.589Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:54.708Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:54.858Z] TimingData updated
+  car #3 -> gap: +4.155
+[2026-07-26T13:46:54.972Z] TimingData updated
+  car #3 -> gap: +4.167
+[2026-07-26T13:46:54.989Z] TimingData updated
+  car #3 -> gap: +4.167
+[2026-07-26T13:46:55.058Z] TimingData updated
+  car #3 -> gap: +4.167
+[2026-07-26T13:46:55.073Z] TimingData updated
+  car #3 -> gap: +4.167
+[2026-07-26T13:46:55.073Z] TimingData updated
+  car #3 -> gap: +4.167
+[2026-07-26T13:46:55.074Z] TimingData updated
+  car #3 -> gap: +4.167
+[2026-07-26T13:46:55.09Z] TimingData updated
+  car #3 -> gap: +4.167
+[2026-07-26T13:46:55.101Z] TimingData updated
+  car #3 -> gap: +4.167
+[2026-07-26T13:46:55.194Z] TimingData updated
+  car #3 -> gap: +4.167
+[2026-07-26T13:46:55.214Z] TimingData updated
+  car #3 -> gap: +4.167
+[2026-07-26T13:46:55.235Z] TimingData updated
+  car #3 -> gap: +4.167
+[2026-07-26T13:46:55.298Z] TimingData updated
+  car #3 -> gap: +4.167
+[2026-07-26T13:46:55.369Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:55.746Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:55.777Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:55.824Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:55.824Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:55.824Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:55.839Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:55.839Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:55.839Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:55.855Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:55.855Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:55.855Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:55.886Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:55.95Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:55.996Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:56.042Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:56.062Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:56.518Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:56.574Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:56.635Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:57.013Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:57.029Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:57.035Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:57.042Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:57.057Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:57.269Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:57.269Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:57.566Z] TimingData updated
+  car #1 -> gap: +0.960
+[state] TimingAppData seeded
+[2026-07-26T13:46:57.627Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:57.627Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:57.647Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:58.067Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:58.517Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:58.953Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:58.967Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:59.026Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:59.026Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:59.074Z] TimingData updated
+  car #1 -> gap: +0.960
+[2026-07-26T13:46:59.074Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.089Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.099Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.174Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.237Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.314Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.314Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.355Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.355Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.379Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.435Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.44Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.455Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.484Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.502Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.541Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.627Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.817Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.817Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.822Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.939Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:46:59.968Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:00.126Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:00.203Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:00.24Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:00.24Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:00.34Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:00.399Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:00.601Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:00.601Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:00.846Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:00.899Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:00.977Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:00.994Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:01.008Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:01.258Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:01.305Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:01.336Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:01.727Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:01.867Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:01.961Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:02.008Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:02.024Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:02.039Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:02.055Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:02.086Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:02.117Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:02.133Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:02.414Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:02.868Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:02.883Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:03.055Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:03.274Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:03.321Z] TimingData updated
+  car #1 -> gap: +0.919
+[2026-07-26T13:47:03.321Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:03.383Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:03.399Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:03.461Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:03.571Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:03.633Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:04.102Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:04.102Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:04.102Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:04.18Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:04.367Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:04.367Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:04.492Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:04.586Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:04.633Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:04.774Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:04.805Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:04.867Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:04.899Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:05.164Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:05.164Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:05.196Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:05.274Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:05.649Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:05.727Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:05.852Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:05.867Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:05.914Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:05.93Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:06.164Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:06.227Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:06.336Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:06.336Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:06.383Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:06.414Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:06.43Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:06.461Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:06.477Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:06.571Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:06.602Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:06.664Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:06.68Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:07.009Z] TimingData updated
+  car #1 -> gap: +0.914
+[2026-07-26T13:47:07.071Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:07.149Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:07.164Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:07.196Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:07.211Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:08.164Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:08.18Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:08.696Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:08.696Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:08.696Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:08.711Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:08.727Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:08.742Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:08.867Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:08.93Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:09.133Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:09.164Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:09.196Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:09.211Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:09.399Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:09.414Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:09.477Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:09.524Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:09.571Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:09.586Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:09.68Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:09.696Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:09.711Z] TimingAppData updated
+[2026-07-26T13:47:09.711Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:09.961Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:10.008Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:10.227Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:10.258Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:10.727Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:10.836Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:10.852Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:10.961Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:10.992Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:11.055Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:11.055Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:11.117Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:11.117Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:11.227Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:11.617Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:11.758Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:11.821Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:11.899Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:12.258Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:12.305Z] TimingData updated
+  car #1 -> gap: +0.813
+[2026-07-26T13:47:12.336Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:12.368Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:12.414Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:12.461Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:12.555Z] TimingAppData updated
+[2026-07-26T13:47:12.586Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:12.618Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:12.883Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:12.93Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:12.93Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:12.978Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:12.978Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:13.008Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:13.18Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:13.196Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:13.305Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:13.336Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:13.352Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:13.477Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:13.477Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:13.883Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:13.914Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:14.086Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:14.117Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:14.383Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:14.414Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:14.477Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:14.492Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:14.524Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:14.555Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:14.758Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:14.774Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:14.79Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:14.805Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:15.117Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:15.133Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:15.274Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:15.305Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:15.461Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:15.524Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:15.633Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:15.649Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:15.696Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:15.867Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:15.946Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:15.946Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:15.993Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:15.993Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:16.024Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:16.117Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:16.149Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:16.258Z] TimingData updated
+  car #1 -> gap: +0.738
+[2026-07-26T13:47:16.305Z] TimingData updated
+  car #1 -> gap: +0.738
