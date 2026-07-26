@@ -38,6 +38,10 @@
 </header>
 
 <main class="live-page">
+    <div class="live-gp-banner">
+        <span id="live-gp-name">—</span>
+    </div>
+
     <div class="live-header">
         <h1 class="results-title">Live Timing</h1>
         <span id="live-status" class="live-status live-status--off">Connecting…</span>
@@ -64,6 +68,36 @@
         </table>
     </div>
 </main>
+
+<section class="map-view-section">
+    <div class="live-header">
+        <h2 class="results-title">Map View</h2>
+    </div>
+
+    <div class="map-view-content">
+        <div class="results-table-wrap">
+            <table class="results-table live-table live-table--compact">
+                <thead>
+                    <tr>
+                        <th class="live-col-pos">Pos</th>
+                        <th class="live-delta-col"></th>
+                        <th>Driver</th>
+                        <th>Interval</th>
+                        <th>Last Lap</th>
+                        <th>Tyres</th>
+                    </tr>
+                </thead>
+                <tbody id="live-rows-2">
+                    <tr><td colspan="6" class="results-empty">Waiting for session data…</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="circuit-map-wrap" id="circuit-map-wrap">
+            <img id="circuit-map-img" class="circuit-map-img" alt="">
+        </div>
+    </div>
+</section>
 
 <footer class="footer">
     <div class="footer-grid">

@@ -4,6 +4,68 @@
     margin: 128px auto;
 }
 
+/* ---- MAP VIEW SECTION ----
+   Left-aligned (not centered) like before — margin-left matches .live-page's
+   own left edge (10% = (100% - 80%) / 2) so the two blocks line up. Widened
+   from the earlier 40% to fit the table AND the circuit map side by side;
+   the table itself keeps roughly that same visual width via .results-table-wrap's
+   max-width below, so nothing about its own size actually changed. */
+.map-view-section {
+    width: 80%;
+    margin: 64px auto 128px 10%;
+}
+
+.map-view-content {
+    display: flex;
+    align-items: stretch;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.map-view-content .results-table-wrap {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+/* ---- CIRCUIT MAP (Map View) ----
+   Same asset convention as race.js: prefer the inline SVG layout, fall
+   back to the PNG if that circuit doesn't have one yet. */
+.circuit-map-wrap {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(20,20,30);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 24px;
+    transition: border-color 0.25s ease;
+}
+
+.circuit-map-wrap:hover {
+    border-color: rgba(255,255,255,0.14);
+}
+
+.circuit-map-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* ---- GP NAME BANNER (top of the page) ---- */
+.live-gp-banner {
+    margin-bottom: 12px;
+}
+
+.live-gp-banner #live-gp-name {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--primary-red);
+}
+
 .live-header {
     display: flex;
     align-items: baseline;
@@ -49,12 +111,14 @@
 }
 
 /* ---- DELTA INDICATOR (copied from race.css) ---- */
-.res-delta-col {
+/* Scoped with .live-table th/td (not just the bare class) so this wins
+   over results.css's general .results-table th/td padding. */
+.live-table th.live-delta-col {
     width: 40px;
     padding: 0;
 }
 
-.res-delta-cell {
+.live-table td.res-delta-cell {
     width: 40px;
     padding: 0;
     text-align: left;
@@ -204,10 +268,18 @@
 /* ---- RESPONSIVE ---- */
 @media (max-width: 1100px) {
     .live-page { max-width: 90%; margin: 80px auto; }
+    .map-view-section { width: 90%; margin: 48px auto 80px 5%; }
+}
+
+@media (max-width: 700px) {
+    .map-view-content { flex-direction: column; }
+    .map-view-content .results-table-wrap { flex-basis: auto; width: 100%; }
+    .circuit-map-wrap { width: 100%; }
 }
 
 @media (max-width: 500px) {
     .live-page { max-width: 95%; }
+    .map-view-section { width: 95%; margin: 32px auto 48px auto; }
     .results-table th,
     .results-table td { padding: 0 12px; }
     .tyre-history img { width: 17px; height: 17px; }

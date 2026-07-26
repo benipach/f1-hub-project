@@ -15,6 +15,34 @@ function mergeState(target, patch) {
     return target;
 }
 
+// ── GP → CIRCUIT MAPPING (same map used in race.js) ───────────────────────
+const CIRCUIT_MAP = {
+    'australian-gp':     'albert-park-circuit',
+    'chinese-gp':        'shanghai-international-circuit',
+    'japanese-gp':       'suzuka-international-racing-course',
+    'bahrain-gp':        'bahrain-internatinal-circuit',
+    'saudi-arabian-gp':  'jeddah-corniche-circuit',
+    'miami-gp':          'miami-international-autodrome',
+    'canadian-gp':       'circuit-gilles-villeneuve',
+    'monaco-gp':         'circuit-de-monaco',
+    'barcelona-gp':      'circuit-de-barcelona-catalunya',
+    'austrian-gp':       'red-bull-ring',
+    'british-gp':        'silverstone-circuit',
+    'belgian-gp':        'circuit-de-spa-francorchamps',
+    'hungarian-gp':      'hungaroring',
+    'dutch-gp':          'circuit-zandvoort',
+    'italian-gp':        'autodromo-nazionale-di-monza',
+    'spanish-gp':        'madring',
+    'azerbaijan-gp':     'baku-city-circuit',
+    'singapore-gp':      'marina-bay-street-circuit',
+    'united-states-gp':  'cota',
+    'mexican-gp':        'hermanos-rodriguez',
+    'brazilian-gp':      'autodromo-jose-carlos-pace',
+    'las-vegas-gp':      'las-vegas-strip-circuit',
+    'qatar-gp':          'lusail-international-circuit',
+    'abu-dhabi-gp':      'yas-marina-circuit',
+};
+
 // ── TEAM ID → LOGO FILENAME (same map used in race.js) ───────────────────
 const TEAM_LOGO_MAP = {
     'Mercedes':        'mercedes-logo',
@@ -81,12 +109,46 @@ function connect() {
 
 // --- Rendering helpers ---
 
+// Shows the current/next GP name in the banner at the top of the page,
+// from state.CurrentGP (sent by the backend, computed from season2026.json
+// — see refreshCurrentGP() there). Falls back quietly if it hasn't arrived
+// yet (first snapshot might land before the backend's own startup calc).
+function updateGPName() {
+    const el = document.getElementById('live-gp-name');
+    if (!el) return;
+    const gp = state.CurrentGP;
+    el.textContent = gp && gp.name ? gp.name : 'Loading Grand Prix…';
+}
+
+// Circuit map for the Map View section. Just swaps the layout image when
+// the GP changes (not on every WebSocket update).
+let lastCircuitId = null;
+function updateCircuitMap() {
+    const img = document.getElementById('circuit-map-img');
+    if (!img) return;
+
+    const slug = state.CurrentGP && state.CurrentGP.slug;
+    const circuitId = slug ? CIRCUIT_MAP[slug] : null;
+    if (!circuitId || circuitId === lastCircuitId) return;
+    lastCircuitId = circuitId;
+
+    img.src = `./img/circuits/${circuitId}-layout.png`;
+}
+
 // Full surname, uppercase (e.g. "HAMILTON"). Falls back to Tla/number if
 // the feed hasn't sent LastName yet for this driver.
 function driverSurname(driver, num) {
     if (driver.LastName) return driver.LastName.toUpperCase();
     if (driver.FullName) return driver.FullName.trim().split(' ').pop().toUpperCase();
     return driver.Tla || num;
+}
+
+// 3-letter driver code for the compact Map View table (e.g. "HAM", "VER").
+// Prefers the feed's own Tla if present; otherwise takes the first 3
+// letters of whatever driverSurname() resolves to.
+function driverCode(driver, num) {
+    if (driver.Tla) return driver.Tla.toUpperCase();
+    return driverSurname(driver, num).slice(0, 3);
 }
 
 function teamLogoHTML(teamName) {
@@ -168,6 +230,9 @@ function lapTimeToMs(t) {
 }
 
 function render() {
+    updateGPName();
+    updateCircuitMap();
+
     const timingLines = (state.TimingData && state.TimingData.Lines) || {};
     const driverList = state.DriverList || {};
     const appLines = (state.TimingAppData && state.TimingAppData.Lines) || {};
@@ -185,9 +250,11 @@ function render() {
     }
 
     const tbody = document.getElementById('live-rows');
+    const tbody2 = document.getElementById('live-rows-2');
 
     if (rows.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="results-empty">Waiting for session data…</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" class="results-empty">Waiting for session data…</td></tr>';
+        if (tbody2) tbody2.innerHTML = '<tr><td colspan="6" class="results-empty">Waiting for session data…</td></tr>';
         return;
     }
 
@@ -229,6 +296,59 @@ function render() {
             </tr>
         `;
     }).join('');
+
+    // Map View table: Pos, Delta, Driver (3-letter code), Interval, Last
+    // Lap, Tyres — Gap/Best Lap/Status stay dropped for this compact view.
+    if (tbody2) {
+        tbody2.innerHTML = rows.map(({ num, line }, i) => {
+            const driver = driverList[num] || {};
+            const appLine = appLines[num];
+            const lastLap = line.LastLapTime || {};
+            const posNum = i + 1;
+            const isTop3 = posNum <= 3;
+
+            const lapClass = lastLap.OverallFastest ? 'live-lap--fastest'
+                : lastLap.PersonalFastest ? 'live-lap--pb' : 'live-lap--normal';
+
+            return `
+                <tr class="results-row ${line.Retired ? 'live-row--retired' : ''}">
+                    <td class="res-pos${isTop3 ? ' top3' : ''}">${line.Position ?? posNum}</td>
+                    <td class="res-delta-cell">${gridDeltaHtml(line.Position ?? posNum, appLine && appLine.GridPos)}</td>
+                    <td>
+                        <span class="res-team">
+                            ${teamLogoHTML(driver.TeamName)}
+                            ${driverCode(driver, num)}
+                        </span>
+                    </td>
+                    <td class="results-date">${line.InPit ? '<span class="live-status-inpit">IN PIT</span>' : (posNum === 1 ? 'LEADER' : ((line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? ''))}</td>
+                    <td class="${lapClass}">${lastLap.Value ?? '-'}</td>
+                    <td>${tyreHistoryHTML(appLines[num])}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    syncMapHeight();
 }
+
+// Matches the circuit map container's height to the Map View table's real
+// rendered height — CSS align-items:stretch alone isn't reliable here
+// because the map image sizes itself by its own aspect ratio, not by the
+// table's content. Skipped below the 700px breakpoint, where the two
+// stack vertically (see live.css) and a forced height would just leave
+// empty space instead of matching anything.
+function syncMapHeight() {
+    const tableWrap = document.querySelector('.map-view-content .results-table-wrap');
+    const mapWrap = document.getElementById('circuit-map-wrap');
+    if (!tableWrap || !mapWrap) return;
+
+    if (window.innerWidth <= 700) {
+        mapWrap.style.height = '';
+        return;
+    }
+    mapWrap.style.height = `${tableWrap.offsetHeight}px`;
+}
+
+window.addEventListener('resize', syncMapHeight);
 
 connect();
