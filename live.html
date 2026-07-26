@@ -6,8 +6,8 @@
     <title>F1 Hub | Live Timing</title>
     <link rel="icon" href="img/icon.png">
     <link rel="stylesheet" href="./styles/style.css">
-    <link rel="stylesheet" href="./styles/live.css">
     <link rel="stylesheet" href="./styles/results.css">
+    <link rel="stylesheet" href="./styles/live.css">
     <script src="./js/twemoji.js" defer></script>
     <script src="./js/navbar.js" defer></script>
     <script src="./js/live.js" defer></script>
@@ -48,16 +48,18 @@
             <thead>
                 <tr>
                     <th class="live-col-pos">Pos</th>
+                    <th class="live-delta-col"></th>
                     <th>Driver</th>
                     <th>Gap</th>
                     <th>Interval</th>
                     <th>Last Lap</th>
-                    <th>Tyre</th>
+                    <th>Best Lap</th>
+                    <th>Tyres</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody id="live-rows">
-                <tr><td colspan="7" class="results-empty">Waiting for session data…</td></tr>
+                <tr><td colspan="9" class="results-empty">Waiting for session data…</td></tr>
             </tbody>
         </table>
     </div>
