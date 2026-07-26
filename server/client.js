@@ -189,6 +189,10 @@ connection.on("feed", (topic, rawPatch, timestamp) => {
   const patch = decodeIfCompressed(topic, rawPatch);
   if (patch == null) return;
 
+  if (topic === "DriverList") {
+    console.log("[debug] DriverList raw:", JSON.stringify(patch).slice(0, 1500));
+  }
+
   if (!state[topic]) {
     state[topic] = patch; // first message for this topic: seed as-is
     console.log(`[state] ${topic} seeded`);
@@ -211,7 +215,20 @@ async function main() {
   try {
     await connection.start();
     console.log("[ws] conectado, suscribiendo a:", TOPICS.join(", "));
-    await connection.invoke("Subscribe", TOPICS);
+
+    // Subscribe() itself returns the full current snapshot for every
+    // topic — "feed" only gives deltas AFTER this point. Static or
+    // rarely-changing fields (driver names, starting tyre compound, etc.)
+    // would otherwise never arrive if we joined mid-session.
+    const initial = await connection.invoke("Subscribe", TOPICS);
+    if (initial && typeof initial === "object") {
+      for (const topic of Object.keys(initial)) {
+        const decoded = decodeIfCompressed(topic, initial[topic]);
+        if (decoded == null) continue;
+        state[topic] = decoded;
+        console.log(`[state] ${topic} seeded from Subscribe() snapshot`);
+      }
+    }
   } catch (err) {
     console.error("[main] error de conexión:", err.message);
     console.log("Reintentando en 5s...");

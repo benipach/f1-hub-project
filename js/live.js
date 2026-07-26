@@ -90,10 +90,26 @@ const COMPOUND_META = {
 // inter/wet.png). Falls back to a plain letter badge if the compound isn't
 // recognized (shouldn't normally happen, but keeps the row from breaking).
 function tyreIconHTML(meta) {
+    if (!meta.file && !meta.code) {
+        // Compound genuinely unknown yet (e.g. the feed hasn't sent it for
+        // this stint) — a neutral dot instead of a jarring "?".
+        return `<span class="tyre-icon-unknown"></span>`;
+    }
     if (!meta.file) {
         return `<span class="tyre-icon-fallback">${meta.code}</span>`;
     }
     return `<img class="tyre-icon-img" src="./img/tyres/${meta.file}.png" alt="${meta.code}" width="20" height="20">`;
+}
+
+// The real feed sends lapped-car gaps as e.g. "1 L" (no "+", abbreviated
+// "L"). Expand that to "+1 LAP" / "+2 LAPS" for readability; anything else
+// (normal "+12.345" gaps) passes through unchanged.
+function formatGap(value) {
+    if (!value) return value;
+    const match = /^\+?\s*(\d+)\s*L$/i.exec(value.trim());
+    if (!match) return value;
+    const laps = Number(match[1]);
+    return `+${laps} LAP${laps === 1 ? '' : 'S'}`;
 }
 
 function connect() {
@@ -241,7 +257,7 @@ function tyreHistoryHTML(appLine) {
     keys.forEach((key, i) => {
         if (i > 0) parts.push(tyreSepArrowSvg());
         const stint = appLine.Stints[key];
-        const meta = COMPOUND_META[stint.Compound] || { code: '?', file: null };
+        const meta = COMPOUND_META[stint.Compound] || { code: stint.Compound ? '?' : null, file: null };
         const laps = stint.TotalLaps ?? '?';
         parts.push(tyreIconHTML(meta));
         parts.push(`<span class="tyre-laps">${laps}</span>`);
@@ -338,9 +354,10 @@ function render() {
         const bestMs = lapTimeToMs(bestLap.Value);
         const bestLapClass = (bestMs != null && bestMs === sessionBestMs) ? 'live-lap--fastest' : '';
 
+        const teamColor = TEAM_COLOR_MAP[driver.TeamName] || 'rgba(255,255,255,0.9)';
         const statusTag = line.Retired ? ''
-            : line.InPit ? '<span class="live-status-inpit">IN PIT</span>'
-            : line.PitOut ? '<span class="live-status-outlap">OUT LAP</span>'
+            : line.InPit ? `<span class="live-status-team" style="color:${teamColor}">IN PIT</span>`
+            : line.PitOut ? `<span class="live-status-team" style="color:${teamColor}">OUT LAP</span>`
             : 'RACING';
 
         return `
@@ -353,8 +370,8 @@ function render() {
                         ${driverSurname(driver, num)}
                     </span>
                 </td>
-                <td class="results-date">${posNum === 1 ? 'LEADER' : (line.GapToLeader ?? '')}</td>
-                <td class="results-date">${posNum === 1 ? 'LEADER' : ((line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? '')}</td>
+                <td class="results-date">${posNum === 1 ? 'LEADER' : formatGap(line.GapToLeader) ?? ''}</td>
+                <td class="results-date">${posNum === 1 ? 'LEADER' : formatGap(line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? ''}</td>
                 <td class="${lapClass}">${lastLap.Value ?? '-'}</td>
                 <td class="${bestLapClass}">${bestLap.Value ?? '-'}</td>
                 <td>${tyreHistoryHTML(appLines[num])}</td>
@@ -386,7 +403,7 @@ function render() {
                             ${driverCode(driver, num)}
                         </span>
                     </td>
-                    <td class="results-date">${line.InPit ? '<span class="live-status-inpit">IN PIT</span>' : (posNum === 1 ? 'LEADER' : ((line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? ''))}</td>
+                    <td class="results-date">${line.InPit ? `<span class="live-status-team" style="color:${teamColor}">IN PIT</span>` : (posNum === 1 ? 'LEADER' : formatGap(line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? '')}</td>
                     <td class="${lapClass}">${lastLap.Value ?? '-'}</td>
                     <td>${tyreHistoryHTML(appLines[num])}</td>
                 </tr>
