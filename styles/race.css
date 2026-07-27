@@ -987,7 +987,6 @@ overflow-y: auto;
 background: rgb(20,20,30);
 border: 1px solid rgba(255,255,255,0.05);
 border-radius: 16px;
-max-height: 605px;
 transition: border-color 0.25s ease;
 }
 
@@ -1015,7 +1014,7 @@ padding: 0 20px;
 text-align: left;
 font-family: 'F1-Regular', sans-serif;
 font-size: 11px;
-letter-spacing: 1px;
+letter-spacing: 0.1px;
 text-transform: uppercase;
 color: rgba(255,255,255,0.35);
 background: rgb(20,20,30);
@@ -1024,12 +1023,14 @@ white-space: nowrap;
 }
 
 .data-table td {
-height: 56px;
+height: 32px;
 padding: 0 20px;
 color: var(--text-light);
 border-bottom: 1px solid rgba(255,255,255,0.04);
 background: transparent;
 transition: background 0.15s ease;
+font-size: 16px;
+letter-spacing: 0.1px;
 }
 
 .data-table tbody tr:last-child td { border-bottom: none; }
@@ -1043,7 +1044,7 @@ background: rgba(255,255,255,0.035);
 width: 25px;
 text-align: center;
 font-family: 'F1-Regular';
-font-size: 14px;
+font-size: 16px;
 color: rgba(255,255,255,0.4);
 }
 
@@ -1105,13 +1106,13 @@ flex-shrink: 0;
 .res-time {
 font-family: 'F1-Regular';
 color: rgba(255,255,255,0.6);
-font-size: 14px;
+font-size: 16px;
 }
 
 .res-pts {
 text-align: center;
 font-family: 'F1-Regular';
-font-size: 14px;
+font-size: 16px;
 color: var(--text-light);
 }
 
@@ -1122,14 +1123,14 @@ color: var(--text-light);
 .res-laps {
 text-align: center;
 font-family: 'F1-Regular';
-font-size: 14px;
+font-size: 16px;
 color: rgba(255,255,255,0.55);
 white-space: nowrap;
 }
 
 .res-gap {
 font-family: 'F1-Regular';
-font-size: 14px;
+font-size: 16px;
 color: rgba(255,255,255,0.45);
 white-space: nowrap;
 }
@@ -1151,12 +1152,12 @@ color: rgba(255,255,255,0.4);
 
 /* ---- GRID DELTA ---- */
 .res-delta-col {
-width: 52px;
+width: 40px;
 padding: 0;
 }
 
 .res-delta-cell {
-width: 52px;
+width: 40px;
 padding: 0;
 text-align: left;
 }
@@ -1301,7 +1302,6 @@ border: 1px solid rgba(255,255,255,0.05);
     .track-layout-placeholder { padding: 8px; }
 
     /* Tables */
-    .race-table-wrap { max-height: 420px; }
     .data-table th,
     .data-table td { padding: 0 12px; }
 
@@ -1376,10 +1376,6 @@ border: 1px solid rgba(255,255,255,0.05);
     #fp2-card .res-laps,
     #fp3-card .res-laps-col,
     #fp3-card .res-laps { display: none; }
-
-    .race-table-wrap {
-        max-height: 401px;
-    }
 
     .res-driver-number {
         font-size: 11px;

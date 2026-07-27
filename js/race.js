@@ -467,12 +467,13 @@ function renderRaceResult(raceEntries = [], prevSessionEntries = [], containerId
                         <th>Driver</th>
                         <th class="res-team-col">Team</th>
                         <th class="res-time-col">Time</th>
+                        <th class="res-time-col">Best Lap</th>
                         <th style="text-align:center">Pts</th>
                     </tr>
                 </thead>
                 <tbody>
                     ${raceEntries.map(res => {
-                        const teamId    = res.team || driverTeams[res.driver] || '';
+                        const teamId    = driverTeams[res.driver] || res.team || '';
                         const logoFile  = TEAM_LOGO_MAP[teamId];
                         const teamColor = TEAM_COLOR_MAP[teamId] || 'rgba(255,255,255,0.4)';
                         const driverNum = driverNumbers[res.driver] ?? '';
@@ -484,6 +485,10 @@ function renderRaceResult(raceEntries = [], prevSessionEntries = [], containerId
                         const posNum = parseInt(res.pos, 10);
                         const isTop3 = posNum >= 1 && posNum <= 3;
                         const qualiPos = qualiMap[normalizeName(res.driver)];
+                        const bestLap = res.bestLap || '—';
+                        // Same purple as live.html's session-fastest-lap highlight.
+                        const isFastestLap = res.fastestLap === true;
+                        const bestLapStyle = isFastestLap ? 'color:rgb(176,56,216)' : '';
                         return `
                             <tr>
                                 <td class="res-pos${isTop3 ? ' top3' : ''}" style="${dim}">${res.pos}</td>
@@ -500,6 +505,7 @@ function renderRaceResult(raceEntries = [], prevSessionEntries = [], containerId
                                     </div>
                                 </td>
                                 <td class="res-time" style="${dim}">${res.time}</td>
+                                <td class="res-time" style="${bestLapStyle}">${bestLap}</td>
                                 <td class="res-pts" style="${dim}">${res.pts ?? 0}</td>
                             </tr>`;
                     }).join('')}
@@ -534,7 +540,7 @@ function renderSessionResult(entries = [], containerId, sessionLabel, driverTeam
         if (posNum === 11) {
             return `<tr class="qualy-divider"><td colspan="${colspan}">${qPrefix}2 &mdash; Eliminated</td></tr>`;
         }
-        if (posNum === 16 && entries.length > 15) {
+        if (posNum === 17 && entries.length > 16) {
             return `<tr class="qualy-divider"><td colspan="${colspan}">${qPrefix}1 &mdash; Eliminated</td></tr>`;
         }
         return '';
@@ -555,14 +561,14 @@ function renderSessionResult(entries = [], containerId, sessionLabel, driverTeam
                 </thead>
                 <tbody>
                     ${entries.map((res, i) => {
-                        const teamId    = res.team || driverTeams[res.driver] || '';
+                        const teamId    = driverTeams[res.driver] || res.team || '';
                         const logoFile  = TEAM_LOGO_MAP[teamId];
                         const teamColor = TEAM_COLOR_MAP[teamId] || 'rgba(255,255,255,0.4)';
                         const driverNum = driverNumbers[res.driver] ?? '';
                         const logoHtml  = logoFile
                             ? `<img class="res-team-logo" src="../img/teams/${logoFile}.png" alt="${teamId}">`
                             : `<span class="res-team-logo-placeholder"></span>`;
-                        const noTime = !res.lapTime || res.lapTime === 'DNF' || res.lapTime === 'DNS' || res.lapTime === 'NC';
+                        const noTime = !res.lapTime || ['DNF', 'DNS', 'NC', 'No time'].includes(res.lapTime);
                         const dim    = noTime ? 'opacity:0.4' : '';
                         const posNum = parseInt(res.pos, 10);
                         const isTop3 = posNum >= 1 && posNum <= 3;
