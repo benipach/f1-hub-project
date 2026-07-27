@@ -17,11 +17,64 @@ const URL = "https://livetiming.formula1.com/signalrcore";
 const LOCAL_PORT = 8080; // your frontend connects here: ws://localhost:8080
 
 // Position.z carries live X/Y car coordinates for the map overlay.
+// SessionStatus/SessionInfo drive the "keep last session's results visible
+// for 24h" logic below — see updateDisplayState().
 // Compressed topics (".z" suffix) need inflating before use — see decodeIfCompressed().
-const TOPICS = ["TimingData", "TimingAppData", "DriverList", "Position.z"];
+const TOPICS = ["TimingData", "TimingAppData", "DriverList", "Position.z", "SessionStatus", "SessionInfo"];
 
 // Local, persistent state built from merged deltas. One key per topic.
+// This always mirrors whatever F1's feed is currently sending, live.
 const state = {};
+
+// ── RESULT PERSISTENCE (keep last session visible for 24h) ────────────────
+// `state` above always tracks the raw live feed. What we actually SEND to
+// the frontend is `displayState`, governed by this: while a session is
+// live, displayState mirrors state directly (live = top priority, always).
+// The moment a session ends, we freeze a snapshot of it. That snapshot
+// stays visible for 24h — UNLESS a *different* session goes live sooner
+// (e.g. FP1 -> Qualifying same day), in which case we drop the freeze
+// immediately and go back to mirroring live data.
+const FREEZE_DURATION_MS = 24 * 60 * 60 * 1000;
+let frozen = null; // { sessionKey, data, frozenAt } | null
+let mirroring = true; // true = displayState === state right now
+
+function currentSessionKey() {
+  return state.SessionInfo?.Key ?? null;
+}
+
+function isSessionLive() {
+  return state.SessionStatus?.Status === "Started";
+}
+
+function getDisplayState() {
+  return frozen ? frozen.data : state;
+}
+
+// Re-evaluate live/frozen status. Cheap enough to call on every single
+// update (see onUpdate below) — it's just a couple of property reads
+// unless a transition actually happened.
+function updateDisplayState() {
+  const liveNow = isSessionLive();
+  const sessionKey = currentSessionKey();
+
+  if (liveNow) {
+    if (frozen && frozen.sessionKey !== sessionKey) {
+      console.log(`[session] new session started (key=${sessionKey}), dropping frozen snapshot`);
+      frozen = null;
+    }
+    mirroring = true;
+  } else if (mirroring) {
+    // Was live, isn't anymore: the session just ended. Freeze it.
+    frozen = { sessionKey, data: structuredClone(state), frozenAt: Date.now() };
+    mirroring = false;
+    console.log(`[session] session ended, freezing results for 24h (key=${sessionKey})`);
+  }
+
+  if (frozen && Date.now() - frozen.frozenAt > FREEZE_DURATION_MS) {
+    console.log("[session] 24h window expired, clearing frozen snapshot");
+    frozen = null;
+  }
+}
 
 // ── CURRENT GP, computed from season2026.json ─────────────────────────────
 // Doesn't touch F1's feed at all — pure local date math. The full season
@@ -98,8 +151,9 @@ console.log(`[local] escuchando en ws://localhost:${LOCAL_PORT}`);
 
 localServer.on("connection", (client) => {
   console.log("[local] frontend conectado");
-  // Catch the new client up with everything we have so far.
-  client.send(JSON.stringify({ type: "snapshot", state }));
+  // Catch the new client up with everything we have so far — frozen
+  // results if we're between sessions, live state otherwise.
+  client.send(JSON.stringify({ type: "snapshot", state: getDisplayState() }));
 
   client.on("close", () => console.log("[local] frontend desconectado"));
 });
@@ -111,11 +165,29 @@ refreshCurrentGP();
 setInterval(refreshCurrentGP, 15 * 60 * 1000);
 
 function broadcast(topic) {
-  const payload = JSON.stringify({ type: "update", topic, data: state[topic] });
+  const payload = JSON.stringify({ type: "update", topic, data: getDisplayState()[topic] });
   for (const client of localServer.clients) {
     if (client.readyState === WebSocket.OPEN) client.send(payload);
   }
 }
+
+// Used when the frozen snapshot's 24h window expires with no live traffic
+// to trigger it naturally — pushes a full resync instead of a single-topic
+// update, since potentially everything changed (e.g. back to empty state).
+function broadcastFullSnapshot() {
+  const payload = JSON.stringify({ type: "snapshot", state: getDisplayState() });
+  for (const client of localServer.clients) {
+    if (client.readyState === WebSocket.OPEN) client.send(payload);
+  }
+}
+
+// Catches the 24h expiry even during a quiet period with no incoming
+// messages to trigger updateDisplayState() otherwise.
+setInterval(() => {
+  const wasFrozen = !!frozen;
+  updateDisplayState();
+  if (wasFrozen && !frozen) broadcastFullSnapshot();
+}, 10 * 60 * 1000);
 
 /**
  * Recursively merges a partial update into the local state.
@@ -143,6 +215,7 @@ function mergeState(target, patch) {
 }
 
 function onUpdate(topic) {
+  updateDisplayState();
   broadcast(topic);
 
   // Sanity check in the console: current gap of the first car in the list.

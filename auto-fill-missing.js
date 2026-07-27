@@ -5,6 +5,7 @@
  */
 import { readFile, writeFile, copyFile } from "node:fs/promises";
 import {
+  RACE_LIKE,
   buildKnownDriverNamesFromSeason,
   buildSessionInfoMap,
   fetchSessionWeather,
@@ -25,6 +26,7 @@ function parseArgs(argv) {
     dryRun: false,
     backup: true,
     fixPositions: false,
+    backfillBestLap: false,
     skip: new Set(DEFAULT_SKIP_GP_KEYS),
   };
 
@@ -43,6 +45,9 @@ function parseArgs(argv) {
     else if (arg === "--no-backup") flags.backup = false;
     else if (arg === "--once") { /* no-op */ }
     else if (arg === "--fix-positions") flags.fixPositions = true;
+    // Backfill manual: agrega bestLap a carreras que ya tienen resultados
+    // guardados pero se corrieron antes de que este campo existiera.
+    else if (arg === "--backfill-bestlap") flags.backfillBestLap = true;
     else if (arg.startsWith("--interval=")) console.warn("⚠️ --interval ignorado: GitHub Actions agenda las ejecuciones.");
     else positional.push(arg);
   }
@@ -61,6 +66,12 @@ async function openf1HasResults(sessionKey) {
 }
 function sessionHasResults(session) {
   return Array.isArray(session?.results) && session.results.length > 0;
+}
+// Sesión de carrera con resultados guardados pero de antes de que existiera
+// el campo bestLap (o donde OpenF1 no tenía vueltas para algún piloto).
+function raceSessionMissingBestLap(session) {
+  if (!sessionHasResults(session)) return false;
+  return session.results.some((row) => row && row.bestLap === undefined);
 }
 function parseDate(value) {
   const date = value ? new Date(value) : null;
@@ -103,14 +114,15 @@ function gpHasStartedSession(gp) {
 
 // Evita pegarle a OpenF1 por GPs cuyas sesiones pasadas ya están completas.
 // Con forceWeather=true no saltea nada que ya haya arrancado (backfill manual).
-function gpNeedsWork(gp, weatherEnabled, forceWeather = false) {
-  return Object.values(gp.sessions ?? {}).some((session) => {
+function gpNeedsWork(gp, weatherEnabled, forceWeather = false, backfillBestLap = false) {
+  return Object.entries(gp.sessions ?? {}).some(([resultKey, session]) => {
     if (!session || typeof session !== "object") return false;
     const start = parseDate(session.date);
     const hasStarted = start ? start.getTime() <= Date.now() : true;
     if (!hasStarted) return false;
     if (!sessionHasResults(session)) return true;
     if (weatherEnabled && (isEmptyWeather(session.weather) || forceWeather)) return true;
+    if (backfillBestLap && RACE_LIKE.has(resultKey) && raceSessionMissingBestLap(session)) return true;
     return false;
   });
 }
@@ -166,7 +178,7 @@ async function runOnce(args) {
       console.log(`⏭️ ${gpKey}: todavía no arrancó, se saltea sin consultar OpenF1`);
       continue;
     }
-    if (!gpNeedsWork(gp, args.weather, args.forceWeather)) {
+    if (!gpNeedsWork(gp, args.weather, args.forceWeather, args.backfillBestLap)) {
       console.log(`⏭️ ${gpKey}: ya está completo, se saltea sin consultar OpenF1`);
       continue;
     }
@@ -215,13 +227,21 @@ async function runOnce(args) {
         }
       }
 
-      if (!sessionHasResults(session)) {
+      const needsResults = !sessionHasResults(session);
+      const needsBestLapBackfill =
+        args.backfillBestLap && RACE_LIKE.has(resultKey) && raceSessionMissingBestLap(session);
+
+      if (needsResults || needsBestLapBackfill) {
         try {
-          if (await openf1HasResults(sessionKey)) {
+          if (needsResults ? await openf1HasResults(sessionKey) : true) {
             await fillGPSession(gp, args.year, gpKey, resultKey, knownDriverNames, sessionKey);
             changed = true;
-            console.log(`✅ ${gpKey}/${resultKey}: resultados agregados`);
-          } else if (sessionEnded(session, openf1Session)) {
+            console.log(
+              needsResults
+                ? `✅ ${gpKey}/${resultKey}: resultados agregados`
+                : `🏎️ ${gpKey}/${resultKey}: bestLap agregado`
+            );
+          } else if (needsResults && sessionEnded(session, openf1Session)) {
             console.log(`⏳ ${gpKey}/${resultKey}: terminada sin resultados OpenF1`);
           }
         } catch (err) {

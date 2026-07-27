@@ -350,7 +350,16 @@ function mapQualy(results, driversByNumber, knownDriverNames) {
     };
   });
 }
-function mapRace(results, driversByNumber, knownDriverNames, isSprint) {
+function mapRace(results, driversByNumber, knownDriverNames, isSprint, bestLapByNumber = new Map()) {
+  let fastestNumber = null;
+  let fastestSeconds = Infinity;
+  for (const [num, seconds] of bestLapByNumber) {
+    if (seconds < fastestSeconds) {
+      fastestSeconds = seconds;
+      fastestNumber = num;
+    }
+  }
+
   return [...results].sort(sortByPosition).map((row) => {
     const driver = resolveDriver(row.driver_number, driversByNumber, knownDriverNames);
     const apiPoints = typeof row.points === "number" ? row.points : null;
@@ -363,6 +372,11 @@ function mapRace(results, driversByNumber, knownDriverNames, isSprint) {
       pts: Number(pts),
     };
     if (driver.team) mapped.team = driver.team;
+    const bestSeconds = bestLapByNumber.get(row.driver_number);
+    if (bestSeconds !== undefined) {
+      mapped.bestLap = formatClock(bestSeconds);
+      if (row.driver_number === fastestNumber) mapped.fastestLap = true;
+    }
     return mapped;
   });
 }
@@ -379,6 +393,25 @@ async function fetchSessionResults(sessionKey) {
   return getJSON("/session_result", { session_key: sessionKey });
 }
 
+async function fetchSessionLaps(sessionKey) {
+  return getJSON("/laps", { session_key: sessionKey });
+}
+
+// Mejor vuelta por piloto a partir de /laps: ignora vueltas de salida de
+// boxes y duraciones inválidas/nulas (vuelta incompleta, safety car, etc).
+function bestLapsByNumber(laps) {
+  const best = new Map();
+  for (const lap of laps ?? []) {
+    if (lap?.is_pit_out_lap) continue;
+    const duration = Number(lap?.lap_duration);
+    if (!Number.isFinite(duration) || duration <= 0) continue;
+    const num = lap.driver_number;
+    const current = best.get(num);
+    if (current === undefined || duration < current) best.set(num, duration);
+  }
+  return best;
+}
+
 async function fillGPSession(gp, year, gpKey, resultKey, knownDriverNames = new Set(), sessionKey = null) {
   let resolvedSessionKey = sessionKey;
   if (!resolvedSessionKey) {
@@ -386,9 +419,15 @@ async function fillGPSession(gp, year, gpKey, resultKey, knownDriverNames = new 
     resolvedSessionKey = await findSessionKey(meetingKey, resultKey);
   }
   if (!resolvedSessionKey) return gp;
-  const [results, driversByNumber] = await Promise.all([fetchSessionResults(resolvedSessionKey), buildDriverMap(resolvedSessionKey)]);
+
+  const isRaceLike = RACE_LIKE.has(resultKey);
+  const [results, driversByNumber, laps] = await Promise.all([
+    fetchSessionResults(resolvedSessionKey),
+    buildDriverMap(resolvedSessionKey),
+    isRaceLike ? fetchSessionLaps(resolvedSessionKey) : Promise.resolve(null),
+  ]);
   const session = ensureSession(gp, resultKey);
-  if (RACE_LIKE.has(resultKey)) session.results = mapRace(results, driversByNumber, knownDriverNames, resultKey === "sprintRace");
+  if (isRaceLike) session.results = mapRace(results, driversByNumber, knownDriverNames, resultKey === "sprintRace", bestLapsByNumber(laps));
   else if (QUALY_LIKE.has(resultKey)) session.results = mapQualy(results, driversByNumber, knownDriverNames);
   else session.results = mapPractice(results, driversByNumber, knownDriverNames);
   return gp;
@@ -438,11 +477,14 @@ async function fetchSessionWeather(sessionKey) {
 
 export {
   GP_OPENF1_LOOKUP,
+  RACE_LIKE,
   DRIVER_NAME_MISMATCHES,
   OpenF1Error,
+  bestLapsByNumber,
   buildKnownDriverNamesFromSeason,
   buildSessionInfoMap,
   buildSessionMap,
+  fetchSessionLaps,
   fetchSessionResults,
   fetchSessionWeather,
   fillGPSession,
