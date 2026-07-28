@@ -638,7 +638,7 @@
             "pos": 10,
             "driver": "Gabriel Bortoleto",
             "number": 5,
-            "lapTime": "1:20.221",
+            "lapTime": "No time",
             "team": "Audi"
           },
           {
@@ -9628,7 +9628,7 @@
             "pos": 10,
             "driver": "Isack Hadjar",
             "number": 6,
-            "lapTime": "1:45.823",
+            "lapTime": "No time",
             "team": "Red Bull"
           },
           {
@@ -11009,38 +11009,32 @@
     "color": "#FFCC00 45%, #C60B1E 70%",
     "sessions": {
       "fp1": {
-        "date": "2026-08-28T08:30:00",
-        "endDate": "2026-08-28T09:30:00",
+        "date": "2026-09-11T08:30:00",
+        "endDate": "2026-09-11T09:30:00",
         "weather": {},
         "results": []
       },
       "fp2": {
-        "date": "2026-08-28T12:00:00",
-        "endDate": "2026-08-28T13:00:00",
+        "date": "2026-09-11T12:00:00",
+        "endDate": "2026-09-11T13:00:00",
         "weather": {},
         "results": []
       },
       "fp3": {
-        "date": "2026-08-29T07:30:00",
-        "endDate": "2026-08-29T08:30:00",
-        "weather": {
-          "air_temperature": 27,
-          "track_temperature": 33.9,
-          "humidity": 57,
-          "wind_speed": 2.6,
-          "rainfall": 0
-        },
+        "date": "2026-09-12T07:30:00",
+        "endDate": "2026-09-12T08:30:00",
+        "weather": {},
         "results": []
       },
       "qualifying": {
-        "date": "2026-08-29T11:00:00",
-        "endDate": "2026-08-29T12:00:00",
+        "date": "2026-09-12T11:00:00",
+        "endDate": "2026-09-12T12:00:00",
         "weather": {},
         "results": []
       },
       "race": {
-        "date": "2026-08-30T10:00:00",
-        "endDate": "2026-08-30T12:00:00",
+        "date": "2026-09-13T10:00:00",
+        "endDate": "2026-09-13T12:00:00",
         "weather": {},
         "results": []
       }
@@ -11053,83 +11047,115 @@
     "color": "#0092BC 30%, #EF3340 40%, #EF3340 60%, #00AF66 80%",
     "sessions": {
       "fp1": {
-        "date": "2026-09-18T06:30:00",
-        "endDate": "2026-09-18T07:30:00",
+        "date": "2026-09-24T06:30:00",
+        "endDate": "2026-09-24T07:30:00",
         "weather": {},
         "results": []
       },
       "fp2": {
-        "date": "2026-09-18T10:00:00",
-        "endDate": "2026-09-18T11:00:00",
+        "date": "2026-09-24T10:00:00",
+        "endDate": "2026-09-24T11:00:00",
         "weather": {},
         "results": []
       },
       "fp3": {
-        "date": "2026-09-19T05:30:00",
-        "endDate": "2026-09-19T06:30:00",
+        "date": "2026-09-25T05:30:00",
+        "endDate": "2026-09-25T06:30:00",
         "weather": {},
         "results": []
       },
       "qualifying": {
-        "date": "2026-09-19T09:00:00",
-        "endDate": "2026-09-19T10:00:00",
-        "weather": {
-          "air_temperature": 25.1,
-          "track_temperature": 33,
-          "humidity": 54,
-          "wind_speed": 2.2,
-          "rainfall": 0
-        },
+        "date": "2026-09-25T09:00:00",
+        "endDate": "2026-09-25T10:00:00",
+        "weather": {},
         "results": []
       },
       "race": {
-        "date": "2026-09-20T08:00:00",
-        "endDate": "2026-09-20T10:00:00",
+        "date": "2026-09-26T08:00:00",
+        "endDate": "2026-09-26T10:00:00",
+        "weather": {},
+        "results": []
+      }
+    }
+  },
+  "malaysian-gp": {
+    "round": 18,
+    "name": "Bahrain Grand Prix in Malaysia",
+    "sprint": false,
+    "color": "#CC0001 25%, #FFFFFF 40%, #012169 65%, #FCD116 85%",
+    "sessions": {
+      "fp1": {
+        "date": "2026-10-02T00:00:00",
+        "endDate": "2026-10-02T01:00:00",
+        "weather": {},
+        "results": []
+      },
+      "fp2": {
+        "date": "2026-10-02T04:00:00",
+        "endDate": "2026-10-02T05:00:00",
+        "weather": {},
+        "results": []
+      },
+      "fp3": {
+        "date": "2026-10-03T03:00:00",
+        "endDate": "2026-10-03T04:00:00",
+        "weather": {},
+        "results": []
+      },
+      "qualifying": {
+        "date": "2026-10-03T06:00:00",
+        "endDate": "2026-10-03T07:00:00",
+        "weather": {},
+        "results": []
+      },
+      "race": {
+        "date": "2026-10-04T04:00:00",
+        "endDate": "2026-10-04T06:00:00",
         "weather": {},
         "results": []
       }
     }
   },
   "singapore-gp": {
-    "round": 18,
+    "round": 19,
     "name": "Singapore Grand Prix",
     "sprint": true,
     "color": "#EF3340 45%, #ffffff 80%",
     "sessions": {
       "fp1": {
-        "date": "2026-10-02T06:30:00",
-        "endDate": "2026-10-02T07:30:00",
+        "date": "2026-10-09T06:30:00",
+        "endDate": "2026-10-09T07:30:00",
         "weather": {},
         "results": []
       },
       "sprintQualy": {
-        "date": "2026-10-02T10:00:00",
-        "endDate": "2026-10-02T11:00:00",
+        "date": "2026-10-09T10:00:00",
+        "endDate": "2026-10-09T11:00:00",
         "weather": {},
         "results": []
       },
       "sprintRace": {
-        "date": "2026-10-03T06:30:00",
-        "endDate": "2026-10-03T07:30:00",
+        "date": "2026-10-10T06:30:00",
+        "endDate": "2026-10-10T07:30:00",
         "weather": {},
         "results": []
       },
       "qualifying": {
-        "date": "2026-10-03T10:00:00",
-        "endDate": "2026-10-03T11:00:00",
+        "date": "2026-10-10T10:00:00",
+        "endDate": "2026-10-103T11:00:00",
         "weather": {},
         "results": []
       },
       "race": {
-        "date": "2026-10-04T09:00:00",
-        "endDate": "2026-10-04T11:00:00",
+        "date": "2026-10-11T09:00:00",
+        "endDate": "2026-10-11T11:00:00",
         "weather": {},
         "results": []
       }
     }
   },
   "united-states-gp": {
-    "round": 19,
+    "round": 20,
     "name": "US Grand Prix",
     "sprint": false,
     "color": "#bb1225 25%, #2c2b6b 35%, #2c2b6b 65%, #ffffff 75%",
@@ -11167,7 +11193,7 @@
     }
   },
   "mexican-gp": {
-    "round": 20,
+    "round": 21,
     "name": "Mexican Grand Prix",
     "sprint": false,
     "color": "#006847 30%, #ffffff 40%, #ffffff 60%, #CE1126 80%",
@@ -11205,7 +11231,7 @@
     }
   },
   "brazilian-gp": {
-    "round": 21,
+    "round": 22,
     "name": "Brazilian Grand Prix",
     "sprint": false,
     "color": "#009C3B 25%, #FFDF00 35%, #FFDF00 65%, #002776 75%",
@@ -11243,7 +11269,7 @@
     }
   },
   "las-vegas-gp": {
-    "round": 22,
+    "round": 23,
     "name": "Las Vegas Grand Prix",
     "sprint": false,
     "color": "#FFD700, #FF4500, #8B00FF",
@@ -11281,7 +11307,7 @@
     }
   },
   "qatar-gp": {
-    "round": 23,
+    "round": 24,
     "name": "Qatar Grand Prix",
     "sprint": false,
     "color": "#8D1B3D 45%, #ffffff 70%",
@@ -11319,7 +11345,7 @@
     }
   },
   "abu-dhabi-gp": {
-    "round": 24,
+    "round": 25,
     "name": "Abu Dhabi Grand Prix",
     "sprint": false,
     "color": "#009a1a, #FFD100, #111111",
@@ -11327,13 +11353,7 @@
       "fp1": {
         "date": "2026-12-04T06:30:00",
         "endDate": "2026-12-04T07:30:00",
-        "weather": {
-          "air_temperature": 25.2,
-          "track_temperature": 33.4,
-          "humidity": 56,
-          "wind_speed": 2.7,
-          "rainfall": 0
-        },
+        "weather": {},
         "results": []
       },
       "fp2": {

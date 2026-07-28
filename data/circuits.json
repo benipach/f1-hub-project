@@ -1223,6 +1223,64 @@
   ]
   },
 
+  "sepang-international-circuit": {
+    "name": "Sepang International Circuit",
+    "media": {
+      "image": "../img/circuits/sepang-international-circuit.png",
+      "layout": "../img/circuits/sepang-international-circuit-layout.png"
+    },
+    "stats": {
+      "length": "5.543",
+      "laps": 56,
+      "turns": 15,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "330"
+    },
+    "lapRecord": {
+      "time": "1:34.080",
+      "driver": "Sebastian Vettel",
+      "year": 2017
+    },
+    "characteristics": {
+      "downforce": 55,
+      "overtaking": 75,
+      "tyreDeg": 85,
+      "trackType": "permanent"
+    },
+    "funFacts": [
+      "Sepang was the first purpose-built 'Tilke' circuit, designed by Hermann Tilke, who went on to design most modern F1 tracks.",
+      "It has two full-speed straights separated by only a single hairpin, letting drivers use back-to-back DRS zones.",
+      "Extreme tropical heat and humidity make it one of the most physically demanding races for drivers.",
+      "Sudden monsoon downpours are common, and the 2009 race was red-flagged and never restarted due to heavy rain.",
+      "The abrasive track surface produces some of the highest tyre degradation on the calendar.",
+      "After hosting the Malaysian Grand Prix from 1999 to 2017, the circuit returns to the F1 calendar in 2026 hosting the Bahrain Grand Prix on Bahrain's behalf, following the cancellation of the race in Sakhir.",
+      "The unusual 'Bahrain Grand Prix in Malaysia' name mirrors past cases like the San Marino GP being held at Imola, or the Luxembourg GP at Germany's Nürburgring."
+    ],
+    "history": [
+      { "year": 1999, "pole": "Michael Schumacher", "winner": "Eddie Irvine" },
+      { "year": 2000, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+      { "year": 2001, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+      { "year": 2002, "pole": "Michael Schumacher", "winner": "Ralf Schumacher" },
+      { "year": 2003, "pole": "Fernando Alonso", "winner": "Kimi Raikkonen" },
+      { "year": 2004, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
+      { "year": 2005, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
+      { "year": 2006, "pole": "Giancarlo Fisichella", "winner": "Giancarlo Fisichella" },
+      { "year": 2007, "pole": "Felipe Massa", "winner": "Fernando Alonso" },
+      { "year": 2008, "pole": "Felipe Massa", "winner": "Kimi Raikkonen" },
+      { "year": 2009, "pole": "Jenson Button", "winner": "Jenson Button" },
+      { "year": 2010, "pole": "Mark Webber", "winner": "Sebastian Vettel" },
+      { "year": 2011, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+      { "year": 2012, "pole": "Lewis Hamilton", "winner": "Fernando Alonso" },
+      { "year": 2013, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
+      { "year": 2014, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
+      { "year": 2015, "pole": "Lewis Hamilton", "winner": "Sebastian Vettel" },
+      { "year": 2016, "pole": "Lewis Hamilton", "winner": "Daniel Ricciardo" },
+      { "year": 2017, "pole": "Lewis Hamilton", "winner": "Max Verstappen" }
+    ]
+  },
+
   "marina-bay-street-circuit": {
     "name": "Marina Bay Street Circuit",
     "media": {
