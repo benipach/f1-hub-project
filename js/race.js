@@ -490,7 +490,7 @@ function renderRaceResult(raceEntries = [], prevSessionEntries = [], containerId
                         const bestLap = res.bestLap || '—';
                         // Same purple as live.html's session-fastest-lap highlight.
                         const isFastestLap = res.fastestLap === true;
-                        const bestLapStyle = isFastestLap ? 'color:rgb(176,56,216)' : '';
+                        const bestLapStyle = isFastestLap ? 'color:rgb(176,56,216)' : dim;
                         return `
                             <tr>
                                 <td class="res-pos${isTop3 ? ' top3' : ''}" style="${dim}">${res.pos}</td>
