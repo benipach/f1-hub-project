@@ -21,6 +21,16 @@ const QUALY_LIKE = new Set(["qualifying", "sprintQualy"]);
 const POINTS_TABLE = { 1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1 };
 const SPRINT_POINTS_TABLE = { 1: 8, 2: 7, 3: 6, 4: 5, 5: 4, 6: 3, 7: 2, 8: 1 };
 
+// team_name tal como lo manda OpenF1 → nombre corto que queremos guardar en el JSON.
+const TEAM_NAME_NORMALIZE = {
+  "Red Bull Racing": "Red Bull",
+  "Haas F1 Team": "Haas",
+  "Mercedes": "Mercedes-AMG",
+};
+function normalizeTeamName(name) {
+  return TEAM_NAME_NORMALIZE[name] ?? name;
+}
+
 const GP_OPENF1_LOOKUP = {
   "australian-gp": { location: "Melbourne", circuitShortName: "Melbourne", aliases: ["Australian Grand Prix"] },
   "chinese-gp": { location: "Shanghai", circuitShortName: "Shanghai", aliases: ["Chinese Grand Prix"] },
@@ -246,7 +256,7 @@ async function buildDriverMap(sessionKey) {
   const map = new Map();
   for (const driver of drivers) {
     const name = [driver.first_name, driver.last_name].filter(Boolean).join(" ") || titleCaseName(driver.full_name ?? driver.broadcast_name);
-    map.set(driver.driver_number, { name, team: driver.team_name ?? null });
+    map.set(driver.driver_number, { name, team: normalizeTeamName(driver.team_name ?? null) });
   }
   DRIVER_CACHE.set(sessionKey, map);
   return map;
@@ -493,6 +503,7 @@ export {
   GP_OPENF1_LOOKUP,
   RACE_LIKE,
   DRIVER_NAME_MISMATCHES,
+  TEAM_NAME_NORMALIZE,
   OpenF1Error,
   bestLapsByNumber,
   buildKnownDriverNamesFromSeason,
