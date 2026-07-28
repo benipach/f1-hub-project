@@ -6,6 +6,7 @@
 import { readFile, writeFile, copyFile } from "node:fs/promises";
 import {
   RACE_LIKE,
+  TEAM_NAME_NORMALIZE,
   buildKnownDriverNamesFromSeason,
   buildSessionInfoMap,
   fetchSessionWeather,
@@ -28,6 +29,7 @@ function parseArgs(argv) {
     fixPositions: false,
     backfillBestLap: false,
     backfillDriverInfo: false,
+    normalizeTeams: false,
     skip: new Set(DEFAULT_SKIP_GP_KEYS),
   };
 
@@ -52,6 +54,9 @@ function parseArgs(argv) {
     // Backfill manual: agrega team/number a resultados (cualquier sesión) guardados
     // antes del fix que empezó a incluir esos campos en mapPractice/mapQualy.
     else if (arg === "--backfill-driver-info") flags.backfillDriverInfo = true;
+    // Renombra equipos ya guardados según TEAM_NAME_NORMALIZE (ej. "Haas F1 Team" → "Haas"),
+    // sin pegarle a OpenF1: solo reescribe lo que ya está en el JSON.
+    else if (arg === "--normalize-teams") flags.normalizeTeams = true;
     else if (arg.startsWith("--interval=")) console.warn("⚠️ --interval ignorado: GitHub Actions agenda las ejecuciones.");
     else positional.push(arg);
   }
@@ -172,6 +177,25 @@ function migrateZeroPositions(season) {
   return fixedCount;
 }
 
+// Renombra season.results[].team ya guardados usando TEAM_NAME_NORMALIZE
+// (backfill manual: no vuelve a pegarle a OpenF1, solo reescribe strings).
+function normalizeTeamNamesInSeason(season) {
+  let renamed = 0;
+  for (const gp of Object.values(season)) {
+    if (!gp?.sessions || typeof gp.sessions !== "object") continue;
+    for (const session of Object.values(gp.sessions)) {
+      for (const row of session?.results ?? []) {
+        const mapped = row?.team ? TEAM_NAME_NORMALIZE[row.team] : undefined;
+        if (mapped) {
+          row.team = mapped;
+          renamed += 1;
+        }
+      }
+    }
+  }
+  return renamed;
+}
+
 async function runOnce(args) {
   const season = JSON.parse(await readFile(args.seasonPath, "utf8"));
   const knownDriverNames = buildKnownDriverNamesFromSeason(season);
@@ -184,6 +208,16 @@ async function runOnce(args) {
       updatesCount += fixed;
     } else {
       console.log("🔧 Migración pos:0 → NC: nada para corregir");
+    }
+  }
+
+  if (args.normalizeTeams) {
+    const renamed = normalizeTeamNamesInSeason(season);
+    if (renamed > 0) {
+      console.log(`🏷️ Normalización de equipos: ${renamed} fila(s) renombrada(s)`);
+      updatesCount += renamed;
+    } else {
+      console.log("🏷️ Normalización de equipos: nada para renombrar");
     }
   }
 
