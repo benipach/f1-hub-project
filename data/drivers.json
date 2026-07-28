@@ -64,8 +64,8 @@
       "image": "antonelli.png",
       "coverImage": "antonelli-2.png",
       "history": [
-        { "year": 2025, "teamId": "Mercedes", "points": 150, "poles": 0, "podiums": 3, "wins": 0, "starts": 24, "dnfs": 4, "position": 7 },
-        { "year": 2026, "teamId": "Mercedes" }
+        { "year": 2025, "teamId": "Mercedes-AMG", "points": 150, "poles": 0, "podiums": 3, "wins": 0, "starts": 24, "dnfs": 4, "position": 7 },
+        { "year": 2026, "teamId": "Mercedes-AMG" }
       ]
     },
     {
@@ -111,11 +111,11 @@
         { "year": 2014, "teamId": "Williams", "points": 186, "poles": 0, "podiums": 6, "wins": 0, "starts": 19, "dnfs": 1, "position": 4 },
         { "year": 2015, "teamId": "Williams", "points": 136, "poles": 0, "podiums": 2, "wins": 0, "starts": 18, "dnfs": 1, "position": 5 },
         { "year": 2016, "teamId": "Williams", "points": 85, "poles": 0, "podiums": 1, "wins": 0, "starts": 21, "dnfs": 2, "position": 8 },
-        { "year": 2017, "teamId": "Mercedes", "points": 305, "poles": 4, "podiums": 13, "wins": 3, "starts": 20, "dnfs": 1, "position": 3 },
-        { "year": 2018, "teamId": "Mercedes", "points": 247, "poles": 2, "podiums": 8, "wins": 0, "starts": 21, "dnfs": 1, "position": 5 },
-        { "year": 2019, "teamId": "Mercedes", "points": 326, "poles": 5, "podiums": 15, "wins": 4, "starts": 21, "dnfs": 2, "position": 2 },
-        { "year": 2020, "teamId": "Mercedes", "points": 223, "poles": 5, "podiums": 11, "wins": 2, "starts": 17, "dnfs": 1, "position": 2 },
-        { "year": 2021, "teamId": "Mercedes", "points": 226, "poles": 4, "podiums": 11, "wins": 1, "starts": 22, "dnfs": 4, "position": 3 },
+        { "year": 2017, "teamId": "Mercedes-AMG", "points": 305, "poles": 4, "podiums": 13, "wins": 3, "starts": 20, "dnfs": 1, "position": 3 },
+        { "year": 2018, "teamId": "Mercedes-AMG", "points": 247, "poles": 2, "podiums": 8, "wins": 0, "starts": 21, "dnfs": 1, "position": 5 },
+        { "year": 2019, "teamId": "Mercedes-AMG", "points": 326, "poles": 5, "podiums": 15, "wins": 4, "starts": 21, "dnfs": 2, "position": 2 },
+        { "year": 2020, "teamId": "Mercedes-AMG", "points": 223, "poles": 5, "podiums": 11, "wins": 2, "starts": 17, "dnfs": 1, "position": 2 },
+        { "year": 2021, "teamId": "Mercedes-AMG", "points": 226, "poles": 4, "podiums": 11, "wins": 1, "starts": 22, "dnfs": 4, "position": 3 },
         { "year": 2022, "teamId": "Alfa Romeo", "points": 49, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 6, "position": 10 },
         { "year": 2023, "teamId": "Alfa Romeo", "points": 10, "poles": 0, "podiums": 0, "wins": 0, "starts": 22, "dnfs": 3, "position": 15 },
         { "year": 2024, "teamId": "Kick Sauber", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 24, "dnfs": 1, "position": 22 },
@@ -190,18 +190,18 @@
         { "year": 2010, "teamId": "McLaren", "points": 240, "poles": 1, "podiums": 9, "wins": 3, "starts": 19, "dnfs": 3, "position": 4 },
         { "year": 2011, "teamId": "McLaren", "points": 227, "poles": 1, "podiums": 6, "wins": 3, "starts": 19, "dnfs": 3, "position": 5 },
         { "year": 2012, "teamId": "McLaren", "points": 190, "poles": 7, "podiums": 7, "wins": 4, "starts": 20, "dnfs": 6, "position": 4 },
-        { "year": 2013, "teamId": "Mercedes", "points": 189, "poles": 5, "podiums": 5, "wins": 1, "starts": 19, "dnfs": 1, "position": 4 },
-        { "year": 2014, "teamId": "Mercedes", "points": 384, "poles": 7, "podiums": 16, "wins": 11, "starts": 19, "dnfs": 3, "position": 1 },
-        { "year": 2015, "teamId": "Mercedes", "points": 381, "poles": 11, "podiums": 17, "wins": 10, "starts": 19, "dnfs": 1, "position": 1 },
-        { "year": 2016, "teamId": "Mercedes", "points": 380, "poles": 12, "podiums": 17, "wins": 10, "starts": 21, "dnfs": 2, "position": 2 },
-        { "year": 2017, "teamId": "Mercedes", "points": 363, "poles": 11, "podiums": 13, "wins": 9, "starts": 20, "dnfs": 0, "position": 1 },
-        { "year": 2018, "teamId": "Mercedes", "points": 408, "poles": 11, "podiums": 17, "wins": 11, "starts": 21, "dnfs": 1, "position": 1 },
-        { "year": 2019, "teamId": "Mercedes", "points": 413, "poles": 5, "podiums": 17, "wins": 11, "starts": 21, "dnfs": 0, "position": 1 },
-        { "year": 2020, "teamId": "Mercedes", "points": 347, "poles": 10, "podiums": 14, "wins": 11, "starts": 16, "dnfs": 0, "position": 1 },
-        { "year": 2021, "teamId": "Mercedes", "points": 387.5, "poles": 5, "podiums": 17, "wins": 8, "starts": 22, "dnfs": 1, "position": 2 },
-        { "year": 2022, "teamId": "Mercedes", "points": 240, "poles": 0, "podiums": 9, "wins": 0, "starts": 22, "dnfs": 2, "position": 6 },
-        { "year": 2023, "teamId": "Mercedes", "points": 234, "poles": 1, "podiums": 6, "wins": 0, "starts": 22, "dnfs": 1, "position": 3 },
-        { "year": 2024, "teamId": "Mercedes", "points": 190, "poles": 0, "podiums": 4, "wins": 2, "starts": 24, "dnfs": 2, "position": 7 },
+        { "year": 2013, "teamId": "Mercedes-AMG", "points": 189, "poles": 5, "podiums": 5, "wins": 1, "starts": 19, "dnfs": 1, "position": 4 },
+        { "year": 2014, "teamId": "Mercedes-AMG", "points": 384, "poles": 7, "podiums": 16, "wins": 11, "starts": 19, "dnfs": 3, "position": 1 },
+        { "year": 2015, "teamId": "Mercedes-AMG", "points": 381, "poles": 11, "podiums": 17, "wins": 10, "starts": 19, "dnfs": 1, "position": 1 },
+        { "year": 2016, "teamId": "Mercedes-AMG", "points": 380, "poles": 12, "podiums": 17, "wins": 10, "starts": 21, "dnfs": 2, "position": 2 },
+        { "year": 2017, "teamId": "Mercedes-AMG", "points": 363, "poles": 11, "podiums": 13, "wins": 9, "starts": 20, "dnfs": 0, "position": 1 },
+        { "year": 2018, "teamId": "Mercedes-AMG", "points": 408, "poles": 11, "podiums": 17, "wins": 11, "starts": 21, "dnfs": 1, "position": 1 },
+        { "year": 2019, "teamId": "Mercedes-AMG", "points": 413, "poles": 5, "podiums": 17, "wins": 11, "starts": 21, "dnfs": 0, "position": 1 },
+        { "year": 2020, "teamId": "Mercedes-AMG", "points": 347, "poles": 10, "podiums": 14, "wins": 11, "starts": 16, "dnfs": 0, "position": 1 },
+        { "year": 2021, "teamId": "Mercedes-AMG", "points": 387.5, "poles": 5, "podiums": 17, "wins": 8, "starts": 22, "dnfs": 1, "position": 2 },
+        { "year": 2022, "teamId": "Mercedes-AMG", "points": 240, "poles": 0, "podiums": 9, "wins": 0, "starts": 22, "dnfs": 2, "position": 6 },
+        { "year": 2023, "teamId": "Mercedes-AMG", "points": 234, "poles": 1, "podiums": 6, "wins": 0, "starts": 22, "dnfs": 1, "position": 3 },
+        { "year": 2024, "teamId": "Mercedes-AMG", "points": 190, "poles": 0, "podiums": 4, "wins": 2, "starts": 24, "dnfs": 2, "position": 7 },
         { "year": 2025, "teamId": "Ferrari", "points": 156, "poles": 0, "podiums": 1, "wins": 0, "starts": 24, "dnfs": 3, "position": 6 },
         { "year": 2026, "teamId": "Ferrari" }
       ]
@@ -381,11 +381,11 @@
         { "year": 2019, "teamId": "Williams", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "fastestLaps": 0, "starts": 21, "dnfs": 2, "position": 20 },
         { "year": 2020, "teamId": "Williams", "points": 3, "poles": 0, "podiums": 0, "wins": 0, "fastestLaps": 1, "starts": 17, "dnfs": 4, "position": 18 },
         { "year": 2021, "teamId": "Williams", "points": 16, "poles": 0, "podiums": 1, "wins": 0, "fastestLaps": 0, "starts": 22, "dnfs": 6, "position": 15 },
-        { "year": 2022, "teamId": "Mercedes", "points": 275, "poles": 1, "podiums": 8, "wins": 1, "fastestLaps": 4, "starts": 22, "dnfs": 1, "position": 4 },
-        { "year": 2023, "teamId": "Mercedes", "points": 175, "poles": 0, "podiums": 2, "wins": 0, "fastestLaps": 1, "starts": 22, "dnfs": 3, "position": 8 },
-        { "year": 2024, "teamId": "Mercedes", "points": 245, "poles": 4, "podiums": 4, "wins": 2, "fastestLaps": 2, "starts": 24, "dnfs": 3, "position": 6 },
-        { "year": 2025, "teamId": "Mercedes", "points": 319, "poles": 2, "podiums": 9, "wins": 2, "fastestLaps": 3, "starts": 24, "dnfs": 0, "position": 4 },
-        { "year": 2026, "teamId": "Mercedes" }
+        { "year": 2022, "teamId": "Mercedes-AMG", "points": 275, "poles": 1, "podiums": 8, "wins": 1, "fastestLaps": 4, "starts": 22, "dnfs": 1, "position": 4 },
+        { "year": 2023, "teamId": "Mercedes-AMG", "points": 175, "poles": 0, "podiums": 2, "wins": 0, "fastestLaps": 1, "starts": 22, "dnfs": 3, "position": 8 },
+        { "year": 2024, "teamId": "Mercedes-AMG", "points": 245, "poles": 4, "podiums": 4, "wins": 2, "fastestLaps": 2, "starts": 24, "dnfs": 3, "position": 6 },
+        { "year": 2025, "teamId": "Mercedes-AMG", "points": 319, "poles": 2, "podiums": 9, "wins": 2, "fastestLaps": 3, "starts": 24, "dnfs": 0, "position": 4 },
+        { "year": 2026, "teamId": "Mercedes-AMG" }
       ]
     },
     {

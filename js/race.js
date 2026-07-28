@@ -327,6 +327,7 @@ function renderFunFacts(circuit) {
 // ── TEAM ID → LOGO FILENAME ──────────────────────────────────────
 const TEAM_LOGO_MAP = {
     'Mercedes':        'mercedes-logo',
+    'Mercedes-AMG':    'mercedes-logo',
     'Ferrari':         'ferrari-logo',
     'McLaren':         'mclaren-logo',
     'Red Bull':        'redbull-logo',
@@ -344,6 +345,7 @@ const TEAM_LOGO_MAP = {
 // ── TEAM ID → PRIMARY COLOR ──────────────────────────────────────────────
 const TEAM_COLOR_MAP = {
     'Mercedes':         '#2BFFDB',
+    'Mercedes-AMG':     '#2BFFDB',
     'Ferrari':          '#FF0019',
     'McLaren':          '#FF7F00',
     'Red Bull':         '#22477A',
