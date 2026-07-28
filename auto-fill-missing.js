@@ -27,6 +27,7 @@ function parseArgs(argv) {
     backup: true,
     fixPositions: false,
     backfillBestLap: false,
+    backfillDriverInfo: false,
     skip: new Set(DEFAULT_SKIP_GP_KEYS),
   };
 
@@ -48,6 +49,9 @@ function parseArgs(argv) {
     // Backfill manual: agrega bestLap a carreras que ya tienen resultados
     // guardados pero se corrieron antes de que este campo existiera.
     else if (arg === "--backfill-bestlap") flags.backfillBestLap = true;
+    // Backfill manual: agrega team/number a resultados (cualquier sesión) guardados
+    // antes del fix que empezó a incluir esos campos en mapPractice/mapQualy.
+    else if (arg === "--backfill-driver-info") flags.backfillDriverInfo = true;
     else if (arg.startsWith("--interval=")) console.warn("⚠️ --interval ignorado: GitHub Actions agenda las ejecuciones.");
     else positional.push(arg);
   }
@@ -72,6 +76,12 @@ function sessionHasResults(session) {
 function raceSessionMissingBestLap(session) {
   if (!sessionHasResults(session)) return false;
   return session.results.some((row) => row && row.bestLap === undefined);
+}
+// Resultados (de cualquier sesión) guardados antes de que mapPractice/mapQualy
+// empezaran a incluir number/team: se detectan porque a esas filas les falta "number".
+function sessionMissingDriverInfo(session) {
+  if (!sessionHasResults(session)) return false;
+  return session.results.some((row) => row && row.number === undefined);
 }
 function parseDate(value) {
   const date = value ? new Date(value) : null;
@@ -114,7 +124,7 @@ function gpHasStartedSession(gp) {
 
 // Evita pegarle a OpenF1 por GPs cuyas sesiones pasadas ya están completas.
 // Con forceWeather=true no saltea nada que ya haya arrancado (backfill manual).
-function gpNeedsWork(gp, weatherEnabled, forceWeather = false, backfillBestLap = false) {
+function gpNeedsWork(gp, weatherEnabled, forceWeather = false, backfillBestLap = false, backfillDriverInfo = false) {
   return Object.entries(gp.sessions ?? {}).some(([resultKey, session]) => {
     if (!session || typeof session !== "object") return false;
     const start = parseDate(session.date);
@@ -123,6 +133,7 @@ function gpNeedsWork(gp, weatherEnabled, forceWeather = false, backfillBestLap =
     if (!sessionHasResults(session)) return true;
     if (weatherEnabled && (isEmptyWeather(session.weather) || forceWeather)) return true;
     if (backfillBestLap && RACE_LIKE.has(resultKey) && raceSessionMissingBestLap(session)) return true;
+    if (backfillDriverInfo && sessionMissingDriverInfo(session)) return true;
     return false;
   });
 }
@@ -192,7 +203,7 @@ async function runOnce(args) {
       console.log(`⏭️ ${gpKey}: todavía no arrancó, se saltea sin consultar OpenF1`);
       continue;
     }
-    if (!gpNeedsWork(gp, args.weather, args.forceWeather, args.backfillBestLap)) {
+    if (!gpNeedsWork(gp, args.weather, args.forceWeather, args.backfillBestLap, args.backfillDriverInfo)) {
       console.log(`⏭️ ${gpKey}: ya está completo, se saltea sin consultar OpenF1`);
       continue;
     }
@@ -244,8 +255,10 @@ async function runOnce(args) {
       const needsResults = !sessionHasResults(session);
       const needsBestLapBackfill =
         args.backfillBestLap && RACE_LIKE.has(resultKey) && raceSessionMissingBestLap(session);
+      const needsDriverInfoBackfill =
+        args.backfillDriverInfo && sessionMissingDriverInfo(session);
 
-      if (needsResults || needsBestLapBackfill) {
+      if (needsResults || needsBestLapBackfill || needsDriverInfoBackfill) {
         try {
           if (needsResults ? await openf1HasResults(sessionKey) : true) {
             await fillGPSession(gp, args.year, gpKey, resultKey, knownDriverNames, sessionKey);
@@ -253,6 +266,8 @@ async function runOnce(args) {
             console.log(
               needsResults
                 ? `✅ ${gpKey}/${resultKey}: resultados agregados`
+                : needsDriverInfoBackfill
+                ? `🔢 ${gpKey}/${resultKey}: number/team agregado`
                 : `🏎️ ${gpKey}/${resultKey}: bestLap agregado`
             );
           } else if (needsResults && sessionEnded(session, openf1Session)) {

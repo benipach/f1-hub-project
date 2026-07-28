@@ -271,7 +271,7 @@ function resolveDriver(driverNumber, driversByNumber, knownDriverNames = new Set
     DRIVER_NAME_MISMATCH_SET.add(name);
     DRIVER_NAME_MISMATCHES.push(name);
   }
-  return { name, team: driver?.team ?? null };
+  return { name, team: driver?.team ?? null, number: driverNumber };
 }
 
 // OpenF1 a veces manda position:0 en vez de null para pilotos aún no
@@ -338,23 +338,29 @@ function mapPractice(results, driversByNumber, knownDriverNames) {
   return [...results].sort(sortByPosition).map((row, i) => {
     const driver = resolveDriver(row.driver_number, driversByNumber, knownDriverNames);
     const status = statusLabel(row);
-    return {
+    const mapped = {
       pos: i + 1,
       driver: driver.name,
+      number: driver.number,
       lapTime: status ?? formatLapTime(row.duration),
       laps: String(row.number_of_laps ?? 0),
     };
+    if (driver.team) mapped.team = driver.team;
+    return mapped;
   });
 }
 function mapQualy(results, driversByNumber, knownDriverNames) {
   return [...results].sort(sortByPosition).map((row, i) => {
     const driver = resolveDriver(row.driver_number, driversByNumber, knownDriverNames);
     const status = statusLabel(row);
-    return {
+    const mapped = {
       pos: i + 1,
       driver: driver.name,
+      number: driver.number,
       lapTime: status ?? formatLapTime(row.duration),
     };
+    if (driver.team) mapped.team = driver.team;
+    return mapped;
   });
 }
 function mapRace(results, driversByNumber, knownDriverNames, isSprint, bestLapByNumber = new Map()) {
@@ -374,6 +380,7 @@ function mapRace(results, driversByNumber, knownDriverNames, isSprint, bestLapBy
     const mapped = {
       pos: i + 1,
       driver: driver.name,
+      number: driver.number,
       laps: String(row.number_of_laps ?? 0),
       time: formatRaceTime(row),
       pts: Number(pts),
