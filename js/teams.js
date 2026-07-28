@@ -5,7 +5,7 @@
 
 const TEAMS = {
     // ── EQUIPOS ACTUALES ─────────────────────────────────────────
-    'Mercedes':        { color: 'rgb(43, 255, 219)',  cssVar: '--f1-mercedes',      logo: 'mercedes-logo',    aliases: ['mercedes'],
+    'Mercedes':        { color: 'rgb(43, 255, 219)',  cssVar: '--f1-mercedes',      logo: 'mercedes-logo',    aliases: ['mercedes', 'mercedes-amg'],
                          lineage: ['tyrrell', 'bar', 'honda', 'brawn-gp', 'mercedes'] },
     'Ferrari':         { color: 'rgb(255, 0, 25)',    cssVar: '--f1-ferrari',       logo: 'ferrari-logo',     aliases: ['ferrari'],
                          lineage: ['ferrari'] },
