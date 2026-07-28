@@ -498,6 +498,9 @@ function renderRaceResult(raceEntries = [], prevSessionEntries = [], containerId
                                 ${hasQuali ? `<td class="res-delta-cell" style="${dim}">${gridDeltaHtml(res.pos, qualiPos)}</td>` : ''}
                                 <td class="res-driver" style="${dim}">
                                     <span class="res-driver-number" style="color:${teamColor}">#${driverNum}</span>
+                                    ${logoFile
+                                        ? `<img class="res-driver-team-logo" src="../img/teams/${logoFile}.png" alt="${teamId}">`
+                                        : `<span class="res-driver-team-logo res-team-logo-placeholder"></span>`}
                                     <span class="driver-fullname">${formatDriverName(res.driver)}</span>
                                     <span class="driver-lastname">${res.driver.split(' ').slice(1).join(' ').slice(0, 3).toUpperCase()}</span>
                                 </td>
@@ -582,6 +585,9 @@ function renderSessionResult(entries = [], containerId, sessionLabel, driverTeam
                                 <td class="res-pos${isTop3 ? ' top3' : ''}" style="${dim}">${res.pos}</td>
                                 <td class="res-driver" style="${dim}">
                                     <span class="res-driver-number" style="color:${teamColor}">#${driverNum}</span>
+                                    ${logoFile
+                                        ? `<img class="res-driver-team-logo" src="../img/teams/${logoFile}.png" alt="${teamId}">`
+                                        : `<span class="res-driver-team-logo res-team-logo-placeholder"></span>`}
                                     <span class="driver-fullname">${formatDriverName(res.driver)}</span>
                                     <span class="driver-lastname">${res.driver.split(' ').slice(1).join(' ').slice(0, 3).toUpperCase()}</span>
                                 </td>
