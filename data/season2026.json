@@ -39,7 +39,7 @@
             "number": 3,
             "lapTime": "1:20.789",
             "laps": "27",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 4,
@@ -47,7 +47,7 @@
             "number": 6,
             "lapTime": "1:21.087",
             "laps": "24",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 5,
@@ -71,7 +71,7 @@
             "number": 63,
             "lapTime": "1:21.371",
             "laps": "26",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 8,
@@ -79,7 +79,7 @@
             "number": 12,
             "lapTime": "1:21.376",
             "laps": "24",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 9,
@@ -103,7 +103,7 @@
             "number": 31,
             "lapTime": "1:22.161",
             "laps": "28",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 12,
@@ -127,7 +127,7 @@
             "number": 87,
             "lapTime": "1:22.682",
             "laps": "25",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 15,
@@ -213,7 +213,7 @@
             "number": 12,
             "lapTime": "1:19.943",
             "laps": "31",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
@@ -221,7 +221,7 @@
             "number": 63,
             "lapTime": "1:20.049",
             "laps": "28",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 4,
@@ -245,7 +245,7 @@
             "number": 3,
             "lapTime": "1:20.366",
             "laps": "13",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 7,
@@ -269,7 +269,7 @@
             "number": 6,
             "lapTime": "1:20.941",
             "laps": "28",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 10,
@@ -277,7 +277,7 @@
             "number": 31,
             "lapTime": "1:21.179",
             "laps": "29",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 11,
@@ -285,7 +285,7 @@
             "number": 87,
             "lapTime": "1:21.326",
             "laps": "31",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 12,
@@ -395,7 +395,7 @@
             "number": 63,
             "lapTime": "1:19.053",
             "laps": "23",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
@@ -427,7 +427,7 @@
             "number": 6,
             "lapTime": "1:20.137",
             "laps": "15",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 6,
@@ -435,7 +435,7 @@
             "number": 3,
             "lapTime": "1:20.197",
             "laps": "15",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 7,
@@ -443,7 +443,7 @@
             "number": 12,
             "lapTime": "1:20.324",
             "laps": "18",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 8,
@@ -467,7 +467,7 @@
             "number": 87,
             "lapTime": "1:20.778",
             "laps": "18",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 11,
@@ -491,7 +491,7 @@
             "number": 31,
             "lapTime": "1:20.983",
             "laps": "19",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 14,
@@ -576,21 +576,21 @@
             "driver": "George Russell",
             "number": 63,
             "lapTime": "1:18.518",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
             "driver": "Kimi Antonelli",
             "number": 12,
             "lapTime": "1:18.811",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
             "driver": "Isack Hadjar",
             "number": 6,
             "lapTime": "1:19.303",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 4,
@@ -653,14 +653,14 @@
             "driver": "Oliver Bearman",
             "number": 87,
             "lapTime": "1:20.311",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 13,
             "driver": "Esteban Ocon",
             "number": 31,
             "lapTime": "1:20.491",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 14,
@@ -725,7 +725,7 @@
             "laps": "58",
             "time": "1:23:06.801",
             "pts": 25,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:22.670"
           },
           {
@@ -735,7 +735,7 @@
             "laps": "58",
             "time": "+2.974s",
             "pts": 18,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:22.417"
           },
           {
@@ -775,7 +775,7 @@
             "laps": "58",
             "time": "+54.617s",
             "pts": 8,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:22.091",
             "fastestLap": true
           },
@@ -786,7 +786,7 @@
             "laps": "57",
             "time": "+1 Lap",
             "pts": 6,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:24.020"
           },
           {
@@ -826,7 +826,7 @@
             "laps": "57",
             "time": "+1 Lap",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:24.424"
           },
           {
@@ -916,7 +916,7 @@
             "laps": "10",
             "time": "DNF",
             "pts": 0,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:25.239"
           },
           {
@@ -965,7 +965,7 @@
             "number": 63,
             "lapTime": "1:32.741",
             "laps": "29",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
@@ -973,7 +973,7 @@
             "number": 12,
             "lapTime": "1:32.861",
             "laps": "30",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
@@ -1013,7 +1013,7 @@
             "number": 87,
             "lapTime": "1:34.426",
             "laps": "28",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 8,
@@ -1021,7 +1021,7 @@
             "number": 3,
             "lapTime": "1:34.541",
             "laps": "24",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 9,
@@ -1061,7 +1061,7 @@
             "number": 6,
             "lapTime": "1:34.856",
             "laps": "26",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 14,
@@ -1069,7 +1069,7 @@
             "number": 31,
             "lapTime": "1:34.877",
             "laps": "25",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 15,
@@ -1154,14 +1154,14 @@
             "driver": "George Russell",
             "number": 63,
             "lapTime": "1:31.520",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
             "driver": "Kimi Antonelli",
             "number": 12,
             "lapTime": "1:31.809",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
@@ -1203,21 +1203,21 @@
             "driver": "Max Verstappen",
             "number": 3,
             "lapTime": "1:33.254",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 9,
             "driver": "Oliver Bearman",
             "number": 87,
             "lapTime": "1:33.409",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 10,
             "driver": "Isack Hadjar",
             "number": 6,
             "lapTime": "1:33.723",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 11,
@@ -1231,7 +1231,7 @@
             "driver": "Esteban Ocon",
             "number": 31,
             "lapTime": "1:33.639",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 13,
@@ -1317,7 +1317,7 @@
             "laps": "19",
             "time": "33:38.998",
             "pts": 8,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:35.101"
           },
           {
@@ -1358,7 +1358,7 @@
             "laps": "19",
             "time": "+5.688s",
             "pts": 4,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:34.760"
           },
           {
@@ -1388,7 +1388,7 @@
             "laps": "19",
             "time": "+11.271s",
             "pts": 1,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:37.374"
           },
           {
@@ -1398,7 +1398,7 @@
             "laps": "19",
             "time": "+11.619s",
             "pts": 0,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:35.774"
           },
           {
@@ -1408,7 +1408,7 @@
             "laps": "19",
             "time": "+13.887s",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:37.363"
           },
           {
@@ -1458,7 +1458,7 @@
             "laps": "19",
             "time": "+16.430s",
             "pts": 0,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:36.912"
           },
           {
@@ -1550,14 +1550,14 @@
             "driver": "Kimi Antonelli",
             "number": 12,
             "lapTime": "1:32.064",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
             "driver": "George Russell",
             "number": 63,
             "lapTime": "1:32.286",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
@@ -1599,21 +1599,21 @@
             "driver": "Max Verstappen",
             "number": 3,
             "lapTime": "1:33.002",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 9,
             "driver": "Isack Hadjar",
             "number": 6,
             "lapTime": "1:33.121",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 10,
             "driver": "Oliver Bearman",
             "number": 87,
             "lapTime": "1:33.292",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 11,
@@ -1634,7 +1634,7 @@
             "driver": "Esteban Ocon",
             "number": 31,
             "lapTime": "1:33.538",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 14,
@@ -1720,7 +1720,7 @@
             "laps": "56",
             "time": "1:33:15.607",
             "pts": 25,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:35.275",
             "fastestLap": true
           },
@@ -1731,7 +1731,7 @@
             "laps": "56",
             "time": "+5.515s",
             "pts": 18,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:35.400"
           },
           {
@@ -1761,7 +1761,7 @@
             "laps": "56",
             "time": "+57.268s",
             "pts": 10,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:36.429"
           },
           {
@@ -1791,7 +1791,7 @@
             "laps": "56",
             "time": "+87.247s",
             "pts": 4,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:37.311"
           },
           {
@@ -1851,7 +1851,7 @@
             "laps": "55",
             "time": "+1 Lap",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:35.964"
           },
           {
@@ -1871,7 +1871,7 @@
             "laps": "45",
             "time": "DNF",
             "pts": 0,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:37.046"
           },
           {
@@ -1958,7 +1958,7 @@
             "number": 63,
             "lapTime": "1:31.666",
             "laps": "27",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
@@ -1966,7 +1966,7 @@
             "number": 12,
             "lapTime": "1:31.692",
             "laps": "26",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
@@ -2006,7 +2006,7 @@
             "number": 3,
             "lapTime": "1:32.457",
             "laps": "27",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 8,
@@ -2022,7 +2022,7 @@
             "number": 31,
             "lapTime": "1:32.601",
             "laps": "23",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 10,
@@ -2054,7 +2054,7 @@
             "number": 6,
             "lapTime": "1:32.803",
             "laps": "27",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 14,
@@ -2062,7 +2062,7 @@
             "number": 87,
             "lapTime": "1:32.900",
             "laps": "27",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 15,
@@ -2156,7 +2156,7 @@
             "number": 12,
             "lapTime": "1:30.225",
             "laps": "28",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
@@ -2164,7 +2164,7 @@
             "number": 63,
             "lapTime": "1:30.338",
             "laps": "29",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 4,
@@ -2212,7 +2212,7 @@
             "number": 87,
             "lapTime": "1:31.498",
             "laps": "28",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 10,
@@ -2220,7 +2220,7 @@
             "number": 3,
             "lapTime": "1:31.509",
             "laps": "29",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 11,
@@ -2228,7 +2228,7 @@
             "number": 31,
             "lapTime": "1:31.532",
             "laps": "30",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 12,
@@ -2260,7 +2260,7 @@
             "number": 6,
             "lapTime": "1:31.759",
             "laps": "29",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 16,
@@ -2338,7 +2338,7 @@
             "number": 12,
             "lapTime": "1:29.362",
             "laps": "18",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
@@ -2346,7 +2346,7 @@
             "number": 63,
             "lapTime": "1:29.616",
             "laps": "18",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
@@ -2394,7 +2394,7 @@
             "number": 3,
             "lapTime": "1:30.910",
             "laps": "22",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 9,
@@ -2418,7 +2418,7 @@
             "number": 6,
             "lapTime": "1:31.094",
             "laps": "21",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 12,
@@ -2442,7 +2442,7 @@
             "number": 31,
             "lapTime": "1:31.326",
             "laps": "22",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 15,
@@ -2450,7 +2450,7 @@
             "number": 87,
             "lapTime": "1:31.558",
             "laps": "18",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 16,
@@ -2527,14 +2527,14 @@
             "driver": "Kimi Antonelli",
             "number": 12,
             "lapTime": "1:28.778",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
             "driver": "George Russell",
             "number": 63,
             "lapTime": "1:29.076",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
@@ -2576,7 +2576,7 @@
             "driver": "Isack Hadjar",
             "number": 6,
             "lapTime": "1:29.978",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 9,
@@ -2597,14 +2597,14 @@
             "driver": "Max Verstappen",
             "number": 3,
             "lapTime": "1:30.262",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 12,
             "driver": "Esteban Ocon",
             "number": 31,
             "lapTime": "1:30.309",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 13,
@@ -2646,7 +2646,7 @@
             "driver": "Oliver Bearman",
             "number": 87,
             "lapTime": "1:31.090",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 19,
@@ -2697,7 +2697,7 @@
             "laps": "53",
             "time": "1:28:03.403",
             "pts": 25,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:32.432",
             "fastestLap": true
           },
@@ -2728,7 +2728,7 @@
             "laps": "53",
             "time": "+15.754s",
             "pts": 12,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:32.549"
           },
           {
@@ -2768,7 +2768,7 @@
             "laps": "53",
             "time": "+32.677s",
             "pts": 4,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:33.552"
           },
           {
@@ -2788,7 +2788,7 @@
             "laps": "53",
             "time": "+51.216s",
             "pts": 1,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:34.256"
           },
           {
@@ -2808,7 +2808,7 @@
             "laps": "53",
             "time": "+56.154s",
             "pts": 0,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:33.837"
           },
           {
@@ -2908,7 +2908,7 @@
             "laps": "20",
             "time": "DNF",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:35.604"
           }
         ]
@@ -3083,7 +3083,7 @@
             "number": 3,
             "lapTime": "1:29.607",
             "laps": "41",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 3,
@@ -3107,7 +3107,7 @@
             "number": 12,
             "lapTime": "1:30.079",
             "laps": "24",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 6,
@@ -3115,7 +3115,7 @@
             "number": 63,
             "lapTime": "1:30.100",
             "laps": "34",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 7,
@@ -3139,7 +3139,7 @@
             "number": 6,
             "lapTime": "1:30.873",
             "laps": "40",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 10,
@@ -3171,7 +3171,7 @@
             "number": 87,
             "lapTime": "1:31.091",
             "laps": "35",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 14,
@@ -3195,7 +3195,7 @@
             "number": 31,
             "lapTime": "1:31.635",
             "laps": "36",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 17,
@@ -3271,7 +3271,7 @@
             "driver": "Kimi Antonelli",
             "number": 12,
             "lapTime": "1:28.091",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
@@ -3292,14 +3292,14 @@
             "driver": "Max Verstappen",
             "number": 3,
             "lapTime": "1:28.461",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 6,
             "driver": "George Russell",
             "number": 63,
             "lapTime": "1:28.493",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 7,
@@ -3320,7 +3320,7 @@
             "driver": "Isack Hadjar",
             "number": 6,
             "lapTime": "1:29.422",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 10,
@@ -3348,7 +3348,7 @@
             "driver": "Oliver Bearman",
             "number": 87,
             "lapTime": "1:30.116",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 14,
@@ -3376,7 +3376,7 @@
             "driver": "Esteban Ocon",
             "number": 31,
             "lapTime": "1:31.245",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 18,
@@ -3458,7 +3458,7 @@
             "laps": "19",
             "time": "+12.951s",
             "pts": 5,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:32.387"
           },
           {
@@ -3468,7 +3468,7 @@
             "laps": "19",
             "time": "+13.639s",
             "pts": 4,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:32.201"
           },
           {
@@ -3478,7 +3478,7 @@
             "laps": "19",
             "time": "+13.777s",
             "pts": 3,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:31.932"
           },
           {
@@ -3508,7 +3508,7 @@
             "laps": "19",
             "time": "+35.346s",
             "pts": 0,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:33.119"
           },
           {
@@ -3528,7 +3528,7 @@
             "laps": "19",
             "time": "+56.972s",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:34.409"
           },
           {
@@ -3538,7 +3538,7 @@
             "laps": "19",
             "time": "+57.365s",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:34.524"
           },
           {
@@ -3658,14 +3658,14 @@
             "driver": "Kimi Antonelli",
             "number": 12,
             "lapTime": "1:27.798",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
             "driver": "Max Verstappen",
             "number": 3,
             "lapTime": "1:27.964",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 3,
@@ -3686,7 +3686,7 @@
             "driver": "George Russell",
             "number": 63,
             "lapTime": "1:28.197",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 6,
@@ -3735,7 +3735,7 @@
             "driver": "Oliver Bearman",
             "number": 87,
             "lapTime": "1:29.567",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 13,
@@ -3749,7 +3749,7 @@
             "driver": "Esteban Ocon",
             "number": 31,
             "lapTime": "1:29.772",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 15,
@@ -3805,7 +3805,7 @@
             "driver": "Isack Hadjar",
             "number": 6,
             "lapTime": "1:28.789",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           }
         ]
       },
@@ -3828,7 +3828,7 @@
             "laps": "57",
             "time": "1:33:19.273",
             "pts": 25,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:31.968"
           },
           {
@@ -3859,7 +3859,7 @@
             "laps": "57",
             "time": "+43.051s",
             "pts": 12,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:32.446"
           },
           {
@@ -3869,7 +3869,7 @@
             "laps": "57",
             "time": "+48.949s",
             "pts": 10,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:33.110"
           },
           {
@@ -3929,7 +3929,7 @@
             "laps": "56",
             "time": "+1 Lap",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:33.744"
           },
           {
@@ -3949,7 +3949,7 @@
             "laps": "56",
             "time": "+1 Lap",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:33.712"
           },
           {
@@ -4039,7 +4039,7 @@
             "laps": "4",
             "time": "DNF",
             "pts": 0,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:34.833"
           }
         ]
@@ -4070,7 +4070,7 @@
             "number": 12,
             "lapTime": "1:13.402",
             "laps": "33",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
@@ -4078,7 +4078,7 @@
             "number": 63,
             "lapTime": "1:13.544",
             "laps": "35",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
@@ -4102,7 +4102,7 @@
             "number": 3,
             "lapTime": "1:14.366",
             "laps": "31",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 6,
@@ -4158,7 +4158,7 @@
             "number": 6,
             "lapTime": "1:16.253",
             "laps": "29",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 13,
@@ -4166,7 +4166,7 @@
             "number": 31,
             "lapTime": "1:16.497",
             "laps": "32",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 14,
@@ -4214,7 +4214,7 @@
             "number": 87,
             "lapTime": "1:17.770",
             "laps": "26",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 20,
@@ -4259,14 +4259,14 @@
             "driver": "George Russell",
             "number": 63,
             "lapTime": "1:12.965",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
             "driver": "Kimi Antonelli",
             "number": 12,
             "lapTime": "1:13.033",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
@@ -4301,14 +4301,14 @@
             "driver": "Max Verstappen",
             "number": 3,
             "lapTime": "1:13.504",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 8,
             "driver": "Isack Hadjar",
             "number": 6,
             "lapTime": "1:13.605",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 9,
@@ -4350,14 +4350,14 @@
             "driver": "Esteban Ocon",
             "number": 31,
             "lapTime": "1:14.928",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 15,
             "driver": "Oliver Bearman",
             "number": 87,
             "lapTime": "1:15.197",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 16,
@@ -4415,7 +4415,7 @@
             "laps": "23",
             "time": "28:50.951",
             "pts": 8,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:14.702"
           },
           {
@@ -4435,7 +4435,7 @@
             "laps": "23",
             "time": "+1.843s",
             "pts": 6,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:14.380",
             "fastestLap": true
           },
@@ -4476,7 +4476,7 @@
             "laps": "23",
             "time": "+15.935s",
             "pts": 2,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:14.974"
           },
           {
@@ -4536,7 +4536,7 @@
             "laps": "23",
             "time": "+64.209s",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:16.849"
           },
           {
@@ -4586,7 +4586,7 @@
             "laps": "22",
             "time": "+1 Lap",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:16.210"
           },
           {
@@ -4616,7 +4616,7 @@
             "laps": "20",
             "time": "+3 Laps",
             "pts": 0,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:14.941"
           },
           {
@@ -4648,14 +4648,14 @@
             "driver": "George Russell",
             "number": 63,
             "lapTime": "1:12.578",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
             "driver": "Kimi Antonelli",
             "number": 12,
             "lapTime": "1:12.646",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
@@ -4683,14 +4683,14 @@
             "driver": "Max Verstappen",
             "number": 3,
             "lapTime": "1:12.907",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 7,
             "driver": "Isack Hadjar",
             "number": 6,
             "lapTime": "1:12.935",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 8,
@@ -4753,14 +4753,14 @@
             "driver": "Oliver Bearman",
             "number": 87,
             "lapTime": "1:14.416",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 17,
             "driver": "Esteban Ocon",
             "number": 31,
             "lapTime": "1:14.845",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 18,
@@ -4818,7 +4818,7 @@
             "laps": "68",
             "time": "1:28:15.758",
             "pts": 25,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:14.210",
             "fastestLap": true
           },
@@ -4839,7 +4839,7 @@
             "laps": "68",
             "time": "+11.276s",
             "pts": 15,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:14.398"
           },
           {
@@ -4859,7 +4859,7 @@
             "laps": "67",
             "time": "+1 Lap",
             "pts": 10,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:14.578"
           },
           {
@@ -4909,7 +4909,7 @@
             "laps": "67",
             "time": "+1 Lap",
             "pts": 1,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:16.002"
           },
           {
@@ -4949,7 +4949,7 @@
             "laps": "66",
             "time": "+2 Laps",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:16.577"
           },
           {
@@ -4999,7 +4999,7 @@
             "laps": "29",
             "time": "DNF",
             "pts": 0,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:15.477"
           },
           {
@@ -5075,7 +5075,7 @@
             "number": 3,
             "lapTime": "1:14.491",
             "laps": "26",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 4,
@@ -5083,7 +5083,7 @@
             "number": 12,
             "lapTime": "1:14.537",
             "laps": "31",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 5,
@@ -5091,7 +5091,7 @@
             "number": 63,
             "lapTime": "1:14.983",
             "laps": "29",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 6,
@@ -5155,7 +5155,7 @@
             "number": 6,
             "lapTime": "1:16.148",
             "laps": "14",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 14,
@@ -5179,7 +5179,7 @@
             "number": 87,
             "lapTime": "1:16.292",
             "laps": "31",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 17,
@@ -5187,7 +5187,7 @@
             "number": 31,
             "lapTime": "1:16.333",
             "laps": "31",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 18,
@@ -5265,7 +5265,7 @@
             "number": 3,
             "lapTime": "1:13.194",
             "laps": "35",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 4,
@@ -5273,7 +5273,7 @@
             "number": 63,
             "lapTime": "1:13.405",
             "laps": "35",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 5,
@@ -5281,7 +5281,7 @@
             "number": 12,
             "lapTime": "1:13.529",
             "laps": "35",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 6,
@@ -5289,7 +5289,7 @@
             "number": 6,
             "lapTime": "1:14.087",
             "laps": "24",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 7,
@@ -5321,7 +5321,7 @@
             "number": 87,
             "lapTime": "1:14.456",
             "laps": "37",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 11,
@@ -5377,7 +5377,7 @@
             "number": 31,
             "lapTime": "1:14.845",
             "laps": "35",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 18,
@@ -5439,7 +5439,7 @@
             "number": 12,
             "lapTime": "1:12.720",
             "laps": "22",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
@@ -5463,7 +5463,7 @@
             "number": 63,
             "lapTime": "1:13.483",
             "laps": "23",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 5,
@@ -5471,7 +5471,7 @@
             "number": 3,
             "lapTime": "1:13.662",
             "laps": "23",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 6,
@@ -5495,7 +5495,7 @@
             "number": 6,
             "lapTime": "1:13.877",
             "laps": "25",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 9,
@@ -5519,7 +5519,7 @@
             "number": 31,
             "lapTime": "1:14.278",
             "laps": "24",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 12,
@@ -5543,7 +5543,7 @@
             "number": 87,
             "lapTime": "1:14.487",
             "laps": "18",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 15,
@@ -5628,14 +5628,14 @@
             "driver": "Kimi Antonelli",
             "number": 12,
             "lapTime": "1:12.051",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
             "driver": "Max Verstappen",
             "number": 3,
             "lapTime": "1:12.094",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 3,
@@ -5656,14 +5656,14 @@
             "driver": "Isack Hadjar",
             "number": 6,
             "lapTime": "1:12.434",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 6,
             "driver": "George Russell",
             "number": 63,
             "lapTime": "1:12.445",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 7,
@@ -5740,7 +5740,7 @@
             "driver": "Esteban Ocon",
             "number": 31,
             "lapTime": "1:14.722",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 18,
@@ -5754,7 +5754,7 @@
             "driver": "Oliver Bearman",
             "number": 87,
             "lapTime": "1:14.814",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 20,
@@ -5798,7 +5798,7 @@
             "laps": "78",
             "time": "2:23:31.243",
             "pts": 25,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:13.481",
             "fastestLap": true
           },
@@ -5829,7 +5829,7 @@
             "laps": "78",
             "time": "+23.394s",
             "pts": 12,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:15.669"
           },
           {
@@ -5879,7 +5879,7 @@
             "laps": "78",
             "time": "+37.140s",
             "pts": 2,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:16.914"
           },
           {
@@ -5909,7 +5909,7 @@
             "laps": "78",
             "time": "+43.353s",
             "pts": 0,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:15.773"
           },
           {
@@ -5989,7 +5989,7 @@
             "laps": "27",
             "time": "DNF",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:18.475"
           },
           {
@@ -6009,7 +6009,7 @@
             "laps": "0",
             "time": "DNF",
             "pts": 0,
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           }
         ]
       }
@@ -6039,7 +6039,7 @@
             "number": 63,
             "lapTime": "1:16.363",
             "laps": "27",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
@@ -6063,7 +6063,7 @@
             "number": 3,
             "lapTime": "1:17.047",
             "laps": "29",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 5,
@@ -6119,7 +6119,7 @@
             "number": 87,
             "lapTime": "1:18.172",
             "laps": "25",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 12,
@@ -6143,7 +6143,7 @@
             "number": 36,
             "lapTime": "1:18.298",
             "laps": "21",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 15,
@@ -6151,7 +6151,7 @@
             "number": 72,
             "lapTime": "1:18.365",
             "laps": "28",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 16,
@@ -6159,7 +6159,7 @@
             "number": 31,
             "lapTime": "1:18.372",
             "laps": "27",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 17,
@@ -6229,7 +6229,7 @@
             "number": 63,
             "lapTime": "1:15.435",
             "laps": "28",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
@@ -6253,7 +6253,7 @@
             "number": 12,
             "lapTime": "1:16.015",
             "laps": "31",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 6,
@@ -6261,7 +6261,7 @@
             "number": 3,
             "lapTime": "1:16.321",
             "laps": "33",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 7,
@@ -6293,7 +6293,7 @@
             "number": 6,
             "lapTime": "1:16.674",
             "laps": "30",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 11,
@@ -6309,7 +6309,7 @@
             "number": 87,
             "lapTime": "1:16.945",
             "laps": "31",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 13,
@@ -6349,7 +6349,7 @@
             "number": 31,
             "lapTime": "1:17.538",
             "laps": "29",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 18,
@@ -6411,7 +6411,7 @@
             "number": 63,
             "lapTime": "1:15.679",
             "laps": "11",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
@@ -6451,7 +6451,7 @@
             "number": 3,
             "lapTime": "1:16.434",
             "laps": "12",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 7,
@@ -6459,7 +6459,7 @@
             "number": 12,
             "lapTime": "1:16.500",
             "laps": "12",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 8,
@@ -6467,7 +6467,7 @@
             "number": 6,
             "lapTime": "1:16.684",
             "laps": "15",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 9,
@@ -6531,7 +6531,7 @@
             "number": 31,
             "lapTime": "1:18.040",
             "laps": "15",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 17,
@@ -6539,7 +6539,7 @@
             "number": 87,
             "lapTime": "1:18.391",
             "laps": "13",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 18,
@@ -6600,7 +6600,7 @@
             "driver": "George Russell",
             "number": 63,
             "lapTime": "1:14.679",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
@@ -6614,7 +6614,7 @@
             "driver": "Kimi Antonelli",
             "number": 12,
             "lapTime": "1:14.998",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 4,
@@ -6628,14 +6628,14 @@
             "driver": "Max Verstappen",
             "number": 3,
             "lapTime": "1:15.021",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 6,
             "driver": "Isack Hadjar",
             "number": 6,
             "lapTime": "1:15.077",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 7,
@@ -6698,7 +6698,7 @@
             "driver": "Oliver Bearman",
             "number": 87,
             "lapTime": "1:16.389",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 16,
@@ -6712,7 +6712,7 @@
             "driver": "Esteban Ocon",
             "number": 31,
             "lapTime": "1:17.073",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 18,
@@ -6781,7 +6781,7 @@
             "laps": "66",
             "time": "+19.561s",
             "pts": 18,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:20.640"
           },
           {
@@ -6801,7 +6801,7 @@
             "laps": "66",
             "time": "+40.497s",
             "pts": 12,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:20.230"
           },
           {
@@ -6821,7 +6821,7 @@
             "laps": "65",
             "time": "+1 Lap",
             "pts": 8,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:20.150"
           },
           {
@@ -6891,7 +6891,7 @@
             "laps": "64",
             "time": "+2 Laps",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:21.643"
           },
           {
@@ -6921,7 +6921,7 @@
             "laps": "61",
             "time": "DNF",
             "pts": 0,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:20.704"
           },
           {
@@ -6931,7 +6931,7 @@
             "laps": "60",
             "time": "DNF",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:22.419"
           },
           {
@@ -7012,7 +7012,7 @@
             "number": 12,
             "lapTime": "1:07.796",
             "laps": "29",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
@@ -7020,7 +7020,7 @@
             "number": 63,
             "lapTime": "1:07.836",
             "laps": "30",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
@@ -7036,7 +7036,7 @@
             "number": 3,
             "lapTime": "1:08.077",
             "laps": "17",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 5,
@@ -7084,7 +7084,7 @@
             "number": 87,
             "lapTime": "1:09.071",
             "laps": "26",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 11,
@@ -7100,7 +7100,7 @@
             "number": 6,
             "lapTime": "1:09.481",
             "laps": "11",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 13,
@@ -7156,7 +7156,7 @@
             "number": 50,
             "lapTime": "1:10.493",
             "laps": "23",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 20,
@@ -7202,7 +7202,7 @@
             "number": 12,
             "lapTime": "1:07.014",
             "laps": "32",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
@@ -7226,7 +7226,7 @@
             "number": 3,
             "lapTime": "1:07.564",
             "laps": "29",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 5,
@@ -7242,7 +7242,7 @@
             "number": 63,
             "lapTime": "1:07.637",
             "laps": "25",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 7,
@@ -7250,7 +7250,7 @@
             "number": 6,
             "lapTime": "1:07.758",
             "laps": "28",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 8,
@@ -7298,7 +7298,7 @@
             "number": 87,
             "lapTime": "1:08.532",
             "laps": "33",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 14,
@@ -7314,7 +7314,7 @@
             "number": 31,
             "lapTime": "1:08.830",
             "laps": "33",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 16,
@@ -7392,7 +7392,7 @@
             "number": 63,
             "lapTime": "1:07.096",
             "laps": "19",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
@@ -7400,7 +7400,7 @@
             "number": 12,
             "lapTime": "1:07.134",
             "laps": "17",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
@@ -7432,7 +7432,7 @@
             "number": 3,
             "lapTime": "1:07.369",
             "laps": "16",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 7,
@@ -7448,7 +7448,7 @@
             "number": 6,
             "lapTime": "1:07.912",
             "laps": "27",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 9,
@@ -7504,7 +7504,7 @@
             "number": 87,
             "lapTime": "1:08.529",
             "laps": "19",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 16,
@@ -7512,7 +7512,7 @@
             "number": 31,
             "lapTime": "1:08.707",
             "laps": "15",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 17,
@@ -7581,7 +7581,7 @@
             "driver": "George Russell",
             "number": 63,
             "lapTime": "1:06.113",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
@@ -7602,14 +7602,14 @@
             "driver": "Kimi Antonelli",
             "number": 12,
             "lapTime": "1:06.414",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 5,
             "driver": "Max Verstappen",
             "number": 3,
             "lapTime": "1:06.475",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 6,
@@ -7630,7 +7630,7 @@
             "driver": "Isack Hadjar",
             "number": 6,
             "lapTime": "1:06.632",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 9,
@@ -7665,7 +7665,7 @@
             "driver": "Oliver Bearman",
             "number": 87,
             "lapTime": "1:07.523",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 14,
@@ -7679,7 +7679,7 @@
             "driver": "Esteban Ocon",
             "number": 31,
             "lapTime": "1:07.817",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 16,
@@ -7751,7 +7751,7 @@
             "laps": "71",
             "time": "1:26:37.979",
             "pts": 25,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:10.683"
           },
           {
@@ -7761,7 +7761,7 @@
             "laps": "71",
             "time": "+1.611s",
             "pts": 18,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:10.483"
           },
           {
@@ -7771,7 +7771,7 @@
             "laps": "71",
             "time": "+1.986s",
             "pts": 15,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:10.374",
             "fastestLap": true
           },
@@ -7802,7 +7802,7 @@
             "laps": "71",
             "time": "+29.399s",
             "pts": 8,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:10.947"
           },
           {
@@ -7882,7 +7882,7 @@
             "laps": "70",
             "time": "+1 Lap",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:12.207"
           },
           {
@@ -7902,7 +7902,7 @@
             "laps": "69",
             "time": "+2 Laps",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:12.979"
           },
           {
@@ -8001,7 +8001,7 @@
             "number": 12,
             "lapTime": "1:29.473",
             "laps": "29",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
@@ -8017,7 +8017,7 @@
             "number": 63,
             "lapTime": "1:29.938",
             "laps": "31",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 5,
@@ -8033,7 +8033,7 @@
             "number": 3,
             "lapTime": "1:30.240",
             "laps": "27",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 7,
@@ -8049,7 +8049,7 @@
             "number": 6,
             "lapTime": "1:30.338",
             "laps": "28",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 9,
@@ -8097,7 +8097,7 @@
             "number": 87,
             "lapTime": "1:31.373",
             "laps": "27",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 15,
@@ -8113,7 +8113,7 @@
             "number": 31,
             "lapTime": "1:31.684",
             "laps": "27",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 17,
@@ -8189,14 +8189,14 @@
             "driver": "Kimi Antonelli",
             "number": 12,
             "lapTime": "1:28.387",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 3,
             "driver": "Max Verstappen",
             "number": 3,
             "lapTime": "1:28.697",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 4,
@@ -8210,7 +8210,7 @@
             "driver": "George Russell",
             "number": 63,
             "lapTime": "1:28.733",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 6,
@@ -8231,7 +8231,7 @@
             "driver": "Isack Hadjar",
             "number": 6,
             "lapTime": "1:28.835",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 9,
@@ -8294,14 +8294,14 @@
             "driver": "Oliver Bearman",
             "number": 87,
             "lapTime": "1:31.083",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 18,
             "driver": "Esteban Ocon",
             "number": 31,
             "lapTime": "1:31.714",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 19,
@@ -8352,7 +8352,7 @@
             "laps": "17",
             "time": "26:12.129",
             "pts": 8,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:31.607",
             "fastestLap": true
           },
@@ -8383,7 +8383,7 @@
             "laps": "17",
             "time": "+10.639s",
             "pts": 5,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:31.977"
           },
           {
@@ -8403,7 +8403,7 @@
             "laps": "17",
             "time": "+16.550s",
             "pts": 3,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:32.393"
           },
           {
@@ -8433,7 +8433,7 @@
             "laps": "17",
             "time": "+30.953s",
             "pts": 0,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:33.000"
           },
           {
@@ -8483,7 +8483,7 @@
             "laps": "17",
             "time": "+45.784s",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:33.574"
           },
           {
@@ -8503,7 +8503,7 @@
             "laps": "17",
             "time": "+49.810s",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:34.399"
           },
           {
@@ -8585,7 +8585,7 @@
             "driver": "Kimi Antonelli",
             "number": 12,
             "lapTime": "1:28.111",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
@@ -8606,14 +8606,14 @@
             "driver": "George Russell",
             "number": 63,
             "lapTime": "1:28.481",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 5,
             "driver": "Isack Hadjar",
             "number": 6,
             "lapTime": "1:28.746",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 6,
@@ -8627,7 +8627,7 @@
             "driver": "Max Verstappen",
             "number": 3,
             "lapTime": "1:28.893",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 8,
@@ -8676,7 +8676,7 @@
             "driver": "Oliver Bearman",
             "number": 87,
             "lapTime": "1:30.501",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 15,
@@ -8697,7 +8697,7 @@
             "driver": "Esteban Ocon",
             "number": 31,
             "lapTime": "1:30.680",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 18,
@@ -8765,7 +8765,7 @@
             "laps": "52",
             "time": "+0.427s",
             "pts": 18,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:32.489"
           },
           {
@@ -8795,7 +8795,7 @@
             "laps": "52",
             "time": "+1.598s",
             "pts": 10,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:32.268"
           },
           {
@@ -8865,7 +8865,7 @@
             "laps": "52",
             "time": "+5.245s",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:34.455"
           },
           {
@@ -8875,7 +8875,7 @@
             "laps": "52",
             "time": "+5.512s",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:34.792"
           },
           {
@@ -8895,7 +8895,7 @@
             "laps": "52",
             "time": "+8.005s",
             "pts": 0,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:31.777",
             "fastestLap": true
           },
@@ -8946,7 +8946,7 @@
             "laps": "46",
             "time": "DNF",
             "pts": 0,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:32.101"
           },
           {
@@ -8997,7 +8997,7 @@
             "number": 3,
             "lapTime": "1:47.070",
             "laps": "24",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 2,
@@ -9021,7 +9021,7 @@
             "number": 6,
             "lapTime": "1:47.322",
             "laps": "23",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 5,
@@ -9037,7 +9037,7 @@
             "number": 12,
             "lapTime": "1:47.603",
             "laps": "23",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 7,
@@ -9053,7 +9053,7 @@
             "number": 63,
             "lapTime": "1:47.959",
             "laps": "22",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 9,
@@ -9093,7 +9093,7 @@
             "number": 87,
             "lapTime": "1:49.010",
             "laps": "21",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 14,
@@ -9117,7 +9117,7 @@
             "number": 31,
             "lapTime": "1:49.449",
             "laps": "21",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 17,
@@ -9187,7 +9187,7 @@
             "number": 12,
             "lapTime": "1:45.944",
             "laps": "18",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
@@ -9203,7 +9203,7 @@
             "number": 3,
             "lapTime": "1:46.416",
             "laps": "21",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 4,
@@ -9219,7 +9219,7 @@
             "number": 6,
             "lapTime": "1:46.714",
             "laps": "20",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 6,
@@ -9243,7 +9243,7 @@
             "number": 63,
             "lapTime": "1:47.229",
             "laps": "20",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 9,
@@ -9275,7 +9275,7 @@
             "number": 87,
             "lapTime": "1:47.792",
             "laps": "16",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 13,
@@ -9291,7 +9291,7 @@
             "number": 31,
             "lapTime": "1:47.958",
             "laps": "19",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 15,
@@ -9377,7 +9377,7 @@
             "number": 12,
             "lapTime": "1:45.990",
             "laps": "13",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
@@ -9393,7 +9393,7 @@
             "number": 3,
             "lapTime": "1:46.138",
             "laps": "14",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 4,
@@ -9401,7 +9401,7 @@
             "number": 63,
             "lapTime": "1:46.357",
             "laps": "12",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 5,
@@ -9449,7 +9449,7 @@
             "number": 6,
             "lapTime": "1:47.096",
             "laps": "19",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 11,
@@ -9481,7 +9481,7 @@
             "number": 87,
             "lapTime": "1:47.920",
             "laps": "23",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 15,
@@ -9521,7 +9521,7 @@
             "number": 31,
             "lapTime": "1:48.730",
             "laps": "22",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 20,
@@ -9566,14 +9566,14 @@
             "driver": "Kimi Antonelli",
             "number": 12,
             "lapTime": "1:44.361",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 2,
             "driver": "Max Verstappen",
             "number": 3,
             "lapTime": "1:44.678",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 3,
@@ -9587,7 +9587,7 @@
             "driver": "George Russell",
             "number": 63,
             "lapTime": "1:44.869",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 5,
@@ -9629,7 +9629,7 @@
             "driver": "Isack Hadjar",
             "number": 6,
             "lapTime": "DNF",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 11,
@@ -9671,7 +9671,7 @@
             "driver": "Oliver Bearman",
             "number": 87,
             "lapTime": "1:46.779",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 17,
@@ -9685,7 +9685,7 @@
             "driver": "Esteban Ocon",
             "number": 31,
             "lapTime": "1:47.801",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 19,
@@ -9736,7 +9736,7 @@
             "laps": "44",
             "time": "1:24:42.479",
             "pts": 25,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:49.098"
           },
           {
@@ -9756,7 +9756,7 @@
             "laps": "44",
             "time": "+11.586s",
             "pts": 15,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:49.618"
           },
           {
@@ -9786,7 +9786,7 @@
             "laps": "44",
             "time": "+23.307s",
             "pts": 8,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:49.298"
           },
           {
@@ -9867,7 +9867,7 @@
             "laps": "44",
             "time": "+94.465s",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:51.109"
           },
           {
@@ -9897,7 +9897,7 @@
             "laps": "44",
             "time": "+110.925s",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:51.900"
           },
           {
@@ -9947,7 +9947,7 @@
             "laps": "0",
             "time": "DNF",
             "pts": 0,
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           }
         ]
       }
@@ -9985,7 +9985,7 @@
             "number": 3,
             "lapTime": "1:19.559",
             "laps": "25",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 3,
@@ -10001,7 +10001,7 @@
             "number": 6,
             "lapTime": "1:19.997",
             "laps": "25",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 5,
@@ -10009,7 +10009,7 @@
             "number": 63,
             "lapTime": "1:20.066",
             "laps": "21",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 6,
@@ -10025,7 +10025,7 @@
             "number": 72,
             "lapTime": "1:20.467",
             "laps": "24",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 8,
@@ -10065,7 +10065,7 @@
             "number": 31,
             "lapTime": "1:21.051",
             "laps": "24",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 13,
@@ -10105,7 +10105,7 @@
             "number": 50,
             "lapTime": "1:22.001",
             "laps": "25",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 18,
@@ -10191,7 +10191,7 @@
             "number": 3,
             "lapTime": "1:19.421",
             "laps": "27",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 5,
@@ -10199,7 +10199,7 @@
             "number": 63,
             "lapTime": "1:19.662",
             "laps": "30",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 6,
@@ -10207,7 +10207,7 @@
             "number": 6,
             "lapTime": "1:19.800",
             "laps": "20",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 7,
@@ -10255,7 +10255,7 @@
             "number": 31,
             "lapTime": "1:20.557",
             "laps": "26",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 13,
@@ -10263,7 +10263,7 @@
             "number": 12,
             "lapTime": "1:20.693",
             "laps": "30",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 14,
@@ -10279,7 +10279,7 @@
             "number": 87,
             "lapTime": "1:20.950",
             "laps": "28",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 16,
@@ -10365,7 +10365,7 @@
             "number": 12,
             "lapTime": "1:18.068",
             "laps": "16",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 4,
@@ -10389,7 +10389,7 @@
             "number": 63,
             "lapTime": "1:18.541",
             "laps": "18",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 7,
@@ -10397,7 +10397,7 @@
             "number": 3,
             "lapTime": "1:18.656",
             "laps": "14",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 8,
@@ -10405,7 +10405,7 @@
             "number": 6,
             "lapTime": "1:18.943",
             "laps": "17",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 9,
@@ -10461,7 +10461,7 @@
             "number": 31,
             "lapTime": "1:20.295",
             "laps": "18",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 16,
@@ -10469,7 +10469,7 @@
             "number": 87,
             "lapTime": "1:20.312",
             "laps": "14",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 17,
@@ -10559,7 +10559,7 @@
             "driver": "Kimi Antonelli",
             "number": 12,
             "lapTime": "1:17.479",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 5,
@@ -10573,21 +10573,21 @@
             "driver": "Max Verstappen",
             "number": 3,
             "lapTime": "1:17.725",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 7,
             "driver": "George Russell",
             "number": 63,
             "lapTime": "1:17.760",
-            "team": "Mercedes"
+            "team": "Mercedes-AMG"
           },
           {
             "pos": 8,
             "driver": "Isack Hadjar",
             "number": 6,
             "lapTime": "1:17.856",
-            "team": "Red Bull Racing"
+            "team": "Red Bull"
           },
           {
             "pos": 9,
@@ -10636,7 +10636,7 @@
             "driver": "Esteban Ocon",
             "number": 31,
             "lapTime": "1:19.734",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 16,
@@ -10650,7 +10650,7 @@
             "driver": "Oliver Bearman",
             "number": 87,
             "lapTime": "1:20.233",
-            "team": "Haas F1 Team"
+            "team": "Haas"
           },
           {
             "pos": 18,
@@ -10718,7 +10718,7 @@
             "laps": "70",
             "time": "+15.080s",
             "pts": 18,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:23.433"
           },
           {
@@ -10728,7 +10728,7 @@
             "laps": "70",
             "time": "+18.728s",
             "pts": 15,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:22.415"
           },
           {
@@ -10759,7 +10759,7 @@
             "laps": "70",
             "time": "+55.488s",
             "pts": 8,
-            "team": "Red Bull Racing",
+            "team": "Red Bull",
             "bestLap": "1:23.218"
           },
           {
@@ -10769,7 +10769,7 @@
             "laps": "70",
             "time": "+57.503s",
             "pts": 6,
-            "team": "Mercedes",
+            "team": "Mercedes-AMG",
             "bestLap": "1:22.589"
           },
           {
@@ -10859,7 +10859,7 @@
             "laps": "68",
             "time": "+2 Laps",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:25.889"
           },
           {
@@ -10889,7 +10889,7 @@
             "laps": "68",
             "time": "+2 Laps",
             "pts": 0,
-            "team": "Haas F1 Team",
+            "team": "Haas",
             "bestLap": "1:25.884"
           },
           {
