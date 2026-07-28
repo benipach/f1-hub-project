@@ -473,10 +473,10 @@ function renderRaceResult(raceEntries = [], prevSessionEntries = [], containerId
                 </thead>
                 <tbody>
                     ${raceEntries.map(res => {
-                        const teamId    = driverTeams[res.driver] || res.team || '';
+                        const teamId    = res.team || '';
                         const logoFile  = TEAM_LOGO_MAP[teamId];
                         const teamColor = TEAM_COLOR_MAP[teamId] || 'rgba(255,255,255,0.4)';
-                        const driverNum = driverNumbers[res.driver] ?? '';
+                        const driverNum = res.number ?? '';
                         const logoHtml  = logoFile
                             ? `<img class="res-team-logo" src="../img/teams/${logoFile}.png" alt="${teamId}">`
                             : `<span class="res-team-logo-placeholder"></span>`;
@@ -561,10 +561,10 @@ function renderSessionResult(entries = [], containerId, sessionLabel, driverTeam
                 </thead>
                 <tbody>
                     ${entries.map((res, i) => {
-                        const teamId    = driverTeams[res.driver] || res.team || '';
+                        const teamId    = res.team || '';
                         const logoFile  = TEAM_LOGO_MAP[teamId];
                         const teamColor = TEAM_COLOR_MAP[teamId] || 'rgba(255,255,255,0.4)';
-                        const driverNum = driverNumbers[res.driver] ?? '';
+                        const driverNum = res.number ?? '';
                         const logoHtml  = logoFile
                             ? `<img class="res-team-logo" src="../img/teams/${logoFile}.png" alt="${teamId}">`
                             : `<span class="res-team-logo-placeholder"></span>`;
