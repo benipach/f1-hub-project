@@ -470,7 +470,7 @@ function renderRaceResult(raceEntries = [], prevSessionEntries = [], containerId
                         <th>Driver</th>
                         <th class="res-team-col">Team</th>
                         <th class="res-time-col">Time</th>
-                        <th class="res-time-col">Best Lap</th>
+                        <th class="res-time-col res-bestlap-col">Best Lap</th>
                         <th style="text-align:center">Pts</th>
                     </tr>
                 </thead>
@@ -511,7 +511,7 @@ function renderRaceResult(raceEntries = [], prevSessionEntries = [], containerId
                                     </div>
                                 </td>
                                 <td class="res-time" style="${dim}">${res.time}</td>
-                                <td class="res-time" style="${bestLapStyle}">${bestLap}</td>
+                                <td class="res-time res-bestlap" style="${bestLapStyle}">${bestLap}</td>
                                 <td class="res-pts" style="${dim}">${res.pts ?? 0}</td>
                             </tr>`;
                     }).join('')}
