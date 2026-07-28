@@ -127,20 +127,34 @@ function gpNeedsWork(gp, weatherEnabled, forceWeather = false, backfillBestLap =
   });
 }
 
-// Migración: results ya guardados con pos:0 (bug viejo) deberían ser "NC".
-// 0 nunca es una posición real de carrera, así que es seguro reescribirla.
+// Migración: results ya guardados con pos:0 (bug viejo de OpenF1) deben
+// renumerarse. 0 nunca es una posición real, así que esas filas se mandan
+// al final (detrás de las posiciones numéricas reales, preservando el
+// orden relativo entre ellas) y se renumera todo 1..N por índice — igual
+// que hace mapRace/mapQualy/mapPractice con datos nuevos. Nada de "NC".
 function migrateZeroPositions(season) {
   let fixedCount = 0;
   for (const [gpKey, gp] of Object.entries(season)) {
     if (!gp?.sessions || typeof gp.sessions !== "object") continue;
     for (const [resultKey, session] of Object.entries(gp.sessions)) {
-      if (!Array.isArray(session?.results)) continue;
-      for (const row of session.results) {
-        if (row && row.pos === 0) {
-          row.pos = "NC";
-          fixedCount += 1;
-          console.log(`🔧 ${gpKey}/${resultKey}: ${row.driver ?? "?"} pos 0 → NC`);
-        }
+      if (!Array.isArray(session?.results) || session.results.length === 0) continue;
+      const zeroRows = session.results.filter((row) => row && row.pos === 0);
+      if (zeroRows.length === 0) continue;
+
+      const reordered = session.results
+        .map((row, i) => ({ row, i }))
+        .sort((a, b) => {
+          const av = !a.row || a.row.pos === 0 || !Number.isFinite(Number(a.row.pos)) ? Number.POSITIVE_INFINITY : Number(a.row.pos);
+          const bv = !b.row || b.row.pos === 0 || !Number.isFinite(Number(b.row.pos)) ? Number.POSITIVE_INFINITY : Number(b.row.pos);
+          return av !== bv ? av - bv : a.i - b.i;
+        })
+        .map(({ row }) => row);
+      reordered.forEach((row, i) => { if (row) row.pos = i + 1; });
+      session.results = reordered;
+
+      fixedCount += zeroRows.length;
+      for (const row of zeroRows) {
+        console.log(`🔧 ${gpKey}/${resultKey}: ${row.driver ?? "?"} pos 0 → renumerado al final`);
       }
     }
   }

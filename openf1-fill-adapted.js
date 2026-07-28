@@ -274,11 +274,18 @@ function resolveDriver(driverNumber, driversByNumber, knownDriverNames = new Set
   return { name, team: driver?.team ?? null };
 }
 
+// OpenF1 a veces manda position:0 en vez de null para pilotos aún no
+// clasificados (DNF/DNS/DSQ). 0 nunca es una posición real de carrera, así
+// que se trata igual que una posición ausente en vez de dejar que "gane" el
+// ordenamiento ascendente y termine arriba de todo.
+function isValidPosition(position) {
+  const n = Number(position);
+  return Number.isFinite(n) && n > 0;
+}
 function numericPosition(position) {
-  return Number.isFinite(Number(position)) ? Number(position) : Number.POSITIVE_INFINITY;
+  return isValidPosition(position) ? Number(position) : Number.POSITIVE_INFINITY;
 }
 function sortByPosition(a, b) { return numericPosition(a.position) - numericPosition(b.position); }
-function outputPosition(row) { return Number.isFinite(Number(row.position)) ? Number(row.position) : "NC"; }
 function statusLabel(row) {
   if (row?.dsq) return "DSQ";
   if (row?.dns) return "DNS";
@@ -328,11 +335,11 @@ function fallbackPoints(position, isSprint) {
 }
 
 function mapPractice(results, driversByNumber, knownDriverNames) {
-  return [...results].sort(sortByPosition).map((row) => {
+  return [...results].sort(sortByPosition).map((row, i) => {
     const driver = resolveDriver(row.driver_number, driversByNumber, knownDriverNames);
     const status = statusLabel(row);
     return {
-      pos: outputPosition(row),
+      pos: i + 1,
       driver: driver.name,
       lapTime: status ?? formatLapTime(row.duration),
       laps: String(row.number_of_laps ?? 0),
@@ -340,11 +347,11 @@ function mapPractice(results, driversByNumber, knownDriverNames) {
   });
 }
 function mapQualy(results, driversByNumber, knownDriverNames) {
-  return [...results].sort(sortByPosition).map((row) => {
+  return [...results].sort(sortByPosition).map((row, i) => {
     const driver = resolveDriver(row.driver_number, driversByNumber, knownDriverNames);
     const status = statusLabel(row);
     return {
-      pos: outputPosition(row),
+      pos: i + 1,
       driver: driver.name,
       lapTime: status ?? formatLapTime(row.duration),
     };
@@ -360,12 +367,12 @@ function mapRace(results, driversByNumber, knownDriverNames, isSprint, bestLapBy
     }
   }
 
-  return [...results].sort(sortByPosition).map((row) => {
+  return [...results].sort(sortByPosition).map((row, i) => {
     const driver = resolveDriver(row.driver_number, driversByNumber, knownDriverNames);
     const apiPoints = typeof row.points === "number" ? row.points : null;
     const pts = row.dsq ? 0 : (apiPoints ?? fallbackPoints(row.position, isSprint));
     const mapped = {
-      pos: outputPosition(row),
+      pos: i + 1,
       driver: driver.name,
       laps: String(row.number_of_laps ?? 0),
       time: formatRaceTime(row),
