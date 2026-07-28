@@ -1359,6 +1359,11 @@ border: 1px solid rgba(255,255,255,0.05);
     #sprint-race-card .data-table td.res-delta-cell,
     #sprint-race-card .data-table th.res-delta-col { display: none; }
 
+    #race-card .data-table td.res-bestlap,
+    #race-card .data-table th.res-bestlap-col,
+    #sprint-race-card .data-table td.res-bestlap,
+    #sprint-race-card .data-table th.res-bestlap-col { display: none; }
+
     #race-card .data-table th.res-team-col,
     #sprint-race-card .data-table th.res-team-col,
     #qualifying-card .data-table th.res-team-col,

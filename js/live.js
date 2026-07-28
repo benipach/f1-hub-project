@@ -109,7 +109,7 @@ function formatGap(value) {
     const match = /^\+?\s*(\d+)\s*L$/i.exec(value.trim());
     if (!match) return value;
     const laps = Number(match[1]);
-    return `+${laps} LAP${laps === 1 ? '' : 'S'}`;
+    return `+${laps} Lap${laps === 1 ? '' : 's'}`;
 }
 
 function connect() {
@@ -356,9 +356,9 @@ function render() {
 
         const teamColor = TEAM_COLOR_MAP[driver.TeamName] || 'rgba(255,255,255,0.9)';
         const statusTag = line.Retired ? ''
-            : line.InPit ? `<span class="live-status-team" style="color:${teamColor}">IN PIT</span>`
-            : line.PitOut ? `<span class="live-status-team" style="color:${teamColor}">OUT LAP</span>`
-            : 'RACING';
+            : line.InPit ? `<span class="live-status-team" style="color:${teamColor}">In pit</span>`
+            : line.PitOut ? `<span class="live-status-team" style="color:${teamColor}">Out lap</span>`
+            : 'Racing';
 
         return `
             <tr class="results-row ${line.Retired ? 'live-row--retired' : ''}">
@@ -370,8 +370,8 @@ function render() {
                         ${driverSurname(driver, num)}
                     </span>
                 </td>
-                <td class="results-date">${posNum === 1 ? 'LEADER' : formatGap(line.GapToLeader) ?? ''}</td>
-                <td class="results-date">${posNum === 1 ? 'LEADER' : formatGap(line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? ''}</td>
+                <td class="results-date">${posNum === 1 ? 'Leader' : formatGap(line.GapToLeader) ?? ''}</td>
+                <td class="results-date">${posNum === 1 ? 'Leader' : formatGap(line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? ''}</td>
                 <td class="${lapClass}">${lastLap.Value ?? '-'}</td>
                 <td class="${bestLapClass}">${bestLap.Value ?? '-'}</td>
                 <td>${tyreHistoryHTML(appLines[num])}</td>
@@ -393,6 +393,8 @@ function render() {
             const lapClass = lastLap.OverallFastest ? 'live-lap--fastest'
                 : lastLap.PersonalFastest ? 'live-lap--pb' : 'live-lap--normal';
 
+            const teamColor = TEAM_COLOR_MAP[driver.TeamName] || 'rgba(255,255,255,0.9)';
+
             return `
                 <tr class="results-row ${line.Retired ? 'live-row--retired' : ''}">
                     <td class="res-pos${isTop3 ? ' top3' : ''}">${line.Position ?? posNum}</td>
@@ -403,7 +405,7 @@ function render() {
                             ${driverCode(driver, num)}
                         </span>
                     </td>
-                    <td class="results-date">${line.InPit ? `<span class="live-status-team" style="color:${teamColor}">IN PIT</span>` : (posNum === 1 ? 'LEADER' : formatGap(line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? '')}</td>
+                    <td class="results-date">${line.InPit ? `<span class="live-status-team" style="color:${teamColor}">In pit</span>` : (posNum === 1 ? 'Leader' : formatGap(line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? '')}</td>
                     <td class="${lapClass}">${lastLap.Value ?? '-'}</td>
                     <td>${tyreHistoryHTML(appLines[num])}</td>
                 </tr>
