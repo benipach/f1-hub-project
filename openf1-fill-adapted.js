@@ -302,6 +302,11 @@ function statusLabel(row) {
   if (row?.dnf) return "DNF";
   return null;
 }
+// En qualy, DNF/DNS no aportan info útil (mejor mostrar "No time" vía
+// formatLapTime); solo DSQ es un status real que vale la pena mostrar.
+function qualyStatusLabel(row) {
+  return row?.dsq ? "DSQ" : null;
+}
 function pickLastNumber(value) {
   if (Array.isArray(value)) {
     for (let i = value.length - 1; i >= 0; i--) {
@@ -362,7 +367,7 @@ function mapPractice(results, driversByNumber, knownDriverNames) {
 function mapQualy(results, driversByNumber, knownDriverNames) {
   return [...results].sort(sortByPosition).map((row, i) => {
     const driver = resolveDriver(row.driver_number, driversByNumber, knownDriverNames);
-    const status = statusLabel(row);
+    const status = qualyStatusLabel(row);
     const mapped = {
       pos: i + 1,
       driver: driver.name,
@@ -502,6 +507,7 @@ async function fetchSessionWeather(sessionKey) {
 export {
   GP_OPENF1_LOOKUP,
   RACE_LIKE,
+  QUALY_LIKE,
   DRIVER_NAME_MISMATCHES,
   TEAM_NAME_NORMALIZE,
   OpenF1Error,

@@ -6,6 +6,7 @@
 import { readFile, writeFile, copyFile } from "node:fs/promises";
 import {
   RACE_LIKE,
+  QUALY_LIKE,
   TEAM_NAME_NORMALIZE,
   buildKnownDriverNamesFromSeason,
   buildSessionInfoMap,
@@ -30,6 +31,7 @@ function parseArgs(argv) {
     backfillBestLap: false,
     backfillDriverInfo: false,
     normalizeTeams: false,
+    fixQualyStatus: false,
     skip: new Set(DEFAULT_SKIP_GP_KEYS),
   };
 
@@ -57,6 +59,9 @@ function parseArgs(argv) {
     // Renombra equipos ya guardados según TEAM_NAME_NORMALIZE (ej. "Haas F1 Team" → "Haas"),
     // sin pegarle a OpenF1: solo reescribe lo que ya está en el JSON.
     else if (arg === "--normalize-teams") flags.normalizeTeams = true;
+    // Backfill manual: re-pide resultados de qualy ya guardados que tengan
+    // DNF/DNS como lapTime, para que pasen a "No time" (ver qualyStatusLabel).
+    else if (arg === "--fix-qualy-status") flags.fixQualyStatus = true;
     else if (arg.startsWith("--interval=")) console.warn("⚠️ --interval ignorado: GitHub Actions agenda las ejecuciones.");
     else positional.push(arg);
   }
@@ -87,6 +92,11 @@ function raceSessionMissingBestLap(session) {
 function sessionMissingDriverInfo(session) {
   if (!sessionHasResults(session)) return false;
   return session.results.some((row) => row && row.number === undefined);
+}
+// Filas de qualy guardadas antes de que DNF/DNS pasaran a mostrarse como "No time".
+function sessionHasStaleQualyStatus(resultKey, session) {
+  if (!QUALY_LIKE.has(resultKey) || !sessionHasResults(session)) return false;
+  return session.results.some((row) => row?.lapTime === "DNF" || row?.lapTime === "DNS");
 }
 function parseDate(value) {
   const date = value ? new Date(value) : null;
@@ -129,7 +139,7 @@ function gpHasStartedSession(gp) {
 
 // Evita pegarle a OpenF1 por GPs cuyas sesiones pasadas ya están completas.
 // Con forceWeather=true no saltea nada que ya haya arrancado (backfill manual).
-function gpNeedsWork(gp, weatherEnabled, forceWeather = false, backfillBestLap = false, backfillDriverInfo = false) {
+function gpNeedsWork(gp, weatherEnabled, forceWeather = false, backfillBestLap = false, backfillDriverInfo = false, fixQualyStatus = false) {
   return Object.entries(gp.sessions ?? {}).some(([resultKey, session]) => {
     if (!session || typeof session !== "object") return false;
     const start = parseDate(session.date);
@@ -139,6 +149,7 @@ function gpNeedsWork(gp, weatherEnabled, forceWeather = false, backfillBestLap =
     if (weatherEnabled && (isEmptyWeather(session.weather) || forceWeather)) return true;
     if (backfillBestLap && RACE_LIKE.has(resultKey) && raceSessionMissingBestLap(session)) return true;
     if (backfillDriverInfo && sessionMissingDriverInfo(session)) return true;
+    if (fixQualyStatus && sessionHasStaleQualyStatus(resultKey, session)) return true;
     return false;
   });
 }
@@ -237,7 +248,7 @@ async function runOnce(args) {
       console.log(`⏭️ ${gpKey}: todavía no arrancó, se saltea sin consultar OpenF1`);
       continue;
     }
-    if (!gpNeedsWork(gp, args.weather, args.forceWeather, args.backfillBestLap, args.backfillDriverInfo)) {
+    if (!gpNeedsWork(gp, args.weather, args.forceWeather, args.backfillBestLap, args.backfillDriverInfo, args.fixQualyStatus)) {
       console.log(`⏭️ ${gpKey}: ya está completo, se saltea sin consultar OpenF1`);
       continue;
     }
@@ -291,8 +302,10 @@ async function runOnce(args) {
         args.backfillBestLap && RACE_LIKE.has(resultKey) && raceSessionMissingBestLap(session);
       const needsDriverInfoBackfill =
         args.backfillDriverInfo && sessionMissingDriverInfo(session);
+      const needsQualyStatusFix =
+        args.fixQualyStatus && sessionHasStaleQualyStatus(resultKey, session);
 
-      if (needsResults || needsBestLapBackfill || needsDriverInfoBackfill) {
+      if (needsResults || needsBestLapBackfill || needsDriverInfoBackfill || needsQualyStatusFix) {
         try {
           if (needsResults ? await openf1HasResults(sessionKey) : true) {
             await fillGPSession(gp, args.year, gpKey, resultKey, knownDriverNames, sessionKey);
@@ -302,6 +315,8 @@ async function runOnce(args) {
                 ? `✅ ${gpKey}/${resultKey}: resultados agregados`
                 : needsDriverInfoBackfill
                 ? `🔢 ${gpKey}/${resultKey}: number/team agregado`
+                : needsQualyStatusFix
+                ? `⏱️ ${gpKey}/${resultKey}: DNF/DNS → No time`
                 : `🏎️ ${gpKey}/${resultKey}: bestLap agregado`
             );
           } else if (needsResults && sessionEnded(session, openf1Session)) {
