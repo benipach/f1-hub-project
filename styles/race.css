@@ -1103,6 +1103,15 @@ height: 20px;
 flex-shrink: 0;
 }
 
+.res-driver-team-logo {
+width: 20px;
+height: 20px;
+object-fit: contain;
+flex-shrink: 0;
+opacity: 0.9;
+display: none;
+}
+
 .res-time {
 font-family: 'F1-Regular';
 color: rgba(255,255,255,0.6);
@@ -1378,8 +1387,11 @@ border: 1px solid rgba(255,255,255,0.05);
     #fp3-card .res-laps { display: none; }
 
     .res-driver-number {
-        font-size: 11px;
-        min-width: 28px;
+        display: none;
+    }
+
+    .res-driver-team-logo {
+        display: inline-block;
     }
 
     .rc-section-subtitle {
