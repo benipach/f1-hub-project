@@ -112,6 +112,63 @@ function formatGap(value) {
     return `+${laps} Lap${laps === 1 ? '' : 's'}`;
 }
 
+function getNestedValue(target, pathSegments) {
+    let current = target;
+    for (const segment of pathSegments) {
+        if (current === null || current === undefined) return null;
+        if (typeof current !== 'object' && typeof current !== 'function') return null;
+        if (!(segment in current)) return null;
+        current = current[segment];
+    }
+    return current;
+}
+
+function normalizeTimeValue(value) {
+    if (value === null || value === undefined) return null;
+    if (typeof value === 'string') return value;
+    if (typeof value === 'object' && 'Value' in value) return value.Value;
+    return null;
+}
+
+function getSectorTimeInfo(line, sectorIndex) {
+    const candidates = [
+        [`Sector${sectorIndex}Time`],
+        [`Sector${sectorIndex}`],
+        [`LastLapTime`, `Sector${sectorIndex}Time`],
+        [`LastLapTime`, `Sector${sectorIndex}`],
+        ['Sectors', String(sectorIndex), 'Value'],
+        ['Sectors', sectorIndex, 'Value'],
+        ['LastLapTime', 'Sectors', String(sectorIndex), 'Value'],
+        ['LastLapTime', 'Sectors', sectorIndex, 'Value'],
+    ];
+
+    let value = null;
+    let className = '';
+
+    for (const path of candidates) {
+        const node = getNestedValue(line, path);
+        const normalized = normalizeTimeValue(node);
+        if (normalized !== null && value === null) value = normalized;
+        if (node && typeof node === 'object') {
+            if (node.OverallFastest) {
+                className = 'live-lap--fastest';
+                break;
+            }
+            if (node.PersonalFastest && className !== 'live-lap--fastest') {
+                className = 'live-lap--pb';
+            }
+        }
+    }
+
+    if (value === null) return null;
+    if (!className) className = 'live-lap--normal';
+    return { value, className };
+}
+
+function getSectorTimes(line) {
+    return [1, 2, 3].map((sectorIndex) => getSectorTimeInfo(line, sectorIndex));
+}
+
 function connect() {
     const ws = new WebSocket('ws://localhost:8080');
     const statusEl = document.getElementById('live-status');
@@ -175,30 +232,37 @@ const FLAG_EMOJI_MAP = {
     'abu-dhabi-gp':      '🇦🇪',
 };
 
-// Fills in the GP name and country flag in the hero row — same
-// markup/classes as index.html's hero, so it reuses that exact look.
+// Fills in the GP name (with country flag prefixed, same text node) in
+// the hero row — same markup/classes as index.html's hero, so it reuses
+// that exact look.
 function updateGPName() {
     const nameEl = document.getElementById('hero-gp-name');
-    const flagEl = document.getElementById('hero-gp-flag');
+    // Fullscreen Map View header — same data, separate element (only
+    // renders while #live-map-view-content.is-fullscreen is active).
+    const fsNameEl = document.getElementById('mapview-fs-name');
     if (!nameEl) return;
 
     const gp = state.CurrentGP;
     if (!gp || !gp.name) {
         nameEl.textContent = 'Loading Grand Prix…';
+        if (fsNameEl) fsNameEl.textContent = 'Loading Grand Prix…';
         return;
     }
 
-    nameEl.textContent = gp.name;
+    const flag = FLAG_EMOJI_MAP[gp.slug];
+    const label = flag ? `${flag} ${gp.name}` : gp.name;
 
-    if (flagEl) {
-        const flag = FLAG_EMOJI_MAP[gp.slug];
-        if (flag && flagEl.textContent !== flag) {
-            flagEl.textContent = flag;
-            // twemoji.js is already loaded site-wide (see the <script> tag
-            // in live.html) — this swaps the raw emoji character for its
-            // image, same as every other flag on the site.
-            if (window.twemoji) window.twemoji.parse(flagEl);
-        }
+    if (nameEl.textContent !== label) {
+        nameEl.textContent = label;
+        // twemoji.js is already loaded site-wide (see the <script> tag
+        // in live.html) — this swaps the raw emoji character for its
+        // image, same as every other flag on the site.
+        if (window.twemoji) window.twemoji.parse(nameEl);
+    }
+
+    if (fsNameEl && fsNameEl.textContent !== label) {
+        fsNameEl.textContent = label;
+        if (window.twemoji) window.twemoji.parse(fsNameEl);
     }
 }
 
@@ -215,6 +279,14 @@ function updateCircuitMap() {
     lastCircuitId = circuitId;
 
     img.src = `./img/circuits/${circuitId}-layout.png`;
+}
+
+// Full driver name, preserving the feed's formatting when available.
+// Examples: "Carlos SAINZ", "Max Verstappen".
+function driverFullName(driver, num) {
+    if (driver.FullName) return driver.FullName.trim();
+    if (driver.LastName) return driver.LastName.toUpperCase();
+    return driver.Tla || num;
 }
 
 // Full surname, uppercase (e.g. "HAMILTON"). Falls back to Tla/number if
@@ -311,8 +383,114 @@ function lapTimeToMs(t) {
     return isNaN(secs) ? null : secs * 1000;
 }
 
+// ── WEATHER (hero card, top of the page) ─────────────────────────────────
+// Card markup/CSS is identical to race.js's session-weather-card; only the
+// data source differs: race.js reads pre-recorded session weather from
+// season2026.json, this reads live WeatherData pushed over the WebSocket.
+function formatWeatherNumber(value, suffix = '') {
+    return Number.isFinite(Number(value)) ? `${Number(value).toFixed(1).replace('.0', '')}${suffix}` : '—';
+}
+
+function compassLabel(deg) {
+    const points = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+    const idx = Math.round(deg / 45) % 8;
+    return points[idx];
+}
+
+function renderSessionWeatherCard(weather) {
+    const rainfall = Number(weather.rainfall || 0) > 0;
+    const air      = formatWeatherNumber(weather.air_temperature, '°');
+    const track    = formatWeatherNumber(weather.track_temperature, '°');
+    const humidity = formatWeatherNumber(weather.humidity, '%');
+    const wind     = formatWeatherNumber(Number(weather.wind_speed) * 3.6, ' km/h');
+    const hasWindDir  = Number.isFinite(Number(weather.wind_direction));
+    const windDirDeg  = hasWindDir ? Number(weather.wind_direction) : 0;
+
+    const compassSvg = `
+        <svg class="swc-wind-compass-icon" viewBox="0 0 24 24" style="transform:rotate(${windDirDeg}deg)" aria-hidden="true">
+            <line x1="12" y1="22.5" x2="12" y2="3.5" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+            <path d="M3.5 11 L12 2 L20.5 11" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`;
+
+    return `
+        <div class="session-weather-card">
+            <div class="swc-condition ${rainfall ? 'is-wet' : 'is-dry'}">
+                <span class="swc-condition-icon">${rainfall ? '🌧️' : '☀️'}</span>
+                <div class="swc-condition-text">
+                    <span class="swc-condition-label">${rainfall ? 'Wet' : 'Dry'}</span>
+                    <span class="swc-condition-sub">Conditions</span>
+                </div>
+            </div>
+            <div class="swc-stats">
+                <div class="swc-stat">
+                    <span class="swc-stat-value">${air}</span>
+                    <span class="swc-stat-label">Air Temp</span>
+                </div>
+                <div class="swc-stat">
+                    <span class="swc-stat-value">${track}</span>
+                    <span class="swc-stat-label">Track Temp</span>
+                </div>
+                <div class="swc-stat">
+                    <span class="swc-stat-value">${humidity}</span>
+                    <span class="swc-stat-label">Humidity</span>
+                </div>
+                <div class="swc-stat">
+                    <span class="swc-stat-value">${wind}</span>
+                    <span class="swc-stat-label">Wind Speed</span>
+                </div>
+                ${hasWindDir ? `
+                <div class="swc-stat">
+                    <span class="swc-stat-value swc-wind-dir-value">
+                        ${compassLabel(windDirDeg)}
+                        ${compassSvg}
+                    </span>
+                    <span class="swc-stat-label">Wind Dir</span>
+                </div>` : ''}
+            </div>
+        </div>`;
+}
+
+// state.WeatherData is expected in the F1 SignalR feed's native shape
+// (AirTemp, TrackTemp, Humidity, WindSpeed, WindDirection, Rainfall — all
+// strings). Normalized here to the lowercase/numeric shape renderSessionWeatherCard
+// expects, matching what the future backend adapter will forward as-is.
+function getLiveWeather() {
+    const w = state.WeatherData;
+    if (!w) return null;
+    return {
+        air_temperature:  w.AirTemp,
+        track_temperature: w.TrackTemp,
+        humidity:         w.Humidity,
+        wind_speed:       Number(w.WindSpeed) / 3.6, // feed sends km/h; renderer expects m/s
+        wind_direction:   w.WindDirection,
+        rainfall:         w.Rainfall,
+    };
+}
+
+function renderWeatherInto(containerId, weather) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    if (!weather) {
+        container.style.display = 'none';
+        container.innerHTML = '';
+        return;
+    }
+
+    container.style.display = '';
+    container.innerHTML = renderSessionWeatherCard(weather);
+    if (window.twemoji) window.twemoji.parse(container);
+}
+
+function updateLiveWeather() {
+    const weather = getLiveWeather();
+    renderWeatherInto('live-weather', weather);
+    renderWeatherInto('mapview-fs-weather', weather);
+}
+
 function render() {
     updateGPName();
+    updateLiveWeather();
     updateCircuitMap();
 
     const timingLines = (state.TimingData && state.TimingData.Lines) || {};
@@ -335,8 +513,8 @@ function render() {
     const tbody2 = document.getElementById('live-rows-2');
 
     if (rows.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" class="results-empty">Waiting for session data…</td></tr>';
-        if (tbody2) tbody2.innerHTML = '<tr><td colspan="6" class="results-empty">Waiting for session data…</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="12" class="results-empty">Waiting for session data…</td></tr>';
+        if (tbody2) tbody2.innerHTML = '<tr><td colspan="9" class="results-empty">Waiting for session data…</td></tr>';
         return;
     }
 
@@ -344,6 +522,7 @@ function render() {
         const driver = driverList[num] || {};
         const appLine = appLines[num];
         const lastLap = line.LastLapTime || {};
+        const [sector1, sector2, sector3] = getSectorTimes(line);
         const posNum = i + 1;
         const isTop3 = posNum <= 3;
 
@@ -367,11 +546,14 @@ function render() {
                 <td>
                     <span class="res-team">
                         ${teamLogoHTML(driver.TeamName)}
-                        ${driverSurname(driver, num)}
+                        ${driverFullName(driver, num)}
                     </span>
                 </td>
                 <td class="results-date">${posNum === 1 ? 'Leader' : formatGap(line.GapToLeader) ?? ''}</td>
                 <td class="results-date">${posNum === 1 ? 'Leader' : formatGap(line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? ''}</td>
+                <td class="live-sector-cell ${sector1?.className || ''}">${sector1?.value ?? '-'}</td>
+                <td class="live-sector-cell ${sector2?.className || ''}">${sector2?.value ?? '-'}</td>
+                <td class="live-sector-cell ${sector3?.className || ''}">${sector3?.value ?? '-'}</td>
                 <td class="${lapClass}">${lastLap.Value ?? '-'}</td>
                 <td class="${bestLapClass}">${bestLap.Value ?? '-'}</td>
                 <td>${tyreHistoryHTML(appLines[num])}</td>
@@ -387,25 +569,33 @@ function render() {
             const driver = driverList[num] || {};
             const appLine = appLines[num];
             const lastLap = line.LastLapTime || {};
+            const [sector1, sector2, sector3] = getSectorTimes(line);
             const posNum = i + 1;
             const isTop3 = posNum <= 3;
 
             const lapClass = lastLap.OverallFastest ? 'live-lap--fastest'
                 : lastLap.PersonalFastest ? 'live-lap--pb' : 'live-lap--normal';
 
+            const bestLap = line.BestLapTime || {};
+            const bestMs = lapTimeToMs(bestLap.Value);
+            const fastestRowClass = (bestMs != null && bestMs === sessionBestMs) ? ' live-row--fastest-map' : '';
+
             const teamColor = TEAM_COLOR_MAP[driver.TeamName] || 'rgba(255,255,255,0.9)';
 
             return `
-                <tr class="results-row ${line.Retired ? 'live-row--retired' : ''}">
+                <tr class="results-row ${line.Retired ? 'live-row--retired' : ''}${fastestRowClass}">
                     <td class="res-pos${isTop3 ? ' top3' : ''}">${line.Position ?? posNum}</td>
                     <td class="res-delta-cell">${gridDeltaHtml(line.Position ?? posNum, appLine && appLine.GridPos)}</td>
                     <td>
                         <span class="res-team">
                             ${teamLogoHTML(driver.TeamName)}
-                            ${driverCode(driver, num)}
+                            ${driverSurname(driver, num)}
                         </span>
                     </td>
                     <td class="results-date">${line.InPit ? `<span class="live-status-team" style="color:${teamColor}">In pit</span>` : (posNum === 1 ? 'Leader' : formatGap(line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? '')}</td>
+                    <td class="live-sector-cell ${sector1?.className || ''}">${sector1?.value ?? '-'}</td>
+                    <td class="live-sector-cell ${sector2?.className || ''}">${sector2?.value ?? '-'}</td>
+                    <td class="live-sector-cell ${sector3?.className || ''}">${sector3?.value ?? '-'}</td>
                     <td class="${lapClass}">${lastLap.Value ?? '-'}</td>
                     <td>${tyreHistoryHTML(appLines[num])}</td>
                 </tr>
@@ -483,4 +673,44 @@ function syncMapHeight() {
 
 window.addEventListener('resize', syncMapHeight);
 
+// ── FULLSCREEN TOGGLE (tabla principal / tabla reducida + mapa) ────────────
+// No reparenta nada del DOM — solo agranda el contenedor con position:fixed
+// (misma capa que .track-zoom-modal en race.css, z-index 999), así que
+// getElementById('live-rows'), getElementById('live-rows-2'), etc. siguen
+// funcionando igual estén o no en pantalla completa.
+function initFullscreenButtons() {
+    const targets = [
+        { btnId: 'live-table-fullscreen-btn', wrapId: 'live-table-wrap' },
+        { btnId: 'live-map-fullscreen-btn', wrapId: 'live-map-view-content' },
+    ];
+
+    function setFullscreen(wrap, btn, on) {
+        wrap.classList.toggle('is-fullscreen', on);
+        btn.classList.toggle('is-fullscreen', on);
+        btn.setAttribute('aria-label', on ? 'Salir de pantalla completa' : 'Pantalla completa');
+        document.body.style.overflow = document.querySelector('.is-fullscreen') ? 'hidden' : '';
+        syncMapHeight();
+    }
+
+    targets.forEach(({ btnId, wrapId }) => {
+        const btn = document.getElementById(btnId);
+        const wrap = document.getElementById(wrapId);
+        if (!btn || !wrap) return;
+
+        btn.addEventListener('click', () => {
+            setFullscreen(wrap, btn, !wrap.classList.contains('is-fullscreen'));
+        });
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        targets.forEach(({ btnId, wrapId }) => {
+            const btn = document.getElementById(btnId);
+            const wrap = document.getElementById(wrapId);
+            if (wrap && wrap.classList.contains('is-fullscreen')) setFullscreen(wrap, btn, false);
+        });
+    });
+}
+
+initFullscreenButtons();
 connect();

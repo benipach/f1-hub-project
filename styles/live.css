@@ -18,7 +18,7 @@
 .map-view-content {
     display: flex;
     align-items: stretch;
-    gap: 40px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
@@ -90,12 +90,183 @@
 /* ---- GP NAME + FLAG + CIRCUIT (copied from index.css's .hero-title-row /
    .hero-gp-name / .hero-gp-flag / .hero-underline — same markup, same
    classes, same look as the homepage hero) ---- */
-.hero-title-row {
+.live-hero-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: 24px;
+    flex-wrap: wrap;
     margin: 0 0 4px 0;
+}
+
+.hero-title-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* ---- SESSION WEATHER CARD BASE (copied verbatim from race.css — remove
+   this block if results.css/style.css already define it site-wide) ---- */
+.session-weather-card {
+    background: rgb(20,20,30);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 10px;
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    transition: border-color 0.25s ease;
+}
+
+.session-weather-card:hover {
+    border-color: rgba(255,255,255,0.14);
+}
+
+.swc-condition {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-right: 32px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    white-space: nowrap;
+}
+
+.swc-condition-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.swc-condition-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.swc-condition-label {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 26px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.swc-condition.is-dry .swc-condition-label { color: #f5b74a; }
+.swc-condition.is-wet .swc-condition-label { color: #4ab3f5; }
+
+.swc-condition-sub {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.swc-stats {
+    display: flex;
+    flex: 1;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.swc-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 74px;
+}
+
+.swc-stat-value {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 26px;
+    color: var(--text-light);
+    line-height: 1;
+}
+
+.swc-stat-label {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.swc-wind-dir-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.swc-wind-compass-icon {
+    width: 0.85em;
+    height: 0.85em;
+    color: var(--text-light);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+/* ---- LIVE WEATHER CARD (compact variant of race.html's session-weather-card) ---- */
+.live-hero-weather {
+    margin-left: auto;
+}
+
+.live-hero-weather .session-weather-card {
+    padding: 12px 18px;
+    gap: 18px;
+}
+
+.live-hero-weather .swc-condition {
+    gap: 10px;
+    padding-right: 18px;
+}
+
+.live-hero-weather .swc-condition-icon {
+    font-size: 1.6rem;
+}
+
+.live-hero-weather .swc-condition-label {
+    font-size: 18px;
+}
+
+.live-hero-weather .swc-stats {
+    gap: 20px;
+}
+
+.live-hero-weather .swc-stat {
+    min-width: 0;
+    gap: 3px;
+}
+
+.live-hero-weather .swc-stat-value {
+    font-size: 18px;
+}
+
+@media (max-width: 900px) {
+    .live-hero-weather { margin-left: 0; }
+}
+
+@media (max-width: 500px) {
+    .live-hero-weather .session-weather-card {
+        padding: 12px 16px;
+        gap: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .live-hero-weather .swc-condition {
+        width: 100%;
+        padding-right: 0;
+        padding-bottom: 10px;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .live-hero-weather .swc-stats {
+        width: 100%;
+        gap: 12px;
+    }
+    .live-hero-weather .swc-stat { min-width: calc(50% - 6px); }
 }
 
 .hero-gp-name {
@@ -106,20 +277,12 @@
     text-transform: uppercase;
 }
 
-.hero-gp-flag {
-    flex-shrink: 0;
-    font-size: 72px;
-    line-height: 0;
-}
-
 @media (max-width: 1100px) {
     .hero-gp-name { font-size: 28px; }
-    .hero-gp-flag { font-size: 28px; }
 }
 
 @media (max-width: 600px) {
     .hero-gp-name { font-size: 22px; }
-    .hero-gp-flag { font-size: 22px; }
 }
 
 /* ---- ROW HEIGHT (overrides results.css's 56px, since live.css loads after it) ---- */
@@ -134,6 +297,47 @@
 
 .live-table td {
     font-size: 16px;
+}
+
+.live-table th:nth-child(6),
+.live-table td:nth-child(6) {
+    padding-right: 5px;
+}
+
+.live-table th:nth-child(7),
+.live-table td:nth-child(7),
+.live-table th:nth-child(8),
+.live-table td:nth-child(8) {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.live-table th:nth-child(9),
+.live-table td:nth-child(9) {
+    padding-left: 10px;
+}
+
+.live-table th:nth-child(10),
+.live-table td:nth-child(10) {
+    padding-left: 5px;
+}
+
+.live-table.live-table--compact th:nth-child(5),
+.live-table.live-table--compact td:nth-child(5) {
+    padding-right: 5px;
+}
+
+.live-table.live-table--compact th:nth-child(6),
+.live-table.live-table--compact td:nth-child(6),
+.live-table.live-table--compact th:nth-child(7),
+.live-table.live-table--compact td:nth-child(7) {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.live-table.live-table--compact th:nth-child(8),
+.live-table.live-table--compact td:nth-child(8) {
+    padding-left: 10px;
 }
 
 /* ---- DELTA INDICATOR (copied from race.css) ---- */
@@ -200,9 +404,18 @@
 }
 
 /* ---- PODIUM COLORS (same convention as race.css .res-pos.top3) ---- */
-#live-rows tr:nth-child(1) .res-pos.top3 { font-family: 'F1-Bold'; color: #f7d774; }
-#live-rows tr:nth-child(2) .res-pos.top3 { font-family: 'F1-Bold'; color: #d6d6d6; }
-#live-rows tr:nth-child(3) .res-pos.top3 { font-family: 'F1-Bold'; color: #cd9a63; }
+#live-rows tr:nth-child(1) .res-pos.top3,
+#live-rows-2 tr:nth-child(1) .res-pos.top3 { font-family: 'F1-Bold'; color: #f7d774; }
+#live-rows tr:nth-child(2) .res-pos.top3,
+#live-rows-2 tr:nth-child(2) .res-pos.top3 { font-family: 'F1-Bold'; color: #d6d6d6; }
+#live-rows tr:nth-child(3) .res-pos.top3,
+#live-rows-2 tr:nth-child(3) .res-pos.top3 { font-family: 'F1-Bold'; color: #cd9a63; }
+
+/* Soft purple background for the compact Map View row of the session
+   fastest lap holder. */
+.live-table.live-table--compact tr.live-row--fastest-map {
+    background: rgba(176, 56, 216, 0.2);
+}
 
 /* Lap time convention (official F1 timing colors): purple = session
    fastest, green = personal best, yellow = neither (normal lap).
@@ -294,7 +507,289 @@
     font-weight: bold;
 }
 
-/* ---- RESPONSIVE ---- */
+.live-sector-col,
+.live-sector-cell {
+    text-align: left;
+    white-space: nowrap;
+    min-width: 4.2ch;
+    padding: 0 6px;
+}
+
+.live-sector-col {
+    font-size: 0.82em;
+    opacity: 0.85;
+}
+
+.live-sector-cell {
+    color: inherit;
+}
+
+
+/* ---- FULLSCREEN BUTTON ----
+   Same visual pattern as race.html's .track-zoom-btn (circular, hidden
+   until hover, red on hover/focus, always visible on touch devices) —
+   just swapped for an expand/collapse icon since this toggles a table
+   instead of opening an image modal. */
+.table-fullscreen-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 20;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10,10,20,0.85);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 50%;
+    color: var(--text-light);
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0.85);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+#live-table-wrap:hover .table-fullscreen-btn,
+#live-map-view-content:hover .table-fullscreen-btn,
+.table-fullscreen-btn:focus-visible,
+.table-fullscreen-btn.is-fullscreen {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+.table-fullscreen-btn:hover,
+.table-fullscreen-btn:focus-visible {
+    background: var(--primary-red);
+    border-color: var(--primary-red);
+}
+
+.table-fullscreen-btn svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    flex-shrink: 0;
+    pointer-events: none;
+}
+
+/* Icon swap: expand icon by default, collapse icon once fullscreen */
+.table-fullscreen-btn .icon-collapse { display: none; }
+.table-fullscreen-btn.is-fullscreen .icon-expand { display: none; }
+.table-fullscreen-btn.is-fullscreen .icon-collapse { display: block; }
+
+@media (hover: none) {
+    .table-fullscreen-btn {
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+    }
+}
+
+/* ---- FULLSCREEN TARGETS ----
+   #live-table-wrap = the big table alone.
+   #live-map-view-content = the reduced table + the circuit map together
+   (it's already display:flex/gap, so both children just get more room). */
+#live-table-wrap,
+#live-map-view-content {
+    position: relative;
+}
+
+#live-table-wrap.is-fullscreen,
+#live-map-view-content.is-fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    margin: 0;
+    padding: 8px;
+    background: rgb(8,8,14);
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+}
+
+/* En pantalla completa, la tabla se lleva más espacio que el mapa (60/40
+   en vez del 50/50 normal de .map-view-content). Solo aplica en fullscreen:
+   fuera de eso, ambos siguen flex: 1 1 0 (mitad y mitad) como antes.
+   The 6/4 split now targets the panels (the actual flex children of
+   #live-map-view-content) instead of .results-table-wrap/.circuit-map-wrap,
+   which live one level deeper since those got wrapped in .mapview-panel. */
+#live-map-view-content.is-fullscreen {
+    flex-direction: column;
+}
+
+/* ---- FULLSCREEN GP NAME/FLAG HEADER ----
+   Top-right corner, above the two panels. Hidden entirely outside
+   fullscreen. */
+.mapview-fs-header {
+    display: none;
+}
+
+#live-map-view-content.is-fullscreen .mapview-fs-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 24px;
+    flex-shrink: 0;
+    padding: 0 0 20px 0;
+    flex-wrap: wrap;
+}
+
+.mapview-fs-weather {
+    flex-shrink: 0;
+    margin-bottom: 12px;
+}
+
+.mapview-fs-name {
+    font-family: 'F1-Black', sans-serif;
+    font-size: 40px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-light, #fff);
+    white-space: nowrap;
+}
+
+@media (max-width: 1100px) {
+    .mapview-fs-name { font-size: 22px; }
+}
+
+/* Same compact weather card treatment as .live-hero-weather */
+.mapview-fs-weather .session-weather-card {
+    padding: 12px 18px;
+    gap: 18px;
+    background: rgb(16,16,24);
+}
+
+.mapview-fs-weather .session-weather-card:hover {
+    border-color: rgba(255,255,255,0.05);
+}
+
+.mapview-fs-weather .swc-condition {
+    gap: 10px;
+    padding-right: 18px;
+}
+
+.mapview-fs-weather .swc-condition-icon {
+    font-size: 1.6rem;
+}
+
+.mapview-fs-weather .swc-condition-label {
+    font-size: 18px;
+}
+
+.mapview-fs-weather .swc-stats {
+    gap: 20px;
+}
+
+.mapview-fs-weather .swc-stat {
+    min-width: 0;
+    gap: 3px;
+}
+
+.mapview-fs-weather .swc-stat-value {
+    font-size: 18px;
+}
+
+@media (max-width: 1100px) {
+    .mapview-fs-weather .session-weather-card { padding: 10px 14px; gap: 12px; }
+    .mapview-fs-weather .swc-stats { gap: 14px; }
+    .mapview-fs-weather .swc-stat-value { font-size: 15px; }
+}
+
+/* ---- PANELS ROW WRAPPER ----
+   display:contents makes this div invisible to layout outside fullscreen,
+   so .mapview-panel--table/--map act as direct children of
+   .map-view-content exactly like before (same flex row, same gap).
+   In fullscreen, #live-map-view-content becomes a column (header on
+   top), so this wrapper turns into the actual flex row for the panels. */
+.mapview-panels-row {
+    display: contents;
+}
+
+#live-map-view-content.is-fullscreen .mapview-panels-row {
+    display: flex;
+    flex: 1 1 0;
+    min-height: 0px;
+    max-height: 750px;
+    gap: 16px;
+}
+
+#live-map-view-content.is-fullscreen .mapview-panel--table {
+    flex: 6 1 0;
+}
+
+#live-map-view-content.is-fullscreen .mapview-panel--map {
+    flex: 4 1 0;
+}
+
+/* ---- MAP VIEW PANELS ("interfaz posta") ----
+   Table and map each get wrapped in a .mapview-panel with its own header
+   bar and boxed chrome — same visual language as pro timing dashboards
+   (title strip, red accent underline, sticky column headers). All of
+   this is structurally always in the DOM but visually inert outside
+   fullscreen (header hidden, panel has no bg/border), so the normal
+   Map View stays pixel-identical to before. */
+.mapview-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.mapview-panel-title {
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.85);
+}
+
+#live-map-view-content.is-fullscreen .mapview-panel {
+    background: rgb(16,16,24);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Table panel: the inner wrap becomes the scroll container so the
+   thead can stick to the top of the panel, not the whole viewport. */
+#live-map-view-content.is-fullscreen .mapview-panel--table .results-table-wrap {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+}
+
+#live-map-view-content.is-fullscreen .mapview-panel--table .live-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: rgb(16,16,24);
+}
+
+/* Map panel: strip circuit-map-wrap's own chrome so the panel's border/
+   background/header are the only chrome — avoids a double frame. */
+#live-map-view-content.is-fullscreen .mapview-panel--map {
+    padding: 0;
+}
+
+#live-map-view-content.is-fullscreen .circuit-map-wrap {
+    flex: 1 1 0;
+    min-height: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    margin: 0;
+}
+
+
 @media (max-width: 1100px) {
     .live-page { max-width: 90%; margin: 80px auto; }
     .map-view-section { width: 90%; margin: 48px auto 80px 5%; }
