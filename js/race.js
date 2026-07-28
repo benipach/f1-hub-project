@@ -658,7 +658,7 @@ function renderSessionWeatherCard(weather) {
                 <span class="swc-condition-icon">${rainfall ? '🌧️' : '☀️'}</span>
                 <div class="swc-condition-text">
                     <span class="swc-condition-label">${rainfall ? 'Wet' : 'Dry'}</span>
-                    <span class="swc-condition-sub">Track Conditions</span>
+                    <span class="swc-condition-sub">Conditions</span>
                 </div>
             </div>
             <div class="swc-stats">
