@@ -129,7 +129,7 @@ nav ul li a {
     display: inline-block;
     margin-left: 32px;
     color: var(--text-light);
-    font-size: 14px;
+    font-size: 16px;
     text-decoration: none;
     text-transform: uppercase;
     transition: all 0.2s ease;
