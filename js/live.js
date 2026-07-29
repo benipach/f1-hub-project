@@ -664,7 +664,10 @@ function syncMapHeight() {
     const mapWrap = document.getElementById('circuit-map-wrap');
     if (!tableWrap || !mapWrap) return;
 
-    if (window.innerWidth <= 700) {
+    const mapViewContent = document.getElementById('live-map-view-content');
+    const isFullscreen = mapViewContent && mapViewContent.classList.contains('is-fullscreen');
+
+    if (window.innerWidth <= 700 || isFullscreen) {
         mapWrap.style.height = '';
         return;
     }
