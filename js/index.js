@@ -179,13 +179,9 @@ function updateDashboard(season, circuits) {
     // Set city for the canvas blurred text (inline script reads window._heroCity)
     window._heroCity = GP_CITY[nextId] || '';
 
-    // GP name (full name, e.g. "AUSTRIAN GRAND PRIX")
+    // GP name (full name, e.g. "AUSTRIAN GRAND PRIX") plus country flag
     const gpNameEl = document.getElementById('hero-gp-name');
-    if (gpNameEl) gpNameEl.textContent = nextGP.name.toUpperCase();
-
-    // Country flag next to the GP title
-    const flagEl = document.getElementById('hero-gp-flag');
-    if (flagEl) flagEl.textContent = GP_FLAG[nextId] || '';
+    if (gpNameEl) gpNameEl.textContent = `${GP_FLAG[nextId] || ''} ${nextGP.name.toUpperCase()}`.trim();
 
     // Circuit name below the GP title
     const circuitLabelEl = document.getElementById('hero-circuit-label');
@@ -202,18 +198,12 @@ function updateDashboard(season, circuits) {
     updateRacecards(season, nextId, now, circuits);
 }
 
-function ordinalSuffix(day) {
-    if (day >= 11 && day <= 13) return 'th';
-    switch (day % 10) {
-        case 1: return 'st';
-        case 2: return 'nd';
-        case 3: return 'rd';
-        default: return 'th';
-    }
+function formatDay(date) {
+    return String(date.getDate()).padStart(2, '0');
 }
 
-function formatOrdinalDay(date) {
-    return `${String(date.getDate()).padStart(2, '0')}${ordinalSuffix(date.getDate())}`;
+function formatMonth(date) {
+    return date.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
 }
 
 // Weekend range = earliest session start → latest session end, straight from the JSON.
@@ -229,11 +219,11 @@ function formatWeekendDateRange(gp) {
     const range = getWeekendRange(gp);
     if (!range) return '';
     const { start, end } = range;
-    const startMonth = start.toLocaleDateString('en-US', { month: 'short' });
-    const endMonth   = end.toLocaleDateString('en-US', { month: 'short' });
+    const startMonth = formatMonth(start);
+    const endMonth   = formatMonth(end);
     return startMonth === endMonth
-        ? `${formatOrdinalDay(start)} - ${formatOrdinalDay(end)} ${endMonth}`
-        : `${formatOrdinalDay(start)} ${startMonth} - ${formatOrdinalDay(end)} ${endMonth}`;
+        ? `${formatDay(start)} - ${formatDay(end)} ${endMonth}`
+        : `${formatDay(start)} ${startMonth} - ${formatDay(end)} ${endMonth}`;
 }
 
 function updateRacecards(season, nextId, now, circuits) {
@@ -269,10 +259,10 @@ function updateRacecards(season, nextId, now, circuits) {
                 : roundEl.dataset.baseText;
         }
 
-        if (gp.cancelled) {
+        if (isGpCancelled(gp)) {
             card.classList.add('race-card-cancelled');
             if (spanEl) { spanEl.classList.add('status-cancelled'); spanEl.innerText = 'CANCELLED'; }
-            if (linkEl) linkEl.innerText = 'Cancelled';
+            if (linkEl) linkEl.innerText = 'See why';
         } else if (getSessionEnd(gp, 'race') && getSessionEnd(gp, 'race') < now) {
             card.classList.add('race-card-ended');
             if (spanEl) { spanEl.classList.add('status-ended'); spanEl.innerText = 'ENDED'; }
@@ -327,7 +317,6 @@ function renderNextCard(card, gp, gpId, circuits, dateText, isSprint) {
                 </div>
                 <h3 class="race-card-next-title">${flag} ${gp.name}</h3>
                 <p class="race-card-next-circuit">${circuit?.name || circuit?.Name || ''}</p>
-                <p class="race-card-next-date">${dateText}</p>
                 <a class="race-link race-card-next-cta${isLive ? ' race-card-next-cta-live' : ''}" href="./races/race.html?gp=${gpId}">
                     <span>${isLive ? 'Tune in Live' : 'Show More'}</span><span class="race-card-next-cta-arrow">→</span>
                 </a>
@@ -378,6 +367,18 @@ function getSessionEnd(gp, sessionKey) {
 function getSessionResults(gp, sessionKey) {
     const results = getSession(gp, sessionKey)?.results;
     return Array.isArray(results) ? results : [];
+}
+
+function isGpCancelled(gp) {
+    const status = gp?.status?.toString().trim().toLowerCase();
+    return Boolean(
+        gp?.cancelled ||
+        gp?.canceled ||
+        gp?.is_cancelled ||
+        gp?.isCanceled ||
+        status === 'cancelled' ||
+        status === 'canceled'
+    );
 }
 
 function hasSession(gp, sessionKey) {
