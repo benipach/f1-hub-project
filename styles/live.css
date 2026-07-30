@@ -299,8 +299,31 @@
     font-size: 16px;
 }
 
+.live-table th:nth-child(1),
+.live-table td:nth-child(1),
+.live-table th:nth-child(3),
+.live-table td:nth-child(3),
+.live-table th:nth-child(4),
+.live-table td:nth-child(4),
+.live-table th:nth-child(5),
+.live-table td:nth-child(5) {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.live-table.live-table--compact th:nth-child(1),
+.live-table.live-table--compact td:nth-child(1),
+.live-table.live-table--compact th:nth-child(3),
+.live-table.live-table--compact td:nth-child(3),
+.live-table.live-table--compact th:nth-child(4),
+.live-table.live-table--compact td:nth-child(4) {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
 .live-table th:nth-child(6),
 .live-table td:nth-child(6) {
+    padding-left: 15px;
     padding-right: 5px;
 }
 
@@ -314,7 +337,8 @@
 
 .live-table th:nth-child(9),
 .live-table td:nth-child(9) {
-    padding-left: 10px;
+    padding-left: 5px;
+    padding-right: 15px;
 }
 
 .live-table th:nth-child(10),
@@ -322,13 +346,24 @@
     padding-left: 5px;
 }
 
+.live-table th:nth-child(11),
+.live-table td:nth-child(11) {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
 .live-table.live-table--compact th:nth-child(5),
 .live-table.live-table--compact td:nth-child(5) {
+    padding-left: 15px;
     padding-right: 5px;
 }
 
 .live-table.live-table--compact th:nth-child(6),
-.live-table.live-table--compact td:nth-child(6),
+.live-table.live-table--compact td:nth-child(6) {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
 .live-table.live-table--compact th:nth-child(7),
 .live-table.live-table--compact td:nth-child(7) {
     padding-left: 5px;
@@ -337,7 +372,14 @@
 
 .live-table.live-table--compact th:nth-child(8),
 .live-table.live-table--compact td:nth-child(8) {
-    padding-left: 10px;
+    padding-left: 5px;
+    padding-right: 15px;
+}
+
+.live-table.live-table--compact th:nth-child(9),
+.live-table.live-table--compact td:nth-child(9) {
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 /* ---- DELTA INDICATOR (copied from race.css) ---- */
@@ -403,6 +445,10 @@
     flex-shrink: 0;
 }
 
+.live-table td.res-pos {
+    text-align: center;
+}
+
 /* ---- PODIUM COLORS (same convention as race.css .res-pos.top3) ---- */
 #live-rows tr:nth-child(1) .res-pos.top3,
 #live-rows-2 tr:nth-child(1) .res-pos.top3 { font-family: 'F1-Bold'; color: #f7d774; }
@@ -445,9 +491,7 @@
     opacity: 0.35;
 }
 
-/* ---- TYRE HISTORY ICONS ---- */
-/* Flat flex row — icon, laps text, arrow, icon, laps text, arrow... all as
-   direct children, same pattern as .res-team (logo + surname). */
+/* ---- TYRE ICON + LAPS (fallback while totalLaps isn't known yet) ---- */
 /* Same pattern as .res-team (logo + surname): plain flex, no height or
    vertical-align tricks — that's the structure that actually centers
    correctly inside a table cell. */
@@ -460,8 +504,8 @@
 .tyre-history img {
     display: block;
     object-fit: contain;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     flex-shrink: 0;
 }
 
@@ -469,8 +513,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     flex-shrink: 0;
     border-radius: 50%;
     background: #0b0d10;
@@ -483,8 +527,8 @@
 
 .tyre-icon-unknown {
     display: inline-block;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     flex-shrink: 0;
     border-radius: 50%;
     background: rgba(255,255,255,0.06);
@@ -494,17 +538,60 @@
 .tyre-laps {
     align-self: center;
     font-size: 12px;
-    line-height: 20px;
+    line-height: 22px;
     color: #ffffff;
     letter-spacing: normal;
     margin-left: -2px;
 }
 
-.tyre-sep-arrow {
-    width: 16px;
-    height: 16px;
-    color: #ffffff;
-    flex-shrink: 0;
+/* ---- TYRE TIMELINE (current-stint bar) ----
+   Replaces .tyre-history when totalLaps is known. One fixed-
+   width track per driver; the .tyre-segment is positioned by
+   JS-computed width % (current stint only, no history), so all drivers
+   share the same race-distance scale. Icon sits on the segment's start
+   boundary, lap count on its end — both allowed to overflow the track
+   (icons/labels aren't clipped) since the track itself carries no visible edge past its background color. */
+.tyre-timeline {
+    position: relative;
+    width: 220px;
+    height: 20px;
+    margin-left: 10px;
+}
+
+.tyre-segment {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.tyre-seg--soft    { background: rgb(254, 0, 0);    color: rgb(254, 0, 0); }
+.tyre-seg--medium  { background: rgb(255, 211, 1);  color: rgb(255, 211, 1); }
+.tyre-seg--hard    { background: rgb(255, 255, 255); color: rgb(255, 255, 255); }
+.tyre-seg--inter   { background: rgb(0, 188, 66);   color: rgb(0, 188, 66); }
+.tyre-seg--wet     { background: rgb(2, 87, 206);   color: rgb(2, 87, 206); }
+.tyre-seg--unknown { background: rgba(255, 255, 255, 0.15); color: #ffffff; }
+
+.tyre-segment-icon {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    z-index: 2;
+}
+
+.tyre-segment-laps {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(100%, -50%);
+    padding-left: 4px;
+    font-size: 16px;
+    color: inherit;
+    white-space: nowrap;
 }
 
 /* ---- STATUS TEXT ----
@@ -855,5 +942,5 @@
     .results-table td { padding: 0 12px; }
     .tyre-history img { width: 17px; height: 17px; }
     .tyre-icon-fallback { width: 17px; height: 17px; font-size: 10px; }
-    .tyre-sep-arrow { width: 14px; height: 14px; }
+    .tyre-timeline { width: 140px; }
 }

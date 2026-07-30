@@ -77,6 +77,26 @@ const TEAM_COLOR_MAP = {
     'Cadillac':        'rgb(170, 170, 173)',
 };
 
+// ── CIRCUIT DATA (for total race laps, used by the tyre timeline) ────────
+// Same data/circuits.json race.js reads for circuit.stats.laps. Fetched
+// once and cached; re-renders once it lands so the first frame or two
+// (before the fetch resolves) just fall back gracefully to no timeline.
+let circuitsData = null;
+fetch('./data/circuits.json')
+    .then((res) => (res.ok ? res.json() : null))
+    .then((data) => { if (data) { circuitsData = data; render(); } })
+    .catch(() => {});
+
+// Total laps for the current GP (from circuits.json), or null if not
+// resolvable yet (circuitsData still loading, or unknown slug).
+function totalLapsForCurrentGP() {
+    const slug = state.CurrentGP && state.CurrentGP.slug;
+    const circuitId = slug ? CIRCUIT_MAP[slug] : null;
+    const circuit = circuitId && circuitsData ? circuitsData[circuitId] : null;
+    const laps = Number(circuit && circuit.stats && circuit.stats.laps);
+    return Number.isFinite(laps) && laps > 0 ? laps : null;
+}
+
 // Tyre compound → PNG filename in img/tyres/
 const COMPOUND_META = {
     SOFT:         { code: 'S', file: 'soft' },
@@ -98,7 +118,7 @@ function tyreIconHTML(meta) {
     if (!meta.file) {
         return `<span class="tyre-icon-fallback">${meta.code}</span>`;
     }
-    return `<img class="tyre-icon-img" src="./img/tyres/${meta.file}.png" alt="${meta.code}" width="20" height="20">`;
+    return `<img class="tyre-icon-img" src="./img/tyres/${meta.file}.png" alt="${meta.code}" width="22" height="22">`;
 }
 
 // The real feed sends lapped-car gaps as e.g. "1 L" (no "+", abbreviated
@@ -312,36 +332,49 @@ function teamLogoHTML(teamName) {
         : `<span class="res-team-logo-placeholder"></span>`;
 }
 
-// Builds the full stint-by-stint tyre history for a driver, oldest first.
-// Flat structure on purpose — icon, laps text, and separator arrows are all
-// direct children of one single flex container (.tyre-history), the same
-// pattern .res-team uses for the logo+surname pair. No nested inline-flex
-// wrappers per chip: that nesting (each chip and each separator as its own
-// separate flex formatting context) is what caused the vertical drift no
-// matter how the arrow itself was measured or centered.
-function tyreHistoryHTML(appLine) {
+// Builds the visual tyre timeline for a driver: one proportional bar
+// (relative to the full race distance) with a colored segment per stint,
+// oldest first — icon anchored at each segment's start, lap count shown
+// only on the last (current) segment. Falls back to a plain icon+laps
+// sequence (no bar) while totalLaps isn't resolvable yet (circuits.json
+// still loading), instead of drawing a bar with a made-up length.
+function tyreTimelineHTML(appLine) {
     if (!appLine || !appLine.Stints) return '<span class="results-date">–</span>';
 
     const keys = Object.keys(appLine.Stints).sort((a, b) => Number(a) - Number(b));
     if (keys.length === 0) return '<span class="results-date">–</span>';
 
-    const parts = [];
-    keys.forEach((key, i) => {
-        if (i > 0) parts.push(tyreSepArrowSvg());
+    const totalLaps = totalLapsForCurrentGP();
+    if (!totalLaps) {
+        const parts = keys.map((key) => {
+            const stint = appLine.Stints[key];
+            const meta = COMPOUND_META[stint.Compound] || { code: stint.Compound ? '?' : null, file: null };
+            return tyreIconHTML(meta);
+        });
+        const lastStint = appLine.Stints[keys[keys.length - 1]];
+        return `<span class="tyre-history">${parts.join('')}<span class="tyre-laps">${lastStint.TotalLaps ?? '?'}</span></span>`;
+    }
+
+    let cumPct = 0;
+    const segmentsHTML = keys.map((key, i) => {
         const stint = appLine.Stints[key];
         const meta = COMPOUND_META[stint.Compound] || { code: stint.Compound ? '?' : null, file: null };
-        const laps = stint.TotalLaps ?? '?';
-        parts.push(tyreIconHTML(meta));
-        parts.push(`<span class="tyre-laps">${laps}</span>`);
-    });
+        const laps = Number(stint.TotalLaps) || 0;
+        const widthPct = Math.max(0, Math.min(100 - cumPct, (laps / totalLaps) * 100));
+        const left = cumPct;
+        cumPct += widthPct;
 
-    return `<span class="tyre-history">${parts.join('')}</span>`;
-}
+        const compoundClass = meta.file ? `tyre-seg--${meta.file}` : 'tyre-seg--unknown';
+        const isLast = i === keys.length - 1;
+        const lapsLabel = isLast ? `<span class="tyre-segment-laps">${stint.TotalLaps ?? '?'}</span>` : '';
 
-// Same chevron shape as deltaArrowSvg, just rotated 90deg to point right
-// instead of up/down — keeps the two arrow styles visually consistent.
-function tyreSepArrowSvg() {
-    return `<svg class="tyre-sep-arrow" viewBox="0 0 24 24" style="transform:rotate(90deg)" aria-hidden="true"><path d="M3.5 16 L12 7 L20.5 16" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        return `<div class="tyre-segment ${compoundClass}" style="left:${left}%;width:${widthPct}%;">` +
+            `<span class="tyre-segment-icon">${tyreIconHTML(meta)}</span>` +
+            lapsLabel +
+            `</div>`;
+    }).join('');
+
+    return `<div class="tyre-timeline">${segmentsHTML}</div>`;
 }
 
 // Same chevron icon used for the delta indicator in race.js
@@ -556,7 +589,7 @@ function render() {
                 <td class="live-sector-cell ${sector3?.className || ''}">${sector3?.value ?? '-'}</td>
                 <td class="${lapClass}">${lastLap.Value ?? '-'}</td>
                 <td class="${bestLapClass}">${bestLap.Value ?? '-'}</td>
-                <td>${tyreHistoryHTML(appLines[num])}</td>
+                <td>${tyreTimelineHTML(appLines[num])}</td>
                 <td>${line.Retired ? 'RETIRED' : statusTag}</td>
             </tr>
         `;
@@ -597,7 +630,7 @@ function render() {
                     <td class="live-sector-cell ${sector2?.className || ''}">${sector2?.value ?? '-'}</td>
                     <td class="live-sector-cell ${sector3?.className || ''}">${sector3?.value ?? '-'}</td>
                     <td class="${lapClass}">${lastLap.Value ?? '-'}</td>
-                    <td>${tyreHistoryHTML(appLines[num])}</td>
+                    <td>${tyreTimelineHTML(appLines[num])}</td>
                 </tr>
             `;
         }).join('');
