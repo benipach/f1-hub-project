@@ -41,6 +41,7 @@
     <div class="live-hero-row">
         <div class="hero-title-row">
             <h1 class="hero-gp-name" id="hero-gp-name">–</h1>
+            <div class="hero-session-status" id="hero-session-status"></div>
         </div>
         <div class="session-weather live-hero-weather" id="live-weather"></div>
     </div>
@@ -61,19 +62,19 @@
             </svg>
         </button>
         <table class="results-table live-table">
-            <thead>
+            <thead id="live-thead">
                 <tr>
-                    <th class="live-col-pos">Pos</th>
+                    <th class="live-col-pos live-col-roomy">Pos</th>
                     <th class="live-delta-col"></th>
-                    <th>Driver</th>
-                    <th>Gap</th>
-                    <th>Interval</th>
-                    <th class="live-sector-col">S1</th>
-                    <th class="live-sector-col">S2</th>
-                    <th class="live-sector-col">S3</th>
-                    <th>Last Lap</th>
-                    <th>Best Lap</th>
-                    <th>Tyres</th>
+                    <th class="live-col-roomy">Driver</th>
+                    <th class="live-col-roomy">Gap</th>
+                    <th class="live-col-roomy">Interval</th>
+                    <th class="live-sector-col live-col-tight-first">S1</th>
+                    <th class="live-sector-col live-col-tight-mid">S2</th>
+                    <th class="live-sector-col live-col-tight-mid">S3</th>
+                    <th class="live-col-tight-mid">Last Lap</th>
+                    <th class="live-col-tight-last">Best Lap</th>
+                    <th class="live-col-roomy">Tyres</th>
                     <th>Status</th>
                 </tr>
             </thead>
@@ -102,23 +103,24 @@
         </button>
         <div class="mapview-fs-header" id="mapview-fs-header">
             <span class="mapview-fs-name" id="mapview-fs-name">–</span>
+            <div class="hero-session-status mapview-fs-session-status" id="mapview-fs-session-status"></div>
         </div>
 
         <div class="mapview-panels-row">
         <div class="mapview-panel mapview-panel--table">
             <div class="results-table-wrap">
                 <table class="results-table live-table live-table--compact">
-                    <thead>
+                    <thead id="live-thead-2">
                         <tr>
-                            <th class="live-col-pos">Pos</th>
+                            <th class="live-col-pos live-col-roomy">Pos</th>
                             <th class="live-delta-col"></th>
-                            <th>Driver</th>
-                            <th>Interval</th>
-                            <th class="live-sector-col">S1</th>
-                            <th class="live-sector-col">S2</th>
-                            <th class="live-sector-col">S3</th>
-                            <th>Last Lap</th>
-                            <th>Tyres</th>
+                            <th class="live-col-roomy">Driver</th>
+                            <th class="live-col-roomy">Interval</th>
+                            <th class="live-sector-col live-col-tight-first">S1</th>
+                            <th class="live-sector-col live-col-tight-mid">S2</th>
+                            <th class="live-sector-col live-col-tight-mid">S3</th>
+                            <th class="live-col-tight-last">Last Lap</th>
+                            <th class="live-col-roomy">Tyres</th>
                         </tr>
                     </thead>
                     <tbody id="live-rows-2">
