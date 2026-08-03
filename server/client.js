@@ -20,7 +20,25 @@ const LOCAL_PORT = 8080; // your frontend connects here: ws://localhost:8080
 // SessionStatus/SessionInfo drive the "keep last session's results visible
 // for 24h" logic below — see updateDisplayState().
 // Compressed topics (".z" suffix) need inflating before use — see decodeIfCompressed().
-const TOPICS = ["TimingData", "TimingAppData", "DriverList", "Position.z", "SessionStatus", "SessionInfo"];
+// ExtrapolatedClock: countdown for Practice/Qualifying (Remaining + a flag
+// telling us whether it's currently ticking or frozen, e.g. red flag).
+// SessionData: tells us which Qualifying part (Q1/Q2/Q3) is currently live.
+// TrackStatus: flag state (green/yellow/red/SC/VSC) — used as a second
+// signal to confirm a countdown should be paused.
+// WeatherData: was missing here even though live.js already reads
+// state.WeatherData — that's why the weather card was showing nothing.
+const TOPICS = [
+  "TimingData",
+  "TimingAppData",
+  "DriverList",
+  "Position.z",
+  "SessionStatus",
+  "SessionInfo",
+  "ExtrapolatedClock",
+  "SessionData",
+  "TrackStatus",
+  "WeatherData",
+];
 
 // Local, persistent state built from merged deltas. One key per topic.
 // This always mirrors whatever F1's feed is currently sending, live.
@@ -48,6 +66,39 @@ function isSessionLive() {
 
 function getDisplayState() {
   return frozen ? frozen.data : state;
+}
+
+// ── RACE/SPRINT CLOCK START (for the frontend's count-up stopwatch) ───────
+// SessionInfo.StartDate is the *scheduled* start, which drifts from the
+// real green flag (delays, formation lap, etc.). So instead we record the
+// real Date.now() the moment SessionStatus flips to "Started" for a
+// Race-like session, and broadcast that as its own tiny topic
+// ("SessionTiming") — the frontend just counts up from it, no guessing.
+//
+// "Race-like" = anything that isn't Practice/Qualifying (covers both
+// "Race" and "Sprint", whatever exact string F1 sends for the sprint race
+// — confirm with the console.log below on a real sprint weekend).
+let sessionTiming = { key: null, startedUtc: null };
+
+function isCountUpSession(sessionInfo) {
+  const name = (sessionInfo && sessionInfo.Name || "").toLowerCase();
+  if (!name) return false;
+  return !name.includes("practice") && !name.includes("qualifying") && !name.includes("shootout");
+}
+
+function updateSessionTiming() {
+  const key = currentSessionKey();
+  if (key !== sessionTiming.key) {
+    sessionTiming = { key, startedUtc: null };
+  }
+
+  const raceLike = isCountUpSession(state.SessionInfo);
+  if (raceLike && isSessionLive() && !sessionTiming.startedUtc) {
+    sessionTiming.startedUtc = new Date().toISOString();
+    state.SessionTiming = { ...sessionTiming };
+    broadcast("SessionTiming");
+    console.log(`[clock] sesión tipo carrera arrancó (Name="${state.SessionInfo?.Name}"), startedUtc=${sessionTiming.startedUtc}`);
+  }
 }
 
 // Re-evaluate live/frozen status. Cheap enough to call on every single
@@ -216,7 +267,20 @@ function mergeState(target, patch) {
 
 function onUpdate(topic) {
   updateDisplayState();
+  updateSessionTiming();
   broadcast(topic);
+
+  // TEMP DEBUG — confirm the real shape of these three topics against your
+  // live feed, then delete these three blocks once verified.
+  if (topic === "ExtrapolatedClock") {
+    console.log("[debug] ExtrapolatedClock:", JSON.stringify(state.ExtrapolatedClock));
+  }
+  if (topic === "SessionData") {
+    console.log("[debug] SessionData:", JSON.stringify(state.SessionData).slice(0, 800));
+  }
+  if (topic === "TrackStatus") {
+    console.log("[debug] TrackStatus:", JSON.stringify(state.TrackStatus));
+  }
 
   // Sanity check in the console: current gap of the first car in the list.
   const line = state.TimingData?.Lines;
@@ -224,7 +288,7 @@ function onUpdate(topic) {
     const sample = Object.entries(line)[0];
     if (sample) {
       const [num, data] = sample;
-      console.log(`  car #${num} -> gap: ${data.GapToLeader ?? "?"}`);
+      console.log(`  car #${num} -> gap: ${data.GapToLeader ?? "?"}, laps: ${data.NumberOfLaps ?? "?"}`);
     }
   }
 }

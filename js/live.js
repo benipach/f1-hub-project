@@ -1,6 +1,12 @@
 // Local mirror of backend state: { DriverList, TimingData, TimingAppData }
 let state = {};
 
+// Local (client-side) timestamp of the last time we RECEIVED an
+// ExtrapolatedClock update — not part of `state` itself, since it's not
+// data from the feed, it's "when did *we* get this". Used to extrapolate
+// the countdown between messages (see updateSessionClock below).
+let lastClockUpdateLocalTime = Date.now();
+
 // Same recursive merge as the backend's mergeState(). Works whether
 // "data" arrives as a partial delta or a full topic object — newer
 // keys always overwrite older ones, so the result converges either way.
@@ -204,8 +210,10 @@ function connect() {
         const msg = JSON.parse(event.data);
         if (msg.type === 'snapshot') {
             state = msg.state || {};
+            if (state.ExtrapolatedClock) lastClockUpdateLocalTime = Date.now();
         } else if (msg.type === 'update') {
             state[msg.topic] = mergeState(state[msg.topic] || {}, msg.data);
+            if (msg.topic === 'ExtrapolatedClock') lastClockUpdateLocalTime = Date.now();
         }
         render();
     };
@@ -284,6 +292,246 @@ function updateGPName() {
         fsNameEl.textContent = label;
         if (window.twemoji) window.twemoji.parse(fsNameEl);
     }
+}
+
+// ── SESSION CLOCK (label + time, below the GP name) ───────────────────────
+// Three behaviors, per session type (matches what you described):
+//   - Practice (FP1/FP2/FP3): countdown from 1h, pauses on red flag.
+//   - Qualifying (Q1/Q2/Q3) & Sprint Qualifying (SQ1/SQ2/SQ3): countdown per
+//     segment, same pause behavior. Segment durations only used as a
+//     fallback before the feed's first ExtrapolatedClock message lands.
+//   - Race / Sprint: count-up stopwatch, NEVER pauses. Driven by
+//     state.SessionTiming.startedUtc, which the backend stamps the moment
+//     the session actually goes green (see client.js) — more reliable than
+//     the scheduled start time.
+//
+// NOTE ON FIELD NAMES: SessionInfo.Name / SessionData.Series / TrackStatus
+// are reverse-engineered from F1's feed (same approach f1-dash/Nitrous use),
+// not officially documented. The backend logs each of these once verified —
+// check your terminal during a real session and adjust the string matches
+// below if something doesn't line up.
+const SEGMENT_DURATIONS = {
+    Q:  [18 * 60, 15 * 60, 12 * 60],
+    SQ: [12 * 60, 10 * 60, 8 * 60],
+};
+
+function deriveSessionMeta(sessionInfo) {
+    const name = (sessionInfo && sessionInfo.Name || '').toLowerCase();
+    if (!name) return null;
+
+    if (name.includes('practice 1')) return { kind: 'countdown-fixed', label: 'FP1', duration: 3600 };
+    if (name.includes('practice 2')) return { kind: 'countdown-fixed', label: 'FP2', duration: 3600 };
+    if (name.includes('practice 3')) return { kind: 'countdown-fixed', label: 'FP3', duration: 3600 };
+    if (name.includes('sprint') && (name.includes('qualifying') || name.includes('shootout'))) {
+        return { kind: 'countdown-segment', prefix: 'SQ' };
+    }
+    if (name.includes('sprint')) return { kind: 'count-up', label: 'SPRINT' };
+    if (name.includes('qualifying')) return { kind: 'countdown-segment', prefix: 'Q' };
+    if (name.includes('race')) return { kind: 'count-up', label: 'RACE' };
+    return null;
+}
+
+// SessionData.Series is expected as a dict of {Utc, QualifyingPart} entries
+// (same "dict of deltas" shape TimingData.Lines uses) — the latest one by
+// Utc tells us the current segment. Defaults to part 1 if we don't have
+// data yet (e.g. right as Q1 starts, before the first message lands).
+function currentQualifyingPart() {
+    const series = state.SessionData && state.SessionData.Series;
+    if (!series) return 1;
+    const entries = Object.values(series).filter((e) => e && typeof e.QualifyingPart === 'number');
+    if (entries.length === 0) return 1;
+    entries.sort((a, b) => new Date(a.Utc) - new Date(b.Utc));
+    return entries[entries.length - 1].QualifyingPart;
+}
+
+// ── QUALIFYING ELIMINATION CUTOFFS ────────────────────────────────────────
+// 2026 rule (22-car grid): the cut is after P16 (Q1→Q2) and P10 (Q2→Q3) —
+// 6 eliminated per cut instead of the pre-2026 5, so P17-P22 drop after Q1
+// and P11-P16 drop after Q2, always leaving 10 cars for Q3. Returns which
+// cutoff line(s) to draw for the segment currently in progress:
+//   Q1 live -> only the Q1 cut (P16/P17) — "ELIMINATION ZONE" (red), it's
+//              still an active decision
+//   Q2 live -> the Q2 cut (P10/P11), also "ELIMINATION ZONE" (red, still
+//              active) + the P16/P17 line, now just "Q1 ELIMINATED" (grey,
+//              already decided)
+//   Q3 live -> BOTH lines, but by now NEITHER is still being decided —
+//              "Q1 ELIMINATED" and "Q2 ELIMINATED" (both grey). Deliberately
+//              separate label objects from the Q1/Q2-live ones above, so
+//              Q3 never inherits the red "ELIMINATION ZONE" wording.
+// Returns [] outside qualifying/sprint-qualifying (meta.kind !== 'countdown-segment').
+function qualyCutoffLines(meta) {
+    if (!meta || meta.kind !== 'countdown-segment') return [];
+    const part = currentQualifyingPart();
+    const isSprint = meta.prefix === 'SQ';
+
+    if (part === 1) {
+        return [{ afterPos: 16, label: 'ELIMINATION ZONE' }];
+    }
+    if (part === 2) {
+        // Q2 live: the live cut moves to P10 ("ELIMINATION ZONE" — who's
+        // fighting to make Q3), and the old P16/P17 line becomes a plain
+        // divider marking the Q1 dropouts frozen at the bottom of the
+        // table (see dimAfterPos in render(), driven by `dimBeyond`).
+        return [
+            { afterPos: 10, label: 'ELIMINATION ZONE' },
+            { afterPos: 16, label: isSprint ? 'SQ1 ELIMINATED' : 'Q1 ELIMINATED', dimBeyond: true },
+        ];
+    }
+    if (part === 3) {
+        // Both lines are already-decided by now, so everything below P10
+        // (both the P11-16 and P17-22 groups) gets dimmed the same way Q2
+        // dims its Q1 dropouts — dimBeyond only needs to sit on the P10
+        // line since that's the outermost boundary of "already out".
+        return [
+            { afterPos: 16, label: isSprint ? 'SQ1 ELIMINATED' : 'Q1 ELIMINATED' },
+            { afterPos: 10, label: isSprint ? 'SQ2 ELIMINATED' : 'Q2 ELIMINATED', dimBeyond: true },
+        ];
+    }
+    return [];
+}
+
+// Weaves cutoff separator rows into an already-rendered array of per-driver
+// row HTML strings. `rowHtmls[i]` must correspond to finishing position
+// i+1 (same order render() already sorts rows into). `colspan` must match
+// the number of columns of the target table (12 for the main table, 9 for
+// the compact Map View one) so the separator's single <td> spans correctly.
+function withQualySeparators(rowHtmls, cutoffLines, colspan) {
+    if (cutoffLines.length === 0) return rowHtmls.join('');
+    const out = [];
+    rowHtmls.forEach((html, i) => {
+        out.push(html);
+        const posNum = i + 1;
+        const cut = cutoffLines.find((c) => c.afterPos === posNum);
+        if (cut) {
+            out.push(
+                `<tr class="live-qualy-separator"><td colspan="${colspan}">` +
+                `<span class="live-qualy-separator-inner">` +
+                `<span class="live-qualy-separator-line"></span>` +
+                `<span class="live-qualy-separator-label${cut.label.includes('ELIMINATION ZONE') ? ' live-qualy-separator-label--danger' : ''}">${cut.label}</span>` +
+                `<span class="live-qualy-separator-line"></span>` +
+                `</span>` +
+                `</td></tr>`
+            );
+        }
+    });
+    return out.join('');
+}
+
+// Full session name shown OUTSIDE the flag badge, e.g. "QUALIFYING - Q2",
+// "SPRINT QUALIFYING - SQ2", "FREE PRACTICE 2", "SPRINT RACE", "RACE".
+function fullSessionLabel(meta) {
+    if (meta.kind === 'countdown-fixed') {
+        const num = meta.label.replace('FP', ''); // "FP2" -> "2"
+        return `FREE PRACTICE ${num}`;
+    }
+    if (meta.kind === 'countdown-segment') {
+        const part = currentQualifyingPart();
+        return meta.prefix === 'SQ'
+            ? `SPRINT QUALIFYING SQ${part}`
+            : `QUALIFYING Q${part}`;
+    }
+    if (meta.kind === 'count-up') {
+        return meta.label === 'SPRINT' ? 'SPRINT RACE' : 'RACE';
+    }
+    return '';
+}
+
+function fallbackDuration(meta) {
+    if (meta.kind === 'countdown-fixed') return meta.duration;
+    if (meta.kind === 'countdown-segment') {
+        const durations = SEGMENT_DURATIONS[meta.prefix] || [];
+        return durations[currentQualifyingPart() - 1] ?? durations[0] ?? 0;
+    }
+    return 0;
+}
+
+function parseClockToSeconds(hhmmss) {
+    if (!hhmmss) return null;
+    const parts = hhmmss.split(':').map(Number);
+    if (parts.some((n) => Number.isNaN(n))) return null;
+    if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    if (parts.length === 2) return parts[0] * 60 + parts[1];
+    return parts[0];
+}
+
+function formatClockSeconds(totalSeconds) {
+    const sign = totalSeconds < 0 ? '-' : '';
+    const abs = Math.max(0, Math.abs(Math.floor(totalSeconds)));
+    const h = Math.floor(abs / 3600);
+    const m = Math.floor((abs % 3600) / 60);
+    const s = abs % 60;
+    const mm = String(m).padStart(2, '0');
+    const ss = String(s).padStart(2, '0');
+    return h > 0 ? `${sign}${h}:${mm}:${ss}` : `${sign}${mm}:${ss}`;
+}
+
+// Reads the current flag state off TrackStatus. Real F1 feed status codes
+// (per f1-dash/Nitrous and similar reverse-engineered docs): 1=AllClear,
+// 2=Yellow, 4=SafetyCar, 5=Red, 6=VSC, 7=VSCEnding. Collapsed here to the
+// 3 colors you asked for (SC/VSC count as yellow).
+// TODO: confirm these codes against your own TrackStatus console.log.
+function currentFlagState() {
+    const ts = state.TrackStatus;
+    const status = ts && ts.Status;
+
+    if (status === '5') return { color: 'red', text: 'RED FLAG' };
+    if (status === '4') return { color: 'yellow', text: 'SAFETY CAR' };
+    if (status === '6' || status === '7') return { color: 'yellow', text: 'VIRTUAL SAFETY CAR' };
+    if (status === '2') return { color: 'yellow', text: 'YELLOW FLAG' };
+    return { color: 'green', text: 'TRACK CLEAR' };
+}
+
+// Whether the countdown should be frozen — red flag is the one that always
+// pauses; used together with ExtrapolatedClock's own Extrapolating flag.
+function isRedFlag() {
+    return currentFlagState().color === 'red';
+}
+
+function updateSessionClock() {
+    const el = document.getElementById('hero-session-status');
+    const fsEl = document.getElementById('mapview-fs-session-status');
+    if (!el && !fsEl) return;
+
+    const meta = deriveSessionMeta(state.SessionInfo);
+    if (!meta) {
+        if (el) el.innerHTML = '';
+        if (fsEl) fsEl.innerHTML = '';
+        return;
+    }
+
+    const flag = currentFlagState();
+    const fullLabel = fullSessionLabel(meta);
+    let clockText = '--:--';
+    let paused = false;
+
+    if (meta.kind === 'count-up') {
+        const startedUtc = state.SessionTiming && state.SessionTiming.startedUtc;
+        clockText = startedUtc
+            ? formatClockSeconds((Date.now() - new Date(startedUtc).getTime()) / 1000)
+            : '00:00';
+    } else {
+        const clock = state.ExtrapolatedClock;
+        const remainingFromFeed = clock && parseClockToSeconds(clock.Remaining);
+        const extrapolating = clock ? clock.Extrapolating !== false : true;
+        paused = !extrapolating || isRedFlag();
+
+        if (remainingFromFeed != null) {
+            const elapsedSinceUpdate = paused ? 0 : (Date.now() - lastClockUpdateLocalTime) / 1000;
+            clockText = formatClockSeconds(remainingFromFeed - elapsedSinceUpdate);
+        } else {
+            // No ExtrapolatedClock message yet this segment — show the
+            // nominal full duration instead of a blank/placeholder dash.
+            clockText = formatClockSeconds(fallbackDuration(meta));
+        }
+    }
+
+    const html = `
+        <span class="status-flag status-flag--${flag.color}">${flag.text}</span>
+        <span class="status-session-name">${fullLabel}</span>
+        <span class="status-clock${paused ? ' status-clock--paused' : ''}">${clockText}${paused ? ' ⏸' : ''}</span>
+    `;
+    if (el) el.innerHTML = html;
+    if (fsEl) fsEl.innerHTML = html;
 }
 
 // Circuit map for the Map View section. Just swaps the layout image when
@@ -521,8 +769,169 @@ function updateLiveWeather() {
     renderWeatherInto('mapview-fs-weather', weather);
 }
 
+// ── MAP VIEW FULLSCREEN PANEL HEIGHT (Q1 vs Q2/Q3) ────────────────────────
+// Fullscreen .mapview-panels-row height differs by qualifying segment (see
+// live.css): 782px in Q1 (still 22 cars in the table), 814px in Q2/Q3 (field
+// already down to 16/10, table's shorter so the row can stretch taller).
+// Outside qualifying, neither class applies and live.css falls back to its
+// default max-height.
+function updateQualiPanelHeightClass(sessionMeta) {
+    const mapViewContent = document.getElementById('live-map-view-content');
+    if (!mapViewContent) return;
+
+    mapViewContent.classList.remove('quali-q1', 'quali-q2-q3');
+    if (!sessionMeta || sessionMeta.kind !== 'countdown-segment') return;
+
+    const part = currentQualifyingPart();
+    if (part === 1) mapViewContent.classList.add('quali-q1');
+    else if (part === 2 || part === 3) mapViewContent.classList.add('quali-q2-q3');
+}
+
+// Qualifying/Sprint Qualifying tyre cell: just the current compound icon
+// plus the lap count on that set — the full stint timeline
+// (tyreTimelineHTML) doesn't earn its space in a segment with no pit
+// strategy to tell, so this swaps in for it whenever
+// sessionMeta.kind === 'countdown-segment' (see
+// render()'s tyreCellHTML pick).
+function tyreCompoundBadgeHTML(appLine) {
+    if (!appLine || !appLine.Stints) return '<span class="results-date">–</span>';
+
+    const keys = Object.keys(appLine.Stints).sort((a, b) => Number(a) - Number(b));
+    if (keys.length === 0) return '<span class="results-date">–</span>';
+
+    const stint = appLine.Stints[keys[keys.length - 1]];
+    const meta = COMPOUND_META[stint.Compound] || { code: stint.Compound ? '?' : null, file: null };
+    // Laps already done on this set, not New/Used — same raw-number
+    // convention as .tyre-segment-laps/.tyre-laps in the full timeline.
+    const laps = stint.TotalLaps ?? '?';
+    // Colored to match the compound (same palette as .tyre-seg--*).
+    const colorClass = meta.file ? `tyre-fresh-label--${meta.file}` : '';
+
+    return `<span class="tyre-fresh">${tyreIconHTML(meta)}` +
+        `<span class="tyre-fresh-label ${colorClass}">${laps}</span>` +
+        `</span>`;
+}
+
+// ── TABLE HEADERS (swap columns for Qualifying/Sprint Qualifying & FP) ────
+// Race/Sprint: Pos, Delta, Driver, Gap*, Interval, S1, S2, S3, Last Lap,
+// Best Lap, Tyres, Status* (*main table only).
+// FP: same column set/order as Race/Sprint, minus Delta (no grid position
+// exists mid-practice either).
+// Q/SQ: no Delta, and Best Lap / Last Lap move in front of the sector
+// columns instead of after — see the render() row-building below, which
+// mirrors this same order/column set.
+const MAIN_THEAD_DEFAULT = `
+    <tr>
+        <th class="live-col-pos live-col-roomy">Pos</th>
+        <th class="live-delta-col"></th>
+        <th class="live-col-roomy">Driver</th>
+        <th class="live-col-roomy">Gap</th>
+        <th class="live-col-roomy">Interval</th>
+        <th class="live-sector-col live-col-tight-first">S1</th>
+        <th class="live-sector-col live-col-tight-mid">S2</th>
+        <th class="live-sector-col live-col-tight-mid">S3</th>
+        <th class="live-col-tight-mid">Last Lap</th>
+        <th class="live-col-tight-last">Best Lap</th>
+        <th class="live-col-roomy">Tyres</th>
+        <th>Status</th>
+    </tr>
+`;
+const MAIN_THEAD_NODELTA = `
+    <tr>
+        <th class="live-col-pos live-col-roomy">Pos</th>
+        <th class="live-col-roomy">Driver</th>
+        <th class="live-col-roomy">Gap</th>
+        <th class="live-col-roomy">Interval</th>
+        <th class="live-col-tight-first">Best Lap</th>
+        <th class="live-col-tight-mid">Last Lap</th>
+        <th class="live-sector-col live-col-tight-mid">S1</th>
+        <th class="live-sector-col live-col-tight-mid">S2</th>
+        <th class="live-sector-col live-col-tight-last">S3</th>
+        <th class="live-col-roomy">Tyres</th>
+        <th>Status</th>
+        <th class="live-col-roomy">Laps</th>
+    </tr>
+`;
+const MAIN_THEAD_QUALI = `
+    <tr>
+        <th class="live-col-pos live-col-roomy">Pos</th>
+        <th class="live-col-roomy">Driver</th>
+        <th class="live-col-roomy">Gap</th>
+        <th class="live-col-roomy">Interval</th>
+        <th class="live-col-tight-first">Best Lap</th>
+        <th class="live-col-tight-mid">Last Lap</th>
+        <th class="live-sector-col live-col-tight-mid">S1</th>
+        <th class="live-sector-col live-col-tight-mid">S2</th>
+        <th class="live-sector-col live-col-tight-last">S3</th>
+        <th class="live-col-roomy">Tyres</th>
+        <th>Status</th>
+    </tr>
+`;
+// Map View compact table: no Gap/Status either way. Best Lap only shows up
+// here in Q/SQ (added alongside the column reshuffle) — outside qualifying
+// it stays dropped, same as before.
+const COMPACT_THEAD_DEFAULT = `
+    <tr>
+        <th class="live-col-pos live-col-roomy">Pos</th>
+        <th class="live-delta-col"></th>
+        <th class="live-col-roomy">Driver</th>
+        <th class="live-col-roomy">Interval</th>
+        <th class="live-sector-col live-col-tight-first">S1</th>
+        <th class="live-sector-col live-col-tight-mid">S2</th>
+        <th class="live-sector-col live-col-tight-mid">S3</th>
+        <th class="live-col-tight-last">Last Lap</th>
+        <th class="live-col-roomy">Tyres</th>
+    </tr>
+`;
+const COMPACT_THEAD_NODELTA = `
+    <tr>
+        <th class="live-col-pos live-col-roomy">Pos</th>
+        <th class="live-col-roomy">Driver</th>
+        <th class="live-col-roomy">Gap</th>
+        <th class="live-col-tight-first">Best Lap</th>
+        <th class="live-col-tight-mid">Last Lap</th>
+        <th class="live-sector-col live-col-tight-mid">S1</th>
+        <th class="live-sector-col live-col-tight-mid">S2</th>
+        <th class="live-sector-col live-col-tight-last">S3</th>
+        <th class="live-col-roomy">Tyres</th>
+        <th class="live-col-roomy">Laps</th>
+    </tr>
+`;
+const COMPACT_THEAD_QUALI = `
+    <tr>
+        <th class="live-col-pos live-col-roomy">Pos</th>
+        <th class="live-col-roomy">Driver</th>
+        <th class="live-col-roomy">Gap</th>
+        <th class="live-col-tight-first">Best Lap</th>
+        <th class="live-col-tight-mid">Last Lap</th>
+        <th class="live-sector-col live-col-tight-mid">S1</th>
+        <th class="live-sector-col live-col-tight-mid">S2</th>
+        <th class="live-sector-col live-col-tight-last">S3</th>
+        <th class="live-col-roomy">Tyres</th>
+    </tr>
+`;
+
+// Only touches the DOM when the session type actually flips, so this is
+// cheap to call on every render(). mode is 'quali' | 'nodelta' | 'default'.
+let lastHeaderMode = null;
+function updateTableHeaders(mode) {
+    if (lastHeaderMode === mode) return;
+    lastHeaderMode = mode;
+
+    const thead = document.getElementById('live-thead');
+    const thead2 = document.getElementById('live-thead-2');
+    const mainByMode = { quali: MAIN_THEAD_QUALI, nodelta: MAIN_THEAD_NODELTA, default: MAIN_THEAD_DEFAULT };
+    const compactByMode = { quali: COMPACT_THEAD_QUALI, nodelta: COMPACT_THEAD_NODELTA, default: COMPACT_THEAD_DEFAULT };
+    if (thead) thead.innerHTML = mainByMode[mode];
+    if (thead2) thead2.innerHTML = compactByMode[mode];
+
+    // FP-only: widens Best Lap's padding to 15px both sides (see live.css).
+    document.body.classList.toggle('is-fp-session', mode === 'nodelta');
+}
+
 function render() {
     updateGPName();
+    updateSessionClock();
     updateLiveWeather();
     updateCircuitMap();
 
@@ -542,29 +951,78 @@ function render() {
         if (ms != null && ms < sessionBestMs) sessionBestMs = ms;
     }
 
+    // Only non-empty during Q1/Q2/Q3 (or SQ1/SQ2/SQ3) — see qualyCutoffLines().
+    const sessionMeta = deriveSessionMeta(state.SessionInfo);
+    const cutoffLines = qualyCutoffLines(sessionMeta);
+    updateQualiPanelHeightClass(sessionMeta);
+
+    // Qualifying & Sprint Qualifying: no pit strategy to show (one push lap
+    // at a time), so swap the full stint timeline for just the current
+    // compound + New/Used — see tyreCompoundBadgeHTML(). Free Practice gets
+    // the same badge now (multiple short runs, not a strategy to trace).
+    // Race/Sprint keep the full timeline.
+    const isQualiSession = sessionMeta && sessionMeta.kind === 'countdown-segment';
+    // Free Practice: same deal as Q/SQ — P1-P3 there is just "currently
+    // fastest in the session", not a race result, so no podium coloring.
+    const isPracticeSession = sessionMeta && sessionMeta.kind === 'countdown-fixed';
+    const tyreCellHTML = (isQualiSession || isPracticeSession) ? tyreCompoundBadgeHTML : tyreTimelineHTML;
+    const headerMode = isQualiSession ? 'quali' : isPracticeSession ? 'nodelta' : 'default';
+    updateTableHeaders(headerMode);
+    // No Delta column in Q/SQ (11 cols) or Race/Sprint keep the full 12.
+    // FP also lands on 12 — same 11 as Q/SQ plus the new Laps column.
+    const mainColspan = isQualiSession ? 11 : 12;
+    // Compact table: 9 columns normally (Q/SQ swaps Delta out for Best Lap,
+    // FP drops Delta but adds Best Lap back in too — see
+    // COMPACT_THEAD_NODELTA). FP gets a 10th for the new Laps column.
+    const compactColspan = isPracticeSession ? 10 : 9;
+
+    // Rows below the outermost "already eliminated" divider get dimmed —
+    // frozen results from a segment that's over, not part of the live
+    // fight happening above. In Q2 that's below P16 (Q1 dropouts); in Q3
+    // it's below P10 (everyone eliminated in Q1 or Q2). `dimBeyond` flags
+    // which cutoff (if any) marks that boundary; null in Q1, so nothing
+    // is dimmed there (nobody's eliminated yet).
+    const dimAfterPos = (cutoffLines.find((c) => c.dimBeyond) || {}).afterPos ?? null;
+
+    // Sector times get blanked out for whoever's already out: in Q2 that's
+    // the Q1 dropouts (below P16), in Q3 it's the Q2 dropouts (below P10) —
+    // their sector splits are stale from a segment that's already over, so
+    // showing them next to the live fight above is misleading.
+    const qualifyingPart = isQualiSession ? currentQualifyingPart() : null;
+    const blankSectorsAfterPos = qualifyingPart === 2 ? 16 : qualifyingPart === 3 ? 10 : null;
+
     const tbody = document.getElementById('live-rows');
     const tbody2 = document.getElementById('live-rows-2');
 
     if (rows.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="12" class="results-empty">Waiting for session data…</td></tr>';
-        if (tbody2) tbody2.innerHTML = '<tr><td colspan="9" class="results-empty">Waiting for session data…</td></tr>';
+        tbody.innerHTML = `<tr><td colspan="${mainColspan}" class="results-empty">Waiting for session data…</td></tr>`;
+        if (tbody2) tbody2.innerHTML = `<tr><td colspan="${compactColspan}" class="results-empty">Waiting for session data…</td></tr>`;
         return;
     }
 
-    tbody.innerHTML = rows.map(({ num, line }, i) => {
+    const mainRowHtmls = rows.map(({ num, line }, i) => {
         const driver = driverList[num] || {};
         const appLine = appLines[num];
         const lastLap = line.LastLapTime || {};
         const [sector1, sector2, sector3] = getSectorTimes(line);
         const posNum = i + 1;
-        const isTop3 = posNum <= 3;
+        // Podium gold/silver/bronze doesn't apply in Q/SQ or FP — P1-P3
+        // there is just "currently fastest", not a race result — so the
+        // top3 class (which drives the coloring in live.css) only gets
+        // added in Race/Sprint.
+        const isTop3 = posNum <= 3 && !isQualiSession && !isPracticeSession;
 
         const lapClass = lastLap.OverallFastest ? 'live-lap--fastest'
             : lastLap.PersonalFastest ? 'live-lap--pb' : 'live-lap--normal';
 
         const bestLap = line.BestLapTime || {};
         const bestMs = lapTimeToMs(bestLap.Value);
-        const bestLapClass = (bestMs != null && bestMs === sessionBestMs) ? 'live-lap--fastest' : '';
+        // Same reasoning as the mapview row tint: in FP the fastest lap is
+        // always whoever's sitting in P1 (table's sorted by best lap), so
+        // painting that cell purple is redundant — it's just "the top row,
+        // again". Race/Sprint/Q/SQ keep it, since there P1 isn't
+        // necessarily the fastest lap.
+        const bestLapClass = (bestMs != null && bestMs === sessionBestMs && !isPracticeSession) ? 'live-lap--fastest' : '';
 
         const teamColor = TEAM_COLOR_MAP[driver.TeamName] || 'rgba(255,255,255,0.9)';
         const statusTag = line.Retired ? ''
@@ -572,68 +1030,149 @@ function render() {
             : line.PitOut ? `<span class="live-status-team" style="color:${teamColor}">Out lap</span>`
             : 'Racing';
 
+        const isEliminated = dimAfterPos != null && posNum > dimAfterPos;
+        const sectorsBlanked = blankSectorsAfterPos != null && posNum > blankSectorsAfterPos;
+
+        // Q/SQ and FP: no Delta column (grid position doesn't exist in
+        // either), and Best Lap / Last Lap sit before the sectors instead
+        // of after — mirrors MAIN_THEAD_QUALI/MAIN_THEAD_NODELTA above.
+        // Only Race/Sprint keep the sectors-then-laps order. The
+        // live-col-tight-* classes carry the padding that used to be
+        // nth-child-based (see the live.css comment on those classes);
+        // which cell gets first/mid/last just follows whichever order is
+        // active, same 5-cell cluster either way.
+        const deltaCellHTML = (isQualiSession || isPracticeSession) ? '' :
+            `<td class="res-delta-cell">${gridDeltaHtml(line.Position ?? posNum, appLine && appLine.GridPos)}</td>`;
+        const s1HTML = sectorsBlanked ? '' : (sector1?.value ?? '-');
+        const s2HTML = sectorsBlanked ? '' : (sector2?.value ?? '-');
+        const s3HTML = sectorsBlanked ? '' : (sector3?.value ?? '-');
+        const s1Class = sectorsBlanked ? '' : (sector1?.className || '');
+        const s2Class = sectorsBlanked ? '' : (sector2?.className || '');
+        const s3Class = sectorsBlanked ? '' : (sector3?.className || '');
+        const lapAndSectorCellsHTML = (isQualiSession || isPracticeSession)
+            ? `<td class="${bestLapClass} live-col-tight-first">${bestLap.Value ?? '-'}</td>
+                <td class="${lapClass} live-col-tight-mid">${lastLap.Value ?? '-'}</td>
+                <td class="live-sector-cell live-col-tight-mid ${s1Class}">${s1HTML}</td>
+                <td class="live-sector-cell live-col-tight-mid ${s2Class}">${s2HTML}</td>
+                <td class="live-sector-cell live-col-tight-last ${s3Class}">${s3HTML}</td>`
+            : `<td class="live-sector-cell live-col-tight-first ${s1Class}">${s1HTML}</td>
+                <td class="live-sector-cell live-col-tight-mid ${s2Class}">${s2HTML}</td>
+                <td class="live-sector-cell live-col-tight-mid ${s3Class}">${s3HTML}</td>
+                <td class="${lapClass} live-col-tight-mid">${lastLap.Value ?? '-'}</td>
+                <td class="${bestLapClass} live-col-tight-last">${bestLap.Value ?? '-'}</td>`;
+
         return `
-            <tr class="results-row ${line.Retired ? 'live-row--retired' : ''}">
-                <td class="res-pos${isTop3 ? ' top3' : ''}">${line.Position ?? posNum}</td>
-                <td class="res-delta-cell">${gridDeltaHtml(line.Position ?? posNum, appLine && appLine.GridPos)}</td>
-                <td>
+            <tr class="results-row ${line.Retired ? 'live-row--retired' : ''}${isEliminated ? ' live-row--eliminated' : ''}">
+                <td class="res-pos live-col-roomy${isTop3 ? ' top3' : ''}">${line.Position ?? posNum}</td>
+                ${deltaCellHTML}
+                <td class="live-col-roomy">
                     <span class="res-team">
                         ${teamLogoHTML(driver.TeamName)}
                         ${driverFullName(driver, num)}
                     </span>
                 </td>
-                <td class="results-date">${posNum === 1 ? 'Leader' : formatGap(line.GapToLeader) ?? ''}</td>
-                <td class="results-date">${posNum === 1 ? 'Leader' : formatGap(line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? ''}</td>
-                <td class="live-sector-cell ${sector1?.className || ''}">${sector1?.value ?? '-'}</td>
-                <td class="live-sector-cell ${sector2?.className || ''}">${sector2?.value ?? '-'}</td>
-                <td class="live-sector-cell ${sector3?.className || ''}">${sector3?.value ?? '-'}</td>
-                <td class="${lapClass}">${lastLap.Value ?? '-'}</td>
-                <td class="${bestLapClass}">${bestLap.Value ?? '-'}</td>
-                <td>${tyreTimelineHTML(appLines[num])}</td>
+                <td class="results-date live-col-roomy">${posNum === 1 ? 'Leader' : formatGap(line.GapToLeader) ?? ''}</td>
+                <td class="results-date live-col-roomy">${posNum === 1 ? 'Leader' : formatGap(line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? ''}</td>
+                ${lapAndSectorCellsHTML}
+                <td class="live-col-roomy">${tyreCellHTML(appLines[num])}</td>
                 <td>${line.Retired ? 'RETIRED' : statusTag}</td>
+                ${isPracticeSession ? `<td class="live-col-roomy">${line.NumberOfLaps ?? '-'}</td>` : ''}
             </tr>
         `;
-    }).join('');
+    });
+    tbody.innerHTML = withQualySeparators(mainRowHtmls, cutoffLines, mainColspan);
 
     // Map View table: Pos, Delta, Driver (3-letter code), Interval, Last
     // Lap, Tyres — Gap/Best Lap/Status stay dropped for this compact view.
+    // Q/SQ exception: Delta drops out, Best Lap gets added back in, both
+    // laps move ahead of the sectors, and Interval becomes Gap (to the
+    // leader, not the car ahead) — see COMPACT_THEAD_QUALI above.
     if (tbody2) {
-        tbody2.innerHTML = rows.map(({ num, line }, i) => {
+        const compactRowHtmls = rows.map(({ num, line }, i) => {
             const driver = driverList[num] || {};
             const appLine = appLines[num];
             const lastLap = line.LastLapTime || {};
             const [sector1, sector2, sector3] = getSectorTimes(line);
             const posNum = i + 1;
-            const isTop3 = posNum <= 3;
+            const isTop3 = posNum <= 3 && !isQualiSession && !isPracticeSession;
 
             const lapClass = lastLap.OverallFastest ? 'live-lap--fastest'
                 : lastLap.PersonalFastest ? 'live-lap--pb' : 'live-lap--normal';
 
             const bestLap = line.BestLapTime || {};
             const bestMs = lapTimeToMs(bestLap.Value);
-            const fastestRowClass = (bestMs != null && bestMs === sessionBestMs) ? ' live-row--fastest-map' : '';
+            // Same FP exception as the main table above — redundant when
+            // the fastest lap is always P1's.
+            const bestLapClass = (bestMs != null && bestMs === sessionBestMs && !isPracticeSession) ? 'live-lap--fastest' : '';
+            // The full purple row highlight only makes sense in Race/Sprint.
+            // In Q/SQ the purple *cell* on Best/Last Lap (bestLapClass
+            // above) already marks the fastest time, so the whole-row tint
+            // is redundant there. In FP it's pointless for a different
+            // reason: the table's sorted by best lap, so the fastest time
+            // is always P1 — tinting "the top row" isn't telling you
+            // anything a purple cell there wouldn't already say.
+            const fastestRowClass = (bestLapClass && !isQualiSession && !isPracticeSession) ? ' live-row--fastest-map' : '';
 
             const teamColor = TEAM_COLOR_MAP[driver.TeamName] || 'rgba(255,255,255,0.9)';
+            const isEliminated = dimAfterPos != null && posNum > dimAfterPos;
+
+            // Best Lap gets added on top of the base 4-cell cluster
+            // (S1/S2/S3/LastLap) in both Q/SQ and FP, and in the same spot
+            // for both now: before Last Lap/sectors — matches
+            // COMPACT_THEAD_QUALI/COMPACT_THEAD_NODELTA. Race/Sprint keep
+            // the plain 4-cell cluster, no Best Lap here. Same
+            // live-col-tight-* pattern regardless — just a different cell
+            // holding "first"/"last".
+            // Q/SQ: this column shows Gap to leader instead of Interval to
+            // the car ahead — matches COMPACT_THEAD_QUALI's header swap.
+            // It also now surfaces Out lap (PitOut) here, same as the main
+            // table's status column already does — only in Q/SQ, since
+            // that's the only place this column loses its "Interval" job
+            // and has room to carry driver state instead.
+            const gapCellContent = line.InPit
+                ? `<span class="live-status-team" style="color:${teamColor}">In pit</span>`
+                : (isQualiSession && line.PitOut)
+                    ? `<span class="live-status-team" style="color:${teamColor}">Out lap</span>`
+                    : (posNum === 1 ? 'Leader' : ((isQualiSession || isPracticeSession)
+                        ? formatGap(line.GapToLeader) ?? ''
+                        : formatGap(line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? ''));
+            const intervalCellHTML = `<td class="results-date live-col-roomy">${gapCellContent}</td>`;
+            const sectorsBlanked = blankSectorsAfterPos != null && posNum > blankSectorsAfterPos;
+            const s1HTML = sectorsBlanked ? '' : (sector1?.value ?? '-');
+            const s2HTML = sectorsBlanked ? '' : (sector2?.value ?? '-');
+            const s3HTML = sectorsBlanked ? '' : (sector3?.value ?? '-');
+            const s1Class = sectorsBlanked ? '' : (sector1?.className || '');
+            const s2Class = sectorsBlanked ? '' : (sector2?.className || '');
+            const s3Class = sectorsBlanked ? '' : (sector3?.className || '');
+            const lapAndSectorCellsHTML = (isQualiSession || isPracticeSession)
+                ? `<td class="${bestLapClass} live-col-tight-first">${bestLap.Value ?? '-'}</td>
+                    <td class="${lapClass} live-col-tight-mid">${lastLap.Value ?? '-'}</td>
+                    <td class="live-sector-cell live-col-tight-mid ${s1Class}">${s1HTML}</td>
+                    <td class="live-sector-cell live-col-tight-mid ${s2Class}">${s2HTML}</td>
+                    <td class="live-sector-cell live-col-tight-last ${s3Class}">${s3HTML}</td>`
+                : `<td class="live-sector-cell live-col-tight-first ${s1Class}">${s1HTML}</td>
+                    <td class="live-sector-cell live-col-tight-mid ${s2Class}">${s2HTML}</td>
+                    <td class="live-sector-cell live-col-tight-mid ${s3Class}">${s3HTML}</td>
+                    <td class="${lapClass} live-col-tight-last">${lastLap.Value ?? '-'}</td>`;
 
             return `
-                <tr class="results-row ${line.Retired ? 'live-row--retired' : ''}${fastestRowClass}">
-                    <td class="res-pos${isTop3 ? ' top3' : ''}">${line.Position ?? posNum}</td>
-                    <td class="res-delta-cell">${gridDeltaHtml(line.Position ?? posNum, appLine && appLine.GridPos)}</td>
-                    <td>
+                <tr class="results-row ${line.Retired ? 'live-row--retired' : ''}${fastestRowClass}${isEliminated ? ' live-row--eliminated' : ''}">
+                    <td class="res-pos live-col-roomy${isTop3 ? ' top3' : ''}">${line.Position ?? posNum}</td>
+                    ${(isQualiSession || isPracticeSession) ? '' : `<td class="res-delta-cell">${gridDeltaHtml(line.Position ?? posNum, appLine && appLine.GridPos)}</td>`}
+                    <td class="live-col-roomy">
                         <span class="res-team">
                             ${teamLogoHTML(driver.TeamName)}
                             ${driverSurname(driver, num)}
                         </span>
                     </td>
-                    <td class="results-date">${line.InPit ? `<span class="live-status-team" style="color:${teamColor}">In pit</span>` : (posNum === 1 ? 'Leader' : formatGap(line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? '')}</td>
-                    <td class="live-sector-cell ${sector1?.className || ''}">${sector1?.value ?? '-'}</td>
-                    <td class="live-sector-cell ${sector2?.className || ''}">${sector2?.value ?? '-'}</td>
-                    <td class="live-sector-cell ${sector3?.className || ''}">${sector3?.value ?? '-'}</td>
-                    <td class="${lapClass}">${lastLap.Value ?? '-'}</td>
-                    <td>${tyreTimelineHTML(appLines[num])}</td>
+                    ${intervalCellHTML}
+                    ${lapAndSectorCellsHTML}
+                    <td class="live-col-roomy">${tyreCellHTML(appLines[num])}</td>
+                    ${isPracticeSession ? `<td class="live-col-roomy">${line.NumberOfLaps ?? '-'}</td>` : ''}
                 </tr>
             `;
-        }).join('');
+        });
+        tbody2.innerHTML = withQualySeparators(compactRowHtmls, cutoffLines, compactColspan);
     }
 
     syncMapHeight();
@@ -750,3 +1289,7 @@ function initFullscreenButtons() {
 
 initFullscreenButtons();
 connect();
+
+// Keeps the clock moving smoothly even during gaps between WS messages
+// (render() alone only repaints when something arrives over the socket).
+setInterval(updateSessionClock, 1000);
