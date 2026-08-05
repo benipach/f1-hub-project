@@ -195,6 +195,62 @@ function getSectorTimes(line) {
     return [1, 2, 3].map((sectorIndex) => getSectorTimeInfo(line, sectorIndex));
 }
 
+// ── MINI-SECTORS (segment bars, all session types) ────────────────────────
+// F1's feed splits each of the 3 main sectors into further "segments",
+// each with its own Status code — same idea as the little colored bars in
+// Nitrous/f1-dash. Status codes reverse-engineered by the community
+// (FastF1/OpenF1 docs): 0 not available, 2048 yellow, 2049 green, 2051
+// purple (overall fastest), 2064 pitlane; other codes fall back to a
+// neutral "unknown" bar rather than breaking. Per OpenF1's own docs these
+// segments aren't sent during races — only Practice/Qualifying — so in
+// Race/Sprint this will render empty (or partially empty) with the real
+// feed until/unless that changes; kept enabled everywhere anyway since
+// getSegments()/microsectorsHTML() degrade gracefully to '' with no data.
+const SEGMENT_STATUS_CLASS = {
+    0: 'unavailable',
+    2048: 'yellow',
+    2049: 'green',
+    2050: 'unknown',
+    2051: 'purple',
+    2052: 'unknown',
+    2064: 'pitlane',
+    2068: 'unknown',
+};
+
+function segmentStatusClass(status) {
+    return SEGMENT_STATUS_CLASS[status] ?? 'unknown';
+}
+
+// NOTE: whether the feed's Sectors dict is keyed 0-based or 1-based isn't
+// confirmed against a real capture yet (this codebase's own
+// getSectorTimeInfo above assumes 1-based, e.g. Sectors["1"] for S1) — this
+// tries both so it doesn't silently render empty either way. Once you've
+// checked a live capture, drop whichever candidate pair turns out unused.
+function getSegments(line, sectorIndex) {
+    const candidates = [
+        ['Sectors', String(sectorIndex), 'Segments'],
+        ['Sectors', String(sectorIndex - 1), 'Segments'],
+        ['LastLapTime', 'Sectors', String(sectorIndex), 'Segments'],
+        ['LastLapTime', 'Sectors', String(sectorIndex - 1), 'Segments'],
+    ];
+    for (const path of candidates) {
+        const node = getNestedValue(line, path);
+        if (node && typeof node === 'object') {
+            return Object.keys(node)
+                .sort((a, b) => Number(a) - Number(b))
+                .map((key) => node[key] && node[key].Status);
+        }
+    }
+    return [];
+}
+
+function microsectorsHTML(segments) {
+    if (!segments.length) return '';
+    return `<span class="live-microsectors">${segments
+        .map((status) => `<span class="live-microsector live-microsector--${segmentStatusClass(status)}"></span>`)
+        .join('')}</span>`;
+}
+
 function connect() {
     const ws = new WebSocket('ws://localhost:8080');
     const statusEl = document.getElementById('live-status');
@@ -603,20 +659,43 @@ function tyreTimelineHTML(appLine) {
         return `<span class="tyre-history">${parts.join('')}<span class="tyre-laps">${lastStint.TotalLaps ?? '?'}</span></span>`;
     }
 
-    let cumPct = 0;
+    // .tyre-timeline is a fluid (width:100%) track now, not a fixed 220px
+    // box — it has to shrink with the column instead of overflowing it.
+    // Plain "left:X%;width:Y%" can't reserve fixed pixel room for the
+    // first icon / last laps-count at the edges: a % is always relative
+    // to the CURRENT (shrinking) box width, so at some point that reserved
+    // room would shrink to nothing and the icon/label would spill past the
+    // track's own edges — exactly the overflow this is meant to prevent.
+    // Fix: every segment's left/width is expressed as calc(RESERVE_PX +
+    // (100% - RESERVE_LEFT_PX - RESERVE_RIGHT_PX) * fraction) — the
+    // reserved pixel margins stay constant however wide the box gets, and
+    // only the middle "track" portion scales. RESERVE_LEFT (22px) exactly
+    // matches the compound icon's width (see tyreIconHTML) so the FIRST
+    // icon — which sits translated fully to the left of its segment's own
+    // start, see .tyre-segment-icon — lands snug inside that reserved
+    // strip instead of poking out past .tyre-timeline's left edge.
+    // RESERVE_RIGHT (30px) is sized the same way for the final stint's
+    // .tyre-segment-laps count on the right.
+    const RESERVE_LEFT = 22;
+    const RESERVE_RIGHT = 30;
+
+    let cumFrac = 0;
     const segmentsHTML = keys.map((key, i) => {
         const stint = appLine.Stints[key];
         const meta = COMPOUND_META[stint.Compound] || { code: stint.Compound ? '?' : null, file: null };
         const laps = Number(stint.TotalLaps) || 0;
-        const widthPct = Math.max(0, Math.min(100 - cumPct, (laps / totalLaps) * 100));
-        const left = cumPct;
-        cumPct += widthPct;
+        const widthFrac = Math.max(0, Math.min(1 - cumFrac, laps / totalLaps));
+        const leftFrac = cumFrac;
+        cumFrac += widthFrac;
+
+        const leftCalc = `calc(${RESERVE_LEFT}px + (100% - ${RESERVE_LEFT + RESERVE_RIGHT}px) * ${leftFrac.toFixed(4)})`;
+        const widthCalc = `calc((100% - ${RESERVE_LEFT + RESERVE_RIGHT}px) * ${widthFrac.toFixed(4)})`;
 
         const compoundClass = meta.file ? `tyre-seg--${meta.file}` : 'tyre-seg--unknown';
         const isLast = i === keys.length - 1;
         const lapsLabel = isLast ? `<span class="tyre-segment-laps">${stint.TotalLaps ?? '?'}</span>` : '';
 
-        return `<div class="tyre-segment ${compoundClass}" style="left:${left}%;width:${widthPct}%;">` +
+        return `<div class="tyre-segment ${compoundClass}" style="left:${leftCalc};width:${widthCalc};">` +
             `<span class="tyre-segment-icon">${tyreIconHTML(meta)}</span>` +
             lapsLabel +
             `</div>`;
@@ -697,19 +776,15 @@ function renderSessionWeatherCard(weather) {
         <div class="session-weather-card">
             <div class="swc-condition ${rainfall ? 'is-wet' : 'is-dry'}">
                 <span class="swc-condition-icon">${rainfall ? '🌧️' : '☀️'}</span>
-                <div class="swc-condition-text">
-                    <span class="swc-condition-label">${rainfall ? 'Wet' : 'Dry'}</span>
-                    <span class="swc-condition-sub">Conditions</span>
-                </div>
             </div>
             <div class="swc-stats">
                 <div class="swc-stat">
                     <span class="swc-stat-value">${air}</span>
-                    <span class="swc-stat-label">Air Temp</span>
+                    <span class="swc-stat-label">Air</span>
                 </div>
                 <div class="swc-stat">
                     <span class="swc-stat-value">${track}</span>
-                    <span class="swc-stat-label">Track Temp</span>
+                    <span class="swc-stat-label">Track</span>
                 </div>
                 <div class="swc-stat">
                     <span class="swc-stat-value">${humidity}</span>
@@ -813,10 +888,11 @@ function tyreCompoundBadgeHTML(appLine) {
 }
 
 // ── TABLE HEADERS (swap columns for Qualifying/Sprint Qualifying & FP) ────
-// Race/Sprint: Pos, Delta, Driver, Gap*, Interval, S1, S2, S3, Last Lap,
+// Race/Sprint: Pos, Delta, Driver, Gap*, Interval, Last Lap, S1, S2, S3,
 // Best Lap, Tyres, Status* (*main table only).
-// FP: same column set/order as Race/Sprint, minus Delta (no grid position
-// exists mid-practice either).
+// FP: no Delta (no grid position exists mid-practice either), and Best Lap
+// sits in front of Last Lap/the sectors instead of Last Lap alone — see
+// MAIN_THEAD_NODELTA below.
 // Q/SQ: no Delta, and Best Lap / Last Lap move in front of the sector
 // columns instead of after — see the render() row-building below, which
 // mirrors this same order/column set.
@@ -827,10 +903,10 @@ const MAIN_THEAD_DEFAULT = `
         <th class="live-col-roomy">Driver</th>
         <th class="live-col-roomy">Gap</th>
         <th class="live-col-roomy">Interval</th>
-        <th class="live-sector-col live-col-tight-first">S1</th>
+        <th class="live-col-tight-first">Last Lap</th>
+        <th class="live-sector-col live-col-tight-mid">S1</th>
         <th class="live-sector-col live-col-tight-mid">S2</th>
         <th class="live-sector-col live-col-tight-mid">S3</th>
-        <th class="live-col-tight-mid">Last Lap</th>
         <th class="live-col-tight-last">Best Lap</th>
         <th class="live-col-roomy">Tyres</th>
         <th>Status</th>
@@ -867,26 +943,29 @@ const MAIN_THEAD_QUALI = `
         <th>Status</th>
     </tr>
 `;
-// Map View compact table: no Gap/Status either way. Best Lap only shows up
-// here in Q/SQ (added alongside the column reshuffle) — outside qualifying
-// it stays dropped, same as before.
+// Map View compact table: Race/Sprint shows both Gap and Interval, while
+// Practice/Qualifying keep a single distance column. A Status column is
+// added for In Pit / Out Lap / Boost state in the map view only.
 const COMPACT_THEAD_DEFAULT = `
     <tr>
         <th class="live-col-pos live-col-roomy">Pos</th>
         <th class="live-delta-col"></th>
-        <th class="live-col-roomy">Driver</th>
+        <th class="live-col-roomy live-col-driver">Driver</th>
+        <th class="live-col-status"></th>
+        <th class="live-col-roomy">Gap</th>
         <th class="live-col-roomy">Interval</th>
-        <th class="live-sector-col live-col-tight-first">S1</th>
+        <th class="live-col-tight-first">Last Lap</th>
+        <th class="live-sector-col live-col-tight-mid">S1</th>
         <th class="live-sector-col live-col-tight-mid">S2</th>
-        <th class="live-sector-col live-col-tight-mid">S3</th>
-        <th class="live-col-tight-last">Last Lap</th>
+        <th class="live-sector-col live-col-tight-last">S3</th>
         <th class="live-col-roomy">Tyres</th>
     </tr>
 `;
 const COMPACT_THEAD_NODELTA = `
     <tr>
         <th class="live-col-pos live-col-roomy">Pos</th>
-        <th class="live-col-roomy">Driver</th>
+        <th class="live-col-roomy live-col-driver">Driver</th>
+        <th class="live-col-status"></th>
         <th class="live-col-roomy">Gap</th>
         <th class="live-col-tight-first">Best Lap</th>
         <th class="live-col-tight-mid">Last Lap</th>
@@ -900,7 +979,8 @@ const COMPACT_THEAD_NODELTA = `
 const COMPACT_THEAD_QUALI = `
     <tr>
         <th class="live-col-pos live-col-roomy">Pos</th>
-        <th class="live-col-roomy">Driver</th>
+        <th class="live-col-roomy live-col-driver">Driver</th>
+        <th class="live-col-status"></th>
         <th class="live-col-roomy">Gap</th>
         <th class="live-col-tight-first">Best Lap</th>
         <th class="live-col-tight-mid">Last Lap</th>
@@ -971,10 +1051,9 @@ function render() {
     // No Delta column in Q/SQ (11 cols) or Race/Sprint keep the full 12.
     // FP also lands on 12 — same 11 as Q/SQ plus the new Laps column.
     const mainColspan = isQualiSession ? 11 : 12;
-    // Compact table: 9 columns normally (Q/SQ swaps Delta out for Best Lap,
-    // FP drops Delta but adds Best Lap back in too — see
-    // COMPACT_THEAD_NODELTA). FP gets a 10th for the new Laps column.
-    const compactColspan = isPracticeSession ? 10 : 9;
+    // Compact table: Race/Sprint gets 11 columns (Gap + Interval + Status),
+    // FP gets 11 with the Laps column, and Q/SQ stays at 10.
+    const compactColspan = isPracticeSession ? 11 : isQualiSession ? 10 : 11;
 
     // Rows below the outermost "already eliminated" divider get dimmed —
     // frozen results from a segment that's over, not part of the live
@@ -1036,11 +1115,11 @@ function render() {
         // Q/SQ and FP: no Delta column (grid position doesn't exist in
         // either), and Best Lap / Last Lap sit before the sectors instead
         // of after — mirrors MAIN_THEAD_QUALI/MAIN_THEAD_NODELTA above.
-        // Only Race/Sprint keep the sectors-then-laps order. The
-        // live-col-tight-* classes carry the padding that used to be
-        // nth-child-based (see the live.css comment on those classes);
-        // which cell gets first/mid/last just follows whichever order is
-        // active, same 5-cell cluster either way.
+        // Race/Sprint: Last Lap sits before the sectors and Best Lap stays
+        // last. The live-col-tight-* classes carry the padding that used
+        // to be nth-child-based (see the live.css comment on those
+        // classes); which cell gets first/mid/last just follows whichever
+        // order is active, same 5-cell cluster either way.
         const deltaCellHTML = (isQualiSession || isPracticeSession) ? '' :
             `<td class="res-delta-cell">${gridDeltaHtml(line.Position ?? posNum, appLine && appLine.GridPos)}</td>`;
         const s1HTML = sectorsBlanked ? '' : (sector1?.value ?? '-');
@@ -1049,16 +1128,20 @@ function render() {
         const s1Class = sectorsBlanked ? '' : (sector1?.className || '');
         const s2Class = sectorsBlanked ? '' : (sector2?.className || '');
         const s3Class = sectorsBlanked ? '' : (sector3?.className || '');
+        // Mini-sector bars: ver getSegments()/microsectorsHTML() arriba.
+        const s1Bars = !sectorsBlanked ? microsectorsHTML(getSegments(line, 1)) : '';
+        const s2Bars = !sectorsBlanked ? microsectorsHTML(getSegments(line, 2)) : '';
+        const s3Bars = !sectorsBlanked ? microsectorsHTML(getSegments(line, 3)) : '';
         const lapAndSectorCellsHTML = (isQualiSession || isPracticeSession)
             ? `<td class="${bestLapClass} live-col-tight-first">${bestLap.Value ?? '-'}</td>
                 <td class="${lapClass} live-col-tight-mid">${lastLap.Value ?? '-'}</td>
-                <td class="live-sector-cell live-col-tight-mid ${s1Class}">${s1HTML}</td>
-                <td class="live-sector-cell live-col-tight-mid ${s2Class}">${s2HTML}</td>
-                <td class="live-sector-cell live-col-tight-last ${s3Class}">${s3HTML}</td>`
-            : `<td class="live-sector-cell live-col-tight-first ${s1Class}">${s1HTML}</td>
-                <td class="live-sector-cell live-col-tight-mid ${s2Class}">${s2HTML}</td>
-                <td class="live-sector-cell live-col-tight-mid ${s3Class}">${s3HTML}</td>
-                <td class="${lapClass} live-col-tight-mid">${lastLap.Value ?? '-'}</td>
+                <td class="live-sector-cell live-col-tight-mid ${s1Class}"><span class="live-sector-wrap">${s1Bars}<span class="live-sector-time">${s1HTML}</span></span></td>
+                <td class="live-sector-cell live-col-tight-mid ${s2Class}"><span class="live-sector-wrap">${s2Bars}<span class="live-sector-time">${s2HTML}</span></span></td>
+                <td class="live-sector-cell live-col-tight-last ${s3Class}"><span class="live-sector-wrap">${s3Bars}<span class="live-sector-time">${s3HTML}</span></span></td>`
+            : `<td class="${lapClass} live-col-tight-first">${lastLap.Value ?? '-'}</td>
+                <td class="live-sector-cell live-col-tight-mid ${s1Class}"><span class="live-sector-wrap">${s1Bars}<span class="live-sector-time">${s1HTML}</span></span></td>
+                <td class="live-sector-cell live-col-tight-mid ${s2Class}"><span class="live-sector-wrap">${s2Bars}<span class="live-sector-time">${s2HTML}</span></span></td>
+                <td class="live-sector-cell live-col-tight-mid ${s3Class}"><span class="live-sector-wrap">${s3Bars}<span class="live-sector-time">${s3HTML}</span></span></td>
                 <td class="${bestLapClass} live-col-tight-last">${bestLap.Value ?? '-'}</td>`;
 
         return `
@@ -1083,7 +1166,8 @@ function render() {
     tbody.innerHTML = withQualySeparators(mainRowHtmls, cutoffLines, mainColspan);
 
     // Map View table: Pos, Delta, Driver (3-letter code), Interval, Last
-    // Lap, Tyres — Gap/Best Lap/Status stay dropped for this compact view.
+    // Lap, Tyres — Gap/Best Lap/Status stay dropped for this compact view,
+    // and Last Lap sits before the sectors, same as the main table.
     // Q/SQ exception: Delta drops out, Best Lap gets added back in, both
     // laps move ahead of the sectors, and Interval becomes Gap (to the
     // leader, not the car ahead) — see COMPACT_THEAD_QUALI above.
@@ -1117,26 +1201,22 @@ function render() {
             const isEliminated = dimAfterPos != null && posNum > dimAfterPos;
 
             // Best Lap gets added on top of the base 4-cell cluster
-            // (S1/S2/S3/LastLap) in both Q/SQ and FP, and in the same spot
+            // (LastLap/S1/S2/S3) in both Q/SQ and FP, and in the same spot
             // for both now: before Last Lap/sectors — matches
             // COMPACT_THEAD_QUALI/COMPACT_THEAD_NODELTA. Race/Sprint keep
-            // the plain 4-cell cluster, no Best Lap here. Same
-            // live-col-tight-* pattern regardless — just a different cell
-            // holding "first"/"last".
-            // Q/SQ: this column shows Gap to leader instead of Interval to
-            // the car ahead — matches COMPACT_THEAD_QUALI's header swap.
-            // It also now surfaces Out lap (PitOut) here, same as the main
-            // table's status column already does — only in Q/SQ, since
-            // that's the only place this column loses its "Interval" job
-            // and has room to carry driver state instead.
-            const gapCellContent = line.InPit
-                ? `<span class="live-status-team" style="color:${teamColor}">In pit</span>`
-                : (isQualiSession && line.PitOut)
-                    ? `<span class="live-status-team" style="color:${teamColor}">Out lap</span>`
-                    : (posNum === 1 ? 'Leader' : ((isQualiSession || isPracticeSession)
-                        ? formatGap(line.GapToLeader) ?? ''
-                        : formatGap(line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? ''));
-            const intervalCellHTML = `<td class="results-date live-col-roomy">${gapCellContent}</td>`;
+            // the plain 4-cell cluster, no Best Lap here, just Last Lap
+            // ahead of the sectors instead. Same live-col-tight-* pattern
+            // regardless — just a different cell holding "first"/"last".
+            // Race/Sprint show both Gap and Interval; Practice/Qualifying
+            // only keep the single distance column.
+            const gapCellContent = posNum === 1 ? 'Leader' : formatGap(line.GapToLeader) ?? '';
+            const intervalValue = line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value;
+            const intervalCellContent = posNum === 1 ? 'Leader' : formatGap(intervalValue) ?? '';
+            const gapCellHTML = `<td class="results-date live-col-roomy">${gapCellContent}</td>`;
+            const intervalCellHTML = `<td class="results-date live-col-roomy">${intervalCellContent}</td>`;
+            const distanceCellsHTML = (isQualiSession || isPracticeSession) ? gapCellHTML : `${gapCellHTML}${intervalCellHTML}`;
+            const statusLabel = line.Retired ? 'RETIRED' : line.InPit ? 'PIT' : line.PitOut ? 'OUT' : '';
+            const statusCellHTML = `<td class="live-col-status">${statusLabel ? `<span class="live-status-wrap"><span class="live-status-badge" style="color:${teamColor}">${statusLabel}</span></span>` : ''}</td>`;
             const sectorsBlanked = blankSectorsAfterPos != null && posNum > blankSectorsAfterPos;
             const s1HTML = sectorsBlanked ? '' : (sector1?.value ?? '-');
             const s2HTML = sectorsBlanked ? '' : (sector2?.value ?? '-');
@@ -1144,28 +1224,32 @@ function render() {
             const s1Class = sectorsBlanked ? '' : (sector1?.className || '');
             const s2Class = sectorsBlanked ? '' : (sector2?.className || '');
             const s3Class = sectorsBlanked ? '' : (sector3?.className || '');
+            const s1Bars = !sectorsBlanked ? microsectorsHTML(getSegments(line, 1)) : '';
+            const s2Bars = !sectorsBlanked ? microsectorsHTML(getSegments(line, 2)) : '';
+            const s3Bars = !sectorsBlanked ? microsectorsHTML(getSegments(line, 3)) : '';
             const lapAndSectorCellsHTML = (isQualiSession || isPracticeSession)
                 ? `<td class="${bestLapClass} live-col-tight-first">${bestLap.Value ?? '-'}</td>
                     <td class="${lapClass} live-col-tight-mid">${lastLap.Value ?? '-'}</td>
-                    <td class="live-sector-cell live-col-tight-mid ${s1Class}">${s1HTML}</td>
-                    <td class="live-sector-cell live-col-tight-mid ${s2Class}">${s2HTML}</td>
-                    <td class="live-sector-cell live-col-tight-last ${s3Class}">${s3HTML}</td>`
-                : `<td class="live-sector-cell live-col-tight-first ${s1Class}">${s1HTML}</td>
-                    <td class="live-sector-cell live-col-tight-mid ${s2Class}">${s2HTML}</td>
-                    <td class="live-sector-cell live-col-tight-mid ${s3Class}">${s3HTML}</td>
-                    <td class="${lapClass} live-col-tight-last">${lastLap.Value ?? '-'}</td>`;
+                    <td class="live-sector-cell live-col-tight-mid ${s1Class}"><span class="live-sector-wrap">${s1Bars}<span class="live-sector-time">${s1HTML}</span></span></td>
+                    <td class="live-sector-cell live-col-tight-mid ${s2Class}"><span class="live-sector-wrap">${s2Bars}<span class="live-sector-time">${s2HTML}</span></span></td>
+                    <td class="live-sector-cell live-col-tight-last ${s3Class}"><span class="live-sector-wrap">${s3Bars}<span class="live-sector-time">${s3HTML}</span></span></td>`
+                : `<td class="${lapClass} live-col-tight-first">${lastLap.Value ?? '-'}</td>
+                    <td class="live-sector-cell live-col-tight-mid ${s1Class}"><span class="live-sector-wrap">${s1Bars}<span class="live-sector-time">${s1HTML}</span></span></td>
+                    <td class="live-sector-cell live-col-tight-mid ${s2Class}"><span class="live-sector-wrap">${s2Bars}<span class="live-sector-time">${s2HTML}</span></span></td>
+                    <td class="live-sector-cell live-col-tight-last ${s3Class}"><span class="live-sector-wrap">${s3Bars}<span class="live-sector-time">${s3HTML}</span></span></td>`;
 
             return `
                 <tr class="results-row ${line.Retired ? 'live-row--retired' : ''}${fastestRowClass}${isEliminated ? ' live-row--eliminated' : ''}">
                     <td class="res-pos live-col-roomy${isTop3 ? ' top3' : ''}">${line.Position ?? posNum}</td>
                     ${(isQualiSession || isPracticeSession) ? '' : `<td class="res-delta-cell">${gridDeltaHtml(line.Position ?? posNum, appLine && appLine.GridPos)}</td>`}
-                    <td class="live-col-roomy">
+                    <td class="live-col-roomy live-col-driver">
                         <span class="res-team">
                             ${teamLogoHTML(driver.TeamName)}
-                            ${driverSurname(driver, num)}
+                            ${driverCode(driver, num)}
                         </span>
                     </td>
-                    ${intervalCellHTML}
+                    ${statusCellHTML}
+                    ${distanceCellsHTML}
                     ${lapAndSectorCellsHTML}
                     <td class="live-col-roomy">${tyreCellHTML(appLines[num])}</td>
                     ${isPracticeSession ? `<td class="live-col-roomy">${line.NumberOfLaps ?? '-'}</td>` : ''}

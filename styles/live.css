@@ -193,8 +193,7 @@
 .swc-condition {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding-right: 32px;
+    padding-right: 24px;
     border-right: 1px solid rgba(255,255,255,0.08);
     white-space: nowrap;
 }
@@ -202,31 +201,6 @@
 .swc-condition-icon {
     font-size: 2.5rem;
     line-height: 1;
-}
-
-.swc-condition-text {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.swc-condition-label {
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 26px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    line-height: 1;
-}
-
-.swc-condition.is-dry .swc-condition-label { color: #f5b74a; }
-.swc-condition.is-wet .swc-condition-label { color: #4ab3f5; }
-
-.swc-condition-sub {
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 12px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: var(--text-dim);
 }
 
 .swc-stats {
@@ -292,10 +266,6 @@
 
 .live-hero-weather .swc-condition-icon {
     font-size: 1.6rem;
-}
-
-.live-hero-weather .swc-condition-label {
-    font-size: 18px;
 }
 
 .live-hero-weather .swc-stats {
@@ -657,26 +627,49 @@ body.is-fp-session .live-table .live-col-tight-first {
 .tyre-fresh-label--wet    { color: rgb(2, 87, 206); }
 
 /* ---- TYRE TIMELINE (current-stint bar) ----
-   Replaces .tyre-history when totalLaps is known. One fixed-
-   width track per driver; the .tyre-segment is positioned by
-   JS-computed width % (current stint only, no history), so all drivers
-   share the same race-distance scale. Icon sits on the segment's start
-   boundary, lap count on its end — both allowed to overflow the track
-   (icons/labels aren't clipped) since the track itself carries no visible edge past its background color. */
+   Replaces .tyre-history when totalLaps is known. Three widths doing
+   three different jobs (not just width:100%, which made the browser's
+   table layout treat 96px as the column's only real size signal and
+   collapse every stint into a squished mess with barely any visible gap
+   — width alone isn't the "preferred" size a table's auto layout uses):
+     - width: 220px   -> the PREFERRED size. This is what tells the
+       table's column-width algorithm "I'd like to be this wide" so it
+       actually gets that space when the page has room — same visual
+       size as the old fixed-width version, restoring proper spacing
+       between stints (gap length must stay proportional to lap count).
+     - max-width: 100% -> the OVERFLOW GUARD. % resolves against the
+       <td>'s own content-box width, so this never lets the track render
+       wider than whatever room the cell actually has — this is what
+       stops it from spilling past the cell's padding when the table
+       genuinely doesn't have 220px to give it.
+     - min-width: 96px -> the FLOOR. Below this the track stops shrinking
+       and the cell may need horizontal scroll instead — needed so the
+       icons/label never get so small they're illegible.
+   The 22px/30px reserved-edge math that keeps the first icon and the
+   last stint's lap count from poking out past this box lives in
+   tyreTimelineHTML() in live.js (see the comment there) — it has to be
+   done there, in the per-segment left/width calc(), because a plain %
+   can't reserve fixed pixel space in a box whose actual rendered width
+   varies (220px normally, less under space pressure). */
 .tyre-timeline {
     position: relative;
     width: 220px;
+    max-width: 100%;
+    min-width: 96px;
     height: 20px;
-    margin-left: 10px;
 }
 
 .tyre-segment {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    height: 3px;
+    height: 2px;
     border-radius: 2px;
     background: rgba(255, 255, 255, 0.08);
+    box-sizing: border-box;
+    padding-left: 22px;
+    padding-right: 22px;
+    background-clip: content-box;
 }
 
 .tyre-seg--soft    { background: rgb(254, 0, 0);    color: rgb(254, 0, 0); }
@@ -690,9 +683,15 @@ body.is-fp-session .live-table .live-col-tight-first {
     position: absolute;
     left: 0;
     top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-100%, -50%);
     display: flex;
     z-index: 2;
+    /* Opaque circular backing behind the compound icon. Without this, the
+       PNG's transparent corners let the .tyre-segment color bleed through
+       around the icon (looks like the bar "atraviesa por detrás" it) —
+       this backdrop stops the bar cleanly at the icon's edge instead. */
+    background: #0b0d10;
+    border-radius: 50%;
 }
 
 .tyre-segment-laps {
@@ -707,12 +706,47 @@ body.is-fp-session .live-table .live-col-tight-first {
 }
 
 /* ---- STATUS TEXT ----
-   IN PIT / OUT LAP now use the driver's own team color (set inline in
-   JS from TEAM_COLOR_MAP), so this class only handles the shared
-   weight/style, not the color itself. */
+   In the mapview compact table, status badges are small bordered labels
+   in the team color. */
+/* Same pattern as .res-team: plain flex wrapper, no height or
+   vertical-align tricks — that's what actually centers content
+   vertically inside a table cell in this codebase. */
+.live-status-wrap {
+    display: flex;
+    align-items: center;
+}
+
+.live-status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 46px;
+    padding: 4px 6px;
+    border: 2px solid currentColor;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
 .live-status-team {
     font-weight: bold;
     text-transform: uppercase;
+}
+
+/* Mapview compact Status column should not inherit the normal roomy padding. */
+.live-table td.live-col-status,
+.live-table th.live-col-status {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* Mapview compact Driver column should use a smaller right padding. */
+.live-table.live-table--compact td.live-col-driver,
+.live-table.live-table--compact th.live-col-driver {
+    padding-right: 5px !important;
 }
 
 .live-sector-col,
@@ -724,13 +758,75 @@ body.is-fp-session .live-table .live-col-tight-first {
 }
 
 .live-sector-col {
-    font-size: 0.82em;
+    font-size: 13px;
     opacity: 0.85;
 }
 
 .live-sector-cell {
     color: inherit;
 }
+
+/* ---- SECTOR WRAP ----
+   Real container, same "one parent, two children" shape as .res-team:
+   .live-sector-wrap is the parent, .live-microsectors and
+   .live-sector-time are its two children.
+   The two children are decoupled on purpose: .live-microsectors is
+   pulled out of flow (position:absolute, see below) so it can pin to
+   the row's exact top edge, while .live-sector-time is the ONLY thing
+   left in normal flow — meaning align-items:center below centers it
+   against the wrap's full height (100% of the row) with nothing else
+   in the way. No magic numbers to keep in sync if the bar height ever
+   changes; the two are fully independent. */
+.live-sector-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+/* ---- MINI-SECTOR BARS (FP only) ----
+   position:absolute relative to .live-sector-wrap (which spans the full
+   row via height:100% above) — top:0 puts it flush against the actual
+   top edge of the table row, not just "near the top". Being out of flow
+   means it can never affect .live-sector-time's centering, in either
+   direction. Left/right:0 match the wrap's own width, which already
+   sits inset by .live-sector-cell's padding, so the bars line up with
+   the time's left/right edges. */
+.live-microsectors {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+/* ---- SECTOR TIME TEXT ----
+   The only normal-flow child of .live-sector-wrap (see above) — that's
+   what lets align-items:center on the wrap center it against the row's
+   full height, landing on the exact same vertical center as the
+   plain-text Last Lap cell next to it, regardless of what
+   .live-microsectors is doing above. */
+.live-sector-time {
+    display: block;
+    line-height: 1;
+}
+
+.live-microsector {
+    flex: 1 1 0;
+    width: 8px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.12);
+}
+
+.live-microsector--yellow      { background: rgba(255,212,0,0.9); }
+.live-microsector--green       { background: rgba(0,212,96,0.9); }
+.live-microsector--purple      { background: rgba(176,56,216,0.9); }
+.live-microsector--pitlane     { background: rgba(120,170,255,0.75); }
+.live-microsector--unknown     { background: rgba(255,255,255,0.35); }
+.live-microsector--unavailable { background: rgba(255,255,255,0.12); }
 
 
 /* ---- FULLSCREEN BUTTON ----
@@ -906,10 +1002,6 @@ img.emoji {
     font-size: 1.6rem;
 }
 
-.mapview-fs-weather .swc-condition-label {
-    font-size: 18px;
-}
-
 .mapview-fs-weather .swc-stats {
     gap: 20px;
 }
@@ -946,7 +1038,7 @@ img.emoji {
 
 #live-map-view-content.is-fullscreen .mapview-panels-row {
     display: grid;
-    grid-template-columns: 6fr 4fr;
+    grid-template-columns: 6.75fr 3.25fr;
     grid-template-rows: auto 1fr;
     flex: 1 1 0;
     min-height: 0px;
@@ -1107,5 +1199,5 @@ img.emoji {
     .results-table td { padding: 0 12px; }
     .tyre-history img { width: 17px; height: 17px; }
     .tyre-icon-fallback { width: 17px; height: 17px; font-size: 10px; }
-    .tyre-timeline { width: 140px; }
+    .tyre-timeline { min-width: 76px; }
 }
