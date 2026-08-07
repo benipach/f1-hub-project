@@ -25,15 +25,6 @@
       "tyreDeg": 60,
       "trackType": "semi-urban"
     },
-    "funFacts": [
-      "It is a semi-street circuit: during the year it functions as a regular public park.",
-      "The asphalt grip changes a lot over the weekend because it starts off 'green'.",
-      "Albert Park Lake sits right next to the circuit and is part of its iconic scenery.",
-      "Before Albert Park, the Australian Grand Prix was held in Adelaide.",
-      "Melbourne weather is very unpredictable: it can go from sunshine to rain within hours.",
-      "It is not one of the best tracks for overtaking, but it does have some clear passing zones.",
-      "The layout was modified in 2022 to make it faster and improve overtaking."
-    ],
     "history": [
       { "year": 1996, "pole": "Jacques Villenueve", "winner": "Damon Hill"},
       { "year": 1997, "pole": "Jacques Villenueve","winner": "Heinz-Harald Frentzen" },
@@ -93,15 +84,6 @@
       "tyreDeg": 70,
       "trackType": "permanent"
     },
-    "funFacts": [
-      "The Shanghai circuit is known for its unique snail-shaped layout, inspired by the Chinese character for 'Shang'.",
-      "The long back straight is one of the best overtaking opportunities on the calendar.",
-      "China returned to the calendar in 2024 after a five-year absence due to COVID-19.",
-      "The final sector features a very slow and technical hairpin section that puts heavy stress on tyres.",
-      "Shanghai is one of the widest circuits on the calendar, giving drivers more room to race.",
-      "The circuit was designed by Hermann Tilke, the architect behind many modern F1 tracks.",
-      "High tyre degradation is a key strategic factor here, often leading to multi-stop races."
-    ],
     "history": [
       { "year": 2004, "pole": "Rubens Barrichello", "winner": "Rubens Barrichello" },
       { "year": 2005, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
@@ -238,15 +220,6 @@
       "tyreDeg": 75,
       "trackType": "permanent"
     },
-    "funFacts": [
-      "Bahrain was the first F1 race to be held in the Middle East, debuting in 2004.",
-      "The race takes place under floodlights, making it one of the most visually stunning events on the calendar.",
-      "The desert sand blown onto the track can significantly affect grip levels throughout the weekend.",
-      "Bahrain has three DRS zones, making it one of the better circuits for overtaking.",
-      "The circuit has an alternative 'Endurance' layout used for testing but never for a Grand Prix.",
-      "Tyre degradation is very high due to the abrasive surface and extreme temperatures.",
-      "The circuit sits in the middle of the desert, with sand dunes visible from the track."
-    ],
     "history": [
       { "year": 2004, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
       { "year": 2005, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
@@ -298,15 +271,6 @@
       "tyreDeg": 45,
       "trackType": "street"
     },
-    "funFacts": [
-      "Jeddah is the second fastest street circuit in F1 history, with average speeds exceeding 250 km/h.",
-      "The circuit runs along the Red Sea corniche, with the water visible from several sections of the track.",
-      "With 27 corners, it is one of the most complex layouts on the calendar.",
-      "The walls are extremely close to the racing line, leaving almost no margin for error.",
-      "It debuted on the calendar in 2021 and immediately produced dramatic and controversial racing.",
-      "The high-speed nature of the circuit means safety car periods are very common.",
-      "Visibility through the blind corners is extremely limited, requiring drivers to commit fully on instinct."
-    ],
       "history": [
         { "year": 2021, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
         { "year": 2022, "pole": "Sergio Pérez", "winner": "Max Verstappen" },
@@ -342,15 +306,6 @@
       "tyreDeg": 40,
       "trackType": "street"
     },
-    "funFacts": [
-      "The Miami International Autodrome is built around the Hard Rock Stadium, home of the Miami Dolphins NFL team.",
-      "The circuit features a fake marina and beach area in the paddock zone for the celebrity-heavy event.",
-      "Miami joined the calendar in 2022 and immediately became one of the most glamorous events of the year.",
-      "The track surface heats up significantly due to the Florida sun, making tyre management crucial.",
-      "It is one of two US rounds on the calendar alongside Austin and Las Vegas.",
-      "The DRS zones are long and effective, producing some of the best overtaking opportunities of the season.",
-      "Miami is known for its electric atmosphere, with huge crowds and a festival-like environment."
-    ],
     "history": [
       { "year": 2022, "pole": "Charles Leclerc", "winner": "Max Verstappen", "winnerTeam": "Red Bull" },
       { "year": 2023, "pole": "Sergio Pérez", "winner": "Max Verstappen", "winnerTeam": "Red Bull" },
@@ -386,15 +341,6 @@
       "tyreDeg": 40,
       "trackType": "semi-urban"
     },
-    "funFacts": [
-      "The circuit is named after Canadian F1 hero Gilles Villeneuve, who won the first Canadian GP held here in 1978.",
-      "The track is built on Île Notre-Dame, an artificial island in the Saint Lawrence River in Montreal.",
-      "The infamous 'Wall of Champions' at the final chicane has claimed many title contenders over the years.",
-      "Canada is known for producing some of the most unpredictable and entertaining races on the calendar.",
-      "The low-downforce setup required here puts extreme stress on the brakes throughout the race.",
-      "The circuit is only used for the Grand Prix weekend — the rest of the year it hosts other events.",
-      "Montreal's weather is notoriously unpredictable in June, making strategy calls particularly complex."
-    ],
   "history": [
     { "year": 1978, "pole": "Jean-Pierre Jarier", "winner": "Gilles Villeneuve" },
     { "year": 1979, "pole": "Alan Jones", "winner": "Alan Jones" },
@@ -465,16 +411,6 @@
     "tyreDeg": 30,
     "trackType": "street"
   },
-  "funFacts": [
-    "Monaco is the shortest circuit on the F1 calendar but one of the most challenging.",
-    "Overtaking is extremely difficult, making qualifying the most important session of the weekend.",
-    "The race is often described as 'driving a car around a living room'.",
-    "The famous tunnel section creates a dramatic change in lighting conditions for drivers.",
-    "Monaco has the slowest average speed of any track in Formula 1.",
-    "The Grand Prix has been held since 1929 and is part of the Triple Crown of Motorsport.",
-    "Barriers are very close, so even a small mistake usually ends in a crash."
-  ],
-
   "history": [
     { "year": 1950, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
     { "year": 1955, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
@@ -575,15 +511,6 @@
     "tyreDeg": 75,
     "trackType": "permanent"
   },
-  "funFacts": [
-    "The circuit is one of the most used for pre-season testing due to its balanced layout.",
-    "It features a mix of high-speed corners and technical sections, making it a complete track.",
-    "Tyre degradation is usually high, which plays a key role in race strategy.",
-    "The long main straight combined with DRS creates good overtaking opportunities into Turn 1.",
-    "The final chicane was removed in 2023, restoring the original fast last sector.",
-    "Teams know this track extremely well, so performance differences are often very tight.",
-    "Wind conditions can significantly affect car balance throughout the lap."
-  ],
   "history": [
     { "year": 1991, "pole": "Gerhard Berger", "winner": "Nigel Mansell" },
     { "year": 1992, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
@@ -649,15 +576,6 @@
     "tyreDeg": 50,
     "trackType": "permanent"
   },
-  "funFacts": [
-    "The Red Bull Ring is one of the shortest lap times on the calendar.",
-    "Despite having only 10 corners, it produces exciting racing and many overtakes.",
-    "The track is located in the Styrian mountains, offering big elevation changes.",
-    "Heavy braking zones into Turns 1, 3 and 4 create prime overtaking opportunities.",
-    "Track limits are a constant issue, especially at the final two corners.",
-    "It used to be known as the A1-Ring before being renovated and renamed.",
-    "The circuit often hosts Sprint weekends in the modern F1 format."
-  ],
   "history": [
     { "year": 1997, "pole": "Jacques Villeneuve", "winner": "Jacques Villeneuve" },
     { "year": 1998, "pole": "Giancarlo Fisichella", "winner": "Mika Häkkinen" },
@@ -709,15 +627,6 @@
     "tyreDeg": 80,
     "trackType": "permanent"
   },
-  "funFacts": [
-    "Silverstone hosted the first ever Formula 1 World Championship race in 1950.",
-    "Corners like Maggotts, Becketts and Copse are among the fastest and most iconic in F1.",
-    "The track was originally a World War II airfield before being converted into a circuit.",
-    "High-speed corners put extreme stress on tyres, especially the front-left.",
-    "British weather is famously unpredictable, often impacting race strategy.",
-    "It is considered one of the purest high-speed circuits on the calendar.",
-    "Drivers experience very high lateral G-forces through the fast sequences."
-  ],
   "history": [
     { "year": 1950, "pole": "Giuseppe Farina", "winner": "Giuseppe Farina" },
     { "year": 1951, "pole": "José Froilán González", "winner": "José Froilán González" },
@@ -808,15 +717,6 @@
     "tyreDeg": 60,
     "trackType": "permanent"
   },
-  "funFacts": [
-    "Spa is the longest circuit on the Formula 1 calendar.",
-    "The famous Eau Rouge–Raidillon sequence is one of the most iconic corners in motorsport.",
-    "Weather can vary drastically across different parts of the track at the same time.",
-    "Long straights combined with high-speed corners make setup a compromise.",
-    "Slipstream battles on the Kemmel Straight often lead to overtakes into Les Combes.",
-    "It is one of the drivers' favorite tracks due to its fast and flowing nature.",
-    "The circuit is located in the Ardennes forest and has significant elevation changes."
-  ],
   "history": [
     { "year": 1950, "pole": "Giuseppe Farina", "winner": "Giuseppe Farina" },
     { "year": 1951, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
@@ -905,16 +805,6 @@
     "tyreDeg": 70,
     "trackType": "permanent"
   },
-  "funFacts": [
-    "The Hungaroring is often compared to Monaco without walls due to its tight layout.",
-    "Overtaking is very difficult, making qualifying extremely important.",
-    "It was the first Formula 1 race held behind the Iron Curtain in 1986.",
-    "The track is twisty and technical with very few long straights.",
-    "High temperatures usually make tyre management a key factor.",
-    "Dusty conditions off the racing line reduce grip significantly.",
-    "Drivers are constantly turning, making it one of the most physically demanding circuits."
-  ],
-
   "history": [
     { "year": 1986, "pole": "Ayrton Senna", "winner": "Nelson Piquet" },
     { "year": 1987, "pole": "Nigel Mansell", "winner": "Nelson Piquet" },
@@ -985,15 +875,6 @@
     "tyreDeg": 65,
     "trackType": "permanent"
   },
-  "funFacts": [
-    "Zandvoort features unique banked corners, especially Turns 3 and 14.",
-    "The track runs through sand dunes near the North Sea coast.",
-    "Wind and sand can reduce grip and change track conditions quickly.",
-    "Overtaking is difficult due to the narrow and flowing layout.",
-    "The Dutch Grand Prix returned to Formula 1 in 2021 after a long absence.",
-    "High downforce setups are used to maximize performance in fast corners.",
-    "The atmosphere is one of the most vibrant thanks to passionate Dutch fans."
-  ],
   "history": [
     { "year": 1952, "pole": "Alberto Ascari", "winner": "Alberto Ascari" },
     { "year": 1953, "pole": "Alberto Ascari", "winner": "Alberto Ascari" },
@@ -1059,15 +940,6 @@
     "tyreDeg": 40,
     "trackType": "permanent"
   },
-  "funFacts": [
-    "Monza is known as the Temple of Speed due to its extremely high average speeds.",
-    "It is one of the oldest and most historic circuits in Formula 1.",
-    "Cars run ultra-low downforce setups to maximize straight-line speed.",
-    "The circuit features famous corners like Parabolica, Ascari and Variante Rettifilo.",
-    "Slipstreaming plays a huge role during qualifying and races.",
-    "Monza has hosted more Formula 1 Grands Prix than any other circuit.",
-    "The passionate Ferrari fans are known worldwide as the Tifosi."
-  ],
   "history": [
     { "year": 1950, "pole": "Juan Manuel Fangio", "winner": "Giuseppe Farina" },
     { "year": 1951, "pole": "Juan Manuel Fangio", "winner": "Alberto Ascari" },
@@ -1173,16 +1045,6 @@
       "tyreDeg": 0,
       "trackType": "semi-urban"
     },
-    "funFacts": [
-      "The IFEMA Madrid circuit is a 'hybrid' track, combining street sections on public roads with a purpose-built permanent track area.",
-      "It marks the return of Formula 1 to the city of Madrid for the first time since 1981, when the race was held at Jarama.",
-      "The track features a spectacular steep banked corner in the Valdebebas section, designed to challenge drivers and increase speeds.",
-      "It includes a unique section where the track passes closely alongside (and partially through) the IFEMA exhibition pavilions.",
-      "Sustainability is a key focus: the venue is highly connected, with an estimated 90% of fans expected to arrive via the Madrid Metro and public transport.",
-      "Because it's a new circuit for 2026, the official F1 simulations estimate a qualifying lap time of around 1 minute and 32 seconds.",
-      "The circuit is located just five minutes away from the Adolfo Suárez Madrid-Barajas Airport, making it one of the most logistically accessible tracks on the calendar."
-    ],
-
     "history": [
       { "year": 2026, "pole": "N/A", "winner": "N/A" }
     ]
@@ -1214,15 +1076,6 @@
       "tyreDeg": 40,
       "trackType": "street"
     },
-    "funFacts": [
-      "The 'Old Town' complex (Turns 8, 9 and 10) passing the historic Maiden Tower is the narrowest section on the F1 calendar, measuring just 7.6 metres wide.",
-      "Despite being a tight street circuit, Valtteri Bottas set the unofficial all-time F1 top speed record here in 2016, hitting a massive 378 km/h (234.9 mph) in his Williams.",
-      "The track features a massive 2.2 km full-throttle section along the Caspian Sea coastline, allowing for incredible slipstreaming and overtaking.",
-      "The circuit sits completely below sea level, as the capital city of Baku is situated 28 metres below the world's ocean level.",
-      "The run from pole position to the Turn 1 braking point is a mere 141 metres, making it the shortest run down to Turn 1 of any track on the calendar.",
-      "The circuit made its F1 debut in 2016 under the title of the 'European Grand Prix', before being officially renamed the Azerbaijan Grand Prix in 2017.",
-      "Charles Leclerc holds an extraordinary qualifying record at this track, having taken four consecutive pole positions from 2021 to 2024."
-    ],
   "history": [
     { "year": 2016, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
     { "year": 2017, "pole": "Lewis Hamilton", "winner": "Daniel Ricciardo" },
@@ -1262,15 +1115,6 @@
       "tyreDeg": 85,
       "trackType": "permanent"
     },
-    "funFacts": [
-      "Sepang was the first purpose-built 'Tilke' circuit, designed by Hermann Tilke, who went on to design most modern F1 tracks.",
-      "It has two full-speed straights separated by only a single hairpin, letting drivers use back-to-back DRS zones.",
-      "Extreme tropical heat and humidity make it one of the most physically demanding races for drivers.",
-      "Sudden monsoon downpours are common, and the 2009 race was red-flagged and never restarted due to heavy rain.",
-      "The abrasive track surface produces some of the highest tyre degradation on the calendar.",
-      "After hosting the Malaysian Grand Prix from 1999 to 2017, the circuit returns to the F1 calendar in 2026 hosting the Bahrain Grand Prix on Bahrain's behalf, following the cancellation of the race in Sakhir.",
-      "The unusual 'Bahrain Grand Prix in Malaysia' name mirrors past cases like the San Marino GP being held at Imola, or the Luxembourg GP at Germany's Nürburgring."
-    ],
     "history": [
       { "year": 1999, "pole": "Michael Schumacher", "winner": "Eddie Irvine" },
       { "year": 2000, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
@@ -1320,15 +1164,6 @@
       "tyreDeg": 70,
       "trackType": "street"
     },
-    "funFacts": [
-      "It hosted the first-ever night race in Formula 1 history, making its debut in 2008.",
-      "Due to extreme heat and humidity, drivers can lose up to 3 kg of body weight in sweat during the race.",
-      "The Safety Car has an incredible 100% deployment record at this circuit since it first joined the calendar.",
-      "The layout was significantly modified in 2023, removing the old Turns 16 to 19 to create a new straight and reduce lap times.",
-      "Nearly 1,600 custom-made lighting projectors illuminate the track to completely mimic daylight conditions for the drivers.",
-      "In 2024, the FIA added a fourth DRS zone between Turns 14 and 16 to help improve the notoriously difficult overtaking.",
-      "Because of the relentless corners, heavy braking zones, and brutal climate, it is widely considered the most physically demanding race of the entire season."
-    ],
   "history": [
     { "year": 2008, "pole": "Felipe Massa", "winner": "Fernando Alonso" },
     { "year": 2009, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
@@ -1375,15 +1210,6 @@
       "tyreDeg": 85,
       "trackType": "permanent"
     },
-    "funFacts": [
-      "The signature Turn 1 features a spectacular 11% gradient, creating a steep, blind uphill braking zone.",
-      "The track's design was heavily inspired by iconic sections of other F1 circuits, such as Silverstone's Maggotts-Becketts and Hockenheim's stadium section.",
-      "It is one of the few circuits on the F1 calendar that runs counter-clockwise, putting extra physical strain on the drivers' necks.",
-      "The track is notoriously bumpy because it was built on shifting, expansive clay soil, requiring frequent resurfacing work over the years.",
-      "The observation tower sitting inside the track stands 77 meters (251 feet) tall and offers a panoramic view of the entire layout.",
-      "It was the first purpose-built Formula 1 facility in the United States, officially opening its doors in 2012.",
-      "The event is famous for its massive festival atmosphere and concerts, regularly attracting over 400,000 fans throughout the weekend."
-    ],
   "history": [
     { "year": 2012, "pole": "Sebastian Vettel", "winner": "Lewis Hamilton" },
     { "year": 2013, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
@@ -1427,15 +1253,6 @@
       "tyreDeg": 50,
       "trackType": "permanent"
     },
-    "funFacts": [
-      "The circuit is situated at a massive 2,285 meters (7,500 feet) above sea level, making the air 25% thinner than at sea level.",
-      "Because of the thin air, teams run their maximum downforce setups (similar to Monaco), yet the cars produce less actual downforce than at Monza.",
-      "The thin air also drastically reduces drag, which allowed Valtteri Bottas to hit an astonishing top speed of 372.5 km/h here in 2016.",
-      "The track uniquely weaves right through the Foro Sol (now Estadio GNP Seguros), a former baseball stadium packed with over 30,000 cheering fans.",
-      "Unlike any other race, the podium ceremony doesn't happen on the main straight; it takes place right inside the stadium section for an incredible atmosphere.",
-      "Cooling the cars is a nightmare here: the lack of dense air forces teams to open up the car's bodywork to maximum capacity to cool engines and brakes.",
-      "The circuit is named after the legendary Mexican racing brothers Pedro and Ricardo Rodríguez, who were instrumental in bringing motorsport to the country."
-    ],
   "history": [
     { "year": 1963, "pole": "Jim Clark", "winner": "Jim Clark" },
     { "year": 1964, "pole": "Jim Clark", "winner": "Dan Gurney" },
@@ -1491,15 +1308,6 @@
       "tyreDeg": 65,
       "trackType": "permanent"
     },
-    "funFacts": [
-      "It is one of the few circuits on the F1 calendar that runs counter-clockwise, putting extra physical strain on the left side of the drivers' necks.",
-      "The circuit was originally called 'Interlagos' because it was built on a piece of land situated between two large artificial lakes.",
-      "The iconic sweeping first sequence of corners, known as the 'Senna S' (Turns 1 and 2), was proposed by Ayrton Senna himself during the track's 1990 redesign.",
-      "The starting grid is situated on an uphill slope, forcing drivers to hold the brake pedal firmly while waiting for the lights to go out.",
-      "Interlagos is famous for its dramatic elevation changes, with a massive 43-meter drop from its highest point to its lowest point.",
-      "The weather in São Paulo is notoriously unpredictable, often bringing sudden and intense tropical downpours that completely turn the race upside down.",
-      "It has hosted some of the most historic championship deciders in F1 history, including Lewis Hamilton's famous last-corner title win in 2008."
-    ],
   "history": [
     { "year": 1973, "pole": "Ronnie Peterson", "winner": "Emerson Fittipaldi" },
     { "year": 1974, "pole": "Emerson Fittipaldi", "winner": "Emerson Fittipaldi" },
@@ -1572,15 +1380,6 @@
       "tyreDeg": 30,
       "trackType": "street"
     },
-    "funFacts": [
-      "The track features a massive 1.9 km (1.18 miles) flat-out section directly down the world-famous Las Vegas Strip.",
-      "The race uniquely takes place on a Saturday night at 10:00 PM local time to better accommodate global television audiences.",
-      "It is the first and only Formula 1 race to be directly promoted by F1 and Liberty Media themselves, rather than a local promoter.",
-      "Because it's held in the Nevada desert in late November, track temperatures are extremely low, making tyre warm-up a massive challenge.",
-      "Formula 1 purchased a 39-acre plot of land for $240 million just to build the permanent 300,000-square-foot pit and paddock complex.",
-      "The layout sweeps past world-renowned landmarks, including the MSG Sphere, the Bellagio Fountains, and the Eiffel Tower at Paris Las Vegas.",
-      "Despite being a street track with 90-degree corners, cars reach top speeds of 350 km/h (217 mph), making it second only to Monza in average speed."
-    ],
   "history": [
     { "year": 2023, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
     { "year": 2024, "pole": "George Russell", "winner": "George Russell" },
@@ -1614,15 +1413,6 @@
       "tyreDeg": 80,
       "trackType": "permanent"
     },
-    "funFacts": [
-      "The circuit was originally built in 2004 primarily for MotoGP, and F1 first raced here in 2021 as a replacement race during the COVID-19 pandemic.",
-      "It features a continuous flow of medium and high-speed corners, making it extremely demanding on the cars' aerodynamics and the drivers' necks.",
-      "The 2023 race was held under such extreme heat and humidity that multiple drivers required medical attention for severe dehydration and heat exhaustion.",
-      "Due to safety concerns over tyre structural failures caused by the aggressive 'pyramid' kerbs, the FIA mandated a strict maximum of 18 laps per set of tyres during the 2023 Grand Prix.",
-      "It is a full night race, illuminated by massive floodlights that underwent a massive LED upgrade in 2023 to consume significantly less energy.",
-      "The track is surrounded by artificial grass to help prevent the desert sand from blowing onto the racing line, though dust still heavily affects grip during early practice sessions.",
-      "Max Verstappen secured his third consecutive World Drivers' Championship here in 2023 during the Saturday Sprint race, a highly unusual occurrence in F1 history."
-    ],
   "history": [
     { "year": 2021, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
     { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
@@ -1657,15 +1447,6 @@
       "tyreDeg": 50,
       "trackType": "permanent"
     },
-    "funFacts": [
-      "It is Formula 1's first-ever twilight race, starting in the late afternoon sunlight and finishing entirely under artificial floodlights.",
-      "The pit exit is completely unique in motorsport, as it safely funnels cars through a narrow tunnel that runs directly underneath the circuit.",
-      "The track layout was significantly modified in 2021, removing several slow chicanes to increase speeds and improve overtaking opportunities.",
-      "The circuit passes directly underneath and through the iconic W Abu Dhabi Hotel, which is covered in LED panels that change colors throughout the night.",
-      "Built on a spectacular man-made island at an estimated cost of $1 billion, it is widely considered the most expensive Formula 1 facility ever constructed.",
-      "It has become the traditional season finale, crowning the World Champion on several dramatic occasions since its debut in 2009.",
-      "The track was the setting for the historic and highly controversial 2021 championship showdown between Max Verstappen and Lewis Hamilton."
-    ],
     "history": [
       { "year": 2009, "pole": "Lewis Hamilton", "winner": "Sebastian Vettel" },
       { "year": 2010, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
