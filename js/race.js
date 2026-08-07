@@ -129,7 +129,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         injectColors(gp.color);
         renderHero(gp, circuit, circuitId);
         renderRaceWeekendData(circuit);
-        renderFunFacts(circuit);
 
         // ── Sesiones de práctica libre ──
         renderSessionResult(getSessionResults(gp, 'fp1'), 'fp1-card', 'Free Practice 1', driverTeams, driverNats, driverNumbers);
@@ -312,53 +311,6 @@ function renderRaceWeekendData(circuit) {
                 </div>` : ''}
             </div>
         </div>`;
-}
-
-// ── FUN FACTS ────────────────────────────────────────────────────
-function renderFunFacts(circuit) {
-    const track   = document.getElementById('facts-track');
-    const dotsEl  = document.getElementById('facts-dots');
-    const prevBtn = document.getElementById('facts-prev');
-    const nextBtn = document.getElementById('facts-next');
-    if (!track || !circuit?.funFacts?.length) return;
-
-    const facts = circuit.funFacts;
-    const perPage = 1;
-    let current = 0;
-    const pages = Math.ceil(facts.length / perPage);
-
-    track.innerHTML = facts.map((fact, i) => `
-        <div class="fact-card">
-            <p class="fact-num">Fact ${String(i + 1).padStart(2, '0')}</p>
-            <p class="fact-text">${fact}</p>
-        </div>
-    `).join('');
-
-    // dots
-    dotsEl.innerHTML = Array.from({ length: pages }, (_, i) =>
-        `<button class="facts-dot ${i === 0 ? 'active' : ''}" data-i="${i}"></button>`
-    ).join('');
-
-    function goTo(page) {
-        current = Math.max(0, Math.min(page, pages - 1));
-        const cardW = track.querySelector('.fact-card')?.offsetWidth || 0;
-        const gap = 14;
-        track.style.transform = `translateX(-${current * perPage * (cardW + gap)}px)`;
-        dotsEl.querySelectorAll('.facts-dot').forEach((d, i) =>
-            d.classList.toggle('active', i === current)
-        );
-        prevBtn.disabled = current === 0;
-        nextBtn.disabled = current >= pages - 1;
-    }
-
-    prevBtn.addEventListener('click', () => goTo(current - 1));
-    nextBtn.addEventListener('click', () => goTo(current + 1));
-    dotsEl.addEventListener('click', e => {
-        const i = e.target.dataset.i;
-        if (i !== undefined) goTo(+i);
-    });
-
-    goTo(0);
 }
 
 // ── TEAM ID → LOGO FILENAME ──────────────────────────────────────
