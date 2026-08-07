@@ -142,101 +142,10 @@
             <!--           CIRCUIT SECTION           -->
             <!-- ═══════════════════════════════════ -->
 
-            <!-- CIRCUIT OVERVIEW -->
-            <section>
-                <p class="rc-section-title">Circuit Overview</p>
-                <div class="circuit-overview-card">
-
-                    <!-- Track layout -->
-                    <div class="track-layout-pane">
-                        <div class="track-layout-placeholder" id="track-layout-container">
-                            <div class="track-layout-img-wrap" id="track-layout-img-wrap">
-                                <div class="track-layout-svg" id="track-layout-svg"></div>
-                                <img id="track-layout-img" src="" alt="">
-                            </div>
-                            <button class="track-zoom-btn" id="track-zoom-btn" type="button" aria-label="Ampliar imagen del circuito">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                </svg>
-                            </button>
-                        </div>
-                        <p id="track-layout-name" class="track-layout-name"></p>
-                    </div>
-
-                    <!-- Stats + Characteristics -->
-                    <div class="circuit-info-pane">
-
-                        <div class="circuit-stats-pane">
-                            <div class="circuit-stats-row">
-                                <div class="cs-stat">
-                                    <span class="cs-stat-val" id="cs-length">-</span>
-                                    <span class="cs-stat-label">km per lap</span>
-                                </div>
-                                <div class="cs-stat">
-                                    <span class="cs-stat-val" id="cs-distance">-</span>
-                                    <span class="cs-stat-label">total km</span>
-                                </div>
-                                <div class="cs-stat">
-                                    <span class="cs-stat-val" id="cs-laps">-</span>
-                                    <span class="cs-stat-label">race laps</span>
-                                </div>
-                                <div class="cs-stat">
-                                    <span class="cs-stat-val" id="cs-corners">-</span>
-                                    <span class="cs-stat-label">corners</span>
-                                </div>
-                                <div class="cs-stat">
-                                    <span class="cs-stat-val" id="cs-overtake">-</span>
-                                    <span class="cs-stat-label">OT zones</span>
-                                </div>
-                                <div class="cs-stat">
-                                    <span class="cs-stat-val" id="cs-editions">-</span>
-                                    <span class="cs-stat-label">editions held</span>
-                                </div>
-                                <div class="cs-stat">
-                                    <span class="cs-stat-val" id="lr-time">-</span>
-                                    <span class="cs-stat-label">lap record</span>
-                                </div>
-                                <div class="cs-stat">
-                                    <span class="cs-stat-val" id="lr-topspeed">-</span>
-                                    <span class="cs-stat-label">top speed</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="circuit-characteristics-pane">
-                            <div class="circuit-characteristics">
-                                <div class="char-row">
-                                    <div class="char-label-row">
-                                        <span class="char-label">Downforce</span>
-                                        <span class="char-val" id="char-downforce">-</span>
-                                    </div>
-                                    <div class="char-bar"><div class="char-bar-fill" id="bar-downforce" style="width:0%"></div></div>
-                                </div>
-                                <div class="char-row">
-                                    <div class="char-label-row">
-                                        <span class="char-label">Overtaking</span>
-                                        <span class="char-val" id="char-overtaking">-</span>
-                                    </div>
-                                    <div class="char-bar"><div class="char-bar-fill" id="bar-overtaking" style="width:0%"></div></div>
-                                </div>
-                                <div class="char-row">
-                                    <div class="char-label-row">
-                                        <span class="char-label">Tyre Degradation</span>
-                                        <span class="char-val" id="char-tiredeg">-</span>
-                                    </div>
-                                    <div class="char-bar"><div class="char-bar-fill" id="bar-tiredeg" style="width:0%"></div></div>
-                                </div>
-                                <div class="track-type-row">
-                                    <span class="char-label">Track Type</span>
-                                    <span class="track-type-badge" id="char-tracktype">-</span>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
+            <!-- RACE WEEKEND DATA -->
+            <section id="section-raceweekend">
+                <p class="rc-section-title">Track &amp; Tyre Data</p>
+                <div class="rwd-card" id="raceweekend-card"></div>
             </section>
 
             <!-- FUN FACTS -->

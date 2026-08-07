@@ -182,387 +182,190 @@
     background: rgba(255,255,255,0.1);
 }
 
-/* ---- CIRCUIT OVERVIEW ---- */
-.circuit-overview-card {
+/* ---- RACE WEEKEND DATA (pit loss / characteristics / tyres) ---- */
+.rwd-card {
     background: rgb(20,20,30);
     border: 1px solid rgba(255,255,255,0.05);
     border-radius: 16px;
-    padding: 32px;
+    padding: 28px 32px 32px;
+}
+
+/* Headline stat */
+.rwd-headline {
     display: flex;
-    gap: 32px;
-    transition: border-color 0.25s ease;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 22px;
+    margin-bottom: 26px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
-.circuit-overview-card:hover {
-    border-color: rgba(255,255,255,0.14);
-}
-
-/* Track layout pane */
-.track-layout-pane {
-    flex: 0 0 360px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding-right: 32px;
-    border-right: 1px solid rgba(255,255,255,0.06);
-}
-
-.track-layout-name {
-    font-family: 'F1-Regular', sans-serif;
-    font-size: clamp(8px, 3vw, 24px);
-    line-height: 1.25;
+.rwd-headline-label {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: var(--text-light);
-    text-align: center;
-    margin-top: 0.25rem;
-}
-
-.track-layout-placeholder {
-    position: relative;
-    width: 100%;
-    background: rgb(10,10,20);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 28px;
     color: var(--text-dim);
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 0.7rem;
-    letter-spacing: 1px;
 }
 
-/* Wraps just the image so the zoom button anchors to the image's own corner,
-   not the padded placeholder box */
-.track-layout-img-wrap {
-    position: relative;
-    width: 100%;
-    display: block;
-    line-height: 0;
-}
-
-/* SVG track outline, shown as the thumbnail when one exists for this circuit */
-.track-layout-svg {
-    display: none;
-    width: 100%;
-}
-
-.track-layout-svg.is-active {
-    display: block;
-}
-
-.track-layout-svg svg {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-/* The source SVGs are drawn with a near-black fill (#15151E), which disappears
-   against the card's dark background. Recolor to a fixed light tone instead. */
-.track-layout-svg svg path {
-    fill: var(--text-light);
-    opacity: 0.9;
-    transition: opacity 0.2s ease;
-}
-
-.track-layout-placeholder:hover .track-layout-svg svg path {
-    opacity: 1;
-}
-
-#track-layout-img {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 8px;
-}
-
-/* Hidden as a thumbnail once the SVG version takes over, but still kept
-   in the DOM so its src can be reused as the full-size image in the zoom modal */
-#track-layout-img.is-hidden-thumb {
-    display: none;
-}
-
-/* Zoom button — hidden until the user hovers the card, but always tappable on touch devices.
-   Anchored to the outer padded placeholder (not the image itself) so it sits near the
-   card's real edge instead of floating off the image's corner. */
-.track-zoom-btn {
-    position: absolute;
-    right: 6px;
-    bottom: 6px;
-    z-index: 5;
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(10,10,20,0.85);
-    border: 1px solid rgba(255,255,255,0.18);
-    border-radius: 50%;
-    color: var(--text-light);
-    cursor: pointer;
-    opacity: 0;
-    transform: scale(0.85);
-    pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-}
-
-.track-layout-placeholder:hover .track-zoom-btn,
-.track-zoom-btn:focus-visible {
-    opacity: 1;
-    transform: scale(1);
-    pointer-events: auto;
-}
-
-.track-zoom-btn:hover,
-.track-zoom-btn:focus-visible {
-    background: var(--primary-red);
-    border-color: var(--primary-red);
-}
-
-.track-zoom-btn svg {
-    width: 16px;
-    height: 16px;
-    display: block;
-    flex-shrink: 0;
-    pointer-events: none;
-}
-
-/* Touch devices have no hover — keep the button visible so it stays reachable */
-@media (hover: none) {
-    .track-zoom-btn {
-        opacity: 1;
-        transform: scale(1);
-        pointer-events: auto;
-    }
-}
-
-/* Fullscreen modal opened by tapping/clicking the zoom button */
-.track-zoom-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(5,5,10,0.85);
-    backdrop-filter: blur(6px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 48px;
-    opacity: 0;
-    visibility: hidden;
-    z-index: 999;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
-}
-
-.track-zoom-modal.is-active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.track-zoom-modal img {
-    box-sizing: border-box;
-    max-width: min(90vw, 800px);
-    max-height: 85vh;
-    width: auto;
-    height: auto;
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.15);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-    background: rgb(10,10,20);
-    transform: scale(0.94);
-    transition: transform 0.2s ease;
-}
-
-.track-zoom-modal.is-active img {
-    transform: scale(1);
-}
-
-.track-zoom-modal-close {
-    position: absolute;
-    top: 20px;
-    right: 24px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: rgba(10,10,20,0.85);
-    border: 1px solid rgba(255,255,255,0.18);
-    color: var(--text-light);
-    font-size: 22px;
+.rwd-headline-value {
+    font-family: 'F1-Black', sans-serif;
+    font-size: clamp(30px, 4.5vw, 46px);
     line-height: 1;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s ease, border-color 0.2s ease;
+    color: var(--gp-color-a, var(--primary-red));
 }
 
-.track-zoom-modal-close:hover {
-    background: var(--primary-red);
-    border-color: var(--primary-red);
-}
-
-/* Stats + characteristics pane */
-.circuit-info-pane {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    justify-content: center;
-}
-
-.circuit-stats-pane {
-    padding-bottom: 24px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-
-.circuit-stats-row {
+/* Two-column layout */
+.rwd-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px 16px;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 44px;
 }
 
-.cs-stat {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.cs-stat-val {
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 26px;
-    color: var(--text-light);
-    line-height: 1;
-}
-
-.cs-stat-val.accent {
-    background: var(--primary-red);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
-
-.cs-stat-label {
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-}
-
-.circuit-characteristics {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.char-row {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.char-label-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.char-label {
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--text-light);
-}
-
-.char-val {
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-}
-
-.char-bar {
-    height: 4px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 2px;
-    overflow: hidden;
-}
-
-.char-bar-fill {
-    height: 100%;
-    border-radius: 2px;
-    background: var(--text-light);
-    transition: width 1s ease;
-}
-
-.track-type-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 0.25rem;
-}
-
-.track-type-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 12px;
-    border-radius: 6px;
-    background: rgba(225,6,0,0.1);
-    border: 1px solid rgba(225,6,0,0.2);
-    color: var(--primary-red);
+.rwd-col-title {
     font-family: 'F1-Bold', sans-serif;
     font-size: 11px;
-    letter-spacing: 1px;
+    letter-spacing: 2.5px;
     text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 20px;
 }
 
-/* ---- LAP RECORD ---- */
-.lap-record-banner {
-    background: rgb(10,10,20);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 12px;
-    padding: 24px;
+.rwd-col-title--spaced { margin-top: 30px; }
+
+/* Characteristics ratings */
+.rwd-ratings {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.rwd-rating-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 2rem;
-    flex-wrap: wrap;
-    margin-top: -1rem;
+    gap: 18px;
 }
 
-.lr-label {
-    font-family: 'F1-Regular';
-    font-size: 0.65rem;
-    letter-spacing: 2px;
+.rwd-rating-label {
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    white-space: nowrap;
+}
+
+.rwd-rating-bar {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.rwd-seg {
+    width: 22px;
+    height: 8px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.08);
+    transition: background 0.4s ease;
+}
+
+.rwd-seg.is-filled {
+    background: var(--gp-color-a, var(--primary-red));
+}
+
+/* Tyre compounds */
+.rwd-compounds {
+    display: flex;
+    gap: 26px;
+}
+
+.rwd-compound {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.rwd-compound-tyre {
+    --compound-color: #999;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: rgb(12,12,18);
+    border: 5px solid var(--compound-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+.rwd-compound-code {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 13px;
+    color: var(--text-light);
+}
+
+.rwd-compound-label {
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 10px;
+    letter-spacing: 1px;
     text-transform: uppercase;
     color: var(--text-dim);
-    margin-bottom: 4px;
 }
 
-.lr-time {
+/* Pressure & camber table */
+.rwd-table-wrap { overflow-x: auto; }
+
+.rwd-press-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.rwd-press-table th {
     font-family: 'F1-Bold', sans-serif;
-    font-size: 24px;
-    color: var(--text-light);
-    line-height: 1;
-    background: var(--text-light);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: right;
+    padding: 0 0 10px;
 }
 
-.lr-meta {
+.rwd-press-table th:first-child { text-align: left; }
+
+.rwd-press-table td {
     font-family: 'F1-Regular', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    text-align: right;
+    padding: 9px 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    white-space: nowrap;
+}
+
+.rwd-press-table td.rwd-press-label {
+    text-align: left;
     color: var(--text-dim);
-    margin-top: 4px;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+@media (max-width: 1100px) {
+    .rwd-card { padding: 24px; }
+    .rwd-grid { gap: 30px; }
+}
+
+@media (max-width: 700px) {
+    .rwd-grid { grid-template-columns: 1fr; gap: 34px; }
+}
+
+@media (max-width: 500px) {
+    .rwd-card { padding: 20px; }
+    .rwd-headline { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .rwd-compounds { gap: 18px; }
+    .rwd-rating-label { font-size: 0.78rem; }
+    .rwd-seg { width: 15px; }
 }
 
 /* ---- FUN FACTS ---- */
@@ -1306,9 +1109,7 @@ border: 1px solid rgba(255,255,255,0.05);
     .race-sprint-badge { top: 72px; }
 
     /* Circuit overview */
-    .circuit-overview-card { flex-direction: column; gap: 24px; }
-    .track-layout-pane { flex: none; padding-right: 0; padding-bottom: 24px; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.06); }
-    .track-layout-placeholder { padding: 8px; }
+
 
     /* Tables */
     .data-table th,
@@ -1339,11 +1140,6 @@ border: 1px solid rgba(255,255,255,0.05);
     .race-hero-meta { width: 100%; gap: 1rem; }
     .race-hero-flag-bg { display: none; }
     .race-sprint-badge { top: 64px; right: 4%; }
-
-    /* Circuit overview */
-    .circuit-overview-card { padding: 1.25rem; gap: 20px; }
-    .circuit-stats-row { grid-template-columns: repeat(2, 1fr); gap: 18px 12px; }
-    .cs-stat-val { font-size: 18px; }
 
     /* Tables — result table */
     #race-card .res-team-cell,
@@ -1409,10 +1205,6 @@ border: 1px solid rgba(255,255,255,0.05);
 
     .weather-grid {
         grid-template-columns: 1fr;
-    }
-
-    .lr-time {
-        font-size: 18px;
     }
 
     .driver-fullname { display: none; }
