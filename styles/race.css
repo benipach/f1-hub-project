@@ -86,16 +86,16 @@
 .race-hero-title { margin-bottom: 24px; }
 
 .race-hero-circuit {
-    font-family: 'F1-Regular', sans-serif;
+    font-family: 'F1-Regular';
     font-size: clamp(12px, 2.5vw, 32px);
-    letter-spacing: 6px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     color: rgba(255,255,255,0.5);
     line-height: 0.85;
 }
 
 .race-hero-name {
-    font-family: 'F1-Black', sans-serif;
+    font-family: 'F1-Black';
     font-size: clamp(3rem, 10vw, 8rem);
     text-transform: uppercase;
     line-height: 0.9;
@@ -116,18 +116,18 @@
 .race-hero-meta-item {
     display: flex;
     flex-direction: column;
-    gap: 5px;
     font-family: 'F1-Regular';
-    font-size: 0.6rem;
-    letter-spacing: 1.5px;
+    font-size: 16px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
     color: rgba(255,255,255,0.5);
 }
 
 .race-hero-meta-item strong {
     font-family: 'F1-Bold';
-    font-size: 0.9rem;
+    font-size: 24px;
     letter-spacing: 0.5px;
+    line-height: 1;
     color: var(--text-light);
     font-weight: normal;
 }

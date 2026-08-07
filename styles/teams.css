@@ -23,7 +23,11 @@
 .teams-hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(10,10,20,0) 40%, rgba(10,10,20,1) 100%);
+    background: linear-gradient(
+        to bottom,
+        rgba(10,10,20,0) 40%,
+        rgba(10,10,20,1) 100%
+    );
     z-index: 1;
 }
 
@@ -55,7 +59,7 @@
 .teams-hero-eyebrow {
     font-family: 'F1-Regular', sans-serif;
     font-size: clamp(16px, 2.5vw, 48px);
-    letter-spacing: 6px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     color: rgba(255,255,255,0.5);
     line-height: 0.85;
@@ -82,19 +86,19 @@
 .teams-hero-meta-item {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 0.6rem;
-    letter-spacing: 1.5px;
+    font-family: 'F1-Regular';
+    font-size: 16px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.5);
 }
 
 .teams-hero-meta-item strong {
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 0.9rem;
+    font-family: 'F1-Bold';
+    font-size: 24px;
     letter-spacing: 0.5px;
-    color: #ffffff;
+    line-height: 1;
+    color: var(--text-light);
     font-weight: normal;
 }
 
