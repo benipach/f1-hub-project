@@ -137,7 +137,7 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     margin: 128px auto;
-    max-width: 60%;
+    max-width: 70%;
 }
 
 .drivercard {
@@ -154,6 +154,27 @@
     opacity: 0;
     transform: translateY(28px);
     transition: all 0.5s ease;
+}
+
+.drivercard::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 48px;
+    height: 48px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    opacity: 0.9;
+    pointer-events: none;
+    z-index: 3;
+    transform: translateX(500%);
+    transition: all 0.5s ease;
+}
+
+.drivercard:hover::after {
+    transform: translateX(0);
 }
 
 .drivercard.visible {
@@ -197,6 +218,28 @@
     shadow: 0 0 8px rgba(191, 149, 63, 0.4);
 }
 
+.driver-flag {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin-right: -2px;
+    margin-left: 0;
+    font-size: 3.5rem;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--dc-color);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1;
+    transform: translateX(-500%);
+    transition: all 0.5s ease;
+    text-shadow: var(--dc-color) 0 0 75px;
+}
+
+.drivercard:hover .driver-flag {
+    transform: translateX(0);
+}
+
 /* Foto del piloto */
 .driver-img {
     position: absolute;
@@ -233,32 +276,83 @@
 .driver-details {
     position: relative;
     z-index: 3;
-    padding: 1.2rem 1.4rem;
+    padding: 12px 16px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 32px;
     transition: transform 0.5s ease;
 }
 
 .drivercard:hover .driver-details {
-    transform: translateY(-65%);
+    transform: translateY(-40%);
 }
 
 .driver-details .dc-label {
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 0.6rem;
-    letter-spacing: 2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'F1-Regular';
+    font-size: 16px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
     color: var(--dc-color);
 }
+.drivercard.team-mercedes .dc-label::before,
+.drivercard.team-ferrari .dc-label::before,
+.drivercard.team-mclaren .dc-label::before,
+.drivercard.team-haas .dc-label::before,
+.drivercard.team-alpine .dc-label::before,
+.drivercard.team-red-bull .dc-label::before,
+.drivercard.team-racing-bulls .dc-label::before,
+.drivercard.team-audi .dc-label::before,
+.drivercard.team-williams .dc-label::before,
+.drivercard.team-cadillac .dc-label::before,
+.drivercard.team-aston-martin .dc-label::before {
+    content: '';
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+.drivercard.team-mercedes .dc-label::before { background-image: url('../img/teams/mercedes-logo.png'); }
+.drivercard.team-ferrari .dc-label::before { background-image: url('../img/teams/ferrari-logo.png'); }
+.drivercard.team-mclaren .dc-label::before { background-image: url('../img/teams/mclaren-logo.png'); }
+.drivercard.team-haas .dc-label::before { background-image: url('../img/teams/haas-logo.png'); }
+.drivercard.team-alpine .dc-label::before { background-image: url('../img/teams/alpine-logo.png'); }
+.drivercard.team-red-bull .dc-label::before { background-image: url('../img/teams/redbull-logo.png'); }
+.drivercard.team-racing-bulls .dc-label::before { background-image: url('../img/teams/racingbulls-logo.png'); }
+.drivercard.team-audi .dc-label::before { background-image: url('../img/teams/audi-logo.png'); }
+.drivercard.team-williams .dc-label::before { background-image: url('../img/teams/williams-logo.png'); }
+.drivercard.team-cadillac .dc-label::before { background-image: url('../img/teams/cadillac-logo.png'); }
+.drivercard.team-aston-martin .dc-label::before { background-image: url('../img/teams/astonmartin-logo.png'); }
+
+.drivercard.team-mercedes::after { background-image: url('../img/teams/mercedes-logo.png'); }
+.drivercard.team-ferrari::after { background-image: url('../img/teams/ferrari-logo.png'); }
+.drivercard.team-mclaren::after { background-image: url('../img/teams/mclaren-logo.png'); }
+.drivercard.team-haas::after { background-image: url('../img/teams/haas-logo.png'); }
+.drivercard.team-alpine::after { background-image: url('../img/teams/alpine-logo.png'); }
+.drivercard.team-red-bull::after { background-image: url('../img/teams/redbull-logo.png'); }
+.drivercard.team-racing-bulls::after { background-image: url('../img/teams/racingbulls-logo.png'); }
+.drivercard.team-audi::after { background-image: url('../img/teams/audi-logo.png'); }
+.drivercard.team-williams::after { background-image: url('../img/teams/williams-logo.png'); }
+.drivercard.team-cadillac::after { background-image: url('../img/teams/cadillac-logo.png'); }
+.drivercard.team-aston-martin::after { background-image: url('../img/teams/astonmartin-logo.png'); }
 
 .driver-details h3 {
-    font-family: 'F1-Black', sans-serif;
-    font-size: 1.3rem;
+    font-family: 'F1-Regular';
+    font-size: 32px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
-    line-height: 1;
+    line-height: 0.8;
     color: #ffffff;
     margin: 0;
+}
+
+.driver-details h3 span {
+    font-size: 16px;
+    line-height: 1;
 }
 
 .driver-details p {
@@ -269,18 +363,20 @@
     margin: 0;
 }
 
-.driver-details .dc-cta {
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 0.6rem;
-    letter-spacing: 1.5px;
+.dc-cta {
+    font-family: 'F1-Regular';
+    font-size: 16px;
+    letter-spacing: 0;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.25);
+    opacity: 0;
     margin-top: 6px;
-    transition: color 0.3s ease;
+    transform: translateY(-32px);
+    transition: all 0.5s ease;
 }
 
 .drivercard:hover .dc-cta {
     color: var(--dc-color);
+    opacity: 100;
 }
 
 /* Fondos por equipo */
