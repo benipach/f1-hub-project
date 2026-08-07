@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         injectColors(gp.color);
         renderHero(gp, circuit, circuitId);
-        renderCircuitOverview(circuit, circuitId);
+        renderRaceWeekendData(circuit);
         renderFunFacts(circuit);
 
         // ── Sesiones de práctica libre ──
@@ -201,81 +201,117 @@ function renderHero(gp, circuit, circuitId) {
     document.getElementById('stat-first').textContent = circuit?.history?.[0]?.year || '-';
 }
 
-// ── CIRCUIT OVERVIEW ─────────────────────────────────────────────
-function renderCircuitOverview(circuit, circuitId) {
-    if (!circuit) return;
-    const s = circuit.stats;
+// ── RACE WEEKEND DATA (pit loss / track characteristics / tyres) ──
+const RWD_RATING_LABELS = {
+    traction:         'Traction',
+    braking:          'Braking',
+    tyreStress:       'Tyre Stress',
+    asphaltAbrasion:  'Asphalt Abrasion',
+    asphaltGrip:      'Asphalt Grip',
+    lateral:          'Lateral Load',
+    trackEvolution:   'Track Evolution',
+};
 
-    if (s) {
-        document.getElementById('cs-length').textContent   = s.length || '-';
-        document.getElementById('cs-distance').textContent = s.length
-            ? (parseFloat(s.length) * s.laps).toFixed(3): '-';
-        document.getElementById('cs-laps').textContent     = s.laps          || '-';
-        document.getElementById('cs-corners').textContent  = s.turns         || '-';
-        document.getElementById('cs-overtake').textContent = s.overtakeZones || '-';
-    }
+const RWD_COMPOUND_COLORS = {
+    hard:   '#f0f0f0',
+    medium: '#f5d13a',
+    soft:   '#e8002d',
+};
 
-    document.getElementById('cs-editions').textContent = circuit.history?.length || '-';
-
-    if (circuit.lapRecord) {
-        document.getElementById('lr-time').textContent = circuit.lapRecord.time || '-';
-    }
-
-    if (circuit.topSpeed) {
-        document.getElementById('lr-topspeed').textContent = circuit.topSpeed.speed || '-';
-    }
-
-    const trackLayoutImg = document.getElementById('track-layout-img');
-    const trackLayoutSvg = document.getElementById('track-layout-svg');
-    if (trackLayoutImg) {
-        // The raster PNG is always kept as the source for the enlarged (modal) view
-        trackLayoutImg.src = `../img/circuits/${circuitId}-layout.png`;
-    }
-
-    if (trackLayoutSvg) {
-        fetch(`../img/circuits/${circuitId}-layout.svg`)
-            .then(res => {
-                if (!res.ok) throw new Error('no svg layout for this circuit');
-                return res.text();
-            })
-            .then(svgMarkup => {
-                trackLayoutSvg.innerHTML = svgMarkup;
-                trackLayoutSvg.classList.add('is-active');
-                if (trackLayoutImg) trackLayoutImg.classList.add('is-hidden-thumb');
-            })
-            .catch(() => {
-                // No SVG yet for this circuit — keep showing the PNG as the thumbnail
-                trackLayoutSvg.classList.remove('is-active');
-                trackLayoutSvg.innerHTML = '';
-                if (trackLayoutImg) trackLayoutImg.classList.remove('is-hidden-thumb');
-            });
-    }
-
-    if (circuit.characteristics) {
-        setBar('downforce', circuit.characteristics.downforce);
-        setBar('overtaking', circuit.characteristics.overtaking);
-        setBar('tiredeg',    circuit.characteristics.tyreDeg);
-        const trackEl = document.getElementById('char-tracktype');
-        if (trackEl) trackEl.textContent = circuit.characteristics.trackType || '-';
-    }
-
-    const nameEl = document.getElementById('track-layout-name');
-    if (nameEl && circuit.name) nameEl.textContent = circuit.name;
+function rwdRatingRowHtml(label, value) {
+    const v = Math.max(0, Math.min(5, Math.round(Number(value) || 0)));
+    const segments = Array.from({ length: 5 }, (_, i) =>
+        `<span class="rwd-seg ${i < v ? 'is-filled' : ''}"></span>`
+    ).join('');
+    return `
+        <div class="rwd-rating-row">
+            <span class="rwd-rating-label">${label}</span>
+            <div class="rwd-rating-bar">${segments}</div>
+        </div>`;
 }
 
-function setBar(id, value) {
-    const pct = Math.min(Math.max(value || 0, 0), 100);
-    let label;
-    if (pct <= 30)      label = 'Low';
-    else if (pct <= 50) label = 'Medium Low';
-    else if (pct <= 65) label = 'Medium';
-    else if (pct <= 80) label = 'Medium High';
-    else                label = 'High';
+function rwdCompoundHtml(code, name) {
+    if (!code) return '';
+    const color = RWD_COMPOUND_COLORS[name.toLowerCase()] || '#999';
+    const label = name.charAt(0).toUpperCase() + name.slice(1);
+    return `
+        <div class="rwd-compound">
+            <div class="rwd-compound-tyre" style="--compound-color:${color}">
+                <span class="rwd-compound-code">${code}</span>
+            </div>
+            <span class="rwd-compound-label">${label}</span>
+        </div>`;
+}
 
-    const charEl = document.getElementById(`char-${id}`);
-    const barEl  = document.getElementById(`bar-${id}`);
-    if (charEl) charEl.textContent = label;
-    setTimeout(() => { if (barEl) barEl.style.width = pct + '%'; }, 300);
+function rwdPressureRowHtml(label, front, rear, unit) {
+    if (front == null && rear == null) return '';
+    const fmt = v => (v != null ? `${v}${unit}` : '—');
+    return `
+        <tr>
+            <td class="rwd-press-label">${label}</td>
+            <td>${fmt(front)}</td>
+            <td>${fmt(rear)}</td>
+        </tr>`;
+}
+
+function renderRaceWeekendData(circuit) {
+    const section   = document.getElementById('section-raceweekend');
+    const container = document.getElementById('raceweekend-card');
+    if (!section || !container) return;
+
+    const rwd = circuit?.raceWeekendData;
+    if (!rwd) {
+        section.style.display = 'none';
+        return;
+    }
+    section.style.display = '';
+
+    const ratingsHtml = Object.entries(RWD_RATING_LABELS)
+        .filter(([key]) => rwd.ratings?.[key] != null)
+        .map(([key, label]) => rwdRatingRowHtml(label, rwd.ratings[key]))
+        .join('');
+
+    const compoundsHtml = ['hard', 'medium', 'soft']
+        .filter(name => rwd.compounds?.[name])
+        .map(name => rwdCompoundHtml(rwd.compounds[name], name))
+        .join('');
+
+    const minP   = rwd.tyres?.minStartingPressure       || {};
+    const stabP  = rwd.tyres?.stabilizedRunningPressure  || {};
+    const camber = rwd.tyres?.eosCamberLimit             || {};
+
+    const pressureRows = [
+        rwdPressureRowHtml('Min Starting',        minP.front,   minP.rear,   ' psi'),
+        rwdPressureRowHtml('Stabilized Running',  stabP.front,  stabP.rear,  ' psi'),
+        rwdPressureRowHtml('EOS Camber Limit',    camber.front, camber.rear, '°'),
+    ].join('');
+
+    container.innerHTML = `
+        ${rwd.pitStopLoss ? `
+        <div class="rwd-headline">
+            <span class="rwd-headline-label">Pit Stop Loss</span>
+            <span class="rwd-headline-value">${rwd.pitStopLoss}</span>
+        </div>` : ''}
+        <div class="rwd-grid">
+            ${ratingsHtml ? `
+            <div class="rwd-col">
+                <p class="rwd-col-title">Track Characteristics</p>
+                <div class="rwd-ratings">${ratingsHtml}</div>
+            </div>` : ''}
+            <div class="rwd-col">
+                ${compoundsHtml ? `
+                <p class="rwd-col-title">Tyre Compounds</p>
+                <div class="rwd-compounds">${compoundsHtml}</div>` : ''}
+                ${pressureRows ? `
+                <p class="rwd-col-title rwd-col-title--spaced">Pressure &amp; Camber</p>
+                <div class="rwd-table-wrap">
+                    <table class="rwd-press-table">
+                        <thead><tr><th></th><th>Front</th><th>Rear</th></tr></thead>
+                        <tbody>${pressureRows}</tbody>
+                    </table>
+                </div>` : ''}
+            </div>
+        </div>`;
 }
 
 // ── FUN FACTS ────────────────────────────────────────────────────

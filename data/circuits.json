@@ -151,15 +151,28 @@
       "tyreDeg": 45,
       "trackType": "permanent"
     },
-    "funFacts": [
-      "Suzuka is the only figure-of-eight circuit on the F1 calendar, where the track crosses over itself via a bridge.",
-      "It is widely considered one of the greatest and most challenging circuits in the world by drivers.",
-      "The high-speed 130R corner is one of the most iconic and demanding corners in all of motorsport.",
-      "Suzuka has hosted some of the most memorable championship-deciding moments in F1 history.",
-      "The Esses section in the first sector requires extreme precision and rhythm from the driver.",
-      "Japanese fans are renowned for being among the most passionate and knowledgeable in Formula 1.",
-      "The circuit was originally built in 1962 by Honda as a test track before hosting its first GP in 1987."
-    ],
+    "raceWeekendData": {
+      "pitStopLoss": "22s",
+      "ratings": {
+          "traction": 3,
+          "braking": 2,
+          "tyreStress": 5,
+          "asphaltAbrasion": 3,
+          "asphaltGrip": 4,
+          "lateral": 5,
+          "trackEvolution": 4
+      },
+      "tyres": {
+          "minStartingPressure": { "front": "28.0", "rear": "25.0" },
+          "stabilizedRunningPressure": { "front": "28.5", "rear": "25.5" },
+          "eosCamberLimit": { "front": "-2.75", "rear": "-1.50" }
+      },
+      "compounds": {
+          "hard": "C1",
+          "medium": "C2",
+          "soft": "C3"
+      }
+  },
     "history": [
       { "year": 1987, "pole": "Gerhard Berger", "winner": "Gerhard Berger" },
       { "year": 1988, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
