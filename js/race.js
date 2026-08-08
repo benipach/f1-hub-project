@@ -27,6 +27,43 @@ const CIRCUIT_MAP = {
     'abu-dhabi-gp':           'yas-marina-circuit',
 };
 
+// ── CIRCUIT → COUNTRY FLAG ────────────────────────────────────────
+const CIRCUIT_FLAG_MAP = {
+    'albert-park-circuit':                'AU',
+    'shanghai-international-circuit':     'CN',
+    'suzuka-international-racing-course': 'JP',
+    'bahrain-internatinal-circuit':       'BH',
+    'jeddah-corniche-circuit':            'SA',
+    'miami-international-autodrome':      'US',
+    'circuit-gilles-villeneuve':          'CA',
+    'circuit-de-monaco':                  'MC',
+    'circuit-de-barcelona-catalunya':     'ES',
+    'red-bull-ring':                      'AT',
+    'silverstone-circuit':                'GB',
+    'circuit-de-spa-francorchamps':       'BE',
+    'hungaroring':                        'HU',
+    'circuit-zandvoort':                  'NL',
+    'autodromo-nazionale-di-monza':       'IT',
+    'madring':                            'ES',
+    'baku-city-circuit':                  'AZ',
+    'sepang-international-circuit':       'MY',
+    'marina-bay-street-circuit':          'SG',
+    'cota':                               'US',
+    'hermanos-rodriguez':                 'MX',
+    'autodromo-jose-carlos-pace':         'BR',
+    'las-vegas-strip-circuit':            'US',
+    'lusail-international-circuit':       'QA',
+    'yas-marina-circuit':                 'AE',
+};
+
+// Convierte un código de país ISO 3166-1 alpha-2 (ej. "AR") a su emoji de bandera
+function countryCodeToFlagEmoji(code) {
+    if (!code || code.length !== 2) return '';
+    return [...code.toUpperCase()]
+        .map(c => String.fromCodePoint(127397 + c.charCodeAt(0)))
+        .join('');
+}
+
 // ── FETCH ─────────────────────────────────────────────────────────
 async function loadSeason(base = '.') {
     const res = await fetch(`${base}/data/season2026.json`);
@@ -215,6 +252,12 @@ function renderHero(gp, circuit, circuitId) {
     }
 
     if (circuit?.name) document.getElementById('hero-circuit-name').textContent = circuit.name;
+
+    const flagBg = document.getElementById('hero-flag-bg');
+    if (flagBg) {
+        const countryCode = CIRCUIT_FLAG_MAP[circuitId];
+        flagBg.textContent = countryCode ? countryCodeToFlagEmoji(countryCode) : '';
+    }
 
     if (gp.name) {
         const heroName = document.getElementById('hero-name');
