@@ -178,6 +178,20 @@
     color: #ff9f1c;
 }
 
+.gp-info-title-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.gp-info-date {
+    font-family: 'F1-Regular';
+    font-size: 12px;
+    letter-spacing: 0.3px;
+    color: rgba(255, 159, 28, 0.65);
+}
+
 .gp-info-body {
     margin: 0;
     font-family: 'F1-Regular';
