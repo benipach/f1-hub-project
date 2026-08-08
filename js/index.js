@@ -386,7 +386,7 @@ function hasSession(gp, sessionKey) {
     return !!session && (session.date || session.endDate || Array.isArray(session.results));
 }
 
-function renderHeroSchedule(gp, gpId, containerId = 'hero-schedule') {
+function renderHeroSchedule(gp, gpId, containerId = 'hero-schedule-days') {
     const container = document.getElementById(containerId);
     if (!container || !gp?.sessions) return;
 
