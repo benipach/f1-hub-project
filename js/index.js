@@ -266,7 +266,8 @@ function updateRacecards(season, nextId, now, circuits) {
         } else if (getSessionEnd(gp, 'race') && getSessionEnd(gp, 'race') < now) {
             card.classList.add('race-card-ended');
             if (spanEl) { spanEl.classList.add('status-ended'); spanEl.innerText = 'ENDED'; }
-            if (linkEl) linkEl.innerText = 'View Results';
+            if (linkEl) linkEl.innerText = 'View Full Results';
+            renderTop3MiniTable(card, gp);
 
         } else if (gpId === nextId) {
             card.classList.add('race-card-next');
@@ -282,6 +283,59 @@ function updateRacecards(season, nextId, now, circuits) {
             twemoji.parse(card, { folder: 'svg', ext: '.svg' });
         }
     });
+}
+
+// Injects a compact top-3 podium table (pos, gap to leader, driver + team
+// logo) into an ended race card, right before the "View Full Results" link.
+// TEAM_LOGO_MAP comes from race.js, loaded before this script on index.html.
+function renderTop3MiniTable(card, gp) {
+    const contentEl = card.querySelector('.race-card-content');
+    const linkEl    = card.querySelector('.race-link');
+    if (!contentEl) return;
+
+    const top3 = getSessionResults(gp, 'race')
+        .filter(res => {
+            const pos = parseInt(res.pos, 10);
+            return pos >= 1 && pos <= 3;
+        })
+        .sort((a, b) => parseInt(a.pos, 10) - parseInt(b.pos, 10));
+
+    if (!top3.length) return;
+
+    const qualiResults = getSessionResults(gp, 'qualifying');
+    const qualiMap = typeof buildQualiMap !== 'undefined' ? buildQualiMap(qualiResults) : {};
+
+    const rowsHtml = top3.map(res => {
+        const teamId   = res.team || '';
+        const logoFile = typeof TEAM_LOGO_MAP !== 'undefined' ? TEAM_LOGO_MAP[teamId] : null;
+        const logoHtml = logoFile
+            ? `<img class="top3-team-logo" src="./img/teams/${logoFile}.png" alt="${teamId}">`
+            : `<span class="top3-team-logo top3-team-logo-placeholder"></span>`;
+        const lastName = res.driver.split(' ').slice(1).join(' ') || res.driver;
+        const driverCode = lastName.slice(0, 3).toUpperCase();
+        const posNum   = parseInt(res.pos, 10);
+        const qualiPos = qualiMap[typeof normalizeName !== 'undefined' ? normalizeName(res.driver) : res.driver];
+        const deltaHtml = typeof gridDeltaHtml !== 'undefined'
+            ? gridDeltaHtml(res.pos, qualiPos)
+            : '';
+        const timeText = posNum === 1 ? '' : (res.time || '—');
+
+        return `
+            <div class="race-card-top3-row">
+                <span class="top3-pos">${res.pos}</span>
+                <span class="top3-delta">${deltaHtml}</span>
+                ${logoHtml}
+                <span class="top3-driver">${driverCode}</span>
+                <span class="top3-time">${timeText}</span>
+            </div>`;
+    }).join('');
+
+    const table = document.createElement('div');
+    table.className = 'race-card-top3';
+    table.innerHTML = rowsHtml;
+
+    if (linkEl) linkEl.before(table);
+    else contentEl.appendChild(table);
 }
 
 // Replaces the compact "next" card with a full-width, detail-rich version:

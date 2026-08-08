@@ -450,7 +450,7 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
-    max-width: 60%;
+    max-width: 70%;
     margin: 128px auto;
     scroll-margin-top: 80px;
 }
@@ -520,15 +520,15 @@
 .race-card-content h3 {
     margin-bottom: 4px;
     font-family: 'F1-Regular';
-    font-size: 18px;
+    font-size: 22px;
     line-height: 1.3;
     text-transform: uppercase;
 }
 
 .race-card-content h3 img.emoji,
 .race-card-next-title img.emoji {
-    width: 22px;
-    height: 22px;
+    width: 26px;
+    height: 26px;
     vertical-align: middle;
     margin-bottom: 2px;
 }
@@ -546,7 +546,7 @@
     gap: 6px;
     color: var(--text-dim);
     font-family: 'F1-Regular';
-    font-size: 10px;
+    font-size: 12px;
     text-transform: uppercase;
 }
 
@@ -559,7 +559,7 @@
     background: rgba(245, 166, 35, 0.12);
     color: #f5a623;
     font-family: 'F1-Regular';
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 0.5px;
 }
 
@@ -583,7 +583,7 @@
     margin-bottom: 0;
     color: var(--text-dim);
     font-family: 'F1-Regular';
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.3px;
 }
 
@@ -596,7 +596,8 @@
     border: 1px solid transparent;
     border-radius: 20px;
     font-family: 'F1-Regular';
-    font-size: 10px;
+    font-size: 12px;
+    letter-spacing: 0.1px;
     text-transform: uppercase;
 }
 
@@ -648,6 +649,92 @@
     border-color: rgba(255, 77, 77, 0.2);
     margin-top: 10px;
     margin-bottom: 12px;
+}
+
+.race-card-top3 {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+    padding: 8px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.race-card-top3-row {
+    display: grid;
+    grid-template-columns: 16px 28px 18px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+}
+
+.top3-pos {
+    color: var(--text-dim);
+    font-family: 'F1-Regular';
+    font-size: 12px;
+}
+
+.top3-team-logo {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+.top3-team-logo-placeholder {
+    width: 18px;
+    height: 18px;
+}
+
+.top3-driver {
+    overflow: hidden;
+    color: var(--text-light);
+    font-family: 'F1-Regular';
+    font-size: 14px;
+    letter-spacing: 0.1px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.top3-delta {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: rgba(255, 255, 255, 0.2);
+    font-family: 'F1-Bold';
+    font-size: 12px;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.top3-delta .res-delta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.top3-delta .res-delta-arrow {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+}
+
+.top3-delta .res-delta--up   { color: #22c55e; }
+.top3-delta .res-delta--down { color: var(--primary-red, #e8002d); }
+
+.top3-delta .res-delta--same,
+.top3-delta .res-delta--none {
+    color: rgba(255, 255, 255, 0.2);
+    font-family: 'F1-Regular';
+    font-size: 12px;
+}
+
+.top3-time {
+    color: var(--text-dim);
+    font-family: 'F1-Regular';
+    font-size: 14px;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
 }
 
 .race-link {
