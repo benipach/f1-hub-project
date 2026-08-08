@@ -128,6 +128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         injectColors(gp.color);
         renderHero(gp, circuit, circuitId);
+        renderGPInfo(gp);
         renderRaceWeekendData(circuit);
 
         // ── Sesiones de práctica libre ──
@@ -166,6 +167,32 @@ function injectColors(colors) {
     else                         gradient = `linear-gradient(90deg, ${colors})`;
 
     document.documentElement.style.setProperty('--gp-gradient', gradient);
+}
+
+// ── GP INFO BANNER ──────────────────────────────────────────────────
+// Optional per-GP heads-up notice, driven by season2026.json:
+//   "info": { "title": "Race Cancelled", "text": "..." }
+// "title" is optional; "text" is required for the banner to render.
+function renderGPInfo(gp) {
+    const section = document.getElementById('section-gp-info');
+    if (!section) return;
+
+    const info = gp?.info;
+    if (!info?.text) {
+        section.style.display = 'none';
+        return;
+    }
+
+    const titleEl = document.getElementById('gp-info-title');
+    if (titleEl) {
+        titleEl.textContent = info.title || '';
+        titleEl.style.display = info.title ? 'block' : 'none';
+    }
+
+    const bodyEl = document.getElementById('gp-info-body');
+    if (bodyEl) bodyEl.textContent = info.text;
+
+    section.style.display = 'flex';
 }
 
 // ── HERO ─────────────────────────────────────────────────────────

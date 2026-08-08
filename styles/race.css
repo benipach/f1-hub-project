@@ -141,6 +141,52 @@
     gap: 128px;
 }
 
+/* ---- GP INFO BANNER ---- */
+/* Orange "heads-up" notice for special-case GPs (cancelled, replacement,
+   new circuit, etc). Only shown when gp.info is set in season2026.json. */
+.gp-info-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 22px;
+    border: 1px solid rgba(255, 159, 28, 0.35);
+    border-left: 3px solid #ff9f1c;
+    border-radius: 10px;
+    background: rgba(255, 159, 28, 0.08);
+}
+
+.gp-info-icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    margin-top: 2px;
+    color: #ff9f1c;
+}
+
+.gp-info-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.gp-info-title {
+    margin: 0;
+    font-family: 'F1-Bold';
+    font-size: 18px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #ff9f1c;
+}
+
+.gp-info-body {
+    margin: 0;
+    font-family: 'F1-Regular';
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: 0.5px;
+    color: var(--text-light);
+}
+
 /* Section title */
 .rc-section-title {
     display: flex;
