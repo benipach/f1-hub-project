@@ -261,7 +261,8 @@ function renderHero(gp, circuit, circuitId) {
 
     if (gp.name) {
         const heroName = document.getElementById('hero-name');
-        heroName.textContent = gp.name.replace(' Grand Prix', '').trim();
+        const mainName = gp.name.replace(' Grand Prix', '').trim();
+        heroName.innerHTML = `${mainName}<span class="race-hero-name-suffix">Grand Prix</span>`;
         // Se eliminaron las líneas que aplicaban el gradiente de color al texto
     }
 

@@ -103,6 +103,14 @@
     margin: 0;
 }
 
+.race-hero-name-suffix {
+    display: block;
+    font-family: 'F1-Black';
+    font-size: clamp(1.1rem, 3vw, 2.75rem);
+    color: var(--text-light);
+    line-height: 0.8;
+}
+
 /* Meta row (mirrors driver-hero-meta) */
 .race-hero-meta {
     width: 55%;
