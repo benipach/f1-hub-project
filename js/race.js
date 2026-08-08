@@ -171,8 +171,9 @@ function injectColors(colors) {
 
 // ── GP INFO BANNER ──────────────────────────────────────────────────
 // Optional per-GP heads-up notice, driven by season2026.json:
-//   "info": { "title": "Race Cancelled", "text": "..." }
-// "title" is optional; "text" is required for the banner to render.
+//   "info": { "title": "Race Cancelled", "date": "2026-03-14", "text": "..." }
+// "title" and "date" are optional; "date" is when the news broke, not
+// today's date. "text" is required for the banner to render.
 function renderGPInfo(gp) {
     const section = document.getElementById('section-gp-info');
     if (!section) return;
@@ -187,6 +188,16 @@ function renderGPInfo(gp) {
     if (titleEl) {
         titleEl.textContent = info.title || '';
         titleEl.style.display = info.title ? 'block' : 'none';
+    }
+
+    const dateEl = document.getElementById('gp-info-date');
+    if (dateEl) {
+        const parsed = info.date ? new Date(`${info.date}T00:00:00`) : null;
+        const valid = parsed && !isNaN(parsed);
+        dateEl.textContent = valid
+            ? parsed.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            : '';
+        dateEl.style.display = valid ? 'inline' : 'none';
     }
 
     const bodyEl = document.getElementById('gp-info-body');
