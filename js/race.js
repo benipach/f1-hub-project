@@ -166,6 +166,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         injectColors(gp.color);
         renderHero(gp, circuit, circuitId);
         renderGPInfo(gp);
+        renderSchedule(gp);
         renderRaceWeekendData(circuit);
 
         // ── Sesiones de práctica libre ──
@@ -816,6 +817,144 @@ function renderHistory(circuit) {
                 <tbody>${rows}</tbody>
             </table>
         </div>`;
+}
+
+// ── SCHEDULE ─────────────────────────────────────────────────────
+const SCHEDULE_SESSION_LABELS = {
+    fp1:         'Free Practice 1',
+    sprintQualy: 'Sprint Qualifying',
+    sprintRace:  'Sprint Race',
+    fp2:         'Free Practice 2',
+    fp3:         'Free Practice 3',
+    qualifying:  'Qualifying',
+    race:        'Race',
+};
+
+function formatDuration(start, end) {
+    if (!start || !end) return null;
+    const totalMin = Math.round((end - start) / 60000);
+    if (totalMin <= 0) return null;
+    const h = Math.floor(totalMin / 60);
+    const m = totalMin % 60;
+    if (h && m) return `${h}h ${m}m`;
+    if (h)      return `${h}h`;
+    return `${m}m`;
+}
+
+// Igual al countdown del hero de index.js: dd/hh/mm/ss, se muestran los 2 primeros valores no nulos
+function formatCountdown(diffMs) {
+    if (diffMs <= 0) return null;
+    const d = Math.floor(diffMs / 86400000);
+    const h = Math.floor((diffMs % 86400000) / 3600000);
+    const m = Math.floor((diffMs % 3600000) / 60000);
+    const s = Math.floor((diffMs % 60000) / 1000);
+    const parts = [
+        d > 0 && `${d}d`,
+        h > 0 && `${h}h`,
+        m > 0 && `${m}m`,
+        `${s}s`,
+    ].filter(Boolean);
+    return parts.slice(0, 2).join(' ');
+}
+
+function renderSchedule(gp) {
+    const section   = document.getElementById('section-schedule');
+    const container = document.getElementById('schedule-card');
+    if (!section || !container) return;
+
+    // Solo mostramos el schedule si la carrera todavía no se disputó
+    const raceEnd     = getSessionEnd(gp, 'race');
+    const alreadyRaced = raceEnd && raceEnd < new Date();
+    if (gp.cancelled || alreadyRaced) {
+        section.style.display = 'none';
+        container.innerHTML = '';
+        return;
+    }
+
+    const now = new Date();
+    const sessions = Object.entries(SCHEDULE_SESSION_LABELS)
+        .map(([key, label]) => {
+            const start = getSessionStart(gp, key);
+            const end   = getSessionEnd(gp, key);
+            return start ? { label, start, end } : null;
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.start - b.start);
+
+    if (!sessions.length) {
+        section.style.display = 'none';
+        container.innerHTML = '';
+        return;
+    }
+
+    // Agrupamos las sesiones por día — cada día es una columna
+    const days = [];
+    sessions.forEach(s => {
+        const dayKey = s.start.toDateString();
+        let day = days.find(d => d.key === dayKey);
+        if (!day) {
+            day = { key: dayKey, label: formatDate(s.start), rows: [] };
+            days.push(day);
+        }
+        day.rows.push(s);
+    });
+
+    container.innerHTML = days.map(day => `
+        <div class="schedule-day">
+            <p class="schedule-day-label">${day.label}</p>
+            <div class="schedule-day-rows">
+                ${day.rows.map(s => {
+                    const duration = formatDuration(s.start, s.end);
+                    const ended    = s.end && s.end <= now;
+                    const live     = s.start <= now && (!s.end || s.end > now);
+                    const upcoming = !ended && !live;
+                    const tag      = live ? 'Live' : ended ? 'Ended' : 'Upcoming';
+                    const stateCls = live ? ' schedule-row-live' : ended ? ' schedule-row-ended' : '';
+                    const dataAttr = upcoming ? ` data-start="${s.start.getTime()}"` : '';
+                    return `
+                    <div class="schedule-row${stateCls}"${dataAttr}>
+                        <div class="schedule-row-top">
+                            <span class="schedule-row-session">${s.label}</span>
+                            <span class="schedule-row-tag">${tag}</span>
+                        </div>
+                        <div class="schedule-row-meta">
+                            <span class="schedule-row-time">${formatRange(s.start, s.end)}</span>
+                            ${upcoming
+                                ? `<span class="schedule-row-countdown">—</span>`
+                                : `<span class="schedule-row-duration">${duration || '—'}</span>`}
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>
+        </div>
+    `).join('');
+
+    section.style.display = '';
+    initScheduleCountdowns(container);
+}
+
+// Cuenta regresiva en vivo para cada sesión que todavía no arrancó,
+// mostrada aparte del horario (space-between) y actualizada cada segundo
+function initScheduleCountdowns(container) {
+    const rows = [...container.querySelectorAll('.schedule-row[data-start]')];
+    if (!rows.length) return;
+
+    const tick = () => {
+        rows.forEach(row => {
+            const el = row.querySelector('.schedule-row-countdown');
+            if (!el) return;
+            const startMs   = Number(row.dataset.start);
+            const remaining = formatCountdown(startMs - Date.now());
+            el.textContent  = remaining || 'Starting…';
+        });
+    };
+
+    tick();
+    const interval = setInterval(tick, 1000);
+
+    // Evita timers acumulados si se vuelve a renderizar el schedule
+    if (container._scheduleInterval) clearInterval(container._scheduleInterval);
+    container._scheduleInterval = interval;
 }
 
 // ── SESSION TABS ─────────────────────────────────────────────────
