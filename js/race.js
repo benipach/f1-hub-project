@@ -615,10 +615,10 @@ function renderSessionResult(entries = [], containerId, sessionLabel, driverTeam
             return `<tr class="qualy-divider"><td colspan="${colspan}">${qPrefix}3</td></tr>`;
         }
         if (posNum === 11) {
-            return `<tr class="qualy-divider"><td colspan="${colspan}">${qPrefix}2 &mdash; Eliminated</td></tr>`;
+            return `<tr class="qualy-divider"><td colspan="${colspan}">Eliminated in ${qPrefix}2</td></tr>`;
         }
         if (posNum === 17 && entries.length > 16) {
-            return `<tr class="qualy-divider"><td colspan="${colspan}">${qPrefix}1 &mdash; Eliminated</td></tr>`;
+            return `<tr class="qualy-divider"><td colspan="${colspan}">Eliminated in ${qPrefix}1</td></tr>`;
         }
         return '';
     };
