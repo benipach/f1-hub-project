@@ -1,0 +1,5750 @@
+{
+  "racesHistory": {
+    "1950": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Giuseppe Farina",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Giuseppe Farina",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Giuseppe Farina",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Juan Manuel Fangio",
+        "team": null
+      }
+    ],
+    "1951": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Juan Manuel Fangio",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "José Froilán González",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Alberto Ascari",
+        "team": null
+      }
+    ],
+    "1952": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Alberto Ascari",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Alberto Ascari",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Alberto Ascari",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Alberto Ascari",
+        "team": null
+      }
+    ],
+    "1953": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Alberto Ascari",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Alberto Ascari",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Alberto Ascari",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Juan Manuel Fangio",
+        "team": null
+      }
+    ],
+    "1954": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Juan Manuel Fangio",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Juan Manuel Fangio",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Juan Manuel Fangio",
+        "team": null
+      }
+    ],
+    "1955": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Juan Manuel Fangio",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Juan Manuel Fangio",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Juan Manuel Fangio",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Juan Manuel Fangio",
+        "team": null
+      }
+    ],
+    "1956": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Stirling Moss",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Juan Manuel Fangio",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Stirling Moss",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Stirling Moss",
+        "team": null
+      }
+    ],
+    "1957": [
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Stirling Moss",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Juan Manuel Fangio",
+        "team": null
+      }
+    ],
+    "1958": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Mike Hawthorn",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Peter Collins",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Stirling Moss",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Tony Brooks",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Mike Hawthorn",
+        "team": null
+      }
+    ],
+    "1959": [
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Jo Bonnier",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Stirling Moss",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Jack Brabham",
+        "team": null
+      }
+    ],
+    "1960": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Jack Brabham",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Jack Brabham",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Stirling Moss",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Phil Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Bruce McLaren",
+        "team": null
+      }
+    ],
+    "1961": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Phil Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Jim Clark",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Phil Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Richie Ginther",
+        "team": null
+      }
+    ],
+    "1962": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Jim Clark",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Bruce McLaren",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Graham Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Bruce McLaren",
+        "team": null
+      }
+    ],
+    "1963": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Jim Clark",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Jim Clark",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Jim Clark",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Jim Clark",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Jim Clark",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "John Surtees",
+        "team": null
+      }
+    ],
+    "1964": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Dan Gurney",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Jim Clark",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "John Surtees",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Dan Gurney",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Graham Hill",
+        "team": null
+      }
+    ],
+    "1965": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Jim Clark",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Jim Clark",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Jim Clark",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Jim Clark",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Richie Ginther",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Graham Hill",
+        "team": null
+      }
+    ],
+    "1966": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "John Surtees",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Jack Brabham",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Ludovico Scarfiotti",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "John Surtees",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Lorenzo Bandini",
+        "team": null
+      }
+    ],
+    "1967": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Dan Gurney",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Jim Clark",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Jim Clark",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "John Surtees",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Jim Clark",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Denny Hulme",
+        "team": null
+      }
+    ],
+    "1968": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Bruce McLaren",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Jackie Stewart",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Denny Hulme",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Graham Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Graham Hill",
+        "team": null
+      }
+    ],
+    "1969": [
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Jackie Stewart",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Jackie Stewart",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Jackie Stewart",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Denny Hulme",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Jackie Stewart",
+        "team": null
+      }
+    ],
+    "1970": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Pedro Rodríguez",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Jochen Rindt",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Clay Regazzoni",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Jacky Ickx",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Jochen Rindt",
+        "team": null
+      }
+    ],
+    "1971": [
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Jackie Stewart",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Jacky Ickx",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Peter Gethin",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Jackie Stewart",
+        "team": null
+      }
+    ],
+    "1972": [
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Emerson Fittipaldi",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Jean-Pierre Beltoise",
+        "team": null
+      }
+    ],
+    "1973": [
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "James Hunt",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Jackie Stewart",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Ronnie Peterson",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Jackie Stewart",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Emerson Fittipaldi",
+        "team": null
+      }
+    ],
+    "1974": [
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Niki Lauda",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Carlos Pace",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Ronnie Peterson",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Emerson Fittipaldi",
+        "team": null
+      }
+    ],
+    "1975": [
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Emerson Fittipaldi",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "James Hunt",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Clay Regazzoni",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Niki Lauda",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Carlos Pace",
+        "team": null
+      }
+    ],
+    "1976": [
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "James Hunt",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Ronnie Peterson",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Clay Regazzoni",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Niki Lauda",
+        "team": null
+      }
+    ],
+    "1977": [
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "James Hunt",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Niki Lauda",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Mario Andretti",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Jody Scheckter",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Carlos Reutemann",
+        "team": null
+      }
+    ],
+    "1978": [
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Gilles Villeneuve",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Mario Andretti",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Mario Andretti",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Patrick Depailler",
+        "team": null
+      }
+    ],
+    "1979": [
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Clay Regazzoni",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Alan Jones",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Gilles Villeneuve",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Jody Scheckter",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Jody Scheckter",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Jacques Laffite",
+        "team": null
+      }
+    ],
+    "1980": [
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Alan Jones",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "René Arnoux",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Carlos Reutemann",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "René Arnoux",
+        "team": null
+      }
+    ],
+    "1981": [
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "John Watson",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "John Watson",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Alan Jones",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Carlos Reutemann",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Gilles Villeneuve",
+        "team": null
+      }
+    ],
+    "1982": [
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Didier Pironi",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Derek Warwick",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "René Arnoux",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Riccardo Patrese",
+        "team": null
+      }
+    ],
+    "1983": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Alain Prost",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Alain Prost",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Patrick Tambay",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "René Arnoux",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Nelson Piquet",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Nelson Piquet",
+        "team": null
+      }
+    ],
+    "1984": [
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Nelson Piquet",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Niki Lauda",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Niki Lauda",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Alain Prost",
+        "team": null
+      }
+    ],
+    "1985": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Alain Prost",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Alain Prost",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Alain Prost",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Alain Prost",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Alain Prost",
+        "team": null
+      }
+    ],
+    "1986": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Nigel Mansell",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Nigel Mansell",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Nelson Piquet",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Nelson Piquet",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Gerhard Berger",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Alain Prost",
+        "team": null
+      }
+    ],
+    "1987": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Alain Prost",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Nigel Mansell",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Nelson Piquet",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Nelson Piquet",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Gerhard Berger",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Nigel Mansell",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Ayrton Senna",
+        "team": null
+      }
+    ],
+    "1988": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Gerhard Berger",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Alain Prost",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Ayrton Senna",
+        "team": null
+      }
+    ],
+    "1989": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Nigel Mansell",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Jonathan Palmer",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Nigel Mansell",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Alain Prost",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Alessandro Nannini",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Alain Prost",
+        "team": null
+      }
+    ],
+    "1990": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Nigel Mansell",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Gerhard Berger",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Thierry Boutsen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Nelson Piquet",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Alain Prost",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Alain Prost",
+        "team": null
+      }
+    ],
+    "1991": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Nigel Mansell",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Nigel Mansell",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Gerhard Berger",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Riccardo Patrese",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Alain Prost",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Nigel Mansell",
+        "team": null
+      }
+    ],
+    "1992": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Nigel Mansell",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Nigel Mansell",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Riccardo Patrese",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Riccardo Patrese",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Nigel Mansell",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Nigel Mansell",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Nigel Mansell",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Nigel Mansell",
+        "team": null
+      }
+    ],
+    "1993": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Alain Prost",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Damon Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Alain Prost",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Damon Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Alain Prost",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Ayrton Senna",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Alain Prost",
+        "team": null
+      }
+    ],
+    "1994": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Damon Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Damon Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Damon Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Damon Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Damon Hill",
+        "team": null
+      }
+    ],
+    "1995": [
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Damon Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Damon Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Gerhard Berger",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Jean Alesi",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Michael Schumacher",
+        "team": null
+      }
+    ],
+    "1996": [
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Damon Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Jacques Villeneuve",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Damon Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Damon Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Damon Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Olivier Panis",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Damon Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Michael Schumacher",
+        "team": null
+      }
+    ],
+    "1997": [
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Heinz-Harald Frentzen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Jacques Villeneuve",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Jacques Villeneuve",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Jacques Villeneuve",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "David Coulthard",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Heinz-Harald Frentzen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Jacques Villeneuve",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Jacques Villeneuve",
+        "team": null
+      }
+    ],
+    "1998": [
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Mika Hakkinen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Mika Häkkinen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Damon Hill",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Mika Häkkinen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Mika Häkkinen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Mika Hakkinen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Mika Häkkinen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Mika Häkkinen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Mika Häkkinen",
+        "team": null
+      }
+    ],
+    "1999": [
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Eddie Irvine",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Mika Häkkinen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Mika Häkkinen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Eddie Irvine",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "David Coulthard",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Heinz-Harald Frentzen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Mika Hakkinen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Eddie Irvine",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Mika Häkkinen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Mika Häkkinen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Mika Häkkinen",
+        "team": null
+      }
+    ],
+    "2000": [
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Rubens Barrichello",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Mika Häkkinen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Rubens Barrichello",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "David Coulthard",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Mika Häkkinen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "David Coulthard",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Mika Häkkinen",
+        "team": null
+      }
+    ],
+    "2001": [
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "David Coulthard",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Mika Häkkinen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Ralf Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Juan Pablo Montoya",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "David Coulthard",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "David Coulthard",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Michael Schumacher",
+        "team": null
+      }
+    ],
+    "2002": [
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Kimi Raikkonen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Rubens Barrichello",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Juan Pablo Montoya",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Rubens Barrichello",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Rubens Barrichello",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Ralf Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "David Coulthard",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Michael Schumacher",
+        "team": null
+      }
+    ],
+    "2003": [
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Kimi Raikkonen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Rubens Barrichello",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Rubens Barrichello",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Kimi Raikkonen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Juan Pablo Montoya",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Giancarlo Fisichella",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Michael Schumacher",
+        "team": null
+      }
+    ],
+    "2004": [
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Kimi Räikkönen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Rubens Barrichello",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Rubens Barrichello",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Rubens Barrichello",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Jarno Trulli",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Juan Pablo Montoya",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Michael Schumacher",
+        "team": null
+      }
+    ],
+    "2005": [
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Kimi Räikkönen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Juan Pablo Montoya",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Kimi Räikkönen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Kimi Räikkönen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Juan Pablo Montoya",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Kimi Raikkonen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Kimi Räikkönen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Juan Pablo Montoya",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Kimi Räikkönen",
+        "team": null
+      }
+    ],
+    "2006": [
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Kimi Raikkonen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Jenson Button",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Michael Schumacher",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Giancarlo Fisichella",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Felipe Massa",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Fernando Alonso",
+        "team": null
+      }
+    ],
+    "2007": [
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Kimi Raikkonen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Felipe Massa",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Kimi Räikkönen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Kimi Räikkönen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Kimi Raikkonen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Kimi Räikkönen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Kimi Räikkönen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Felipe Massa",
+        "team": null
+      }
+    ],
+    "2008": [
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Heikki Kovalainen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Felipe Massa",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Felipe Massa",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Kimi Räikkönen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Robert Kubica",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Kimi Räikkönen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Kimi Raikkonen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Felipe Massa",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "singapore-gp",
+        "gpName": "Singapore Grand Prix",
+        "circuitId": "marina-bay-street-circuit",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Kimi Räikkönen",
+        "team": null
+      }
+    ],
+    "2009": [
+      {
+        "round": null,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Jenson Button",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Kimi Räikkönen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Mark Webber",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Rubens Barrichello",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Jenson Button",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Jenson Button",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Mark Webber",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "singapore-gp",
+        "gpName": "Singapore Grand Prix",
+        "circuitId": "marina-bay-street-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Jenson Button",
+        "team": null
+      }
+    ],
+    "2010": [
+      {
+        "round": null,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Mark Webber",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Mark Webber",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Jenson Button",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Mark Webber",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "singapore-gp",
+        "gpName": "Singapore Grand Prix",
+        "circuitId": "marina-bay-street-circuit",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Mark Webber",
+        "team": null
+      }
+    ],
+    "2011": [
+      {
+        "round": null,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Felipe Massa",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Jenson Button",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Jenson Button",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Jenson Button",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Mark Webber",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "singapore-gp",
+        "gpName": "Singapore Grand Prix",
+        "circuitId": "marina-bay-street-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Mark Webber",
+        "team": null
+      }
+    ],
+    "2012": [
+      {
+        "round": null,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Kimi Räikkönen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Jenson Button",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Jenson Button",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Mark Webber",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Jenson Button",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "singapore-gp",
+        "gpName": "Singapore Grand Prix",
+        "circuitId": "marina-bay-street-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Pastor Maldonado",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "united-states-gp",
+        "gpName": "United States Grand Prix",
+        "circuitId": "cota",
+        "winner": "Lewis Hamilton",
+        "team": null
+      }
+    ],
+    "2013": [
+      {
+        "round": null,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Kimi Raikkonen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Mark Webber",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "singapore-gp",
+        "gpName": "Singapore Grand Prix",
+        "circuitId": "marina-bay-street-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Fernando Alonso",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "united-states-gp",
+        "gpName": "United States Grand Prix",
+        "circuitId": "cota",
+        "winner": "Sebastian Vettel",
+        "team": null
+      }
+    ],
+    "2014": [
+      {
+        "round": null,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Daniel Ricciardo",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Daniel Ricciardo",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "singapore-gp",
+        "gpName": "Singapore Grand Prix",
+        "circuitId": "marina-bay-street-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "united-states-gp",
+        "gpName": "United States Grand Prix",
+        "circuitId": "cota",
+        "winner": "Lewis Hamilton",
+        "team": null
+      }
+    ],
+    "2015": [
+      {
+        "round": null,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Daniel Ricciardo",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "singapore-gp",
+        "gpName": "Singapore Grand Prix",
+        "circuitId": "marina-bay-street-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "united-states-gp",
+        "gpName": "United States Grand Prix",
+        "circuitId": "cota",
+        "winner": "Lewis Hamilton",
+        "team": null
+      }
+    ],
+    "2016": [
+      {
+        "round": null,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Daniel Ricciardo",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "azerbaijan-gp",
+        "gpName": "Azerbaijan Grand Prix",
+        "circuitId": "baku-city-circuit",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Daniel Ricciardo",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Daniel Ricciardo",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "singapore-gp",
+        "gpName": "Singapore Grand Prix",
+        "circuitId": "marina-bay-street-circuit",
+        "winner": "Nico Rosberg",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Max Verstappen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "united-states-gp",
+        "gpName": "United States Grand Prix",
+        "circuitId": "cota",
+        "winner": "Lewis Hamilton",
+        "team": null
+      }
+    ],
+    "2017": [
+      {
+        "round": null,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Valtteri Bottas",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Kimi Raikkonen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "azerbaijan-gp",
+        "gpName": "Azerbaijan Grand Prix",
+        "circuitId": "baku-city-circuit",
+        "winner": "Daniel Ricciardo",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "malaysian-gp",
+        "gpName": "Malaysian Grand Prix",
+        "circuitId": "sepang-international-circuit",
+        "winner": "Max Verstappen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Max Verstappen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "singapore-gp",
+        "gpName": "Singapore Grand Prix",
+        "circuitId": "marina-bay-street-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "united-states-gp",
+        "gpName": "United States Grand Prix",
+        "circuitId": "cota",
+        "winner": "Lewis Hamilton",
+        "team": null
+      }
+    ],
+    "2018": [
+      {
+        "round": null,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Daniel Ricciardo",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Max Verstappen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "azerbaijan-gp",
+        "gpName": "Azerbaijan Grand Prix",
+        "circuitId": "baku-city-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Daniel Ricciardo",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Max Verstappen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Daniel Ricciardo",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "singapore-gp",
+        "gpName": "Singapore Grand Prix",
+        "circuitId": "marina-bay-street-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "united-states-gp",
+        "gpName": "United States Grand Prix",
+        "circuitId": "cota",
+        "winner": "Kimi Räikkönen",
+        "team": null
+      }
+    ],
+    "2019": [
+      {
+        "round": null,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Valtteri Bottas",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Max Verstappen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "azerbaijan-gp",
+        "gpName": "Azerbaijan Grand Prix",
+        "circuitId": "baku-city-circuit",
+        "winner": "Valtteri Bottas",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Charles Leclerc",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Charles Leclerc",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Valtteri Bottas",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Max Verstappen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "singapore-gp",
+        "gpName": "Singapore Grand Prix",
+        "circuitId": "marina-bay-street-circuit",
+        "winner": "Sebastian Vettel",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "united-states-gp",
+        "gpName": "United States Grand Prix",
+        "circuitId": "cota",
+        "winner": "Valtteri Bottas",
+        "team": null
+      }
+    ],
+    "2020": [
+      {
+        "round": null,
+        "gpId": "70th-anniversary-gp",
+        "gpName": "70th Anniversary Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Max Verstappen",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Lando Norris",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Sergio Pérez",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Pierre Gasly",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Lewis Hamilton",
+        "team": null
+      },
+      {
+        "round": null,
+        "gpId": "styrian-gp",
+        "gpName": "Styrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Lewis Hamilton",
+        "team": null
+      }
+    ],
+    "2021": [
+      {
+        "round": 1,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Lewis Hamilton",
+        "team": "Mercedes"
+      },
+      {
+        "round": 2,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Lewis Hamilton",
+        "team": "Mercedes"
+      },
+      {
+        "round": 3,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 4,
+        "gpId": "azerbaijan-gp",
+        "gpName": "Azerbaijan Grand Prix",
+        "circuitId": "baku-city-circuit",
+        "winner": "Sergio Pérez",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 5,
+        "gpId": "styrian-gp",
+        "gpName": "Styrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 6,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 7,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Lewis Hamilton",
+        "team": "Mercedes"
+      },
+      {
+        "round": 8,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Esteban Ocon",
+        "team": "Alpine"
+      },
+      {
+        "round": 9,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 10,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 11,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Daniel Ricciardo",
+        "team": "McLaren"
+      },
+      {
+        "round": 12,
+        "gpId": "united-states-gp",
+        "gpName": "United States Grand Prix",
+        "circuitId": "cota",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 13,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 14,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Lewis Hamilton",
+        "team": "Mercedes"
+      },
+      {
+        "round": 15,
+        "gpId": "qatar-gp",
+        "gpName": "Qatar Grand Prix",
+        "circuitId": "lusail-international-circuit",
+        "winner": "Lewis Hamilton",
+        "team": "Mercedes"
+      },
+      {
+        "round": 16,
+        "gpId": "saudi-arabian-gp",
+        "gpName": "Saudi Arabian Grand Prix",
+        "circuitId": "jeddah-corniche-circuit",
+        "winner": "Lewis Hamilton",
+        "team": "Mercedes"
+      },
+      {
+        "round": 17,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      }
+    ],
+    "2022": [
+      {
+        "round": 1,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Charles Leclerc",
+        "team": "Ferrari"
+      },
+      {
+        "round": 2,
+        "gpId": "saudi-arabian-gp",
+        "gpName": "Saudi Arabian Grand Prix",
+        "circuitId": "jeddah-corniche-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 3,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Charles Leclerc",
+        "team": "Ferrari"
+      },
+      {
+        "round": 4,
+        "gpId": "miami-gp",
+        "gpName": "Miami Grand Prix",
+        "circuitId": "miami-international-autodrome",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 5,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 6,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Sergio Pérez",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 7,
+        "gpId": "azerbaijan-gp",
+        "gpName": "Azerbaijan Grand Prix",
+        "circuitId": "baku-city-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 8,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 9,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Carlos Sainz",
+        "team": "Ferrari"
+      },
+      {
+        "round": 10,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 11,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 12,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 13,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 14,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 15,
+        "gpId": "singapore-gp",
+        "gpName": "Singapore Grand Prix",
+        "circuitId": "marina-bay-street-circuit",
+        "winner": "Sergio Perez",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 16,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 17,
+        "gpId": "united-states-gp",
+        "gpName": "United States Grand Prix",
+        "circuitId": "cota",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 18,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 19,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "George Russell",
+        "team": "Mercedes"
+      },
+      {
+        "round": 20,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      }
+    ],
+    "2023": [
+      {
+        "round": 1,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 2,
+        "gpId": "saudi-arabian-gp",
+        "gpName": "Saudi Arabian Grand Prix",
+        "circuitId": "jeddah-corniche-circuit",
+        "winner": "Sergio Pérez",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 3,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 4,
+        "gpId": "azerbaijan-gp",
+        "gpName": "Azerbaijan Grand Prix",
+        "circuitId": "baku-city-circuit",
+        "winner": "Sergio Pérez",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 5,
+        "gpId": "miami-gp",
+        "gpName": "Miami Grand Prix",
+        "circuitId": "miami-international-autodrome",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 6,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 7,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 8,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 9,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 10,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 11,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 12,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 13,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 14,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 15,
+        "gpId": "singapore-gp",
+        "gpName": "Singapore Grand Prix",
+        "circuitId": "marina-bay-street-circuit",
+        "winner": "Carlos Sainz",
+        "team": "Ferrari"
+      },
+      {
+        "round": 16,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 17,
+        "gpId": "qatar-gp",
+        "gpName": "Qatar Grand Prix",
+        "circuitId": "lusail-international-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 18,
+        "gpId": "united-states-gp",
+        "gpName": "United States Grand Prix",
+        "circuitId": "cota",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 19,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 20,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 21,
+        "gpId": "las-vegas-gp",
+        "gpName": "Las Vegas Grand Prix",
+        "circuitId": "las-vegas-strip-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 22,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      }
+    ],
+    "2024": [
+      {
+        "round": 1,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 2,
+        "gpId": "saudi-arabian-gp",
+        "gpName": "Saudi Arabian Grand Prix",
+        "circuitId": "jeddah-corniche-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 3,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Carlos Sainz",
+        "team": "Ferrari"
+      },
+      {
+        "round": 4,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 5,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 6,
+        "gpId": "miami-gp",
+        "gpName": "Miami Grand Prix",
+        "circuitId": "miami-international-autodrome",
+        "winner": "Lando Norris",
+        "team": "McLaren"
+      },
+      {
+        "round": 7,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Lewis Hamilton",
+        "team": "Mercedes"
+      },
+      {
+        "round": 8,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 9,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 10,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 11,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Lewis Hamilton",
+        "team": "Mercedes"
+      },
+      {
+        "round": 12,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Oscar Piastri",
+        "team": "McLaren"
+      },
+      {
+        "round": 13,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Lewis Hamilton",
+        "team": "Mercedes"
+      },
+      {
+        "round": 14,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Lando Norris",
+        "team": "McLaren"
+      },
+      {
+        "round": 15,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Lando Norris",
+        "team": "McLaren"
+      },
+      {
+        "round": 16,
+        "gpId": "azerbaijan-gp",
+        "gpName": "Azerbaijan Grand Prix",
+        "circuitId": "baku-city-circuit",
+        "winner": "Oscar Piastri",
+        "team": "McLaren"
+      },
+      {
+        "round": 17,
+        "gpId": "singapore-gp",
+        "gpName": "Singapore Grand Prix",
+        "circuitId": "marina-bay-street-circuit",
+        "winner": "Lando Norris",
+        "team": "McLaren"
+      },
+      {
+        "round": 18,
+        "gpId": "united-states-gp",
+        "gpName": "United States Grand Prix",
+        "circuitId": "cota",
+        "winner": "Charles Leclerc",
+        "team": "Ferrari"
+      },
+      {
+        "round": 19,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Carlos Sainz",
+        "team": "Ferrari"
+      },
+      {
+        "round": 20,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 21,
+        "gpId": "las-vegas-gp",
+        "gpName": "Las Vegas Grand Prix",
+        "circuitId": "las-vegas-strip-circuit",
+        "winner": "George Russell",
+        "team": "Mercedes"
+      },
+      {
+        "round": 22,
+        "gpId": "qatar-gp",
+        "gpName": "Qatar Grand Prix",
+        "circuitId": "lusail-international-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 23,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Lando Norris",
+        "team": "McLaren"
+      }
+    ],
+    "2025": [
+      {
+        "round": 1,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "Lando Norris",
+        "team": "McLaren"
+      },
+      {
+        "round": 2,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Oscar Piastri",
+        "team": "McLaren"
+      },
+      {
+        "round": 3,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 4,
+        "gpId": "bahrain-gp",
+        "gpName": "Bahrain Grand Prix",
+        "circuitId": "bahrain-international-circuit",
+        "winner": "Oscar Piastri",
+        "team": "McLaren"
+      },
+      {
+        "round": 5,
+        "gpId": "saudi-arabian-gp",
+        "gpName": "Saudi Arabian Grand Prix",
+        "circuitId": "jeddah-corniche-circuit",
+        "winner": "Oscar Piastri",
+        "team": "McLaren"
+      },
+      {
+        "round": 6,
+        "gpId": "miami-gp",
+        "gpName": "Miami Grand Prix",
+        "circuitId": "miami-international-autodrome",
+        "winner": "Oscar Piastri",
+        "team": "McLaren"
+      },
+      {
+        "round": 7,
+        "gpId": "monaco-gp",
+        "gpName": "Monaco Grand Prix",
+        "circuitId": "circuit-de-monaco",
+        "winner": "Lando Norris",
+        "team": "McLaren"
+      },
+      {
+        "round": 8,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "circuit-de-barcelona-catalunya",
+        "winner": "Oscar Piastri",
+        "team": "McLaren"
+      },
+      {
+        "round": 9,
+        "gpId": "canadian-gp",
+        "gpName": "Canadian Grand Prix",
+        "circuitId": "circuit-gilles-villeneuve",
+        "winner": "George Russell",
+        "team": "Mercedes"
+      },
+      {
+        "round": 10,
+        "gpId": "austrian-gp",
+        "gpName": "Austrian Grand Prix",
+        "circuitId": "red-bull-ring",
+        "winner": "Lando Norris",
+        "team": "McLaren"
+      },
+      {
+        "round": 11,
+        "gpId": "british-gp",
+        "gpName": "British Grand Prix",
+        "circuitId": "silverstone-circuit",
+        "winner": "Lando Norris",
+        "team": "McLaren"
+      },
+      {
+        "round": 12,
+        "gpId": "belgian-gp",
+        "gpName": "Belgian Grand Prix",
+        "circuitId": "circuit-de-spa-francorchamps",
+        "winner": "Oscar Piastri",
+        "team": "McLaren"
+      },
+      {
+        "round": 13,
+        "gpId": "hungarian-gp",
+        "gpName": "Hungarian Grand Prix",
+        "circuitId": "hungaroring",
+        "winner": "Lando Norris",
+        "team": "McLaren"
+      },
+      {
+        "round": 14,
+        "gpId": "dutch-gp",
+        "gpName": "Dutch Grand Prix",
+        "circuitId": "circuit-zandvoort",
+        "winner": "Oscar Piastri",
+        "team": "McLaren"
+      },
+      {
+        "round": 15,
+        "gpId": "italian-gp",
+        "gpName": "Italian Grand Prix",
+        "circuitId": "autodromo-nazionale-di-monza",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 16,
+        "gpId": "azerbaijan-gp",
+        "gpName": "Azerbaijan Grand Prix",
+        "circuitId": "baku-city-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 17,
+        "gpId": "singapore-gp",
+        "gpName": "Singapore Grand Prix",
+        "circuitId": "marina-bay-street-circuit",
+        "winner": "George Russell",
+        "team": "Mercedes"
+      },
+      {
+        "round": 18,
+        "gpId": "united-states-gp",
+        "gpName": "United States Grand Prix",
+        "circuitId": "cota",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 19,
+        "gpId": "mexico-city-gp",
+        "gpName": "Mexico City Grand Prix",
+        "circuitId": "hermanos-rodriguez",
+        "winner": "Lando Norris",
+        "team": "McLaren"
+      },
+      {
+        "round": 20,
+        "gpId": "sao-paulo-gp",
+        "gpName": "São Paulo Grand Prix",
+        "circuitId": "autodromo-jose-carlos-pace",
+        "winner": "Lando Norris",
+        "team": "McLaren"
+      },
+      {
+        "round": 21,
+        "gpId": "las-vegas-gp",
+        "gpName": "Las Vegas Grand Prix",
+        "circuitId": "las-vegas-strip-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 22,
+        "gpId": "qatar-gp",
+        "gpName": "Qatar Grand Prix",
+        "circuitId": "lusail-international-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      },
+      {
+        "round": 23,
+        "gpId": "abu-dhabi-gp",
+        "gpName": "Abu Dhabi Grand Prix",
+        "circuitId": "yas-marina-circuit",
+        "winner": "Max Verstappen",
+        "team": "Red Bull Racing"
+      }
+    ],
+    "2026": [
+      {
+        "round": 1,
+        "gpId": "australian-gp",
+        "gpName": "Australian Grand Prix",
+        "circuitId": "albert-park-circuit",
+        "winner": "George Russell",
+        "team": "Mercedes"
+      },
+      {
+        "round": 2,
+        "gpId": "chinese-gp",
+        "gpName": "Chinese Grand Prix",
+        "circuitId": "shanghai-international-circuit",
+        "winner": "Kimi Antonelli",
+        "team": "Mercedes"
+      },
+      {
+        "round": 3,
+        "gpId": "japanese-gp",
+        "gpName": "Japanese Grand Prix",
+        "circuitId": "suzuka-international-racing-course",
+        "winner": "Kimi Antonelli",
+        "team": "Mercedes"
+      },
+      {
+        "round": 4,
+        "gpId": "spanish-gp",
+        "gpName": "Spanish Grand Prix",
+        "circuitId": "madring",
+        "winner": "N/A",
+        "team": null
+      }
+    ]
+  }
+}
