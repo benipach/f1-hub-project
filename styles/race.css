@@ -91,7 +91,7 @@
     letter-spacing: 2px;
     text-transform: uppercase;
     color: rgba(255,255,255,0.5);
-    line-height: 0.85;
+    line-height: 1;
 }
 
 .race-hero-name {
@@ -106,10 +106,9 @@
 .race-hero-name-suffix {
     display: block;
     font-family: 'F1-Black';
-    font-size: clamp(1.1rem, 3vw, 2.75rem);
+    font-size: clamp(16px, 6vw, 64px);
     color: var(--text-light);
-    line-height: 1;
-    margin-top: 0.2em;
+    line-height: 0.85;
 }
 
 /* Meta row (mirrors driver-hero-meta) */
@@ -134,7 +133,7 @@
 
 .race-hero-meta-item strong {
     font-family: 'F1-Bold';
-    font-size: 24px;
+    font-size: 20px;
     letter-spacing: 0.5px;
     line-height: 1;
     color: var(--text-light);
@@ -1070,6 +1069,7 @@ gap: 10px;
 font-family: 'F1-Bold';
 font-size: 13px;
 letter-spacing: 0.5px;
+text-align: right;
 transform: skewX(-15deg);
 flex-shrink: 0;
 min-width: 32px;
@@ -1139,15 +1139,16 @@ white-space: nowrap;
 .res-team-col { white-space: nowrap; }
 
 .qualy-divider td {
-height: 30px;
+height: 32px;
 padding: 0 20px;
 background: rgba(255,255,255,0.03);
 border-bottom: 1px solid rgba(255,255,255,0.06);
-font-family: 'F1-Bold', sans-serif;
-font-size: 11px;
-letter-spacing: 2px;
+font-family: 'F1-Regular';
+font-size: 14px;
+letter-spacing: 1px;
+text-align: center;
 text-transform: uppercase;
-color: rgba(255,255,255,0.4);
+color: var(--text-light);
 }
 .res-time-col { white-space: nowrap; }
 
@@ -1317,6 +1318,10 @@ border: 1px solid rgba(255,255,255,0.05);
         height: 50vh;
     }
 
+    .race-hero-content {
+        padding: 0 6%;
+    }
+
     .race-content {
         max-width: 95%;
         gap: 56px;
@@ -1324,9 +1329,14 @@ border: 1px solid rgba(255,255,255,0.05);
 
     /* Hero */
     .race-hero { min-height: 480px; }
+    .race-hero-title { margin-bottom: 18px; }
     .race-hero-name { font-size: clamp(32px, 12vw, 64px); margin-bottom: 0; }
-    .race-hero-circuit { letter-spacing: 4px; }
-    .race-hero-meta { width: 100%; gap: 1rem; }
+    .race-hero-circuit {
+        font-size: 11px;
+        letter-spacing: 1.5px;
+        margin-bottom: 4px;
+    }
+    .race-hero-meta { display: none; }
     .race-hero-flag-bg { display: none; }
     .race-sprint-badge { top: 64px; right: 4%; }
 
