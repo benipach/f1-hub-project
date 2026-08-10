@@ -1,10 +1,7 @@
 {
   "albert-park-circuit": {
     "name": "Albert Park Circuit",
-    "media": {
-      "image": "../img/circuits/albert-park-circuit.png",
-      "layout": "../img/circuits/albert-park-circuit-layout.png"
-    },
+    "active": true,
     "stats": {
       "length": "5.278",
       "laps": 58,
@@ -24,46 +21,491 @@
       "overtaking": 85,
       "tyreDeg": 60,
       "trackType": "semi-urban"
-    },
-    "history": [
-      { "year": 1996, "pole": "Jacques Villenueve", "winner": "Damon Hill"},
-      { "year": 1997, "pole": "Jacques Villenueve","winner": "Heinz-Harald Frentzen" },
-      { "year": 1998, "pole": "Mika Hakkinen", "winner": "Mika Hakkinen"},
-      { "year": 1999, "pole": "Mika Hakkinen", "winner": "Michael Schumacher" },
-      { "year": 2000, "pole": "Mika Hakkinen", "winner": "Rubens Barrichello" },
-      { "year": 2001, "pole": "Michael Schumacher", "winner": "Michael Schumacher"},
-      { "year": 2002, "pole": "Rubens Barrichello","winner": "Kimi Raikkonen" },
-      { "year": 2003, "pole": "Michael Schumacher", "winner": "Kimi Raikkonen"},
-      { "year": 2004, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-      { "year": 2005, "pole": "Michael Schumacher", "winner": "Fernando Alonso" },
-      { "year": 2006, "pole": "Jenson Button", "winner": "Kimi Raikkonen"},
-      { "year": 2007, "pole": "Kimi Raikkonen","winner": "Kimi Raikkonen" },
-      { "year": 2008, "pole": "Lewis Hamilton", "winner": "Heikki Kovalainen"},
-      { "year": 2009, "pole": "Jenson Button", "winner": "Nico Rosberg" },
-      { "year": 2010, "pole": "Sebastian Vettel", "winner": "Mark Webber" },
-      { "year": 2011, "pole": "Sebastian Vettel", "winner": "Felipe Massa"},
-      { "year": 2012, "pole": "Lewis Hamilton","winner": "Jenson Button" },
-      { "year": 2013, "pole": "Sebastian Vettel", "winner": "Kimi Raikkonen"},
-      { "year": 2014, "pole": "Lewis Hamilton", "winner": "Nico Rosberg" },
-      { "year": 2015, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-      { "year": 2016, "pole": "Lewis Hamilton", "winner": "Daniel Ricciardo"},
-      { "year": 2017, "pole": "Lewis Hamilton","winner": "Kimi Raikkonen" },
-      { "year": 2018, "pole": "Lewis Hamilton", "winner": "Daniel Ricciardo"},
-      { "year": 2019, "pole": "Lewis Hamilton", "winner": "Valtteri Bottas" },
-      { "year": 2022, "pole": "Charles Leclerc", "winner": "Charles Leclerc" },
-      { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen"},
-      { "year": 2024, "pole": "Max Verstappen", "winner": "Carlos Sainz" },
-      { "year": 2025, "pole": "Lando Norris", "winner": "Lando Norris" },
-      { "year": 2026, "pole": "George Russell", "winner": "George Russell"}
-    ]
+    }
   },
-
+  "autodromo-nazionale-di-monza": {
+    "name": "Autodromo Nazionale di Monza",
+    "active": true,
+    "stats": {
+      "length": "5.793",
+      "laps": 53,
+      "turns": 11,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "372"
+    },
+    "lapRecord": {
+      "time": "1:21.046",
+      "driver": "Rubens Barrichello",
+      "year": 2004
+    },
+    "characteristics": {
+      "downforce": 15,
+      "overtaking": 85,
+      "tyreDeg": 40,
+      "trackType": "permanent"
+    }
+  },
+  "hermanos-rodriguez": {
+    "name": "Autódromo Hermanos Rodríguez",
+    "active": true,
+    "stats": {
+      "length": "4.304",
+      "laps": 71,
+      "turns": 17,
+      "overtakeZones": 3
+    },
+    "topSpeed": {
+      "speed": "372"
+    },
+    "lapRecord": {
+      "time": "1:17.774",
+      "driver": "Valtteri Bottas",
+      "year": 2021
+    },
+    "characteristics": {
+      "downforce": 100,
+      "overtaking": 60,
+      "tyreDeg": 50,
+      "trackType": "permanent"
+    }
+  },
+  "autodromo-jose-carlos-pace": {
+    "name": "Autódromo José Carlos Pace",
+    "active": true,
+    "stats": {
+      "length": "4.309",
+      "laps": 71,
+      "turns": 15,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "338"
+    },
+    "lapRecord": {
+      "time": "1:10.540",
+      "driver": "Valtteri Bottas",
+      "year": 2018
+    },
+    "characteristics": {
+      "downforce": 70,
+      "overtaking": 85,
+      "tyreDeg": 65,
+      "trackType": "permanent"
+    }
+  },
+  "bahrain-international-circuit": {
+    "name": "Bahrain International Circuit",
+    "active": true,
+    "stats": {
+      "length": "5.412",
+      "laps": 57,
+      "turns": 15,
+      "overtakeZones": 3
+    },
+    "topSpeed": {
+      "speed": "322"
+    },
+    "lapRecord": {
+      "time": "1:31.447",
+      "driver": "Pedro de la Rosa",
+      "year": 2005
+    },
+    "characteristics": {
+      "downforce": 55,
+      "overtaking": 70,
+      "tyreDeg": 75,
+      "trackType": "permanent"
+    }
+  },
+  "baku-city-circuit": {
+    "name": "Baku City Circuit",
+    "active": true,
+    "stats": {
+      "length": "6.003",
+      "laps": 51,
+      "turns": 20,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "378"
+    },
+    "lapRecord": {
+      "time": "1:43.009",
+      "driver": "Charles Leclerc",
+      "year": 2019
+    },
+    "characteristics": {
+      "downforce": 40,
+      "overtaking": 85,
+      "tyreDeg": 40,
+      "trackType": "street"
+    }
+  },
+  "circuit-gilles-villeneuve": {
+    "name": "Circuit Gilles Villeneuve",
+    "active": true,
+    "stats": {
+      "length": "4.361",
+      "laps": 70,
+      "turns": 14,
+      "overtakeZones": 4
+    },
+    "topSpeed": {
+      "speed": "328"
+    },
+    "lapRecord": {
+      "time": "1:13.078",
+      "driver": "Valtteri Bottas",
+      "year": 2019
+    },
+    "characteristics": {
+      "downforce": 35,
+      "overtaking": 75,
+      "tyreDeg": 40,
+      "trackType": "semi-urban"
+    }
+  },
+  "circuit-zandvoort": {
+    "name": "Circuit Zandvoort",
+    "active": true,
+    "stats": {
+      "length": "4.259",
+      "laps": 72,
+      "turns": 14,
+      "overtakeZones": 1
+    },
+    "topSpeed": {
+      "speed": "338"
+    },
+    "lapRecord": {
+      "time": "1:11.097",
+      "driver": "Lewis Hamilton",
+      "year": 2021
+    },
+    "characteristics": {
+      "downforce": 80,
+      "overtaking": 20,
+      "tyreDeg": 65,
+      "trackType": "permanent"
+    }
+  },
+  "circuit-de-barcelona-catalunya": {
+    "name": "Circuit de Barcelona-Catalunya",
+    "active": false,
+    "stats": {
+      "length": "4.657",
+      "laps": 66,
+      "turns": 14,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "320"
+    },
+    "lapRecord": {
+      "time": "1:16.330",
+      "driver": "Max Verstappen",
+      "year": 2023
+    },
+    "characteristics": {
+      "downforce": 70,
+      "overtaking": 55,
+      "tyreDeg": 75,
+      "trackType": "permanent"
+    }
+  },
+  "circuit-de-monaco": {
+    "name": "Circuit de Monaco",
+    "active": true,
+    "stats": {
+      "length": "3.337",
+      "laps": 78,
+      "turns": 19,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "293"
+    },
+    "lapRecord": {
+      "time": "1:12.909",
+      "driver": "Lewis Hamilton",
+      "year": 2021
+    },
+    "characteristics": {
+      "downforce": 95,
+      "overtaking": 10,
+      "tyreDeg": 30,
+      "trackType": "street"
+    }
+  },
+  "circuit-de-spa-francorchamps": {
+    "name": "Circuit de Spa-Francorchamps",
+    "active": true,
+    "stats": {
+      "length": "7.004",
+      "laps": 44,
+      "turns": 19,
+      "overtakeZones": 3
+    },
+    "topSpeed": {
+      "speed": "335"
+    },
+    "lapRecord": {
+      "time": "1:46.286",
+      "driver": "Valtteri Bottas",
+      "year": 2018
+    },
+    "characteristics": {
+      "downforce": 65,
+      "overtaking": 80,
+      "tyreDeg": 60,
+      "trackType": "permanent"
+    }
+  },
+  "cota": {
+    "name": "Circuit of The Americas",
+    "active": true,
+    "stats": {
+      "length": "5.513",
+      "laps": 56,
+      "turns": 20,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "335"
+    },
+    "lapRecord": {
+      "time": "1:36.169",
+      "driver": "Charles Leclerc",
+      "year": 2019
+    },
+    "characteristics": {
+      "downforce": 75,
+      "overtaking": 80,
+      "tyreDeg": 85,
+      "trackType": "permanent"
+    }
+  },
+  "hungaroring": {
+    "name": "Hungaroring",
+    "active": true,
+    "stats": {
+      "length": "4.381",
+      "laps": 70,
+      "turns": 14,
+      "overtakeZones": 1
+    },
+    "topSpeed": {
+      "speed": "315"
+    },
+    "lapRecord": {
+      "time": "1:16.627",
+      "driver": "Lewis Hamilton",
+      "year": 2020
+    },
+    "characteristics": {
+      "downforce": 85,
+      "overtaking": 20,
+      "tyreDeg": 70,
+      "trackType": "permanent"
+    }
+  },
+  "jeddah-corniche-circuit": {
+    "name": "Jeddah Corniche Circuit",
+    "active": true,
+    "stats": {
+      "length": "6.174",
+      "laps": 50,
+      "turns": 27,
+      "overtakeZones": 3
+    },
+    "topSpeed": {
+      "speed": "342"
+    },
+    "lapRecord": {
+      "time": "1:30.734",
+      "driver": "Lewis Hamilton",
+      "year": 2021
+    },
+    "characteristics": {
+      "downforce": 40,
+      "overtaking": 50,
+      "tyreDeg": 45,
+      "trackType": "street"
+    }
+  },
+  "las-vegas-strip-circuit": {
+    "name": "Las Vegas Strip Circuit",
+    "active": true,
+    "stats": {
+      "length": "6.201",
+      "laps": 50,
+      "turns": 17,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "369"
+    },
+    "lapRecord": {
+      "time": "1:35.490",
+      "driver": "Oscar Piastri",
+      "year": 2023
+    },
+    "characteristics": {
+      "downforce": 15,
+      "overtaking": 90,
+      "tyreDeg": 30,
+      "trackType": "street"
+    }
+  },
+  "lusail-international-circuit": {
+    "name": "Lusail International Circuit",
+    "active": true,
+    "stats": {
+      "length": "5.419",
+      "laps": 57,
+      "turns": 16,
+      "overtakeZones": 1
+    },
+    "topSpeed": {
+      "speed": "337"
+    },
+    "lapRecord": {
+      "time": "1:24.319",
+      "driver": "Max Verstappen",
+      "year": 2023
+    },
+    "characteristics": {
+      "downforce": 65,
+      "overtaking": 40,
+      "tyreDeg": 80,
+      "trackType": "permanent"
+    }
+  },
+  "madring": {
+    "name": "Madring",
+    "active": true,
+    "stats": {
+      "length": "5.416",
+      "laps": 57,
+      "turns": 22,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "N/A"
+    },
+    "lapRecord": {
+      "time": "1:32.026 (Est.)",
+      "driver": "N/A",
+      "year": 2026
+    },
+    "characteristics": {
+      "downforce": 0,
+      "overtaking": 0,
+      "tyreDeg": 0,
+      "trackType": "semi-urban"
+    }
+  },
+  "marina-bay-street-circuit": {
+    "name": "Marina Bay Street Circuit",
+    "active": true,
+    "stats": {
+      "length": "4.940",
+      "laps": 62,
+      "turns": 19,
+      "overtakeZones": 4
+    },
+    "topSpeed": {
+      "speed": "320"
+    },
+    "lapRecord": {
+      "time": "1:34.486",
+      "driver": "Daniel Ricciardo",
+      "year": 2024
+    },
+    "characteristics": {
+      "downforce": 80,
+      "overtaking": 40,
+      "tyreDeg": 70,
+      "trackType": "street"
+    }
+  },
+  "miami-international-autodrome": {
+    "name": "Miami International Autodrome",
+    "active": true,
+    "stats": {
+      "length": "5.412",
+      "laps": 57,
+      "turns": 19,
+      "overtakeZones": 3
+    },
+    "topSpeed": {
+      "speed": "320"
+    },
+    "lapRecord": {
+      "time": "1:29.708",
+      "driver": "Max Verstappen",
+      "year": 2023
+    },
+    "characteristics": {
+      "downforce": 45,
+      "overtaking": 70,
+      "tyreDeg": 40,
+      "trackType": "street"
+    }
+  },
+  "red-bull-ring": {
+    "name": "Red Bull Ring",
+    "active": true,
+    "stats": {
+      "length": "4.318",
+      "laps": 71,
+      "turns": 10,
+      "overtakeZones": 3
+    },
+    "topSpeed": {
+      "speed": "322"
+    },
+    "lapRecord": {
+      "time": "1:05.619",
+      "driver": "Carlos Sainz",
+      "year": 2020
+    },
+    "characteristics": {
+      "downforce": 60,
+      "overtaking": 80,
+      "tyreDeg": 50,
+      "trackType": "permanent"
+    }
+  },
+  "sepang-international-circuit": {
+    "name": "Sepang International Circuit",
+    "active": false,
+    "stats": {
+      "length": "5.543",
+      "laps": 56,
+      "turns": 15,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "330"
+    },
+    "lapRecord": {
+      "time": "1:34.080",
+      "driver": "Sebastian Vettel",
+      "year": 2017
+    },
+    "characteristics": {
+      "downforce": 55,
+      "overtaking": 75,
+      "tyreDeg": 85,
+      "trackType": "permanent"
+    }
+  },
   "shanghai-international-circuit": {
     "name": "Shanghai International Circuit",
-    "media": {
-      "image": "../img/circuits/china.png",
-      "layout": "../img/circuits/china-layout.png"
-    },
+    "active": true,
     "stats": {
       "length": "5.451",
       "laps": 56,
@@ -83,36 +525,35 @@
       "overtaking": 75,
       "tyreDeg": 70,
       "trackType": "permanent"
-    },
-    "history": [
-      { "year": 2004, "pole": "Rubens Barrichello", "winner": "Rubens Barrichello" },
-      { "year": 2005, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
-      { "year": 2006, "pole": "Fernando Alonso", "winner": "Michael Schumacher"},
-      { "year": 2007, "pole": "Lewis Hamilton","winner": "Kimi Raikkonen" },
-      { "year": 2008, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton"},
-      { "year": 2009, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-      { "year": 2010, "pole": "Sebastian Vettel", "winner": "Jenson Button" },
-      { "year": 2011, "pole": "Sebastian Vettel", "winner": "Lewis Hamilton"},
-      { "year": 2012, "pole": "Nico Rosberg","winner": "Nico Rosberg" },
-      { "year": 2013, "pole": "Lewis Hamilton", "winner": "Fernando Alonso"},
-      { "year": 2014, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-      { "year": 2015, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-      { "year": 2016, "pole": "Nico Rosberg", "winner": "Nico Rosberg"},
-      { "year": 2017, "pole": "Lewis Hamilton","winner": "Lewis Hamilton" },
-      { "year": 2018, "pole": "Sebastian Vettel", "winner": "Daniel Ricciardo"},
-      { "year": 2019, "pole": "Valtteri Bottas", "winner": "Lewis Hamilton" },
-      { "year": 2024, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-      { "year": 2025, "pole": "Oscar Piastri", "winner": "Oscar Piastri" },
-      { "year": 2026, "pole": "Kimi Antonelli", "winner": "Kimi Antonelli" }
-    ]
+    }
   },
-
+  "silverstone-circuit": {
+    "name": "Silverstone Circuit",
+    "active": true,
+    "stats": {
+      "length": "5.891",
+      "laps": 52,
+      "turns": 18,
+      "overtakeZones": 2
+    },
+    "topSpeed": {
+      "speed": "335"
+    },
+    "lapRecord": {
+      "time": "1:27.097",
+      "driver": "Max Verstappen",
+      "year": 2020
+    },
+    "characteristics": {
+      "downforce": 60,
+      "overtaking": 70,
+      "tyreDeg": 80,
+      "trackType": "permanent"
+    }
+  },
   "suzuka-international-racing-course": {
     "name": "Suzuka International Racing Course",
-    "media": {
-      "image": "../img/circuits/japan.png",
-      "layout": "../img/circuits/japan-layout.png"
-    },
+    "active": true,
     "stats": {
       "length": "5.807",
       "laps": 53,
@@ -136,1297 +577,38 @@
     "raceWeekendData": {
       "pitStopLoss": "22s",
       "ratings": {
-          "traction": 3,
-          "braking": 2,
-          "tyreStress": 5,
-          "asphaltAbrasion": 3,
-          "asphaltGrip": 4,
-          "lateral": 5,
-          "trackEvolution": 4
+        "traction": 3,
+        "braking": 2,
+        "tyreStress": 5,
+        "asphaltAbrasion": 3,
+        "asphaltGrip": 4,
+        "lateral": 5,
+        "trackEvolution": 4
       },
       "tyres": {
-          "minStartingPressure": { "front": "28.0", "rear": "25.0" },
-          "stabilizedRunningPressure": { "front": "28.5", "rear": "25.5" },
-          "eosCamberLimit": { "front": "-2.75", "rear": "-1.50" }
+        "minStartingPressure": {
+          "front": "28.0",
+          "rear": "25.0"
+        },
+        "stabilizedRunningPressure": {
+          "front": "28.5",
+          "rear": "25.5"
+        },
+        "eosCamberLimit": {
+          "front": "-2.75",
+          "rear": "-1.50"
+        }
       },
       "compounds": {
-          "hard": "C1",
-          "medium": "C2",
-          "soft": "C3"
+        "hard": "C1",
+        "medium": "C2",
+        "soft": "C3"
       }
+    }
   },
-    "history": [
-      { "year": 1987, "pole": "Gerhard Berger", "winner": "Gerhard Berger" },
-      { "year": 1988, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
-      { "year": 1989, "pole": "Ayrton Senna", "winner": "Alessandro Nannini" },
-      { "year": 1990, "pole": "Ayrton Senna", "winner": "Nelson Piquet" },
-      { "year": 1991, "pole": "Gerhard Berger","winner": "Gerhard Berger" },
-      { "year": 1992, "pole": "Nigel Mansell", "winner": "Riccardo Patrese"},
-      { "year": 1993, "pole": "Alain Prost", "winner": "Ayrton Senna" },
-      { "year": 1994, "pole": "Michael Schumacher", "winner": "Damon Hill" },
-      { "year": 1995, "pole": "Michael Schumacher", "winner": "Michael Schumacher"},
-      { "year": 1996, "pole": "Jacques Villenueve", "winner": "Damon Hill"},
-      { "year": 1997, "pole": "Jacques Villenueve","winner": "Michael Schumacher" },
-      { "year": 1998, "pole": "Michael Schumacher", "winner": "Mika Hakkinen"},
-      { "year": 1999, "pole": "Michael Schumacher", "winner": "Mika Hakkinen" },
-      { "year": 2000, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-      { "year": 2001, "pole": "Michael Schumacher", "winner": "Michael Schumacher"},
-      { "year": 2002, "pole": "Michael Schumacher","winner": "Michael Schumacher" },
-      { "year": 2003, "pole": "Rubens Barrichello", "winner": "Rubens Barrichello"},
-      { "year": 2004, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-      { "year": 2005, "pole": "Ralf Schumacher", "winner": "Kimi Raikkonen" },
-      { "year": 2006, "pole": "Felipe Massa", "winner": "Fernando Alonso"},
-      { "year": 2009, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-      { "year": 2010, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-      { "year": 2011, "pole": "Sebastian Vettel", "winner": "Jenson Button"},
-      { "year": 2012, "pole": "Sebastian Vettel","winner": "Sebastian Vettel" },
-      { "year": 2013, "pole": "Mark Webber", "winner": "Sebastian Vettel"},
-      { "year": 2014, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
-      { "year": 2015, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
-      { "year": 2016, "pole": "Nico Rosberg", "winner": "Nico Rosberg"},
-      { "year": 2017, "pole": "Lewis Hamilton","winner": "Lewis Hamilton" },
-      { "year": 2018, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton"},
-      { "year": 2019, "pole": "Sebastian Vettel", "winner": "Valtteri Bottas" },
-      { "year": 2022, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-      { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen"},
-      { "year": 2024, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-      { "year": 2025, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-      { "year": 2026, "pole": "Kimi Antonelli", "winner": "Kimi Antonelli"}
-    ]
-  },
-  "bahrain-internatinal-circuit": {
-    "name": "Bahrain International Circuit",
-    "media": {
-      "image": "../img/circuits/bahrain.png",
-      "layout": "../img/circuits/bahrain-layout.png"
-    },
-    "stats": {
-      "length": "5.412",
-      "laps": 57,
-      "turns": 15,
-      "overtakeZones": 3
-    },
-    "topSpeed": {
-      "speed": "322"
-    },
-    "lapRecord": {
-      "time": "1:31.447",
-      "driver": "Pedro de la Rosa",
-      "year": 2005
-    },
-    "characteristics": {
-      "downforce": 55,
-      "overtaking": 70,
-      "tyreDeg": 75,
-      "trackType": "permanent"
-    },
-    "history": [
-      { "year": 2004, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-      { "year": 2005, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
-      { "year": 2006, "pole": "Michael Schumacher", "winner": "Fernando Alonso" },
-      { "year": 2007, "pole": "Felipe Massa", "winner": "Felipe Massa" },
-      { "year": 2008, "pole": "Robert Kubica", "winner": "Felipe Massa" },
-      { "year": 2009, "pole": "Jarno Trulli", "winner": "Jenson Button" },
-      { "year": 2010, "pole": "Sebastian Vettel", "winner": "Fernando Alonso" },
-      { "year": 2012, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-      { "year": 2013, "pole": "Nico Rosberg", "winner": "Sebastian Vettel" },
-      { "year": 2014, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
-      { "year": 2015, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-      { "year": 2016, "pole": "Lewis Hamilton", "winner": "Nico Rosberg" },
-      { "year": 2017, "pole": "Valtteri Bottas", "winner": "Sebastian Vettel" },
-      { "year": 2018, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-      { "year": 2019, "pole": "Charles Leclerc", "winner": "Lewis Hamilton" },
-      { "year": 2020, "pole": "Lewis Hamilton", "winner": "Sergio Pérez" },
-      { "year": 2021, "pole": "Max Verstappen", "winner": "Lewis Hamilton" },
-      { "year": 2022, "pole": "Charles Leclerc", "winner": "Charles Leclerc" },
-      { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-      { "year": 2024, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-      { "year": 2025, "pole": "Oscar Piastri", "winner": "Oscar Piastri" }
-    ]
-  },
-
-  "jeddah-corniche-circuit": {
-    "name": "Jeddah Corniche Circuit",
-    "media": {
-      "image": "../img/circuits/saudi-arabia.png",
-      "layout": "../img/circuits/saudiarabia-layout.png"
-    },
-    "stats": {
-      "length": "6.174",
-      "laps": 50,
-      "turns": 27,
-      "overtakeZones": 3
-    },
-    "topSpeed": {
-      "speed": "342"
-    },
-    "lapRecord": {
-      "time": "1:30.734",
-      "driver": "Lewis Hamilton",
-      "year": 2021
-    },
-    "characteristics": {
-      "downforce": 40,
-      "overtaking": 50,
-      "tyreDeg": 45,
-      "trackType": "street"
-    },
-      "history": [
-        { "year": 2021, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-        { "year": 2022, "pole": "Sergio Pérez", "winner": "Max Verstappen" },
-        { "year": 2023, "pole": "Sergio Pérez", "winner": "Sergio Pérez" },
-        { "year": 2024, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-        { "year": 2025, "pole": "Max Verstappen", "winner": "Oscar Piastri" }
-      ]
-  },
-
-  "miami-international-autodrome": {
-    "name": "Miami International Autodrome",
-    "media": {
-      "image": "../img/circuits/miami.png",
-      "layout": "../img/circuits/miami-layout.png"
-    },
-    "stats": {
-      "length": "5.412",
-      "laps": 57,
-      "turns": 19,
-      "overtakeZones": 3
-    },
-    "topSpeed": {
-      "speed": "320"
-    },
-    "lapRecord": {
-      "time": "1:29.708",
-      "driver": "Max Verstappen",
-      "year": 2023
-    },
-    "characteristics": {
-      "downforce": 45,
-      "overtaking": 70,
-      "tyreDeg": 40,
-      "trackType": "street"
-    },
-    "history": [
-      { "year": 2022, "pole": "Charles Leclerc", "winner": "Max Verstappen", "winnerTeam": "Red Bull" },
-      { "year": 2023, "pole": "Sergio Pérez", "winner": "Max Verstappen", "winnerTeam": "Red Bull" },
-      { "year": 2024, "pole": "Max Verstappen", "winner": "Lando Norris", "winnerTeam": "McLaren" },
-      { "year": 2025, "pole": "Max Verstappen", "winner": "Oscar Piastri", "winnerTeam": "McLaren" }
-    ]
-  },
-
-  "circuit-gilles-villeneuve": {
-
-    "name": "Circuit Gilles Villeneuve",
-    "media": {
-      "image": "../img/circuits/canada.png",
-      "layout": "../img/circuits/canada-layout.png"
-    },
-    "stats": {
-      "length": "4.361",
-      "laps": 70,
-      "turns": 14,
-      "overtakeZones": 4
-    },
-    "topSpeed": {
-      "speed": "328"
-    },
-    "lapRecord": {
-      "time": "1:13.078",
-      "driver": "Valtteri Bottas",
-      "year": 2019
-    },
-    "characteristics": {
-      "downforce": 35,
-      "overtaking": 75,
-      "tyreDeg": 40,
-      "trackType": "semi-urban"
-    },
-  "history": [
-    { "year": 1978, "pole": "Jean-Pierre Jarier", "winner": "Gilles Villeneuve" },
-    { "year": 1979, "pole": "Alan Jones", "winner": "Alan Jones" },
-    { "year": 1980, "pole": "Nelson Piquet", "winner": "Alan Jones" },
-    { "year": 1981, "pole": "Nelson Piquet", "winner": "John Watson" },
-    { "year": 1982, "pole": "Didier Pironi", "winner": "Didier Pironi" },
-    { "year": 1983, "pole": "René Arnoux", "winner": "Patrick Tambay" },
-    { "year": 1984, "pole": "Nelson Piquet", "winner": "Nelson Piquet" },
-    { "year": 1985, "pole": "Elio de Angelis", "winner": "Ayrton Senna" },
-    { "year": 1986, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
-    { "year": 1988, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
-    { "year": 1989, "pole": "Alain Prost", "winner": "Jonathan Palmer" },
-    { "year": 1990, "pole": "Ayrton Senna", "winner": "Gerhard Berger" },
-    { "year": 1994, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-    { "year": 1995, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-    { "year": 1996, "pole": "Damon Hill", "winner": "Damon Hill" },
-    { "year": 1997, "pole": "Michael Schumacher", "winner": "David Coulthard" },
-    { "year": 1998, "pole": "David Coulthard", "winner": "Michael Schumacher" },
-    { "year": 1999, "pole": "Michael Schumacher", "winner": "Eddie Irvine" },
-    { "year": 2000, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-    { "year": 2001, "pole": "Michael Schumacher", "winner": "Ralf Schumacher" },
-    { "year": 2002, "pole": "Juan Pablo Montoya", "winner": "Juan Pablo Montoya" },
-    { "year": 2003, "pole": "Ralf Schumacher", "winner": "Fernando Alonso" },
-    { "year": 2004, "pole": "Ralf Schumacher", "winner": "Rubens Barrichello" },
-    { "year": 2005, "pole": "Jenson Button", "winner": "Kimi Räikkönen" },
-    { "year": 2006, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
-    { "year": 2007, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2008, "pole": "Lewis Hamilton", "winner": "Robert Kubica" },
-    { "year": 2010, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2011, "pole": "Sebastian Vettel", "winner": "Jenson Button" },
-    { "year": 2012, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-    { "year": 2013, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-    { "year": 2014, "pole": "Nico Rosberg", "winner": "Daniel Ricciardo" },
-    { "year": 2015, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2017, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2018, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-    { "year": 2019, "pole": "Sebastian Vettel", "winner": "Lewis Hamilton" },
-    { "year": 2022, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-    { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-    { "year": 2024, "pole": "George Russell", "winner": "Max Verstappen" },
-    { "year": 2025, "pole": "George Russell", "winner": "George Russell" }
-  ]
-  },
-  "circuit-de-monaco": {
-  "name": "Circuit de Monaco",
-  "media": {
-    "image": "../img/circuits/monaco.png",
-    "layout": "../img/circuits/monaco-layout.png"
-  },
-  "stats": {
-    "length": "3.337",
-    "laps": 78,
-    "turns": 19,
-    "overtakeZones": 2
-  },
-  "topSpeed": {
-    "speed": "293"
-  },
-  "lapRecord": {
-    "time": "1:12.909",
-    "driver": "Lewis Hamilton",
-    "year": 2021
-  },
-  "characteristics": {
-    "downforce": 95,
-    "overtaking": 10,
-    "tyreDeg": 30,
-    "trackType": "street"
-  },
-  "history": [
-    { "year": 1950, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
-    { "year": 1955, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
-    { "year": 1956, "pole": "Juan Manuel Fangio", "winner": "Stirling Moss" },
-    { "year": 1957, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
-    { "year": 1958, "pole": "Tony Brooks", "winner": "Mike Hawthorn" },
-    { "year": 1959, "pole": "Stirling Moss", "winner": "Jack Brabham" },
-    { "year": 1960, "pole": "Stirling Moss", "winner": "Bruce McLaren" },
-    { "year": 1961, "pole": "Stirling Moss", "winner": "Richie Ginther" },
-    { "year": 1962, "pole": "Jim Clark", "winner": "Bruce McLaren" },
-    { "year": 1963, "pole": "Jim Clark", "winner": "John Surtees" },
-    { "year": 1964, "pole": "Jim Clark", "winner": "Graham Hill" },
-    { "year": 1965, "pole": "Graham Hill", "winner": "Graham Hill" },
-    { "year": 1966, "pole": "Jim Clark", "winner": "Lorenzo Bandini" },
-    { "year": 1967, "pole": "Jack Brabham", "winner": "Denny Hulme" },
-    { "year": 1968, "pole": "Graham Hill", "winner": "Graham Hill" },
-    { "year": 1969, "pole": "Jackie Stewart", "winner": "Jackie Stewart" },
-    { "year": 1970, "pole": "Jackie Stewart", "winner": "Jochen Rindt" },
-    { "year": 1971, "pole": "Jackie Stewart", "winner": "Jackie Stewart" },
-    { "year": 1972, "pole": "Emerson Fittipaldi", "winner": "Jean-Pierre Beltoise" },
-    { "year": 1973, "pole": "Jackie Stewart", "winner": "Jackie Stewart" },
-    { "year": 1974, "pole": "Niki Lauda", "winner": "Ronnie Peterson" },
-    { "year": 1975, "pole": "Niki Lauda", "winner": "Niki Lauda" },
-    { "year": 1976, "pole": "Niki Lauda", "winner": "Clay Regazzoni" },
-    { "year": 1977, "pole": "John Watson", "winner": "Jody Scheckter" },
-    { "year": 1978, "pole": "Carlos Reutemann", "winner": "Patrick Depailler" },
-    { "year": 1979, "pole": "Jody Scheckter", "winner": "Jody Scheckter" },
-    { "year": 1980, "pole": "Didier Pironi", "winner": "Carlos Reutemann" },
-    { "year": 1981, "pole": "Nelson Piquet", "winner": "Gilles Villeneuve" },
-    { "year": 1982, "pole": "René Arnoux", "winner": "Riccardo Patrese" },
-    { "year": 1983, "pole": "Alain Prost", "winner": "Nelson Piquet" },
-    { "year": 1984, "pole": "Alain Prost", "winner": "Alain Prost" },
-    { "year": 1985, "pole": "Ayrton Senna", "winner": "Alain Prost" },
-    { "year": 1986, "pole": "Alain Prost", "winner": "Alain Prost" },
-    { "year": 1987, "pole": "Nigel Mansell", "winner": "Ayrton Senna" },
-    { "year": 1988, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
-    { "year": 1989, "pole": "Ayrton Senna", "winner": "Alain Prost" },
-    { "year": 1990, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
-    { "year": 1991, "pole": "Ayrton Senna", "winner": "Alain Prost" },
-    { "year": 1992, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
-    { "year": 1993, "pole": "Alain Prost", "winner": "Alain Prost" },
-    { "year": 1994, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-    { "year": 1995, "pole": "Damon Hill", "winner": "Jean Alesi" },
-    { "year": 1996, "pole": "Michael Schumacher", "winner": "Olivier Panis" },
-    { "year": 1997, "pole": "Heinz-Harald Frentzen", "winner": "Michael Schumacher" },
-    { "year": 1998, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
-    { "year": 1999, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
-    { "year": 2000, "pole": "Michael Schumacher", "winner": "David Coulthard" },
-    { "year": 2001, "pole": "David Coulthard", "winner": "David Coulthard" },
-    { "year": 2002, "pole": "Juan Pablo Montoya", "winner": "David Coulthard" },
-    { "year": 2003, "pole": "Ralf Schumacher", "winner": "Juan Pablo Montoya" },
-    { "year": 2004, "pole": "Jarno Trulli", "winner": "Jarno Trulli" },
-    { "year": 2005, "pole": "Kimi Räikkönen", "winner": "Kimi Räikkönen" },
-    { "year": 2006, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
-    { "year": 2007, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
-    { "year": 2008, "pole": "Felipe Massa", "winner": "Lewis Hamilton" },
-    { "year": 2009, "pole": "Jenson Button", "winner": "Jenson Button" },
-    { "year": 2010, "pole": "Mark Webber", "winner": "Mark Webber" },
-    { "year": 2011, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-    { "year": 2012, "pole": "Mark Webber", "winner": "Mark Webber" },
-    { "year": 2013, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
-    { "year": 2014, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
-    { "year": 2015, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Daniel Ricciardo" },
-    { "year": 2017, "pole": "Kimi Räikkönen", "winner": "Sebastian Vettel" },
-    { "year": 2018, "pole": "Daniel Ricciardo", "winner": "Daniel Ricciardo" },
-    { "year": 2019, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2021, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
-    { "year": 2022, "pole": "Charles Leclerc", "winner": "Sergio Pérez" },
-    { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-    { "year": 2024, "pole": "Charles Leclerc", "winner": "Lewis Hamilton" },
-    { "year": 2025, "pole": "Lando Norris", "winner": "Lando Norris" }
-  ]
-  },
-  "circuit-de-barcelona-catalunya": {
-  "name": "Circuit de Barcelona-Catalunya",
-  "media": {
-    "image": "../img/circuits/barcelona.png",
-    "layout": "../img/circuits/barcelona-layout.png"
-  },
-  "stats": {
-    "length": "4.657",
-    "laps": 66,
-    "turns": 14,
-    "overtakeZones": 2
-  },
-  "topSpeed": {
-    "speed": "320"
-  },
-  "lapRecord": {
-    "time": "1:16.330",
-    "driver": "Max Verstappen",
-    "year": 2023
-  },
-  "characteristics": {
-    "downforce": 70,
-    "overtaking": 55,
-    "tyreDeg": 75,
-    "trackType": "permanent"
-  },
-  "history": [
-    { "year": 1991, "pole": "Gerhard Berger", "winner": "Nigel Mansell" },
-    { "year": 1992, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
-    { "year": 1993, "pole": "Alain Prost", "winner": "Alain Prost" },
-    { "year": 1994, "pole": "Michael Schumacher", "winner": "Damon Hill" },
-    { "year": 1995, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-    { "year": 1996, "pole": "Damon Hill", "winner": "Michael Schumacher" },
-    { "year": 1997, "pole": "Jacques Villeneuve", "winner": "Jacques Villeneuve" },
-    { "year": 1998, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
-    { "year": 1999, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
-    { "year": 2000, "pole": "Michael Schumacher", "winner": "Mika Häkkinen" },
-    { "year": 2001, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-    { "year": 2002, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-    { "year": 2003, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-    { "year": 2004, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-    { "year": 2005, "pole": "Kimi Räikkönen", "winner": "Kimi Räikkönen" },
-    { "year": 2006, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
-    { "year": 2007, "pole": "Felipe Massa", "winner": "Felipe Massa" },
-    { "year": 2008, "pole": "Kimi Räikkönen", "winner": "Kimi Räikkönen" },
-    { "year": 2009, "pole": "Jenson Button", "winner": "Jenson Button" },
-    { "year": 2010, "pole": "Mark Webber", "winner": "Mark Webber" },
-    { "year": 2011, "pole": "Mark Webber", "winner": "Mark Webber" },
-    { "year": 2012, "pole": "Pastor Maldonado", "winner": "Pastor Maldonado" },
-    { "year": 2013, "pole": "Nico Rosberg", "winner": "Fernando Alonso" },
-    { "year": 2014, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2015, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
-    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Max Verstappen" },
-    { "year": 2017, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2018, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2019, "pole": "Valtteri Bottas", "winner": "Lewis Hamilton" },
-    { "year": 2020, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2021, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2022, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
-    { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-    { "year": 2024, "pole": "Lando Norris", "winner": "Max Verstappen" },
-    { "year": 2025, "pole": "Oscar Piastri", "winner": "Oscar Piastri" }
-  ]
-  },
-
-  "red-bull-ring": {
-  "name": "Red Bull Ring",
-  "media": {
-    "image": "../img/circuits/austria.png",
-    "layout": "../img/circuits/austria-layout.png"
-  },
-  "stats": {
-    "length": "4.318",
-    "laps": 71,
-    "turns": 10,
-    "overtakeZones": 3
-  },
-  "topSpeed": {
-    "speed": "322"
-  },
-  "lapRecord": {
-    "time": "1:05.619",
-    "driver": "Carlos Sainz",
-    "year": 2020
-  },
-  "characteristics": {
-    "downforce": 60,
-    "overtaking": 80,
-    "tyreDeg": 50,
-    "trackType": "permanent"
-  },
-  "history": [
-    { "year": 1997, "pole": "Jacques Villeneuve", "winner": "Jacques Villeneuve" },
-    { "year": 1998, "pole": "Giancarlo Fisichella", "winner": "Mika Häkkinen" },
-    { "year": 1999, "pole": "Mika Häkkinen", "winner": "Eddie Irvine" },
-    { "year": 2000, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
-    { "year": 2001, "pole": "Michael Schumacher", "winner": "David Coulthard" },
-    { "year": 2002, "pole": "Rubens Barrichello", "winner": "Michael Schumacher" },
-    { "year": 2003, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-    { "year": 2014, "pole": "Felipe Massa", "winner": "Nico Rosberg" },
-    { "year": 2015, "pole": "Lewis Hamilton", "winner": "Nico Rosberg" },
-    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2017, "pole": "Valtteri Bottas", "winner": "Lewis Hamilton" },
-    { "year": 2018, "pole": "Valtteri Bottas", "winner": "Max Verstappen" },
-    { "year": 2019, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
-    { "year": 2020, "pole": "Valtteri Bottas", "winner": "Lando Norris" },
-    { "year": 2020, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton", "note": "Styrian GP" },
-    { "year": 2021, "pole": "Max Verstappen", "winner": "Max Verstappen", "note": "Styrian GP" },
-    { "year": 2021, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-    { "year": 2022, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
-    { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-    { "year": 2024, "pole": "George Russell", "winner": "Max Verstappen" },
-    { "year": 2025, "pole": "Lando Norris", "winner": "Lando Norris" }
-  ]
-  },
-
-  "silverstone-circuit": {
-  "name": "Silverstone Circuit",
-  "media": {
-    "image": "../img/circuits/silverstone.png",
-    "layout": "../img/circuits/silverstone-layout.png"
-  },
-  "stats": {
-    "length": "5.891",
-    "laps": 52,
-    "turns": 18,
-    "overtakeZones": 2
-  },
-  "topSpeed": {
-    "speed": "335"
-  },
-  "lapRecord": {
-    "time": "1:27.097",
-    "driver": "Max Verstappen",
-    "year": 2020
-  },
-  "characteristics": {
-    "downforce": 60,
-    "overtaking": 70,
-    "tyreDeg": 80,
-    "trackType": "permanent"
-  },
-  "history": [
-    { "year": 1950, "pole": "Giuseppe Farina", "winner": "Giuseppe Farina" },
-    { "year": 1951, "pole": "José Froilán González", "winner": "José Froilán González" },
-    { "year": 1952, "pole": "Giuseppe Farina", "winner": "Alberto Ascari" },
-    { "year": 1953, "pole": "Alberto Ascari", "winner": "Alberto Ascari" },
-    { "year": 1954, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
-    { "year": 1956, "pole": "Stirling Moss", "winner": "Juan Manuel Fangio" },
-    { "year": 1958, "pole": "Stirling Moss", "winner": "Peter Collins" },
-    { "year": 1960, "pole": "Jack Brabham", "winner": "Jack Brabham" },
-    { "year": 1963, "pole": "Jim Clark", "winner": "Jim Clark" },
-    { "year": 1965, "pole": "Jim Clark", "winner": "Jim Clark" },
-    { "year": 1967, "pole": "Jim Clark", "winner": "Jim Clark" },
-    { "year": 1969, "pole": "Jochen Rindt", "winner": "Jackie Stewart" },
-    { "year": 1971, "pole": "Clay Regazzoni", "winner": "Jackie Stewart" },
-    { "year": 1973, "pole": "Ronnie Peterson", "winner": "James Hunt" },
-    { "year": 1975, "pole": "Tom Pryce", "winner": "Emerson Fittipaldi" },
-    { "year": 1977, "pole": "James Hunt", "winner": "James Hunt" },
-    { "year": 1979, "pole": "Alan Jones", "winner": "Clay Regazzoni" },
-    { "year": 1981, "pole": "René Arnoux", "winner": "John Watson" },
-    { "year": 1983, "pole": "René Arnoux", "winner": "Alain Prost" },
-    { "year": 1985, "pole": "Keke Rosberg", "winner": "Alain Prost" },
-    { "year": 1987, "pole": "Nelson Piquet", "winner": "Nigel Mansell" },
-    { "year": 1988, "pole": "Gerhard Berger", "winner": "Ayrton Senna" },
-    { "year": 1989, "pole": "Ayrton Senna", "winner": "Nigel Mansell" },
-    { "year": 1990, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
-    { "year": 1991, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
-    { "year": 1992, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
-    { "year": 1993, "pole": "Alain Prost", "winner": "Damon Hill" },
-    { "year": 1994, "pole": "Damon Hill", "winner": "Damon Hill" },
-    { "year": 1995, "pole": "Damon Hill", "winner": "Damon Hill" },
-    { "year": 1996, "pole": "Damon Hill", "winner": "Jacques Villeneuve" },
-    { "year": 1997, "pole": "Jacques Villeneuve", "winner": "Jacques Villeneuve" },
-    { "year": 1998, "pole": "Mika Häkkinen", "winner": "Michael Schumacher" },
-    { "year": 1999, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
-    { "year": 2000, "pole": "Rubens Barrichello", "winner": "David Coulthard" },
-    { "year": 2001, "pole": "Michael Schumacher", "winner": "Mika Häkkinen" },
-    { "year": 2002, "pole": "Juan Pablo Montoya", "winner": "Rubens Barrichello" },
-    { "year": 2003, "pole": "Rubens Barrichello", "winner": "Rubens Barrichello" },
-    { "year": 2004, "pole": "Kimi Räikkönen", "winner": "Michael Schumacher" },
-    { "year": 2005, "pole": "Fernando Alonso", "winner": "Juan Pablo Montoya" },
-    { "year": 2006, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
-    { "year": 2007, "pole": "Lewis Hamilton", "winner": "Kimi Räikkönen" },
-    { "year": 2008, "pole": "Heikki Kovalainen", "winner": "Kimi Räikkönen" },
-    { "year": 2009, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-    { "year": 2010, "pole": "Sebastian Vettel", "winner": "Mark Webber" },
-    { "year": 2011, "pole": "Mark Webber", "winner": "Fernando Alonso" },
-    { "year": 2012, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
-    { "year": 2013, "pole": "Lewis Hamilton", "winner": "Nico Rosberg" },
-    { "year": 2014, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
-    { "year": 2015, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2017, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2018, "pole": "Lewis Hamilton", "winner": "Sebastian Vettel" },
-    { "year": 2019, "pole": "Valtteri Bottas", "winner": "Lewis Hamilton" },
-    { "year": 2020, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2020, "pole": "Valtteri Bottas", "winner": "Lewis Hamilton", "note": "70th Anniversary GP" },
-    { "year": 2021, "pole": "Max Verstappen", "winner": "Lewis Hamilton" },
-    { "year": 2022, "pole": "Carlos Sainz", "winner": "Carlos Sainz" },
-    { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-    { "year": 2024, "pole": "George Russell", "winner": "Lewis Hamilton" },
-    { "year": 2025, "pole": "Max Verstappen", "winner": "Lando Norris" }
-  ]
-  },
-
-  "circuit-de-spa-francorchamps": {
-  "Name": "Circuit de Spa-Francorchamps",
-  "media": {
-    "image": "../img/circuits/spa.png",
-    "layout": "../img/circuits/spa-layout.png"
-  },
-  "stats": {
-    "length": "7.004",
-    "laps": 44,
-    "turns": 19,
-    "overtakeZones": 3
-  },
-  "topSpeed": {
-    "speed": "335"
-  },
-  "lapRecord": {
-    "time": "1:46.286",
-    "driver": "Valtteri Bottas",
-    "year": 2018
-  },
-  "characteristics": {
-    "downforce": 65,
-    "overtaking": 80,
-    "tyreDeg": 60,
-    "trackType": "permanent"
-  },
-  "history": [
-    { "year": 1950, "pole": "Giuseppe Farina", "winner": "Giuseppe Farina" },
-    { "year": 1951, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
-    { "year": 1952, "pole": "Alberto Ascari", "winner": "Alberto Ascari" },
-    { "year": 1953, "pole": "Juan Manuel Fangio", "winner": "Alberto Ascari" },
-    { "year": 1954, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
-    { "year": 1955, "pole": "Eugenio Castellotti", "winner": "Juan Manuel Fangio" },
-    { "year": 1956, "pole": "Juan Manuel Fangio", "winner": "Stirling Moss" },
-    { "year": 1958, "pole": "Mike Hawthorn", "winner": "Mike Hawthorn" },
-    { "year": 1960, "pole": "Jack Brabham", "winner": "Jack Brabham" },
-    { "year": 1961, "pole": "Phil Hill", "winner": "Phil Hill" },
-    { "year": 1962, "pole": "Graham Hill", "winner": "Jim Clark" },
-    { "year": 1963, "pole": "Graham Hill", "winner": "Jim Clark" },
-    { "year": 1964, "pole": "Dan Gurney", "winner": "Dan Gurney" },
-    { "year": 1965, "pole": "Graham Hill", "winner": "Jim Clark" },
-    { "year": 1966, "pole": "John Surtees", "winner": "John Surtees" },
-    { "year": 1967, "pole": "Jim Clark", "winner": "Dan Gurney" },
-    { "year": 1968, "pole": "Chris Amon", "winner": "Bruce McLaren" },
-    { "year": 1970, "pole": "Jackie Stewart", "winner": "Pedro Rodríguez" },
-    { "year": 1983, "pole": "Alain Prost", "winner": "Alain Prost" },
-    { "year": 1985, "pole": "Alain Prost", "winner": "Alain Prost" },
-    { "year": 1986, "pole": "Nelson Piquet", "winner": "Nigel Mansell" },
-    { "year": 1987, "pole": "Nigel Mansell", "winner": "Alain Prost" },
-    { "year": 1988, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
-    { "year": 1989, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
-    { "year": 1990, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
-    { "year": 1991, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
-    { "year": 1992, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
-    { "year": 1993, "pole": "Alain Prost", "winner": "Alain Prost" },
-    { "year": 1994, "pole": "Rubens Barrichello", "winner": "Damon Hill" },
-    { "year": 1995, "pole": "Gerhard Berger", "winner": "Michael Schumacher" },
-    { "year": 1996, "pole": "Jacques Villeneuve", "winner": "Michael Schumacher" },
-    { "year": 1997, "pole": "Jacques Villeneuve", "winner": "Jacques Villeneuve" },
-    { "year": 1998, "pole": "Mika Häkkinen", "winner": "Damon Hill" },
-    { "year": 1999, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
-    { "year": 2000, "pole": "Mika Häkkinen", "winner": "Rubens Barrichello" },
-    { "year": 2001, "pole": "Juan Pablo Montoya", "winner": "Michael Schumacher" },
-    { "year": 2002, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-    { "year": 2004, "pole": "Jarno Trulli", "winner": "Kimi Räikkönen" },
-    { "year": 2005, "pole": "Juan Pablo Montoya", "winner": "Kimi Räikkönen" },
-    { "year": 2007, "pole": "Kimi Räikkönen", "winner": "Kimi Räikkönen" },
-    { "year": 2008, "pole": "Lewis Hamilton", "winner": "Felipe Massa" },
-    { "year": 2009, "pole": "Giancarlo Fisichella", "winner": "Kimi Räikkönen" },
-    { "year": 2010, "pole": "Mark Webber", "winner": "Lewis Hamilton" },
-    { "year": 2011, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-    { "year": 2012, "pole": "Jenson Button", "winner": "Jenson Button" },
-    { "year": 2013, "pole": "Lewis Hamilton", "winner": "Sebastian Vettel" },
-    { "year": 2014, "pole": "Nico Rosberg", "winner": "Daniel Ricciardo" },
-    { "year": 2015, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2016, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
-    { "year": 2017, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2018, "pole": "Lewis Hamilton", "winner": "Sebastian Vettel" },
-    { "year": 2019, "pole": "Charles Leclerc", "winner": "Charles Leclerc" },
-    { "year": 2020, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2021, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-    { "year": 2022, "pole": "Carlos Sainz", "winner": "Max Verstappen" },
-    { "year": 2023, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
-    { "year": 2024, "pole": "Charles Leclerc", "winner": "Lewis Hamilton" },
-    { "year": 2025, "pole": "Lando Norris", "winner": "Oscar Piastri" }
-  ]
-  },
-
-  "hungaroring": {
-  "name": "Hungaroring",
-  "media": {
-    "image": "../img/circuits/hungary.png",
-    "layout": "../img/circuits/hungary-layout.png"
-  },
-  "stats": {
-    "length": "4.381",
-    "laps": 70,
-    "turns": 14,
-    "overtakeZones": 1
-  },
-  "topSpeed": {
-    "speed": "315"
-  },
-  "lapRecord": {
-    "time": "1:16.627",
-    "driver": "Lewis Hamilton",
-    "year": 2020
-  },
-  "characteristics": {
-    "downforce": 85,
-    "overtaking": 20,
-    "tyreDeg": 70,
-    "trackType": "permanent"
-  },
-  "history": [
-    { "year": 1986, "pole": "Ayrton Senna", "winner": "Nelson Piquet" },
-    { "year": 1987, "pole": "Nigel Mansell", "winner": "Nelson Piquet" },
-    { "year": 1988, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
-    { "year": 1989, "pole": "Riccardo Patrese", "winner": "Nigel Mansell" },
-    { "year": 1990, "pole": "Thierry Boutsen", "winner": "Thierry Boutsen" },
-    { "year": 1991, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
-    { "year": 1992, "pole": "Riccardo Patrese", "winner": "Riccardo Patrese" },
-    { "year": 1993, "pole": "Alain Prost", "winner": "Alain Prost" },
-    { "year": 1994, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-    { "year": 1995, "pole": "Damon Hill", "winner": "Damon Hill" },
-    { "year": 1996, "pole": "Michael Schumacher", "winner": "Damon Hill" },
-    { "year": 1997, "pole": "Michael Schumacher", "winner": "Heinz-Harald Frentzen" },
-    { "year": 1998, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
-    { "year": 1999, "pole": "Mika Häkkinen", "winner": "David Coulthard" },
-    { "year": 2000, "pole": "Michael Schumacher", "winner": "Mika Häkkinen" },
-    { "year": 2001, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-    { "year": 2002, "pole": "Rubens Barrichello", "winner": "Rubens Barrichello" },
-    { "year": 2003, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
-    { "year": 2004, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-    { "year": 2005, "pole": "Michael Schumacher", "winner": "Kimi Räikkönen" },
-    { "year": 2006, "pole": "Kimi Räikkönen", "winner": "Jenson Button" },
-    { "year": 2007, "pole": "Lewis Hamilton", "winner": "Kimi Räikkönen" },
-    { "year": 2008, "pole": "Lewis Hamilton", "winner": "Kimi Räikkönen" },
-    { "year": 2009, "pole": "Fernando Alonso", "winner": "Mark Webber" },
-    { "year": 2010, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-    { "year": 2011, "pole": "Sebastian Vettel", "winner": "Jenson Button" },
-    { "year": 2012, "pole": "Lewis Hamilton", "winner": "Sebastian Vettel" },
-    { "year": 2013, "pole": "Lewis Hamilton", "winner": "Mark Webber" },
-    { "year": 2014, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
-    { "year": 2015, "pole": "Lewis Hamilton", "winner": "Daniel Ricciardo" },
-    { "year": 2016, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
-    { "year": 2017, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-    { "year": 2018, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2019, "pole": "Max Verstappen", "winner": "Lewis Hamilton" },
-    { "year": 2020, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2021, "pole": "Lewis Hamilton", "winner": "Esteban Ocon" },
-    { "year": 2022, "pole": "George Russell", "winner": "Max Verstappen" },
-    { "year": 2023, "pole": "Lewis Hamilton", "winner": "Max Verstappen" },
-    { "year": 2024, "pole": "Lando Norris", "winner": "Oscar Piastri" },
-    { "year": 2025, "pole": "Charles Leclerc", "winner": "Lando Norris" }
-  ]
-  },
-
-  "circuit-zandvoort": {
-  "name": "Circuit Zandvoort",
-  "media": {
-    "image": "../img/circuits/zandvoort.png",
-    "layout": "../img/circuits/zandvoort-layout.png"
-  },
-  "stats": {
-    "length": "4.259",
-    "laps": 72,
-    "turns": 14,
-    "overtakeZones": 1
-  },
-  "topSpeed": {
-    "speed": "338"
-  },
-  "lapRecord": {
-    "time": "1:11.097",
-    "driver": "Lewis Hamilton",
-    "year": 2021
-  },
-  "characteristics": {
-    "downforce": 80,
-    "overtaking": 20,
-    "tyreDeg": 65,
-    "trackType": "permanent"
-  },
-  "history": [
-    { "year": 1952, "pole": "Alberto Ascari", "winner": "Alberto Ascari" },
-    { "year": 1953, "pole": "Alberto Ascari", "winner": "Alberto Ascari" },
-    { "year": 1955, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
-    { "year": 1958, "pole": "Stuart Lewis-Evans", "winner": "Stirling Moss" },
-    { "year": 1959, "pole": "Jo Bonnier", "winner": "Jo Bonnier" },
-    { "year": 1960, "pole": "Stirling Moss", "winner": "Stirling Moss" },
-    { "year": 1961, "pole": "Phil Hill", "winner": "Jim Clark" },
-    { "year": 1962, "pole": "John Surtees", "winner": "Bruce McLaren" },
-    { "year": 1963, "pole": "Jim Clark", "winner": "Jim Clark" },
-    { "year": 1964, "pole": "Dan Gurney", "winner": "Jim Clark" },
-    { "year": 1965, "pole": "Graham Hill", "winner": "Jim Clark" },
-    { "year": 1966, "pole": "Jack Brabham", "winner": "Jack Brabham" },
-    { "year": 1967, "pole": "Graham Hill", "winner": "Jim Clark" },
-    { "year": 1968, "pole": "Chris Amon", "winner": "Jackie Stewart" },
-    { "year": 1969, "pole": "Jochen Rindt", "winner": "Jackie Stewart" },
-    { "year": 1970, "pole": "Jochen Rindt", "winner": "Jochen Rindt" },
-    { "year": 1971, "pole": "Jacky Ickx", "winner": "Jacky Ickx" },
-    { "year": 1973, "pole": "Ronnie Peterson", "winner": "Jackie Stewart" },
-    { "year": 1974, "pole": "Niki Lauda", "winner": "Niki Lauda" },
-    { "year": 1975, "pole": "Niki Lauda", "winner": "James Hunt" },
-    { "year": 1976, "pole": "Ronnie Peterson", "winner": "James Hunt" },
-    { "year": 1977, "pole": "Mario Andretti", "winner": "Niki Lauda" },
-    { "year": 1978, "pole": "Mario Andretti", "winner": "Mario Andretti" },
-    { "year": 1979, "pole": "René Arnoux", "winner": "Gilles Villeneuve" },
-    { "year": 1980, "pole": "René Arnoux", "winner": "René Arnoux" },
-    { "year": 1981, "pole": "Alain Prost", "winner": "Alan Jones" },
-    { "year": 1982, "pole": "René Arnoux", "winner": "Derek Warwick" },
-    { "year": 1983, "pole": "Nelson Piquet", "winner": "René Arnoux" },
-    { "year": 1984, "pole": "Alain Prost", "winner": "Niki Lauda" },
-    { "year": 1985, "pole": "Nelson Piquet", "winner": "Alain Prost" },
-    { "year": 2021, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-    { "year": 2022, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-    { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-    { "year": 2024, "pole": "Lando Norris", "winner": "Lando Norris" },
-    { "year": 2025, "pole": "Oscar Piastri", "winner": "Oscar Piastri" }
-  ]
-  },
-
-  "autodromo-nazionale-di-monza": {
-  "name": "Autodromo Nazionale di Monza",
-  "media": {
-    "image": "../img/circuits/monza.png",
-    "layout": "../img/circuits/monza-layout.png"
-  },
-  "stats": {
-    "length": "5.793",
-    "laps": 53,
-    "turns": 11,
-    "overtakeZones": 2
-  },
-  "topSpeed": {
-    "speed": "372"
-  },
-  "lapRecord": {
-    "time": "1:21.046",
-    "driver": "Rubens Barrichello",
-    "year": 2004
-  },
-  "characteristics": {
-    "downforce": 15,
-    "overtaking": 85,
-    "tyreDeg": 40,
-    "trackType": "permanent"
-  },
-  "history": [
-    { "year": 1950, "pole": "Juan Manuel Fangio", "winner": "Giuseppe Farina" },
-    { "year": 1951, "pole": "Juan Manuel Fangio", "winner": "Alberto Ascari" },
-    { "year": 1952, "pole": "Alberto Ascari", "winner": "Alberto Ascari" },
-    { "year": 1953, "pole": "Alberto Ascari", "winner": "Juan Manuel Fangio" },
-    { "year": 1954, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
-    { "year": 1955, "pole": "Juan Manuel Fangio", "winner": "Juan Manuel Fangio" },
-    { "year": 1956, "pole": "Juan Manuel Fangio", "winner": "Stirling Moss" },
-    { "year": 1957, "pole": "Stuart Lewis-Evans", "winner": "Stirling Moss" },
-    { "year": 1958, "pole": "Stirling Moss", "winner": "Tony Brooks" },
-    { "year": 1959, "pole": "Stirling Moss", "winner": "Stirling Moss" },
-    { "year": 1960, "pole": "Phil Hill", "winner": "Phil Hill" },
-    { "year": 1961, "pole": "Wolfgang von Trips", "winner": "Phil Hill" },
-    { "year": 1962, "pole": "Jim Clark", "winner": "Graham Hill" },
-    { "year": 1963, "pole": "John Surtees", "winner": "Jim Clark" },
-    { "year": 1964, "pole": "John Surtees", "winner": "John Surtees" },
-    { "year": 1965, "pole": "Jim Clark", "winner": "Jim Clark" },
-    { "year": 1966, "pole": "Mike Parkes", "winner": "Ludovico Scarfiotti" },
-    { "year": 1967, "pole": "Jim Clark", "winner": "John Surtees" },
-    { "year": 1968, "pole": "John Surtees", "winner": "Denny Hulme" },
-    { "year": 1969, "pole": "Jochen Rindt", "winner": "Jackie Stewart" },
-    { "year": 1970, "pole": "Jacky Ickx", "winner": "Clay Regazzoni" },
-    { "year": 1971, "pole": "Chris Amon", "winner": "Peter Gethin" },
-    { "year": 1972, "pole": "Jacky Ickx", "winner": "Emerson Fittipaldi" },
-    { "year": 1973, "pole": "Ronnie Peterson", "winner": "Ronnie Peterson" },
-    { "year": 1974, "pole": "Niki Lauda", "winner": "Carlos Pace" },
-    { "year": 1975, "pole": "Niki Lauda", "winner": "Clay Regazzoni" },
-    { "year": 1976, "pole": "Jacques Laffite", "winner": "Ronnie Peterson" },
-    { "year": 1977, "pole": "James Hunt", "winner": "Mario Andretti" },
-    { "year": 1978, "pole": "Mario Andretti", "winner": "Mario Andretti" },
-    { "year": 1979, "pole": "Jean-Pierre Jabouille", "winner": "Jody Scheckter" },
-    { "year": 1981, "pole": "René Arnoux", "winner": "Carlos Reutemann" },
-    { "year": 1982, "pole": "Mario Andretti", "winner": "René Arnoux" },
-    { "year": 1983, "pole": "Riccardo Patrese", "winner": "Nelson Piquet" },
-    { "year": 1984, "pole": "Nelson Piquet", "winner": "Niki Lauda" },
-    { "year": 1985, "pole": "Ayrton Senna", "winner": "Alain Prost" },
-    { "year": 1986, "pole": "Teo Fabi", "winner": "Nelson Piquet" },
-    { "year": 1987, "pole": "Nelson Piquet", "winner": "Nelson Piquet" },
-    { "year": 1988, "pole": "Ayrton Senna", "winner": "Gerhard Berger" },
-    { "year": 1989, "pole": "Ayrton Senna", "winner": "Alain Prost" },
-    { "year": 1990, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
-    { "year": 1991, "pole": "Ayrton Senna", "winner": "Nigel Mansell" },
-    { "year": 1992, "pole": "Nigel Mansell", "winner": "Ayrton Senna" },
-    { "year": 1993, "pole": "Alain Prost", "winner": "Damon Hill" },
-    { "year": 1994, "pole": "Jean Alesi", "winner": "Damon Hill" },
-    { "year": 1995, "pole": "David Coulthard", "winner": "Gerhard Berger" },
-    { "year": 1996, "pole": "Damon Hill", "winner": "Michael Schumacher" },
-    { "year": 1997, "pole": "Jean Alesi", "winner": "Michael Schumacher" },
-    { "year": 1998, "pole": "Michael Schumacher", "winner": "Mika Häkkinen" },
-    { "year": 1999, "pole": "Mika Häkkinen", "winner": "Heinz-Harald Frentzen" },
-    { "year": 2000, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-    { "year": 2001, "pole": "Juan Pablo Montoya", "winner": "Juan Pablo Montoya" },
-    { "year": 2002, "pole": "Juan Pablo Montoya", "winner": "Rubens Barrichello" },
-    { "year": 2003, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-    { "year": 2004, "pole": "Rubens Barrichello", "winner": "Rubens Barrichello" },
-    { "year": 2005, "pole": "Juan Pablo Montoya", "winner": "Juan Pablo Montoya" },
-    { "year": 2006, "pole": "Kimi Räikkönen", "winner": "Michael Schumacher" },
-    { "year": 2007, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
-    { "year": 2008, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-    { "year": 2009, "pole": "Lewis Hamilton", "winner": "Rubens Barrichello" },
-    { "year": 2010, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
-    { "year": 2011, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-    { "year": 2012, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2013, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-    { "year": 2014, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2015, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2017, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2018, "pole": "Kimi Räikkönen", "winner": "Lewis Hamilton" },
-    { "year": 2019, "pole": "Charles Leclerc", "winner": "Charles Leclerc" },
-    { "year": 2020, "pole": "Lewis Hamilton", "winner": "Pierre Gasly" },
-    { "year": 2021, "pole": "Max Verstappen", "winner": "Daniel Ricciardo" },
-    { "year": 2022, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
-    { "year": 2023, "pole": "Carlos Sainz", "winner": "Max Verstappen" },
-    { "year": 2024, "pole": "Lando Norris", "winner": "Lando Norris" },
-    { "year": 2025, "pole": "Max Verstappen", "winner": "Max Verstappen" }
-  ]
-  },
-
-"madring": {
-    "name": "Madring",
-    "media": {
-      "image": "../img/circuits/madring.png",
-      "layout": "../img/circuits/madring-layout.png"
-    },
-    "stats": {
-      "length": "5.416",
-      "laps": 57,
-      "turns": 22,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "N/A"
-    },
-    "lapRecord": {
-      "time": "1:32.026 (Est.)",
-      "driver": "N/A",
-      "year": 2026
-    },
-    "characteristics": {
-      "downforce": 0,
-      "overtaking": 0,
-      "tyreDeg": 0,
-      "trackType": "semi-urban"
-    },
-    "history": [
-      { "year": 2026, "pole": "N/A", "winner": "N/A" }
-    ]
-  },
-
-  "baku-city-circuit": {
-    "name": "Baku City Circuit",
-    "media": {
-      "image": "../img/circuits/baku-street-circuit.png",
-      "layout": "../img/circuits/baku-street-circuit-layout.png"
-    },
-    "stats": {
-      "length": "6.003",
-      "laps": 51,
-      "turns": 20,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "378"
-    },
-    "lapRecord": {
-      "time": "1:43.009",
-      "driver": "Charles Leclerc",
-      "year": 2019
-    },
-    "characteristics": {
-      "downforce": 40,
-      "overtaking": 85,
-      "tyreDeg": 40,
-      "trackType": "street"
-    },
-  "history": [
-    { "year": 2016, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
-    { "year": 2017, "pole": "Lewis Hamilton", "winner": "Daniel Ricciardo" },
-    { "year": 2018, "pole": "Sebastian Vettel", "winner": "Lewis Hamilton" },
-    { "year": 2019, "pole": "Valtteri Bottas", "winner": "Valtteri Bottas" },
-    { "year": 2021, "pole": "Charles Leclerc", "winner": "Sergio Pérez" },
-    { "year": 2022, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
-    { "year": 2023, "pole": "Charles Leclerc", "winner": "Sergio Pérez" },
-    { "year": 2024, "pole": "Charles Leclerc", "winner": "Oscar Piastri" },
-    { "year": 2025, "pole": "Max Verstappen", "winner": "Max Verstappen" }
-  ]
-  },
-
-  "sepang-international-circuit": {
-    "name": "Sepang International Circuit",
-    "media": {
-      "image": "../img/circuits/sepang-international-circuit.png",
-      "layout": "../img/circuits/sepang-international-circuit-layout.png"
-    },
-    "stats": {
-      "length": "5.543",
-      "laps": 56,
-      "turns": 15,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "330"
-    },
-    "lapRecord": {
-      "time": "1:34.080",
-      "driver": "Sebastian Vettel",
-      "year": 2017
-    },
-    "characteristics": {
-      "downforce": 55,
-      "overtaking": 75,
-      "tyreDeg": 85,
-      "trackType": "permanent"
-    },
-    "history": [
-      { "year": 1999, "pole": "Michael Schumacher", "winner": "Eddie Irvine" },
-      { "year": 2000, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-      { "year": 2001, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-      { "year": 2002, "pole": "Michael Schumacher", "winner": "Ralf Schumacher" },
-      { "year": 2003, "pole": "Fernando Alonso", "winner": "Kimi Raikkonen" },
-      { "year": 2004, "pole": "Michael Schumacher", "winner": "Michael Schumacher" },
-      { "year": 2005, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
-      { "year": 2006, "pole": "Giancarlo Fisichella", "winner": "Giancarlo Fisichella" },
-      { "year": 2007, "pole": "Felipe Massa", "winner": "Fernando Alonso" },
-      { "year": 2008, "pole": "Felipe Massa", "winner": "Kimi Raikkonen" },
-      { "year": 2009, "pole": "Jenson Button", "winner": "Jenson Button" },
-      { "year": 2010, "pole": "Mark Webber", "winner": "Sebastian Vettel" },
-      { "year": 2011, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-      { "year": 2012, "pole": "Lewis Hamilton", "winner": "Fernando Alonso" },
-      { "year": 2013, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-      { "year": 2014, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-      { "year": 2015, "pole": "Lewis Hamilton", "winner": "Sebastian Vettel" },
-      { "year": 2016, "pole": "Lewis Hamilton", "winner": "Daniel Ricciardo" },
-      { "year": 2017, "pole": "Lewis Hamilton", "winner": "Max Verstappen" }
-    ]
-  },
-
-  "marina-bay-street-circuit": {
-    "name": "Marina Bay Street Circuit",
-    "media": {
-      "image": "../img/circuits/marina-bay-street-circuit.png",
-      "layout": "../img/circuits/marina-bay-street-circuit-layout.png"
-    },
-    "stats": {
-      "length": "4.940",
-      "laps": 62,
-      "turns": 19,
-      "overtakeZones": 4
-    },
-    "topSpeed": {
-      "speed": "320"
-    },
-    "lapRecord": {
-      "time": "1:34.486",
-      "driver": "Daniel Ricciardo",
-      "year": 2024
-    },
-    "characteristics": {
-      "downforce": 80,
-      "overtaking": 40,
-      "tyreDeg": 70,
-      "trackType": "street"
-    },
-  "history": [
-    { "year": 2008, "pole": "Felipe Massa", "winner": "Fernando Alonso" },
-    { "year": 2009, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2010, "pole": "Fernando Alonso", "winner": "Fernando Alonso" },
-    { "year": 2011, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-    { "year": 2012, "pole": "Lewis Hamilton", "winner": "Sebastian Vettel" },
-    { "year": 2013, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-    { "year": 2014, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2015, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-    { "year": 2016, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
-    { "year": 2017, "pole": "Sebastian Vettel", "winner": "Lewis Hamilton" },
-    { "year": 2018, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2019, "pole": "Charles Leclerc", "winner": "Sebastian Vettel" },
-    { "year": 2022, "pole": "Charles Leclerc", "winner": "Sergio Perez" },
-    { "year": 2023, "pole": "Carlos Sainz", "winner": "Carlos Sainz" },
-    { "year": 2024, "pole": "Lando Norris", "winner": "Lando Norris" },
-    { "year": 2025, "pole": "George Russell", "winner": "George Russell" }
-  ]
-  },
-
-"cota": {
-    "name": "Circuit of The Americas",
-    "media": {
-      "image": "../img/circuits/cota.png",
-      "layout": "../img/circuits/cota-layout.png"
-    },
-    "stats": {
-      "length": "5.513",
-      "laps": 56,
-      "turns": 20,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "335"
-    },
-    "lapRecord": {
-      "time": "1:36.169",
-      "driver": "Charles Leclerc",
-      "year": 2019
-    },
-    "characteristics": {
-      "downforce": 75,
-      "overtaking": 80,
-      "tyreDeg": 85,
-      "trackType": "permanent"
-    },
-  "history": [
-    { "year": 2012, "pole": "Sebastian Vettel", "winner": "Lewis Hamilton" },
-    { "year": 2013, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-    { "year": 2014, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
-    { "year": 2015, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
-    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2017, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2018, "pole": "Lewis Hamilton", "winner": "Kimi Räikkönen" },
-    { "year": 2019, "pole": "Valtteri Bottas", "winner": "Valtteri Bottas" },
-    { "year": 2021, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-    { "year": 2022, "pole": "Carlos Sainz", "winner": "Max Verstappen" },
-    { "year": 2023, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
-    { "year": 2024, "pole": "Lando Norris", "winner": "Charles Leclerc" },
-    { "year": 2025, "pole": "Max Verstappen", "winner": "Max Verstappen" }
-  ]
-  },
-
-"hermanos-rodriguez": {
-    "name": "Autódromo Hermanos Rodríguez",
-    "media": {
-      "image": "../img/circuits/hermanos-rodriguez.png",
-      "layout": "../img/circuits/hermanos-rodriguez-layout.png"
-    },
-    "stats": {
-      "length": "4.304",
-      "laps": 71,
-      "turns": 17,
-      "overtakeZones": 3
-    },
-    "topSpeed": {
-      "speed": "372"
-    },
-    "lapRecord": {
-      "time": "1:17.774",
-      "driver": "Valtteri Bottas",
-      "year": 2021
-    },
-    "characteristics": {
-      "downforce": 100,
-      "overtaking": 60,
-      "tyreDeg": 50,
-      "trackType": "permanent"
-    },
-  "history": [
-    { "year": 1963, "pole": "Jim Clark", "winner": "Jim Clark" },
-    { "year": 1964, "pole": "Jim Clark", "winner": "Dan Gurney" },
-    { "year": 1965, "pole": "Jim Clark", "winner": "Richie Ginther" },
-    { "year": 1966, "pole": "John Surtees", "winner": "John Surtees" },
-    { "year": 1967, "pole": "Jim Clark", "winner": "Jim Clark" },
-    { "year": 1968, "pole": "Jo Siffert", "winner": "Graham Hill" },
-    { "year": 1969, "pole": "Jack Brabham", "winner": "Denny Hulme" },
-    { "year": 1970, "pole": "Clay Regazzoni", "winner": "Jacky Ickx" },
-    { "year": 1986, "pole": "Ayrton Senna", "winner": "Gerhard Berger" },
-    { "year": 1987, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
-    { "year": 1988, "pole": "Ayrton Senna", "winner": "Alain Prost" },
-    { "year": 1989, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
-    { "year": 1990, "pole": "Gerhard Berger", "winner": "Alain Prost" },
-    { "year": 1991, "pole": "Riccardo Patrese", "winner": "Riccardo Patrese" },
-    { "year": 1992, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
-    { "year": 2015, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
-    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2017, "pole": "Sebastian Vettel", "winner": "Max Verstappen" },
-    { "year": 2018, "pole": "Daniel Ricciardo", "winner": "Max Verstappen" },
-    { "year": 2019, "pole": "Charles Leclerc", "winner": "Lewis Hamilton" },
-    { "year": 2021, "pole": "Valtteri Bottas", "winner": "Max Verstappen" },
-    { "year": 2022, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-    { "year": 2023, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
-    { "year": 2024, "pole": "Carlos Sainz", "winner": "Carlos Sainz" },
-    { "year": 2025, "pole": "Lando Norris", "winner": "Lando Norris" }
-  ]
-  },
-
-"autodromo-jose-carlos-pace": {
-    "name": "Autódromo José Carlos Pace",
-    "media": {
-      "image": "../img/circuits/autodromo-jose-carlos-pace.png",
-      "layout": "../img/circuits/autodromo-jose-carlos-pace-layout.png"
-    },
-    "stats": {
-      "length": "4.309",
-      "laps": 71,
-      "turns": 15,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "338"
-    },
-    "lapRecord": {
-      "time": "1:10.540",
-      "driver": "Valtteri Bottas",
-      "year": 2018
-    },
-    "characteristics": {
-      "downforce": 70,
-      "overtaking": 85,
-      "tyreDeg": 65,
-      "trackType": "permanent"
-    },
-  "history": [
-    { "year": 1973, "pole": "Ronnie Peterson", "winner": "Emerson Fittipaldi" },
-    { "year": 1974, "pole": "Emerson Fittipaldi", "winner": "Emerson Fittipaldi" },
-    { "year": 1975, "pole": "Jean-Pierre Jarier", "winner": "Carlos Pace" },
-    { "year": 1976, "pole": "James Hunt", "winner": "Niki Lauda" },
-    { "year": 1977, "pole": "James Hunt", "winner": "Carlos Reutemann" },
-    { "year": 1979, "pole": "Jacques Laffite", "winner": "Jacques Laffite" },
-    { "year": 1980, "pole": "Jean-Pierre Jabouille", "winner": "René Arnoux" },
-    { "year": 1990, "pole": "Ayrton Senna", "winner": "Alain Prost" },
-    { "year": 1991, "pole": "Ayrton Senna", "winner": "Ayrton Senna" },
-    { "year": 1992, "pole": "Nigel Mansell", "winner": "Nigel Mansell" },
-    { "year": 1993, "pole": "Alain Prost", "winner": "Ayrton Senna" },
-    { "year": 1994, "pole": "Ayrton Senna", "winner": "Michael Schumacher" },
-    { "year": 1995, "pole": "Damon Hill", "winner": "Michael Schumacher" },
-    { "year": 1996, "pole": "Damon Hill", "winner": "Damon Hill" },
-    { "year": 1997, "pole": "Jacques Villeneuve", "winner": "Jacques Villeneuve" },
-    { "year": 1998, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
-    { "year": 1999, "pole": "Mika Häkkinen", "winner": "Mika Häkkinen" },
-    { "year": 2000, "pole": "Mika Häkkinen", "winner": "Michael Schumacher" },
-    { "year": 2001, "pole": "Michael Schumacher", "winner": "David Coulthard" },
-    { "year": 2002, "pole": "Juan Pablo Montoya", "winner": "Michael Schumacher" },
-    { "year": 2003, "pole": "Rubens Barrichello", "winner": "Giancarlo Fisichella" },
-    { "year": 2004, "pole": "Rubens Barrichello", "winner": "Juan Pablo Montoya" },
-    { "year": 2005, "pole": "Fernando Alonso", "winner": "Juan Pablo Montoya" },
-    { "year": 2006, "pole": "Felipe Massa", "winner": "Felipe Massa" },
-    { "year": 2007, "pole": "Felipe Massa", "winner": "Kimi Räikkönen" },
-    { "year": 2008, "pole": "Felipe Massa", "winner": "Felipe Massa" },
-    { "year": 2009, "pole": "Rubens Barrichello", "winner": "Mark Webber" },
-    { "year": 2010, "pole": "Nico Hülkenberg", "winner": "Sebastian Vettel" },
-    { "year": 2011, "pole": "Sebastian Vettel", "winner": "Mark Webber" },
-    { "year": 2012, "pole": "Lewis Hamilton", "winner": "Jenson Button" },
-    { "year": 2013, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-    { "year": 2014, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
-    { "year": 2015, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
-    { "year": 2016, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2017, "pole": "Valtteri Bottas", "winner": "Sebastian Vettel" },
-    { "year": 2018, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2019, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-    { "year": 2021, "pole": "Valtteri Bottas", "winner": "Lewis Hamilton" },
-    { "year": 2022, "pole": "Kevin Magnussen", "winner": "George Russell" },
-    { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-    { "year": 2024, "pole": "Lando Norris", "winner": "Max Verstappen" },
-    { "year": 2025, "pole": "Lando Norris", "winner": "Lando Norris" }
-  ]
-  },
-
-"las-vegas-strip-circuit": {
-    "name": "Las Vegas Strip Circuit",
-    "media": {
-      "image": "../img/circuits/las-vegas-strip-circuit.png",
-      "layout": "../img/circuits/las-vegas-strip-circuit-layout.png"
-    },
-    "stats": {
-      "length": "6.201",
-      "laps": 50,
-      "turns": 17,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "369"
-    },
-    "lapRecord": {
-      "time": "1:35.490",
-      "driver": "Oscar Piastri",
-      "year": 2023
-    },
-    "characteristics": {
-      "downforce": 15,
-      "overtaking": 90,
-      "tyreDeg": 30,
-      "trackType": "street"
-    },
-  "history": [
-    { "year": 2023, "pole": "Charles Leclerc", "winner": "Max Verstappen" },
-    { "year": 2024, "pole": "George Russell", "winner": "George Russell" },
-    { "year": 2025, "pole": "Lando Norris", "winner": "Max Verstappen" }
-  ]
-  },
-
-"lusail-international-circuit": {
-    "name": "Lusail International Circuit",
-    "media": {
-      "image": "../img/circuits/lusail-international-circuit.png",
-      "layout": "../img/circuits/lusail-international-circuit-layout.png"
-    },
-    "stats": {
-      "length": "5.419",
-      "laps": 57,
-      "turns": 16,
-      "overtakeZones": 1
-    },
-    "topSpeed": {
-      "speed": "337"
-    },
-    "lapRecord": {
-      "time": "1:24.319",
-      "driver": "Max Verstappen",
-      "year": 2023
-    },
-    "characteristics": {
-      "downforce": 65,
-      "overtaking": 40,
-      "tyreDeg": 80,
-      "trackType": "permanent"
-    },
-  "history": [
-    { "year": 2021, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-    { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-    { "year": 2024, "pole": "George Russell", "winner": "Max Verstappen" },
-    { "year": 2025, "pole": "Oscar Piastri", "winner": "Max Verstappen" }
-  ]
-  },
-
   "yas-marina-circuit": {
     "name": "Yas Marina Circuit",
-    "media": {
-      "image": "../img/circuits/yas-marina-circuit.png",
-      "layout": "../img/circuits/yas-marina-circuit-layout.png"
-    },
+    "active": true,
     "stats": {
       "length": "5.281",
       "laps": 58,
@@ -1446,25 +628,6 @@
       "overtaking": 60,
       "tyreDeg": 50,
       "trackType": "permanent"
-    },
-    "history": [
-      { "year": 2009, "pole": "Lewis Hamilton", "winner": "Sebastian Vettel" },
-      { "year": 2010, "pole": "Sebastian Vettel", "winner": "Sebastian Vettel" },
-      { "year": 2011, "pole": "Sebastian Vettel", "winner": "Lewis Hamilton" },
-      { "year": 2012, "pole": "Lewis Hamilton", "winner": "Kimi Räikkönen" },
-      { "year": 2013, "pole": "Mark Webber", "winner": "Sebastian Vettel" },
-      { "year": 2014, "pole": "Nico Rosberg", "winner": "Lewis Hamilton" },
-      { "year": 2015, "pole": "Nico Rosberg", "winner": "Nico Rosberg" },
-      { "year": 2016, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-      { "year": 2017, "pole": "Valtteri Bottas", "winner": "Valtteri Bottas" },
-      { "year": 2018, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-      { "year": 2019, "pole": "Lewis Hamilton", "winner": "Lewis Hamilton" },
-      { "year": 2020, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-      { "year": 2021, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-      { "year": 2022, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-      { "year": 2023, "pole": "Max Verstappen", "winner": "Max Verstappen" },
-      { "year": 2024, "pole": "Lando Norris", "winner": "Lando Norris" },
-      { "year": 2025, "pole": "Max Verstappen", "winner": "Max Verstappen" }
-    ]
+    }
   }
 }
