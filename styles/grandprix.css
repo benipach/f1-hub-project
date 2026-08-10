@@ -960,6 +960,25 @@ border-radius: 16px;
 overflow: hidden;
 }
 
+/* Make history tables occupy 60% width and leave space on the right
+   for future content (e.g. drivers holding records). Keep full width
+   on small screens. */
+#history-card .race-table-wrap,
+#circuit-history-card .race-table-wrap {
+    width: 70%;
+    float: left;
+    margin: 0 2rem 1rem 0;
+}
+
+@media (max-width: 900px) {
+    #history-card .race-table-wrap,
+    #circuit-history-card .race-table-wrap {
+        width: 100%;
+        float: none;
+        margin: 0 0 1rem 0;
+    }
+}
+
 /* Estado de carga/vacío */
 .result-pending-text {
 display: block;
@@ -1253,8 +1272,8 @@ border: 1px solid rgba(255,255,255,0.05);
 
 /* ---- HISTORY TABLE SPECIFICS ---- */
 .ht-year {
-font-family: 'F1-Bold', sans-serif;
-color: rgba(255,255,255,0.4);
+font-family: 'F1-Regular';
+color: var(--text-light);
 width: 70px;
 }
 
@@ -1369,8 +1388,8 @@ border: 1px solid rgba(255,255,255,0.05);
 
     #moments-card .data-table th:nth-child(3),
     #moments-card .data-table td:nth-child(3) { display: none; }
-    #history-card .data-table td:last-child,
-    #history-card .data-table th:last-child { display: none; }
+    #history-card .data-table td.ht-circuit,
+    #history-card .data-table th:nth-child(3) { display: none; }
 
     .data-table { font-size: 13px; }
 

@@ -77,6 +77,21 @@ async function loadCircuits(base = '.') {
     return res.json();
 }
 
+async function loadRacesHistory(base = '.') {
+    const res = await fetch(`${base}/data/racesHistory.json`);
+    if (!res.ok) throw new Error(`racesHistory.json — HTTP ${res.status}`);
+    const data = await res.json();
+    // Aplana el objeto agrupado por temporada { "1950": [...], "2026": [...] }
+    // a un array plano, agregando "year" (numérico) a cada fila.
+    const flat = [];
+    for (const [year, races] of Object.entries(data.racesHistory || {})) {
+        for (const race of races) {
+            flat.push({ ...race, year: Number(year) });
+        }
+    }
+    return flat;
+}
+
 async function loadDrivers(base = '.') {
     const res = await fetch(`${base}/data/drivers.json`);
     if (!res.ok) throw new Error(`drivers.json — HTTP ${res.status}`);
@@ -151,9 +166,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!gpId) return;
 
     try {
-        const [season, circuits, { teamMap: driverTeams, natMap: driverNats, numberMap: driverNumbers }] = await Promise.all([
+        const [season, circuits, racesHistory, { teamMap: driverTeams, natMap: driverNats, numberMap: driverNumbers }] = await Promise.all([
             loadSeason('..'),
             loadCircuits('..'),
+            loadRacesHistory('..'),
             loadDrivers('..')
         ]);
 
@@ -163,8 +179,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (!gp) { console.error('GP no encontrado:', gpId); return; }
 
+        // Historia de este Grand Prix puntual (puede estar vacía, ej. un GP nuevo)
+        const gpHistoryRows = racesHistory
+            .filter(r => r.gpId === gpId)
+            .sort((a, b) => b.year - a.year);
+
+        // Historia del circuito que NO pertenece a este mismo GP —
+        // ej. el Malaysian GP viejo, para la página de "Bahrain GP in Malaysia"
+        const circuitHistoryRows = racesHistory
+            .filter(r => r.circuitId === circuitId && r.gpId !== gpId)
+            .sort((a, b) => b.year - a.year);
+
         injectColors(gp.color);
-        renderHero(gp, circuit, circuitId);
+        renderHero(gp, circuit, circuitId, gpHistoryRows);
         renderGPInfo(gp);
         renderSchedule(gp);
         renderRaceWeekendData(circuit);
@@ -181,7 +208,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderRaceResult(getSessionResults(gp, 'race'), getSessionResults(gp, 'qualifying'), 'race-card', driverTeams, driverNats, driverNumbers);
 
         renderWeather(gp);
-        renderHistory(circuit);
+        renderGPHistory(gpHistoryRows);
+        renderCircuitHistory(circuitHistoryRows);
         initScrollAnimations();
         initSessionTabs();
 
@@ -245,7 +273,7 @@ function renderGPInfo(gp) {
 }
 
 // ── HERO ─────────────────────────────────────────────────────────
-function renderHero(gp, circuit, circuitId) {
+function renderHero(gp, circuit, circuitId, gpHistoryRows = []) {
     const heroImg = document.getElementById('race-hero-img');
     if (heroImg) {
         heroImg.src = `../img/circuits/${circuitId}.png`;
@@ -280,7 +308,10 @@ function renderHero(gp, circuit, circuitId) {
         document.getElementById('stat-overtake').textContent = s.overtakeZones || '-';
     }
 
-    document.getElementById('stat-first').textContent = circuit?.history?.[0]?.year || '-';
+    const firstYear = gpHistoryRows.length
+        ? gpHistoryRows[gpHistoryRows.length - 1].year
+        : null;
+    document.getElementById('stat-first').textContent = firstYear || '-';
 }
 
 // ── RACE WEEKEND DATA (pit loss / track characteristics / tyres) ──
@@ -790,18 +821,86 @@ function renderWeather(gp) {
 }
 
 // ── HISTORY ──────────────────────────────────────────────────────
-function renderHistory(circuit) {
-    const container = document.getElementById('history-card');
-    if (!container || !circuit?.history?.length) return;
+// Fila de tabla compartida por las dos tablas de historia de abajo.
+// showCircuit=true agrega la columna de circuito (para Grand Prix History,
+// donde el mismo GP puede haber corrido en circuitos distintos con el tiempo).
+function historyRowHtml(row, { showCircuit } = {}) {
+    const circuitName = showCircuit
+        ? `<td class="ht-circuit">${circuitDisplayName(row.circuitId)}</td>`
+        : '';
+    const teamId   = row.team || '';
+    const logoFile = TEAM_LOGO_MAP[teamId];
+    const logoHtml = logoFile
+        ? `<img class="res-team-logo" src="../img/teams/${logoFile}.png" alt="${teamId}">`
+        : `<span class="res-team-logo-placeholder"></span>`;
 
-    const rows = [...circuit.history].reverse().map(h => `
-        <tr class="${h.year === 2026 ? 'current-year' : ''}">
-            <td class="ht-year">${h.year}</td>
-            <td class="ht-winner">${h.winner ? formatDriverName(h.winner) : '—'}</td>
-            <td><span class="ht-team-badge">${h.winnerTeam || '—'}</span></td>
-            <td>${h.pole ? formatDriverName(h.pole) : '—'}</td>
-        </tr>
-    `).join('');
+    return `
+        <tr class="${row.year === 2026 ? 'current-year' : ''}">
+            <td class="ht-year">${row.year}</td>
+            ${circuitName}
+            <td class="ht-winner">${row.winner && row.winner !== 'N/A' ? formatDriverName(row.winner) : '—'}</td>
+            <td class="res-team-cell">
+                <div class="res-team">
+                    ${logoHtml}
+                    <span class="res-team-name">${teamId || '—'}</span>
+                </div>
+            </td>
+        </tr>`;
+}
+
+// Nombre "lindo" del circuito a partir del circuitId (usado solo acá,
+// no hace falta el objeto circuits completo para esto)
+function circuitDisplayName(circuitId) {
+    return circuitId
+        ? circuitId.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')
+        : '—';
+}
+
+// "Grand Prix History": historial de este GP puntual, filtrado por gpId.
+// Se muestra siempre, aunque esté vacía (ej. un GP nuevo sin ediciones previas).
+function renderGPHistory(rows) {
+    const container = document.getElementById('history-card');
+    if (!container) return;
+
+    if (!rows.length) {
+        container.innerHTML = `<p class="result-pending-text">No previous editions of this Grand Prix yet.</p>`;
+        return;
+    }
+
+    const bodyRows = rows.map(r => historyRowHtml(r, { showCircuit: true })).join('');
+
+    container.innerHTML = `
+        <div class="race-table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Circuit</th>
+                        <th>Winner</th>
+                        <th class="res-team-col">Team</th>
+                    </tr>
+                </thead>
+                <tbody>${bodyRows}</tbody>
+            </table>
+        </div>`;
+}
+
+// "Previous races at this circuit": otras carreras (de OTRO gpId) corridas
+// en el mismo circuito. Se oculta la sección entera si no hay nada distinto
+// que mostrar (ej. un GP que siempre corrió con el mismo nombre en su circuito).
+function renderCircuitHistory(rows) {
+    const section   = document.getElementById('section-circuit-history');
+    const container = document.getElementById('circuit-history-card');
+    if (!section || !container) return;
+
+    if (!rows.length) {
+        section.style.display = 'none';
+        container.innerHTML = '';
+        return;
+    }
+
+    section.style.display = '';
+    const bodyRows = rows.map(r => historyRowHtml(r, { showCircuit: false })).join('');
 
     container.innerHTML = `
         <div class="race-table-wrap">
@@ -811,10 +910,9 @@ function renderHistory(circuit) {
                         <th>Year</th>
                         <th>Winner</th>
                         <th class="res-team-col">Team</th>
-                        <th>Pole Position</th>
                     </tr>
                 </thead>
-                <tbody>${rows}</tbody>
+                <tbody>${bodyRows}</tbody>
             </table>
         </div>`;
 }
