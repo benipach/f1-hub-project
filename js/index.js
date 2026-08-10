@@ -192,7 +192,7 @@ function updateDashboard(season, circuits) {
     if (sprintPill) sprintPill.style.display = nextGP.sprint ? 'inline-flex' : 'none';
 
     const circuitBtn = document.getElementById('hero-circuit-btn');
-    if (circuitBtn) circuitBtn.href = `./races/race.html?gp=${nextId}`;
+    if (circuitBtn) circuitBtn.href = `./grandsprix/grandprix.html?gp=${nextId}`;
 
     renderHeroSchedule(nextGP, nextId);
     updateRacecards(season, nextId, now, circuits);
@@ -244,7 +244,7 @@ function updateRacecards(season, nextId, now, circuits) {
 
         card.classList.remove('race-card-ended', 'race-card-next', 'race-card-next-expanded', 'race-card-upcoming', 'race-card-cancelled');
         if (spanEl) spanEl.className = 'race-status';
-        if (linkEl) linkEl.href = `./races/race.html?gp=${gpId}`;
+        if (linkEl) linkEl.href = `./grandsprix/grandprix.html?gp=${gpId}`;
 
         // Sprint weekends get a gold accent + badge regardless of status,
         // so the calendar isn't just red/blue/grey everywhere
@@ -287,7 +287,7 @@ function updateRacecards(season, nextId, now, circuits) {
 
 // Injects a compact top-3 podium table (pos, gap to leader, driver + team
 // logo) into an ended race card, right before the "View Full Results" link.
-// TEAM_LOGO_MAP comes from race.js, loaded before this script on index.html.
+// TEAM_LOGO_MAP comes from grandprix.js, loaded before this script on index.html.
 function renderTop3MiniTable(card, gp) {
     const contentEl = card.querySelector('.race-card-content');
     const linkEl    = card.querySelector('.race-link');
@@ -371,7 +371,7 @@ function renderNextCard(card, gp, gpId, circuits, dateText, isSprint) {
                 </div>
                 <h3 class="race-card-next-title">${flag} ${gp.name}</h3>
                 <p class="race-card-next-circuit">${circuit?.name || circuit?.Name || ''}</p>
-                <a class="race-link race-card-next-cta${isLive ? ' race-card-next-cta-live' : ''}" href="./races/race.html?gp=${gpId}">
+                <a class="race-link race-card-next-cta${isLive ? ' race-card-next-cta-live' : ''}" href="./grandsprix/grandprix.html?gp=${gpId}">
                     <span>${isLive ? 'Tune in Live' : 'Show More'}</span><span class="race-card-next-cta-arrow">→</span>
                 </a>
             </div>
@@ -495,7 +495,7 @@ function renderHeroSchedule(gp, gpId, containerId = 'hero-schedule-days') {
         const dataAttr = future && s.start ? ` data-start="${s.start.getTime()}"` : '';
 
         const cta = ended
-            ? `<a href="./races/race.html?gp=${gpId}" class="schedule-session-cta">
+            ? `<a href="./grandsprix/grandprix.html?gp=${gpId}" class="schedule-session-cta">
                 <span>View Session Details</span>
                 <span class="schedule-session-cta-arrow">→</span>
                </a>`
