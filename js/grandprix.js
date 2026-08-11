@@ -92,6 +92,13 @@ async function loadRacesHistory(base = '.') {
     return flat;
 }
 
+async function loadGPRecords(base = '.') {
+    const res = await fetch(`${base}/data/gpRecords.json`);
+    if (!res.ok) throw new Error(`gpRecords.json — HTTP ${res.status}`);
+    const data = await res.json();
+    return data.gpRecords || {};
+}
+
 async function loadDrivers(base = '.') {
     const res = await fetch(`${base}/data/drivers.json`);
     if (!res.ok) throw new Error(`drivers.json — HTTP ${res.status}`);
@@ -166,10 +173,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!gpId) return;
 
     try {
-        const [season, circuits, racesHistory, { teamMap: driverTeams, natMap: driverNats, numberMap: driverNumbers }] = await Promise.all([
+        const [season, circuits, racesHistory, gpRecords, { teamMap: driverTeams, natMap: driverNats, numberMap: driverNumbers }] = await Promise.all([
             loadSeason('..'),
             loadCircuits('..'),
             loadRacesHistory('..'),
+            loadGPRecords('..'),
             loadDrivers('..')
         ]);
 
@@ -208,7 +216,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderRaceResult(getSessionResults(gp, 'race'), getSessionResults(gp, 'qualifying'), 'race-card', driverTeams, driverNats, driverNumbers);
 
         renderWeather(gp);
-        renderGPHistory(gpHistoryRows);
+        renderGPHistory(gpHistoryRows, gpRecords[gpId]);
         renderCircuitHistory(circuitHistoryRows);
         initScrollAnimations();
         initSessionTabs();
@@ -429,7 +437,6 @@ function renderRaceWeekendData(circuit) {
 
 // ── TEAM ID → LOGO FILENAME ──────────────────────────────────────
 const TEAM_LOGO_MAP = {
-    'Mercedes':        'mercedes-logo',
     'Mercedes-AMG':    'mercedes-logo',
     'Ferrari':         'ferrari-logo',
     'McLaren':         'mclaren-logo',
@@ -443,6 +450,9 @@ const TEAM_LOGO_MAP = {
     'Haas F1 Team':    'haas-logo',
     'Audi':            'audi-logo',
     'Cadillac':        'cadillac-logo',
+    'Renault':         'renault-logo',
+    'Lotus':           'lotus-logo',
+    'Brawn GP':        'brawngp-logo'
 };
 
 // ── TEAM ID → PRIMARY COLOR ──────────────────────────────────────────────
@@ -820,13 +830,83 @@ function renderWeather(gp) {
     }
 }
 
+// ── GP RECORDS ───────────────────────────────────────────────────
+// Records de cada Grand Prix (poles, podios, vuelta rápida, etc.) —
+// vienen ya armados desde gpRecords.json, porque son datos que no se
+// pueden derivar de racesHistory.json (esa solo guarda el ganador).
+function renderGPRecords(records) {
+    if (!records || !records.length) return '';
+
+    const items = records.map((r, idx) => {
+        // r.detail can be a single string or an array of lines — arrays render
+        // as a stacked, collapsible list instead of one long run-together sentence.
+        const detailLines = Array.isArray(r.detail) ? r.detail : (r.detail ? [r.detail] : []);
+        const detailId = `gp-record-detail-${idx}`;
+        const toggleHtml = detailLines.length
+            ? `<button type="button" class="gp-record-toggle" aria-expanded="false" aria-controls="${detailId}" aria-label="Toggle details">
+                   <span class="gp-record-toggle-icon">${deltaArrowSvg('down')}</span>
+               </button>`
+            : '';
+        const detailHtml = detailLines.length
+            ? (() => {
+                  // "|" separates N columns (year | team | position); falls back to
+                  // ":" for the simpler 2-column year: value lines.
+                  const rows = detailLines.map(line => line.includes('|')
+                      ? line.split('|').map(cell => cell.trim())
+                      : (line.indexOf(':') > -1
+                          ? [line.slice(0, line.indexOf(':')), line.slice(line.indexOf(':') + 1).trim()]
+                          : [line]));
+                  const colCount = Math.max(...rows.map(r => r.length));
+                  const rowsHtml = rows.map(cells => `<div class="gp-record-detail-row">${
+                      cells.map((cell, i) => `<span class="gp-record-detail-cell${i === 0 ? ' gp-record-detail-year' : ''}">${cell}</span>`).join('')
+                  }</div>`).join('');
+                  return `<div class="gp-record-detail-list" id="${detailId}"><div class="gp-record-detail-inner cols-${colCount}">${rowsHtml}</div></div>`;
+              })()
+            : '';
+
+        return `
+        <div class="gp-record-item">
+            ${toggleHtml}
+            <p class="gp-record-label">${r.label}</p>
+            <p class="gp-record-value">${r.value}</p>
+            <p class="gp-record-sub">${r.sub}</p>
+            ${detailHtml}
+        </div>`;
+    }).join('');
+
+    return `
+        <div class="gp-records-panel">
+            <p class="gp-records-title">Grand Prix Records</p>
+            ${items}
+        </div>`;
+}
+
+// Un solo listener delegado para todos los botones .gp-record-toggle,
+// porque el panel se re-inyecta dinámicamente (innerHTML) y no conviene
+// enganchar listeners individuales cada vez que se renderiza.
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.gp-record-toggle');
+    if (!btn) return;
+
+    const detail = document.getElementById(btn.getAttribute('aria-controls'));
+    if (!detail) return;
+
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!expanded));
+    detail.classList.toggle('is-open', !expanded);
+    btn.classList.toggle('is-expanded', !expanded);
+});
+
 // ── HISTORY ──────────────────────────────────────────────────────
 // Fila de tabla compartida por las dos tablas de historia de abajo.
 // showCircuit=true agrega la columna de circuito (para Grand Prix History,
 // donde el mismo GP puede haber corrido en circuitos distintos con el tiempo).
-function historyRowHtml(row, { showCircuit } = {}) {
+function historyRowHtml(row, { showCircuit = false, showGpName = false } = {}) {
     const circuitName = showCircuit
         ? `<td class="ht-circuit">${circuitDisplayName(row.circuitId)}</td>`
+        : '';
+    const gpNameCell = showGpName
+        ? `<td class="ht-gpname">${row.gpName || '—'}</td>`
         : '';
     const teamId   = row.team || '';
     const logoFile = TEAM_LOGO_MAP[teamId];
@@ -837,6 +917,7 @@ function historyRowHtml(row, { showCircuit } = {}) {
     return `
         <tr class="${row.year === 2026 ? 'current-year' : ''}">
             <td class="ht-year">${row.year}</td>
+            ${gpNameCell}
             ${circuitName}
             <td class="ht-winner">${row.winner && row.winner !== 'N/A' ? formatDriverName(row.winner) : '—'}</td>
             <td class="res-team-cell">
@@ -858,16 +939,18 @@ function circuitDisplayName(circuitId) {
 
 // "Grand Prix History": historial de este GP puntual, filtrado por gpId.
 // Se muestra siempre, aunque esté vacía (ej. un GP nuevo sin ediciones previas).
-function renderGPHistory(rows) {
+function renderGPHistory(rows, records) {
     const container = document.getElementById('history-card');
     if (!container) return;
 
+    const recordsHtml = renderGPRecords(records);
+
     if (!rows.length) {
-        container.innerHTML = `<p class="result-pending-text">No previous editions of this Grand Prix yet.</p>`;
+        container.innerHTML = `<p class="result-pending-text">No previous editions of this Grand Prix yet.</p>${recordsHtml}`;
         return;
     }
 
-    const bodyRows = rows.map(r => historyRowHtml(r, { showCircuit: true })).join('');
+    const bodyRows = rows.map(r => historyRowHtml(r, { showCircuit: true, showGpName: false })).join('');
 
     container.innerHTML = `
         <div class="race-table-wrap">
@@ -882,7 +965,8 @@ function renderGPHistory(rows) {
                 </thead>
                 <tbody>${bodyRows}</tbody>
             </table>
-        </div>`;
+        </div>
+        ${recordsHtml}`;
 }
 
 // "Previous races at this circuit": otras carreras (de OTRO gpId) corridas
@@ -900,7 +984,7 @@ function renderCircuitHistory(rows) {
     }
 
     section.style.display = '';
-    const bodyRows = rows.map(r => historyRowHtml(r, { showCircuit: false })).join('');
+    const bodyRows = rows.map(r => historyRowHtml(r, { showCircuit: false, showGpName: true })).join('');
 
     container.innerHTML = `
         <div class="race-table-wrap">
@@ -908,6 +992,7 @@ function renderCircuitHistory(rows) {
                 <thead>
                     <tr>
                         <th>Year</th>
+                        <th>Grand Prix</th>
                         <th>Winner</th>
                         <th class="res-team-col">Team</th>
                     </tr>

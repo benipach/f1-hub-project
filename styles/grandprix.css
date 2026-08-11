@@ -960,10 +960,24 @@ border-radius: 16px;
 overflow: hidden;
 }
 
-/* Make history tables occupy 60% width and leave space on the right
-   for future content (e.g. drivers holding records). Keep full width
-   on small screens. */
-#history-card .race-table-wrap,
+/* #history-card holds both the GP-specific history table and the
+   GP Records panel as two direct sibling children — laid out as an
+   even 50/50 flex row with a fixed 32px gap between them. */
+#history-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+#history-card .race-table-wrap {
+    width: calc(50% - 16px);
+    flex: 1 1 calc(50% - 16px);
+    margin: 0 0 1rem 0;
+    box-sizing: border-box;
+}
+
+/* Circuit history table (different card) keeps its own independent width */
 #circuit-history-card .race-table-wrap {
     width: 70%;
     float: left;
@@ -971,11 +985,161 @@ overflow: hidden;
 }
 
 @media (max-width: 900px) {
-    #history-card .race-table-wrap,
+    #history-card {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    #history-card .race-table-wrap {
+        width: 100%;
+        flex: 1 1 100%;
+        margin: 0 0 1rem 0;
+    }
+
     #circuit-history-card .race-table-wrap {
         width: 100%;
         float: none;
         margin: 0 0 1rem 0;
+    }
+}
+
+/* GP Records panel — ocupa el espacio libre al lado de la tabla */
+.gp-records-panel {
+    float: right;
+    width: 26%;
+    background: rgb(20,20,30);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-sizing: border-box;
+}
+
+.gp-records-title {
+    font-family: 'F1-Regular';
+    font-size: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin: 0 0 1rem 0;
+}
+
+.gp-record-item {
+    position: relative;
+    padding: 0.7rem 1.4rem 0.7rem 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.gp-record-item:first-of-type {
+    border-top: none;
+}
+
+.gp-record-toggle {
+    position: absolute;
+    top: 0.7rem;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.1rem;
+    height: 1.1rem;
+    padding: 0;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    opacity: 0.6;
+    cursor: pointer;
+    transition: opacity 0.15s ease, transform 0.2s ease;
+}
+
+.gp-record-toggle:hover {
+    opacity: 1;
+}
+
+.gp-record-toggle-icon {
+    display: inline-block;
+    font-size: 0.65rem;
+    line-height: 1;
+    transition: transform 0.2s ease;
+}
+
+.gp-record-toggle.is-expanded .gp-record-toggle-icon {
+    transform: rotate(180deg);
+}
+
+.gp-record-label {
+    font-size: 12px;
+    font-family: 'F1-Regular';
+    letter-spacing: 0.1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.gp-record-value {
+    font-family: 'F1-Regular';
+    font-size: 18px;
+    letter-spacing: 0.1px;
+    color: var(--text-light);
+    margin: 0;
+}
+
+.gp-record-sub {
+    font-size: 14px;
+    font-family: 'F1-Regular';
+    color: var(--text-dim);
+    margin: 0.15rem 0 0 0;
+}
+
+.gp-record-detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin: 0;
+    transition: max-height 0.25s ease, opacity 0.2s ease, margin 0.25s ease;
+}
+
+.gp-record-detail-list.is-open {
+    max-height: 400px;
+    opacity: 1;
+    margin: 0.4rem 0 0 0;
+}
+
+.gp-record-detail-inner {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 0.6rem;
+    row-gap: 0.2rem;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.gp-record-detail-inner.cols-3 {
+    grid-template-columns: max-content max-content 1fr;
+}
+
+.gp-record-detail-row {
+    display: contents;
+}
+
+.gp-record-detail-cell {
+    font-size: 14px;
+    font-family: 'F1-Regular';
+    line-height: 1.4;
+    color: var(--text-dim);
+    opacity: 0.75;
+}
+
+.gp-record-detail-year {
+    white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+    .gp-records-panel {
+        float: none;
+        width: 100%;
+        margin-top: 1rem;
     }
 }
 
@@ -1389,7 +1553,7 @@ border: 1px solid rgba(255,255,255,0.05);
     #moments-card .data-table th:nth-child(3),
     #moments-card .data-table td:nth-child(3) { display: none; }
     #history-card .data-table td.ht-circuit,
-    #history-card .data-table th:nth-child(3) { display: none; }
+    #history-card .data-table th:nth-child(2) { display: none; }
 
     .data-table { font-size: 13px; }
 
