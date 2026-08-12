@@ -452,7 +452,8 @@ const TEAM_LOGO_MAP = {
     'Cadillac':        'cadillac-logo',
     'Renault':         'renault-logo',
     'Lotus':           'lotus-logo',
-    'Brawn GP':        'brawngp-logo'
+    'Brawn GP':        'brawngp-logo',
+    'Benetton':        'benetton-logo'
 };
 
 // ── TEAM ID → PRIMARY COLOR ──────────────────────────────────────────────
