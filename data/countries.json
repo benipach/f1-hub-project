@@ -1,0 +1,87 @@
+{
+  "australia": {
+    "name": "Australia",
+    "code": "AUS",
+    "isoCode": "AU"
+  },
+  "austria": {
+    "name": "Austria",
+    "code": "AUT",
+    "isoCode": "AT"
+  },
+  "brazil": {
+    "name": "Brazil",
+    "code": "BRA",
+    "isoCode": "BR"
+  },
+  "france": {
+    "name": "France",
+    "code": "FRA",
+    "isoCode": "FR"
+  },
+  "germany": {
+    "name": "Germany",
+    "code": "GER",
+    "isoCode": "DE"
+  },
+  "hong-kong": {
+    "name": "Hong Kong",
+    "code": "HKG",
+    "isoCode": "HK"
+  },
+  "india": {
+    "name": "India",
+    "code": "IND",
+    "isoCode": "IN"
+  },
+  "ireland": {
+    "name": "Ireland",
+    "code": "IRL",
+    "isoCode": "IE"
+  },
+  "italy": {
+    "name": "Italy",
+    "code": "ITA",
+    "isoCode": "IT"
+  },
+  "japan": {
+    "name": "Japan",
+    "code": "JPN",
+    "isoCode": "JP"
+  },
+  "netherlands": {
+    "name": "Netherlands",
+    "code": "NED",
+    "isoCode": "NL"
+  },
+  "new-zealand": {
+    "name": "New Zealand",
+    "code": "NZL",
+    "isoCode": "NZ"
+  },
+  "russia": {
+    "name": "Russia",
+    "code": "RUS",
+    "isoCode": "RU"
+  },
+  "spain": {
+    "name": "Spain",
+    "code": "ESP",
+    "isoCode": "ES"
+  },
+  "switzerland": {
+    "name": "Switzerland",
+    "code": "SUI",
+    "isoCode": "CH"
+  },
+  "united-kingdom": {
+    "name": "United Kingdom",
+    "code": "GBR",
+    "isoCode": "GB"
+  },
+  "usa": {
+    "name": "United States",
+    "code": "USA",
+    "isoCode": "US"
+  }
+}
