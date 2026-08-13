@@ -460,6 +460,14 @@
     margin-bottom: 0.5rem;
 }
 
+/* Fila que contiene titulo + switcher de anio en la misma linea */
+.season-switcher {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
 .calendar-title {
     font-family: 'F1-Black';
     padding-left: 15px;
@@ -475,6 +483,51 @@
 .calendar-title.in-view {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Grupo derecho: < ANIO > */
+.season-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.season-nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: color 0.2s ease;
+    padding: 0;
+}
+
+.season-nav-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.season-nav-btn:hover:not(:disabled) {
+    color: #fff;
+}
+
+.season-nav-btn:disabled {
+    opacity: 0.2;
+    cursor: default;
+}
+
+.season-year-label {
+    font-family: 'F1-Black';
+    font-size: 32px;
+    color: rgba(255, 255, 255, 0.75);
+    min-width: 4ch;
+    text-align: center;
+    letter-spacing: 0.02em;
 }
 
 .race-card {
