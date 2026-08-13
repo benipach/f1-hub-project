@@ -67,75 +67,161 @@ const DRIVER_TEAM = {
     'Valtteri Bottas':   'Cadillac',
 };
 
-// Maps GP id → host city (shown in the blurred canvas text on the hero left)
-const GP_CITY = {
-    'australian-gp':    'Melbourne',
-    'chinese-gp':       'Shanghai',
-    'japanese-gp':      'Suzuka',
-    'bahrain-gp':       'Sakhir',
-    'saudi-arabian-gp': 'Jeddah',
-    'miami-gp':         'Miami',
-    'canadian-gp':      'Montréal',
-    'monaco-gp':        'Monaco',
-    'barcelona-gp':     'Barcelona',
-    'austrian-gp':      'Spielberg',
-    'british-gp':       'Silverstone',
-    'belgian-gp':       'Spa',
-    'hungarian-gp':     'Budapest',
-    'dutch-gp':         'Zandvoort',
-    'italian-gp':       'Monza',
-    'spanish-gp':       'Madrid',
-    'azerbaijan-gp':    'Baku',
-    'singapore-gp':     'Singapore',
-    'united-states-gp': 'Austin',
-    'mexican-gp':       'Mexico City',
-    'brazilian-gp':     'São Paulo',
-    'las-vegas-gp':     'Las Vegas',
-    'qatar-gp':         'Lusail',
-    'abu-dhabi-gp':     'Abu Dhabi',
-};
+// La ciudad (GP_CITY) y la bandera (GP_FLAG) de cada GP ya no viven acá
+// hardcodeadas: son datos compartidos por todas las temporadas y se cargan
+// desde data/gp-meta.json (ver loadGpMeta/gpFlagEmoji/gpCity/gpLabel en
+// grandprix.js). Las tarjetas del calendario (antes 24 divs hardcodeados en
+// index.html, uno por GP de 2026) tampoco: se generan en JS a partir del
+// season*.json que corresponda, así funciona con cualquier temporada.
 
-// Maps GP id → country flag emoji (shown next to the GP title in the hero)
-const GP_FLAG = {
-    'australian-gp':    '🇦🇺',
-    'chinese-gp':       '🇨🇳',
-    'japanese-gp':      '🇯🇵',
-    'bahrain-gp':       '🇧🇭',
-    'saudi-arabian-gp': '🇸🇦',
-    'miami-gp':         '🇺🇸',
-    'canadian-gp':      '🇨🇦',
-    'monaco-gp':        '🇲🇨',
-    'barcelona-gp':     '🇪🇸',
-    'austrian-gp':      '🇦🇹',
-    'british-gp':       '🇬🇧',
-    'belgian-gp':       '🇧🇪',
-    'hungarian-gp':     '🇭🇺',
-    'dutch-gp':         '🇳🇱',
-    'italian-gp':       '🇮🇹',
-    'spanish-gp':       '🇪🇸',
-    'azerbaijan-gp':    '🇦🇿',
-    'singapore-gp':     '🇸🇬',
-    'united-states-gp': '🇺🇸',
-    'mexican-gp':       '🇲🇽',
-    'brazilian-gp':     '🇧🇷',
-    'las-vegas-gp':     '🇺🇸',
-    'qatar-gp':         '🇶🇦',
-    'abu-dhabi-gp':     '🇦🇪',
-};
+// circuits.json y gp-meta.json no cambian entre temporadas — se cargan una
+// sola vez al entrar al sitio. Lo único que se vuelve a pedir al cambiar de
+// año con las flechas es season${year}.json.
+let _circuitsOnce = null;
+let _gpMetaOnce   = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const [season, circuits] = await Promise.all([
-            loadSeason('.'),
-            loadCircuits('.')
+        const seasonsAvailable = await loadSeasonsIndex('.');
+        if (!seasonsAvailable.length) throw new Error('No se encontró ningún archivo season*.json en data/');
+
+        [_circuitsOnce, _gpMetaOnce] = await Promise.all([
+            loadCircuits('.'),
+            loadGpMeta('.')
         ]);
-        updateDashboard(season, circuits);
-        buildStandings(season);
-        initRaceCardReveal();
+
+        window._seasonState = { year: null, available: seasonsAvailable };
+
+        initSeasonSwitcher(seasonsAvailable);
+
+        const initialYear = getRequestedSeasonYear(seasonsAvailable);
+        await renderSeason(initialYear, { instantCards: false });
+        // initRaceCardReveal ya se llama desde dentro de renderRaceCards
     } catch (err) {
         console.error('Error cargando datos:', err);
     }
 });
+
+// Carga y dibuja una temporada completa (calendario + standings + hero).
+// instantCards=true evita el fade-in de scroll-reveal en las tarjetas —
+// se usa al cambiar de año con las flechas, porque ese efecto es para la
+// primera carga de la página, no para cada cambio de temporada.
+async function renderSeason(year, { instantCards } = {}) {
+    const season = await loadSeason('.', year);
+
+    window._seasonState.year = year;
+
+    const titleEl = document.querySelector('.calendar-title');
+    if (titleEl) titleEl.textContent = `${year} Season Calendar`;
+
+    const yearLabelEl = document.getElementById('season-year-label');
+    if (yearLabelEl) yearLabelEl.textContent = year;
+
+    renderRaceCards(season, _gpMetaOnce, { instant: instantCards });
+    updateDashboard(season, _circuitsOnce, _gpMetaOnce);
+    buildStandings(season);
+    updateSeasonNavButtons();
+}
+
+// ── SEASON SWITCHER (flechas prev/next) ─────────────────────────────
+function initSeasonSwitcher(seasonsAvailable) {
+    const prevBtn = document.getElementById('season-prev');
+    const nextBtn = document.getElementById('season-next');
+    if (!prevBtn || !nextBtn) return;
+
+    const goToOffset = async (offset) => {
+        const { year, available } = window._seasonState;
+        const idx = available.indexOf(year);
+        const newYear = available[idx + offset];
+        if (newYear == null) return; // ya está en el límite
+
+        // Actualiza la URL (?season=YYYY) sin recargar la página, para que
+        // el link se pueda compartir y el botón "atrás" del navegador funcione.
+        const url = new URL(window.location.href);
+        url.searchParams.set('season', newYear);
+        history.pushState({ season: newYear }, '', url);
+
+        await renderSeason(newYear, { instantCards: true });
+    };
+
+    prevBtn.addEventListener('click', () => goToOffset(-1));
+    nextBtn.addEventListener('click', () => goToOffset(1));
+
+    // Botón "atrás/adelante" del navegador
+    window.addEventListener('popstate', () => {
+        const seasonsAvailable2 = window._seasonState.available;
+        const year = getRequestedSeasonYear(seasonsAvailable2);
+        renderSeason(year, { instantCards: true });
+    });
+}
+
+function updateSeasonNavButtons() {
+    const prevBtn = document.getElementById('season-prev');
+    const nextBtn = document.getElementById('season-next');
+    if (!prevBtn || !nextBtn) return;
+
+    const { year, available } = window._seasonState;
+    const idx = available.indexOf(year);
+    prevBtn.disabled = idx <= 0;
+    nextBtn.disabled = idx === -1 || idx >= available.length - 1;
+}
+
+// ── RACE CARDS (generadas desde el JSON, no hardcodeadas en el HTML) ──
+function raceCardSkeleton(gpId, gp, gpMeta) {
+    const flag       = gpFlagEmoji(gpId, gpMeta, gp);
+    const label      = gpLabel(gpId, gpMeta, gp);
+    const roundLabel = `Round ${String(gp.round).padStart(2, '0')}`;
+
+    const card = document.createElement('div');
+    card.className = 'race-card';
+    card.dataset.id = gpId;
+    card.innerHTML = `
+        <div class="race-card-content">
+            <span class="race-round">${roundLabel}</span>
+            <h3>${flag} ${label}</h3>
+            <p class="race-date"></p>
+            <span class="race-status">Loading...</span>
+            <a class="race-link" href="./grandsprix/grandprix.html?gp=${gpId}">Loading...</a>
+        </div>`;
+    return card;
+}
+
+// Observer global: se guarda acá para poder desconectarlo antes de crear uno nuevo
+// al cambiar de temporada, evitando que se acumulen observers huérfanos.
+let _cardRevealObserver = null;
+
+function renderRaceCards(season, gpMeta, { instant = false } = {}) {
+    const calendar = document.querySelector('.race-calendar');
+    if (!calendar) return;
+
+    // Desconectar el observer anterior antes de limpiar el DOM,
+    // así no queda observando nodos que ya no existen.
+    if (_cardRevealObserver) {
+        _cardRevealObserver.disconnect();
+        _cardRevealObserver = null;
+    }
+
+    // Se reconstruye desde cero: distintas temporadas pueden tener otra
+    // cantidad de carreras, otro orden, u otros GPs directamente.
+    calendar.querySelectorAll('.race-card').forEach(el => el.remove());
+
+    const entries = Object.entries(season)
+        .filter(([, gp]) => gp && typeof gp === 'object' && !Array.isArray(gp) && gp.round != null)
+        .sort(([, a], [, b]) => a.round - b.round);
+
+    for (const [gpId, gp] of entries) {
+        const card = raceCardSkeleton(gpId, gp, gpMeta);
+        if (instant) card.classList.add('in-view'); // sin animación al cambiar temporada
+        calendar.appendChild(card);
+    }
+
+    // Scroll reveal: si las cards se insertan con animación (carga inicial),
+    // armamos el observer sobre las cards recién creadas. Si son instant
+    // (cambio de temporada con flechas), ya tienen in-view, nada que observar.
+    if (!instant) {
+        initRaceCardReveal();
+    }
+}
 
 // ── SCROLL REVEAL ─────────────────────────────────────────────────
 function initRaceCardReveal() {
@@ -143,59 +229,67 @@ function initRaceCardReveal() {
     const title = document.querySelector('.calendar-title');
     if (!cards.length) return;
 
-    const obs = new IntersectionObserver(entries => {
+    _cardRevealObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if (!entry.isIntersecting) return;
             const idx   = cards.indexOf(entry.target);
             const delay = idx === -1 ? 0 : (idx % 4) * 40; // left-to-right per row (4-col grid)
             setTimeout(() => entry.target.classList.add('in-view'), delay);
-            obs.unobserve(entry.target);
+            _cardRevealObserver?.unobserve(entry.target);
         });
     }, { threshold: 0.1 });
 
     // Wait two frames so the browser paints the initial hidden state first —
     // otherwise cards already visible on load (past sessions) skip the animation.
     requestAnimationFrame(() => requestAnimationFrame(() => {
-        cards.forEach(el => obs.observe(el));
-        if (title) obs.observe(title);
+        cards.forEach(el => _cardRevealObserver?.observe(el));
+        if (title) _cardRevealObserver?.observe(title);
     }));
 }
 
-function updateDashboard(season, circuits) {
+function updateDashboard(season, circuits, gpMeta) {
     const now = new Date();
     const nextEntry = findNextRace(season);
-    if (!nextEntry) return;
-    const [nextId, nextGP] = nextEntry;
 
-    document.documentElement.style.setProperty('--race-gradient', buildGradient(nextGP.color));
+    // Todo lo del hero grande (foto, cuenta regresiva, nombre de la próxima
+    // carrera) solo tiene sentido si hay una carrera futura en esta
+    // temporada. En una temporada vieja (ya terminada) esto no se toca,
+    // queda como está — lo que sí tiene que seguir funcionando siempre es
+    // el calendario de tarjetas de abajo (ver updateRacecards más abajo).
+    if (nextEntry) {
+        const [nextId, nextGP] = nextEntry;
 
-    const circuitKey = CIRCUIT_MAP[nextId];
-    const circuit = circuits[circuitKey];
+        document.documentElement.style.setProperty('--race-gradient', buildGradient(nextGP.color));
 
-    // Set hero background image
-    const heroImg = document.getElementById('hero-image');
-    if (heroImg) heroImg.src = `./img/circuits/${circuitKey}.png`;
+        const circuitKey = CIRCUIT_MAP[nextId];
+        const circuit = circuits[circuitKey];
 
-    // Set city for the canvas blurred text (inline script reads window._heroCity)
-    window._heroCity = GP_CITY[nextId] || '';
+        // Set hero background image
+        const heroImg = document.getElementById('hero-image');
+        if (heroImg) heroImg.src = `./img/circuits/${circuitKey}.png`;
 
-    // GP name (full name, e.g. "AUSTRIAN GRAND PRIX") plus country flag
-    const gpNameEl = document.getElementById('hero-gp-name');
-    if (gpNameEl) gpNameEl.textContent = `${GP_FLAG[nextId] || ''} ${nextGP.name.toUpperCase()}`.trim();
+        // Set city for the canvas blurred text (inline script reads window._heroCity)
+        window._heroCity = gpCity(nextId, gpMeta, nextGP);
 
-    // Circuit name below the GP title
-    const circuitLabelEl = document.getElementById('hero-circuit-label');
-    if (circuitLabelEl) circuitLabelEl.textContent = circuit?.name || circuit?.Name || '—';
+        // GP name (full name, e.g. "AUSTRIAN GRAND PRIX") plus country flag
+        const gpNameEl = document.getElementById('hero-gp-name');
+        if (gpNameEl) gpNameEl.textContent = `${gpFlagEmoji(nextId, gpMeta, nextGP)} ${nextGP.name.toUpperCase()}`.trim();
 
-    // Sprint pill
-    const sprintPill = document.getElementById('hero-sprint-pill');
-    if (sprintPill) sprintPill.style.display = nextGP.sprint ? 'inline-flex' : 'none';
+        // Circuit name below the GP title
+        const circuitLabelEl = document.getElementById('hero-circuit-label');
+        if (circuitLabelEl) circuitLabelEl.textContent = circuit?.name || circuit?.Name || '—';
 
-    const circuitBtn = document.getElementById('hero-circuit-btn');
-    if (circuitBtn) circuitBtn.href = `./grandsprix/grandprix.html?gp=${nextId}`;
+        // Sprint pill
+        const sprintPill = document.getElementById('hero-sprint-pill');
+        if (sprintPill) sprintPill.style.display = nextGP.sprint ? 'inline-flex' : 'none';
 
-    renderHeroSchedule(nextGP, nextId);
-    updateRacecards(season, nextId, now, circuits);
+        const circuitBtn = document.getElementById('hero-circuit-btn');
+        if (circuitBtn) circuitBtn.href = `./grandsprix/grandprix.html?gp=${nextId}`;
+
+        renderHeroSchedule(nextGP, nextId);
+    }
+
+    updateRacecards(season, nextEntry ? nextEntry[0] : null, now, circuits, gpMeta);
 }
 
 function formatDay(date) {
@@ -226,7 +320,7 @@ function formatWeekendDateRange(gp) {
         : `${formatDay(start)} ${startMonth} - ${formatDay(end)} ${endMonth}`;
 }
 
-function updateRacecards(season, nextId, now, circuits) {
+function updateRacecards(season, nextId, now, circuits, gpMeta) {
     document.querySelectorAll('.race-card').forEach(card => {
         const gpId = card.dataset.id;
         const gp   = season[gpId];
@@ -271,7 +365,7 @@ function updateRacecards(season, nextId, now, circuits) {
 
         } else if (gpId === nextId) {
             card.classList.add('race-card-next');
-            renderNextCard(card, gp, gpId, circuits, dateText, isSprint);
+            renderNextCard(card, gp, gpId, circuits, dateText, isSprint, gpMeta);
 
         } else {
             card.classList.add('race-card-upcoming');
@@ -340,10 +434,10 @@ function renderTop3MiniTable(card, gp) {
 
 // Replaces the compact "next" card with a full-width, detail-rich version:
 // circuit photo, flag + GP name, dates, full weekend schedule and the track layout.
-function renderNextCard(card, gp, gpId, circuits, dateText, isSprint) {
+function renderNextCard(card, gp, gpId, circuits, dateText, isSprint, gpMeta) {
     const circuitKey = CIRCUIT_MAP[gpId];
     const circuit    = circuits?.[circuitKey];
-    const flag       = GP_FLAG[gpId] || '';
+    const flag       = gpFlagEmoji(gpId, gpMeta, gp);
     const scheduleId = `next-card-schedule-${gpId}`;
 
     const now = new Date();
@@ -415,7 +509,21 @@ function getSessionStart(gp, sessionKey) {
 }
 
 function getSessionEnd(gp, sessionKey) {
-    return parseDate(getSession(gp, sessionKey)?.endDate);
+    const session = getSession(gp, sessionKey);
+    if (!session) return null;
+
+    // Si el JSON trae endDate explícito, usalo.
+    if (session.endDate) return parseDate(session.endDate);
+
+    // Fallback para temporadas historicas que solo tienen "date":
+    // si la fecha de inicio ya paso hace mas de 4 horas, la sesion
+    // se considera terminada. Las carreras de F1 duran ~2 h, asi que
+    // 4 h de margen es suficiente para no marcar una carrera en vivo
+    // como ended antes de tiempo.
+    const start = parseDate(session.date);
+    if (!start) return null;
+    const FOUR_HOURS_MS = 4 * 60 * 60 * 1000;
+    return new Date(start.getTime() + FOUR_HOURS_MS);
 }
 
 function getSessionResults(gp, sessionKey) {

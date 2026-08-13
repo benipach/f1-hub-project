@@ -27,36 +27,68 @@ const CIRCUIT_MAP = {
     'abu-dhabi-gp':           'yas-marina-circuit',
 };
 
-// ── CIRCUIT → COUNTRY FLAG ────────────────────────────────────────
-const CIRCUIT_FLAG_MAP = {
-    'albert-park-circuit':                'AU',
-    'shanghai-international-circuit':     'CN',
-    'suzuka-international-racing-course': 'JP',
-    'bahrain-internatinal-circuit':       'BH',
-    'jeddah-corniche-circuit':            'SA',
-    'miami-international-autodrome':      'US',
-    'circuit-gilles-villeneuve':          'CA',
-    'circuit-de-monaco':                  'MC',
-    'circuit-de-barcelona-catalunya':     'ES',
-    'red-bull-ring':                      'AT',
-    'silverstone-circuit':                'GB',
-    'circuit-de-spa-francorchamps':       'BE',
-    'hungaroring':                        'HU',
-    'circuit-zandvoort':                  'NL',
-    'autodromo-nazionale-di-monza':       'IT',
-    'madring':                            'ES',
-    'baku-city-circuit':                  'AZ',
-    'sepang-international-circuit':       'MY',
-    'marina-bay-street-circuit':          'SG',
-    'cota':                               'US',
-    'hermanos-rodriguez':                 'MX',
-    'autodromo-jose-carlos-pace':         'BR',
-    'las-vegas-strip-circuit':            'US',
-    'lusail-international-circuit':       'QA',
-    'yas-marina-circuit':                 'AE',
-};
+// ── GP → COUNTRY / CIUDAD (data/gp-meta.json) ──────────────────────
+// País (código ISO 3166-1 alpha-2) y ciudad de cada GP, compartido por
+// TODAS las temporadas (no cambia de un año a otro, salvo casos puntuales
+// como el "European GP" — ver nota abajo).
+//
+// Caso especial: para 'european-gp' guardamos siempre "EU" como país,
+// sin importar en qué país se corrió ese año en la realidad (fue
+// cambiando con el tiempo). "EU" no es un país real, pero
+// countryCodeToFlagEmoji() lo resuelve igual y muestra la bandera de la
+// Unión Europea 🇪🇺. Si en algún momento un GP puntual de una temporada
+// vieja necesita otro país distinto al de gp-meta.json, se puede agregar
+// un override directo en esa carrera dentro del seasonX.json
+// correspondiente (ej. "countryOverride": "DE") — no implementado todavía.
+let _gpMetaCache = null;
 
-// Convierte un código de país ISO 3166-1 alpha-2 (ej. "AR") a su emoji de bandera
+async function loadGpMeta(base = '.') {
+    if (_gpMetaCache) return _gpMetaCache;
+    const res = await fetch(`${base}/data/gp-meta.json`);
+    if (!res.ok) throw new Error(`gp-meta.json — HTTP ${res.status}`);
+    _gpMetaCache = await res.json();
+    return _gpMetaCache;
+}
+
+// Devuelve el emoji de bandera de un GP a partir de gp-meta.json (con
+// override opcional por temporada vía gp.countryOverride, si existiera).
+function gpFlagEmoji(gpId, gpMeta, gp = null) {
+    const code = gp?.countryOverride || gpMeta?.[gpId]?.country;
+    return countryCodeToFlagEmoji(code);
+}
+
+function gpCity(gpId, gpMeta, gp = null) {
+    return gp?.cityOverride || gpMeta?.[gpId]?.city || '';
+}
+
+// Devuelve el nombre de país a partir de un código ISO usando la API nativa
+// del navegador (Intl.DisplayNames) — así no hay que mantener a mano un
+// diccionario "AU" → "Australia" para cada país del mundo.
+function countryNameFromCode(code) {
+    if (!code) return '';
+    try {
+        const dn = new Intl.DisplayNames(['en'], { type: 'region' });
+        return dn.of(code.toUpperCase()) || code;
+    } catch {
+        return code;
+    }
+}
+
+// Nombre a mostrar en la tarjeta chica del calendario (ej. "Australia").
+// Por defecto es el nombre del país derivado del código ISO. Para GPs que
+// comparten país con otro (ej. Miami/Las Vegas/COTA son los 3 "US"), o que
+// tradicionalmente se muestran por ciudad (Abu Dhabi, Barcelona), gp-meta.json
+// puede traer un campo opcional "label" que pisa el default.
+function gpLabel(gpId, gpMeta, gp = null) {
+    const meta = gpMeta?.[gpId] || {};
+    if (gp?.labelOverride) return gp.labelOverride;
+    if (meta.label) return meta.label;
+    return countryNameFromCode(gp?.countryOverride || meta.country);
+}
+
+// Convierte un código de país ISO 3166-1 alpha-2 (ej. "AR") a su emoji de
+// bandera. También acepta "EU" (pseudo-código, no es ISO real) para la
+// bandera de la Unión Europea, usada en el European GP.
 function countryCodeToFlagEmoji(code) {
     if (!code || code.length !== 2) return '';
     return [...code.toUpperCase()]
@@ -65,9 +97,49 @@ function countryCodeToFlagEmoji(code) {
 }
 
 // ── FETCH ─────────────────────────────────────────────────────────
-async function loadSeason(base = '.') {
-    const res = await fetch(`${base}/data/season2026.json`);
-    if (!res.ok) throw new Error(`season2026.json — HTTP ${res.status}`);
+
+// No hay forma de "listar" una carpeta desde el navegador (fetch no lee
+// directorios), así que para saber qué temporadas existen probamos año por
+// año desde 1950 hasta el año actual, con HEAD (no baja el archivo entero,
+// solo pregunta si existe) para que sea liviano. El GET completo del año
+// que se va a mostrar se hace después, una sola vez, en loadSeason().
+let _seasonsIndexCache = null;
+
+async function loadSeasonsIndex(base = '.') {
+    if (_seasonsIndexCache) return _seasonsIndexCache;
+
+    const startYear = 1950;
+    const endYear   = new Date().getFullYear();
+    const years     = [];
+    for (let y = startYear; y <= endYear; y++) years.push(y);
+
+    const checks = await Promise.all(years.map(async (year) => {
+        try {
+            const res = await fetch(`${base}/data/season${year}.json`, { method: 'HEAD' });
+            return res.ok ? year : null;
+        } catch {
+            return null; // red caída, CORS, etc. — se descarta esa temporada
+        }
+    }));
+
+    _seasonsIndexCache = checks.filter(y => y !== null).sort((a, b) => a - b);
+    return _seasonsIndexCache;
+}
+
+// Resuelve qué temporada mostrar: respeta ?season=YYYY en la URL si es una
+// temporada que efectivamente existe; si no, usa la más reciente disponible.
+// Las flechas prev/next (próximo paso) solo van a tener que reescribir ese
+// query param y volver a llamar a esto.
+function getRequestedSeasonYear(seasonsAvailable) {
+    const param     = new URLSearchParams(window.location.search).get('season');
+    const requested = param ? Number(param) : null;
+    if (requested && seasonsAvailable.includes(requested)) return requested;
+    return seasonsAvailable[seasonsAvailable.length - 1]; // más reciente
+}
+
+async function loadSeason(base = '.', year) {
+    const res = await fetch(`${base}/data/season${year}.json`);
+    if (!res.ok) throw new Error(`season${year}.json — HTTP ${res.status}`);
     return res.json();
 }
 
@@ -173,13 +245,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!gpId) return;
 
     try {
-        const [season, circuits, racesHistory, gpRecords, { teamMap: driverTeams, natMap: driverNats, numberMap: driverNumbers }] = await Promise.all([
-            loadSeason('..'),
+        const seasonsAvailable = await loadSeasonsIndex('..');
+        if (!seasonsAvailable.length) throw new Error('No se encontró ningún archivo season*.json en data/');
+        const currentYear = getRequestedSeasonYear(seasonsAvailable);
+
+        const [season, circuits, racesHistory, gpRecords, { teamMap: driverTeams, natMap: driverNats, numberMap: driverNumbers }, gpMeta] = await Promise.all([
+            loadSeason('..', currentYear),
             loadCircuits('..'),
             loadRacesHistory('..'),
             loadGPRecords('..'),
-            loadDrivers('..')
+            loadDrivers('..'),
+            loadGpMeta('..')
         ]);
+
+        window._seasonState = { year: currentYear, available: seasonsAvailable };
 
         const gp        = season[gpId];
         const circuitId = CIRCUIT_MAP[gpId];
@@ -199,7 +278,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             .sort((a, b) => b.year - a.year);
 
         injectColors(gp.color);
-        renderHero(gp, circuit, circuitId, gpHistoryRows);
+        renderHero(gp, circuit, circuitId, gpId, gpMeta, gpHistoryRows);
         renderGPInfo(gp);
         renderSchedule(gp);
         renderRaceWeekendData(circuit);
@@ -281,7 +360,7 @@ function renderGPInfo(gp) {
 }
 
 // ── HERO ─────────────────────────────────────────────────────────
-function renderHero(gp, circuit, circuitId, gpHistoryRows = []) {
+function renderHero(gp, circuit, circuitId, gpId, gpMeta, gpHistoryRows = []) {
     const heroImg = document.getElementById('race-hero-img');
     if (heroImg) {
         heroImg.src = `../img/circuits/${circuitId}.png`;
@@ -291,10 +370,7 @@ function renderHero(gp, circuit, circuitId, gpHistoryRows = []) {
     if (circuit?.name) document.getElementById('hero-circuit-name').textContent = circuit.name;
 
     const flagBg = document.getElementById('hero-flag-bg');
-    if (flagBg) {
-        const countryCode = CIRCUIT_FLAG_MAP[circuitId];
-        flagBg.textContent = countryCode ? countryCodeToFlagEmoji(countryCode) : '';
-    }
+    if (flagBg) flagBg.textContent = gpFlagEmoji(gpId, gpMeta, gp);
 
     if (gp.name) {
         const heroName = document.getElementById('hero-name');
@@ -437,6 +513,7 @@ function renderRaceWeekendData(circuit) {
 
 // ── TEAM ID → LOGO FILENAME ──────────────────────────────────────
 const TEAM_LOGO_MAP = {
+    'Mercedes':        'mercedes-logo',
     'Mercedes-AMG':    'mercedes-logo',
     'Ferrari':         'ferrari-logo',
     'McLaren':         'mclaren-logo',
