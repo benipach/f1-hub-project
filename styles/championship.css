@@ -630,7 +630,6 @@
 }
 
 .chart-flag-link:hover {
-    transform: translateY(-2px);
     filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.18));
 }
 
@@ -639,7 +638,7 @@
     stroke: rgba(255,255,255,0.08);
     stroke-width: 1;
     rx: 5;
-    transition: fill 0.2s ease, stroke 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .chart-flag-link:hover .chart-flag-shell {
