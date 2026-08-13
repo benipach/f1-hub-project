@@ -1,209 +1,564 @@
 {
-  "teams": [
-    {
-      "id": "alfa-romeo",
-      "name": "Alfa Romeo Racing",
-      "country": "Switzerland",
-      "city": "Hinwil"
-    },
-    {
-      "id": "alpha-tauri",
-      "name": "Scuderia AlphaTauri",
-      "country": "Italy",
-      "city": "Faenza"
-    },
-    {
-      "id": "alpine",
-      "name": "Alpine F1 Team",
-      "country": "France",
-      "city": "Enstone"
-    },
-    {
-      "id": "aston-martin",
-      "name": "Aston Martin Aramco F1 Team",
-      "country": "United Kingdom",
-      "city": "Silverstone"
-    },
-    {
-      "id": "audi",
-      "name": "Audi F1 Team",
-      "country": "Germany",
-      "city": "Neuburg an der Donau"
-    },
-    {
-      "id": "bar",
-      "name": "British American Racing",
-      "country": "England",
-      "city": "Brackley",
-      "history": [
-        { "year": 1999, "chassis": "BAR 001", "engine": "Supertec FB01", "principal": "", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 31, "dnfs": 23, "position": 11 },
-        { "year": 2000, "chassis": "BAR 002", "engine": "Honda RA000E", "principal": "","points": 20, "poles": 0, "podiums": 0, "wins": 0, "starts": 34, "dnfs": 13, "position": 5 },
-        { "year": 2001, "chassis": "BAR 003", "engine": "Honda RA001E", "principal": "","points": 17, "poles": 0, "podiums": 2, "wins": 0, "starts": 34, "dnfs": 12, "position": 6 },
-        { "year": 2002, "chassis": "BAR 004", "engine": "Honda RA002E", "principal": "","points": 7, "poles": 0, "podiums": 0, "wins": 0, "starts": 34, "dnfs": 17, "position": 8 },
-        { "year": 2003, "chassis": "BAR 005", "engine": "Honda RA003E", "principal": "","points": 26, "poles": 0, "podiums": 0, "wins": 0, "starts": 32, "dnfs": 12, "position": 5 },
-        { "year": 2004, "chassis": "BAR 006", "engine": "Honda RA004E", "principal": "","points": 119, "poles": 1, "podiums": 11, "wins": 0, "starts": 36, "dnfs": 10, "position": 2 },
-        { "year": 2005, "chassis": "BAR 007", "engine": "Honda RA005E", "principal": "","points": 38, "poles": 1, "podiums": 2, "wins": 0, "starts": 36, "dnfs": 10, "position": 6 }
-      ]
-    },
-    {
-      "id": "brawn-gp",
-      "name": "Brawn GP",
-      "country": "England",
-      "city": "Brackley",
-      "history": [
-        { "year": 2009, "chassis": "BGP 001", "engine": "Mercedes-Benz 108W", "principal": "", "points": 172, "poles": 5, "podiums": 15, "wins": 8, "starts": 34, "dnfs": 3, "position": 1 }
-      ]
-    },
-    {
-      "id": "cadillac",
-      "name": "Cadillac F1 Team",
-      "country": "United States",
-      "city": "Charlotte"
-    },
-    {
-      "id": "ferrari",
-      "name": "Scuderia Ferrari",
-      "country": "Italy",
-      "city": "Maranello"
-    },
-    {
-      "id": "force-india",
-      "name": "Sahara Force India F1 Team",
-      "country": "India",
-      "city": "Silverstone"
-    },
-    {
-      "id": "haas",
-      "name": "Haas F1 Team",
-      "country": "United States",
-      "city": "Kannapolis"
-    },
-    {
-      "id": "honda",
-      "name": "Honda Racing",
-      "country": "England",
-      "city": "Brackley",
-      "history": [
-        { "year": 2006, "chassis": "RA106", "engine": "Honda RA806E", "principal": "", "points": 86, "poles": 1, "podiums": 3, "wins": 1, "starts": 36, "dnfs": 8, "position": 4 },
-        { "year": 2007, "chassis": "RA107", "engine": "Honda RA807E", "principal": "", "points": 6, "poles": 0, "podiums": 0, "wins": 0, "starts": 34, "dnfs": 8, "position": 8 },
-        { "year": 2008, "chassis": "RA108", "engine": "Honda RA808E", "principal": "", "points": 14, "poles": 0, "podiums": 1, "wins": 0, "starts": 36, "dnfs": 8, "position": 9 }
-      ]
-    },
-    {
-      "id": "kick",
-      "name": "Kick Sauber F1 Team",
-      "country": "Switzerland",
-      "city": "Hinwil"
-    },
-    {
-      "id": "mclaren",
-      "name": "McLaren F1 Team",
-      "country": "United Kingdom",
-      "city": "Woking"
-    },
-    {
-      "id": "mercedes",
-      "name": "Mercedes-AMG",
-      "country": "England",
-      "city": "Brackley",
-      "history": [
-        { "year": 2010, "chassis": "W01", "engine": "Mercedes-AMG M01", "principal": "Toto Wolff", "points": 214, "poles": 0, "podiums": 3, "wins": 0, "starts": 38, "dnfs": 5, "position": 4 },
-        { "year": 2011, "chassis": "W02", "engine": "Mercedes-AMG M02", "principal": "Toto Wolff", "points": 165, "poles": 1, "podiums": 0, "wins": 0, "starts": 38, "dnfs": 9, "position": 4 },
-        { "year": 2012, "chassis": "W03", "engine": "Mercedes-AMG M03", "principal": "Toto Wolff", "points": 142, "poles": 1, "podiums": 3, "wins": 1, "starts": 40, "dnfs": 12, "position": 5 },
-        { "year": 2013, "chassis": "W04", "engine": "Mercedes-AMG M04", "principal": "Toto Wolff", "points": 360, "poles": 8, "podiums": 9, "wins": 3, "starts": 38, "dnfs": 5, "position": 2 },
-        { "year": 2014, "chassis": "W05", "engine": "Mercedes-AMG M05", "principal": "Toto Wolff", "points": 701, "poles": 18, "podiums": 31, "wins": 16, "starts": 38, "dnfs": 5, "position": 1 },
-        { "year": 2015, "chassis": "W06", "engine": "Mercedes-AMG M06", "principal": "Toto Wolff", "points": 703, "poles": 18, "podiums": 32, "wins": 16, "starts": 38, "dnfs": 2, "position": 1 },
-        { "year": 2016, "chassis": "W07", "engine": "Mercedes-AMG M07", "principal": "Toto Wolff", "points": 765, "poles": 20, "podiums": 33, "wins": 19, "starts": 42, "dnfs": 3, "position": 1 },
-        { "year": 2017, "chassis": "W08", "engine": "Mercedes-AMG M08", "principal": "Toto Wolff", "points": 668, "poles": 15, "podiums": 26, "wins": 12, "starts": 40, "dnfs": 1, "position": 1 },
-        { "year": 2018, "chassis": "W09", "engine": "Mercedes-AMG M09", "principal": "Toto Wolff", "points": 655, "poles": 13, "podiums": 25, "wins": 11, "starts": 42, "dnfs": 3, "position": 1 },
-        { "year": 2019, "chassis": "W10", "engine": "Mercedes-AMG M10", "principal": "Toto Wolff", "points": 739, "poles": 10, "podiums": 32, "wins": 15, "starts": 42, "dnfs": 2, "position": 1 },
-        { "year": 2020, "chassis": "W11", "engine": "Mercedes-AMG M11", "principal": "Toto Wolff", "points": 573, "poles": 15, "podiums": 25, "wins": 13, "starts": 34, "dnfs": 1, "position": 1 },
-        { "year": 2021, "chassis": "W12", "engine": "Mercedes-AMG M12", "principal": "Toto Wolff", "points": 613.5, "poles": 9, "podiums": 28, "wins": 9, "starts": 44, "dnfs": 5, "position": 1 },
-        { "year": 2022, "chassis": "W13", "engine": "Mercedes-AMG M13", "principal": "Toto Wolff", "points": 515, "poles": 1, "podiums": 17, "wins": 1, "starts": 44, "dnfs": 2, "position": 3 },
-        { "year": 2023, "chassis": "W14", "engine": "Mercedes-AMG M14", "principal": "Toto Wolff", "points": 409, "poles": 1, "podiums": 8, "wins": 0, "starts": 44, "dnfs": 5, "position": 2 },
-        { "year": 2024, "chassis": "W15", "engine": "Mercedes-AMG M15", "principal": "Toto Wolff", "points": 468, "poles": 4, "podiums": 9, "wins": 4, "starts": 48, "dnfs": 4, "position": 4 },
-        { "year": 2025, "chassis": "W16", "engine": "Mercedes-AMG M16", "principal": "Toto Wolff", "points": 469, "poles": 2, "podiums": 12, "wins": 2, "starts": 48, "dnfs": 4, "position": 2 },
-        { "year": 2026, "chassis": "W17", "engine": "Mercedes-AMG M17", "principal": "Toto Wolff"}
-      ]
-    },
-    {
-      "id": "racing-bulls",
-      "name": "Racing Bulls F1 Team",
-      "country": "Italy",
-      "city": "Faenza"
-    },
-    {
-      "id": "racing-point",
-      "name": "SportPesa Racing Point F1 Team",
-      "country": "United Kingdom",
-      "city": "Silverstone"
-    },
-    {
-      "id": "red-bull",
-      "name": "Red Bull Racing",
-      "country": "Austria",
-      "city": "Milton Keynes"
-    },
-    {
-      "id": "renault",
-      "name": "Renault F1 Team",
-      "country": "France",
-      "city": "Enstone"
-    },
-    {
-      "id": "sauber",
-      "name": "Sauber F1 Team",
-      "country": "Switzerland",
-      "city": "Hinwil"
-    },
-    {
-      "id": "toro-rosso",
-      "name": "Scuderia Toro Rosso",
-      "country": "Italy",
-      "city": "Faenza"
-    },
-    {
-      "id": "tyrrell",
-      "name": "Tyrrell",
-      "country": "England",
-      "city": "Ockham",
-      "history": [
-        { "year": 1970, "chassis": "Tyrrell 001", "engine": "Ford DFV", "principal": "Ken Tyrrell", "points": 1, "poles": 1, "podiums": 4, "wins": 0, "starts": 38, "dnfs": 12, "position": 10 },
-        { "year": 1971, "chassis": "Tyrrell 002", "engine": "Ford DFV", "principal": "Ken Tyrrell", "points": 73, "poles": 11, "podiums": 16, "wins": 7, "starts": 38, "dnfs": 5, "position": 1 },
-        { "year": 1972, "chassis": "Tyrrell 003", "engine": "Ford DFV", "principal": "Ken Tyrrell", "points": 51, "poles": 0, "podiums": 8, "wins": 4, "starts": 40, "dnfs": 12, "position": 2 },
-        { "year": 1973, "chassis": "Tyrrell 004", "engine": "Ford DFV", "principal": "Ken Tyrrell", "points": 82, "poles": 0, "podiums": 17, "wins": 5, "starts": 38, "dnfs": 6, "position": 2 },
-        { "year": 1974, "chassis": "Tyrrell 005", "engine": "Ford DFV", "principal": "Ken Tyrrell", "points": 52, "poles": 2, "podiums": 10, "wins": 2, "starts": 38, "dnfs": 9, "position": 3 },
-        { "year": 1975, "chassis": "Tyrrell 006", "engine": "Ford DFV", "principal": "Ken Tyrrell", "points": 25, "poles": 0, "podiums": 3, "wins": 1, "starts": 38, "dnfs": 10, "position": 5 },
-        { "year": 1976, "chassis": "Tyrrell 007", "engine": "Ford DFV", "principal": "Ken Tyrrell", "points": 71, "poles": 0, "podiums": 9, "wins": 1, "starts": 42, "dnfs": 14, "position": 3 },
-        { "year": 1977, "chassis": "Tyrrell 008", "engine": "Ford DFV", "principal": "Ken Tyrrell", "points": 27, "poles": 0, "podiums": 2, "wins": 0, "starts": 40, "dnfs": 17, "position": 4 },
-        { "year": 1978, "chassis": "Tyrrell 009", "engine": "Ford DFV", "principal": "Ken Tyrrell", "points": 31, "poles": 0, "podiums": 4, "wins": 1, "starts": 42, "dnfs": 15, "position": 3 },
-        { "year": 1979, "chassis": "Tyrrell 010", "engine": "Ford DFV", "principal": "Ken Tyrrell", "points": 47, "poles": 0, "podiums": 4, "wins": 0, "starts": 42, "dnfs": 9, "position": 5 },
-        { "year": 1980, "chassis": "Tyrrell 011", "engine": "Ford DFV", "principal": "Ken Tyrrell", "points": 12, "poles": 0, "podiums": 0, "wins": 0, "starts": 34, "dnfs": 14, "position": 6 },
-        { "year": 1981, "chassis": "Tyrrell 012", "engine": "Ford DFV", "principal": "Ken Tyrrell", "points": 10, "poles": 0, "podiums": 0, "wins": 0, "starts": 44, "dnfs": 14, "position": 7 },
-        { "year": 1982, "chassis": "Tyrrell 013", "engine": "Ford DFV", "principal": "Ken Tyrrell", "points": 25, "poles": 0, "podiums": 2, "wins": 1, "starts": 44, "dnfs": 10, "position": 3 },
-        { "year": 1983, "chassis": "Tyrrell 014", "engine": "Ford DFY", "principal": "Ken Tyrrell", "points": 41, "poles": 0, "podiums": 1, "wins": 1, "starts": 44, "dnfs": 16, "position": 4 },
-        { "year": 1984, "chassis": "Tyrrell 015", "engine": "Ford DFY", "principal": "Ken Tyrrell", "points": 3, "poles": 0, "podiums": 0, "wins": 0, "starts": 48, "dnfs": 9, "position": 7 },
-        { "year": 1985, "chassis": "Tyrrell 016", "engine": "Renault EF4B", "principal": "Ken Tyrrell", "points": 4, "poles": 0, "podiums": 0, "wins": 0, "starts": 48, "dnfs": 12, "position": 9 },
-        { "year": 1986, "chassis": "Tyrrell 017", "engine": "Renault EF4B", "principal": "Ken Tyrrell", "points": 11, "poles": 0, "podiums": 0, "wins": 0, "starts": 48, "dnfs": 16, "position": 7 },
-        { "year": 1987, "chassis": "Tyrrell 018", "engine": "Ford DFZ", "principal": "Ken Tyrrell", "points": 11, "poles": 0, "podiums": 0, "wins": 0, "starts": 48, "dnfs": 6, "position": 6 },
-        { "year": 1988, "chassis": "Tyrrell 019", "engine": "Ford DFZ", "principal": "Ken Tyrrell", "points": 5, "poles": 0, "podiums": 0, "wins": 0, "starts": 48, "dnfs": 16, "position": 8 },
-        { "year": 1989, "chassis": "Tyrrell 020", "engine": "Ford DFZ", "principal": "Ken Tyrrell", "points": 16, "poles": 0, "podiums": 1, "wins": 0, "starts": 48, "dnfs": 12, "position": 5 },
-        { "year": 1990, "chassis": "Tyrrell 021", "engine": "Ford DFR", "principal": "Ken Tyrrell", "points": 16, "poles": 0, "podiums": 0, "wins": 0, "starts": 48, "dnfs": 14, "position": 5 },
-        { "year": 1991, "chassis": "Tyrrell 022", "engine": "Honda RA101E", "principal": "Ken Tyrrell", "points": 12, "poles": 0, "podiums": 0, "wins": 0, "starts": 48, "dnfs": 16, "position": 6 },
-        { "year": 1992, "chassis": "Tyrrell 023", "engine": "Ilmor 2175A", "principal": "Ken Tyrrell", "points": 8, "poles": 0, "podiums": 1, "wins": 0, "starts": 48, "dnfs": 17, "position": 6 },
-        { "year": 1993, "chassis": "Tyrrell 024", "engine": "Yamaha OX10A", "principal": "Ken Tyrrell", "points": 0, "poles": 0, "podiums": 0, "wins": 0, "starts": 48, "dnfs": 16, "position": 8 },
-        { "year": 1994, "chassis": "Tyrrell 025", "engine": "Yamaha OX10B", "principal": "Ken Tyrrell", "points": 13, "poles": 0, "podiums": 0, "wins": 0, "starts": 48, "dnfs": 17, "position": 7 },
-        { "year": 1995, "chassis": "Tyrrell 026", "engine": "Yamaha OX10C", "principal": "Ken Tyrrell", "points": 5, "poles": 0, "podiums": 0, "wins": 0, "starts": 48, "dnfs": 16, "position": 9 },
-        { "year": 1996, "chassis": "Tyrrell 027", "engine": "Yamaha OX11A", "principal": "Ken Tyrrell", "points": 5, "poles": 0, "podiums": 0, "wins": 0, "starts": 48, "dnfs": 12, "position": 8 },
-        { "year": 1997, "chassis": "Tyrrell 028", "engine": "Ford ED4", "principal": "Ken Tyrrell", "points": 2, "poles": 0, "podiums": 0, "wins": 0, "starts": 48, "dnfs": 16, "position": 10 },
-        { "year": 1998, "chassis": "Tyrrell 029", "engine": "Ford JD Zetec-R", "principal": "Harvey Postlethwaite", "points": 0, "poles": 2, "podiums": 0, "wins": 0, "starts": 48, "dnfs": 14, "position": 11 }
-      ]
-    },
-    {
-      "id": "williams",
-      "name": "Williams Racing",
-      "country": "United Kingdom",
-      "city": "Grove"
-    }
-  ]
+  "ags": {
+    "id": "ags",
+    "name": "AGS",
+    "country": "france"
+  },
+  "alfa-romeo": {
+    "id": "alfa-romeo",
+    "name": "Alfa Romeo",
+    "country": "italy"
+  },
+  "alfa-romeo-sauber": {
+    "id": "alfa-romeo-sauber",
+    "name": "Alfa Romeo F1 Team",
+    "base": "hinwil",
+    "country": "switzerland"
+  },
+  "alphatauri": {
+    "id": "alphatauri",
+    "name": "AlphaTauri",
+    "base": "faenza",
+    "country": "italy",
+    "color": "#2B4562"
+  },
+  "alpine": {
+    "id": "alpine",
+    "name": "Alpine",
+    "base": "enstone",
+    "country": "france",
+    "color": "#0090FF"
+  },
+  "alta": {
+    "id": "alta",
+    "name": "Alta",
+    "country": "united-kingdom"
+  },
+  "amon": {
+    "id": "amon",
+    "name": "Amon",
+    "country": "new-zealand"
+  },
+  "andrea-moda": {
+    "id": "andrea-moda",
+    "name": "Andrea Moda",
+    "country": "italy"
+  },
+  "anglo-american-racers": {
+    "id": "anglo-american-racers",
+    "name": "Anglo American Racers",
+    "country": "usa"
+  },
+  "apollon": {
+    "id": "apollon",
+    "name": "Apollon",
+    "country": "switzerland"
+  },
+  "arrows": {
+    "id": "arrows",
+    "name": "Arrows",
+    "country": "united-kingdom"
+  },
+  "arzani-volpini": {
+    "id": "arzani-volpini",
+    "name": "Arzani-Volpini",
+    "country": "italy"
+  },
+  "aston-martin-1959": {
+    "id": "aston-martin-1959",
+    "name": "Aston Martin",
+    "country": "united-kingdom"
+  },
+  "aston-martin": {
+    "id": "aston-martin",
+    "name": "Aston Martin",
+    "base": "silverstone",
+    "country": "united-kingdom",
+    "color": "#00594F"
+  },
+  "ats-1963": {
+    "id": "ats-1963",
+    "name": "ATS",
+    "country": "italy"
+  },
+  "ats": {
+    "id": "ats",
+    "name": "ATS",
+    "country": "germany"
+  },
+  "bar": {
+    "id": "bar",
+    "name": "BAR",
+    "base": "brackley",
+    "country": "united-kingdom"
+  },
+  "bmw-sauber": {
+    "id": "bmw-sauber",
+    "name": "BMW Sauber",
+    "base": "hinwil",
+    "country": "switzerland"
+  },
+  "benetton": {
+    "id": "benetton",
+    "name": "Benetton",
+    "base": "enstone",
+    "country": "united-kingdom"
+  },
+  "bellasi": {
+    "id": "bellasi",
+    "name": "Bellasi",
+    "country": "switzerland"
+  },
+  "bms-scuderia-italia": {
+    "id": "bms-scuderia-italia",
+    "name": "BMS Scuderia Italia",
+    "country": "italy"
+  },
+  "boro": {
+    "id": "boro",
+    "name": "Boro",
+    "country": "united-kingdom"
+  },
+  "brabham": {
+    "id": "brabham",
+    "name": "Brabham",
+    "country": "australia"
+  },
+  "brawn-gp": {
+    "id": "brawn-gp",
+    "name": "Brawn GP",
+    "base": "brackley",
+    "country": "united-kingdom",
+    "color": "#B4C744"
+  },
+  "brm": {
+    "id": "brm",
+    "name": "BRM",
+    "country": "united-kingdom"
+  },
+  "brp": {
+    "id": "brp",
+    "name": "BRP",
+    "country": "united-kingdom"
+  },
+  "bugatti": {
+    "id": "bugatti",
+    "name": "Bugatti",
+    "country": "france"
+  },
+  "cadillac": {
+    "id": "cadillac",
+    "name": "Cadillac",
+    "country": "usa"
+  },
+  "caterham": {
+    "id": "caterham",
+    "name": "Caterham",
+    "country": "united-kingdom"
+  },
+  "coloni": {
+    "id": "coloni",
+    "name": "Coloni",
+    "country": "italy"
+  },
+  "cooper": {
+    "id": "cooper",
+    "name": "Cooper",
+    "country": "united-kingdom"
+  },
+  "courage": {
+    "id": "courage",
+    "name": "Courage",
+    "country": "france"
+  },
+  "dallara": {
+    "id": "dallara",
+    "name": "Dallara",
+    "country": "italy"
+  },
+  "de-tomaso": {
+    "id": "de-tomaso",
+    "name": "De Tomaso",
+    "country": "italy"
+  },
+  "derrington-francis": {
+    "id": "derrington-francis",
+    "name": "Derrington-Francis",
+    "country": "united-kingdom"
+  },
+  "eagle": {
+    "id": "eagle",
+    "name": "Eagle",
+    "country": "usa"
+  },
+  "ensign": {
+    "id": "ensign",
+    "name": "Ensign",
+    "country": "united-kingdom"
+  },
+  "eurobrun": {
+    "id": "eurobrun",
+    "name": "EuroBrun",
+    "country": "italy"
+  },
+  "ferrari": {
+    "id": "ferrari",
+    "name": "Ferrari",
+    "base": "maranello",
+    "country": "italy",
+    "color": "#DC0000"
+  },
+  "fittipaldi": {
+    "id": "fittipaldi",
+    "name": "Fittipaldi",
+    "country": "brazil"
+  },
+  "fondmetal": {
+    "id": "fondmetal",
+    "name": "Fondmetal",
+    "country": "italy"
+  },
+  "force-india": {
+    "id": "force-india",
+    "name": "Force India",
+    "base": "silverstone",
+    "country": "india"
+  },
+  "forti": {
+    "id": "forti",
+    "name": "Forti",
+    "country": "italy"
+  },
+  "gordini": {
+    "id": "gordini",
+    "name": "Gordini",
+    "country": "france"
+  },
+  "haas": {
+    "id": "haas",
+    "name": "Haas",
+    "country": "usa"
+  },
+  "hesketh": {
+    "id": "hesketh",
+    "name": "Hesketh",
+    "country": "united-kingdom"
+  },
+  "hill": {
+    "id": "hill",
+    "name": "Hill",
+    "country": "united-kingdom"
+  },
+  "honda-1964": {
+    "id": "honda-1964",
+    "name": "Honda",
+    "country": "japan"
+  },
+  "honda": {
+    "id": "honda",
+    "name": "Honda Racing F1",
+    "base": "brackley",
+    "country": "united-kingdom"
+  },
+  "hrt": {
+    "id": "hrt",
+    "name": "HRT",
+    "country": "spain"
+  },
+  "iso-marlboro": {
+    "id": "iso-marlboro",
+    "name": "Iso-Marlboro",
+    "country": "united-kingdom"
+  },
+  "jaguar": {
+    "id": "jaguar",
+    "name": "Jaguar",
+    "base": "milton-keynes",
+    "country": "united-kingdom"
+  },
+  "jordan": {
+    "id": "jordan",
+    "name": "Jordan",
+    "base": "silverstone",
+    "country": "ireland"
+  },
+  "klenk": {
+    "id": "klenk",
+    "name": "Klenk",
+    "country": "germany"
+  },
+  "kojima": {
+    "id": "kojima",
+    "name": "Kojima",
+    "country": "japan"
+  },
+  "kurtis-kraft": {
+    "id": "kurtis-kraft",
+    "name": "Kurtis Kraft",
+    "country": "usa"
+  },
+  "larrousse": {
+    "id": "larrousse",
+    "name": "Larrousse",
+    "country": "france"
+  },
+  "ligier": {
+    "id": "ligier",
+    "name": "Ligier",
+    "country": "france"
+  },
+  "lola": {
+    "id": "lola",
+    "name": "Lola",
+    "country": "united-kingdom"
+  },
+  "lotus": {
+    "id": "lotus",
+    "name": "Team Lotus",
+    "country": "united-kingdom"
+  },
+  "lotus-f1-team": {
+    "id": "lotus-f1-team",
+    "name": "Lotus F1 Team",
+    "base": "enstone",
+    "country": "united-kingdom"
+  },
+  "march": {
+    "id": "march",
+    "name": "March",
+    "country": "united-kingdom"
+  },
+  "manor": {
+    "id": "manor",
+    "name": "Manor",
+    "country": "united-kingdom"
+  },
+  "marussia": {
+    "id": "marussia",
+    "name": "Marussia",
+    "country": "russia"
+  },
+  "maserati": {
+    "id": "maserati",
+    "name": "Maserati",
+    "country": "italy"
+  },
+  "matra": {
+    "id": "matra",
+    "name": "Matra",
+    "country": "france"
+  },
+  "mclaren": {
+    "id": "mclaren",
+    "name": "McLaren",
+    "base": "woking",
+    "country": "united-kingdom",
+    "color": "#FF8000"
+  },
+  "mercedes": {
+    "id": "mercedes",
+    "name": "Mercedes",
+    "base": "brackley",
+    "country": "germany",
+    "color": "#00D2BE"
+  },
+  "midland": {
+    "id": "midland",
+    "name": "Midland",
+    "base": "silverstone",
+    "country": "netherlands"
+  },
+  "minardi": {
+    "id": "minardi",
+    "name": "Minardi",
+    "base": "faenza",
+    "country": "italy"
+  },
+  "modena": {
+    "id": "modena",
+    "name": "Modena",
+    "country": "united-kingdom"
+  },
+  "maki": {
+    "id": "maki",
+    "name": "Maki",
+    "country": "japan"
+  },
+  "martini": {
+    "id": "martini",
+    "name": "Martini",
+    "country": "france"
+  },
+  "osella": {
+    "id": "osella",
+    "name": "Osella",
+    "country": "italy"
+  },
+  "pacific": {
+    "id": "pacific",
+    "name": "Pacific",
+    "country": "united-kingdom"
+  },
+  "penske": {
+    "id": "penske",
+    "name": "Penske",
+    "country": "usa"
+  },
+  "porsche": {
+    "id": "porsche",
+    "name": "Porsche",
+    "country": "germany"
+  },
+  "prost": {
+    "id": "prost",
+    "name": "Prost",
+    "country": "france"
+  },
+  "racing-point": {
+    "id": "racing-point",
+    "name": "Racing Point",
+    "base": "silverstone",
+    "country": "united-kingdom",
+    "color": "#F596C8"
+  },
+  "racing-bulls": {
+    "id": "racing-bulls",
+    "name": "Racing Bulls",
+    "base": "faenza",
+    "country": "italy",
+    "color": "#6C98FF"
+  },
+  "red-bull-racing": {
+    "id": "red-bull-racing",
+    "name": "Red Bull Racing",
+    "base": "milton-keynes",
+    "country": "austria",
+    "color": "#1E41FF"
+  },
+  "renault": {
+    "id": "renault",
+    "name": "Renault",
+    "base": "enstone",
+    "country": "france",
+    "color": "#FFF500"
+  },
+  "rial": {
+    "id": "rial",
+    "name": "Rial",
+    "country": "germany"
+  },
+  "rob-walker-racing": {
+    "id": "rob-walker-racing",
+    "name": "Rob Walker Racing",
+    "country": "united-kingdom"
+  },
+  "sauber": {
+    "id": "sauber",
+    "name": "Sauber",
+    "base": "hinwil",
+    "country": "switzerland"
+  },
+  "kick-sauber": {
+    "id": "kick-sauber",
+    "name": "Kick Sauber",
+    "base": "hinwil",
+    "country": "switzerland"
+  },
+  "audi": {
+    "id": "audi",
+    "name": "Audi",
+    "base": "hinwil",
+    "country": "germany"
+  },
+  "shadow": {
+    "id": "shadow",
+    "name": "Shadow",
+    "country": "united-kingdom"
+  },
+  "simtek": {
+    "id": "simtek",
+    "name": "Simtek",
+    "country": "united-kingdom"
+  },
+  "spyker": {
+    "id": "spyker",
+    "name": "Spyker",
+    "base": "silverstone",
+    "country": "netherlands"
+  },
+  "spirit": {
+    "id": "spirit",
+    "name": "Spirit",
+    "country": "united-kingdom"
+  },
+  "stewart": {
+    "id": "stewart",
+    "name": "Stewart",
+    "base": "milton-keynes",
+    "country": "united-kingdom"
+  },
+  "super-aguri": {
+    "id": "super-aguri",
+    "name": "Super Aguri",
+    "country": "japan"
+  },
+  "surtees": {
+    "id": "surtees",
+    "name": "Surtees",
+    "country": "united-kingdom"
+  },
+  "theodore": {
+    "id": "theodore",
+    "name": "Theodore",
+    "country": "hong-kong"
+  },
+  "toleman": {
+    "id": "toleman",
+    "name": "Toleman",
+    "country": "united-kingdom"
+  },
+  "toro-rosso": {
+    "id": "toro-rosso",
+    "name": "Toro Rosso",
+    "base": "faenza",
+    "country": "italy"
+  },
+  "toyota": {
+    "id": "toyota",
+    "name": "Toyota",
+    "country": "japan"
+  },
+  "tyrrell": {
+    "id": "tyrrell",
+    "name": "Tyrrell",
+    "base": "ockham",
+    "country": "united-kingdom"
+  },
+  "vanwall": {
+    "id": "vanwall",
+    "name": "Vanwall",
+    "country": "united-kingdom"
+  },
+  "virgin": {
+    "id": "virgin",
+    "name": "Virgin",
+    "country": "united-kingdom"
+  },
+  "williams": {
+    "id": "williams",
+    "name": "Williams",
+    "base": "grove",
+    "country": "united-kingdom",
+    "color": "#00A0DE"
+  },
+  "wolf": {
+    "id": "wolf",
+    "name": "Wolf",
+    "country": "austria"
+  },
+  "zakspeed": {
+    "id": "zakspeed",
+    "name": "Zakspeed",
+    "country": "germany"
+  }
 }
