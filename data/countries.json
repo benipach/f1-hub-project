@@ -1,4 +1,9 @@
 {
+  "argentina": {
+    "name": "Argentina",
+    "code": "ARG",
+    "isoCode": "AR"
+  },
   "australia": {
     "name": "Australia",
     "code": "AUS",
@@ -9,10 +14,40 @@
     "code": "AUT",
     "isoCode": "AT"
   },
+  "belgium": {
+    "name": "Belgium",
+    "code": "BEL",
+    "isoCode": "BE"
+  },
   "brazil": {
     "name": "Brazil",
     "code": "BRA",
     "isoCode": "BR"
+  },
+  "canada": {
+    "name": "Canada",
+    "code": "CAN",
+    "isoCode": "CA"
+  },
+  "china": {
+    "name": "China",
+    "code": "CHN",
+    "isoCode": "CN"
+  },
+  "colombia": {
+    "name": "Colombia",
+    "code": "COL",
+    "isoCode": "CO"
+  },
+  "denmark": {
+    "name": "Denmark",
+    "code": "DEN",
+    "isoCode": "DK"
+  },
+  "finland": {
+    "name": "Finland",
+    "code": "FIN",
+    "isoCode": "FI"
   },
   "france": {
     "name": "France",
@@ -34,6 +69,11 @@
     "code": "IND",
     "isoCode": "IN"
   },
+  "indonesia": {
+    "name": "Indonesia",
+    "code": "INA",
+    "isoCode": "ID"
+  },
   "ireland": {
     "name": "Ireland",
     "code": "IRL",
@@ -49,6 +89,16 @@
     "code": "JPN",
     "isoCode": "JP"
   },
+  "mexico": {
+    "name": "Mexico",
+    "code": "MEX",
+    "isoCode": "MX"
+  },
+  "monaco": {
+    "name": "Monaco",
+    "code": "MON",
+    "isoCode": "MC"
+  },
   "netherlands": {
     "name": "Netherlands",
     "code": "NED",
@@ -59,20 +109,45 @@
     "code": "NZL",
     "isoCode": "NZ"
   },
+  "poland": {
+    "name": "Poland",
+    "code": "POL",
+    "isoCode": "PL"
+  },
+  "portugal": {
+    "name": "Portugal",
+    "code": "POR",
+    "isoCode": "PT"
+  },
   "russia": {
     "name": "Russia",
     "code": "RUS",
     "isoCode": "RU"
+  },
+  "south-africa": {
+    "name": "South Africa",
+    "code": "RSA",
+    "isoCode": "ZA"
   },
   "spain": {
     "name": "Spain",
     "code": "ESP",
     "isoCode": "ES"
   },
+  "sweden": {
+    "name": "Sweden",
+    "code": "SWE",
+    "isoCode": "SE"
+  },
   "switzerland": {
     "name": "Switzerland",
     "code": "SUI",
     "isoCode": "CH"
+  },
+  "thailand": {
+    "name": "Thailand",
+    "code": "THA",
+    "isoCode": "TH"
   },
   "united-kingdom": {
     "name": "United Kingdom",
@@ -83,5 +158,10 @@
     "name": "United States",
     "code": "USA",
     "isoCode": "US"
+  },
+  "venezuela": {
+    "name": "Venezuela",
+    "code": "VEN",
+    "isoCode": "VE"
   }
 }
