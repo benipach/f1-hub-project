@@ -1,24 +1,5 @@
 // TEAMS, teamColor() vienen de teams.js, que debe cargarse antes que este archivo.
 
-// ── TEAM ID → LOGO FILENAME ──────────────────────────────────────────────
-const TEAM_LOGO_MAP = {
-    'Mercedes':        'mercedes-logo',
-    'Ferrari':         'ferrari-logo',
-    'McLaren':         'mclaren-logo',
-    'Red Bull':        'redbull-logo',
-    'Red Bull Racing': 'redbull-logo',
-    'Aston Martin':    'astonmartin-logo',
-    'Alpine':          'alpine-logo',
-    'Williams':        'williams-logo',
-    'Racing Bulls':    'racingbulls-logo',
-    'Haas':            'haas-logo',
-    'Haas F1 Team':    'haas-logo',
-    'Audi':            'audi-logo',
-    'Cadillac':        'cadillac-logo',
-};
-
-
-
 function buildCumulative(points) {
     let sum = 0;
     return points.map(p => {
@@ -72,7 +53,9 @@ document.addEventListener('click', e => {
 });
 
 ['driver', 'constructor'].forEach(type => {
-    document.getElementById(`${type}-filter-btn`).addEventListener('click', e => {
+    const btn = document.getElementById(`${type}-filter-btn`);
+    if (!btn) return;
+    btn.addEventListener('click', e => {
         e.stopPropagation();
         document.getElementById(`${type}-filter-dropdown`).classList.toggle('open');
     });
@@ -94,7 +77,7 @@ const CHART_LAYOUT = {
 };
 
 // ── FILTERED CHART BUILDER ───────────────────────────────────────────────
-function makeFilteredChart(containerId, filterItemsId, selectAllId, datasets, labels) {
+function makeFilteredChart(containerId, filterItemsId, selectAllId, datasets, labels, gridStep = CHART_LAYOUT.gridStep) {
     const container = document.getElementById(containerId);
     const filterContainer = document.getElementById(filterItemsId);
     const selectAllBtn = document.getElementById(selectAllId);
@@ -145,7 +128,7 @@ function makeFilteredChart(containerId, filterItemsId, selectAllId, datasets, la
     }
 
     function scaleMaxFrom(sourceDatasets) {
-        const step = CHART_LAYOUT.gridStep;
+        const step = gridStep;
         const values = getValuesFrom(sourceDatasets);
         const highest = Math.max(...values, 0);
 
@@ -267,7 +250,7 @@ function makeFilteredChart(containerId, filterItemsId, selectAllId, datasets, la
     }
 
     function makeGrid() {
-        const step = CHART_LAYOUT.gridStep;
+        const step = gridStep;
         const ticks = [];
 
         // Values are generated bottom-to-top: 0, 50, 100, ... maxY.
@@ -896,7 +879,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 data: buildCumulative(c.racePoints),
             }));
 
-        makeFilteredChart('constructorChart', 'constructor-filter-items', 'constructor-select-all', constructorDatasets, raceLabels);
+        makeFilteredChart('constructorChart', 'constructor-filter-items', 'constructor-select-all', constructorDatasets, raceLabels, 50);
 
     } catch (err) {
         console.error('Error loading championship data:', err);

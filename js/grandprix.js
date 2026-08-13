@@ -527,10 +527,21 @@ const TEAM_LOGO_MAP = {
     'Haas F1 Team':    'haas-logo',
     'Audi':            'audi-logo',
     'Cadillac':        'cadillac-logo',
+    'Force India':     'forceindia-logo',
+    'Toro Rosso':      'tororosso-logo',
+    'Sauber':          'sauber-logo',
     'Renault':         'renault-logo',
     'Lotus':           'lotus-logo',
     'Brawn GP':        'brawngp-logo',
-    'Benetton':        'benetton-logo'
+    'Benetton':        'benetton-logo',
+    'Jordan':          'jordan-logo',
+    'Tyrrell':         'tyrrell-logo',
+    'Footwork':        'footwork-logo',
+    'Larrousse':       'larrousse-logo',
+    'Minardi':         'minardi-logo',
+    'Simtek':          'simtek-logo',
+    'Pacific':         'pacific-logo',
+    'Ligier':          'ligier-logo'
 };
 
 // ── TEAM ID → PRIMARY COLOR ──────────────────────────────────────────────

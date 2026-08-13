@@ -167,7 +167,6 @@
     background: var(--base-700);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 16px;
-    max-height: 605px;
     transition: border-color 0.25s ease;
 }
 
@@ -209,9 +208,10 @@
 }
 
 .standings-table td {
-    height: 56px;
+    height: 32px;
     padding: 0 20px;
     color: var(--text-light);
+    font-size: 16px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     background: transparent;
     transition: background 0.15s ease;
@@ -257,9 +257,8 @@
 .st-driver-num {
     font-family: 'F1-Bold';
     font-size: 13px;
-    letter-spacing: 0.5px;
-    transform: skewX(-15deg);
     flex-shrink: 0;
+    text-align: right;
     min-width: 32px;
 }
 
@@ -465,10 +464,6 @@
     .standings-table td,
     .standings-table th {
         padding: 0 10px;
-    }
-
-    .standings-table-wrap {
-        max-height: 401px;
     }
 
     #tab-drivers .standings-table th:nth-child(3),
@@ -784,9 +779,9 @@
     display: block;
     margin-bottom: 5px;
     color: var(--text-light);
-    font-family: 'F1-Bold';
-    font-size: 11px;
-    letter-spacing: 1px;
+    font-family: 'F1-Regular';
+    font-size: 14px;
+    letter-spacing: 0.1px;
     text-transform: uppercase;
 }
 

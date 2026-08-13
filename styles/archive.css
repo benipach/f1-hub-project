@@ -1,0 +1,86 @@
+/* ============================================================ */
+/*  archive.css                                                  */
+/*  Solo estilos específicos de Archive — el resto lo hereda    */
+/*  de championship.css y style.css                             */
+/* ============================================================ */
+
+/* ── HEADER ──────────────────────────────────────────────────── */
+
+/* Fila título + dropdown en la misma línea */
+.archive-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+/* ── DROPDOWN DE TEMPORADA ───────────────────────────────────── */
+.archive-season-select-wrap {
+    flex-shrink: 0;
+}
+
+.archive-season-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: rgba(255, 255, 255, 0.05);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='rgba(255,255,255,0.4)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: var(--text-light);
+    cursor: pointer;
+    font-family: 'F1-Regular';
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0.6rem 2.2rem 0.6rem 1rem;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    min-width: 160px;
+}
+
+.archive-season-select:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.archive-season-select:focus {
+    outline: none;
+    border-color: var(--primary-red);
+}
+
+.archive-season-select option {
+    background-color: #1a1a2e;
+    color: var(--text-light);
+}
+
+/* ── CONTENIDO (oculto hasta elegir año) ─────────────────────── */
+.archive-content {
+    /* El atributo `hidden` lo oculta por defecto.
+       Cuando JS lo remueve, esta clase entra en juego
+       para darle la misma estructura que .champ-content */
+}
+
+/* ── CALENDARIO ──────────────────────────────────────────────── */
+.archive-calendar {
+    padding: 3rem 10% 4rem;
+}
+
+.archive-calendar .calendar-header {
+    margin-bottom: 2rem;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────── */
+@media (max-width: 600px) {
+    .archive-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .archive-season-select {
+        width: 100%;
+        min-width: unset;
+    }
+}
