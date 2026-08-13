@@ -7,19 +7,17 @@
   "alfa-romeo": {
     "id": "alfa-romeo",
     "name": "Alfa Romeo",
-    "country": "italy"
+    "base": "milan"
   },
   "alfa-romeo-sauber": {
     "id": "alfa-romeo-sauber",
     "name": "Alfa Romeo F1 Team",
-    "base": "hinwil",
-    "country": "switzerland"
+    "base": "hinwil"
   },
   "alphatauri": {
     "id": "alphatauri",
     "name": "AlphaTauri",
     "base": "faenza",
-    "country": "italy",
     "color": "#2B4562"
   },
   "alpine": {
@@ -42,12 +40,13 @@
   "andrea-moda": {
     "id": "andrea-moda",
     "name": "Andrea Moda",
-    "country": "italy"
+    "base": "civitanova-marche"
   },
   "anglo-american-racers": {
     "id": "anglo-american-racers",
     "name": "Anglo American Racers",
-    "country": "usa"
+    "country": "usa",
+    "base": "rye"
   },
   "apollon": {
     "id": "apollon",
@@ -57,7 +56,7 @@
   "arrows": {
     "id": "arrows",
     "name": "Arrows",
-    "country": "united-kingdom"
+    "base": "leafield"
   },
   "arzani-volpini": {
     "id": "arzani-volpini",
@@ -73,7 +72,6 @@
     "id": "aston-martin",
     "name": "Aston Martin",
     "base": "silverstone",
-    "country": "united-kingdom",
     "color": "#00594F"
   },
   "ats-1963": {
@@ -84,25 +82,23 @@
   "ats": {
     "id": "ats",
     "name": "ATS",
-    "country": "germany"
+    "country": "germany",
+    "base": "bicester"
   },
   "bar": {
     "id": "bar",
     "name": "BAR",
-    "base": "brackley",
-    "country": "united-kingdom"
+    "base": "brackley"
   },
   "bmw-sauber": {
     "id": "bmw-sauber",
     "name": "BMW Sauber",
-    "base": "hinwil",
-    "country": "switzerland"
+    "base": "hinwil"
   },
   "benetton": {
     "id": "benetton",
     "name": "Benetton",
-    "base": "enstone",
-    "country": "united-kingdom"
+    "base": "enstone"
   },
   "bellasi": {
     "id": "bellasi",
@@ -112,7 +108,7 @@
   "bms-scuderia-italia": {
     "id": "bms-scuderia-italia",
     "name": "BMS Scuderia Italia",
-    "country": "italy"
+    "base": "brescia"
   },
   "boro": {
     "id": "boro",
@@ -122,19 +118,19 @@
   "brabham": {
     "id": "brabham",
     "name": "Brabham",
-    "country": "australia"
+    "country": "australia",
+    "base": "weybridge"
   },
   "brawn-gp": {
     "id": "brawn-gp",
     "name": "Brawn GP",
     "base": "brackley",
-    "country": "united-kingdom",
     "color": "#B4C744"
   },
   "brm": {
     "id": "brm",
     "name": "BRM",
-    "country": "united-kingdom"
+    "base": "bourne"
   },
   "brp": {
     "id": "brp",
@@ -154,17 +150,17 @@
   "caterham": {
     "id": "caterham",
     "name": "Caterham",
-    "country": "united-kingdom"
+    "base": "leafield"
   },
   "coloni": {
     "id": "coloni",
     "name": "Coloni",
-    "country": "italy"
+    "base": "passignano-sul-trasimeno"
   },
   "cooper": {
     "id": "cooper",
     "name": "Cooper",
-    "country": "united-kingdom"
+    "base": "surbiton"
   },
   "courage": {
     "id": "courage",
@@ -174,12 +170,12 @@
   "dallara": {
     "id": "dallara",
     "name": "Dallara",
-    "country": "italy"
+    "base": "varano-de-melegari"
   },
   "de-tomaso": {
     "id": "de-tomaso",
     "name": "De Tomaso",
-    "country": "italy"
+    "base": "modena"
   },
   "derrington-francis": {
     "id": "derrington-francis",
@@ -189,34 +185,35 @@
   "eagle": {
     "id": "eagle",
     "name": "Eagle",
-    "country": "usa"
+    "country": "usa",
+    "base": "rye"
   },
   "ensign": {
     "id": "ensign",
     "name": "Ensign",
-    "country": "united-kingdom"
+    "base": "burntwood"
   },
   "eurobrun": {
     "id": "eurobrun",
     "name": "EuroBrun",
-    "country": "italy"
+    "base": "senago"
   },
   "ferrari": {
     "id": "ferrari",
     "name": "Ferrari",
     "base": "maranello",
-    "country": "italy",
     "color": "#DC0000"
   },
   "fittipaldi": {
     "id": "fittipaldi",
     "name": "Fittipaldi",
-    "country": "brazil"
+    "country": "brazil",
+    "base": "reading"
   },
   "fondmetal": {
     "id": "fondmetal",
     "name": "Fondmetal",
-    "country": "italy"
+    "base": "bergamo"
   },
   "force-india": {
     "id": "force-india",
@@ -227,27 +224,27 @@
   "forti": {
     "id": "forti",
     "name": "Forti",
-    "country": "italy"
+    "base": "alessandria"
   },
   "gordini": {
     "id": "gordini",
     "name": "Gordini",
-    "country": "france"
+    "base": "paris"
   },
   "haas": {
     "id": "haas",
     "name": "Haas",
-    "country": "usa"
+    "base": "kannapolis"
   },
   "hesketh": {
     "id": "hesketh",
     "name": "Hesketh",
-    "country": "united-kingdom"
+    "base": "easton-neston"
   },
   "hill": {
     "id": "hill",
     "name": "Hill",
-    "country": "united-kingdom"
+    "base": "feltham"
   },
   "honda-1964": {
     "id": "honda-1964",
@@ -257,13 +254,12 @@
   "honda": {
     "id": "honda",
     "name": "Honda Racing F1",
-    "base": "brackley",
-    "country": "united-kingdom"
+    "base": "brackley"
   },
   "hrt": {
     "id": "hrt",
     "name": "HRT",
-    "country": "spain"
+    "base": "madrid"
   },
   "iso-marlboro": {
     "id": "iso-marlboro",
@@ -273,8 +269,7 @@
   "jaguar": {
     "id": "jaguar",
     "name": "Jaguar",
-    "base": "milton-keynes",
-    "country": "united-kingdom"
+    "base": "milton-keynes"
   },
   "jordan": {
     "id": "jordan",
@@ -300,59 +295,58 @@
   "larrousse": {
     "id": "larrousse",
     "name": "Larrousse",
-    "country": "france"
+    "base": "signes"
   },
   "ligier": {
     "id": "ligier",
     "name": "Ligier",
-    "country": "france"
+    "base": "vichy"
   },
   "lola": {
     "id": "lola",
     "name": "Lola",
-    "country": "united-kingdom"
+    "base": "huntingdon"
   },
   "lotus": {
     "id": "lotus",
     "name": "Team Lotus",
-    "country": "united-kingdom"
+    "base": "hethel"
   },
   "lotus-f1-team": {
     "id": "lotus-f1-team",
     "name": "Lotus F1 Team",
-    "base": "enstone",
-    "country": "united-kingdom"
+    "base": "enstone"
   },
   "march": {
     "id": "march",
     "name": "March",
-    "country": "united-kingdom"
+    "base": "bicester"
   },
   "manor": {
     "id": "manor",
     "name": "Manor",
-    "country": "united-kingdom"
+    "base": "banbury"
   },
   "marussia": {
     "id": "marussia",
     "name": "Marussia",
-    "country": "russia"
+    "country": "russia",
+    "base": "banbury"
   },
   "maserati": {
     "id": "maserati",
     "name": "Maserati",
-    "country": "italy"
+    "base": "modena"
   },
   "matra": {
     "id": "matra",
     "name": "Matra",
-    "country": "france"
+    "base": "velizy-villacoublay"
   },
   "mclaren": {
     "id": "mclaren",
     "name": "McLaren",
     "base": "woking",
-    "country": "united-kingdom",
     "color": "#FF8000"
   },
   "mercedes": {
@@ -371,8 +365,7 @@
   "minardi": {
     "id": "minardi",
     "name": "Minardi",
-    "base": "faenza",
-    "country": "italy"
+    "base": "faenza"
   },
   "modena": {
     "id": "modena",
@@ -392,7 +385,7 @@
   "osella": {
     "id": "osella",
     "name": "Osella",
-    "country": "italy"
+    "base": "verolengo"
   },
   "pacific": {
     "id": "pacific",
@@ -407,25 +400,23 @@
   "porsche": {
     "id": "porsche",
     "name": "Porsche",
-    "country": "germany"
+    "base": "zuffenhausen"
   },
   "prost": {
     "id": "prost",
     "name": "Prost",
-    "country": "france"
+    "base": "guyancourt"
   },
   "racing-point": {
     "id": "racing-point",
     "name": "Racing Point",
     "base": "silverstone",
-    "country": "united-kingdom",
     "color": "#F596C8"
   },
   "racing-bulls": {
     "id": "racing-bulls",
     "name": "Racing Bulls",
     "base": "faenza",
-    "country": "italy",
     "color": "#6C98FF"
   },
   "red-bull-racing": {
@@ -445,7 +436,7 @@
   "rial": {
     "id": "rial",
     "name": "Rial",
-    "country": "germany"
+    "base": "fussgonheim"
   },
   "rob-walker-racing": {
     "id": "rob-walker-racing",
@@ -455,14 +446,12 @@
   "sauber": {
     "id": "sauber",
     "name": "Sauber",
-    "base": "hinwil",
-    "country": "switzerland"
+    "base": "hinwil"
   },
   "kick-sauber": {
     "id": "kick-sauber",
     "name": "Kick Sauber",
-    "base": "hinwil",
-    "country": "switzerland"
+    "base": "hinwil"
   },
   "audi": {
     "id": "audi",
@@ -473,12 +462,12 @@
   "shadow": {
     "id": "shadow",
     "name": "Shadow",
-    "country": "united-kingdom"
+    "base": "northampton"
   },
   "simtek": {
     "id": "simtek",
     "name": "Simtek",
-    "country": "united-kingdom"
+    "base": "banbury"
   },
   "spyker": {
     "id": "spyker",
@@ -494,71 +483,71 @@
   "stewart": {
     "id": "stewart",
     "name": "Stewart",
-    "base": "milton-keynes",
-    "country": "united-kingdom"
+    "base": "milton-keynes"
   },
   "super-aguri": {
     "id": "super-aguri",
     "name": "Super Aguri",
-    "country": "japan"
+    "country": "japan",
+    "base": "leafield"
   },
   "surtees": {
     "id": "surtees",
     "name": "Surtees",
-    "country": "united-kingdom"
+    "base": "edenbridge"
   },
   "theodore": {
     "id": "theodore",
     "name": "Theodore",
-    "country": "hong-kong"
+    "country": "hong-kong",
+    "base": "woking"
   },
   "toleman": {
     "id": "toleman",
     "name": "Toleman",
-    "country": "united-kingdom"
+    "base": "witney"
   },
   "toro-rosso": {
     "id": "toro-rosso",
     "name": "Toro Rosso",
-    "base": "faenza",
-    "country": "italy"
+    "base": "faenza"
   },
   "toyota": {
     "id": "toyota",
     "name": "Toyota",
-    "country": "japan"
+    "country": "japan",
+    "base": "cologne"
   },
   "tyrrell": {
     "id": "tyrrell",
     "name": "Tyrrell",
-    "base": "ockham",
-    "country": "united-kingdom"
+    "base": "ockham"
   },
   "vanwall": {
     "id": "vanwall",
     "name": "Vanwall",
-    "country": "united-kingdom"
+    "base": "acton"
   },
   "virgin": {
     "id": "virgin",
     "name": "Virgin",
-    "country": "united-kingdom"
+    "base": "dinnington"
   },
   "williams": {
     "id": "williams",
     "name": "Williams",
     "base": "grove",
-    "country": "united-kingdom",
     "color": "#00A0DE"
   },
   "wolf": {
     "id": "wolf",
     "name": "Wolf",
-    "country": "austria"
+    "country": "canada",
+    "base": "reading"
   },
   "zakspeed": {
     "id": "zakspeed",
     "name": "Zakspeed",
-    "country": "germany"
+    "base": "niederzissen"
   }
 }
