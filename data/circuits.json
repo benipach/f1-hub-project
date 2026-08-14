@@ -1,20 +1,18 @@
 {
   "albert-park-circuit": {
+    "id": "albert-park-circuit",
     "name": "Albert Park Circuit",
+    "location": {
+      "city": "melbourne"
+    },
     "active": true,
-    "stats": {
-      "length": "5.278",
-      "laps": 58,
-      "turns": 16,
-      "overtakeZones": 5
-    },
-    "topSpeed": {
-      "speed": "343"
-    },
-    "lapRecord": {
-      "time": "1:19.813",
-      "driver": "Charles Leclerc",
-      "year": 2024
+    "layouts": {
+      "current": {
+        "length": 5.278,
+        "turns": 16,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 60,
@@ -24,21 +22,19 @@
     }
   },
   "autodromo-nazionale-di-monza": {
+    "id": "autodromo-nazionale-di-monza",
     "name": "Autodromo Nazionale di Monza",
+    "location": {
+      "city": "monza"
+    },
     "active": true,
-    "stats": {
-      "length": "5.793",
-      "laps": 53,
-      "turns": 11,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "372"
-    },
-    "lapRecord": {
-      "time": "1:21.046",
-      "driver": "Rubens Barrichello",
-      "year": 2004
+    "layouts": {
+      "current": {
+        "length": 5.793,
+        "turns": 11,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 15,
@@ -48,21 +44,19 @@
     }
   },
   "hermanos-rodriguez": {
+    "id": "hermanos-rodriguez",
     "name": "Autódromo Hermanos Rodríguez",
+    "location": {
+      "city": "mexico-city"
+    },
     "active": true,
-    "stats": {
-      "length": "4.304",
-      "laps": 71,
-      "turns": 17,
-      "overtakeZones": 3
-    },
-    "topSpeed": {
-      "speed": "372"
-    },
-    "lapRecord": {
-      "time": "1:17.774",
-      "driver": "Valtteri Bottas",
-      "year": 2021
+    "layouts": {
+      "current": {
+        "length": 4.304,
+        "turns": 17,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 100,
@@ -72,21 +66,19 @@
     }
   },
   "autodromo-jose-carlos-pace": {
+    "id": "autodromo-jose-carlos-pace",
     "name": "Autódromo José Carlos Pace",
+    "location": {
+      "city": "sao-paulo"
+    },
     "active": true,
-    "stats": {
-      "length": "4.309",
-      "laps": 71,
-      "turns": 15,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "338"
-    },
-    "lapRecord": {
-      "time": "1:10.540",
-      "driver": "Valtteri Bottas",
-      "year": 2018
+    "layouts": {
+      "current": {
+        "length": 4.309,
+        "turns": 15,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 70,
@@ -96,21 +88,19 @@
     }
   },
   "bahrain-international-circuit": {
+    "id": "bahrain-international-circuit",
     "name": "Bahrain International Circuit",
+    "location": {
+      "city": "sakhir"
+    },
     "active": true,
-    "stats": {
-      "length": "5.412",
-      "laps": 57,
-      "turns": 15,
-      "overtakeZones": 3
-    },
-    "topSpeed": {
-      "speed": "322"
-    },
-    "lapRecord": {
-      "time": "1:31.447",
-      "driver": "Pedro de la Rosa",
-      "year": 2005
+    "layouts": {
+      "current": {
+        "length": 5.412,
+        "turns": 15,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 55,
@@ -120,21 +110,19 @@
     }
   },
   "baku-city-circuit": {
+    "id": "baku-city-circuit",
     "name": "Baku City Circuit",
+    "location": {
+      "city": "baku"
+    },
     "active": true,
-    "stats": {
-      "length": "6.003",
-      "laps": 51,
-      "turns": 20,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "378"
-    },
-    "lapRecord": {
-      "time": "1:43.009",
-      "driver": "Charles Leclerc",
-      "year": 2019
+    "layouts": {
+      "current": {
+        "length": 6.003,
+        "turns": 20,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 40,
@@ -144,21 +132,19 @@
     }
   },
   "circuit-gilles-villeneuve": {
+    "id": "circuit-gilles-villeneuve",
     "name": "Circuit Gilles Villeneuve",
+    "location": {
+      "city": "montreal"
+    },
     "active": true,
-    "stats": {
-      "length": "4.361",
-      "laps": 70,
-      "turns": 14,
-      "overtakeZones": 4
-    },
-    "topSpeed": {
-      "speed": "328"
-    },
-    "lapRecord": {
-      "time": "1:13.078",
-      "driver": "Valtteri Bottas",
-      "year": 2019
+    "layouts": {
+      "current": {
+        "length": 4.361,
+        "turns": 14,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 35,
@@ -168,21 +154,19 @@
     }
   },
   "circuit-zandvoort": {
+    "id": "circuit-zandvoort",
     "name": "Circuit Zandvoort",
+    "location": {
+      "city": "zandvoort"
+    },
     "active": true,
-    "stats": {
-      "length": "4.259",
-      "laps": 72,
-      "turns": 14,
-      "overtakeZones": 1
-    },
-    "topSpeed": {
-      "speed": "338"
-    },
-    "lapRecord": {
-      "time": "1:11.097",
-      "driver": "Lewis Hamilton",
-      "year": 2021
+    "layouts": {
+      "current": {
+        "length": 4.259,
+        "turns": 14,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 80,
@@ -192,21 +176,19 @@
     }
   },
   "circuit-de-barcelona-catalunya": {
+    "id": "circuit-de-barcelona-catalunya",
     "name": "Circuit de Barcelona-Catalunya",
+    "location": {
+      "city": "montmelo"
+    },
     "active": false,
-    "stats": {
-      "length": "4.657",
-      "laps": 66,
-      "turns": 14,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "320"
-    },
-    "lapRecord": {
-      "time": "1:16.330",
-      "driver": "Max Verstappen",
-      "year": 2023
+    "layouts": {
+      "current": {
+        "length": 4.657,
+        "turns": 14,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 70,
@@ -216,21 +198,19 @@
     }
   },
   "circuit-de-monaco": {
+    "id": "circuit-de-monaco",
     "name": "Circuit de Monaco",
+    "location": {
+      "city": "monte-carlo"
+    },
     "active": true,
-    "stats": {
-      "length": "3.337",
-      "laps": 78,
-      "turns": 19,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "293"
-    },
-    "lapRecord": {
-      "time": "1:12.909",
-      "driver": "Lewis Hamilton",
-      "year": 2021
+    "layouts": {
+      "current": {
+        "length": 3.337,
+        "turns": 19,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 95,
@@ -240,21 +220,19 @@
     }
   },
   "circuit-de-spa-francorchamps": {
+    "id": "circuit-de-spa-francorchamps",
     "name": "Circuit de Spa-Francorchamps",
+    "location": {
+      "city": "spa"
+    },
     "active": true,
-    "stats": {
-      "length": "7.004",
-      "laps": 44,
-      "turns": 19,
-      "overtakeZones": 3
-    },
-    "topSpeed": {
-      "speed": "335"
-    },
-    "lapRecord": {
-      "time": "1:46.286",
-      "driver": "Valtteri Bottas",
-      "year": 2018
+    "layouts": {
+      "current": {
+        "length": 7.004,
+        "turns": 19,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 65,
@@ -264,21 +242,19 @@
     }
   },
   "cota": {
+    "id": "cota",
     "name": "Circuit of The Americas",
+    "location": {
+      "city": "austin"
+    },
     "active": true,
-    "stats": {
-      "length": "5.513",
-      "laps": 56,
-      "turns": 20,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "335"
-    },
-    "lapRecord": {
-      "time": "1:36.169",
-      "driver": "Charles Leclerc",
-      "year": 2019
+    "layouts": {
+      "current": {
+        "length": 5.513,
+        "turns": 20,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 75,
@@ -288,21 +264,19 @@
     }
   },
   "hungaroring": {
+    "id": "hungaroring",
     "name": "Hungaroring",
+    "location": {
+      "city": "budapest"
+    },
     "active": true,
-    "stats": {
-      "length": "4.381",
-      "laps": 70,
-      "turns": 14,
-      "overtakeZones": 1
-    },
-    "topSpeed": {
-      "speed": "315"
-    },
-    "lapRecord": {
-      "time": "1:16.627",
-      "driver": "Lewis Hamilton",
-      "year": 2020
+    "layouts": {
+      "current": {
+        "length": 4.381,
+        "turns": 14,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 85,
@@ -312,21 +286,19 @@
     }
   },
   "jeddah-corniche-circuit": {
+    "id": "jeddah-corniche-circuit",
     "name": "Jeddah Corniche Circuit",
+    "location": {
+      "city": "jeddah"
+    },
     "active": true,
-    "stats": {
-      "length": "6.174",
-      "laps": 50,
-      "turns": 27,
-      "overtakeZones": 3
-    },
-    "topSpeed": {
-      "speed": "342"
-    },
-    "lapRecord": {
-      "time": "1:30.734",
-      "driver": "Lewis Hamilton",
-      "year": 2021
+    "layouts": {
+      "current": {
+        "length": 6.174,
+        "turns": 27,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 40,
@@ -336,21 +308,19 @@
     }
   },
   "las-vegas-strip-circuit": {
+    "id": "las-vegas-strip-circuit",
     "name": "Las Vegas Strip Circuit",
+    "location": {
+      "city": "las-vegas"
+    },
     "active": true,
-    "stats": {
-      "length": "6.201",
-      "laps": 50,
-      "turns": 17,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "369"
-    },
-    "lapRecord": {
-      "time": "1:35.490",
-      "driver": "Oscar Piastri",
-      "year": 2023
+    "layouts": {
+      "current": {
+        "length": 6.201,
+        "turns": 17,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 15,
@@ -360,21 +330,19 @@
     }
   },
   "lusail-international-circuit": {
+    "id": "lusail-international-circuit",
     "name": "Lusail International Circuit",
+    "location": {
+      "city": "lusail"
+    },
     "active": true,
-    "stats": {
-      "length": "5.419",
-      "laps": 57,
-      "turns": 16,
-      "overtakeZones": 1
-    },
-    "topSpeed": {
-      "speed": "337"
-    },
-    "lapRecord": {
-      "time": "1:24.319",
-      "driver": "Max Verstappen",
-      "year": 2023
+    "layouts": {
+      "current": {
+        "length": 5.419,
+        "turns": 16,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 65,
@@ -384,21 +352,19 @@
     }
   },
   "madring": {
+    "id": "madring",
     "name": "Madring",
+    "location": {
+      "city": "madrid"
+    },
     "active": true,
-    "stats": {
-      "length": "5.416",
-      "laps": 57,
-      "turns": 22,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "N/A"
-    },
-    "lapRecord": {
-      "time": "1:32.026 (Est.)",
-      "driver": "N/A",
-      "year": 2026
+    "layouts": {
+      "current": {
+        "length": 5.416,
+        "turns": 22,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 0,
@@ -408,21 +374,19 @@
     }
   },
   "marina-bay-street-circuit": {
+    "id": "marina-bay-street-circuit",
     "name": "Marina Bay Street Circuit",
+    "location": {
+      "city": "singapore"
+    },
     "active": true,
-    "stats": {
-      "length": "4.940",
-      "laps": 62,
-      "turns": 19,
-      "overtakeZones": 4
-    },
-    "topSpeed": {
-      "speed": "320"
-    },
-    "lapRecord": {
-      "time": "1:34.486",
-      "driver": "Daniel Ricciardo",
-      "year": 2024
+    "layouts": {
+      "current": {
+        "length": 4.94,
+        "turns": 19,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 80,
@@ -432,21 +396,19 @@
     }
   },
   "miami-international-autodrome": {
+    "id": "miami-international-autodrome",
     "name": "Miami International Autodrome",
+    "location": {
+      "city": "miami"
+    },
     "active": true,
-    "stats": {
-      "length": "5.412",
-      "laps": 57,
-      "turns": 19,
-      "overtakeZones": 3
-    },
-    "topSpeed": {
-      "speed": "320"
-    },
-    "lapRecord": {
-      "time": "1:29.708",
-      "driver": "Max Verstappen",
-      "year": 2023
+    "layouts": {
+      "current": {
+        "length": 5.412,
+        "turns": 19,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 45,
@@ -456,21 +418,19 @@
     }
   },
   "red-bull-ring": {
+    "id": "red-bull-ring",
     "name": "Red Bull Ring",
+    "location": {
+      "city": "spielberg"
+    },
     "active": true,
-    "stats": {
-      "length": "4.318",
-      "laps": 71,
-      "turns": 10,
-      "overtakeZones": 3
-    },
-    "topSpeed": {
-      "speed": "322"
-    },
-    "lapRecord": {
-      "time": "1:05.619",
-      "driver": "Carlos Sainz",
-      "year": 2020
+    "layouts": {
+      "current": {
+        "length": 4.318,
+        "turns": 10,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 60,
@@ -480,21 +440,19 @@
     }
   },
   "sepang-international-circuit": {
+    "id": "sepang-international-circuit",
     "name": "Sepang International Circuit",
+    "location": {
+      "city": "sepang"
+    },
     "active": false,
-    "stats": {
-      "length": "5.543",
-      "laps": 56,
-      "turns": 15,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "330"
-    },
-    "lapRecord": {
-      "time": "1:34.080",
-      "driver": "Sebastian Vettel",
-      "year": 2017
+    "layouts": {
+      "current": {
+        "length": 5.543,
+        "turns": 15,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 55,
@@ -504,21 +462,19 @@
     }
   },
   "shanghai-international-circuit": {
+    "id": "shanghai-international-circuit",
     "name": "Shanghai International Circuit",
+    "location": {
+      "city": "shanghai"
+    },
     "active": true,
-    "stats": {
-      "length": "5.451",
-      "laps": 56,
-      "turns": 16,
-      "overtakeZones": 4
-    },
-    "topSpeed": {
-      "speed": "354"
-    },
-    "lapRecord": {
-      "time": "1:32.238",
-      "driver": "Michael Schumacher",
-      "year": 2004
+    "layouts": {
+      "current": {
+        "length": 5.451,
+        "turns": 16,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 50,
@@ -528,21 +484,19 @@
     }
   },
   "silverstone-circuit": {
+    "id": "silverstone-circuit",
     "name": "Silverstone Circuit",
+    "location": {
+      "city": "silverstone"
+    },
     "active": true,
-    "stats": {
-      "length": "5.891",
-      "laps": 52,
-      "turns": 18,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "335"
-    },
-    "lapRecord": {
-      "time": "1:27.097",
-      "driver": "Max Verstappen",
-      "year": 2020
+    "layouts": {
+      "current": {
+        "length": 5.891,
+        "turns": 18,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 60,
@@ -552,21 +506,19 @@
     }
   },
   "suzuka-international-racing-course": {
+    "id": "suzuka-international-racing-course",
     "name": "Suzuka International Racing Course",
+    "location": {
+      "city": "suzuka"
+    },
     "active": true,
-    "stats": {
-      "length": "5.807",
-      "laps": 53,
-      "turns": 18,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "349"
-    },
-    "lapRecord": {
-      "time": "1:30.983",
-      "driver": "Lewis Hamilton",
-      "year": 2019
+    "layouts": {
+      "current": {
+        "length": 5.807,
+        "turns": 18,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 75,
@@ -607,21 +559,19 @@
     }
   },
   "yas-marina-circuit": {
+    "id": "yas-marina-circuit",
     "name": "Yas Marina Circuit",
+    "location": {
+      "city": "abu-dhabi"
+    },
     "active": true,
-    "stats": {
-      "length": "5.281",
-      "laps": 58,
-      "turns": 16,
-      "overtakeZones": 2
-    },
-    "topSpeed": {
-      "speed": "335"
-    },
-    "lapRecord": {
-      "time": "1:26.103",
-      "driver": "Max Verstappen",
-      "year": 2021
+    "layouts": {
+      "current": {
+        "length": 5.281,
+        "turns": 16,
+        "validFrom": null,
+        "validTo": null
+      }
     },
     "characteristics": {
       "downforce": 70,
