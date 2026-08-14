@@ -7,10 +7,16 @@
     },
     "active": true,
     "layouts": {
-      "current": {
-        "length": 5.278,
+      "1996-2020": {
+        "length": 5.303,
         "turns": 16,
-        "validFrom": null,
+        "validFrom": 1996,
+        "validTo": 2020
+      },
+      "2021-present": {
+        "length": 5.278,
+        "turns": 14,
+        "validFrom": 2021,
         "validTo": null
       }
     },
@@ -29,10 +35,52 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "1950-1954": {
+        "length": 6.3,
+        "turns": 7,
+        "validFrom": 1950,
+        "validTo": 1954
+      },
+      "1955-1971": {
+        "length": 5.75,
+        "turns": 7,
+        "validFrom": 1955,
+        "validTo": 1971
+      },
+      "1972-1973": {
+        "length": 5.775,
+        "turns": 11,
+        "validFrom": 1972,
+        "validTo": 1973
+      },
+      "1974-1975": {
+        "length": 5.78,
+        "turns": 11,
+        "validFrom": 1974,
+        "validTo": 1975
+      },
+      "1976-1993": {
+        "length": 5.8,
+        "turns": 14,
+        "validFrom": 1976,
+        "validTo": 1993
+      },
+      "1994-1995": {
+        "length": 5.834,
+        "turns": 14,
+        "validFrom": 1994,
+        "validTo": 1995
+      },
+      "1996-1999": {
+        "length": 5.77,
+        "turns": 14,
+        "validFrom": 1996,
+        "validTo": 1999
+      },
+      "2000-present": {
         "length": 5.793,
         "turns": 11,
-        "validFrom": null,
+        "validFrom": 2000,
         "validTo": null
       }
     },
@@ -51,10 +99,16 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "1986-1992": {
+        "length": 4.421,
+        "turns": null,
+        "validFrom": 1986,
+        "validTo": 1992
+      },
+      "2015-present": {
         "length": 4.304,
         "turns": 17,
-        "validFrom": null,
+        "validFrom": 2015,
         "validTo": null
       }
     },
@@ -73,10 +127,34 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "1973-1979": {
+        "length": 7.96,
+        "turns": null,
+        "validFrom": 1973,
+        "validTo": 1979
+      },
+      "1980-1989": {
+        "length": 7.873,
+        "turns": 26,
+        "validFrom": 1980,
+        "validTo": 1989
+      },
+      "1990-1995": {
+        "length": 4.325,
+        "turns": 15,
+        "validFrom": 1990,
+        "validTo": 1995
+      },
+      "1996-1998": {
+        "length": 4.292,
+        "turns": 15,
+        "validFrom": 1996,
+        "validTo": 1998
+      },
+      "1999-present": {
         "length": 4.309,
         "turns": 15,
-        "validFrom": null,
+        "validFrom": 1999,
         "validTo": null
       }
     },
@@ -95,10 +173,28 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "2004": {
+        "length": 5.417,
+        "turns": 15,
+        "validFrom": 2004,
+        "validTo": 2004
+      },
+      "2005-2009": {
         "length": 5.412,
         "turns": 15,
-        "validFrom": null,
+        "validFrom": 2005,
+        "validTo": 2009
+      },
+      "2010": {
+        "length": 6.299,
+        "turns": 23,
+        "validFrom": 2010,
+        "validTo": 2010
+      },
+      "2012-present": {
+        "length": 5.412,
+        "turns": 15,
+        "validFrom": 2012,
         "validTo": null
       }
     },
@@ -117,10 +213,10 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "2016-present": {
         "length": 6.003,
         "turns": 20,
-        "validFrom": null,
+        "validFrom": 2016,
         "validTo": null
       }
     },
@@ -139,10 +235,34 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "1978-1986": {
+        "length": 4.41,
+        "turns": 19,
+        "validFrom": 1978,
+        "validTo": 1986
+      },
+      "1988-1993": {
+        "length": 4.43,
+        "turns": 17,
+        "validFrom": 1988,
+        "validTo": 1993
+      },
+      "1994-1995": {
+        "length": 4.45,
+        "turns": 20,
+        "validFrom": 1994,
+        "validTo": 1995
+      },
+      "1996-2001": {
+        "length": 4.421,
+        "turns": 13,
+        "validFrom": 1996,
+        "validTo": 2001
+      },
+      "2002-present": {
         "length": 4.361,
         "turns": 14,
-        "validFrom": null,
+        "validFrom": 2002,
         "validTo": null
       }
     },
@@ -161,10 +281,28 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "1948-1971": {
+        "length": 4.193,
+        "turns": 19,
+        "validFrom": 1948,
+        "validTo": 1971
+      },
+      "1972-1979": {
+        "length": 4.226,
+        "turns": 19,
+        "validFrom": 1972,
+        "validTo": 1979
+      },
+      "1980-1985": {
+        "length": 4.252,
+        "turns": 19,
+        "validFrom": 1980,
+        "validTo": 1985
+      },
+      "2020-present": {
         "length": 4.259,
         "turns": 14,
-        "validFrom": null,
+        "validFrom": 2020,
         "validTo": null
       }
     },
@@ -183,10 +321,46 @@
     },
     "active": false,
     "layouts": {
-      "current": {
+      "1991-1993": {
+        "length": 4.747,
+        "turns": 14,
+        "validFrom": 1991,
+        "validTo": 1993
+      },
+      "1994": {
+        "length": 4.745,
+        "turns": 16,
+        "validFrom": 1994,
+        "validTo": 1994
+      },
+      "1995-2003": {
+        "length": 4.73,
+        "turns": 13,
+        "validFrom": 1995,
+        "validTo": 2003
+      },
+      "2004-2006": {
+        "length": 4.627,
+        "turns": 14,
+        "validFrom": 2004,
+        "validTo": 2006
+      },
+      "2007-2020": {
+        "length": 4.655,
+        "turns": 16,
+        "validFrom": 2007,
+        "validTo": 2020
+      },
+      "2021-2022": {
+        "length": 4.675,
+        "turns": 16,
+        "validFrom": 2021,
+        "validTo": 2022
+      },
+      "2023-present": {
         "length": 4.657,
         "turns": 14,
-        "validFrom": null,
+        "validFrom": 2023,
         "validTo": null
       }
     },
@@ -205,10 +379,40 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "1973-1975": {
+        "length": 3.278,
+        "turns": 17,
+        "validFrom": 1973,
+        "validTo": 1975
+      },
+      "1976-1985": {
+        "length": 3.312,
+        "turns": 20,
+        "validFrom": 1976,
+        "validTo": 1985
+      },
+      "1986-1996": {
+        "length": 3.328,
+        "turns": 20,
+        "validFrom": 1986,
+        "validTo": 1996
+      },
+      "1997-2002": {
+        "length": 3.37,
+        "turns": 18,
+        "validFrom": 1997,
+        "validTo": 2002
+      },
+      "2003-2014": {
+        "length": 3.34,
+        "turns": 19,
+        "validFrom": 2003,
+        "validTo": 2014
+      },
+      "2015-present": {
         "length": 3.337,
         "turns": 19,
-        "validFrom": null,
+        "validFrom": 2015,
         "validTo": null
       }
     },
@@ -227,10 +431,16 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "1981-2006": {
+        "length": 6.976,
+        "turns": 19,
+        "validFrom": 1981,
+        "validTo": 2006
+      },
+      "2007-present": {
         "length": 7.004,
         "turns": 19,
-        "validFrom": null,
+        "validFrom": 2007,
         "validTo": null
       }
     },
@@ -249,10 +459,10 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "2012-present": {
         "length": 5.513,
         "turns": 20,
-        "validFrom": null,
+        "validFrom": 2012,
         "validTo": null
       }
     },
@@ -271,10 +481,22 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "1986-1988": {
+        "length": 4.014,
+        "turns": 16,
+        "validFrom": 1986,
+        "validTo": 1988
+      },
+      "1989-2002": {
+        "length": 3.975,
+        "turns": 13,
+        "validFrom": 1989,
+        "validTo": 2002
+      },
+      "2003-present": {
         "length": 4.381,
         "turns": 14,
-        "validFrom": null,
+        "validFrom": 2003,
         "validTo": null
       }
     },
@@ -293,10 +515,10 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "2021-present": {
         "length": 6.174,
         "turns": 27,
-        "validFrom": null,
+        "validFrom": 2021,
         "validTo": null
       }
     },
@@ -315,10 +537,10 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "2023-present": {
         "length": 6.201,
         "turns": 17,
-        "validFrom": null,
+        "validFrom": 2023,
         "validTo": null
       }
     },
@@ -337,10 +559,16 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "2004-2022": {
+        "length": 5.38,
+        "turns": 16,
+        "validFrom": 2004,
+        "validTo": 2022
+      },
+      "2023-present": {
         "length": 5.419,
         "turns": 16,
-        "validFrom": null,
+        "validFrom": 2023,
         "validTo": null
       }
     },
@@ -359,10 +587,10 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "2026-present": {
         "length": 5.416,
         "turns": 22,
-        "validFrom": null,
+        "validFrom": 2026,
         "validTo": null
       }
     },
@@ -381,10 +609,16 @@
     },
     "active": true,
     "layouts": {
-      "current": {
-        "length": 4.94,
+      "2008-2022": {
+        "length": 5.063,
+        "turns": 23,
+        "validFrom": 2008,
+        "validTo": 2022
+      },
+      "2023-present": {
+        "length": 4.928,
         "turns": 19,
-        "validFrom": null,
+        "validFrom": 2023,
         "validTo": null
       }
     },
@@ -403,10 +637,10 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "2022-present": {
         "length": 5.412,
         "turns": 19,
-        "validFrom": null,
+        "validFrom": 2022,
         "validTo": null
       }
     },
@@ -425,10 +659,34 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "1970-1976": {
+        "length": 5.911,
+        "turns": 16,
+        "validFrom": 1970,
+        "validTo": 1976
+      },
+      "1977-1987": {
+        "length": 5.941,
+        "turns": 18,
+        "validFrom": 1977,
+        "validTo": 1987
+      },
+      "1997-2015": {
+        "length": 4.326,
+        "turns": 9,
+        "validFrom": 1997,
+        "validTo": 2015
+      },
+      "2016-2024": {
         "length": 4.318,
         "turns": 10,
-        "validFrom": null,
+        "validFrom": 2016,
+        "validTo": 2024
+      },
+      "2025-present": {
+        "length": 4.326,
+        "turns": 10,
+        "validFrom": 2025,
         "validTo": null
       }
     },
@@ -447,10 +705,10 @@
     },
     "active": false,
     "layouts": {
-      "current": {
+      "1999-present": {
         "length": 5.543,
         "turns": 15,
-        "validFrom": null,
+        "validFrom": 1999,
         "validTo": null
       }
     },
@@ -469,10 +727,10 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "2004-present": {
         "length": 5.451,
         "turns": 16,
-        "validFrom": null,
+        "validFrom": 2004,
         "validTo": null
       }
     },
@@ -491,10 +749,16 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "1997-2009": {
+        "length": 5.141,
+        "turns": 17,
+        "validFrom": 1997,
+        "validTo": 2009
+      },
+      "2010-present": {
         "length": 5.891,
         "turns": 18,
-        "validFrom": null,
+        "validFrom": 2010,
         "validTo": null
       }
     },
@@ -513,10 +777,22 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "1987-2001": {
+        "length": 5.86,
+        "turns": 18,
+        "validFrom": 1987,
+        "validTo": 2001
+      },
+      "2002": {
+        "length": 5.821,
+        "turns": 18,
+        "validFrom": 2002,
+        "validTo": 2002
+      },
+      "2003-present": {
         "length": 5.807,
         "turns": 18,
-        "validFrom": null,
+        "validFrom": 2003,
         "validTo": null
       }
     },
@@ -525,37 +801,6 @@
       "overtaking": 30,
       "tyreDeg": 45,
       "trackType": "permanent"
-    },
-    "raceWeekendData": {
-      "pitStopLoss": "22s",
-      "ratings": {
-        "traction": 3,
-        "braking": 2,
-        "tyreStress": 5,
-        "asphaltAbrasion": 3,
-        "asphaltGrip": 4,
-        "lateral": 5,
-        "trackEvolution": 4
-      },
-      "tyres": {
-        "minStartingPressure": {
-          "front": "28.0",
-          "rear": "25.0"
-        },
-        "stabilizedRunningPressure": {
-          "front": "28.5",
-          "rear": "25.5"
-        },
-        "eosCamberLimit": {
-          "front": "-2.75",
-          "rear": "-1.50"
-        }
-      },
-      "compounds": {
-        "hard": "C1",
-        "medium": "C2",
-        "soft": "C3"
-      }
     }
   },
   "yas-marina-circuit": {
@@ -566,10 +811,16 @@
     },
     "active": true,
     "layouts": {
-      "current": {
+      "2009-2020": {
+        "length": 5.554,
+        "turns": 21,
+        "validFrom": 2009,
+        "validTo": 2020
+      },
+      "2021-present": {
         "length": 5.281,
         "turns": 16,
-        "validFrom": null,
+        "validFrom": 2021,
         "validTo": null
       }
     },
