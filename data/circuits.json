@@ -803,6 +803,16 @@
       "trackType": "permanent"
     }
   },
+  "sochi-autodrom": {
+    "id": "sochi-autodrom",
+    "name": "Sochi Autodrom",
+    "location": { "city": "sochi" },
+    "active": false,
+    "layouts": {
+      "2014-2021": { "length": 5.848, "turns": 18, "validFrom": 2014, "validTo": 2021 }
+    },
+    "characteristics": { "downforce": 40, "overtaking": 55, "tyreDeg": 30, "trackType": "street" }
+  },
   "yas-marina-circuit": {
     "id": "yas-marina-circuit",
     "name": "Yas Marina Circuit",
