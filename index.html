@@ -90,23 +90,14 @@
         <section id="calendar" class="race-calendar">
 
             <div class="calendar-header">
-                <div class="season-switcher">
-                    <h2 class="calendar-title" id="calendar-title">2026 Season Calendar</h2>
-                    <div class="season-nav">
-                        <button id="season-prev" class="season-nav-btn" type="button" aria-label="Temporada anterior">
-                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4 L7 12 L15 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
-                        <span class="season-year-label" id="season-year-label">2026</span>
-                        <button id="season-next" class="season-nav-btn" type="button" aria-label="Temporada siguiente">
-                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 L17 12 L9 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
-                    </div>
-                </div>
+                <h2 class="calendar-title" id="calendar-title">Season Calendar</h2>
             </div>
-            <!-- Las tarjetas de carrera ya NO van hardcodeadas acá: se generan
-                 dinámicamente en index.js (renderRaceCards) a partir del
-                 season*.json que corresponda, para que funcione con
-                 cualquier temporada, no solo con el calendario de 2026. -->
+            <!-- El año en "calendar-title" y las tarjetas de carrera se generan
+                 dinámicamente en index.js a partir de data/latest.json (que
+                 apunta a la temporada más reciente) + season{año}.json.
+                 No hay selector de temporada: index.html siempre muestra la
+                 última disponible, sin querystring ni año hardcodeado. -->
+
         </section>
     </main>
 
