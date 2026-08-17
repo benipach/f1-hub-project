@@ -5,7 +5,6 @@
     "location": {
       "city": "melbourne"
     },
-    "active": true,
     "layouts": {
       "1996-2020": {
         "length": 5.303,
@@ -33,7 +32,6 @@
     "location": {
       "city": "monza"
     },
-    "active": true,
     "layouts": {
       "1950-1954": {
         "length": 6.3,
@@ -97,7 +95,6 @@
     "location": {
       "city": "mexico-city"
     },
-    "active": true,
     "layouts": {
       "1986-1992": {
         "length": 4.421,
@@ -125,7 +122,6 @@
     "location": {
       "city": "sao-paulo"
     },
-    "active": true,
     "layouts": {
       "1973-1979": {
         "length": 7.96,
@@ -171,7 +167,6 @@
     "location": {
       "city": "sakhir"
     },
-    "active": true,
     "layouts": {
       "2004": {
         "length": 5.417,
@@ -211,7 +206,6 @@
     "location": {
       "city": "baku"
     },
-    "active": true,
     "layouts": {
       "2016-present": {
         "length": 6.003,
@@ -233,7 +227,6 @@
     "location": {
       "city": "montreal"
     },
-    "active": true,
     "layouts": {
       "1978-1986": {
         "length": 4.41,
@@ -279,7 +272,6 @@
     "location": {
       "city": "zandvoort"
     },
-    "active": true,
     "layouts": {
       "1948-1971": {
         "length": 4.193,
@@ -319,7 +311,6 @@
     "location": {
       "city": "montmelo"
     },
-    "active": false,
     "layouts": {
       "1991-1993": {
         "length": 4.747,
@@ -377,7 +368,6 @@
     "location": {
       "city": "monte-carlo"
     },
-    "active": true,
     "layouts": {
       "1973-1975": {
         "length": 3.278,
@@ -429,7 +419,6 @@
     "location": {
       "city": "spa"
     },
-    "active": true,
     "layouts": {
       "1981-2006": {
         "length": 6.976,
@@ -457,7 +446,6 @@
     "location": {
       "city": "austin"
     },
-    "active": true,
     "layouts": {
       "2012-present": {
         "length": 5.513,
@@ -479,7 +467,6 @@
     "location": {
       "city": "budapest"
     },
-    "active": true,
     "layouts": {
       "1986-1988": {
         "length": 4.014,
@@ -513,7 +500,6 @@
     "location": {
       "city": "jeddah"
     },
-    "active": true,
     "layouts": {
       "2021-present": {
         "length": 6.174,
@@ -535,7 +521,6 @@
     "location": {
       "city": "las-vegas"
     },
-    "active": true,
     "layouts": {
       "2023-present": {
         "length": 6.201,
@@ -557,7 +542,6 @@
     "location": {
       "city": "lusail"
     },
-    "active": true,
     "layouts": {
       "2004-2022": {
         "length": 5.38,
@@ -585,7 +569,6 @@
     "location": {
       "city": "madrid"
     },
-    "active": true,
     "layouts": {
       "2026-present": {
         "length": 5.416,
@@ -607,7 +590,6 @@
     "location": {
       "city": "singapore"
     },
-    "active": true,
     "layouts": {
       "2008-2022": {
         "length": 5.063,
@@ -635,7 +617,6 @@
     "location": {
       "city": "miami"
     },
-    "active": true,
     "layouts": {
       "2022-present": {
         "length": 5.412,
@@ -657,7 +638,6 @@
     "location": {
       "city": "spielberg"
     },
-    "active": true,
     "layouts": {
       "1970-1976": {
         "length": 5.911,
@@ -703,7 +683,6 @@
     "location": {
       "city": "sepang"
     },
-    "active": false,
     "layouts": {
       "1999-present": {
         "length": 5.543,
@@ -725,7 +704,6 @@
     "location": {
       "city": "shanghai"
     },
-    "active": true,
     "layouts": {
       "2004-present": {
         "length": 5.451,
@@ -747,7 +725,6 @@
     "location": {
       "city": "silverstone"
     },
-    "active": true,
     "layouts": {
       "1997-2009": {
         "length": 5.141,
@@ -775,7 +752,6 @@
     "location": {
       "city": "suzuka"
     },
-    "active": true,
     "layouts": {
       "1987-2001": {
         "length": 5.86,
@@ -807,7 +783,6 @@
     "id": "sochi-autodrom",
     "name": "Sochi Autodrom",
     "location": { "city": "sochi" },
-    "active": false,
     "layouts": {
       "2014-2021": { "length": 5.848, "turns": 18, "validFrom": 2014, "validTo": 2021 }
     },
@@ -819,7 +794,6 @@
     "location": {
       "city": "abu-dhabi"
     },
-    "active": true,
     "layouts": {
       "2009-2020": {
         "length": 5.554,

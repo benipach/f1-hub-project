@@ -2,6 +2,7 @@
   "australian-gp": {
     "round": 1,
     "name": "Australian Grand Prix",
+    "circuitId": "albert-park-circuit",
     "sprint": false,
     "cancelled": false,
     "sessions": {
@@ -944,6 +945,7 @@
   "chinese-gp": {
     "round": 2,
     "name": "Chinese Grand Prix",
+    "circuitId": "shanghai-international-circuit",
     "sprint": true,
     "cancelled": false,
     "sessions": {
@@ -1937,6 +1939,7 @@
   "japanese-gp": {
     "round": 3,
     "name": "Japanese Grand Prix",
+    "circuitId": "suzuka-international-racing-course",
     "sprint": false,
     "cancelled": false,
     "sessions": {
@@ -2918,6 +2921,7 @@
   "bahrain-gp": {
     "round": 4,
     "name": "Bahrain Grand Prix",
+    "circuitId": "miami-international-autodrome",
     "sprint": false,
     "cancelled": true,
     "sessions": {
@@ -2961,6 +2965,7 @@
   "saudi-arabian-gp": {
     "round": 5,
     "name": "Saudi Arabian Grand Prix",
+    "circuitId": "circuit-gilles-villeneuve",
     "sprint": false,
     "cancelled": true,
     "sessions": {
@@ -3034,6 +3039,7 @@
   "miami-gp": {
     "round": 6,
     "name": "Miami Grand Prix",
+    "circuitId": "circuit-de-monaco",
     "sprint": true,
     "cancelled": false,
     "sessions": {
@@ -4029,6 +4035,7 @@
   "canadian-gp": {
     "round": 7,
     "name": "Canadian Grand Prix",
+    "circuitId": "circuit-de-barcelona-catalunya",
     "sprint": true,
     "cancelled": false,
     "sessions": {
@@ -5018,6 +5025,7 @@
   "monaco-gp": {
     "round": 8,
     "name": "Monaco Grand Prix",
+    "circuitId": "red-bull-ring",
     "sprint": false,
     "cancelled": false,
     "sessions": {
@@ -5998,6 +6006,7 @@
   "barcelona-gp": {
     "round": 9,
     "name": "Barcelona Grand Prix",
+    "circuitId": "silverstone-circuit",
     "sprint": false,
     "cancelled": false,
     "sessions": {
@@ -6976,6 +6985,7 @@
   "austrian-gp": {
     "round": 10,
     "name": "Austrian Grand Prix",
+    "circuitId": "circuit-de-spa-francorchamps",
     "sprint": false,
     "cancelled": false,
     "sessions": {
@@ -7957,6 +7967,7 @@
   "british-gp": {
     "round": 11,
     "name": "British Grand Prix",
+    "circuitId": "hungaroring",
     "sprint": true,
     "cancelled": false,
     "sessions": {
@@ -8961,6 +8972,7 @@
   "belgian-gp": {
     "round": 12,
     "name": "Belgian Grand Prix",
+    "circuitId": "circuit-zandvoort",
     "sprint": false,
     "cancelled": false,
     "sessions": {
@@ -9946,6 +9958,7 @@
   "hungarian-gp": {
     "round": 13,
     "name": "Hungarian Grand Prix",
+    "circuitId": "autodromo-nazionale-di-monza",
     "sprint": false,
     "cancelled": false,
     "sessions": {
@@ -10957,6 +10970,7 @@
   "italian-gp": {
     "round": 15,
     "name": "Italian Grand Prix",
+    "circuitId": "baku-city-circuit",
     "sprint": false,
     "cancelled": false,
     "sessions": {
@@ -10995,6 +11009,7 @@
   "spanish-gp": {
     "round": 16,
     "name": "Spanish Grand Prix",
+    "circuitId": "sepang-international-circuit",
     "sprint": false,
     "cancelled": false,
     "sessions": {
@@ -11038,6 +11053,7 @@
   "azerbaijan-gp": {
     "round": 17,
     "name": "Azerbaijan Grand Prix",
+    "circuitId": "marina-bay-street-circuit",
     "sprint": false,
     "cancelled": false,
     "sessions": {
@@ -11076,6 +11092,7 @@
   "bahrain-gp-in-malaysia": {
     "round": 18,
     "name": "Bahrain Grand Prix in Malaysia",
+    "circuitId": "cota",
     "sprint": false,
     "cancelled": false,
     "sessions": {
@@ -11119,6 +11136,7 @@
   "singapore-gp": {
     "round": 19,
     "name": "Singapore Grand Prix",
+    "circuitId": "hermanos-rodriguez",
     "sprint": true,
     "cancelled": false,
     "sessions": {
@@ -11157,6 +11175,7 @@
   "united-states-gp": {
     "round": 20,
     "name": "US Grand Prix",
+    "circuitId": "autodromo-jose-carlos-pace",
     "sprint": false,
     "cancelled": false,
     "sessions": {
@@ -11195,6 +11214,7 @@
   "mexican-gp": {
     "round": 21,
     "name": "Mexican Grand Prix",
+    "circuitId": "las-vegas-strip-circuit",
     "sprint": false,
     "cancelled": false,
     "sessions": {
@@ -11233,6 +11253,7 @@
   "brazilian-gp": {
     "round": 22,
     "name": "Brazilian Grand Prix",
+    "circuitId": "lusail-international-circuit",
     "sprint": false,
     "cancelled": false,
     "sessions": {
@@ -11271,6 +11292,7 @@
   "las-vegas-gp": {
     "round": 23,
     "name": "Las Vegas Grand Prix",
+    "circuitId": "yas-marina-circuit",
     "sprint": false,
     "cancelled": false,
     "sessions": {
