@@ -12,7 +12,7 @@ import { join } from 'node:path';
 const BASE_URL = 'https://api.jolpi.ca/ergast/f1';
 const SEASONS_DIR = join('data', 'seasons');
 const CIRCUITS_PATH = join('data', 'circuits.json');
-const MISSING_LOG_PATH = 'missing-circuits.txt';
+const MISSING_LOG_PATH = join(SEASONS_DIR, 'missing-circuits.txt');
 const REQUEST_DELAY_MS = 500;
 
 function sleep(ms) {
