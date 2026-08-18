@@ -217,8 +217,8 @@ async function main() {
       continue;
     }
     season[seasonSlug].sessions = {
-      ...season[seasonSlug].sessions,
       ...sessions,
+      ...season[seasonSlug].sessions,
     };
     merged++;
   }
