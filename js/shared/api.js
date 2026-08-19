@@ -13,12 +13,21 @@ async function apiFetch(url, options = {}) {
 
 async function loadGpMeta(base = '.')     { return (_gpMetaCache   ??= await apiFetch(`${base}/data/gp-meta.json`)); }
 async function loadCircuits(base = '.')   { return (_circuitsCache  ??= await apiFetch(`${base}/data/circuits.json`)); }
-async function loadSeason(base = '.', year) { return apiFetch(`${base}/data/season${year}.json`); }
+async function loadSeason(base = '.', year) { return apiFetch(`${base}/data/seasons/season${year}.json`); }
+
+// ── New data catalogs (added for the index.js rewrite) ────────────────────
+let _latestCache    = null;
+let _teamsCache     = null;
+let _countriesCache = null;
+let _citiesCache    = null;
+
+async function loadLatest(base = '.')    { return (_latestCache    ??= await apiFetch(`${base}/data/latest.json`)); }
+async function loadTeams(base = '.')     { return (_teamsCache     ??= await apiFetch(`${base}/data/teams.json`)); }
+async function loadCountries(base = '.') { return (_countriesCache ??= await apiFetch(`${base}/data/countries.json`)); }
+async function loadCities(base = '.')    { return (_citiesCache    ??= await apiFetch(`${base}/data/cities.json`)); }
 
 async function loadDrivers(base = '.') {
-    if (_driversCache) return _driversCache;
-    const data = await apiFetch(`${base}/data/drivers.json`);
-    return (_driversCache = data.drivers ?? []);
+    return (_driversCache ??= await apiFetch(`${base}/data/drivers.json`));
 }
 
 async function loadSeasonsIndex(base = '.') {
@@ -27,7 +36,7 @@ async function loadSeasonsIndex(base = '.') {
     const years = Array.from({ length: end - 1950 + 1 }, (_, i) => 1950 + i);
     const checks = await Promise.all(years.map(async (year) => {
         try {
-            const res = await fetch(`${base}/data/season${year}.json`, { method: 'HEAD' });
+            const res = await fetch(`${base}/data/seasons/season${year}.json`, { method: 'HEAD' });
             return res.ok ? year : null;
         } catch { return null; }
     }));

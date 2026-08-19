@@ -142,7 +142,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 14px 20px;
+    padding: 16px;
     border: 1px solid rgba(255, 255, 255, 0.07);
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.1);
@@ -150,6 +150,7 @@
     font-family: 'F1-Regular';
     font-size: 16px;
     letter-spacing: 0.5px;
+    line-height: 1;
     text-decoration: none;
     transition: background 0.2s ease, border-color 0.2s ease;
 }
@@ -173,7 +174,7 @@
    separate days rather than one continuous list. */
 
 .schedule-day {
-    padding: 14px 16px 12px;
+    padding: 16px;
     border: 1px solid rgba(255, 255, 255, 0.07);
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.1);
@@ -185,13 +186,14 @@
     align-items: baseline;
     justify-content: space-between;
     margin: 0 0 10px;
-    padding-bottom: 9px;
+    padding-bottom: 16px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .day-weekday {
     font-family: 'F1-Regular';
     font-size: 16px;
+    font-weight: 600;
     letter-spacing: 0.5px;
     line-height: 1;
     text-transform: uppercase;
@@ -201,6 +203,7 @@
 .day-date {
     font-family: 'F1-Regular';
     font-size: 16px;
+    font-weight: 600;
     letter-spacing: 0.5px;
     line-height: 1;
     text-transform: uppercase;
@@ -219,8 +222,9 @@
 
 .schedule-session-name {
     font-family: 'F1-Regular';
+    text-transform: uppercase;
     font-size: 16px;
-    letter-spacing: 0.1px;
+    letter-spacing: 0.5px;
     color: rgba(255, 255, 255, 0.75);
     transition: color 0.15s ease, opacity 0.15s ease;
 }
@@ -243,12 +247,12 @@
     transition: opacity 0.15s ease;
 }
 
-.schedule-session-ended .schedule-session-name,
-.schedule-session-ended .schedule-session-time {
+.schedule-session-finished .schedule-session-name,
+.schedule-session-finished .schedule-session-time {
     opacity: 0.4;
 }
 
-.schedule-session-ended .schedule-session-tag {
+.schedule-session-finished .schedule-session-tag {
     display: inline-flex;
     color: rgba(255, 255, 255, 0.4);
 }
@@ -348,8 +352,7 @@
     .hero-underline,
     .hero-divider,
     .hero-schedule-label,
-    .hero-schedule,
-    .hero-circuit-btn {
+    .hero-schedule{
         margin-left: 8%;
         margin-right: 8%;
     }
@@ -397,8 +400,7 @@
     .hero-underline,
     .hero-divider,
     .hero-schedule-label,
-    .hero-schedule,
-    .hero-circuit-btn {
+    .hero-schedule {
         margin-left: 6%;
         margin-right: 6%;
     }
@@ -419,13 +421,8 @@
         font-size: 12px;
     }
 
-    .hero-circuit-btn {
-        font-size: 12px;
-        padding: 12px 16px;
-    }
-
     .schedule-day {
-        padding: 12px 14px 10px;
+        padding: 16px 12px 12px 12px;
     }
 
     .schedule-session-name,
@@ -433,9 +430,19 @@
         font-size: 13px;
     }
 
+    .day-weekday,
+    .day-date {
+        font-size: 13px;
+    }
+
     .schedule-session-cta {
         max-width: 220px;
         font-size: 11px;
+    }
+
+    .hero-circuit-btn {
+        font-size: 13px;
+        padding: 14px;
     }
 }
 
@@ -450,7 +457,7 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
-    max-width: 70%;
+    max-width: 80%;
     margin: 128px auto;
     scroll-margin-top: 80px;
 }
@@ -472,7 +479,7 @@
     font-family: 'F1-Black';
     padding-left: 15px;
     border-left: 5px solid var(--primary-red);
-    font-size: 48px;
+    font-size: 56px;
     text-transform: uppercase;
     line-height: 0.9;
     opacity: 0;
@@ -567,28 +574,28 @@
     flex-direction: column;
     flex-grow: 1;
     gap: 0;
-    padding: 10px 16px 16px 16px;
+    padding: 13px 16px 16px 16px;
 }
 
 .race-card-content h3 {
     margin-bottom: 4px;
     font-family: 'F1-Regular';
-    font-size: 22px;
+    font-size: 24px;
     line-height: 1.3;
     text-transform: uppercase;
 }
 
 .race-card-content h3 img.emoji,
 .race-card-next-title img.emoji {
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
     vertical-align: middle;
     margin-bottom: 2px;
 }
 
 .race-card-next-title img.emoji {
-    width: 32px;
-    height: 32px;
+    width: 52px;
+    height: 42px;
     margin-bottom: 1px;
 }
 
@@ -599,26 +606,29 @@
     gap: 6px;
     color: var(--text-dim);
     font-family: 'F1-Regular';
-    font-size: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
 }
 
 .sprint-chip {
     display: inline-flex;
     align-items: center;
-    padding: 1px 6px;
-    border: 1px solid rgba(245, 166, 35, 0.35);
-    border-radius: 20px;
-    background: rgba(245, 166, 35, 0.12);
+    padding: 4px 10px;
+    border-radius: 3px;
+    background: rgba(245, 166, 35, 0.14);
     color: #f5a623;
     font-family: 'F1-Regular';
-    font-size: 12px;
-    letter-spacing: 0.5px;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 /* Sprint weekends get a gold top accent so the calendar isn't only red/blue/grey.
    Left out of race-card-next so the "NEXT" red highlight still wins there. */
-.race-card-ended.race-card-sprint::before,
+.race-card-finished.race-card-sprint::before,
 .race-card-upcoming.race-card-sprint::before {
     background: linear-gradient(
         90deg,
@@ -628,7 +638,7 @@
     );
 }
 
-.race-card-ended.race-card-sprint {
+.race-card-finished.race-card-sprint {
     border-color: rgba(245, 166, 35, 0.12);
 }
 
@@ -636,70 +646,52 @@
     margin-bottom: 0;
     color: var(--text-dim);
     font-family: 'F1-Regular';
-    font-size: 12px;
-    letter-spacing: 0.3px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.5px;
 }
 
 .race-status {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
     width: fit-content;
-    padding: 1px 6px;
-    border: 1px solid transparent;
-    border-radius: 20px;
+    padding: 4px 10px;
+    border-radius: 3px;
     font-family: 'F1-Regular';
-    font-size: 12px;
-    letter-spacing: 0.1px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
 }
 
-.race-status::before {
-    content: '';
-    display: inline-block;
-    flex-shrink: 0;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
-}
-
-.status-ended {
+/* ENDED — mini checkered-flag pattern, not a faded dot */
+.status-finished {
     color: var(--text-dim);
-    background: rgba(255, 255, 255, 0.05);
-    border-color: transparent;
+    background: rgba(255, 255, 255, 0.06);
     margin-top: 10px;
     margin-bottom: 12px;
 }
 
-.status-ended::before {
-    opacity: 0.4;
-}
-
+/* NEXT — solid saturated fill, text-only */
 .status-next {
-    color: #ff7070;
-    font-size: 12px;
-    background: rgba(232, 0, 45, 0.1);
-    border-color: rgba(232, 0, 45, 0.25);
-}
-
-.status-next::before {
+    color: #ffffff;
     background: #e8002d;
-    animation: pulse 1.5s infinite;
+    font-size: 11px;
 }
 
+/* UPCOMING — text-only */
 .status-upcoming {
     color: #5dade2;
     background: rgba(52, 152, 219, 0.1);
-    border-color: rgba(52, 152, 219, 0.2);
     margin-top: 10px;
     margin-bottom: 12px;
 }
 
+/* CANCELLED — struck-through label says it all */
 .status-cancelled {
     color: #ff6666;
     background: rgba(255, 77, 77, 0.08);
-    border-color: rgba(255, 77, 77, 0.2);
+    text-decoration-thickness: 1.5px;
     margin-top: 10px;
     margin-bottom: 12px;
 }
@@ -725,7 +717,8 @@
 .top3-pos {
     color: var(--text-dim);
     font-family: 'F1-Regular';
-    font-size: 12px;
+    font-weight: 600;
+    font-size: 14px;
 }
 
 .top3-team-logo {
@@ -743,8 +736,10 @@
     overflow: hidden;
     color: var(--text-light);
     font-family: 'F1-Regular';
+    font-weight: 600;
     font-size: 14px;
-    letter-spacing: 0.1px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
@@ -767,8 +762,8 @@
 }
 
 .top3-delta .res-delta-arrow {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     flex-shrink: 0;
 }
 
@@ -785,8 +780,9 @@
 .top3-time {
     color: var(--text-dim);
     font-family: 'F1-Regular';
+    font-weight: 600;
     font-size: 14px;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.5px;
     white-space: nowrap;
 }
 
@@ -799,8 +795,9 @@
     background: transparent;
     color: var(--text-dim);
     font-family: 'F1-Regular';
-    font-size: 12px;
-    letter-spacing: 1px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.5px;
     text-align: center;
     text-decoration: none;
     text-transform: uppercase;
@@ -813,21 +810,17 @@
     color: rgba(255, 255, 255, 0.85);
 }
 
-.race-card-ended {
+.race-card-finished {
     background-color: var(--base-700);
     opacity: 0.67;
 }
 
-.race-card-ended:hover {
+.race-card-finished:hover {
     background-color: var(--base-600);
     opacity: 1;
 }
 
-.race-card-ended::before {
-    background: rgba(255, 255, 255, 0.07);
-}
-
-.race-card-ended .race-card-content h3 {
+.race-card-finished .race-card-content h3 {
     color: var(--text-light);
 }
 
@@ -876,7 +869,7 @@
 }
 
 .race-card-next-photo {
-    flex: 0 0 240px;
+    flex: 0 0 360px;
     border-radius: 10px;
     overflow: hidden;
 }
@@ -906,7 +899,7 @@
 
 .race-card-next-title {
     font-family: 'F1-Black';
-    font-size: 32px;
+    font-size: 36px;
     text-transform: uppercase;
     line-height: 1;
 }
@@ -946,7 +939,7 @@
 }
 
 .race-card-next-layout {
-    flex: 0 0 200px;
+    flex: 0 0 360px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -979,10 +972,12 @@
 }
 
 @media (max-width: 1100px) {
+    .race-card-next-title { font-size: 24px; font-family: 'F1-Regular'; }
     .race-card-next-top-row { flex-direction: column; }
-    .race-card-next-photo,
-    .race-card-next-layout { flex: none; width: 100%; }
+    .race-card-next-photo { flex: none; width: 100%; }
+    .race-card-next-layout { display: none; }
     .race-card-next-photo { height: 180px; }
+    .calendar-title { font-size: 48px; }
 }
 
 .race-card-upcoming {
@@ -1004,7 +999,6 @@
 
 .race-card-cancelled {
     opacity: 0.65;
-
     background-color: rgb(18, 8, 8);
 }
 
@@ -1015,10 +1009,6 @@
         rgba(255, 77, 77, 0.4) 50%,
         rgba(255, 77, 77, 0) 100%
     );
-}
-
-.race-card-cancelled .race-date {
-    text-decoration: line-through;
 }
 
 .race-card-cancelled:hover {

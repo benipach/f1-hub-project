@@ -1,3 +1,5 @@
+// archivo viejo
+
 const hamburger = document.getElementById('hamburger-btn');
 const navMenu = document.getElementById('nav-menu');
 

@@ -1,3 +1,5 @@
+// archivo viejo
+
 // ── GP → CIRCUIT MAPPING ──────────────────────────────────────────
 const CIRCUIT_MAP = {
     'australian-gp':          'albert-park-circuit',
@@ -1177,11 +1179,11 @@ function renderSchedule(gp) {
             <div class="schedule-day-rows">
                 ${day.rows.map(s => {
                     const duration = formatDuration(s.start, s.end);
-                    const ended    = s.end && s.end <= now;
+                    const finished    = s.end && s.end <= now;
                     const live     = s.start <= now && (!s.end || s.end > now);
-                    const upcoming = !ended && !live;
-                    const tag      = live ? 'Live' : ended ? 'Ended' : 'Upcoming';
-                    const stateCls = live ? ' schedule-row-live' : ended ? ' schedule-row-ended' : '';
+                    const upcoming = !finished && !live;
+                    const tag      = live ? 'Live' : finished ? 'Finished' : 'Upcoming';
+                    const stateCls = live ? ' schedule-row-live' : finished ? ' schedule-row-finished' : '';
                     const dataAttr = upcoming ? ` data-start="${s.start.getTime()}"` : '';
                     return `
                     <div class="schedule-row${stateCls}"${dataAttr}>

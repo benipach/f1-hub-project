@@ -1,3 +1,5 @@
+// no se si sigue funcionando
+
 // Local mirror of backend state: { DriverList, TimingData, TimingAppData }
 let state = {};
 

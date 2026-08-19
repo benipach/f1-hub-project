@@ -14,6 +14,16 @@
     "code": "AUT",
     "isoCode": "AT"
   },
+  "azerbaijan": {
+    "name": "Azerbaijan",
+    "code": "AZE",
+    "isoCode": "AZ"
+  },
+  "bahrain": {
+    "name": "Bahrain",
+    "code": "BRN",
+    "isoCode": "BH"
+  },
   "belgium": {
     "name": "Belgium",
     "code": "BEL",
@@ -64,6 +74,11 @@
     "code": "HKG",
     "isoCode": "HK"
   },
+  "hungary": {
+    "name": "Hungary",
+    "code": "HUN",
+    "isoCode": "HU"
+  },
   "india": {
     "name": "India",
     "code": "IND",
@@ -88,6 +103,11 @@
     "name": "Japan",
     "code": "JPN",
     "isoCode": "JP"
+  },
+  "malaysia": {
+    "name": "Malaysia",
+    "code": "MYS",
+    "isoCode": "MY"
   },
   "mexico": {
     "name": "Mexico",
@@ -119,10 +139,25 @@
     "code": "POR",
     "isoCode": "PT"
   },
+  "qatar": {
+    "name": "Qatar",
+    "code": "QAT",
+    "isoCode": "QA"
+  },
   "russia": {
     "name": "Russia",
     "code": "RUS",
     "isoCode": "RU"
+  },
+  "saudi-arabia": {
+    "name": "Saudi Arabia",
+    "code": "KSA",
+    "isoCode": "SA"
+  },
+  "singapore": {
+    "name": "Singapore",
+    "code": "SGP",
+    "isoCode": "SG"
   },
   "south-africa": {
     "name": "South Africa",
@@ -148,6 +183,11 @@
     "name": "Thailand",
     "code": "THA",
     "isoCode": "TH"
+  },
+  "uae": {
+    "name": "United Arab Emirates",
+    "code": "UAE",
+    "isoCode": "AE"
   },
   "united-kingdom": {
     "name": "United Kingdom",
