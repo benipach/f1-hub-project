@@ -1,3 +1,5 @@
+// archivo viejo
+
 // TEAMS, teamColor() vienen de teams.js, que debe cargarse antes que este archivo.
 
 function buildCumulative(points) {

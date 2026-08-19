@@ -1,3 +1,5 @@
+// archivo viejo
+
 const CURRENT_SEASON_FILE = '../data/season2026.json';
 const CURRENT_SEASON_YEAR = 2026;
 

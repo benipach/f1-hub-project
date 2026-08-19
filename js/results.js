@@ -1,3 +1,5 @@
+// archivo viejo
+
 // ── FLAGS ─────────────────────────────────────────────────────────
 const FLAG_MAP = {
     'australian-gp':     '🇦🇺',
