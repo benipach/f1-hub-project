@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charles Leclerc — F1 Hub</title>
+<style>
+/* ========================================= */
+/*               ROOT / COLORS               */
+/* ========================================= */
+
+:root {
+
+    /* Main Colors */
+    --primary-red: rgb(225,6,0);
+    --base-900: rgb(6,6,9); /* navbar, footer */
+    --base-800: rgb(10,10,15); /* background */
+    --base-700: rgb(19,19,28); /* containers */
+    --base-600: rgb(30,30,42); /* sub-containers */
+    --text-light: rgb(220,220,220);
+    --text-dim: rgb(170,170,170);
+
+    /* Scrollbar */
+    --scrollbar-color: rgba(255,255,255,0.15);
+    --scrollbar-hover: rgba(255,255,255,0.3);
+}
+
+/* ================================= */
+/*               FONTS               */
+/* ================================= */
+
+@font-face {
+    font-family: 'F1-Regular';
+    src: url('../fonts/Formula1-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'F1-Bold';
+    src: url('../fonts/Formula1-Bold.ttf') format('truetype');
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'F1-Black';
+    src: url('../fonts/Formula1-Black.ttf') format('truetype');
+}
+
+/* ======================================= */
+/*               RESET / BASE              */
+/* ======================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--base-800);
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+/* ===================================== */
+/*               SCROLLBAR               */
+/* ===================================== */
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-color);
+    border-radius: 3px;
+    transition: all 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-hover);
+}
+
+/* ======================================= */
+/*               TWEMOJI FIX               */
+/* ======================================= */
+
+img.emoji {
+    width: auto;
+    height: 1.2em;
+    margin: 0 0.2em;
+    vertical-align: -0.2em;
+}
+
+/* ================================= */
+/*               NAVBAR              */
+/* ================================= */
+
+.navbar {
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 60px;
+    padding: 0 10%;
+    font-family: 'F1-Regular';
+    background-color: rgba(10,10,15,0.75);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    transition: all 0.2s ease;
+}
+
+.nav-logo {
+    display: block;
+    width: auto;
+    height: 40px;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+}
+
+nav ul li a {
+    position: relative;
+    display: inline-block;
+    margin-left: 32px;
+    color: var(--text-light);
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+}
+
+nav ul li a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0%;
+    height: 2px;
+    background-color: var(--primary-red);
+    border-radius: 999px;
+    transition: all 0.2s ease;
+}
+
+nav ul li a:hover {
+    color: var(--primary-red);
+}
+
+nav ul li a:hover::after {
+    width: 100%;
+}
+
+/* Hamburguer menu */
+
+.hamburger {
+    display: none;
+    margin-left: auto;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    z-index: 101;
+}
+
+.bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    background-color: var(--text-light);
+    border-radius: 3px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Responsive */
+
+@media (max-width: 500px) {
+
+    /* Navbar */
+
+    .navbar {
+        background-color: var(--base-900);
+        height: 50px;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+
+    .navbar:hover {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+
+    .nav-logo {
+        height: 25px;
+    }
+
+    .nav-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 0 10%;
+        text-align: right;
+        background: rgb(10,10,15,0.75);
+        border-bottom: 1px solid rgb(10,10,20);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        transform: translateY(-125%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .nav-menu.active {
+        transform: translateY(1px);
+    }
+
+    .nav-menu li {
+        margin: 0.7rem 0;
+    }
+
+    nav ul li a {
+        display: block;
+        margin-left: 0;
+        padding: 0.5rem 0;
+        font-size: 1.1rem;
+    }
+
+    /* Hamburguer menu */
+
+    .hamburger {
+        display: block;
+    }
+
+    .hamburger.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(40deg);
+    }
+
+    .hamburger.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-40deg);
+    }
+}
+
+/* ================================== */
+/*               FOOTER               */
+/* ================================== */
+
+.footer {
+    position: relative;
+    padding: 48px 5% 0;
+    font-family: 'F1-Regular';
+    background: var(--base-900);
+}
+
+/* Top red line */
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(225,6,0,0.5) 25%,
+        var(--primary-red) 50%,
+        rgba(225,6,0,0.5) 75%,
+        transparent 100%
+    );
+}
+
+/* Grid */
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 48px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Brand column */
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-logo {
+    display: inline-block;
+    margin-bottom: 14px;
+    transition: all 0.2s ease;
+}
+
+.footer-logo:hover {
+    opacity: 0.75;
+    transform: translateY(-2px);
+}
+
+.footer-logo-img {
+    width: auto;
+    height: 25px;
+}
+
+.footer-tagline {
+    max-width: 260px;
+    margin-bottom: 20px;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* Social Buttons */
+.footer-social {
+    display: flex;
+    gap: 8px;
+}
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
+    font-family: 'F1-Bold';
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.social-btn:hover {
+    background: rgba(232, 0, 45, 0.12);
+    border-color: rgba(232, 0, 45, 0.3);
+    color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+}
+
+/* Link columns */
+.footer-col-title {
+    margin-bottom: 16px;
+    color: rgba(255, 255, 255, 0.22);
+    font-size: 12px;
+    font-family: 'F1-Bold';
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.footer-links ul {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    list-style: none;
+}
+
+.footer-links ul li a {
+    position: relative;
+    padding-left: 14px;
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+}
+
+/* Arrow */
+.footer-links ul li a::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: rgba(232, 0, 45, 0.5);
+    transition: all 0.2s ease;
+}
+
+.footer-links ul li a:hover {
+    padding-left: 18px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.footer-links ul li a:hover::before {
+    color: var(--primary-red);
+}
+
+/* Bottom */
+.footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    padding: 16px 0;
+}
+
+.footer-copyright,
+.footer-timezone {
+    color: rgba(255, 255, 255, 0.18);
+    font-size: 12px;
+    letter-spacing: 0.25px;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+    }
+
+    .footer-brand {
+        grid-column: 1 / -1;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+}
+
+@media (max-width: 500px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================ */
+/*              DRIVER PAGE STYLES              */
+/* ============================================ */
+
+:root {
+    --driver-color: var(--primary-red);
+}
+
+/* ---- HERO ---- */
+.drv-hero {
+    position: relative;
+    height: 92vh;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+}
+
+.drv-hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 70% 60% at 78% 15%, color-mix(in srgb, var(--driver-color) 26%, transparent), transparent 65%),
+        linear-gradient(180deg, rgb(8,8,12) 0%, var(--base-800) 55%, var(--base-800) 100%);
+    z-index: 0;
+}
+
+.drv-hero-number {
+    position: absolute;
+    top: 8%;
+    right: 4%;
+    font-family: 'F1-Black';
+    font-size: clamp(180px, 26vw, 460px);
+    line-height: 0.8;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255,255,255,0.08);
+    z-index: 1;
+    user-select: none;
+    pointer-events: none;
+}
+
+.drv-hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 0 5% 4.5rem;
+}
+
+.drv-hero-team-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.drv-team-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px 6px 10px;
+    border: 1px solid color-mix(in srgb, var(--driver-color) 40%, transparent);
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--driver-color) 12%, transparent);
+    font-family: 'F1-Bold';
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+
+.drv-team-chip-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--driver-color);
+}
+
+.drv-hero-flag {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.drv-hero-name {
+    margin: 0;
+    font-family: 'F1-Regular';
+    font-size: clamp(20px, 3vw, 30px);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.drv-hero-surname {
+    display: block;
+    margin-top: 2px;
+    font-family: 'F1-Black';
+    font-size: clamp(48px, 8.5vw, 128px);
+    line-height: 0.9;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+
+.drv-hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    width: fit-content;
+}
+
+.drv-hero-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-family: 'F1-Regular';
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.drv-hero-meta-item strong {
+    font-family: 'F1-Bold';
+    font-size: 20px;
+    letter-spacing: 0.3px;
+    color: var(--text-light);
+}
+
+/* ---- CONTENT WRAPPER ---- */
+.drv-content {
+    max-width: 80%;
+    margin: 96px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 96px;
+}
+
+/* Reused section title (same language as grandprix.css .rc-section-title) */
+.drv-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+}
+
+.drv-section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-light);
+    font-family: 'F1-Black';
+    font-size: clamp(24px, 4vw, 42px);
+    text-transform: uppercase;
+}
+
+/* ---- SCOPE TABS (SEASON / CAREER) ---- */
+.drv-tabs {
+    position: relative;
+    display: inline-flex;
+    padding: 4px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 999px;
+    background: rgb(16,16,23);
+}
+
+.drv-tab {
+    position: relative;
+    z-index: 2;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    font-family: 'F1-Bold';
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: color 0.25s ease;
+}
+
+.drv-tab.is-active { color: rgb(10,10,15); }
+
+.drv-tab-glide {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    z-index: 1;
+    height: calc(100% - 8px);
+    border-radius: 999px;
+    background: var(--driver-color);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---- STAT CARDS GRID ---- */
+.drv-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.drv-stat-card {
+    position: relative;
+    padding: 28px 24px 24px;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    background: rgb(17,17,25);
+    overflow: hidden;
+    cursor: default;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.drv-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--driver-color);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.drv-stat-card.is-in .drv-stat-card-icon,
+.drv-stat-card:hover .drv-stat-card-icon {
+    transform: translateY(-2px) scale(1.05);
+}
+
+.drv-stat-card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--driver-color) 35%, transparent);
+    box-shadow: 0 16px 32px -18px color-mix(in srgb, var(--driver-color) 60%, transparent);
+}
+
+.drv-stat-card:hover::before,
+.drv-stat-card.is-in::before {
+    transform: scaleX(1);
+}
+
+.drv-stat-card-icon {
+    width: 34px;
+    height: 34px;
+    margin-bottom: 20px;
+    color: var(--driver-color);
+    transition: transform 0.35s ease;
+}
+
+.drv-stat-card-icon svg { width: 100%; height: 100%; }
+
+.drv-stat-card-value {
+    display: block;
+    font-family: 'F1-Black';
+    font-size: clamp(32px, 3.2vw, 44px);
+    line-height: 1;
+    color: var(--text-light);
+    font-variant-numeric: tabular-nums;
+}
+
+.drv-stat-card-label {
+    display: block;
+    margin-top: 10px;
+    font-family: 'F1-Bold';
+    font-size: 11px;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.drv-stat-card-sub {
+    display: block;
+    margin-top: 14px;
+    font-family: 'F1-Regular';
+    font-size: 12px;
+    letter-spacing: 0.3px;
+    color: rgba(255,255,255,0.32);
+}
+
+/* Panel fade between SEASON / CAREER */
+.drv-panel { display: none; }
+.drv-panel.is-active { display: block; animation: drvPanelIn 0.4s ease; }
+
+@keyframes drvPanelIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- CAREER: TEAM STINT TIMELINE (signature element) ---- */
+.drv-timeline-wrap { margin-bottom: 3rem; }
+
+.drv-timeline-track {
+    display: flex;
+    width: 100%;
+    height: 64px;
+    border-radius: 12px;
+    overflow: hidden;
+    gap: 3px;
+}
+
+.drv-stint {
+    position: relative;
+    flex-shrink: 0;
+    height: 100%;
+    background: var(--stint-color, #555);
+    opacity: 0.28;
+    cursor: pointer;
+    transition: opacity 0.3s ease, flex-grow 0.3s ease;
+}
+
+.drv-stint.is-active { opacity: 1; }
+
+.drv-stint:hover { opacity: 0.85; }
+
+.drv-timeline-labels {
+    display: flex;
+    width: 100%;
+    margin-top: 10px;
+    gap: 3px;
+}
+
+.drv-stint-label {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-family: 'F1-Regular';
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    text-align: center;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.drv-stint-label strong {
+    font-family: 'F1-Bold';
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+    transition: color 0.3s ease;
+}
+
+.drv-stint-label.is-active,
+.drv-stint-label.is-active strong { color: var(--text-light); }
+
+.drv-stint-label.is-active { color: var(--stint-color, var(--text-light)); }
+
+/* Career headline note under timeline */
+.drv-timeline-hint {
+    margin-top: 14px;
+    font-family: 'F1-Regular';
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    color: var(--text-dim);
+}
+
+.drv-timeline-hint strong { color: var(--text-light); font-family: 'F1-Bold'; }
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .drv-content { max-width: 90%; }
+    .drv-stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+    .drv-stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .drv-stat-card { padding: 20px 16px 18px; }
+    .drv-section-head { flex-direction: column; align-items: flex-start; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ============================================ -->
+<!--  DEMO DATA IS HARDCODED IN <script> BELOW.    -->
+<!--  Swap for real driver JSON later in pages/driver.js -->
+<!-- ============================================ -->
+
+<section class="drv-hero" style="--driver-color:#ED1131;">
+    <div class="drv-hero-bg"></div>
+    <div class="drv-hero-number">16</div>
+
+    <div class="drv-hero-content">
+        <div class="drv-hero-team-row">
+            <span class="drv-team-chip">
+                <span class="drv-team-chip-dot"></span>
+                Ferrari
+            </span>
+            <span class="drv-hero-flag">🇲🇨</span>
+        </div>
+
+        <h1 class="drv-hero-name">
+            Charles
+            <span class="drv-hero-surname">Leclerc</span>
+        </h1>
+
+        <div class="drv-hero-meta">
+            <div class="drv-hero-meta-item">Nacionalidad<strong>Mónaco</strong></div>
+            <div class="drv-hero-meta-item">Nº de auto<strong>16</strong></div>
+            <div class="drv-hero-meta-item">Debut<strong>2018</strong></div>
+            <div class="drv-hero-meta-item">Equipo actual<strong>Ferrari</strong></div>
+        </div>
+    </div>
+</section>
+
+<div class="drv-content">
+
+    <section>
+        <div class="drv-section-head">
+            <h2 class="drv-section-title">Estadísticas</h2>
+
+            <div class="drv-tabs" id="drvTabs">
+                <span class="drv-tab-glide" id="drvTabGlide"></span>
+                <button class="drv-tab is-active" data-scope="season">Temporada 2026</button>
+                <button class="drv-tab" data-scope="career">Carrera</button>
+            </div>
+        </div>
+
+        <!-- SEASON PANEL -->
+        <div class="drv-panel is-active" id="panel-season">
+            <div class="drv-stats-grid" id="grid-season"></div>
+        </div>
+
+        <!-- CAREER PANEL -->
+        <div class="drv-panel" id="panel-career">
+
+            <div class="drv-timeline-wrap">
+                <div class="drv-timeline-track" id="stintTrack"></div>
+                <div class="drv-timeline-labels" id="stintLabels"></div>
+                <p class="drv-timeline-hint" id="stintHint"></p>
+            </div>
+
+            <div class="drv-stats-grid" id="grid-career"></div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+/* ============================================ */
+/*  HARDCODED DEMO DATA — visual mockup only     */
+/* ============================================ */
+
+const ICONS = {
+    trophy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4h12v3a6 6 0 0 1-12 0V4Z"/><path d="M6 5H3a3 3 0 0 0 3 5M18 5h3a3 3 0 0 1-3 5"/><path d="M9 20h6M12 13v7"/></svg>`,
+    flag: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 3v18"/><path d="M5 4h9l-1.5 3.5L14 11H5"/></svg>`,
+    podium: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 21h18"/><path d="M6 21v-6h4v6M14 21v-10h4v10M9 15V9h1"/></svg>`,
+    pole: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M12 12v9M8 21h8"/></svg>`,
+    fastlap: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg>`,
+    points: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v18M3 12h18" opacity="0"/><path d="M12 2 2 8.5 12 15l10-6.5L12 2ZM2 15.5 12 22l10-6.5"/></svg>`,
+    races: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>`,
+    dnf: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></svg>`
+};
+
+const SEASON_STATS = [
+    { icon: 'races',   value: 14,  label: 'Carreras', sub: 'de 24 en el calendario' },
+    { icon: 'points',  value: 231, label: 'Puntos' },
+    { icon: 'podium',  value: 5,   label: 'Podios' },
+    { icon: 'pole',    value: 2,   label: 'Poles' },
+    { icon: 'fastlap', value: 3,   label: 'Vueltas rápidas' },
+    { icon: 'trophy',  value: 1,   label: 'Victorias' },
+    { icon: 'flag',    value: '3°', label: 'Posición campeonato', isText: true },
+    { icon: 'dnf',     value: 1,   label: 'Abandonos' }
+];
+
+const CAREER_STATS = [
+    { icon: 'races',   value: 165, label: 'Carreras totales' },
+    { icon: 'trophy',  value: 8,   label: 'Victorias' },
+    { icon: 'podium',  value: 46,  label: 'Podios' },
+    { icon: 'pole',    value: 27,  label: 'Poles' },
+    { icon: 'fastlap', value: 9,   label: 'Vueltas rápidas' },
+    { icon: 'points',  value: 1876, label: 'Puntos totales' },
+    { icon: 'flag',    value: 7,   label: 'Temporadas', sub: '2018 — presente' },
+    { icon: 'dnf',     value: 0,   label: 'Campeonatos' }
+];
+
+// Team stints: order matters (chronological), width = temporadas activas
+const STINTS = [
+    { team: 'Sauber',  years: '2018',        color: '#9B0000', seasons: 1,
+      stats: [
+        { icon:'races', value:21, label:'Carreras' },
+        { icon:'trophy', value:0, label:'Victorias' },
+        { icon:'podium', value:0, label:'Podios' },
+        { icon:'points', value:39, label:'Puntos' }
+      ]},
+    { team: 'Ferrari', years: '2019 — hoy',  color: '#ED1131', seasons: 7,
+      stats: [
+        { icon:'races', value:144, label:'Carreras' },
+        { icon:'trophy', value:8, label:'Victorias' },
+        { icon:'podium', value:46, label:'Podios' },
+        { icon:'points', value:1837, label:'Puntos' }
+      ]}
+];
+
+/* ============================================ */
+/*  RENDER                                       */
+/* ============================================ */
+
+function statCard({ icon, value, label, sub, isText }) {
+    const el = document.createElement('div');
+    el.className = 'drv-stat-card';
+    el.innerHTML = `
+        <div class="drv-stat-card-icon">${ICONS[icon] || ''}</div>
+        <span class="drv-stat-card-value" ${isText ? '' : `data-count="${value}"`}>${isText ? value : '0'}</span>
+        <span class="drv-stat-card-label">${label}</span>
+        ${sub ? `<span class="drv-stat-card-sub">${sub}</span>` : ''}
+    `;
+    return el;
+}
+
+function renderGrid(containerId, data) {
+    const grid = document.getElementById(containerId);
+    grid.innerHTML = '';
+    data.forEach(d => grid.appendChild(statCard(d)));
+}
+
+renderGrid('grid-season', SEASON_STATS);
+renderGrid('grid-career', CAREER_STATS);
+
+/* ---- Count-up animation (IntersectionObserver-triggered) ---- */
+function animateCount(el) {
+    const target = parseFloat(el.dataset.count);
+    if (isNaN(target)) return;
+    const duration = 900;
+    const start = performance.now();
+    function tick(now) {
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased).toLocaleString('es-AR');
+        if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+}
+
+const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const card = entry.target;
+        card.classList.add('is-in');
+        const valueEl = card.querySelector('[data-count]');
+        if (valueEl && !valueEl.dataset.done) {
+            valueEl.dataset.done = '1';
+            animateCount(valueEl);
+        }
+        io.unobserve(card);
+    });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.drv-stat-card').forEach(c => io.observe(c));
+
+/* ---- Tabs: SEASON / CAREER ---- */
+const tabs = document.querySelectorAll('.drv-tab');
+const glide = document.getElementById('drvTabGlide');
+
+function positionGlide(tab) {
+    glide.style.width = tab.offsetWidth + 'px';
+    glide.style.transform = `translateX(${tab.offsetLeft - 4}px)`;
+}
+
+function setScope(scope) {
+    tabs.forEach(t => t.classList.toggle('is-active', t.dataset.scope === scope));
+    document.getElementById('panel-season').classList.toggle('is-active', scope === 'season');
+    document.getElementById('panel-career').classList.toggle('is-active', scope === 'career');
+    positionGlide([...tabs].find(t => t.dataset.scope === scope));
+}
+
+tabs.forEach(t => t.addEventListener('click', () => setScope(t.dataset.scope)));
+window.addEventListener('resize', () => {
+    const active = [...tabs].find(t => t.classList.contains('is-active'));
+    positionGlide(active);
+});
+positionGlide(tabs[0]);
+
+/* ---- Team stint timeline ---- */
+const totalSeasons = STINTS.reduce((s, x) => s + x.seasons, 0);
+const track = document.getElementById('stintTrack');
+const labelsWrap = document.getElementById('stintLabels');
+const hint = document.getElementById('stintHint');
+
+STINTS.forEach((stint, i) => {
+    const grow = stint.seasons / totalSeasons;
+
+    const seg = document.createElement('div');
+    seg.className = 'drv-stint' + (i === STINTS.length - 1 ? ' is-active' : '');
+    seg.style.setProperty('--stint-color', stint.color);
+    seg.style.flexGrow = grow;
+    seg.dataset.index = i;
+    track.appendChild(seg);
+
+    const label = document.createElement('div');
+    label.className = 'drv-stint-label' + (i === STINTS.length - 1 ? ' is-active' : '');
+    label.style.setProperty('--stint-color', stint.color);
+    label.style.flexGrow = grow;
+    label.dataset.index = i;
+    label.innerHTML = `<strong>${stint.team}</strong>${stint.years}`;
+    labelsWrap.appendChild(label);
+});
+
+function selectStint(index) {
+    document.querySelectorAll('.drv-stint').forEach(s => s.classList.toggle('is-active', +s.dataset.index === index));
+    document.querySelectorAll('.drv-stint-label').forEach(s => s.classList.toggle('is-active', +s.dataset.index === index));
+
+    const stint = STINTS[index];
+    hint.innerHTML = `Mostrando estadísticas en <strong>${stint.team}</strong> (${stint.years})`;
+    renderGrid('grid-career', stint.stats);
+    document.querySelectorAll('#grid-career .drv-stat-card').forEach(c => io.observe(c));
+}
+
+[...track.children, ...labelsWrap.children].forEach(el => {
+    el.addEventListener('click', () => selectStint(+el.dataset.index));
+});
+
+selectStint(STINTS.length - 1);
+</script>
+
+</body>
+</html>

@@ -7,7 +7,8 @@
   "alfa-romeo": {
     "id": "alfa-romeo",
     "name": "Alfa Romeo",
-    "base": "milan"
+    "base": "milan",
+    "color": "#9D2235"
   },
   "alfa-romeo-sauber": {
     "id": "alfa-romeo-sauber",
@@ -18,14 +19,14 @@
     "id": "alphatauri",
     "name": "AlphaTauri",
     "base": "faenza",
-    "color": "#2B4562"
+    "color": "#00283F"
   },
   "alpine": {
     "id": "alpine",
     "name": "Alpine",
     "base": "enstone",
     "country": "france",
-    "color": "#0090FF"
+    "color": "#006FBA"
   },
   "alta": {
     "id": "alta",
@@ -72,7 +73,7 @@
     "id": "aston-martin",
     "name": "Aston Martin",
     "base": "silverstone",
-    "color": "#00594F"
+    "color": "#229971"
   },
   "ats-1963": {
     "id": "ats-1963",
@@ -125,7 +126,7 @@
     "id": "brawn-gp",
     "name": "Brawn GP",
     "base": "brackley",
-    "color": "#B4C744"
+    "color": "#E9FF00"
   },
   "brm": {
     "id": "brm",
@@ -145,7 +146,8 @@
   "cadillac": {
     "id": "cadillac",
     "name": "Cadillac",
-    "country": "usa"
+    "country": "usa",
+    "color": "#AAAAAD"
   },
   "caterham": {
     "id": "caterham",
@@ -202,7 +204,7 @@
     "id": "ferrari",
     "name": "Ferrari",
     "base": "maranello",
-    "color": "#DC0000"
+    "color": "#FF0019"
   },
   "fittipaldi": {
     "id": "fittipaldi",
@@ -219,7 +221,8 @@
     "id": "force-india",
     "name": "Force India",
     "base": "silverstone",
-    "country": "india"
+    "country": "india",
+    "color": "#F07D00"
   },
   "forti": {
     "id": "forti",
@@ -234,7 +237,8 @@
   "haas": {
     "id": "haas",
     "name": "Haas",
-    "base": "kannapolis"
+    "base": "kannapolis",
+    "color": "#DEE1E2"
   },
   "hesketh": {
     "id": "hesketh",
@@ -254,7 +258,8 @@
   "honda": {
     "id": "honda",
     "name": "Honda Racing F1",
-    "base": "brackley"
+    "base": "brackley",
+    "color": "#EBEBE1"
   },
   "hrt": {
     "id": "hrt",
@@ -347,14 +352,14 @@
     "id": "mclaren",
     "name": "McLaren",
     "base": "woking",
-    "color": "#FF8000"
+    "color": "#FF7F00"
   },
   "mercedes": {
     "id": "mercedes",
     "name": "Mercedes",
     "base": "brackley",
     "country": "germany",
-    "color": "#00D2BE"
+    "color": "#2BFFDB"
   },
   "midland": {
     "id": "midland",
@@ -411,27 +416,27 @@
     "id": "racing-point",
     "name": "Racing Point",
     "base": "silverstone",
-    "color": "#F596C8"
+    "color": "#FF8EBC"
   },
   "racing-bulls": {
     "id": "racing-bulls",
     "name": "Racing Bulls",
     "base": "faenza",
-    "color": "#6C98FF"
+    "color": "#667DFF"
   },
   "red-bull-racing": {
     "id": "red-bull-racing",
     "name": "Red Bull Racing",
     "base": "milton-keynes",
     "country": "austria",
-    "color": "#1E41FF"
+    "color": "#22477A"
   },
   "renault": {
     "id": "renault",
     "name": "Renault",
     "base": "enstone",
     "country": "france",
-    "color": "#FFF500"
+    "color": "#FFCD2C"
   },
   "rial": {
     "id": "rial",
@@ -451,13 +456,15 @@
   "kick-sauber": {
     "id": "kick-sauber",
     "name": "Kick Sauber",
-    "base": "hinwil"
+    "base": "hinwil",
+    "color": "#5AFF21"
   },
   "audi": {
     "id": "audi",
     "name": "Audi",
     "base": "hinwil",
-    "country": "germany"
+    "country": "germany",
+    "color": "#FF2E2E"
   },
   "shadow": {
     "id": "shadow",
@@ -510,7 +517,8 @@
   "toro-rosso": {
     "id": "toro-rosso",
     "name": "Toro Rosso",
-    "base": "faenza"
+    "base": "faenza",
+    "color": "#161793"
   },
   "toyota": {
     "id": "toyota",
@@ -537,7 +545,7 @@
     "id": "williams",
     "name": "Williams",
     "base": "grove",
-    "color": "#00A0DE"
+    "color": "#1C7AFF"
   },
   "wolf": {
     "id": "wolf",

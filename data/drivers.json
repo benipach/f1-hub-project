@@ -685,7 +685,7 @@
   },
   "andrea-kimi-antonelli": {
     "id": "andrea-kimi-antonelli",
-    "firstName": "Andrea Kimi",
+    "firstName": "Kimi",
     "lastName": "Antonelli",
     "shortName": "ANT",
     "nationality": "italy",
@@ -1822,5 +1822,29 @@
     "dateOfRetirement": "2020-01-01",
     "image": "jack-aitken.png",
     "coverImage": "jack-aitken-cover.png"
+  },
+  "franco-colapinto": {
+    "id": "franco-colapinto",
+    "firstName": "Franco",
+    "lastName": "Colapinto",
+    "shortName": "COL",
+    "nationality": "argentina",
+    "dateOfBirth": "2003-12-27",
+    "dateOfDeath": null,
+    "dateOfRetirement": null,
+    "image": "colapinto.png",
+    "coverImage": "colapinto-2.png"
+  },
+  "arvid-lindblad": {
+    "id": "arvid-lindblad",
+    "firstName": "Arvid",
+    "lastName": "Lindblad",
+    "shortName": "LIN",
+    "nationality": "sweden",
+    "dateOfBirth": "2007-08-08",
+    "dateOfDeath": null,
+    "dateOfRetirement": null,
+    "image": "lindblad.png",
+    "coverImage": "lindblad-2.png"
   }
 }

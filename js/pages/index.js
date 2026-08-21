@@ -1,14 +1,5 @@
 // pages/index.js — orchestrates the DOM for index.html (hero + season calendar).
 // Pure logic lives in shared/*.js; this file only touches the DOM.
-//
-// KNOWN LIMITATION: season2026.json is being migrated row by row from raw
-// display names to IDs, so `driver`/`team` fields are currently a mix of
-// both. Team resolution tries a direct ID match first, then falls back to
-// a best-effort slug guess for unmigrated rows. Driver code has no such
-// fallback — if `driver` isn't a real drivers.json ID, it shows nothing.
-//
-// Sprint weekends: fp1 → sprintQualy → sprintRace → qualifying → race
-// (confirmed against real season2026.json, no fp2/fp3 on those weekends).
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -56,8 +47,6 @@ function isoToFlagEmoji(isoCode) {
 
 function getGpFlag(gp, ctx)     { return isoToFlagEmoji(getGpLocation(gp, ctx).country?.isoCode); }
 function getGpCityName(gp, ctx) { return getGpLocation(gp, ctx).city?.name ?? ''; }
-
-// Card titles use "GP" instead of the full "Grand Prix" (hero keeps the full name).
 function gpShortName(gp) { return gp.name.replace(/Grand Prix/i, 'GP'); }
 
 // ── Team helper (temporary name→slug bridge, see file header) ─────────────
@@ -71,47 +60,34 @@ function toTeamSlugGuess(name) {
 }
 
 function resolveTeamId(rawTeamName, teamsData) {
-    if (teamsData?.[rawTeamName]) return rawTeamName; // already an ID
-    return toTeamSlugGuess(rawTeamName); // legacy raw name, best effort
+    if (teamsData?.[rawTeamName]) return rawTeamName;
+    return toTeamSlugGuess(rawTeamName);
 }
 
 function resolveTeam(rawTeamName, teamsData) {
     return getTeamMeta(resolveTeamId(rawTeamName, teamsData), teamsData);
 }
 
-// Team logos follow a filename convention — [id]-logo.png — instead of a
-// `logo` field in teams.json.
 function teamLogoPath(teamId) {
     return teamId ? `./img/teams/${teamId}-logo.png` : null;
 }
 
-// Driver code (e.g. "RUS") only comes from a real drivers.json match — no
-// guessing from whatever string is in `driver`, so an un-migrated/unknown
-// row shows nothing instead of a wrong code.
 function resolveDriverCode(rawDriver, driversData) {
     return driversData?.[rawDriver]?.lastName ?? '';
 }
 
 // ── Position delta (grid → finish) ─────────────────────────────────────────
-//
-// The race grid always comes from `qualifying`, even on sprint weekends —
-// `sprintQualy` only sets the Sprint's own grid, not the main race's.
 
 function getGridPosition(gp, driverKey) {
     const row = getSessionResults(gp, 'qualifying').find(r => r.driver === driverKey);
     return row ? Number(row.pos) : null;
 }
 
-// Chevron icon — same as grandprix.js's deltaArrowSvg (identical markup, so
-// both pages render the exact same arrow instead of two different styles).
 function deltaArrowSvg(direction) {
     const rotate = direction === 'down' ? 180 : 0;
     return `<svg class="res-delta-arrow" viewBox="0 0 24 24" style="transform:rotate(${rotate}deg)" aria-hidden="true"><path d="M3.5 16 L12 7 L20.5 16" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
 
-// Flat bar for "unchanged" — same stroke weight/style as the chevron, just
-// straight, so it sits as its own flex child (gap applies) instead of being
-// fused into the number as one text string.
 function deltaBarSvg() {
     return `<svg class="res-delta-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12 L20.5 12" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg>`;
 }
@@ -121,7 +97,7 @@ function renderDeltaHTML(gridPos, finishPos) {
         return `<span class="res-delta res-delta--none">—</span>`;
     }
 
-    const diff = gridPos - finishPos; // positive = gained positions on race day
+    const diff = gridPos - finishPos;
     if (diff > 0) {
         return `<span class="res-delta res-delta--up">${deltaArrowSvg('up')}${diff}</span>`;
     } else if (diff < 0) {
@@ -144,7 +120,7 @@ function findNextRace(season) {
 
 function renderHero(season, ctx) {
     const nextEntry = findNextRace(season);
-    if (!nextEntry) return; // season finished — leave hero markup as shipped
+    if (!nextEntry) return;
 
     const [gpId, gp] = nextEntry;
     const { circuit } = getGpLocation(gp, ctx);
@@ -235,7 +211,6 @@ function renderWeekendSchedule(gp, gpId, containerId) {
     bindSessionHoverCta(container);
 }
 
-// CTA-on-hover behavior for finished/live sessions (swaps content for a "view/tune in" link).
 function bindSessionHoverCta(container) {
     container.querySelectorAll('.schedule-session-finished, .schedule-session-live').forEach(row => {
         if (!row.querySelector('.schedule-session-cta')) return;
@@ -270,9 +245,6 @@ function renderRaceCards(season, ctx) {
         const card = buildRaceCard(gpId, gp, ctx, { isNext, now });
         calendar.appendChild(card);
 
-        // Schedule render needs the card already attached to `document`,
-        // since renderWeekendSchedule looks up its container via
-        // document.getElementById — a detached node won't resolve.
         if (isNext) renderWeekendSchedule(gp, gpId, `next-card-schedule-${gpId}`);
     }
 
@@ -314,7 +286,7 @@ function buildRaceCard(gpId, gp, ctx, { isNext, now }) {
 function compactCardHTML(gpId, gp, ctx, isSprint, { statusClass, statusText, linkText }) {
     const flag       = getGpFlag(gp, ctx);
     const roundLabel = `Round ${String(gp.round).padStart(2, '0')}`;
-    const dateText   = formatWeekendDateRange(gp); // from shared/format.js
+    const dateText   = formatWeekendDateRange(gp);
 
     return `
         <div class="race-card-content">
@@ -419,7 +391,7 @@ function initRaceCardReveal() {
         entries.forEach(entry => {
             if (!entry.isIntersecting) return;
             const idx   = cards.indexOf(entry.target);
-            const delay = idx === -1 ? 0 : (idx % 4) * 40; // left-to-right per row (4-col grid)
+            const delay = idx === -1 ? 0 : (idx % 4) * 40;
             setTimeout(() => entry.target.classList.add('in-view'), delay);
             _cardRevealObserver?.unobserve(entry.target);
         });
