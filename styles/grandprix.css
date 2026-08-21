@@ -86,17 +86,16 @@
 .race-hero-title { margin-bottom: 24px; }
 
 .race-hero-circuit {
-    font-family: 'F1-Regular';
-    font-size: clamp(12px, 2.5vw, 32px);
-    letter-spacing: 2px;
+    font-family: 'F1-Black';
+    font-size: clamp(12px, 10vw, 32px);
     text-transform: uppercase;
-    color: rgba(255,255,255,0.5);
+    color: var(--text-light);
     line-height: 1;
 }
 
 .race-hero-name {
     font-family: 'F1-Black';
-    font-size: clamp(3rem, 10vw, 8rem);
+    font-size: clamp(24px, 6vw, 96px);
     text-transform: uppercase;
     line-height: 0.9;
     color: var(--text-light);
@@ -142,7 +141,7 @@
 
 /* ---- PAGE CONTENT ---- */
 .race-content {
-    max-width: 70%;
+    max-width: 80%;
     margin: 128px auto;
     display: flex;
     flex-direction: column;
@@ -700,11 +699,11 @@ gap: 4px;
 .swc-condition-text {
     display: flex;
     flex-direction: column;
-    gap: 4px;
 }
 
 .swc-condition-label {
-    font-family: 'F1-Bold', sans-serif;
+    font-family: 'F1-Regular';
+    font-weight: 600;
     font-size: 26px;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -715,8 +714,9 @@ gap: 4px;
 .swc-condition.is-wet .swc-condition-label { color: #4ab3f5; }
 
 .swc-condition-sub {
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 12px;
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: 14px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     color: var(--text-dim);
@@ -732,20 +732,21 @@ gap: 4px;
 .swc-stat {
     display: flex;
     flex-direction: column;
-    gap: 6px;
     min-width: 74px;
 }
 
 .swc-stat-value {
-    font-family: 'F1-Bold', sans-serif;
+    font-family: 'F1-Regular';
+    font-weight: 600;
     font-size: 26px;
     color: var(--text-light);
     line-height: 1;
 }
 
 .swc-stat-label {
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 12px;
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: 14px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     color: var(--text-dim);
@@ -1186,8 +1187,9 @@ z-index: 1;
 height: 44px;
 padding: 0 20px;
 text-align: left;
-font-family: 'F1-Regular', sans-serif;
-font-size: 11px;
+font-family: 'F1-Regular';
+font-weight: 600;
+font-size: 14px;
 letter-spacing: 0.1px;
 text-transform: uppercase;
 color: rgba(255,255,255,0.35);
@@ -1213,6 +1215,47 @@ letter-spacing: 0.1px;
 background: rgba(255,255,255,0.035);
 }
 
+.data-table tbody tr.row-no-time {
+opacity: 0.5;
+}
+.qualy-separator td {
+height: 32px;
+line-height: 32px;
+padding: 0;
+overflow: hidden;
+box-sizing: border-box;
+background: rgba(255, 0, 25, 0.05);
+border-top: none;
+border-bottom: none;
+}
+
+.qualy-separator-inner {
+display: flex;
+align-items: center;
+justify-content: center;
+width: 100%;
+height: 100%;
+}
+
+.qualy-separator-line {
+flex: 1 1 auto;
+min-width: 20px;
+height: 1px;
+background: rgba(255, 0, 25, 0.4);
+}
+
+.qualy-separator-label {
+flex: 0 0 auto;
+padding: 0 16px;
+white-space: nowrap;
+text-align: center;
+font-family: 'F1-Regular';
+font-size: 16px;
+letter-spacing: 0.6px;
+color: var(--primary-red);
+text-transform: uppercase;
+}
+
 /* ---- RESULT TABLE SPECIFICS ---- */
 .res-pos {
 width: 25px;
@@ -1224,7 +1267,8 @@ color: rgba(255,255,255,0.4);
 
 #race-card .res-pos.top3,
 #sprint-race-card .res-pos.top3 {
-font-family: 'F1-Bold';
+font-family: 'F1-Regular';
+font-weight: 600;
 }
 
 #race-card .data-table tbody tr:nth-child(1) .res-pos.top3,
@@ -1249,12 +1293,12 @@ gap: 10px;
 }
 
 .res-driver-number {
-font-family: 'F1-Bold';
+font-family: 'F1-Regular';
+font-weight: 600;
 font-size: 13px;
 letter-spacing: 0.5px;
 text-align: right;
-transform: skewX(-15deg);
-flex-shrink: 0;
+line-height: 1;
 min-width: 32px;
 }
 
@@ -1291,6 +1335,10 @@ display: none;
 font-family: 'F1-Regular';
 color: rgba(255,255,255,0.6);
 font-size: 16px;
+}
+
+.res-time.is-fastest {
+color: rgb(176,56,216);
 }
 
 .res-pts {
@@ -1631,8 +1679,9 @@ border: 1px solid rgba(255,255,255,0.05);
     border-bottom: 2px solid transparent;
     background: none;
     color: var(--text-dim);
-    font-family: 'F1-Bold';
-    font-size: 12px;
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: 14px;
     letter-spacing: 1px;
     text-transform: uppercase;
     cursor: pointer;
@@ -1655,12 +1704,12 @@ border: 1px solid rgba(255,255,255,0.05);
 
 .session-tab-panel.active {
     display: block;
-    animation: tabFadeIn 0.3s ease;
+    animation: tabFadeIn 0.35s ease;
 }
 
 @keyframes tabFadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateX(var(--tab-slide-x, 0px)); }
+    to   { opacity: 1; transform: translateX(0); }
 }
 
 .session-tab-panel > section {
