@@ -106,9 +106,9 @@
 
     /* ── CONTENT ── */
     .driver-content {
-        max-width: 80%;
-        margin: 0 auto;
-        padding: 128px 0;
+        max-width: var(--content-width);
+        margin-inline: auto;
+        padding: var(--content-rhythm) var(--content-gutter);
     }
 
     /* Section title */
@@ -135,11 +135,6 @@
     /* ── Ajustes generales para celular: menos padding lateral, menos aire entre
        secciones, tipografías del hero más chicas ── */
     @media (max-width: 700px) {
-        .driver-content {
-            max-width: 100%;
-            padding: 72px 16px;
-        }
-
         .driver-hero-content { padding: 0 20px 2.5rem; }
         .driver-hero-last-name { font-size: clamp(2.4rem, 13vw, 4rem); }
         .driver-hero-first-name { font-size: clamp(13px, 4vw, 20px); }

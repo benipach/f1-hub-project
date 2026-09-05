@@ -183,7 +183,7 @@ function archiveRenderConstructorsTable(constructors) {
     </table>`;
 }
 
-// ── CHART (copia de makeFilteredChart de championship.js) ─────────────────
+// ── CHART ────────────────────────────────────────────────────────────────
 function archiveMakeChart(containerId, filterItemsId, selectAllId, datasets, labels) {
     const container      = document.getElementById(containerId);
     const filterContainer = document.getElementById(filterItemsId);
@@ -522,9 +522,9 @@ async function archiveRenderSeason(year) {
             id: d.driver,
             label: d.driver.split(' ').slice(1).join(' ').toUpperCase() || d.driver.toUpperCase(),
             color: (typeof teamColor === 'function' ? teamColor(d.team) : null) || '#ffffff',
-            data: buildCumulative(d.racePoints),
+            data: archiveBuildCumulative(d.racePoints),
         }));
-    makeFilteredChart('archive-driverChart', 'archive-driver-filter-items', 'archive-driver-select-all', driverDatasets, raceLabels);
+    archiveMakeChart('archive-driverChart', 'archive-driver-filter-items', 'archive-driver-select-all', driverDatasets, raceLabels);
 
     // Constructors
     archiveRenderConstructorsTable(Object.values(constructorMap));
@@ -534,9 +534,9 @@ async function archiveRenderSeason(year) {
             id: c.team,
             label: c.team,
             color: (typeof teamColor === 'function' ? teamColor(c.team) : null) || '#ffffff',
-            data: buildCumulative(c.racePoints),
+            data: archiveBuildCumulative(c.racePoints),
         }));
-    makeFilteredChart('archive-constructorChart', 'archive-constructor-filter-items', 'archive-constructor-select-all', constructorDatasets, raceLabels, 50);
+    archiveMakeChart('archive-constructorChart', 'archive-constructor-filter-items', 'archive-constructor-select-all', constructorDatasets, raceLabels);
 
     // Calendario
     archiveRenderCalendar(season, gpMeta);

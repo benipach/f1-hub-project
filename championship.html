@@ -16,12 +16,11 @@
     <link rel="icon" href="img/icon.png">
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/championship.css">
-<script src="./js/twemoji.js" defer></script>
-    <script src="./js/navbar.js" defer></script>
-    <script src="./js/teams.js"></script>
-    <script src="./js/grandprix.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="./js/shared/gp.js" defer></script>
     <script src="./js/championship.js" defer></script>
-
+    <script src="./js/twemoji.js" defer></script>
+    <script src="./js/navbar.js" defer></script>
 </head>
 <body>
 
@@ -51,67 +50,67 @@
 
     <main>
         <div class="champ-header">
-            <h1>2026 CHAMPIONSHIP</h1>
-            <p>Drivers &amp; Teams Standings</p>
+            <h1>2026 Championship</h1>
+            <p id="champHeaderSub">Drivers &amp; Teams Standings</p>
         </div>
 
-        <div class="tab-bar">
-            <button class="tab-btn active" data-tab="drivers">Drivers</button>
-            <button class="tab-btn" data-tab="constructors">Teams</button>
-        </div>
+        <!-- Gráfico + tabla por pestaña, poblados por js/championship.js desde
+             data/seasons/season2026.json. El gráfico y la tabla comparten el
+             foco: tocar una línea resalta su fila, y al revés. -->
+        <div id="championship">
 
-        <div class="champ-content">
+            <div class="tab-bar champ-tab-bar">
+                <button class="tab-btn active" data-tab="drivers">Drivers</button>
+                <button class="tab-btn" data-tab="constructors">Teams</button>
+            </div>
 
-            <!-- DRIVERS TAB -->
+            <div class="champ-content">
+
+            <!-- ── DRIVERS ── -->
             <div id="tab-drivers" class="tab-panel active">
-                <p class="section-title">Drivers Standings</p>
-                <div class="standings-table-wrap" id="drivers-table-wrap"></div>
 
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <span class="chart-title">Cumulative points per race</span>
-                        <div class="filter-wrapper">
-                            <button class="filter-btn" id="driver-filter-btn">
-                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 3h12M3 7h8M5 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                                Drivers
-                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <div class="filter-dropdown" id="driver-filter-dropdown">
-                                <button class="filter-all-btn" id="driver-select-all">Deselect all</button>
-                                <div class="filter-divider"></div>
-                                <div id="driver-filter-items"></div>
-                            </div>
+                <h2 class="section-title">Season progress</h2>
+
+                <div class="champ-form">
+                    <div class="champ-form-head">
+                        <h3 class="champ-form-title">Points curve</h3>
+                        <div class="champ-form-legend">
+                            <span class="champ-form-legend-item is-lead">First driver</span>
+                            <span class="champ-form-legend-item is-teammate">Team mate</span>
                         </div>
                     </div>
-                    <div id="driverChart" class="f1-svg-chart"></div>
+                    <p class="champ-form-badge" hidden></p>
+                    <div class="champ-form-canvas">
+                        <canvas></canvas>
+                    </div>
+                    <p class="champ-form-note"></p>
                 </div>
+
+                <h2 class="section-title">Drivers standings</h2>
+                <div class="standings-table-wrap"></div>
             </div>
 
-            <!-- ── CONSTRUCTORS TAB ── -->
+            <!-- ── CONSTRUCTORS ── -->
             <div id="tab-constructors" class="tab-panel">
-                <p class="section-title">Teams Standings</p>
-                    <div class="standings-table-wrap" id="constructors-table-wrap"></div>
 
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <span class="chart-title">Cumulative points per race</span>
-                        <div class="filter-wrapper">
-                            <button class="filter-btn" id="constructor-filter-btn">
-                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 3h12M3 7h8M5 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                                Teams
-                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <div class="filter-dropdown" id="constructor-filter-dropdown">
-                                <button class="filter-all-btn" id="constructor-select-all">Deselect all</button>
-                                <div class="filter-divider"></div>
-                                <div id="constructor-filter-items"></div>
-                            </div>
-                        </div>
+                <h2 class="section-title">Season progress</h2>
+
+                <div class="champ-form">
+                    <div class="champ-form-head">
+                        <h3 class="champ-form-title">Points curve</h3>
                     </div>
-                    <div id="constructorChart" class="f1-svg-chart"></div>
+                    <p class="champ-form-badge" hidden></p>
+                    <div class="champ-form-canvas">
+                        <canvas></canvas>
+                    </div>
+                    <p class="champ-form-note"></p>
                 </div>
+
+                <h2 class="section-title">Teams standings</h2>
+                <div class="standings-table-wrap"></div>
             </div>
 
+            </div>
         </div>
     </main>
 

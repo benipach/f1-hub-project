@@ -130,9 +130,9 @@
 
     /* ── CONTENT ── */
     .team-content {
-        max-width: 60%;
-        margin: 0 auto;
-        padding: 128px 0;
+        max-width: var(--content-width);
+        margin-inline: auto;
+        padding: var(--content-rhythm) var(--content-gutter);
     }
 
     /* Section title — identical to driver page */
@@ -448,11 +448,6 @@
         .team-hero-meta { width: 100%; gap: 1.5rem; }
         .team-year-bg { width: clamp(120px, 26vw, 240px); }
 
-        .team-content {
-            max-width: 85%;
-            padding: 80px 0;
-        }
-
         .info-chart-row {
             grid-template-columns: 1fr;
         }
@@ -487,11 +482,6 @@
         .team-hero-meta {
             width: 100%;
             gap: 1.25rem;
-        }
-
-        .team-content {
-            max-width: 92%;
-            padding: 60px 0;
         }
 
         .stats-grid {

@@ -136,8 +136,9 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
-    margin: 128px auto;
-    max-width: 70%;
+    margin-inline: auto;
+    padding: var(--content-rhythm) var(--content-gutter);
+    max-width: var(--content-width);
 }
 
 .drivercard {
@@ -394,11 +395,11 @@
 
 /* Responsive */
 @media (max-width: 1100px) {
-    .drivers-grid { grid-template-columns: repeat(3, 1fr); max-width: 80%; }
+    .drivers-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 500px) {
-    .drivers-grid { grid-template-columns: 1fr; max-width: 95%; }
+    .drivers-grid { grid-template-columns: 1fr; }
     .drivercard { height: 220px; }
     .driver-number { font-size: 2.75rem; }
     .driver-img { right: 50px; }
