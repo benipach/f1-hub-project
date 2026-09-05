@@ -12,9 +12,13 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import zlib from "node:zlib";
+import http from "node:http";
 
 const URL = "https://livetiming.formula1.com/signalrcore";
-const LOCAL_PORT = 8080; // your frontend connects here: ws://localhost:8080
+// El puerto lo puede fijar el host donde se despliegue (Render, Railway,
+// Fly y compañía inyectan PORT); en local sigue siendo 8080, así que
+// ws://localhost:8080 no cambia para nada.
+const LOCAL_PORT = Number(process.env.PORT) || 8080;
 
 // Position.z carries live X/Y car coordinates for the map overlay.
 // SessionStatus/SessionInfo drive the "keep last session's results visible
@@ -221,11 +225,42 @@ function refreshCurrentGP() {
 
 // Called once localServer is up — see below.
 
-// Local WS server for the frontend. Browsers can't reach F1's feed directly
-// (this is exactly the "backend relays to its own WebSocket" architecture
-// we talked about — same as f1-dash and friends).
-const localServer = new WebSocketServer({ port: LOCAL_PORT });
-console.log(`[local] escuchando en ws://localhost:${LOCAL_PORT}`);
+// WS server para el frontend. El browser no puede hablar con el feed de F1
+// directamente (de ahí la arquitectura "backend que reenvía a su propio
+// WebSocket", igual que f1-dash y compañía).
+//
+// Va montado sobre un servidor HTTP en vez de abrir el puerto a secas por
+// dos razones: los hosts gratuitos (Render, Railway, Fly) hacen health
+// checks por HTTP y no arrancan el servicio si el puerto no contesta, y
+// además así se puede abrir la URL en el navegador para ver de un vistazo
+// si el relay está vivo y qué sesión tiene cargada.
+const httpServer = http.createServer((req, res) => {
+  const url = (req.url || "/").split("?")[0];
+  if (url === "/" || url === "/health") {
+    res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+    res.end(JSON.stringify({
+      ok: true,
+      service: "f1-hub live relay",
+      gp: state.CurrentGP?.name ?? null,
+      session: state.SessionInfo?.Name ?? null,
+      sessionStatus: state.SessionStatus?.Status ?? null,
+      drivers: Object.keys(state.TimingData?.Lines ?? {}).length,
+      frozen: !!frozen,
+      clients: localServer.clients.size,
+    }));
+    return;
+  }
+  res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+  res.end("not found");
+});
+
+const localServer = new WebSocketServer({ server: httpServer });
+
+// 0.0.0.0 (y no localhost) para que también entren conexiones desde otros
+// dispositivos de la red, no solo desde esta misma máquina.
+httpServer.listen(LOCAL_PORT, "0.0.0.0", () => {
+  console.log(`[local] escuchando en ws://localhost:${LOCAL_PORT} (health: http://localhost:${LOCAL_PORT}/health)`);
+});
 
 localServer.on("connection", (client) => {
   console.log("[local] frontend conectado");

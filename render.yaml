@@ -1,0 +1,18 @@
+# Despliegue del relay de live timing (server/client.js) en Render.
+# Con esto la página publicada en GitHub Pages puede leer los datos desde
+# cualquier dispositivo, sin depender de que la PC de casa esté prendida:
+# Render sirve el WebSocket por wss://, que es lo único que un sitio https
+# puede abrir.
+#
+# Uso: New > Blueprint en Render, apuntando a este repo. La URL que quede
+# (https://<algo>.onrender.com) es la que va en RELAY_URL, arriba de todo
+# en js/live.js.
+services:
+  - type: web
+    name: f1-hub-relay
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node client.js
+    healthCheckPath: /health

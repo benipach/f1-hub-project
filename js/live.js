@@ -315,8 +315,94 @@ function setConnectionNotice(text) {
     }
 }
 
+// ── DÓNDE ESTÁ EL RELAY ───────────────────────────────────────────────────
+// Antes esto era 'ws://localhost:8080' fijo, así que la página solo mostraba
+// datos en la misma máquina que corre server/client.js: desde el celular, o
+// desde la versión publicada en GitHub Pages, no cargaba nada.
+//
+// Ahora la URL se resuelve así, en orden:
+//   1. ?relay=... en la URL (queda guardado, así se configura una sola vez
+//      por dispositivo: abrís live.html?relay=... y listo)
+//   2. lo que haya guardado de una visita anterior (localStorage)
+//   3. window.F1_HUB_RELAY_URL, si se define en un <script> antes de este
+//   4. RELAY_URL de acá abajo — la constante a completar con la URL pública
+//      del relay una vez desplegado
+//   5. ws://localhost:8080 cuando la página se abre en local (dev)
+//
+// Importante: una página servida por https (GitHub Pages lo es) NO puede
+// abrir un WebSocket ws:// — el browser lo bloquea por mixed content. Por
+// eso normalizeRelayUrl fuerza wss:// en ese caso; el relay tiene que estar
+// detrás de HTTPS (cualquier host tipo Render/Railway/Fly ya lo da hecho, o
+// un túnel tipo cloudflared).
+const RELAY_URL = '';
+
+const RELAY_STORAGE_KEY = 'f1hub:relay';
+
+function isLocalPage() {
+    const host = location.hostname;
+    return location.protocol === 'file:' || host === 'localhost' || host === '127.0.0.1' || host === '';
+}
+
+function normalizeRelayUrl(raw) {
+    if (!raw) return null;
+    let url = String(raw).trim();
+    if (!url) return null;
+
+    if (url.startsWith('http://')) url = 'ws://' + url.slice('http://'.length);
+    else if (url.startsWith('https://')) url = 'wss://' + url.slice('https://'.length);
+    else if (!url.startsWith('ws://') && !url.startsWith('wss://')) url = 'wss://' + url;
+
+    // Mixed content: desde https solo se puede wss.
+    if (location.protocol === 'https:' && url.startsWith('ws://')) {
+        url = 'wss://' + url.slice('ws://'.length);
+    }
+    return url;
+}
+
+function readStoredRelay() {
+    try {
+        return localStorage.getItem(RELAY_STORAGE_KEY);
+    } catch (err) {
+        return null; // modo incógnito / storage bloqueado
+    }
+}
+
+function storeRelay(url) {
+    try {
+        localStorage.setItem(RELAY_STORAGE_KEY, url);
+    } catch (err) {
+        /* no pasa nada: sigue funcionando por esta sesión */
+    }
+}
+
+function resolveRelayUrl() {
+    const fromQuery = new URLSearchParams(location.search).get('relay');
+    if (fromQuery) {
+        const url = normalizeRelayUrl(fromQuery);
+        if (url) storeRelay(url);
+        return url;
+    }
+
+    const stored = normalizeRelayUrl(readStoredRelay());
+    if (stored) return stored;
+
+    const fromGlobal = normalizeRelayUrl(window.F1_HUB_RELAY_URL);
+    if (fromGlobal) return fromGlobal;
+
+    const configured = normalizeRelayUrl(RELAY_URL);
+    if (configured) return configured;
+
+    return isLocalPage() ? 'ws://localhost:8080' : null;
+}
+
 function connect() {
-    const ws = new WebSocket('ws://localhost:8080');
+    const relayUrl = resolveRelayUrl();
+    if (!relayUrl) {
+        setConnectionNotice('No hay relay configurado para este dispositivo. Abrí esta página con ?relay=wss://tu-relay para conectarla.');
+        return;
+    }
+
+    const ws = new WebSocket(relayUrl);
 
     ws.onopen = () => {
         setConnectionNotice('Waiting for session data…');
@@ -335,7 +421,9 @@ function connect() {
     };
 
     ws.onclose = () => {
-        setConnectionNotice('Sin conexión con el relay (ws://localhost:8080) — arrancá server/client.js. Reintentando…');
+        setConnectionNotice(isLocalPage()
+            ? `Sin conexión con el relay (${relayUrl}) — arrancá server/client.js. Reintentando…`
+            : `Sin conexión con el relay (${relayUrl}) — puede estar apagado. Reintentando…`);
         setTimeout(connect, 2000);
     };
 
