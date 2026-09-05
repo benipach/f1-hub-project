@@ -95,11 +95,19 @@ fetch('./data/circuits.json')
     .then((data) => { if (data) { circuitsData = data; render(); } })
     .catch(() => {});
 
+// Circuit slug for the current GP. El backend ya lo manda en CurrentGP
+// (lo saca del archivo de temporada), así que eso manda; CIRCUIT_MAP queda
+// solo como fallback para snapshots viejos que no lo traigan.
+function currentCircuitId() {
+    const gp = state.CurrentGP;
+    if (!gp) return null;
+    return gp.circuitId || CIRCUIT_MAP[gp.slug] || null;
+}
+
 // Total laps for the current GP (from circuits.json), or null if not
 // resolvable yet (circuitsData still loading, or unknown slug).
 function totalLapsForCurrentGP() {
-    const slug = state.CurrentGP && state.CurrentGP.slug;
-    const circuitId = slug ? CIRCUIT_MAP[slug] : null;
+    const circuitId = currentCircuitId();
     const circuit = circuitId && circuitsData ? circuitsData[circuitId] : null;
     const laps = Number(circuit && circuit.stats && circuit.stats.laps);
     return Number.isFinite(laps) && laps > 0 ? laps : null;
@@ -140,6 +148,42 @@ function formatGap(value) {
     return `+${laps} Lap${laps === 1 ? '' : 's'}`;
 }
 
+// ── GAP / INTERVAL ────────────────────────────────────────────────────────
+// En Race/Sprint el feed manda los dos valores sueltos en la línea
+// (GapToLeader / IntervalToPositionAhead.Value). En Qualifying, Sprint
+// Qualifying y Práctica esos campos vienen vacíos: los diffs reales viajan
+// en line.Stats, un dict indexado por segmento (Stats["0"] = Q1/SQ1,
+// ["1"] = Q2, ["2"] = Q3) con TimeDiffToFastest y TimeDifftoPositionAhead
+// (sí, con esa "t" minúscula — así lo manda F1). Verificado contra una
+// captura en vivo; sin esto las columnas Gap e Interval quedaban en blanco
+// toda la clasificación.
+function sessionStatsEntry(line) {
+    const stats = line && line.Stats;
+    if (!stats || typeof stats !== 'object') return null;
+
+    const keys = Object.keys(stats).sort((a, b) => Number(a) - Number(b));
+    if (keys.length === 0) return null;
+
+    const part = currentQualifyingPart();
+    const wanted = Number.isFinite(part) ? String(part - 1) : null;
+    return (wanted && stats[wanted]) || stats[keys[keys.length - 1]] || null;
+}
+
+function gapToLeaderValue(line) {
+    if (line.GapToLeader) return line.GapToLeader;
+    const stats = sessionStatsEntry(line);
+    return (stats && stats.TimeDiffToFastest) || line.TimeDiffToFastest || '';
+}
+
+function intervalToAheadValue(line) {
+    const value = line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value;
+    if (value) return value;
+    const stats = sessionStatsEntry(line);
+    return (stats && (stats.TimeDifftoPositionAhead || stats.TimeDiffToPositionAhead))
+        || line.TimeDifftoPositionAhead || '';
+}
+
+
 function getNestedValue(target, pathSegments) {
     let current = target;
     for (const segment of pathSegments) {
@@ -158,16 +202,21 @@ function normalizeTimeValue(value) {
     return null;
 }
 
+// El feed real de F1 manda los sectores en line.Sectors, indexado desde
+// CERO: Sectors["0"] = S1, ["1"] = S2, ["2"] = S3 (verificado contra una
+// captura en vivo del GP de Italia 2026). Antes esto probaba primero la
+// variante 1-based, así que S1 mostraba el tiempo de S2 y S3 quedaba
+// siempre vacío. Sector{n}Time se mantiene arriba porque es la forma que
+// usan los mocks/adaptadores viejos, y ahí el índice sí es 1-based.
 function getSectorTimeInfo(line, sectorIndex) {
+    const zeroBased = String(sectorIndex - 1);
     const candidates = [
         [`Sector${sectorIndex}Time`],
         [`Sector${sectorIndex}`],
         [`LastLapTime`, `Sector${sectorIndex}Time`],
         [`LastLapTime`, `Sector${sectorIndex}`],
-        ['Sectors', String(sectorIndex), 'Value'],
-        ['Sectors', sectorIndex, 'Value'],
-        ['LastLapTime', 'Sectors', String(sectorIndex), 'Value'],
-        ['LastLapTime', 'Sectors', sectorIndex, 'Value'],
+        ['Sectors', zeroBased, 'Value'],
+        ['LastLapTime', 'Sectors', zeroBased, 'Value'],
     ];
 
     let value = null;
@@ -176,7 +225,9 @@ function getSectorTimeInfo(line, sectorIndex) {
     for (const path of candidates) {
         const node = getNestedValue(line, path);
         const normalized = normalizeTimeValue(node);
-        if (normalized !== null && value === null) value = normalized;
+        // Un sector sin tiempo llega como "" (string vacío), no ausente —
+        // eso no es un valor, es "todavía no cruzó".
+        if (normalized && value === null) value = normalized;
         if (node && typeof node === 'object') {
             if (node.OverallFastest) {
                 className = 'live-lap--fastest';
@@ -223,17 +274,13 @@ function segmentStatusClass(status) {
     return SEGMENT_STATUS_CLASS[status] ?? 'unknown';
 }
 
-// NOTE: whether the feed's Sectors dict is keyed 0-based or 1-based isn't
-// confirmed against a real capture yet (this codebase's own
-// getSectorTimeInfo above assumes 1-based, e.g. Sectors["1"] for S1) — this
-// tries both so it doesn't silently render empty either way. Once you've
-// checked a live capture, drop whichever candidate pair turns out unused.
+// Mismo indexado 0-based que getSectorTimeInfo (confirmado contra el feed
+// en vivo): Sectors["0"].Segments son las barras de S1.
 function getSegments(line, sectorIndex) {
+    const zeroBased = String(sectorIndex - 1);
     const candidates = [
-        ['Sectors', String(sectorIndex), 'Segments'],
-        ['Sectors', String(sectorIndex - 1), 'Segments'],
-        ['LastLapTime', 'Sectors', String(sectorIndex), 'Segments'],
-        ['LastLapTime', 'Sectors', String(sectorIndex - 1), 'Segments'],
+        ['Sectors', zeroBased, 'Segments'],
+        ['LastLapTime', 'Sectors', zeroBased, 'Segments'],
     ];
     for (const path of candidates) {
         const node = getNestedValue(line, path);
@@ -253,15 +300,26 @@ function microsectorsHTML(segments) {
         .join('')}</span>`;
 }
 
+// Aviso en las dos tablas cuando todavía no hay NADA que mostrar. Sin
+// esto, con el relay apagado la página se queda para siempre en "Waiting
+// for session data…" y no hay forma de saber que el problema es que
+// server/client.js no está corriendo.
+function setConnectionNotice(text) {
+    if (state.TimingData && state.TimingData.Lines) return; // ya hay datos: no pisar nada
+    const rows = [
+        [document.getElementById('live-rows'), 12],
+        [document.getElementById('live-rows-2'), 9],
+    ];
+    for (const [tbody, colspan] of rows) {
+        if (tbody) tbody.innerHTML = `<tr><td colspan="${colspan}" class="results-empty">${text}</td></tr>`;
+    }
+}
+
 function connect() {
     const ws = new WebSocket('ws://localhost:8080');
-    const statusEl = document.getElementById('live-status');
 
     ws.onopen = () => {
-        if (statusEl) {
-            statusEl.textContent = 'Live';
-            statusEl.className = 'live-status live-status--on';
-        }
+        setConnectionNotice('Waiting for session data…');
     };
 
     ws.onmessage = (event) => {
@@ -277,10 +335,7 @@ function connect() {
     };
 
     ws.onclose = () => {
-        if (statusEl) {
-            statusEl.textContent = 'Reconnecting…';
-            statusEl.className = 'live-status live-status--off';
-        }
+        setConnectionNotice('Sin conexión con el relay (ws://localhost:8080) — arrancá server/client.js. Reintentando…');
         setTimeout(connect, 2000);
     };
 
@@ -599,8 +654,7 @@ function updateCircuitMap() {
     const img = document.getElementById('circuit-map-img');
     if (!img) return;
 
-    const slug = state.CurrentGP && state.CurrentGP.slug;
-    const circuitId = slug ? CIRCUIT_MAP[slug] : null;
+    const circuitId = currentCircuitId();
     if (!circuitId || circuitId === lastCircuitId) return;
     lastCircuitId = circuitId;
 
@@ -1156,8 +1210,8 @@ function render() {
                         ${driverFullName(driver, num)}
                     </span>
                 </td>
-                <td class="results-date live-col-roomy">${posNum === 1 ? 'Leader' : formatGap(line.GapToLeader) ?? ''}</td>
-                <td class="results-date live-col-roomy">${posNum === 1 ? 'Leader' : formatGap(line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) ?? ''}</td>
+                <td class="results-date live-col-roomy">${posNum === 1 ? 'Leader' : formatGap(gapToLeaderValue(line)) ?? ''}</td>
+                <td class="results-date live-col-roomy">${posNum === 1 ? 'Leader' : formatGap(intervalToAheadValue(line)) ?? ''}</td>
                 ${lapAndSectorCellsHTML}
                 <td class="live-col-roomy">${tyreCellHTML(appLines[num])}</td>
                 <td>${line.Retired ? 'RETIRED' : statusTag}</td>
@@ -1211,8 +1265,8 @@ function render() {
             // regardless — just a different cell holding "first"/"last".
             // Race/Sprint show both Gap and Interval; Practice/Qualifying
             // only keep the single distance column.
-            const gapCellContent = posNum === 1 ? 'Leader' : formatGap(line.GapToLeader) ?? '';
-            const intervalValue = line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value;
+            const gapCellContent = posNum === 1 ? 'Leader' : formatGap(gapToLeaderValue(line)) ?? '';
+            const intervalValue = intervalToAheadValue(line);
             const intervalCellContent = posNum === 1 ? 'Leader' : formatGap(intervalValue) ?? '';
             const gapCellHTML = `<td class="results-date live-col-roomy">${gapCellContent}</td>`;
             const intervalCellHTML = `<td class="results-date live-col-roomy">${intervalCellContent}</td>`;

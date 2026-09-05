@@ -133,12 +133,29 @@ function updateDisplayState() {
 // per-request and not from the frontend, so its size never matters at
 // runtime: this is one fs.readFileSync + a handful of Date comparisons.
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// season2026.json lives in /data at the project root, one level up from
-// this file's folder (server/) — adjust further if your layout differs.
-const SEASON_PATH = path.join(__dirname, "..", "data", "season2026.json");
+const DATA_DIR = path.join(__dirname, "..", "data");
+// El archivo de temporada se movió de data/season2026.json a
+// data/seasons/season2026.json, y el año vigente ahora vive en
+// data/latest.json ({"latestSeason": 2026}) — que es lo mismo que lee el
+// resto del sitio. Se resuelve en runtime en vez de hardcodear el año,
+// así el año que viene no hay que tocar nada acá.
+function latestSeasonYear() {
+  try {
+    const raw = fs.readFileSync(path.join(DATA_DIR, "latest.json"), "utf-8");
+    const year = Number(JSON.parse(raw).latestSeason);
+    if (Number.isFinite(year)) return year;
+  } catch (err) {
+    console.error("[gp] no se pudo leer latest.json:", err.message);
+  }
+  return new Date().getFullYear();
+}
+
+function seasonPath() {
+  return path.join(DATA_DIR, "seasons", `season${latestSeasonYear()}.json`);
+}
 
 function loadSeasonData() {
-  const raw = fs.readFileSync(SEASON_PATH, "utf-8");
+  const raw = fs.readFileSync(seasonPath(), "utf-8");
   return JSON.parse(raw);
 }
 
@@ -146,10 +163,10 @@ function loadSeasonData() {
 // end (handles sprint weekends fine too, since it just takes min/max across
 // whatever session keys that GP happens to have).
 function getWeekendRange(gp) {
-  const dates = Object.values(gp.sessions).flatMap((s) => [
-    new Date(s.date).getTime(),
-    new Date(s.endDate).getTime(),
-  ]);
+  const dates = Object.values(gp.sessions || {})
+    .flatMap((s) => [new Date(s.date).getTime(), new Date(s.endDate).getTime()])
+    .filter((t) => Number.isFinite(t));
+  if (!dates.length) return null;
   return { start: Math.min(...dates), end: Math.max(...dates) };
 }
 
@@ -160,7 +177,10 @@ function getWeekendRange(gp) {
 function getCurrentGP(seasonData, now = new Date()) {
   const gps = Object.entries(seasonData)
     .map(([slug, gp]) => ({ slug, ...gp, weekend: getWeekendRange(gp) }))
+    .filter((gp) => gp.weekend && !gp.cancelled)
     .sort((a, b) => a.round - b.round);
+
+  if (!gps.length) return null;
 
   const nowMs = now.getTime();
   const upcoming = gps.find((gp) => gp.weekend.end >= nowMs);
@@ -172,6 +192,9 @@ function getCurrentGP(seasonData, now = new Date()) {
     name: gp.name,
     sprint: gp.sprint,
     color: gp.color,
+    // El slug del circuito ya viene en el archivo de temporada, así que se
+    // manda tal cual en vez de que el front lo adivine con su propio mapa.
+    circuitId: gp.circuitId,
     weekendStart: new Date(gp.weekend.start).toISOString(),
     weekendEnd: new Date(gp.weekend.end).toISOString(),
   };
@@ -181,6 +204,10 @@ function refreshCurrentGP() {
   try {
     const seasonData = loadSeasonData();
     const currentGP = getCurrentGP(seasonData);
+    if (!currentGP) {
+      console.error(`[gp] ${seasonPath()} no tiene ningún GP con fechas válidas`);
+      return;
+    }
     const changed = state.CurrentGP?.slug !== currentGP.slug;
     state.CurrentGP = currentGP;
     if (changed) {
@@ -249,15 +276,25 @@ setInterval(() => {
 function mergeState(target, patch) {
   for (const key of Object.keys(patch)) {
     const value = patch[key];
+    const current = target[key];
+
+    // OJO con los arrays: F1 manda algunas colecciones como array en el
+    // snapshot inicial (p.ej. TimingAppData.Lines[n].Stints = [{Compound:
+    // "SOFT", ...}]) y sus deltas como objeto indexado ({"0": {TotalLaps:
+    // 4}}). La versión anterior excluía los arrays del merge, así que el
+    // primer delta REEMPLAZABA el stint entero y se perdía el Compound —
+    // por eso los neumáticos aparecían como "desconocido" en la tabla.
+    // Ahora un patch-objeto se mergea también sobre un array (los índices
+    // numéricos funcionan igual como claves); solo un patch que ES array
+    // reemplaza de una, que es como F1 manda las listas completas.
     if (
       value &&
       typeof value === "object" &&
       !Array.isArray(value) &&
-      target[key] &&
-      typeof target[key] === "object" &&
-      !Array.isArray(target[key])
+      current &&
+      typeof current === "object"
     ) {
-      mergeState(target[key], value);
+      mergeState(current, value);
     } else {
       target[key] = value;
     }
@@ -365,6 +402,12 @@ async function main() {
         state[topic] = decoded;
         console.log(`[state] ${topic} seeded from Subscribe() snapshot`);
       }
+      // El snapshot pisa lo que hubieran dejado los deltas que llegaron
+      // entre start() y Subscribe(), así que hay que reenviarlo: si no,
+      // un front ya conectado se queda con el estado parcial de antes.
+      updateDisplayState();
+      updateSessionTiming();
+      broadcastFullSnapshot();
     }
   } catch (err) {
     console.error("[main] error de conexión:", err.message);
