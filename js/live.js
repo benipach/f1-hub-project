@@ -334,7 +334,7 @@ function setConnectionNotice(text) {
 // eso normalizeRelayUrl fuerza wss:// en ese caso; el relay tiene que estar
 // detrás de HTTPS (cualquier host tipo Render/Railway/Fly ya lo da hecho, o
 // un túnel tipo cloudflared).
-const RELAY_URL = '';
+const RELAY_URL = 'https://f1-hub-relay.onrender.com';
 
 const RELAY_STORAGE_KEY = 'f1hub:relay';
 
@@ -376,8 +376,14 @@ function storeRelay(url) {
 }
 
 function resolveRelayUrl() {
-    const fromQuery = new URLSearchParams(location.search).get('relay');
-    if (fromQuery) {
+    const params = new URLSearchParams(location.search);
+    const fromQuery = params.get('relay');
+
+    // ?relay= (vacío) borra el override guardado y vuelve al comportamiento
+    // por defecto — la forma de "desconfigurar" un dispositivo.
+    if (fromQuery === '') {
+        try { localStorage.removeItem(RELAY_STORAGE_KEY); } catch (err) { /* ignorar */ }
+    } else if (fromQuery) {
         const url = normalizeRelayUrl(fromQuery);
         if (url) storeRelay(url);
         return url;
