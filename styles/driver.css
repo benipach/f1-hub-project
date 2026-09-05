@@ -1172,6 +1172,10 @@
         text-overflow: ellipsis;
     }
 
+    /* En pantallas chicas la columna no alcanza para "Michael Sch...", así que
+       se corta directo al apellido en vez de truncarlo con ellipsis. */
+    .career-board-name-last { display: none; }
+
     .career-board-bar {
         display: block;
         height: 8px;
@@ -1281,6 +1285,9 @@
             font-size: 13px;
         }
         .career-board-value { font-size: 13px; }
+
+        .career-board-name-full { display: none; }
+        .career-board-name-last { display: inline; }
     }
 
 
