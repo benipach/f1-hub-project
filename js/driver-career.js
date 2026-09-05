@@ -112,15 +112,21 @@
     function renderBoard(el, ranking, names){
         const { rows, gap } = boardRows(ranking);
         const leader = ranking[0]?.value || 1;
-        el.innerHTML = rows.map((r, i) => `
+        el.innerHTML = rows.map((r, i) => {
+            const name = names[r.id] || { full: r.id, last: r.id };
+            return `
             ${gap && i === rows.length - 1 ? '<li class="career-board-gap" aria-hidden="true"><span></span></li>' : ''}
             <li class="career-board-row${r.id === driverId ? ' is-self' : ''}">
                 <span class="career-board-rank">${r.rank}</span>
-                <span class="career-board-name">${names[r.id] || r.id}</span>
+                <span class="career-board-name">
+                    <span class="career-board-name-full">${name.full}</span>
+                    <span class="career-board-name-last">${name.last}</span>
+                </span>
                 <span class="career-board-bar"><span style="width:${leader ? (r.value / leader) * 100 : 0}%"></span></span>
                 <span class="career-board-value">${fmt(r.value)}</span>
             </li>
-        `).join('');
+        `;
+        }).join('');
     }
 
     (async function init(){
@@ -144,7 +150,9 @@
         const names = {};
         for(const id of Object.keys(careers)){
             const d = drivers[id];
-            names[id] = d ? `${d.firstName} ${d.lastName}` : id.replace(/-/g, ' ');
+            names[id] = d
+                ? { full: `${d.firstName} ${d.lastName}`, last: d.lastName }
+                : { full: id.replace(/-/g, ' '), last: id.replace(/-/g, ' ') };
         }
 
         const rankings = {};
