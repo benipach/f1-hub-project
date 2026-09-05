@@ -449,7 +449,7 @@
     "lastName": "Verstappen",
     "shortName": "VER",
     "nationality": "netherlands",
-    "dateOfBirth": "2000-09-30",
+    "dateOfBirth": "1997-09-30",
     "dateOfDeath": null,
     "dateOfRetirement": null,
     "image": "max-verstappen.png",
@@ -683,8 +683,8 @@
     "image": "isack-hadjar.png",
     "coverImage": "isack-hadjar-cover.png"
   },
-  "andrea-kimi-antonelli": {
-    "id": "andrea-kimi-antonelli",
+  "kimi-antonelli": {
+    "id": "kimi-antonelli",
     "firstName": "Kimi",
     "lastName": "Antonelli",
     "shortName": "ANT",
@@ -692,8 +692,8 @@
     "dateOfBirth": "2006-08-25",
     "dateOfDeath": null,
     "dateOfRetirement": null,
-    "image": "andrea-kimi-antonelli.png",
-    "coverImage": "andrea-kimi-antonelli-cover.png"
+    "image": "kimi-antonelli.png",
+    "coverImage": "kimi-antonelli-cover.png"
   },
   "oliver-bearman": {
     "id": "oliver-bearman",

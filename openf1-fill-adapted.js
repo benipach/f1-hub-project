@@ -250,13 +250,26 @@ function titleCaseName(str) {
     .join(" ");
 }
 
+// El resto del proyecto identifica a los pilotos por slug (nombre completo en
+// minúsculas, sin acentos, separado por guiones). OpenF1 devuelve nombres, así
+// que los convertimos acá; si no, el season file queda con "Valtteri Bottas" y
+// nada lo matchea contra drivers.json / careers.json.
+function toDriverSlug(str) {
+  return String(str ?? "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
 async function buildDriverMap(sessionKey) {
   if (DRIVER_CACHE.has(sessionKey)) return DRIVER_CACHE.get(sessionKey);
   const drivers = await getJSON("/drivers", { session_key: sessionKey });
   const map = new Map();
   for (const driver of drivers) {
-    const name = [driver.first_name, driver.last_name].filter(Boolean).join(" ") || titleCaseName(driver.full_name ?? driver.broadcast_name);
-    map.set(driver.driver_number, { name, team: normalizeTeamName(driver.team_name ?? null) });
+    const fullName = [driver.first_name, driver.last_name].filter(Boolean).join(" ") || titleCaseName(driver.full_name ?? driver.broadcast_name);
+    map.set(driver.driver_number, { name: toDriverSlug(fullName), team: normalizeTeamName(driver.team_name ?? null) });
   }
   DRIVER_CACHE.set(sessionKey, map);
   return map;

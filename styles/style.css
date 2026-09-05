@@ -13,6 +13,21 @@
     --text-light: rgb(220,220,220);
     --text-dim: rgb(170,170,170);
 
+    /* Colores de equipo. Espejo de data/teams.json (la fuente de verdad que
+       usan las páginas dinámicas); las tarjetas estáticas de drivers.html y
+       teams.html los toman de acá vía --dc-color / --tc-color. */
+    --f1-mercedes:     #2BFFDB;
+    --f1-ferrari:      #FF0019;
+    --f1-mclaren:      #FF7F00;
+    --f1-red-bull:     #22477A;
+    --f1-racing-bulls: #667DFF;
+    --f1-alpine:       #006FBA;
+    --f1-aston-martin: #229971;
+    --f1-haas:         #DEE1E2;
+    --f1-williams:     #1C7AFF;
+    --f1-audi:         #FF2E2E;
+    --f1-cadillac:     #AAAAAD;
+
     /* Scrollbar */
     --scrollbar-color: rgba(255,255,255,0.15);
     --scrollbar-hover: rgba(255,255,255,0.3);

@@ -1,0 +1,8 @@
+# season2021 — datos incompletos
+# generado 2026-09-03T03:57:17.959Z
+
+## Circuitos a agregar (crear en data/circuits.json; el circuitId ya quedó escrito si había slug propuesto)
+emilia-romagna-gp      R2  Jolpica "imola" → slug propuesto: autodromo-enzo-e-dino-ferrari  (falta "autodromo-enzo-e-dino-ferrari" en circuits.json)
+portuguese-gp          R3  Jolpica "portimao" → slug propuesto: autodromo-internacional-do-algarve  (falta "autodromo-internacional-do-algarve" en circuits.json)
+french-gp              R7  Jolpica "ricard" → slug propuesto: circuit-paul-ricard  (falta "circuit-paul-ricard" en circuits.json)
+turkish-gp             R16  Jolpica "istanbul" → slug propuesto: istanbul-park  (falta "istanbul-park" en circuits.json)

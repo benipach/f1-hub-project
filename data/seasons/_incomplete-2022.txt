@@ -1,0 +1,6 @@
+# season2022 — datos incompletos
+# generado 2026-09-03T04:01:28.407Z
+
+## Circuitos a agregar (crear en data/circuits.json; el circuitId ya quedó escrito si había slug propuesto)
+emilia-romagna-gp      R4  Jolpica "imola" → slug propuesto: autodromo-enzo-e-dino-ferrari  (falta "autodromo-enzo-e-dino-ferrari" en circuits.json)
+french-gp              R12  Jolpica "ricard" → slug propuesto: circuit-paul-ricard  (falta "circuit-paul-ricard" en circuits.json)
