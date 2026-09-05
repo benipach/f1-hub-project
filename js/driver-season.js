@@ -2,6 +2,8 @@
 //
 // Se alimenta de data/seasons/season2026.json + data/drivers.json + data/teams.json
 // (+ circuits/cities/countries para la bandera de cada GP).
+// gpCode()/gpShortLabel() vienen de js/shared/gp.js, compartidos con el gráfico
+// del campeonato.
 // Reemplaza al viejo js/drivers.js, que apuntaba a rutas y formas de datos que ya
 // no existen (data/season2026.json en la raíz, driversData.drivers como array, y
 // match de resultados por nombre completo cuando el JSON usa slugs).
@@ -32,23 +34,6 @@
     // veces como nombre ("Ferrari"); normalizamos a slug para buscar el color.
     const teamSlug = t => String(t || '').trim().toLowerCase().replace(/\s+/g, '-');
 
-    // Códigos de 3 letras al estilo F1. Hace falta el mapa explícito porque cortar
-    // a 3 caracteres colisiona (Australian y Austrian dan los dos "AUS").
-    const GP_CODES = {
-        'Australian': 'AUS', 'Chinese': 'CHN', 'Japanese': 'JPN', 'Bahrain': 'BHR',
-        'Saudi Arabian': 'SAU', 'Miami': 'MIA', 'Canadian': 'CAN', 'Monaco': 'MON',
-        'Barcelona': 'BCN', 'Austrian': 'AUT', 'British': 'GBR', 'Belgian': 'BEL',
-        'Hungarian': 'HUN', 'Dutch': 'NED', 'Italian': 'ITA', 'Spanish': 'ESP',
-        'Azerbaijan': 'AZE', 'Singapore': 'SGP', 'United States': 'USA',
-        'Mexican': 'MEX', 'Brazilian': 'BRA', 'Las Vegas': 'LVG', 'Qatar': 'QAT',
-        'Abu Dhabi': 'ABU',
-    };
-
-    const gpCode = name => {
-        const short = name.replace(/ Grand Prix.*$/, '').trim();
-        return GP_CODES[short] || short.replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase();
-    };
-
     // GP → circuito → ciudad → país → ISO de 2 letras → SVG de Twemoji.
     // Mismo recorrido que shared/resolve.js, mismo CDN que archive.js.
     function flagUrlFor(gp, refs){
@@ -78,7 +63,7 @@
 
             rounds.push({
                 round: gp.round,
-                name: gp.name.replace(/ Grand Prix$/, ''),
+                name: gpShortLabel(gp.name),
                 code: gpCode(gp.name),
                 flag: flagUrlFor(gp, refs),
                 grid: quali?.pos ?? null,

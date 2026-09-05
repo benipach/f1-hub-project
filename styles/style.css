@@ -31,6 +31,37 @@
     /* Scrollbar */
     --scrollbar-color: rgba(255,255,255,0.15);
     --scrollbar-hover: rgba(255,255,255,0.3);
+
+    /* Contenedor de contenido. Una sola definición para todo el sitio: los
+       valores son los de .driver-content, que es la referencia. Cada página
+       centra su bloque principal con estos tokens (o directo con .page-content)
+       en vez de inventar su propio porcentaje, así el borde izquierdo cae en la
+       misma vertical al saltar de una página a otra.
+       En celular el ancho pasa a 100% y el aire lateral lo da el gutter. */
+    --content-width: 80%;
+    --content-gutter: 0px;
+    --content-rhythm: 128px;   /* aire vertical entre el hero/navbar y el contenido */
+}
+
+@media (max-width: 700px) {
+    :root {
+        --content-width: 100%;
+        --content-gutter: 16px;
+        --content-rhythm: 72px;
+    }
+}
+
+/* ========================================== */
+/*               PAGE CONTAINER               */
+/* ========================================== */
+
+/* El bloque principal de una página. Equivale a escribir a mano
+   max-width: var(--content-width); margin-inline: auto; y existe para que las
+   páginas nuevas no tengan que redefinirlo. */
+.page-content {
+    max-width: var(--content-width);
+    margin-inline: auto;
+    padding-inline: var(--content-gutter);
 }
 
 /* ================================= */
