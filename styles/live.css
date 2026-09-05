@@ -72,10 +72,24 @@
     transition: left 0.2s linear, top 0.2s linear;
 }
 
+/* Los layouts oficiales de F1 no son todos iguales: algunos (Hungaroring)
+   ya vienen con un contorno blanco y se leen bien sobre fondo oscuro, y
+   otros (Monza) son negro puro sobre transparente y prácticamente
+   desaparecen. Los drop-shadow le dibujan ese halo claro a cualquiera de
+   los dos siguiendo el alfa de la imagen, sin tener que retocar assets. */
 .circuit-map-img {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    filter: drop-shadow(0 0 1px rgba(255,255,255,0.85))
+            drop-shadow(0 0 3px rgba(255,255,255,0.45));
+}
+
+/* Hasta que updateCircuitMap() sepa qué circuito es, el <img> no tiene
+   src y el navegador dibuja su placeholder roto (un recuadro enorme, más
+   el halo de arriba). Mejor que no ocupe nada. */
+.circuit-map-img:not([src]) {
+    display: none;
 }
 
 /* Just the driver code text, nudged 1px down — separate from .pos-dot's
@@ -895,16 +909,15 @@ body.is-fp-session .live-table .live-col-tight-first {
 }
 
 /* ---- FULLSCREEN TARGETS ----
-   #live-table-wrap = the big table alone.
-   #live-map-view-content = the reduced table + the circuit map together
-   (it's already display:flex/gap, so both children just get more room). */
+   #live-table-wrap = the big table alone (simple overlay, unchanged).
+   #live-map-view-content = the whole "app" view: top bar + timing panel +
+   track map panel, laid out as a real application shell (see below). */
 #live-table-wrap,
 #live-map-view-content {
     position: relative;
 }
 
-#live-table-wrap.is-fullscreen,
-#live-map-view-content.is-fullscreen {
+#live-table-wrap.is-fullscreen {
     position: fixed;
     inset: 0;
     z-index: 999;
@@ -936,152 +949,167 @@ body.is-fp-session .live-table .live-col-tight-first {
     display: none;               /* Chrome/Safari/Edge (Chromium) */
 }
 
-/* En pantalla completa, la tabla se lleva más espacio que el mapa (60/40
-   en vez del 50/50 normal de .map-view-content). Solo aplica en fullscreen:
-   fuera de eso, ambos siguen flex: 1 1 0 (mitad y mitad) como antes.
-   The 6/4 split now targets the panels (the actual flex children of
-   #live-map-view-content) instead of .results-table-wrap/.circuit-map-wrap,
-   which live one level deeper since those got wrapped in .mapview-panel. */
+/* ---- MAP VIEW FULLSCREEN = APPLICATION SHELL ----
+   Antes esto eran tres cards flotando sobre un fondo negro (tabla,
+   weather y mapa, cada una con su borde y su radius, separadas por gaps
+   y con aire de sobra abajo). Ahora es una sola interfaz: una barra
+   superior a lo ancho con GP + reloj + clima, y debajo dos paneles que
+   ocupan TODO el alto restante, pegados y separados solo por una línea
+   de 1px, como un dashboard de timing de verdad. */
 #live-map-view-content.is-fullscreen {
-    flex-direction: column;
+    --app-bg: rgb(9,9,14);
+    --app-panel: rgb(14,14,21);
+    --app-line: rgba(255,255,255,0.09);
+    --app-topbar-h: 68px;
+
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    margin: 0;
+    padding: 0;
+    background: var(--app-bg);
+    display: grid;
+    grid-template-rows: var(--app-topbar-h) minmax(0, 1fr);
+    overflow: hidden;
 }
 
-/* ---- FULLSCREEN GP NAME/FLAG HEADER ----
-   Top-right corner, above the two panels. Hidden entirely outside
-   fullscreen. */
+/* ---- TOP BAR ----
+   Una sola franja a lo ancho: bandera + nombre del GP, estado/reloj de
+   sesión y, empujado a la derecha, el clima (ya sin card propia: acá es
+   parte de la barra). Fuera de fullscreen la barra entera no existe. */
 .mapview-fs-header {
     display: none;
 }
 
 #live-map-view-content.is-fullscreen .mapview-fs-header {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-    flex-shrink: 0;
-    padding: 0 0 20px 0;
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+    min-width: 0;
+    padding: 0 64px 0 20px;
+    background: var(--app-panel);
+    border-bottom: 1px solid var(--app-line);
+    overflow: hidden;
+}
+
+.mapview-fs-ident {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-width: 0;
+}
+
+#live-map-view-content.is-fullscreen .mapview-fs-session-status {
+    gap: 16px;
+    padding-left: 20px;
+    border-left: 1px solid var(--app-line);
 }
 
 .mapview-fs-name {
     font-family: 'F1-Black', sans-serif;
-    font-size: 40px;
+    font-size: 26px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     line-height: 1;
     color: var(--text-light, #fff);
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 img.emoji {
     margin-left: 0;
 }
 
-@media (max-width: 1100px) {
-    .mapview-fs-name { font-size: 22px; }
+/* El clima deja de ser una card: se integra en la barra (sin fondo, sin
+   borde, sin radius) y queda alineado a la derecha. */
+.mapview-fs-weather {
+    margin-left: auto;
+    min-width: 0;
 }
 
-/* Same compact weather card treatment as .live-hero-weather */
-.mapview-fs-weather .session-weather-card {
-    width: 100%;
-    padding: 12px 18px;
-    gap: 18px;
-    background: rgb(16,16,24);
+#live-map-view-content.is-fullscreen .mapview-fs-weather .session-weather-card {
+    width: auto;
+    padding: 0;
+    gap: 20px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    flex-wrap: nowrap;
 }
 
-.mapview-fs-weather .session-weather-card:hover {
-    border-color: rgba(255,255,255,0.05);
+#live-map-view-content.is-fullscreen .mapview-fs-weather .session-weather-card:hover {
+    border-color: transparent;
 }
 
 .mapview-fs-weather .swc-condition {
     gap: 10px;
-    padding-right: 18px;
+    padding-right: 20px;
+    border-right: 1px solid var(--app-line, rgba(255,255,255,0.09));
 }
 
 .mapview-fs-weather .swc-condition-icon {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
 }
 
 .mapview-fs-weather .swc-stats {
-    gap: 20px;
+    gap: 22px;
+    flex-wrap: nowrap;
 }
 
 .mapview-fs-weather .swc-stat {
     min-width: 0;
-    gap: 3px;
+    gap: 4px;
 }
 
 .mapview-fs-weather .swc-stat-value {
-    font-size: 18px;
+    font-size: 17px;
+}
+
+.mapview-fs-weather .swc-stat-label {
+    font-size: 10px;
+    letter-spacing: 0.8px;
+}
+
+@media (max-width: 1400px) {
+    .mapview-fs-weather .swc-stats { gap: 16px; }
+    .mapview-fs-weather .swc-stat-value { font-size: 15px; }
+    .mapview-fs-name { font-size: 22px; }
 }
 
 @media (max-width: 1100px) {
-    .mapview-fs-weather .session-weather-card { padding: 10px 14px; gap: 12px; }
-    .mapview-fs-weather .swc-stats { gap: 14px; }
-    .mapview-fs-weather .swc-stat-value { font-size: 15px; }
+    #live-map-view-content.is-fullscreen { --app-topbar-h: 58px; }
+    .mapview-fs-name { font-size: 18px; }
+    .mapview-fs-weather .swc-stats { gap: 12px; }
+    .mapview-fs-weather .swc-stat-value { font-size: 14px; }
 }
 
-/* ---- PANELS ROW WRAPPER ----
+/* ---- PANELS ROW ----
    Outside fullscreen: display:contents makes this div invisible to
    layout, so .mapview-panel--table/--map act as direct children of
    .map-view-content exactly like before (same flex row, same gap).
-   .mapview-panel--weather stays display:none outside fullscreen (its
-   own rule below), so it never shows up in that flex row.
 
-   In fullscreen: this becomes a 2-column CSS grid — left column is the
-   table (spans both rows), right column stacks weather over map. Only
-   3 real elements now sit in this row (table, weather, map), matching
-   the intended layout exactly. */
+   In fullscreen: dos columnas que llenan el alto restante entero — sin
+   gap, sin max-height, sin espacio muerto abajo. La única separación es
+   el borde izquierdo del panel del mapa. */
 .mapview-panels-row {
     display: contents;
 }
 
 #live-map-view-content.is-fullscreen .mapview-panels-row {
     display: grid;
-    grid-template-columns: 6.75fr 3.25fr;
-    grid-template-rows: auto 1fr;
-    flex: 1 1 0;
-    min-height: 0px;
-    max-height: 750px;
-    gap: 16px;
-}
-
-/* Q1 still has all 22 drivers in the table; Q2/Q3 have a shorter field
-   (16/10 left), so the row can stretch taller. Class set by
-   updateQualiPanelHeightClass() in live.js based on the live segment. */
-#live-map-view-content.is-fullscreen.quali-q1 .mapview-panels-row {
-    max-height: 782px;
-}
-
-#live-map-view-content.is-fullscreen.quali-q2-q3 .mapview-panels-row {
-    max-height: 814px;
-}
-
-#live-map-view-content.is-fullscreen .mapview-panel--weather {
-    display: block;
-    grid-column: 2;
-    grid-row: 1;
+    grid-template-columns: minmax(0, 1fr) clamp(340px, 31%, 640px);
+    gap: 0;
     min-height: 0;
+    overflow: hidden;
 }
 
-#live-map-view-content.is-fullscreen .mapview-panel--table {
-    grid-column: 1;
-    grid-row: 1 / 3;
-    min-height: 0;
-}
-
-#live-map-view-content.is-fullscreen .mapview-panel--map {
-    grid-column: 2;
-    grid-row: 2;
-    min-height: 0;
-}
-
-/* ---- MAP VIEW PANELS ("interfaz posta") ----
-   Table and map each get wrapped in a .mapview-panel with its own header
-   bar and boxed chrome — same visual language as pro timing dashboards
-   (title strip, red accent underline, sticky column headers). All of
-   this is structurally always in the DOM but visually inert outside
-   fullscreen (header hidden, panel has no bg/border), so the normal
-   Map View stays pixel-identical to before. */
+/* ---- PANELS ----
+   Structurally always in the DOM but visually inert outside fullscreen
+   (title strip hidden, no chrome), so the normal Map View stays
+   pixel-identical to before. */
 .mapview-panel {
     display: flex;
     flex-direction: column;
@@ -1089,23 +1117,50 @@ img.emoji {
     min-width: 0;
 }
 
-.mapview-panel--weather {
+#live-map-view-content.is-fullscreen .mapview-panel {
+    min-width: 0;
+    min-height: 0;
+    background: var(--app-bg);
+    border: none;
+    border-radius: 0;
+    overflow: hidden;
+}
+
+#live-map-view-content.is-fullscreen .mapview-panel--map {
+    background: var(--app-panel);
+    border-left: 1px solid var(--app-line);
+    padding: 0;
+}
+
+/* Franja de título de cada panel (con acento rojo), al estilo de un
+   dashboard: identifica la región en vez de dejar dos bloques sueltos. */
+.mapview-panel-title {
     display: none;
 }
 
-.mapview-panel-title {
+#live-map-view-content.is-fullscreen .mapview-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+    height: 32px;
+    padding: 0 16px;
     font-family: 'F1-Regular', sans-serif;
-    font-size: 16px;
-    letter-spacing: 0.5px;
+    font-size: 11px;
+    letter-spacing: 1.4px;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.85);
+    color: rgba(255,255,255,0.45);
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--app-line);
 }
 
-#live-map-view-content.is-fullscreen .mapview-panel {
-    background: rgb(16,16,24);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 12px;
-    overflow: hidden;
+#live-map-view-content.is-fullscreen .mapview-panel-title::before {
+    content: "";
+    width: 3px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--primary-red, #e10600);
+    flex-shrink: 0;
 }
 
 /* Table panel: the inner wrap becomes the scroll container so the
@@ -1120,44 +1175,36 @@ img.emoji {
     padding: 0;
 }
 
-/* Root cause of the persistent "phantom" scroll: only .live-table td got
-   the 32px row-height override above (line ~357) — the thead th never
-   did, so it was still inheriting results.css's ~56px default. That
-   extra ~24px pushed real content height past the 782/814px caps on
-   .mapview-panels-row, forcing overflow-y:auto to kick in even though
-   the numbers "should" have fit. Pinning the header to 32px too — plus
-   border-collapse, in case results.css's default border-spacing was
-   adding a couple more px per row — makes the math exact:
-   32 (thead) + 22*32 (rows) + N*32 (separators) = 768px (Q1, N=1) /
-   800px (Q2-Q3, N=2), both comfortably under the 782/814 caps. */
+/* height:100% reparte el alto sobrante entre las filas en vez de dejar un
+   hueco muerto abajo del último piloto (si el contenido no entra, la tabla
+   crece igual y el wrap scrollea como siempre). */
 #live-map-view-content.is-fullscreen .mapview-panel--table .live-table {
     border-collapse: collapse;
     border-spacing: 0;
+    height: 100%;
 }
 
+/* Con las filas estiradas, las barras de microsectores pinchadas al tope
+   de la fila quedaban lejísimo de su tiempo (parecían de la fila de
+   arriba). Acá se anclan justo encima del número, no al borde. */
+#live-map-view-content.is-fullscreen .mapview-panel--table .live-microsectors {
+    top: 50%;
+    transform: translateY(-16px);
+}
+
+/* Header pegado al tope del panel (no del viewport) y a la misma altura
+   de fila que el resto de la tabla. */
 #live-map-view-content.is-fullscreen .mapview-panel--table .live-table thead th {
     position: sticky;
     top: 0;
     z-index: 5;
-    background: rgb(16,16,24);
+    background: var(--app-bg);
     height: 32px;
+    box-shadow: inset 0 -1px 0 var(--app-line);
 }
 
-/* Map panel: strip circuit-map-wrap's own chrome so the panel's border/
-   background/header are the only chrome — avoids a double frame. */
-#live-map-view-content.is-fullscreen .mapview-panel--map {
-    padding: 0;
-}
-
-/* Weather panel: the session-weather-card already brings its own
-   background/border, so strip the outer panel's chrome to avoid a
-   double frame — same pattern as the map panel above. */
-#live-map-view-content.is-fullscreen .mapview-panel--weather {
-    background: transparent;
-    border: none;
-    padding: 0;
-}
-
+/* Map panel: strip circuit-map-wrap's own chrome so the panel is the
+   only chrome — avoids a double frame. */
 #live-map-view-content.is-fullscreen .circuit-map-wrap {
     flex: 1 1 0;
     min-height: 0;
@@ -1165,20 +1212,31 @@ img.emoji {
     border-radius: 0;
     background: transparent;
     margin: 0;
+    padding: 20px;
 }
 
-/* Make the weather card match the fullscreen panel chrome (same
-   background, border and corner radius) so it visually aligns with
-   the map/table panels. Remove the inset stroke and use the real
-   panel border instead. */
-#live-map-view-content.is-fullscreen .mapview-fs-weather .session-weather-card {
-    background: rgb(16,16,24);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: none;
+#live-map-view-content.is-fullscreen .circuit-position-overlay {
+    inset: 20px;
 }
 
+/* Botón de salir: dentro de la barra superior, cuadrado y siempre
+   visible mientras la interfaz está en pantalla completa. */
+#live-map-view-content.is-fullscreen .table-fullscreen-btn {
+    top: calc(var(--app-topbar-h) / 2);
+    right: 16px;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    border-color: var(--app-line);
+}
+
+#live-map-view-content.is-fullscreen .table-fullscreen-btn:hover,
+#live-map-view-content.is-fullscreen .table-fullscreen-btn:focus-visible {
+    background: var(--primary-red);
+    border-color: var(--primary-red);
+}
 
 @media (max-width: 1100px) {
 }

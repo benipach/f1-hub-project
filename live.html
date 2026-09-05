@@ -112,12 +112,16 @@
             </svg>
         </button>
         <div class="mapview-fs-header" id="mapview-fs-header">
-            <span class="mapview-fs-name" id="mapview-fs-name">–</span>
-            <div class="hero-session-status mapview-fs-session-status" id="mapview-fs-session-status"></div>
+            <div class="mapview-fs-ident">
+                <span class="mapview-fs-name" id="mapview-fs-name">–</span>
+                <div class="hero-session-status mapview-fs-session-status" id="mapview-fs-session-status"></div>
+            </div>
+            <div class="session-weather mapview-fs-weather" id="mapview-fs-weather"></div>
         </div>
 
         <div class="mapview-panels-row">
         <div class="mapview-panel mapview-panel--table">
+            <div class="mapview-panel-title">Live Timing</div>
             <div class="results-table-wrap">
                 <table class="results-table live-table live-table--compact">
                     <thead id="live-thead-2">
@@ -140,11 +144,8 @@
             </div>
         </div>
 
-        <div class="mapview-panel mapview-panel--weather">
-            <div class="session-weather mapview-fs-weather" id="mapview-fs-weather"></div>
-        </div>
-
         <div class="mapview-panel mapview-panel--map">
+            <div class="mapview-panel-title">Track Map</div>
             <div class="circuit-map-wrap" id="circuit-map-wrap">
                 <img id="circuit-map-img" class="circuit-map-img" alt="">
                 <div id="circuit-position-overlay" class="circuit-position-overlay"></div>
