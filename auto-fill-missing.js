@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * auto-fill-missing.js
- * Completa resultados y weather raw por sesión en season2026.json.
+ * Completa resultados y weather raw por sesión en data/seasons/season2026.json.
  */
 import { readFile, writeFile, copyFile } from "node:fs/promises";
 import {
@@ -68,7 +68,7 @@ function parseArgs(argv) {
 
   const [seasonPath] = positional;
   if (!seasonPath) {
-    console.error("❌ Falta path JSON. Uso: node auto-fill-missing.js data/season2026.json");
+    console.error("❌ Falta path JSON. Uso: node auto-fill-missing.js data/seasons/season2026.json");
     process.exit(1);
   }
   return { seasonPath, ...flags };

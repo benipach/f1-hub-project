@@ -57,21 +57,27 @@ const COUNTRY_MAP = {
 };
 
 // ── TEAM ID → LOGO FILE ───────────────────────────────────────────
-const TEAM_LOGO_MAP = {
-    'Mercedes':        'mercedes-logo',
-    'Ferrari':         'ferrari-logo',
-    'McLaren':         'mclaren-logo',
-    'Red Bull':        'redbull-logo',
-    'Red Bull Racing': 'redbull-logo',
-    'Aston Martin':    'astonmartin-logo',
-    'Alpine':          'alpine-logo',
-    'Williams':        'williams-logo',
-    'Racing Bulls':    'racingbulls-logo',
-    'Haas':            'haas-logo',
-    'Haas F1 Team':    'haas-logo',
-    'Audi':            'audi-logo',
-    'Cadillac':        'cadillac-logo',
+// Los archivos de logo se llaman img/teams/<slug>-logo.png, con el mismo slug
+// que usa data/teams.json. El campo `team` de los resultados, en cambio, es
+// una mezcla: los GP viejos guardan el slug ("mercedes", "red-bull-racing") y
+// los que carga el adapter de OpenF1 guardan el nombre lindo ("McLaren",
+// "Mercedes-AMG"). Se normaliza todo a slug y se resuelven los pocos casos
+// donde el nombre comercial no coincide con el del archivo.
+const TEAM_SLUG_ALIASES = {
+    'mercedes-amg':  'mercedes',
+    'red-bull':      'red-bull-racing',
+    'haas-f1-team':  'haas',
+    'kick-sauber':   'kicksauber',
+    'alfa-romeo-sauber': 'alfa-romeo',
 };
+
+function teamSlug(rawTeam) {
+    const slug = String(rawTeam || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+    return TEAM_SLUG_ALIASES[slug] || slug;
+}
 
 // ── SESSION DEFINITIONS ───────────────────────────────────────────
 // timeField/timeLabel: which JSON field holds P1's time and what to call the column.
@@ -90,21 +96,19 @@ const SESSION_DEFS = [
 
 // ── FETCH ─────────────────────────────────────────────────────────
 async function loadSeason() {
-    const res = await fetch('./data/season2026.json');
+    const res = await fetch('./data/seasons/season2026.json');
     if (!res.ok) throw new Error(`season2026.json — HTTP ${res.status}`);
     return res.json();
 }
 
-async function loadDriverTeams() {
+// drivers.json pasó a ser un objeto indexado por slug ({ "lando-norris": {…} }),
+// sin el array `drivers` ni el `history` por año que tenía antes. Leerlo como
+// estaba tiraba un TypeError que caía en el catch del init, y por eso la página
+// entera mostraba "Couldn't load results" en vez de las tablas.
+async function loadDrivers() {
     const res = await fetch('./data/drivers.json');
     if (!res.ok) throw new Error(`drivers.json — HTTP ${res.status}`);
-    const data = await res.json();
-    const teamMap = {};
-    for (const d of data.drivers) {
-        const entry2026 = d.history?.find(h => h.year === 2026);
-        if (entry2026) teamMap[`${d.firstName} ${d.lastName}`] = entry2026.teamId;
-    }
-    return teamMap;
+    return res.json();
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────
@@ -114,14 +118,21 @@ function formatDate(dateStr) {
     return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
 }
 
-function formatDriverName(fullName) {
-    const parts = fullName.trim().split(' ');
-    const last  = parts.pop();
+// El campo `driver` de los resultados es el slug del piloto ("lando-norris").
+// Se resuelve contra drivers.json; si algún resultado viejo todavía guarda el
+// nombre completo, se lo formatea igual que antes en vez de romper.
+function formatDriverName(rawDriver, drivers) {
+    const d = drivers?.[rawDriver];
+    if (d) return `${d.firstName} ${d.lastName.toUpperCase()}`;
+
+    const parts = String(rawDriver || '').trim().split(' ');
+    if (parts.length < 2) return rawDriver || '—';
+    const last = parts.pop();
     return `${parts.join(' ')} ${last.toUpperCase()}`;
 }
 
 // ── RENDER ────────────────────────────────────────────────────────
-function renderSessionTable(season, driverTeams, def) {
+function renderSessionTable(season, drivers, def) {
     const container = document.getElementById(`results-table-${def.key}`);
     if (!container) return;
 
@@ -153,11 +164,10 @@ function renderSessionTable(season, driverTeams, def) {
                     ${rows.map(({ gpId, gp, results }) => {
                         const p1       = results[0];
                         const flag     = FLAG_MAP[gpId] || '';
-                        const name     = p1?.driver ? formatDriverName(p1.driver) : '—';
-                        const teamId   = driverTeams[p1?.driver] || '';
-                        const logoFile = TEAM_LOGO_MAP[teamId];
-                        const logoHtml = logoFile
-                            ? `<img class="results-team-logo" src="./img/teams/${logoFile}.png" alt="${teamId}">`
+                        const name     = p1?.driver ? formatDriverName(p1.driver, drivers) : '—';
+                        const teamId   = teamSlug(p1?.team);
+                        const logoHtml = teamId
+                            ? `<img class="results-team-logo" src="./img/teams/${teamId}-logo.png" alt="${teamId}">`
                             : '';
                         const timeVal = p1?.[def.timeField] || '—';
                         const laps    = p1?.laps ?? '—';
@@ -237,8 +247,8 @@ function initResultsTabs() {
 // ── INIT ──────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const [season, driverTeams] = await Promise.all([loadSeason(), loadDriverTeams()]);
-        SESSION_DEFS.forEach(def => renderSessionTable(season, driverTeams, def));
+        const [season, drivers] = await Promise.all([loadSeason(), loadDrivers()]);
+        SESSION_DEFS.forEach(def => renderSessionTable(season, drivers, def));
         initResultsTabs();
     } catch (err) {
         console.error(err);

@@ -1,6 +1,6 @@
 // archivo viejo
 
-const CURRENT_SEASON_FILE = '../data/season2026.json';
+const CURRENT_SEASON_FILE = '../data/seasons/season2026.json';
 const CURRENT_SEASON_YEAR = 2026;
 
 // teamColor(), teamCssVar(), teamLogo() vienen de teams.js (cargado antes)
