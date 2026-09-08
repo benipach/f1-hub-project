@@ -385,6 +385,10 @@ for (const [driverId, races] of byDriver) {
 
     careers[driverId] = {
         races: races.length,
+        // Fecha del debut. Se usa como desempate en los rankings para los
+        // pilotos que todavía tienen 0 en una categoría: no hay "cuándo lo
+        // consiguió", pero sí "desde cuándo viene intentándolo".
+        debut: races[0]?.date ?? null,
         seasons: [...new Set(races.map(r => r.year))].sort(),
         number: lastNumbered?.number ?? null,
         points: races.reduce((a, r) => a + r.pts, 0),

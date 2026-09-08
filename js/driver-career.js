@@ -38,27 +38,36 @@
     // scripts/build-careers.js: es el día del último evento que hizo subir ese
     // contador, o sea cuándo el piloto llegó al total que muestra hoy.
     //
-    // Sin fecha (piloto en 0, o dato ausente) se va al fondo del empate: no hay
-    // "cuándo lo consiguió" si nunca lo consiguió. Último desempate por id,
-    // para que el orden sea siempre el mismo entre recargas.
-    function compareAchieved(a, b){
-        if(a.achievedAt && b.achievedAt) return a.achievedAt < b.achievedAt ? -1 : a.achievedAt > b.achievedAt ? 1 : 0;
-        if(a.achievedAt) return -1;
-        if(b.achievedAt) return 1;
+    // Los que están en 0 no tienen esa fecha, así que se los desempata por su
+    // debut: siguen todos últimos (0 es 0), pero entre ellos manda la
+    // antigüedad. Un piloto de 2001 que nunca ganó queda por encima de uno que
+    // debutó el año pasado, que todavía casi no tuvo oportunidades — antes los
+    // 99 pilotos sin victorias compartían el puesto 32 y un novato aparecía tan
+    // arriba como alguien con veinte años de carrera sin ganar.
+    //
+    // Como último criterio, el id: así el orden no cambia entre recargas.
+    function rankDate(career, key){
+        return (career.achievedAt && career.achievedAt[key]) || career.debut || null;
+    }
+
+    function compareDates(a, b){
+        if(a && b) return a < b ? -1 : a > b ? 1 : 0;
+        if(a) return -1;   // sin fecha (ni logro ni debut) va al fondo
+        if(b) return 1;
         return 0;
     }
 
-    // Empates reales (misma cifra Y misma fecha) comparten puesto: 1,2,2,4.
+    // Comparten puesto sólo los que empatan en cifra Y fecha: 1,2,2,4.
     function buildRanking(careers, key){
         const rows = Object.entries(careers)
-            .map(([id, c]) => ({ id, value: c[key] || 0, achievedAt: (c.achievedAt && c.achievedAt[key]) || null }))
-            .sort((a, b) => (b.value - a.value) || compareAchieved(a, b) || a.id.localeCompare(b.id));
+            .map(([id, c]) => ({ id, value: c[key] || 0, date: rankDate(c, key) }))
+            .sort((a, b) => (b.value - a.value) || compareDates(a.date, b.date) || a.id.localeCompare(b.id));
         let rank = 0, prevValue = null, prevDate = null;
         rows.forEach((row, i) => {
-            if(row.value !== prevValue || row.achievedAt !== prevDate){
+            if(row.value !== prevValue || row.date !== prevDate){
                 rank = i + 1;
                 prevValue = row.value;
-                prevDate = row.achievedAt;
+                prevDate = row.date;
             }
             row.rank = rank;
         });
