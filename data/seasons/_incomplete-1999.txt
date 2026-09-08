@@ -1,0 +1,23 @@
+# season1999 — datos incompletos
+# generado 2026-09-08T04:57:50.038Z
+
+## Circuitos a agregar (crear en data/circuits.json; el circuitId ya quedó escrito si había slug propuesto)
+san-marino-gp          R3  Jolpica "imola" → slug propuesto: autodromo-enzo-e-dino-ferrari  (falta "autodromo-enzo-e-dino-ferrari" en circuits.json)
+french-gp              R7  Jolpica "magny_cours" → slug propuesto: circuit-de-nevers-magny-cours  (falta "circuit-de-nevers-magny-cours" en circuits.json)
+german-gp              R10  Jolpica "hockenheimring" → slug propuesto: hockenheimring  (falta "hockenheimring" en circuits.json)
+european-gp            R14  Jolpica "nurburgring" → slug propuesto: nurburgring  (falta "nurburgring" en circuits.json)
+
+## Clasificaciones sin datos en Jolpica (completar sessions.qualifying a mano)
+monaco-gp              R4  circuito: circuit-de-monaco
+spanish-gp             R5  circuito: circuit-de-barcelona-catalunya
+canadian-gp            R6  circuito: circuit-gilles-villeneuve
+french-gp              R7  circuito: circuit-de-nevers-magny-cours
+british-gp             R8  circuito: silverstone-circuit
+austrian-gp            R9  circuito: red-bull-ring
+german-gp              R10  circuito: hockenheimring
+hungarian-gp           R11  circuito: hungaroring
+belgian-gp             R12  circuito: circuit-de-spa-francorchamps
+italian-gp             R13  circuito: autodromo-nazionale-di-monza
+european-gp            R14  circuito: nurburgring
+malaysian-gp           R15  circuito: sepang-international-circuit
+japanese-gp            R16  circuito: suzuka-international-racing-course
