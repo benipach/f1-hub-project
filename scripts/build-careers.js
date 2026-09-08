@@ -310,6 +310,7 @@ for (const [driverId, races] of byDriver) {
     }
 
     const firstWinRace = finished.find(r => r.pos === 1) || null;
+    const lastWinRace = [...finished].reverse().find(r => r.pos === 1) || null;
     const sameRace = (a, b) => a && b && a.year === b.year && a.round === b.round;
 
     // Equipos con 2+ victorias: son los únicos que emiten hitos de primera/última
@@ -344,8 +345,11 @@ for (const [driverId, races] of byDriver) {
         ...winEras
             .filter(e => !sameRace(e.firstWin, firstWinRace))
             .map(e => milestone(e.firstWin, 'First win with the team')),
+        // Cuando la última victoria con el equipo es además la última de toda
+        // su carrera, aclarar "with the team" sobra y suena a que después ganó
+        // con otro: ahí el hito es, sin más, la última victoria.
         ...winEras
-            .map(e => milestone(e.lastWin, 'Last win with the team')),
+            .map(e => milestone(e.lastWin, sameRace(e.lastWin, lastWinRace) ? 'Last win' : 'Last win with the team')),
         // Mejor resultado en cada equipo. Último en prioridad. Se omite si esa
         // carrera ya es un hito de victoria: la victoria lo dice todo y el par
         // "first win & best result in the team" sobra.

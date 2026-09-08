@@ -2,8 +2,10 @@ name: Auto fill F1 sessions
 
 on:
   schedule:
-    # Corre cada 30 min solo vie/sab/dom
-    - cron: "0,30 * * * 5,6,0"
+    # Cada 30 min de viernes a lunes. El lunes está incluido a propósito: una
+    # carrera que termina domingo a la noche (o que OpenF1 publica tarde) tiene
+    # así un día entero de margen para entrar, en vez de esperar al viernes.
+    - cron: "0,30 * * * 5,6,0,1"
   workflow_dispatch:
     inputs:
       force_weather:
@@ -14,6 +16,13 @@ on:
 
 permissions:
   contents: write
+
+env:
+  # El archivo de temporada vive en data/seasons/ desde que se agregaron los
+  # años históricos. Antes esta ruta estaba escrita a mano en tres pasos
+  # distintos y quedó apuntando a data/season2026.json, que ya no existe: el
+  # check reventaba, el job fallaba entero y no se cargaba ninguna carrera.
+  SEASON_FILE: data/seasons/season2026.json
 
 jobs:
   update-season:
@@ -31,12 +40,20 @@ jobs:
             echo "should_run=true" >> "$GITHUB_OUTPUT"
           else
             node -e "
-              const data = require('./data/season2026.json');
+              const fs = require('node:fs');
+              const path = process.env.SEASON_FILE;
+              if (!fs.existsSync(path)) {
+                console.error('No existe ' + path + ' — revisá env.SEASON_FILE en este workflow.');
+                process.exit(1);
+              }
+              const data = JSON.parse(fs.readFileSync(path, 'utf8'));
               const now = Date.now();
               const grace = 45 * 60 * 1000; // 45 min después del endDate, le da tiempo a OpenF1 a publicar
               const isEmptyWeather = (w) => w === null || w === undefined || (typeof w === 'object' && Object.keys(w).length === 0);
               const shouldRun = Object.values(data).some(gp =>
-                gp && typeof gp.sessions === 'object' && Object.values(gp.sessions).some(s => {
+                // Un GP cancelado nunca va a tener resultados: si no se lo
+                // excluye, el job se dispara cada media hora para no hacer nada.
+                gp && !gp.cancelled && typeof gp.sessions === 'object' && Object.values(gp.sessions).some(s => {
                   if (!s || !s.endDate) return false;
                   const ended = new Date(s.endDate).getTime() + grace <= now;
                   if (!ended) return false;
@@ -52,17 +69,27 @@ jobs:
       - name: Run OpenF1 auto fill
         if: steps.check.outputs.should_run == 'true'
         run: |
-          FLAGS="data/season2026.json --year=2026 --once --weather --skip=bahrain-gp,saudi-arabian-gp"
+          FLAGS="$SEASON_FILE --year=2026 --once --weather --no-backup --skip=bahrain-gp,saudi-arabian-gp"
           if [ "${{ github.event.inputs.force_weather }}" = "true" ]; then
             FLAGS="$FLAGS --force-weather"
           fi
           node auto-fill-missing.js $FLAGS
+
+      # careers.json es un precálculo de todos los season files: si se cargan
+      # resultados nuevos y no se regenera, las fichas de piloto y los rankings
+      # all-time siguen mostrando los números de la carrera anterior.
+      - name: Rebuild careers.json
+        if: steps.check.outputs.should_run == 'true'
+        run: node scripts/build-careers.js
 
       - name: Commit changes
         if: steps.check.outputs.should_run == 'true'
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add data/season2026.json
-          git diff --cached --quiet || git commit -m "Auto update F1 session data"
+          git add "$SEASON_FILE" data/careers.json
+          git diff --cached --quiet && echo "Sin cambios que commitear" && exit 0
+          git commit -m "Auto update F1 session data"
+          # Puede haber pushes propios entre el checkout y este punto.
+          git pull --rebase
           git push
