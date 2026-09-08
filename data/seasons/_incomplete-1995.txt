@@ -1,0 +1,12 @@
+# season1995 — datos incompletos
+# generado 2026-09-08T05:05:27.949Z
+
+## Circuitos a agregar (crear en data/circuits.json; el circuitId ya quedó escrito si había slug propuesto)
+argentine-gp           R2  Jolpica "galvez"  (sin slug propuesto en CIRCUIT_ID_MAP)
+san-marino-gp          R3  Jolpica "imola" → slug propuesto: autodromo-enzo-e-dino-ferrari  (falta "autodromo-enzo-e-dino-ferrari" en circuits.json)
+french-gp              R7  Jolpica "magny_cours" → slug propuesto: circuit-de-nevers-magny-cours  (falta "circuit-de-nevers-magny-cours" en circuits.json)
+german-gp              R9  Jolpica "hockenheimring" → slug propuesto: hockenheimring  (falta "hockenheimring" en circuits.json)
+portuguese-gp          R13  Jolpica "estoril"  (sin slug propuesto en CIRCUIT_ID_MAP)
+european-gp            R14  Jolpica "nurburgring" → slug propuesto: nurburgring  (falta "nurburgring" en circuits.json)
+pacific-gp             R15  Jolpica "okayama"  (sin slug propuesto en CIRCUIT_ID_MAP)
+australian-gp          R17  Jolpica "adelaide"  (sin slug propuesto en CIRCUIT_ID_MAP)

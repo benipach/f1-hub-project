@@ -1,0 +1,29 @@
+# season1993 — datos incompletos
+# generado 2026-09-08T05:09:32.041Z
+
+## Circuitos a agregar (crear en data/circuits.json; el circuitId ya quedó escrito si había slug propuesto)
+south-african-gp       R1  Jolpica "kyalami"  (sin slug propuesto en CIRCUIT_ID_MAP)
+european-gp            R3  Jolpica "donington"  (sin slug propuesto en CIRCUIT_ID_MAP)
+san-marino-gp          R4  Jolpica "imola" → slug propuesto: autodromo-enzo-e-dino-ferrari  (falta "autodromo-enzo-e-dino-ferrari" en circuits.json)
+french-gp              R8  Jolpica "magny_cours" → slug propuesto: circuit-de-nevers-magny-cours  (falta "circuit-de-nevers-magny-cours" en circuits.json)
+german-gp              R10  Jolpica "hockenheimring" → slug propuesto: hockenheimring  (falta "hockenheimring" en circuits.json)
+portuguese-gp          R14  Jolpica "estoril"  (sin slug propuesto en CIRCUIT_ID_MAP)
+australian-gp          R16  Jolpica "adelaide"  (sin slug propuesto en CIRCUIT_ID_MAP)
+
+## Clasificaciones sin datos en Jolpica (completar sessions.qualifying a mano)
+south-african-gp       R1  circuito: desconocido
+brazilian-gp           R2  circuito: autodromo-jose-carlos-pace
+european-gp            R3  circuito: desconocido
+san-marino-gp          R4  circuito: autodromo-enzo-e-dino-ferrari
+spanish-gp             R5  circuito: circuit-de-barcelona-catalunya
+monaco-gp              R6  circuito: circuit-de-monaco
+canadian-gp            R7  circuito: circuit-gilles-villeneuve
+french-gp              R8  circuito: circuit-de-nevers-magny-cours
+british-gp             R9  circuito: silverstone-circuit
+german-gp              R10  circuito: hockenheimring
+hungarian-gp           R11  circuito: hungaroring
+belgian-gp             R12  circuito: circuit-de-spa-francorchamps
+italian-gp             R13  circuito: autodromo-nazionale-di-monza
+portuguese-gp          R14  circuito: desconocido
+japanese-gp            R15  circuito: suzuka-international-racing-course
+australian-gp          R16  circuito: desconocido
