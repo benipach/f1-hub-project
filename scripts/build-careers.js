@@ -357,6 +357,32 @@ for (const [driverId, races] of byDriver) {
     // Insumos que no van al JSON.
     for (const e of eras) { delete e.bestRace; delete e.firstWin; delete e.lastWin; }
 
+    // ── CUÁNDO LLEGÓ A CADA CIFRA ──────────────────────────────────────────
+    // Fecha del último evento que hizo subir cada contador, o sea el día en
+    // que el piloto alcanzó el total que hoy muestra su ficha. Sirve para
+    // desempatar rankings: entre dos con el mismo número, va primero el que
+    // llegó antes (Schumacher llegó a 5 títulos en 2004, Hamilton a 5 en
+    // 2018, así que con 5 y 5 iría Schumacher arriba).
+    //
+    // Se calcula acá y no en el front porque el front sólo baja careers.json:
+    // recalcularlo allá obligaría a leer los ~7 MB de season files.
+    const lastDateOf = list => list.length ? list[list.length - 1].date || null : null;
+
+    const achievedAt = {
+        races:   lastDateOf(races),
+        wins:    lastDateOf(finished.filter(r => r.pos === 1)),
+        podiums: lastDateOf(finished.filter(r => r.pos <= 3)),
+        poles:   lastDateOf(races.filter(r => r.grid === 1)),
+        // Los puntos suben sólo en las carreras donde sumó, así que la fecha
+        // del total es la de la última vez que puntuó.
+        points:  lastDateOf(races.filter(r => r.pts > 0)),
+        // Para los títulos vale el día en que quedó sellado el último, que es
+        // justo el hito que ya se calcula arriba.
+        titles: titleYears.length
+            ? (milestones.find(m => m.label === `${ordinal(titleYears.length)} World Title`)?.date ?? null)
+            : null,
+    };
+
     careers[driverId] = {
         races: races.length,
         seasons: [...new Set(races.map(r => r.year))].sort(),
@@ -370,6 +396,7 @@ for (const [driverId, races] of byDriver) {
         bestFinish,
         eras,
         milestones,
+        achievedAt,
     };
 }
 

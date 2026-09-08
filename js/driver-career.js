@@ -29,14 +29,37 @@
 
     const fmt = n => Number(n).toLocaleString('en-US');
 
-    // Ranking descendente por categoría. Empates comparten puesto (1,2,2,4).
+    // Ranking descendente por categoría, desempatado por antigüedad: entre dos
+    // pilotos con la misma cifra va primero el que la alcanzó antes. Ejemplo:
+    // con 5 títulos cada uno, Schumacher (2004) queda por encima de Hamilton
+    // (2018), porque llegó a ese número catorce años antes.
+    //
+    // La fecha sale de careers[id].achievedAt[key], que precalcula
+    // scripts/build-careers.js: es el día del último evento que hizo subir ese
+    // contador, o sea cuándo el piloto llegó al total que muestra hoy.
+    //
+    // Sin fecha (piloto en 0, o dato ausente) se va al fondo del empate: no hay
+    // "cuándo lo consiguió" si nunca lo consiguió. Último desempate por id,
+    // para que el orden sea siempre el mismo entre recargas.
+    function compareAchieved(a, b){
+        if(a.achievedAt && b.achievedAt) return a.achievedAt < b.achievedAt ? -1 : a.achievedAt > b.achievedAt ? 1 : 0;
+        if(a.achievedAt) return -1;
+        if(b.achievedAt) return 1;
+        return 0;
+    }
+
+    // Empates reales (misma cifra Y misma fecha) comparten puesto: 1,2,2,4.
     function buildRanking(careers, key){
         const rows = Object.entries(careers)
-            .map(([id, c]) => ({ id, value: c[key] || 0 }))
-            .sort((a, b) => b.value - a.value);
-        let rank = 0, prev = null;
+            .map(([id, c]) => ({ id, value: c[key] || 0, achievedAt: (c.achievedAt && c.achievedAt[key]) || null }))
+            .sort((a, b) => (b.value - a.value) || compareAchieved(a, b) || a.id.localeCompare(b.id));
+        let rank = 0, prevValue = null, prevDate = null;
         rows.forEach((row, i) => {
-            if(row.value !== prev){ rank = i + 1; prev = row.value; }
+            if(row.value !== prevValue || row.achievedAt !== prevDate){
+                rank = i + 1;
+                prevValue = row.value;
+                prevDate = row.achievedAt;
+            }
             row.rank = rank;
         });
         return rows;
