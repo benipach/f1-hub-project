@@ -164,9 +164,23 @@ function sessionStatsEntry(line) {
     const keys = Object.keys(stats).sort((a, b) => Number(a) - Number(b));
     if (keys.length === 0) return null;
 
+    const hasDiff = (entry) => !!(entry && (entry.TimeDiffToFastest
+        || entry.TimeDifftoPositionAhead || entry.TimeDiffToPositionAhead));
+
     const part = currentQualifyingPart();
     const wanted = Number.isFinite(part) ? String(part - 1) : null;
-    return (wanted && stats[wanted]) || stats[keys[keys.length - 1]] || null;
+    const preferred = wanted ? stats[wanted] : null;
+    if (hasDiff(preferred)) return preferred;
+
+    // El segmento en curso puede no tener diff para este piloto: o quedó
+    // eliminado antes (sus números vivos son los del último segmento que
+    // corrió), o todavía no marcó tiempo. Se busca hacia atrás el último
+    // segmento con datos en vez de mostrar la celda vacía.
+    for (let i = keys.length - 1; i >= 0; i--) {
+        const entry = stats[keys[i]];
+        if (hasDiff(entry)) return entry;
+    }
+    return preferred || null;
 }
 
 function gapToLeaderValue(line) {
@@ -217,6 +231,10 @@ function getSectorTimeInfo(line, sectorIndex) {
         [`LastLapTime`, `Sector${sectorIndex}`],
         ['Sectors', zeroBased, 'Value'],
         ['LastLapTime', 'Sectors', zeroBased, 'Value'],
+        // Al completar la vuelta, F1 vacía Sectors[i].Value y deja el
+        // tiempo en PreviousValue. Sin este fallback, S3 quedaba en "-"
+        // para casi todos los pilotos apenas cruzaban meta.
+        ['Sectors', zeroBased, 'PreviousValue'],
     ];
 
     let value = null;
@@ -694,6 +712,22 @@ function isRedFlag() {
     return currentFlagState().color === 'red';
 }
 
+// Cuánto pasó desde que el feed emitió ese Remaining. Se mide contra
+// clock.Utc (la hora del propio feed) y no contra el momento en que nos
+// llegó el mensaje: al abrir la página, el relay manda su último snapshot,
+// que puede tener minutos de antigüedad, y tomarlo como recién llegado
+// hacía que el countdown quedara atrasado justo esa diferencia.
+// Si el reloj de la máquina está muy corrido respecto al del feed, el
+// cálculo da un número absurdo y se cae al método viejo.
+function clockElapsedSeconds(clock) {
+    const feedUtc = clock && clock.Utc ? new Date(clock.Utc).getTime() : NaN;
+    if (Number.isFinite(feedUtc)) {
+        const elapsed = (Date.now() - feedUtc) / 1000;
+        if (elapsed >= 0 && elapsed < 6 * 3600) return elapsed;
+    }
+    return (Date.now() - lastClockUpdateLocalTime) / 1000;
+}
+
 function updateSessionClock() {
     const el = document.getElementById('hero-session-status');
     const fsEl = document.getElementById('mapview-fs-session-status');
@@ -723,7 +757,7 @@ function updateSessionClock() {
         paused = !extrapolating || isRedFlag();
 
         if (remainingFromFeed != null) {
-            const elapsedSinceUpdate = paused ? 0 : (Date.now() - lastClockUpdateLocalTime) / 1000;
+            const elapsedSinceUpdate = paused ? 0 : clockElapsedSeconds(clock);
             clockText = formatClockSeconds(remainingFromFeed - elapsedSinceUpdate);
         } else {
             // No ExtrapolatedClock message yet this segment — show the
@@ -1172,7 +1206,18 @@ function render() {
     const rows = Object.keys(timingLines)
         .map((num) => ({ num, line: timingLines[num] }))
         .filter((r) => r.line)
-        .sort((a, b) => (Number(a.line.Line) || 99) - (Number(b.line.Line) || 99));
+        // Ordenar por Position (que es el número que después se muestra en
+        // la columna Pos) y usar Line solo para desempatar. Antes se
+        // ordenaba solo por Line: cuando el feed manda Position y Line en
+        // updates distintos, la tabla quedaba ordenada de una forma y
+        // numerada de otra, con posiciones que parecían repetidas o
+        // salteadas.
+        .sort((a, b) => {
+            const posA = Number(a.line.Position) || Number(a.line.Line) || 99;
+            const posB = Number(b.line.Position) || Number(b.line.Line) || 99;
+            if (posA !== posB) return posA - posB;
+            return (Number(a.line.Line) || 99) - (Number(b.line.Line) || 99);
+        });
 
     // Find the session's fastest BestLapTime across all drivers, to highlight it purple.
     let sessionBestMs = Infinity;
