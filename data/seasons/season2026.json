@@ -13305,7 +13305,14 @@
       "fp3": {
         "date": "2026-09-12T07:30:00",
         "endDate": "2026-09-12T08:30:00",
-        "weather": {},
+        "weather": {
+          "air_temperature": 25.4,
+          "track_temperature": 46.8,
+          "humidity": 39,
+          "wind_speed": 1.1,
+          "wind_direction": 68,
+          "rainfall": 0
+        },
         "results": []
       },
       "qualifying": {
