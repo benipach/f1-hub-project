@@ -13,6 +13,14 @@
 //   node scripts/build-season.js <year> --force       # rebuild limpio (pisa TODO)
 //   node scripts/build-season.js <year> --dry-run     # no escribe nada, solo reporta
 //   node scripts/build-season.js <year> --out <path>  # escribe a otra ruta
+//   node scripts/build-season.js <year> --grid        # sólo completar la parrilla de salida
+//
+// --grid: modo rápido para temporadas que ya están completas. Pide a Jolpica
+// únicamente los resultados de carrera (y sprint), y a cada fila de resultado
+// que no tenga `grid` le agrega la posición REAL de largada, que no es la de
+// la clasificación: penalizaciones, cambios de motor y largadas desde boxes
+// las separan. No toca ningún otro dato. Vale ~1 request por GP, así que con
+// el límite de Jolpica (500/hora) entran unas 20 temporadas por hora.
 //
 // Por defecto NO pisa datos que ya estén cargados a mano: si el season file
 // existe, cada sesión con resultados se conserva y sólo se completan los huecos.
@@ -104,6 +112,9 @@ function mapRaceResult(r) {
     pts: Number(r.points),
     time,
   };
+  // Posición real de largada (Ergast: "0" = salió desde el pit lane). Es
+  // distinta de la posición en la clasificación cuando hubo penalizaciones.
+  if (r.grid !== undefined && r.grid !== '') mapped.grid = Number(r.grid);
   if (r.FastestLap?.Time?.time) {
     mapped.bestLap = r.FastestLap.Time.time;
     if (r.FastestLap.rank === '1') mapped.fastestLap = true;
@@ -127,7 +138,7 @@ const RACE_DURATION_MS = 4 * 60 * 60 * 1000;     // 4 h (margen para SC / bander
 const addEndDate = (isoStart, durMs) =>
   isoStart ? new Date(new Date(isoStart).getTime() + durMs).toISOString() : null;
 
-async function fetchFromJolpica(year) {
+async function fetchFromJolpica(year, { gridOnly = false } = {}) {
   const racesData = await fetchJson(`${JOLPICA_BASE}/${year}/races.json?limit=100`);
   const races = racesData.MRData.RaceTable.Races;
   if (!races.length) throw new Error(`Jolpica no tiene carreras para ${year}`);
@@ -145,9 +156,23 @@ async function fetchFromJolpica(year) {
     const rd = await fetchJson(`${JOLPICA_BASE}/${year}/${round}/results.json?limit=100`);
     const raceResults = rd.MRData.RaceTable.Races[0]?.Results ?? [];
 
-    await sleep(REQUEST_DELAY_MS);
-    const qd = await fetchJson(`${JOLPICA_BASE}/${year}/${round}/qualifying.json?limit=100`);
-    const qualiResults = qd.MRData.RaceTable.Races[0]?.QualifyingResults ?? [];
+    // En modo --grid la clasificación no hace falta: sólo importa el `grid`
+    // que viene dentro de los resultados de carrera y sprint.
+    let qualiResults = [];
+    if (!gridOnly) {
+      await sleep(REQUEST_DELAY_MS);
+      const qd = await fetchJson(`${JOLPICA_BASE}/${year}/${round}/qualifying.json?limit=100`);
+      qualiResults = qd.MRData.RaceTable.Races[0]?.QualifyingResults ?? [];
+    }
+
+    // Sprint: mismo formato que la carrera (con su propio `grid`, que sale de
+    // la Sprint Qualifying). Sólo se pide en los fines de semana que lo tienen.
+    let sprintResults = [];
+    if (race.Sprint) {
+      await sleep(REQUEST_DELAY_MS);
+      const sd = await fetchJson(`${JOLPICA_BASE}/${year}/${round}/sprint.json?limit=100`);
+      sprintResults = sd.MRData.RaceTable.Races[0]?.SprintResults ?? [];
+    }
 
     const sessions = {};
     if (qualiResults.length) {
@@ -156,6 +181,14 @@ async function fetchFromJolpica(year) {
         date,
         endDate: addEndDate(date, QUALI_DURATION_MS),
         results: qualiResults.map(mapQualiResult),
+      };
+    }
+    if (sprintResults.length) {
+      const date = race.Sprint ? `${race.Sprint.date}T${race.Sprint.time ?? '00:00:00Z'}` : null;
+      sessions.sprintRace = {
+        date,
+        endDate: addEndDate(date, QUALI_DURATION_MS),
+        results: sprintResults.map(mapRaceResult),
       };
     }
     if (raceResults.length) {
@@ -352,7 +385,28 @@ async function fetchPractice(year) {
 // ── 4 · Merge con lo que ya había (preserva lo cargado a mano) ──────────────
 const hasResults = (s) => Array.isArray(s?.results) && s.results.length > 0;
 
-function mergeSeasons(fresh, existing, { force }) {
+// Copia el `grid` de Jolpica a las filas de una sesión que ya teníamos
+// guardada (y que por eso no se pisa), matcheando por piloto y, si el id no
+// coincide, por número de auto. Sólo agrega donde falta: nunca cambia un grid
+// que ya estaba. Devuelve cuántas filas completó.
+function backfillGrid(existingSession, freshSession) {
+  if (!hasResults(existingSession) || !hasResults(freshSession)) return 0;
+  const byDriver = new Map(freshSession.results.map((r) => [r.driver, r.grid]));
+  const byNumber = new Map(freshSession.results.map((r) => [r.number, r.grid]));
+  let n = 0;
+  for (const row of existingSession.results) {
+    if (row.grid !== undefined) continue;
+    const grid = byDriver.get(row.driver) ?? byNumber.get(Number(row.number));
+    if (grid === undefined || grid === null || Number.isNaN(grid)) continue;
+    row.grid = grid;
+    n++;
+  }
+  return n;
+}
+
+const GRID_SESSIONS = ['race', 'sprintRace'];
+
+function mergeSeasons(fresh, existing, { force }, stats = { gridAdded: 0 }) {
   if (force || !existing) return fresh;
 
   for (const [slug, freshGp] of Object.entries(fresh)) {
@@ -367,11 +421,32 @@ function mergeSeasons(fresh, existing, { force }) {
     // datos de OpenF1 en 2026, etc.). La fresca sólo rellena lo que falta.
     const merged = { ...freshGp.sessions };
     for (const [key, sess] of Object.entries(oldGp.sessions ?? {})) {
-      if (hasResults(sess) || !merged[key]) merged[key] = sess;
+      if (hasResults(sess) || !merged[key]) {
+        // La sesión guardada gana, pero si es carrera/sprint se le completa la
+        // parrilla de salida con lo que trajo Jolpica.
+        if (GRID_SESSIONS.includes(key)) stats.gridAdded += backfillGrid(sess, freshGp.sessions?.[key]);
+        merged[key] = sess;
+      }
     }
     fresh[slug].sessions = merged;
   }
   return fresh;
+}
+
+// Modo --grid: el archivo existente es la base y NO se reemplaza nada; sólo se
+// agrega `grid` a las filas de carrera/sprint que no lo tengan.
+function applyGridOnly(existing, fresh) {
+  const stats = { gridAdded: 0, rowsMissing: 0, gpsTouched: 0 };
+  for (const [slug, gp] of Object.entries(existing)) {
+    let touched = false;
+    for (const key of GRID_SESSIONS) {
+      const added = backfillGrid(gp.sessions?.[key], fresh[slug]?.sessions?.[key]);
+      if (added) { stats.gridAdded += added; touched = true; }
+      for (const row of gp.sessions?.[key]?.results ?? []) if (row.grid === undefined) stats.rowsMissing++;
+    }
+    if (touched) stats.gpsTouched++;
+  }
+  return stats;
 }
 
 function attachPractice(season, practiceByRound) {
@@ -443,13 +518,14 @@ async function writeReport(year, report) {
 
 // ── main ───────────────────────────────────────────────────────────────────
 function parseArgs(argv) {
-  const flags = { noPractice: false, force: false, dryRun: false, out: null };
+  const flags = { noPractice: false, force: false, dryRun: false, out: null, grid: false };
   const positional = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--no-practice') flags.noPractice = true;
     else if (a === '--force') flags.force = true;
     else if (a === '--dry-run') flags.dryRun = true;
+    else if (a === '--grid') flags.grid = true;
     else if (a === '--out') flags.out = argv[++i];
     else positional.push(a);
   }
@@ -459,13 +535,18 @@ function parseArgs(argv) {
 async function main() {
   const { year, flags } = parseArgs(process.argv.slice(2));
   if (!year || Number.isNaN(Number(year))) {
-    console.error('Uso: node scripts/build-season.js <year> [--no-practice] [--force] [--dry-run] [--out <path>]');
+    console.error('Uso: node scripts/build-season.js <year> [--no-practice] [--force] [--dry-run] [--grid] [--out <path>]');
     process.exit(1);
   }
 
   await mkdir(SEASONS_DIR, { recursive: true });
   const outPath = flags.out ?? join(SEASONS_DIR, `season${year}.json`);
   const report = { circuits: [], missingQualifying: [] };
+
+  if (flags.grid) {
+    await runGridOnly(year, outPath, flags);
+    return;
+  }
 
   console.log(`\n── 1/4 · Jolpica: carrera + clasificación ──`);
   const { season, circuitByRound } = await fetchFromJolpica(year);
@@ -478,7 +559,9 @@ async function main() {
   try {
     existing = JSON.parse(await readFile(outPath, 'utf-8'));
   } catch { /* no existía: es un season nuevo */ }
-  const merged = mergeSeasons(season, existing, flags);
+  const mergeStats = { gridAdded: 0 };
+  const merged = mergeSeasons(season, existing, flags, mergeStats);
+  if (mergeStats.gridAdded) console.log(`  parrilla de salida completada en ${mergeStats.gridAdded} fila(s) ya existentes`);
 
   if (flags.noPractice) {
     console.log(`\n── 3/4 · práctica (FP1-3): omitida (--no-practice) ──`);
@@ -512,6 +595,40 @@ async function main() {
     await writeReport(year, report);
   }
 
+  console.log('\nRecordá regenerar careers.json:  node scripts/build-careers.js');
+}
+
+// ── --grid: sólo la parrilla de salida ─────────────────────────────────────
+async function runGridOnly(year, outPath, flags) {
+  let existing;
+  try {
+    existing = JSON.parse(await readFile(outPath, 'utf-8'));
+  } catch {
+    console.error(`--grid necesita un season file existente: ${outPath} no existe. Corré primero la temporada completa.`);
+    process.exit(1);
+  }
+
+  console.log(`\n── Jolpica: parrilla de salida de carrera + sprint ──`);
+  const { season: fresh } = await fetchFromJolpica(year, { gridOnly: true });
+  const stats = applyGridOnly(existing, fresh);
+
+  console.log(`\n  ${stats.gridAdded} fila(s) completadas en ${stats.gpsTouched} GP`);
+  if (stats.rowsMissing) {
+    console.log(`  ${stats.rowsMissing} fila(s) siguen sin grid (Jolpica no las tiene o el piloto no matchea)`);
+  } else {
+    console.log('  todas las filas de carrera/sprint tienen grid');
+  }
+
+  if (flags.dryRun) {
+    console.log('\n(--dry-run: no se escribe nada)');
+    return;
+  }
+  if (!stats.gridAdded) {
+    console.log('\nNada que escribir.');
+    return;
+  }
+  await writeFile(outPath, JSON.stringify(existing, null, 2) + '\n', 'utf-8');
+  console.log(`\nEscrito: ${outPath}`);
   console.log('\nRecordá regenerar careers.json:  node scripts/build-careers.js');
 }
 

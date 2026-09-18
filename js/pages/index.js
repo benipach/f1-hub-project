@@ -63,9 +63,9 @@ function resolveDriverCode(rawDriver, driversData) {
 
 // ── Position delta (grid → finish) ─────────────────────────────────────────
 
+// Parrilla real con penalizaciones (shared/grid.js), con fallback a la quali.
 function getGridPosition(gp, driverKey) {
-    const row = getSessionResults(gp, 'qualifying').find(r => r.driver === driverKey);
-    return row ? Number(row.pos) : null;
+    return startingPositionFor(gp, 'race', driverKey);
 }
 
 function deltaArrowSvg(direction) {

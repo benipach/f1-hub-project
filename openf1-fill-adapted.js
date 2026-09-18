@@ -391,7 +391,7 @@ function mapQualy(results, driversByNumber, knownDriverNames) {
     return mapped;
   });
 }
-function mapRace(results, driversByNumber, knownDriverNames, isSprint, bestLapByNumber = new Map()) {
+function mapRace(results, driversByNumber, knownDriverNames, isSprint, bestLapByNumber = new Map(), gridByNumber = new Map()) {
   let fastestNumber = null;
   let fastestSeconds = Infinity;
   for (const [num, seconds] of bestLapByNumber) {
@@ -419,8 +419,49 @@ function mapRace(results, driversByNumber, knownDriverNames, isSprint, bestLapBy
       mapped.bestLap = formatClock(bestSeconds);
       if (row.driver_number === fastestNumber) mapped.fastestLap = true;
     }
+    // Posición real de largada (ver fetchStartingGrid): no es la de la
+    // clasificación cuando hubo penalizaciones.
+    const grid = gridByNumber.get(row.driver_number);
+    if (grid !== undefined) mapped.grid = grid;
     return mapped;
   });
+}
+
+// La parrilla de salida oficial, con penalizaciones aplicadas. OpenF1 la
+// cuelga del session_key de la sesión que la produjo (la Qualifying para la
+// carrera, la Sprint Qualifying para el sprint), no del de la carrera —
+// comprobado contra Monza 2026: pedirla con el key de la carrera devuelve
+// vacío. Devuelve Map<driver_number, position>.
+async function fetchStartingGrid(qualySessionKey) {
+  if (!qualySessionKey) return new Map();
+  const rows = await getJSON("/starting_grid", { session_key: qualySessionKey });
+  const map = new Map();
+  for (const r of Array.isArray(rows) ? rows : []) {
+    const pos = Number(r.position);
+    if (Number.isFinite(pos) && r.driver_number != null) map.set(r.driver_number, pos);
+  }
+  return map;
+}
+
+// Para una carrera, la sesión que define su parrilla.
+const GRID_SOURCE_KEY = { race: "qualifying", sprintRace: "sprintQualy" };
+
+// Agrega `grid` a filas de carrera/sprint ya guardadas que no lo tengan.
+// Devuelve cuántas completó.
+function applyGridToSession(session, gridByNumber) {
+  let n = 0;
+  for (const row of session?.results ?? []) {
+    if (row.grid !== undefined) continue;
+    const grid = gridByNumber.get(Number(row.number));
+    if (grid === undefined) continue;
+    row.grid = grid;
+    n += 1;
+  }
+  return n;
+}
+
+function raceSessionMissingGrid(session) {
+  return Array.isArray(session?.results) && session.results.some((row) => row && row.grid === undefined);
 }
 
 function ensureSession(gp, resultKey) {
@@ -463,13 +504,24 @@ async function fillGPSession(gp, year, gpKey, resultKey, knownDriverNames = new 
   if (!resolvedSessionKey) return gp;
 
   const isRaceLike = RACE_LIKE.has(resultKey);
-  const [results, driversByNumber, laps] = await Promise.all([
+  // La parrilla sale de la sesión de clasificación correspondiente, así que
+  // hace falta el meeting para ubicarla aunque nos hayan pasado el sessionKey.
+  let gridPromise = Promise.resolve(new Map());
+  if (isRaceLike) {
+    gridPromise = (async () => {
+      const meetingKey = await findMeetingKey(year, gpKey, gp);
+      const qualyKey = await findSessionKey(meetingKey, GRID_SOURCE_KEY[resultKey]);
+      return fetchStartingGrid(qualyKey);
+    })().catch(() => new Map());
+  }
+  const [results, driversByNumber, laps, gridByNumber] = await Promise.all([
     fetchSessionResults(resolvedSessionKey),
     buildDriverMap(resolvedSessionKey),
     isRaceLike ? fetchSessionLaps(resolvedSessionKey) : Promise.resolve(null),
+    gridPromise,
   ]);
   const session = ensureSession(gp, resultKey);
-  if (isRaceLike) session.results = mapRace(results, driversByNumber, knownDriverNames, resultKey === "sprintRace", bestLapsByNumber(laps));
+  if (isRaceLike) session.results = mapRace(results, driversByNumber, knownDriverNames, resultKey === "sprintRace", bestLapsByNumber(laps), gridByNumber);
   else if (QUALY_LIKE.has(resultKey)) session.results = mapQualy(results, driversByNumber, knownDriverNames);
   else session.results = mapPractice(results, driversByNumber, knownDriverNames);
   return gp;
@@ -519,8 +571,12 @@ async function fetchSessionWeather(sessionKey) {
 
 export {
   GP_OPENF1_LOOKUP,
+  GRID_SOURCE_KEY,
   RACE_LIKE,
   QUALY_LIKE,
+  applyGridToSession,
+  fetchStartingGrid,
+  raceSessionMissingGrid,
   DRIVER_NAME_MISMATCHES,
   TEAM_NAME_NORMALIZE,
   OpenF1Error,

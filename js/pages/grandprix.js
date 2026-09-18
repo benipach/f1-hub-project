@@ -216,22 +216,16 @@ function renderSessionPanel(gp, jsonKey, htmlKey, ctx) {
         : `<span class="result-pending-text">No results yet</span>`;
 }
 
-// Race/Sprint don't carry their own starting-grid data; the grid position
-// is derived from that GP's Qualifying (for race) or Sprint Qualifying
-// (for sprint) results — same driver key, position from that session.
+// Parrilla de salida real de la carrera/sprint (con penalizaciones), o la
+// clasificación correspondiente si la temporada no tiene el campo `grid`
+// — ver shared/grid.js. Map driver → posición numérica (pit lane = último).
 function getGridPositions(gp, jsonKey) {
-    const gridSessionKey = jsonKey === 'race' ? 'qualifying'
-        : jsonKey === 'sprintRace' ? 'sprintQualy'
-        : null;
-    if (!gridSessionKey) return null;
-
-    const gridResults = getSessionResults(gp, gridSessionKey);
-    if (!gridResults.length) return null;
-
+    if (jsonKey !== 'race' && jsonKey !== 'sprintRace') return null;
+    const grid = startingGridFor(gp, jsonKey);
+    const ids = Object.keys(grid);
+    if (!ids.length) return null;
     const map = {};
-    for (const r of gridResults) {
-        if (r.driver != null) map[r.driver] = Number(r.pos);
-    }
+    for (const id of ids) map[id] = grid[id].pos;
     return map;
 }
 

@@ -5,9 +5,13 @@
  */
 import { readFile, writeFile, copyFile } from "node:fs/promises";
 import {
+  GRID_SOURCE_KEY,
   RACE_LIKE,
   QUALY_LIKE,
   TEAM_NAME_NORMALIZE,
+  applyGridToSession,
+  fetchStartingGrid,
+  raceSessionMissingGrid,
   buildKnownDriverNamesFromSeason,
   buildSessionInfoMap,
   fetchSessionWeather,
@@ -30,6 +34,7 @@ function parseArgs(argv) {
     fixPositions: false,
     backfillBestLap: false,
     backfillDriverInfo: false,
+    backfillGrid: false,
     normalizeTeams: false,
     fixQualyStatus: false,
     skip: new Set(DEFAULT_SKIP_GP_KEYS),
@@ -56,6 +61,10 @@ function parseArgs(argv) {
     // Backfill manual: agrega team/number a resultados (cualquier sesión) guardados
     // antes del fix que empezó a incluir esos campos en mapPractice/mapQualy.
     else if (arg === "--backfill-driver-info") flags.backfillDriverInfo = true;
+    // Backfill manual: agrega la parrilla de salida real (`grid`, con
+    // penalizaciones) a carreras/sprints guardados antes de que existiera el
+    // campo. Los resultados nuevos ya lo traen solos (ver mapRace).
+    else if (arg === "--backfill-grid") flags.backfillGrid = true;
     // Renombra equipos ya guardados según TEAM_NAME_NORMALIZE (ej. "Haas F1 Team" → "Haas"),
     // sin pegarle a OpenF1: solo reescribe lo que ya está en el JSON.
     else if (arg === "--normalize-teams") flags.normalizeTeams = true;
@@ -139,7 +148,7 @@ function gpHasStartedSession(gp) {
 
 // Evita pegarle a OpenF1 por GPs cuyas sesiones pasadas ya están completas.
 // Con forceWeather=true no saltea nada que ya haya arrancado (backfill manual).
-function gpNeedsWork(gp, weatherEnabled, forceWeather = false, backfillBestLap = false, backfillDriverInfo = false, fixQualyStatus = false) {
+function gpNeedsWork(gp, weatherEnabled, forceWeather = false, backfillBestLap = false, backfillDriverInfo = false, fixQualyStatus = false, backfillGrid = false) {
   return Object.entries(gp.sessions ?? {}).some(([resultKey, session]) => {
     if (!session || typeof session !== "object") return false;
     const start = parseDate(session.date);
@@ -150,6 +159,7 @@ function gpNeedsWork(gp, weatherEnabled, forceWeather = false, backfillBestLap =
     if (backfillBestLap && RACE_LIKE.has(resultKey) && raceSessionMissingBestLap(session)) return true;
     if (backfillDriverInfo && sessionMissingDriverInfo(session)) return true;
     if (fixQualyStatus && sessionHasStaleQualyStatus(resultKey, session)) return true;
+    if (backfillGrid && RACE_LIKE.has(resultKey) && raceSessionMissingGrid(session)) return true;
     return false;
   });
 }
@@ -248,7 +258,7 @@ async function runOnce(args) {
       console.log(`⏭️ ${gpKey}: todavía no arrancó, se saltea sin consultar OpenF1`);
       continue;
     }
-    if (!gpNeedsWork(gp, args.weather, args.forceWeather, args.backfillBestLap, args.backfillDriverInfo, args.fixQualyStatus)) {
+    if (!gpNeedsWork(gp, args.weather, args.forceWeather, args.backfillBestLap, args.backfillDriverInfo, args.fixQualyStatus, args.backfillGrid)) {
       console.log(`⏭️ ${gpKey}: ya está completo, se saltea sin consultar OpenF1`);
       continue;
     }
@@ -324,6 +334,23 @@ async function runOnce(args) {
           }
         } catch (err) {
           console.warn(`⚠️ ${gpKey}/${resultKey}: resultados (${err.message})`);
+        }
+      }
+
+      // Parrilla de salida para carreras ya guardadas: sólo se completa lo
+      // que falta, sin volver a pedir los resultados.
+      if (args.backfillGrid && RACE_LIKE.has(resultKey) && raceSessionMissingGrid(session)) {
+        try {
+          const qualyKey = openf1Sessions[GRID_SOURCE_KEY[resultKey]]?.session_key ?? null;
+          const added = applyGridToSession(session, await fetchStartingGrid(qualyKey));
+          if (added) {
+            changed = true;
+            console.log(`🔢 ${gpKey}/${resultKey}: grid agregado a ${added} fila(s)`);
+          } else {
+            console.log(`⏳ ${gpKey}/${resultKey}: OpenF1 no tiene la parrilla todavía`);
+          }
+        } catch (err) {
+          console.warn(`⚠️ ${gpKey}/${resultKey}: grid (${err.message})`);
         }
       }
 
