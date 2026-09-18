@@ -30,7 +30,8 @@
 
     // Los resultados traen el equipo a veces como slug ("red-bull-racing") y a
     // veces como nombre ("Racing Bulls"); normalizamos a slug para el color.
-    const teamSlug = t => String(t || '').trim().toLowerCase().replace(/\s+/g, '-');
+    // resolveTeamId() viene de js/shared/teams.js (resuelve "Red Bull",
+    // "red-bull" o "red-bull-racing-honda" al ID real de teams.json).
 
     const esc = v => String(v)
         .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
@@ -562,7 +563,7 @@
             keyOf: row => row.driver,
             metaOf: row => {
                 const d = drivers[row.driver];
-                const slug = teamSlug(row.team);
+                const slug = resolveTeamId(row.team, teams);
                 const country = countries[d?.nationality] || null;
                 return {
                     ...teamMeta(slug),
@@ -576,10 +577,10 @@
         }));
 
         const teamSeries = buildSeries(rounds, {
-            keyOf: row => teamSlug(row.team),
+            keyOf: row => resolveTeamId(row.team, teams),
             groupOf: true,
             metaOf: row => {
-                const meta = teamMeta(teamSlug(row.team));
+                const meta = teamMeta(resolveTeamId(row.team, teams));
                 return { ...meta, label: meta.teamName };
             },
         });

@@ -45,21 +45,39 @@
 
     const fmtNum = n => Number(n).toLocaleString('en-US');
 
-    // Fila de stats de la era: cada dato con su número grande y su etiqueta.
+    // Franja de stats de la era. Sin tarjetas (la sección entera va sin
+    // tarjetas, ver driver.css): una sola línea de cifras separadas por
+    // filetes, y debajo de las que son un ratio (wins, podiums, poles) una
+    // barra fina del color del equipo con el porcentaje sobre las carreras de
+    // esa era — 5 podios en 37 carreras y 5 en 120 no cuentan lo mismo.
+    // Points lleva el promedio por carrera por el mismo motivo.
     function eraStats(era){
-        const items = [
-            ['Races', era.races],
-            ['Points', era.points],
-            ['Poles', era.poles],
-            ['Podiums', era.podiums],
-            ['Wins', era.wins],
-        ];
-        if(era.best != null) items.push(['Best', `P${era.best}`]);
+        const races = era.races || 0;
+        const pct = n => races ? Math.round((n / races) * 100) : 0;
+        const rate = n => ({ pct: pct(n), sub: `${pct(n)}% of races` });
 
-        return `<ul class="bio-era-stats">${items.map(([label, value]) => `
+        const items = [
+            { label: 'Races',   value: races },
+            { label: 'Wins',    value: era.wins,    ...rate(era.wins) },
+            { label: 'Podiums', value: era.podiums, ...rate(era.podiums) },
+            { label: 'Poles',   value: era.poles,   ...rate(era.poles) },
+            { label: 'Points',  value: era.points,  sub: races ? `${(era.points / races).toFixed(1)} per race` : null },
+        ];
+        // era.best es la mejor POSICIÓN DE LLEGADA en una carrera de esa etapa
+        // (ver build-careers.js: sale de bestRace), no el mejor puesto en un
+        // campeonato — por eso el subtítulo lo aclara. Sólo se muestra si el
+        // piloto no ganó con ese equipo: con una victoria, "Best: P1" repite
+        // lo que ya dice la celda de Wins.
+        if(era.best != null && !era.wins){
+            items.push({ label: 'Best', value: `P${era.best}`, sub: 'race finish' });
+        }
+
+        return `<ul class="bio-era-stats">${items.map(({ label, value, sub, pct }) => `
             <li class="bio-era-stat">
                 <span class="bio-era-stat-value">${typeof value === 'number' ? fmtNum(value) : value}</span>
                 <span class="bio-era-stat-label">${label}</span>
+                ${sub ? `<span class="bio-era-stat-sub">${sub}</span>` : ''}
+                ${pct != null ? `<span class="bio-era-stat-bar" aria-hidden="true"><i style="width:${pct}%"></i></span>` : ''}
             </li>
         `).join('')}</ul>`;
     }

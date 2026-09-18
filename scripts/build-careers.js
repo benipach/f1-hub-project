@@ -20,21 +20,22 @@ const circuits = readJson(path.join(ROOT, 'data', 'circuits.json'));
 const cities = readJson(path.join(ROOT, 'data', 'cities.json'));
 const countries = readJson(path.join(ROOT, 'data', 'countries.json'));
 
-// Los resultados viejos usan ids de equipo que teams.json ya no tiene con ese
-// nombre exacto (2016-2017 traen "red-bull", el JSON sólo tiene "red-bull-racing").
-const TEAM_ALIASES = {
-    'red-bull': 'red-bull-racing',
-    'force-india': 'racing-point',
-    'toro-rosso': 'toro-rosso',
-};
+// La resolución de equipo (alias + recorte de tokens) vive en js/shared/teams.js,
+// que es un script clásico para el navegador. Se lo evalúa acá tal cual para
+// que el precálculo y el front resuelvan exactamente igual — si no, un piloto
+// podía tener una era "Mercedes-AMG" separada de "Mercedes" sólo porque las
+// carreras de 2026 las cargó el adapter de OpenF1 con otro nombre.
+const teamHelpers = new Function(
+    fs.readFileSync(path.join(ROOT, 'js', 'shared', 'teams.js'), 'utf8')
+    + '\nreturn { resolveTeamId };'
+)();
 
 function resolveTeam(rawId) {
-    const slug = String(rawId || '').trim().toLowerCase().replace(/\s+/g, '-');
-    const id = teams[slug] ? slug : (TEAM_ALIASES[slug] && teams[TEAM_ALIASES[slug]] ? TEAM_ALIASES[slug] : null);
-    const meta = id ? teams[id] : null;
+    const id = teamHelpers.resolveTeamId(rawId, teams);
+    const meta = teams[id] || null;
     return {
-        id: id || slug,
-        name: meta?.name || slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+        id,
+        name: meta?.name || id.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
         color: meta?.color || null,
     };
 }

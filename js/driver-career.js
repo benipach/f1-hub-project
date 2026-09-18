@@ -134,11 +134,15 @@
     }
 
     // Top 5 más el piloto si quedó afuera, para que siempre se vea dónde cae.
+    // El corte (los puntos suspensivos) sólo va si de verdad hay pilotos
+    // salteados entre el 5º y él: si es el 6º, sigue derecho como una fila más
+    // — un "…" ahí no tapa a nadie y sólo rompe el ritmo de la lista.
     function boardRows(ranking, topN = 5){
         const top = ranking.slice(0, topN);
         if(top.some(r => r.id === driverId)) return { rows: top, gap: false };
-        const mine = ranking.find(r => r.id === driverId);
-        return mine ? { rows: [...top, mine], gap: true } : { rows: top, gap: false };
+        const idx = ranking.findIndex(r => r.id === driverId);
+        if(idx === -1) return { rows: top, gap: false };
+        return { rows: [...top, ranking[idx]], gap: idx > topN };
     }
 
     function renderBoard(el, ranking, names){
