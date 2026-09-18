@@ -27,25 +27,10 @@ function getCircuitLayout(circuit, year) {
         ?? layouts[layouts.length - 1] ?? null;
 }
 
-// ── Team (season2026.json is mid-migration: driver/team are a mix of raw
-// display names and real IDs — see project notes) ─────────────────────────
-
-function toTeamSlugGuess(name) {
-    return name
-        ?.toLowerCase()
-        .replace(/ f1 team$/, '')
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '') ?? '';
-}
-
-function resolveTeamId(rawTeamName, teamsData) {
-    if (teamsData?.[rawTeamName]) return rawTeamName;
-    return toTeamSlugGuess(rawTeamName);
-}
-
-function resolveTeam(rawTeamName, teamsData) {
-    return getTeamMeta(resolveTeamId(rawTeamName, teamsData), teamsData);
-}
+// ── Team ──────────────────────────────────────────────────────────────────
+// resolveTeamId() / resolveTeam() viven en shared/teams.js (cargado antes):
+// es el único lugar que sabe pasar de "Red Bull", "red-bull" o
+// "red-bull-racing-honda-rbpt" al ID real de teams.json.
 
 function teamLogoPath(teamId, basePath = '.') {
     return teamId ? `${basePath}/img/teams/${teamId}-logo.png` : null;

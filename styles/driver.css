@@ -1142,6 +1142,12 @@
         to   { opacity: 1; transform: translateX(0); }
     }
 
+    /* line-height 1 en las tres celdas de texto: el rank va a 14px y el nombre
+       a 16px, y con el line-height heredado cada caja traía un aire distinto
+       arriba y abajo, así que align-items:center centraba cajas de distinto
+       alto y los glifos quedaban a distinta altura (el número flotaba por
+       encima del nombre). Con la caja igual al cuerpo de la fuente, el centro
+       de la caja es el centro del glifo y las tres columnas quedan en línea. */
     .career-board-row {
         display: grid;
         grid-template-columns: 34px minmax(90px, 190px) 1fr 68px;
@@ -1150,17 +1156,20 @@
         height: 44px;
         font-family: 'F1-Regular';
         font-size: 16px;
+        line-height: 1;
     }
 
     .career-board-rank {
         font-family: 'F1-Regular';
-        font-size: 14px;
+        font-size: 16px;
         font-weight: 600;
+        line-height: 1;
         color: rgba(255,255,255,0.35);
         text-align: right;
     }
 
     .career-board-name {
+        line-height: 1;
         color: var(--text-light);
         white-space: nowrap;
         overflow: hidden;
@@ -1188,6 +1197,7 @@
     }
 
     .career-board-value {
+        line-height: 1;
         text-align: right;
         color: var(--text-light);
         white-space: nowrap;
@@ -1316,12 +1326,13 @@
         padding: 0 0 44px 40px;
     }
 
-    /* La espina, en el color del equipo de esa era. */
+    /* La espina, en el color del equipo de esa era. Arranca en el centro del
+       nodo (queda tapada por él) para que no haya un hueco entre los dos. */
     .bio-era::before {
         content: '';
         position: absolute;
         left: 10px;
-        top: 18px;
+        top: 14px;
         bottom: 0;
         width: 2px;
         background: var(--era-color);
@@ -1335,12 +1346,14 @@
         bottom: 12px;
     }
 
-    /* El nodo cuadrado que abre cada era. */
+    /* El nodo cuadrado que abre cada era. Centrado verticalmente con la fila
+       del título: la fila mide 28px (min-height de .bio-era-head), así que
+       top = 28/2 - 16/2 = 6px. */
     .bio-era::after {
         content: '';
         position: absolute;
         left: 3px;
-        top: 5px;
+        top: 6px;
         width: 16px;
         height: 16px;
         border-radius: 4px;
@@ -1348,11 +1361,17 @@
         box-shadow: 0 0 0 4px var(--base-800);
     }
 
+    /* Todo lo de la fila (logo, nombre, años, badge de títulos y la regla)
+       centrado en un mismo eje. Con baseline cada pieza caía a distinta
+       altura porque tienen tamaños de fuente distintos, el badge tiene
+       padding y la regla ni siquiera tiene texto. line-height 1 en los textos
+       para que el alto de cada uno sea el de su tipografía, sin aire extra. */
     .bio-era-head {
         display: flex;
-        align-items: baseline;
+        align-items: center;
         flex-wrap: wrap;
         gap: 12px;
+        min-height: 28px;
         margin-bottom: 6px;
     }
 
@@ -1369,6 +1388,7 @@
         margin: 0;
         font-family: 'F1-Regular';
         font-size: 22px;
+        line-height: 1;
         font-weight: 600;
         letter-spacing: 0.5px;
         text-transform: uppercase;
@@ -1379,13 +1399,15 @@
         font-family: 'F1-Regular';
         font-weight: 600;
         font-size: 14px;
+        line-height: 1;
         letter-spacing: 1px;
         color: var(--era-color);
     }
 
     .bio-era-titles {
-        padding: 3px 9px;
+        padding: 4px 9px 3px;
         border-radius: 999px;
+        line-height: 1;
         background: rgba(232,185,35,0.14);
         font-family: 'F1-Regular';
         font-weight: 600;
@@ -1405,33 +1427,38 @@
         opacity: 0.35;
     }
 
-    /* Fila de stats de la era: número grande + etiqueta, con un filo del color
-       del equipo arriba de cada celda para que no se vea tan plano. */
+    /* Franja de stats de la era. Coherente con el resto de la biografía: nada
+       de tarjetas, sólo cifras separadas por filetes de 1px. Los filetes salen
+       del truco gap + fondo: el contenedor es el color de la línea y cada celda
+       tapa con el fondo de la página, así las divisiones quedan bien también
+       cuando la fila se parte en dos en pantallas chicas. */
     .bio-era-stats {
         list-style: none;
-        margin: 0 0 24px;
+        margin: 0 0 28px;
         padding: 0;
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 1px;
+        background: rgba(255,255,255,0.08);
     }
 
     .bio-era-stat {
+        position: relative;
+        flex: 1 1 120px;
         display: flex;
         flex-direction: column;
-        gap: 3px;
-        min-width: 76px;
-        padding: 12px 16px 10px;
-        border-radius: 10px;
-        border: 1px solid rgba(255,255,255,0.06);
-        border-top: 2px solid var(--era-color);
-        background: rgba(255,255,255,0.02);
+        gap: 5px;
+        padding: 14px 22px 16px;
+        background: var(--base-800);
     }
+
+    .bio-era-stat:first-child { padding-left: 0; }
 
     .bio-era-stat-value {
         font-family: 'F1-Black';
-        font-size: 22px;
+        font-size: 28px;
         line-height: 1;
+        letter-spacing: 0.5px;
         color: var(--text-light);
     }
 
@@ -1439,9 +1466,39 @@
         font-family: 'F1-Regular';
         font-weight: 600;
         font-size: 10px;
-        letter-spacing: 1.2px;
+        letter-spacing: 1.4px;
+        line-height: 1;
         text-transform: uppercase;
+        color: var(--text-light);
+        opacity: 0.85;
+    }
+
+    /* Lectura secundaria: "14% of races", "8.8 per race". */
+    .bio-era-stat-sub {
+        font-family: 'F1-Regular';
+        font-size: 11px;
+        line-height: 1;
+        letter-spacing: 0.2px;
         color: var(--text-dim);
+    }
+
+    /* Barra de ratio pegada al piso de la celda, del color del equipo. */
+    .bio-era-stat-bar {
+        position: absolute;
+        left: 22px;
+        right: 22px;
+        bottom: 0;
+        height: 2px;
+        background: rgba(255,255,255,0.08);
+        overflow: hidden;
+    }
+
+    .bio-era-stat:first-child .bio-era-stat-bar { left: 0; }
+
+    .bio-era-stat-bar i {
+        display: block;
+        height: 100%;
+        background: var(--era-color);
     }
 
     /* ── Hitos dentro de cada era ── */
@@ -1528,11 +1585,14 @@
         .bio-lead { font-size: 15px; margin-bottom: 26px; }
         .bio-era { padding-left: 28px; padding-bottom: 34px; }
         .bio-era::before { left: 7px; }
-        .bio-era::after { left: 0; width: 14px; height: 14px; }
+        .bio-era::after { left: 0; top: 7px; width: 14px; height: 14px; }
         .bio-era-team { font-size: 17px; }
         .bio-era-years { font-size: 12px; }
-        .bio-era-stat { min-width: calc(33.333% - 7px); padding: 10px 12px 9px; }
-        .bio-era-stat-value { font-size: 19px; }
+        .bio-era-stat { flex-basis: calc(33.333% - 1px); padding: 12px 14px 14px; }
+        .bio-era-stat:first-child { padding-left: 14px; }
+        .bio-era-stat:first-child .bio-era-stat-bar { left: 14px; }
+        .bio-era-stat-bar { left: 14px; right: 14px; }
+        .bio-era-stat-value { font-size: 22px; }
         .bio-moment-dot { left: -25px; width: 9px; height: 9px; }
         .bio-moment-gp { font-size: 15px; }
     }

@@ -51,22 +51,7 @@ function gpShortName(gp) { return gp.name.replace(/Grand Prix/i, 'GP'); }
 
 // ── Team helper (temporary name→slug bridge, see file header) ─────────────
 
-function toTeamSlugGuess(name) {
-    return name
-        ?.toLowerCase()
-        .replace(/ f1 team$/, '')
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '') ?? '';
-}
-
-function resolveTeamId(rawTeamName, teamsData) {
-    if (teamsData?.[rawTeamName]) return rawTeamName;
-    return toTeamSlugGuess(rawTeamName);
-}
-
-function resolveTeam(rawTeamName, teamsData) {
-    return getTeamMeta(resolveTeamId(rawTeamName, teamsData), teamsData);
-}
+// resolveTeamId() / resolveTeam() vienen de shared/teams.js (cargado antes).
 
 function teamLogoPath(teamId) {
     return teamId ? `./img/teams/${teamId}-logo.png` : null;

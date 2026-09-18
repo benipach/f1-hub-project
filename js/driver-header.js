@@ -15,7 +15,7 @@
     const driverId = new URLSearchParams(location.search).get('driver') || 'max-verstappen';
 
     const lastSlug = id => id.split('-').slice(-1)[0];
-    const teamSlug = t => String(t || '').trim().toLowerCase().replace(/\s+/g, '-');
+    // teamSlug() viene de js/shared/teams.js.
 
     const flagUrl = iso => {
         if(!iso || iso.length !== 2) return null;
@@ -94,9 +94,9 @@
             ['Full name',    `${driver.firstName} ${driver.lastName}`],
             ['Abbreviation', driver.shortName || '—'],
             ['Nationality',  `${flag ? `<img class="driver-info-flag" src="${flag}" alt="" loading="lazy">` : ''}${country?.name || driver.nationality || '—'}`],
-            ['Date of birth', prettyDate(driver.dateOfBirth)],
-            ['Age',          ageFrom(driver.dateOfBirth, driver.dateOfDeath)],
             ['Car number',   num != null ? `#${num}` : '—'],
+            ['Age',          ageFrom(driver.dateOfBirth, driver.dateOfDeath)],
+            ['Date of birth', prettyDate(driver.dateOfBirth)],
             ['F1 debut',     debut],
             ['Seasons',      seasonCount],
             ['Current team', `<span style="color:${teamColor}">${teamName}</span>`],

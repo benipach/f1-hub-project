@@ -30,9 +30,9 @@
 
     const isRetired = row => /DN[FS]/i.test(String(row?.time || ''));
 
-    // Los resultados traen el equipo a veces como slug ("red-bull-racing") y a
-    // veces como nombre ("Ferrari"); normalizamos a slug para buscar el color.
-    const teamSlug = t => String(t || '').trim().toLowerCase().replace(/\s+/g, '-');
+    // resolveTeamId() viene de js/shared/teams.js: los resultados traen el
+    // equipo a veces como slug, a veces como nombre ("Red Bull") y a veces
+    // como chasis ("red-bull-racing-honda"), y ahí se resuelve al ID real.
 
     // GP → circuito → ciudad → país → ISO de 2 letras → SVG de Twemoji.
     // Mismo recorrido que shared/resolve.js, mismo CDN que archive.js.
@@ -64,6 +64,7 @@
             rounds.push({
                 round: gp.round,
                 name: gpShortLabel(gp.name),
+                fullName: gp.name,           // "Hungarian Grand Prix", para el texto corrido
                 code: gpCode(gp.name),
                 flag: flagUrlFor(gp, refs),
                 grid: quali?.pos ?? null,
@@ -181,7 +182,7 @@
             return `
                 <tr class="season-round" data-outcome="${outcome}">
                     <td class="season-round-num season-col-round">R${r.round}</td>
-                    <th scope="row" class="season-round-name">${r.flag ? `<img class="season-round-flag" src="${r.flag}" alt="" loading="lazy">` : ''}<span class="season-round-name-full">${r.name} Grand Prix</span><span class="season-round-name-code">${r.code}</span></th>
+                    <th scope="row" class="season-round-name">${r.flag ? `<img class="season-round-flag" src="${r.flag}" alt="" loading="lazy">` : ''}<span class="season-round-name-full">${r.fullName}</span><span class="season-round-name-code">${r.code}</span></th>
                     <td class="season-round-result">
                         <span class="season-round-grid">${r.grid != null ? 'P' + r.grid : '—'}</span>
                         <span class="season-round-arrow" aria-hidden="true"></span>
@@ -358,7 +359,7 @@
         const totalRounds = Object.keys(season).length;
         const raced = Object.values(season).filter(gp => sessionResults(gp, 'race').length).length;
 
-        const slug = teamSlug(rounds[rounds.length - 1].team);
+        const slug = resolveTeamId(rounds[rounds.length - 1].team, teams);
         const team = teams[slug];
         const teamColor = team?.color || '#e10600';
         root.style.setProperty('--team-color', teamColor);
@@ -386,11 +387,12 @@
         if(note){
             const avg = stats.avgGain;
             const bg = stats.bestGain;
-            const gainText = avg > 0.2 ? `gains <b>${avg.toFixed(1)}</b> places per race on average`
-                : avg < -0.2 ? `loses <b>${Math.abs(avg).toFixed(1)}</b> places per race on average`
-                : `finishes roughly where he starts`;
+            // En pasado: son carreras ya corridas, no una tendencia en curso.
+            const gainText = avg > 0.2 ? `gained <b>${avg.toFixed(1)}</b> places per race on average`
+                : avg < -0.2 ? `lost <b>${Math.abs(avg).toFixed(1)}</b> places per race on average`
+                : `finished roughly where he started`;
             const bgText = bg && (bg.grid - bg.finish) > 0
-                ? ` Best drive: <b>${bg.name}</b>, P${bg.grid} to P${bg.finish}.`
+                ? ` Best drive: <b>${bg.fullName}</b>, P${bg.grid} to P${bg.finish}.`
                 : '';
             note.innerHTML = `The gap between the two lines is racecraft — he ${gainText}.${bgText}`
                 + (stats.dnfs ? ` <b>${stats.dnfs}</b> retirement${stats.dnfs > 1 ? 's' : ''} shown in red.` : '');
