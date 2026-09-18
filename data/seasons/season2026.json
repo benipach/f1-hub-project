@@ -727,7 +727,8 @@
             "time": "1:23:06.801",
             "pts": 25,
             "team": "mercedes",
-            "bestLap": "1:22.670"
+            "bestLap": "1:22.670",
+            "grid": 1
           },
           {
             "pos": 2,
@@ -737,7 +738,8 @@
             "time": "+2.974s",
             "pts": 18,
             "team": "mercedes",
-            "bestLap": "1:22.417"
+            "bestLap": "1:22.417",
+            "grid": 2
           },
           {
             "pos": 3,
@@ -747,7 +749,8 @@
             "time": "+15.519s",
             "pts": 15,
             "team": "Ferrari",
-            "bestLap": "1:22.579"
+            "bestLap": "1:22.579",
+            "grid": 4
           },
           {
             "pos": 4,
@@ -757,7 +760,8 @@
             "time": "+16.144s",
             "pts": 12,
             "team": "Ferrari",
-            "bestLap": "1:22.423"
+            "bestLap": "1:22.423",
+            "grid": 7
           },
           {
             "pos": 5,
@@ -767,7 +771,8 @@
             "time": "+51.741s",
             "pts": 10,
             "team": "McLaren",
-            "bestLap": "1:22.358"
+            "bestLap": "1:22.358",
+            "grid": 6
           },
           {
             "pos": 6,
@@ -778,7 +783,8 @@
             "pts": 8,
             "team": "red-bull-racing",
             "bestLap": "1:22.091",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 20
           },
           {
             "pos": 7,
@@ -788,7 +794,8 @@
             "time": "+1 Lap",
             "pts": 6,
             "team": "Haas",
-            "bestLap": "1:24.020"
+            "bestLap": "1:24.020",
+            "grid": 12
           },
           {
             "pos": 8,
@@ -798,7 +805,8 @@
             "time": "+1 Lap",
             "pts": 4,
             "team": "Racing Bulls",
-            "bestLap": "1:24.182"
+            "bestLap": "1:24.182",
+            "grid": 9
           },
           {
             "pos": 9,
@@ -808,7 +816,8 @@
             "time": "+1 Lap",
             "pts": 2,
             "team": "Audi",
-            "bestLap": "1:23.257"
+            "bestLap": "1:23.257",
+            "grid": 10
           },
           {
             "pos": 10,
@@ -818,7 +827,8 @@
             "time": "+1 Lap",
             "pts": 1,
             "team": "Alpine",
-            "bestLap": "1:24.486"
+            "bestLap": "1:24.486",
+            "grid": 14
           },
           {
             "pos": 11,
@@ -828,7 +838,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:24.424"
+            "bestLap": "1:24.424",
+            "grid": 13
           },
           {
             "pos": 12,
@@ -838,7 +849,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:24.375"
+            "bestLap": "1:24.375",
+            "grid": 15
           },
           {
             "pos": 13,
@@ -848,7 +860,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Racing Bulls",
-            "bestLap": "1:23.783"
+            "bestLap": "1:23.783",
+            "grid": 8
           },
           {
             "pos": 14,
@@ -858,7 +871,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:22.926"
+            "bestLap": "1:22.926",
+            "grid": 16
           },
           {
             "pos": 15,
@@ -868,7 +882,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:23.590"
+            "bestLap": "1:23.590",
+            "grid": 21
           },
           {
             "pos": 16,
@@ -878,7 +893,8 @@
             "time": "+3 Laps",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:26.070"
+            "bestLap": "1:26.070",
+            "grid": 18
           },
           {
             "pos": 17,
@@ -888,7 +904,8 @@
             "time": "+15 Laps",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:25.410"
+            "bestLap": "1:25.410",
+            "grid": 22
           },
           {
             "pos": 18,
@@ -898,7 +915,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:25.713"
+            "bestLap": "1:25.713",
+            "grid": 17
           },
           {
             "pos": 19,
@@ -908,7 +926,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:27.364"
+            "bestLap": "1:27.364",
+            "grid": 19
           },
           {
             "pos": 20,
@@ -918,7 +937,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "red-bull-racing",
-            "bestLap": "1:25.239"
+            "bestLap": "1:25.239",
+            "grid": 3
           },
           {
             "pos": 21,
@@ -927,7 +947,8 @@
             "laps": "0",
             "time": "DNS",
             "pts": 0,
-            "team": "McLaren"
+            "team": "McLaren",
+            "grid": 5
           },
           {
             "pos": 22,
@@ -936,7 +957,8 @@
             "laps": "0",
             "time": "DNS",
             "pts": 0,
-            "team": "Audi"
+            "team": "Audi",
+            "grid": 11
           }
         ]
       }
@@ -1320,7 +1342,8 @@
             "time": "33:38.998",
             "pts": 8,
             "team": "mercedes",
-            "bestLap": "1:35.101"
+            "bestLap": "1:35.101",
+            "grid": 1
           },
           {
             "pos": 2,
@@ -1331,7 +1354,8 @@
             "pts": 7,
             "team": "Ferrari",
             "bestLap": "1:34.753",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 6
           },
           {
             "pos": 3,
@@ -1341,7 +1365,8 @@
             "time": "+2.554s",
             "pts": 6,
             "team": "Ferrari",
-            "bestLap": "1:34.926"
+            "bestLap": "1:34.926",
+            "grid": 4
           },
           {
             "pos": 4,
@@ -1351,7 +1376,8 @@
             "time": "+4.433s",
             "pts": 5,
             "team": "McLaren",
-            "bestLap": "1:35.708"
+            "bestLap": "1:35.708",
+            "grid": 3
           },
           {
             "pos": 5,
@@ -1361,7 +1387,8 @@
             "time": "+5.688s",
             "pts": 4,
             "team": "mercedes",
-            "bestLap": "1:34.760"
+            "bestLap": "1:34.760",
+            "grid": 2
           },
           {
             "pos": 6,
@@ -1371,7 +1398,8 @@
             "time": "+6.809s",
             "pts": 3,
             "team": "McLaren",
-            "bestLap": "1:35.635"
+            "bestLap": "1:35.635",
+            "grid": 5
           },
           {
             "pos": 7,
@@ -1381,7 +1409,8 @@
             "time": "+10.900s",
             "pts": 2,
             "team": "Racing Bulls",
-            "bestLap": "1:37.882"
+            "bestLap": "1:37.882",
+            "grid": 13
           },
           {
             "pos": 8,
@@ -1391,7 +1420,8 @@
             "time": "+11.271s",
             "pts": 1,
             "team": "Haas",
-            "bestLap": "1:37.374"
+            "bestLap": "1:37.374",
+            "grid": 9
           },
           {
             "pos": 9,
@@ -1401,7 +1431,8 @@
             "time": "+11.619s",
             "pts": 0,
             "team": "red-bull-racing",
-            "bestLap": "1:35.774"
+            "bestLap": "1:35.774",
+            "grid": 8
           },
           {
             "pos": 10,
@@ -1411,7 +1442,8 @@
             "time": "+13.887s",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:37.363"
+            "bestLap": "1:37.363",
+            "grid": 12
           },
           {
             "pos": 11,
@@ -1421,7 +1453,8 @@
             "time": "+14.780s",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:38.349"
+            "bestLap": "1:38.349",
+            "grid": 7
           },
           {
             "pos": 12,
@@ -1431,7 +1464,8 @@
             "time": "+15.753s",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:37.913"
+            "bestLap": "1:37.913",
+            "grid": 17
           },
           {
             "pos": 13,
@@ -1441,7 +1475,8 @@
             "time": "+15.858s",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:37.800"
+            "bestLap": "1:37.800",
+            "grid": 14
           },
           {
             "pos": 14,
@@ -1451,7 +1486,8 @@
             "time": "+16.393s",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:37.278"
+            "bestLap": "1:37.278",
+            "grid": 16
           },
           {
             "pos": 15,
@@ -1461,7 +1497,8 @@
             "time": "+16.430s",
             "pts": 0,
             "team": "red-bull-racing",
-            "bestLap": "1:36.912"
+            "bestLap": "1:36.912",
+            "grid": 10
           },
           {
             "pos": 16,
@@ -1471,7 +1508,8 @@
             "time": "+20.014s",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:38.158"
+            "bestLap": "1:38.158",
+            "grid": 22
           },
           {
             "pos": 17,
@@ -1481,7 +1519,8 @@
             "time": "+21.599s",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:38.487"
+            "bestLap": "1:38.487",
+            "grid": 18
           },
           {
             "pos": 18,
@@ -1491,7 +1530,8 @@
             "time": "+21.971s",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:38.532"
+            "bestLap": "1:38.532",
+            "grid": 19
           },
           {
             "pos": 19,
@@ -1501,7 +1541,8 @@
             "time": "+28.241s",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:38.862"
+            "bestLap": "1:38.862",
+            "grid": 21
           },
           {
             "pos": 20,
@@ -1511,7 +1552,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:38.027"
+            "bestLap": "1:38.027",
+            "grid": 11
           },
           {
             "pos": 21,
@@ -1521,7 +1563,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:39.262"
+            "bestLap": "1:39.262",
+            "grid": 20
           },
           {
             "pos": 22,
@@ -1531,7 +1574,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Racing Bulls",
-            "bestLap": "1:38.475"
+            "bestLap": "1:38.475",
+            "grid": 15
           }
         ]
       },
@@ -1724,7 +1768,8 @@
             "pts": 25,
             "team": "mercedes",
             "bestLap": "1:35.275",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 1
           },
           {
             "pos": 2,
@@ -1734,7 +1779,8 @@
             "time": "+5.515s",
             "pts": 18,
             "team": "mercedes",
-            "bestLap": "1:35.400"
+            "bestLap": "1:35.400",
+            "grid": 2
           },
           {
             "pos": 3,
@@ -1744,7 +1790,8 @@
             "time": "+25.267s",
             "pts": 15,
             "team": "Ferrari",
-            "bestLap": "1:36.092"
+            "bestLap": "1:36.092",
+            "grid": 3
           },
           {
             "pos": 4,
@@ -1754,7 +1801,8 @@
             "time": "+28.894s",
             "pts": 12,
             "team": "Ferrari",
-            "bestLap": "1:36.011"
+            "bestLap": "1:36.011",
+            "grid": 4
           },
           {
             "pos": 5,
@@ -1764,7 +1812,8 @@
             "time": "+57.268s",
             "pts": 10,
             "team": "Haas",
-            "bestLap": "1:36.429"
+            "bestLap": "1:36.429",
+            "grid": 10
           },
           {
             "pos": 6,
@@ -1774,7 +1823,8 @@
             "time": "+59.647s",
             "pts": 8,
             "team": "Alpine",
-            "bestLap": "1:36.505"
+            "bestLap": "1:36.505",
+            "grid": 7
           },
           {
             "pos": 7,
@@ -1784,7 +1834,8 @@
             "time": "+80.588s",
             "pts": 6,
             "team": "Racing Bulls",
-            "bestLap": "1:37.096"
+            "bestLap": "1:37.096",
+            "grid": 14
           },
           {
             "pos": 8,
@@ -1794,7 +1845,8 @@
             "time": "+87.247s",
             "pts": 4,
             "team": "red-bull-racing",
-            "bestLap": "1:37.311"
+            "bestLap": "1:37.311",
+            "grid": 9
           },
           {
             "pos": 9,
@@ -1804,7 +1856,8 @@
             "time": "+1 Lap",
             "pts": 2,
             "team": "Williams",
-            "bestLap": "1:37.981"
+            "bestLap": "1:37.981",
+            "grid": 17
           },
           {
             "pos": 10,
@@ -1814,7 +1867,8 @@
             "time": "+1 Lap",
             "pts": 1,
             "team": "Alpine",
-            "bestLap": "1:36.783"
+            "bestLap": "1:36.783",
+            "grid": 12
           },
           {
             "pos": 11,
@@ -1824,7 +1878,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:36.180"
+            "bestLap": "1:36.180",
+            "grid": 11
           },
           {
             "pos": 12,
@@ -1834,7 +1889,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Racing Bulls",
-            "bestLap": "1:36.099"
+            "bestLap": "1:36.099",
+            "grid": 15
           },
           {
             "pos": 13,
@@ -1844,7 +1900,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:38.393"
+            "bestLap": "1:38.393",
+            "grid": 19
           },
           {
             "pos": 14,
@@ -1854,7 +1911,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:35.964"
+            "bestLap": "1:35.964",
+            "grid": 13
           },
           {
             "pos": 15,
@@ -1864,7 +1922,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:38.523"
+            "bestLap": "1:38.523",
+            "grid": 21
           },
           {
             "pos": 16,
@@ -1874,7 +1933,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "red-bull-racing",
-            "bestLap": "1:37.046"
+            "bestLap": "1:37.046",
+            "grid": 8
           },
           {
             "pos": 17,
@@ -1884,7 +1944,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:39.721"
+            "bestLap": "1:39.721",
+            "grid": 18
           },
           {
             "pos": 18,
@@ -1894,7 +1955,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:40.883"
+            "bestLap": "1:40.883",
+            "grid": 20
           },
           {
             "pos": 19,
@@ -1903,7 +1965,8 @@
             "laps": "0",
             "time": "DNS",
             "pts": 0,
-            "team": "McLaren"
+            "team": "McLaren",
+            "grid": 5
           },
           {
             "pos": 20,
@@ -1912,7 +1975,8 @@
             "laps": "0",
             "time": "DNS",
             "pts": 0,
-            "team": "McLaren"
+            "team": "McLaren",
+            "grid": 6
           },
           {
             "pos": 21,
@@ -1921,7 +1985,8 @@
             "laps": "0",
             "time": "DNS",
             "pts": 0,
-            "team": "Audi"
+            "team": "Audi",
+            "grid": 16
           },
           {
             "pos": 22,
@@ -1930,7 +1995,8 @@
             "laps": "0",
             "time": "DNS",
             "pts": 0,
-            "team": "Williams"
+            "team": "Williams",
+            "grid": 22
           }
         ]
       }
@@ -2702,7 +2768,8 @@
             "pts": 25,
             "team": "mercedes",
             "bestLap": "1:32.432",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 1
           },
           {
             "pos": 2,
@@ -2712,7 +2779,8 @@
             "time": "+13.722s",
             "pts": 18,
             "team": "McLaren",
-            "bestLap": "1:32.996"
+            "bestLap": "1:32.996",
+            "grid": 3
           },
           {
             "pos": 3,
@@ -2722,7 +2790,8 @@
             "time": "+15.270s",
             "pts": 15,
             "team": "Ferrari",
-            "bestLap": "1:32.634"
+            "bestLap": "1:32.634",
+            "grid": 4
           },
           {
             "pos": 4,
@@ -2732,7 +2801,8 @@
             "time": "+15.754s",
             "pts": 12,
             "team": "mercedes",
-            "bestLap": "1:32.549"
+            "bestLap": "1:32.549",
+            "grid": 2
           },
           {
             "pos": 5,
@@ -2742,7 +2812,8 @@
             "time": "+23.479s",
             "pts": 10,
             "team": "McLaren",
-            "bestLap": "1:33.208"
+            "bestLap": "1:33.208",
+            "grid": 5
           },
           {
             "pos": 6,
@@ -2752,7 +2823,8 @@
             "time": "+25.037s",
             "pts": 8,
             "team": "Ferrari",
-            "bestLap": "1:32.777"
+            "bestLap": "1:32.777",
+            "grid": 6
           },
           {
             "pos": 7,
@@ -2762,7 +2834,8 @@
             "time": "+32.340s",
             "pts": 6,
             "team": "Alpine",
-            "bestLap": "1:33.691"
+            "bestLap": "1:33.691",
+            "grid": 7
           },
           {
             "pos": 8,
@@ -2772,7 +2845,8 @@
             "time": "+32.677s",
             "pts": 4,
             "team": "red-bull-racing",
-            "bestLap": "1:33.552"
+            "bestLap": "1:33.552",
+            "grid": 11
           },
           {
             "pos": 9,
@@ -2782,7 +2856,8 @@
             "time": "+50.180s",
             "pts": 2,
             "team": "Racing Bulls",
-            "bestLap": "1:34.230"
+            "bestLap": "1:34.230",
+            "grid": 14
           },
           {
             "pos": 10,
@@ -2792,7 +2867,8 @@
             "time": "+51.216s",
             "pts": 1,
             "team": "Haas",
-            "bestLap": "1:34.256"
+            "bestLap": "1:34.256",
+            "grid": 12
           },
           {
             "pos": 11,
@@ -2802,7 +2878,8 @@
             "time": "+52.280s",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:33.732"
+            "bestLap": "1:33.732",
+            "grid": 13
           },
           {
             "pos": 12,
@@ -2812,7 +2889,8 @@
             "time": "+56.154s",
             "pts": 0,
             "team": "red-bull-racing",
-            "bestLap": "1:33.837"
+            "bestLap": "1:33.837",
+            "grid": 8
           },
           {
             "pos": 13,
@@ -2822,7 +2900,8 @@
             "time": "+59.078s",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:34.164"
+            "bestLap": "1:34.164",
+            "grid": 9
           },
           {
             "pos": 14,
@@ -2832,7 +2911,8 @@
             "time": "+59.848s",
             "pts": 0,
             "team": "Racing Bulls",
-            "bestLap": "1:34.314"
+            "bestLap": "1:34.314",
+            "grid": 10
           },
           {
             "pos": 15,
@@ -2842,7 +2922,8 @@
             "time": "+65.008s",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:34.514"
+            "bestLap": "1:34.514",
+            "grid": 16
           },
           {
             "pos": 16,
@@ -2852,7 +2933,8 @@
             "time": "+65.773s",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:34.512"
+            "bestLap": "1:34.512",
+            "grid": 15
           },
           {
             "pos": 17,
@@ -2862,7 +2944,8 @@
             "time": "+92.453s",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:35.637"
+            "bestLap": "1:35.637",
+            "grid": 19
           },
           {
             "pos": 18,
@@ -2872,7 +2955,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:36.221"
+            "bestLap": "1:36.221",
+            "grid": 21
           },
           {
             "pos": 19,
@@ -2882,7 +2966,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:36.269"
+            "bestLap": "1:36.269",
+            "grid": 20
           },
           {
             "pos": 20,
@@ -2892,7 +2977,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:33.427"
+            "bestLap": "1:33.427",
+            "grid": 17
           },
           {
             "pos": 21,
@@ -2902,7 +2988,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:37.217"
+            "bestLap": "1:37.217",
+            "grid": 22
           },
           {
             "pos": 22,
@@ -2912,7 +2999,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:35.604"
+            "bestLap": "1:35.604",
+            "grid": 18
           }
         ]
       }
@@ -3415,7 +3503,8 @@
             "pts": 8,
             "team": "McLaren",
             "bestLap": "1:31.885",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 1
           },
           {
             "pos": 2,
@@ -3425,7 +3514,8 @@
             "time": "+3.766s",
             "pts": 7,
             "team": "McLaren",
-            "bestLap": "1:32.079"
+            "bestLap": "1:32.079",
+            "grid": 3
           },
           {
             "pos": 3,
@@ -3435,7 +3525,8 @@
             "time": "+6.251s",
             "pts": 6,
             "team": "Ferrari",
-            "bestLap": "1:31.964"
+            "bestLap": "1:31.964",
+            "grid": 4
           },
           {
             "pos": 4,
@@ -3445,7 +3536,8 @@
             "time": "+12.951s",
             "pts": 5,
             "team": "mercedes",
-            "bestLap": "1:32.387"
+            "bestLap": "1:32.387",
+            "grid": 6
           },
           {
             "pos": 5,
@@ -3455,7 +3547,8 @@
             "time": "+13.639s",
             "pts": 4,
             "team": "red-bull-racing",
-            "bestLap": "1:32.201"
+            "bestLap": "1:32.201",
+            "grid": 5
           },
           {
             "pos": 6,
@@ -3465,7 +3558,8 @@
             "time": "+13.777s",
             "pts": 3,
             "team": "mercedes",
-            "bestLap": "1:31.932"
+            "bestLap": "1:31.932",
+            "grid": 2
           },
           {
             "pos": 7,
@@ -3475,7 +3569,8 @@
             "time": "+21.665s",
             "pts": 2,
             "team": "Ferrari",
-            "bestLap": "1:32.448"
+            "bestLap": "1:32.448",
+            "grid": 7
           },
           {
             "pos": 8,
@@ -3485,7 +3580,8 @@
             "time": "+30.525s",
             "pts": 1,
             "team": "Alpine",
-            "bestLap": "1:33.072"
+            "bestLap": "1:33.072",
+            "grid": 10
           },
           {
             "pos": 9,
@@ -3495,7 +3591,8 @@
             "time": "+35.346s",
             "pts": 0,
             "team": "red-bull-racing",
-            "bestLap": "1:33.119"
+            "bestLap": "1:33.119",
+            "grid": 9
           },
           {
             "pos": 10,
@@ -3505,7 +3602,8 @@
             "time": "+36.970s",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:33.139"
+            "bestLap": "1:33.139",
+            "grid": 8
           },
           {
             "pos": 11,
@@ -3515,7 +3613,8 @@
             "time": "+56.972s",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:34.409"
+            "bestLap": "1:34.409",
+            "grid": 16
           },
           {
             "pos": 12,
@@ -3525,7 +3624,8 @@
             "time": "+57.365s",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:34.524"
+            "bestLap": "1:34.524",
+            "grid": 13
           },
           {
             "pos": 13,
@@ -3535,7 +3635,8 @@
             "time": "+58.504s",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:34.008"
+            "bestLap": "1:34.008",
+            "grid": 14
           },
           {
             "pos": 14,
@@ -3545,7 +3646,8 @@
             "time": "+59.358s",
             "pts": 0,
             "team": "Racing Bulls",
-            "bestLap": "1:34.204"
+            "bestLap": "1:34.204",
+            "grid": 15
           },
           {
             "pos": 15,
@@ -3555,7 +3657,8 @@
             "time": "+76.067s",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:34.720"
+            "bestLap": "1:34.720",
+            "grid": 20
           },
           {
             "pos": 16,
@@ -3565,7 +3668,8 @@
             "time": "+76.691s",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:35.015"
+            "bestLap": "1:35.015",
+            "grid": 17
           },
           {
             "pos": 17,
@@ -3575,7 +3679,8 @@
             "time": "+77.626s",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:35.009"
+            "bestLap": "1:35.009",
+            "grid": 21
           },
           {
             "pos": 18,
@@ -3585,7 +3690,8 @@
             "time": "+88.173s",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:33.473"
+            "bestLap": "1:33.473",
+            "grid": 18
           },
           {
             "pos": 19,
@@ -3595,7 +3701,8 @@
             "time": "+89.597s",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:35.856"
+            "bestLap": "1:35.856",
+            "grid": 19
           },
           {
             "pos": 20,
@@ -3604,7 +3711,8 @@
             "laps": "0",
             "time": "DNS",
             "pts": 0,
-            "team": "Audi"
+            "team": "Audi",
+            "grid": 12
           },
           {
             "pos": 21,
@@ -3613,7 +3721,8 @@
             "laps": "0",
             "time": "DNS",
             "pts": 0,
-            "team": "Racing Bulls"
+            "team": "Racing Bulls",
+            "grid": 22
           },
           {
             "pos": 22,
@@ -3623,7 +3732,8 @@
             "time": "DSQ",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:34.174"
+            "bestLap": "1:34.174",
+            "grid": 11
           }
         ]
       },
@@ -3815,7 +3925,8 @@
             "time": "1:33:19.273",
             "pts": 25,
             "team": "mercedes",
-            "bestLap": "1:31.968"
+            "bestLap": "1:31.968",
+            "grid": 1
           },
           {
             "pos": 2,
@@ -3826,7 +3937,8 @@
             "pts": 18,
             "team": "McLaren",
             "bestLap": "1:31.869",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 4
           },
           {
             "pos": 3,
@@ -3836,7 +3948,8 @@
             "time": "+27.092s",
             "pts": 15,
             "team": "McLaren",
-            "bestLap": "1:31.949"
+            "bestLap": "1:31.949",
+            "grid": 7
           },
           {
             "pos": 4,
@@ -3846,7 +3959,8 @@
             "time": "+43.051s",
             "pts": 12,
             "team": "mercedes",
-            "bestLap": "1:32.446"
+            "bestLap": "1:32.446",
+            "grid": 5
           },
           {
             "pos": 5,
@@ -3856,7 +3970,8 @@
             "time": "+48.949s",
             "pts": 10,
             "team": "red-bull-racing",
-            "bestLap": "1:33.110"
+            "bestLap": "1:33.110",
+            "grid": 2
           },
           {
             "pos": 6,
@@ -3866,7 +3981,8 @@
             "time": "+53.753s",
             "pts": 8,
             "team": "Ferrari",
-            "bestLap": "1:32.676"
+            "bestLap": "1:32.676",
+            "grid": 6
           },
           {
             "pos": 7,
@@ -3876,7 +3992,8 @@
             "time": "+61.871s",
             "pts": 6,
             "team": "Alpine",
-            "bestLap": "1:33.035"
+            "bestLap": "1:33.035",
+            "grid": 8
           },
           {
             "pos": 8,
@@ -3886,7 +4003,8 @@
             "time": "+64.245s",
             "pts": 4,
             "team": "Ferrari",
-            "bestLap": "1:32.515"
+            "bestLap": "1:32.515",
+            "grid": 3
           },
           {
             "pos": 9,
@@ -3896,7 +4014,8 @@
             "time": "+82.072s",
             "pts": 2,
             "team": "Williams",
-            "bestLap": "1:33.026"
+            "bestLap": "1:33.026",
+            "grid": 13
           },
           {
             "pos": 10,
@@ -3906,7 +4025,8 @@
             "time": "+90.972s",
             "pts": 1,
             "team": "Williams",
-            "bestLap": "1:33.784"
+            "bestLap": "1:33.784",
+            "grid": 15
           },
           {
             "pos": 11,
@@ -3916,7 +4036,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:33.744"
+            "bestLap": "1:33.744",
+            "grid": 12
           },
           {
             "pos": 12,
@@ -3926,7 +4047,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:33.500"
+            "bestLap": "1:33.500",
+            "grid": 21
           },
           {
             "pos": 13,
@@ -3936,7 +4058,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:33.712"
+            "bestLap": "1:33.712",
+            "grid": 14
           },
           {
             "pos": 14,
@@ -3946,7 +4069,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Racing Bulls",
-            "bestLap": "1:34.058"
+            "bestLap": "1:34.058",
+            "grid": 16
           },
           {
             "pos": 15,
@@ -3956,7 +4080,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:33.512"
+            "bestLap": "1:33.512",
+            "grid": 17
           },
           {
             "pos": 16,
@@ -3966,7 +4091,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:34.895"
+            "bestLap": "1:34.895",
+            "grid": 20
           },
           {
             "pos": 17,
@@ -3976,7 +4102,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:34.716"
+            "bestLap": "1:34.716",
+            "grid": 18
           },
           {
             "pos": 18,
@@ -3986,7 +4113,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:36.080"
+            "bestLap": "1:36.080",
+            "grid": 19
           },
           {
             "pos": 19,
@@ -3996,7 +4124,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:34.523"
+            "bestLap": "1:34.523",
+            "grid": 10
           },
           {
             "pos": 20,
@@ -4006,7 +4135,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Racing Bulls",
-            "bestLap": "1:34.814"
+            "bestLap": "1:34.814",
+            "grid": 11
           },
           {
             "pos": 21,
@@ -4016,7 +4146,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:34.856"
+            "bestLap": "1:34.856",
+            "grid": 9
           },
           {
             "pos": 22,
@@ -4026,7 +4157,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "red-bull-racing",
-            "bestLap": "1:34.833"
+            "bestLap": "1:34.833",
+            "grid": 22
           }
         ]
       }
@@ -4403,7 +4535,8 @@
             "time": "28:50.951",
             "pts": 8,
             "team": "mercedes",
-            "bestLap": "1:14.702"
+            "bestLap": "1:14.702",
+            "grid": 1
           },
           {
             "pos": 2,
@@ -4413,7 +4546,8 @@
             "time": "+1.272s",
             "pts": 7,
             "team": "McLaren",
-            "bestLap": "1:14.596"
+            "bestLap": "1:14.596",
+            "grid": 3
           },
           {
             "pos": 3,
@@ -4424,7 +4558,8 @@
             "pts": 6,
             "team": "mercedes",
             "bestLap": "1:14.380",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 2
           },
           {
             "pos": 4,
@@ -4434,7 +4569,8 @@
             "time": "+9.797s",
             "pts": 5,
             "team": "McLaren",
-            "bestLap": "1:14.793"
+            "bestLap": "1:14.793",
+            "grid": 4
           },
           {
             "pos": 5,
@@ -4444,7 +4580,8 @@
             "time": "+9.929s",
             "pts": 4,
             "team": "Ferrari",
-            "bestLap": "1:14.741"
+            "bestLap": "1:14.741",
+            "grid": 6
           },
           {
             "pos": 6,
@@ -4454,7 +4591,8 @@
             "time": "+10.545s",
             "pts": 3,
             "team": "Ferrari",
-            "bestLap": "1:14.695"
+            "bestLap": "1:14.695",
+            "grid": 5
           },
           {
             "pos": 7,
@@ -4464,7 +4602,8 @@
             "time": "+15.935s",
             "pts": 2,
             "team": "red-bull-racing",
-            "bestLap": "1:14.974"
+            "bestLap": "1:14.974",
+            "grid": 7
           },
           {
             "pos": 8,
@@ -4474,7 +4613,8 @@
             "time": "+29.710s",
             "pts": 1,
             "team": "Racing Bulls",
-            "bestLap": "1:15.653"
+            "bestLap": "1:15.653",
+            "grid": 9
           },
           {
             "pos": 9,
@@ -4484,7 +4624,8 @@
             "time": "+31.621s",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:15.478"
+            "bestLap": "1:15.478",
+            "grid": 13
           },
           {
             "pos": 10,
@@ -4494,7 +4635,8 @@
             "time": "+36.793s",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:15.943"
+            "bestLap": "1:15.943",
+            "grid": 10
           },
           {
             "pos": 11,
@@ -4504,7 +4646,8 @@
             "time": "+61.344s",
             "pts": 0,
             "team": "Racing Bulls",
-            "bestLap": "1:16.257"
+            "bestLap": "1:16.257",
+            "grid": 18
           },
           {
             "pos": 12,
@@ -4514,7 +4657,8 @@
             "time": "+61.814s",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:15.980"
+            "bestLap": "1:15.980",
+            "grid": 12
           },
           {
             "pos": 13,
@@ -4524,7 +4668,8 @@
             "time": "+64.209s",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:16.849"
+            "bestLap": "1:16.849",
+            "grid": 14
           },
           {
             "pos": 14,
@@ -4534,7 +4679,8 @@
             "time": "+70.402s",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:16.641"
+            "bestLap": "1:16.641",
+            "grid": 16
           },
           {
             "pos": 15,
@@ -4544,7 +4690,8 @@
             "time": "+72.158s",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:16.297"
+            "bestLap": "1:16.297",
+            "grid": 11
           },
           {
             "pos": 16,
@@ -4554,7 +4701,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:17.120"
+            "bestLap": "1:17.120",
+            "grid": 17
           },
           {
             "pos": 17,
@@ -4564,7 +4712,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:17.212"
+            "bestLap": "1:17.212",
+            "grid": 21
           },
           {
             "pos": 18,
@@ -4574,7 +4723,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:16.210"
+            "bestLap": "1:16.210",
+            "grid": 19
           },
           {
             "pos": 19,
@@ -4584,7 +4734,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:15.717"
+            "bestLap": "1:15.717",
+            "grid": 22
           },
           {
             "pos": 20,
@@ -4594,7 +4745,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:16.150"
+            "bestLap": "1:16.150",
+            "grid": 20
           },
           {
             "pos": 21,
@@ -4604,7 +4756,8 @@
             "time": "+3 Laps",
             "pts": 0,
             "team": "red-bull-racing",
-            "bestLap": "1:14.941"
+            "bestLap": "1:14.941",
+            "grid": 8
           },
           {
             "pos": 22,
@@ -4614,7 +4767,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:17.543"
+            "bestLap": "1:17.543",
+            "grid": 15
           }
         ]
       },
@@ -4807,7 +4961,8 @@
             "pts": 25,
             "team": "mercedes",
             "bestLap": "1:14.210",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 2
           },
           {
             "pos": 2,
@@ -4817,7 +4972,8 @@
             "time": "+10.768s",
             "pts": 18,
             "team": "Ferrari",
-            "bestLap": "1:14.573"
+            "bestLap": "1:14.573",
+            "grid": 5
           },
           {
             "pos": 3,
@@ -4827,7 +4983,8 @@
             "time": "+11.276s",
             "pts": 15,
             "team": "red-bull-racing",
-            "bestLap": "1:14.398"
+            "bestLap": "1:14.398",
+            "grid": 6
           },
           {
             "pos": 4,
@@ -4837,7 +4994,8 @@
             "time": "+44.151s",
             "pts": 12,
             "team": "Ferrari",
-            "bestLap": "1:15.297"
+            "bestLap": "1:15.297",
+            "grid": 8
           },
           {
             "pos": 5,
@@ -4847,7 +5005,8 @@
             "time": "+1 Lap",
             "pts": 10,
             "team": "red-bull-racing",
-            "bestLap": "1:14.578"
+            "bestLap": "1:14.578",
+            "grid": 7
           },
           {
             "pos": 6,
@@ -4857,7 +5016,8 @@
             "time": "+1 Lap",
             "pts": 8,
             "team": "Alpine",
-            "bestLap": "1:15.462"
+            "bestLap": "1:15.462",
+            "grid": 10
           },
           {
             "pos": 7,
@@ -4867,7 +5027,8 @@
             "time": "+1 Lap",
             "pts": 6,
             "team": "Racing Bulls",
-            "bestLap": "1:15.604"
+            "bestLap": "1:15.604",
+            "grid": 12
           },
           {
             "pos": 8,
@@ -4877,7 +5038,8 @@
             "time": "+1 Lap",
             "pts": 4,
             "team": "Alpine",
-            "bestLap": "1:15.390"
+            "bestLap": "1:15.390",
+            "grid": 14
           },
           {
             "pos": 9,
@@ -4887,7 +5049,8 @@
             "time": "+1 Lap",
             "pts": 2,
             "team": "Williams",
-            "bestLap": "1:15.852"
+            "bestLap": "1:15.852",
+            "grid": 15
           },
           {
             "pos": 10,
@@ -4897,7 +5060,8 @@
             "time": "+1 Lap",
             "pts": 1,
             "team": "Haas",
-            "bestLap": "1:16.002"
+            "bestLap": "1:16.002",
+            "grid": 16
           },
           {
             "pos": 11,
@@ -4907,7 +5071,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "McLaren",
-            "bestLap": "1:15.456"
+            "bestLap": "1:15.456",
+            "grid": 4
           },
           {
             "pos": 12,
@@ -4917,7 +5082,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:16.275"
+            "bestLap": "1:16.275",
+            "grid": 11
           },
           {
             "pos": 13,
@@ -4927,7 +5093,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:16.221"
+            "bestLap": "1:16.221",
+            "grid": 13
           },
           {
             "pos": 14,
@@ -4937,7 +5104,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:16.577"
+            "bestLap": "1:16.577",
+            "grid": 17
           },
           {
             "pos": 15,
@@ -4947,7 +5115,8 @@
             "time": "+4 Laps",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:18.721"
+            "bestLap": "1:18.721",
+            "grid": 22
           },
           {
             "pos": 16,
@@ -4957,7 +5126,8 @@
             "time": "+4 Laps",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:17.725"
+            "bestLap": "1:17.725",
+            "grid": 21
           },
           {
             "pos": 17,
@@ -4967,7 +5137,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:16.915"
+            "bestLap": "1:16.915",
+            "grid": 20
           },
           {
             "pos": 18,
@@ -4977,7 +5148,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "McLaren",
-            "bestLap": "1:15.845"
+            "bestLap": "1:15.845",
+            "grid": 3
           },
           {
             "pos": 19,
@@ -4987,7 +5159,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "mercedes",
-            "bestLap": "1:15.477"
+            "bestLap": "1:15.477",
+            "grid": 1
           },
           {
             "pos": 20,
@@ -4997,7 +5170,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:19.635"
+            "bestLap": "1:19.635",
+            "grid": 19
           },
           {
             "pos": 21,
@@ -5007,7 +5181,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:17.221"
+            "bestLap": "1:17.221",
+            "grid": 18
           },
           {
             "pos": 22,
@@ -5016,7 +5191,8 @@
             "laps": "0",
             "time": "DNS",
             "pts": 0,
-            "team": "Racing Bulls"
+            "team": "Racing Bulls",
+            "grid": 9
           }
         ]
       }
@@ -5788,7 +5964,8 @@
             "pts": 25,
             "team": "mercedes",
             "bestLap": "1:13.481",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 1
           },
           {
             "pos": 2,
@@ -5798,7 +5975,8 @@
             "time": "+6.271s",
             "pts": 18,
             "team": "Ferrari",
-            "bestLap": "1:14.643"
+            "bestLap": "1:14.643",
+            "grid": 3
           },
           {
             "pos": 3,
@@ -5808,7 +5986,8 @@
             "time": "+20.369s",
             "pts": 15,
             "team": "Alpine",
-            "bestLap": "1:15.497"
+            "bestLap": "1:15.497",
+            "grid": 9
           },
           {
             "pos": 4,
@@ -5818,7 +5997,8 @@
             "time": "+23.394s",
             "pts": 12,
             "team": "red-bull-racing",
-            "bestLap": "1:15.669"
+            "bestLap": "1:15.669",
+            "grid": 5
           },
           {
             "pos": 5,
@@ -5828,7 +6008,8 @@
             "time": "+24.261s",
             "pts": 10,
             "team": "McLaren",
-            "bestLap": "1:15.816"
+            "bestLap": "1:15.816",
+            "grid": 7
           },
           {
             "pos": 6,
@@ -5838,7 +6019,8 @@
             "time": "+26.553s",
             "pts": 8,
             "team": "Racing Bulls",
-            "bestLap": "1:15.754"
+            "bestLap": "1:15.754",
+            "grid": 10
           },
           {
             "pos": 7,
@@ -5848,7 +6030,8 @@
             "time": "+29.010s",
             "pts": 6,
             "team": "Racing Bulls",
-            "bestLap": "1:15.908"
+            "bestLap": "1:15.908",
+            "grid": 15
           },
           {
             "pos": 8,
@@ -5858,7 +6041,8 @@
             "time": "+33.413s",
             "pts": 4,
             "team": "Williams",
-            "bestLap": "1:16.393"
+            "bestLap": "1:16.393",
+            "grid": 11
           },
           {
             "pos": 9,
@@ -5868,7 +6052,8 @@
             "time": "+37.140s",
             "pts": 2,
             "team": "Haas",
-            "bestLap": "1:16.914"
+            "bestLap": "1:16.914",
+            "grid": 17
           },
           {
             "pos": 10,
@@ -5878,7 +6063,8 @@
             "time": "+41.899s",
             "pts": 1,
             "team": "Aston Martin",
-            "bestLap": "1:17.120"
+            "bestLap": "1:17.120",
+            "grid": 21
           },
           {
             "pos": 11,
@@ -5888,7 +6074,8 @@
             "time": "+42.748s",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:16.803"
+            "bestLap": "1:16.803",
+            "grid": 16
           },
           {
             "pos": 12,
@@ -5898,7 +6085,8 @@
             "time": "+43.353s",
             "pts": 0,
             "team": "mercedes",
-            "bestLap": "1:15.773"
+            "bestLap": "1:15.773",
+            "grid": 6
           },
           {
             "pos": 13,
@@ -5908,7 +6096,8 @@
             "time": "+44.102s",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:16.332"
+            "bestLap": "1:16.332",
+            "grid": 13
           },
           {
             "pos": 14,
@@ -5918,7 +6107,8 @@
             "time": "+48.964s",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:16.316"
+            "bestLap": "1:16.316",
+            "grid": 14
           },
           {
             "pos": 15,
@@ -5928,7 +6118,8 @@
             "time": "+49.153s",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:16.891"
+            "bestLap": "1:16.891",
+            "grid": 18
           },
           {
             "pos": 16,
@@ -5938,7 +6129,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:18.022"
+            "bestLap": "1:18.022",
+            "grid": 12
           },
           {
             "pos": 17,
@@ -5948,7 +6140,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Ferrari",
-            "bestLap": "1:15.964"
+            "bestLap": "1:15.964",
+            "grid": 4
           },
           {
             "pos": 18,
@@ -5958,7 +6151,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:18.845"
+            "bestLap": "1:18.845",
+            "grid": 22
           },
           {
             "pos": 19,
@@ -5968,7 +6162,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "McLaren",
-            "bestLap": "1:17.670"
+            "bestLap": "1:17.670",
+            "grid": 8
           },
           {
             "pos": 20,
@@ -5978,7 +6173,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:18.475"
+            "bestLap": "1:18.475",
+            "grid": 19
           },
           {
             "pos": 21,
@@ -5988,7 +6184,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:20.494"
+            "bestLap": "1:20.494",
+            "grid": 20
           },
           {
             "pos": 22,
@@ -5997,7 +6194,8 @@
             "laps": "0",
             "time": "DNF",
             "pts": 0,
-            "team": "red-bull-racing"
+            "team": "red-bull-racing",
+            "grid": 2
           }
         ]
       }
@@ -6761,7 +6959,8 @@
             "pts": 25,
             "team": "Ferrari",
             "bestLap": "1:20.122",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 2
           },
           {
             "pos": 2,
@@ -6771,7 +6970,8 @@
             "time": "+19.561s",
             "pts": 18,
             "team": "mercedes",
-            "bestLap": "1:20.640"
+            "bestLap": "1:20.640",
+            "grid": 1
           },
           {
             "pos": 3,
@@ -6781,7 +6981,8 @@
             "time": "+23.719s",
             "pts": 15,
             "team": "McLaren",
-            "bestLap": "1:20.232"
+            "bestLap": "1:20.232",
+            "grid": 4
           },
           {
             "pos": 4,
@@ -6791,7 +6992,8 @@
             "time": "+40.497s",
             "pts": 12,
             "team": "red-bull-racing",
-            "bestLap": "1:20.230"
+            "bestLap": "1:20.230",
+            "grid": 5
           },
           {
             "pos": 5,
@@ -6801,7 +7003,8 @@
             "time": "+58.661s",
             "pts": 10,
             "team": "McLaren",
-            "bestLap": "1:20.835"
+            "bestLap": "1:20.835",
+            "grid": 7
           },
           {
             "pos": 6,
@@ -6811,7 +7014,8 @@
             "time": "+1 Lap",
             "pts": 8,
             "team": "red-bull-racing",
-            "bestLap": "1:20.150"
+            "bestLap": "1:20.150",
+            "grid": 6
           },
           {
             "pos": 7,
@@ -6821,7 +7025,8 @@
             "time": "+1 Lap",
             "pts": 6,
             "team": "Alpine",
-            "bestLap": "1:21.708"
+            "bestLap": "1:21.708",
+            "grid": 14
           },
           {
             "pos": 8,
@@ -6831,7 +7036,8 @@
             "time": "+1 Lap",
             "pts": 4,
             "team": "Racing Bulls",
-            "bestLap": "1:22.691"
+            "bestLap": "1:22.691",
+            "grid": 8
           },
           {
             "pos": 9,
@@ -6841,7 +7047,8 @@
             "time": "+1 Lap",
             "pts": 2,
             "team": "Racing Bulls",
-            "bestLap": "1:21.914"
+            "bestLap": "1:21.914",
+            "grid": 11
           },
           {
             "pos": 10,
@@ -6851,7 +7058,8 @@
             "time": "+1 Lap",
             "pts": 1,
             "team": "Alpine",
-            "bestLap": "1:22.449"
+            "bestLap": "1:22.449",
+            "grid": 13
           },
           {
             "pos": 11,
@@ -6861,7 +7069,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:21.446"
+            "bestLap": "1:21.446",
+            "grid": 12
           },
           {
             "pos": 12,
@@ -6871,7 +7080,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:22.061"
+            "bestLap": "1:22.061",
+            "grid": 16
           },
           {
             "pos": 13,
@@ -6881,7 +7091,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:21.643"
+            "bestLap": "1:21.643",
+            "grid": 17
           },
           {
             "pos": 14,
@@ -6891,7 +7102,8 @@
             "time": "+3 Laps",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:22.820"
+            "bestLap": "1:22.820",
+            "grid": 19
           },
           {
             "pos": 15,
@@ -6901,7 +7113,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Ferrari",
-            "bestLap": "1:20.379"
+            "bestLap": "1:20.379",
+            "grid": 10
           },
           {
             "pos": 16,
@@ -6911,7 +7124,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "mercedes",
-            "bestLap": "1:20.704"
+            "bestLap": "1:20.704",
+            "grid": 3
           },
           {
             "pos": 17,
@@ -6921,7 +7135,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:22.419"
+            "bestLap": "1:22.419",
+            "grid": 15
           },
           {
             "pos": 18,
@@ -6931,7 +7146,8 @@
             "time": "+11 Laps",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:21.744"
+            "bestLap": "1:21.744",
+            "grid": 18
           },
           {
             "pos": 19,
@@ -6941,7 +7157,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:25.366"
+            "bestLap": "1:25.366",
+            "grid": 22
           },
           {
             "pos": 20,
@@ -6951,7 +7168,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:23.447"
+            "bestLap": "1:23.447",
+            "grid": 9
           },
           {
             "pos": 21,
@@ -6961,7 +7179,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:25.745"
+            "bestLap": "1:25.745",
+            "grid": 20
           },
           {
             "pos": 22,
@@ -6971,7 +7190,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:25.904"
+            "bestLap": "1:25.904",
+            "grid": 21
           }
         ]
       }
@@ -7747,7 +7967,8 @@
             "time": "1:26:37.979",
             "pts": 25,
             "team": "mercedes",
-            "bestLap": "1:10.683"
+            "bestLap": "1:10.683",
+            "grid": 1
           },
           {
             "pos": 2,
@@ -7757,7 +7978,8 @@
             "time": "+1.611s",
             "pts": 18,
             "team": "red-bull-racing",
-            "bestLap": "1:10.483"
+            "bestLap": "1:10.483",
+            "grid": 5
           },
           {
             "pos": 3,
@@ -7768,7 +7990,8 @@
             "pts": 15,
             "team": "mercedes",
             "bestLap": "1:10.374",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 4
           },
           {
             "pos": 4,
@@ -7778,7 +8001,8 @@
             "time": "+21.809s",
             "pts": 12,
             "team": "McLaren",
-            "bestLap": "1:10.595"
+            "bestLap": "1:10.595",
+            "grid": 7
           },
           {
             "pos": 5,
@@ -7788,7 +8012,8 @@
             "time": "+26.393s",
             "pts": 10,
             "team": "Ferrari",
-            "bestLap": "1:10.946"
+            "bestLap": "1:10.946",
+            "grid": 3
           },
           {
             "pos": 6,
@@ -7798,7 +8023,8 @@
             "time": "+29.399s",
             "pts": 8,
             "team": "red-bull-racing",
-            "bestLap": "1:10.947"
+            "bestLap": "1:10.947",
+            "grid": 8
           },
           {
             "pos": 7,
@@ -7808,7 +8034,8 @@
             "time": "+31.505s",
             "pts": 6,
             "team": "McLaren",
-            "bestLap": "1:10.652"
+            "bestLap": "1:10.652",
+            "grid": 6
           },
           {
             "pos": 8,
@@ -7818,7 +8045,8 @@
             "time": "+45.659s",
             "pts": 4,
             "team": "Ferrari",
-            "bestLap": "1:10.606"
+            "bestLap": "1:10.606",
+            "grid": 2
           },
           {
             "pos": 9,
@@ -7828,7 +8056,8 @@
             "time": "+1 Lap",
             "pts": 2,
             "team": "Racing Bulls",
-            "bestLap": "1:11.547"
+            "bestLap": "1:11.547",
+            "grid": 9
           },
           {
             "pos": 10,
@@ -7838,7 +8067,8 @@
             "time": "+1 Lap",
             "pts": 1,
             "team": "Racing Bulls",
-            "bestLap": "1:11.587"
+            "bestLap": "1:11.587",
+            "grid": 10
           },
           {
             "pos": 11,
@@ -7848,7 +8078,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:11.866"
+            "bestLap": "1:11.866",
+            "grid": 12
           },
           {
             "pos": 12,
@@ -7858,7 +8089,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:11.634"
+            "bestLap": "1:11.634",
+            "grid": 14
           },
           {
             "pos": 13,
@@ -7868,7 +8100,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:11.466"
+            "bestLap": "1:11.466",
+            "grid": 11
           },
           {
             "pos": 14,
@@ -7878,7 +8111,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:12.207"
+            "bestLap": "1:12.207",
+            "grid": 13
           },
           {
             "pos": 15,
@@ -7888,7 +8122,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:11.795"
+            "bestLap": "1:11.795",
+            "grid": 16
           },
           {
             "pos": 16,
@@ -7898,7 +8133,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:12.979"
+            "bestLap": "1:12.979",
+            "grid": 15
           },
           {
             "pos": 17,
@@ -7908,7 +8144,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:13.137"
+            "bestLap": "1:13.137",
+            "grid": 18
           },
           {
             "pos": 18,
@@ -7918,7 +8155,8 @@
             "time": "+3 Laps",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:12.501"
+            "bestLap": "1:12.501",
+            "grid": 21
           },
           {
             "pos": 19,
@@ -7928,7 +8166,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:13.796"
+            "bestLap": "1:13.796",
+            "grid": 22
           },
           {
             "pos": 20,
@@ -7938,7 +8177,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:13.694"
+            "bestLap": "1:13.694",
+            "grid": 17
           },
           {
             "pos": 21,
@@ -7948,7 +8188,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:14.448"
+            "bestLap": "1:14.448",
+            "grid": 19
           },
           {
             "pos": 22,
@@ -7958,7 +8199,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:24.462"
+            "bestLap": "1:24.462",
+            "grid": 20
           }
         ]
       }
@@ -8350,7 +8592,8 @@
             "pts": 8,
             "team": "mercedes",
             "bestLap": "1:31.607",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 2
           },
           {
             "pos": 2,
@@ -8360,7 +8603,8 @@
             "time": "+2.745s",
             "pts": 7,
             "team": "Ferrari",
-            "bestLap": "1:31.908"
+            "bestLap": "1:31.908",
+            "grid": 1
           },
           {
             "pos": 3,
@@ -8370,7 +8614,8 @@
             "time": "+9.783s",
             "pts": 6,
             "team": "McLaren",
-            "bestLap": "1:32.190"
+            "bestLap": "1:32.190",
+            "grid": 6
           },
           {
             "pos": 4,
@@ -8380,7 +8625,8 @@
             "time": "+10.639s",
             "pts": 5,
             "team": "mercedes",
-            "bestLap": "1:31.977"
+            "bestLap": "1:31.977",
+            "grid": 5
           },
           {
             "pos": 5,
@@ -8390,7 +8636,8 @@
             "time": "+12.620s",
             "pts": 4,
             "team": "Ferrari",
-            "bestLap": "1:32.158"
+            "bestLap": "1:32.158",
+            "grid": 4
           },
           {
             "pos": 6,
@@ -8400,7 +8647,8 @@
             "time": "+16.550s",
             "pts": 3,
             "team": "red-bull-racing",
-            "bestLap": "1:32.393"
+            "bestLap": "1:32.393",
+            "grid": 3
           },
           {
             "pos": 7,
@@ -8410,7 +8658,8 @@
             "time": "+17.551s",
             "pts": 2,
             "team": "McLaren",
-            "bestLap": "1:32.223"
+            "bestLap": "1:32.223",
+            "grid": 7
           },
           {
             "pos": 8,
@@ -8420,7 +8669,8 @@
             "time": "+30.233s",
             "pts": 1,
             "team": "Racing Bulls",
-            "bestLap": "1:33.051"
+            "bestLap": "1:33.051",
+            "grid": 9
           },
           {
             "pos": 9,
@@ -8430,7 +8680,8 @@
             "time": "+30.953s",
             "pts": 0,
             "team": "red-bull-racing",
-            "bestLap": "1:33.000"
+            "bestLap": "1:33.000",
+            "grid": 8
           },
           {
             "pos": 10,
@@ -8440,7 +8691,8 @@
             "time": "+35.110s",
             "pts": 0,
             "team": "Racing Bulls",
-            "bestLap": "1:33.572"
+            "bestLap": "1:33.572",
+            "grid": 10
           },
           {
             "pos": 11,
@@ -8450,7 +8702,8 @@
             "time": "+40.273s",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:33.880"
+            "bestLap": "1:33.880",
+            "grid": 11
           },
           {
             "pos": 12,
@@ -8460,7 +8713,8 @@
             "time": "+41.026s",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:33.520"
+            "bestLap": "1:33.520",
+            "grid": 14
           },
           {
             "pos": 13,
@@ -8470,7 +8724,8 @@
             "time": "+42.499s",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:33.506"
+            "bestLap": "1:33.506",
+            "grid": 12
           },
           {
             "pos": 14,
@@ -8480,7 +8735,8 @@
             "time": "+45.784s",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:33.574"
+            "bestLap": "1:33.574",
+            "grid": 16
           },
           {
             "pos": 15,
@@ -8490,7 +8746,8 @@
             "time": "+46.680s",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:33.497"
+            "bestLap": "1:33.497",
+            "grid": 13
           },
           {
             "pos": 16,
@@ -8500,7 +8757,8 @@
             "time": "+49.810s",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:34.399"
+            "bestLap": "1:34.399",
+            "grid": 17
           },
           {
             "pos": 17,
@@ -8510,7 +8768,8 @@
             "time": "+50.379s",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:34.186"
+            "bestLap": "1:34.186",
+            "grid": 15
           },
           {
             "pos": 18,
@@ -8520,7 +8779,8 @@
             "time": "+50.757s",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:33.989"
+            "bestLap": "1:33.989",
+            "grid": 22
           },
           {
             "pos": 19,
@@ -8530,7 +8790,8 @@
             "time": "+75.117s",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:35.371"
+            "bestLap": "1:35.371",
+            "grid": 19
           },
           {
             "pos": 20,
@@ -8540,7 +8801,8 @@
             "time": "+91.872s",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:36.301"
+            "bestLap": "1:36.301",
+            "grid": 20
           },
           {
             "pos": 21,
@@ -8550,7 +8812,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:35.028"
+            "bestLap": "1:35.028",
+            "grid": 21
           },
           {
             "pos": 22,
@@ -8560,7 +8823,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:34.528"
+            "bestLap": "1:34.528",
+            "grid": 18
           }
         ]
       },
@@ -8752,7 +9016,8 @@
             "time": "1:27:11.335",
             "pts": 25,
             "team": "Ferrari",
-            "bestLap": "1:32.871"
+            "bestLap": "1:32.871",
+            "grid": 2
           },
           {
             "pos": 2,
@@ -8762,7 +9027,8 @@
             "time": "+0.427s",
             "pts": 18,
             "team": "mercedes",
-            "bestLap": "1:32.489"
+            "bestLap": "1:32.489",
+            "grid": 4
           },
           {
             "pos": 3,
@@ -8772,7 +9038,8 @@
             "time": "+0.772s",
             "pts": 15,
             "team": "Ferrari",
-            "bestLap": "1:32.309"
+            "bestLap": "1:32.309",
+            "grid": 3
           },
           {
             "pos": 4,
@@ -8782,7 +9049,8 @@
             "time": "+1.149s",
             "pts": 12,
             "team": "McLaren",
-            "bestLap": "1:32.625"
+            "bestLap": "1:32.625",
+            "grid": 6
           },
           {
             "pos": 5,
@@ -8792,7 +9060,8 @@
             "time": "+1.598s",
             "pts": 10,
             "team": "red-bull-racing",
-            "bestLap": "1:32.268"
+            "bestLap": "1:32.268",
+            "grid": 5
           },
           {
             "pos": 6,
@@ -8802,7 +9071,8 @@
             "time": "+2.023s",
             "pts": 8,
             "team": "Racing Bulls",
-            "bestLap": "1:33.648"
+            "bestLap": "1:33.648",
+            "grid": 10
           },
           {
             "pos": 7,
@@ -8812,7 +9082,8 @@
             "time": "+2.214s",
             "pts": 6,
             "team": "Racing Bulls",
-            "bestLap": "1:33.632"
+            "bestLap": "1:33.632",
+            "grid": 9
           },
           {
             "pos": 8,
@@ -8822,7 +9093,8 @@
             "time": "+2.413s",
             "pts": 4,
             "team": "Audi",
-            "bestLap": "1:33.650"
+            "bestLap": "1:33.650",
+            "grid": 11
           },
           {
             "pos": 9,
@@ -8832,7 +9104,8 @@
             "time": "+3.229s",
             "pts": 2,
             "team": "Alpine",
-            "bestLap": "1:34.281"
+            "bestLap": "1:34.281",
+            "grid": 19
           },
           {
             "pos": 10,
@@ -8842,7 +9115,8 @@
             "time": "+3.445s",
             "pts": 1,
             "team": "Alpine",
-            "bestLap": "1:34.179"
+            "bestLap": "1:34.179",
+            "grid": 15
           },
           {
             "pos": 11,
@@ -8852,7 +9126,8 @@
             "time": "+4.014s",
             "pts": 0,
             "team": "McLaren",
-            "bestLap": "1:32.917"
+            "bestLap": "1:32.917",
+            "grid": 8
           },
           {
             "pos": 12,
@@ -8862,7 +9137,8 @@
             "time": "+5.245s",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:34.455"
+            "bestLap": "1:34.455",
+            "grid": 13
           },
           {
             "pos": 13,
@@ -8872,7 +9148,8 @@
             "time": "+5.512s",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:34.792"
+            "bestLap": "1:34.792",
+            "grid": 17
           },
           {
             "pos": 14,
@@ -8882,7 +9159,8 @@
             "time": "+7.403s",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:35.520"
+            "bestLap": "1:35.520",
+            "grid": 20
           },
           {
             "pos": 15,
@@ -8893,7 +9171,8 @@
             "pts": 0,
             "team": "mercedes",
             "bestLap": "1:31.777",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 1
           },
           {
             "pos": 16,
@@ -8903,7 +9182,8 @@
             "time": "+8.162s",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:35.893"
+            "bestLap": "1:35.893",
+            "grid": 18
           },
           {
             "pos": 17,
@@ -8913,7 +9193,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:32.734"
+            "bestLap": "1:32.734",
+            "grid": 14
           },
           {
             "pos": 18,
@@ -8923,7 +9204,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:35.827"
+            "bestLap": "1:35.827",
+            "grid": 21
           },
           {
             "pos": 19,
@@ -8933,7 +9215,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:37.232"
+            "bestLap": "1:37.232",
+            "grid": 22
           },
           {
             "pos": 20,
@@ -8943,7 +9226,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "red-bull-racing",
-            "bestLap": "1:32.101"
+            "bestLap": "1:32.101",
+            "grid": 7
           },
           {
             "pos": 21,
@@ -8953,7 +9237,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:33.867"
+            "bestLap": "1:33.867",
+            "grid": 16
           },
           {
             "pos": 22,
@@ -8963,7 +9248,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:33.433"
+            "bestLap": "1:33.433",
+            "grid": 12
           }
         ]
       }
@@ -9734,7 +10020,8 @@
             "time": "1:24:42.479",
             "pts": 25,
             "team": "mercedes",
-            "bestLap": "1:49.098"
+            "bestLap": "1:49.098",
+            "grid": 1
           },
           {
             "pos": 2,
@@ -9744,7 +10031,8 @@
             "time": "+1.952s",
             "pts": 18,
             "team": "Ferrari",
-            "bestLap": "1:49.333"
+            "bestLap": "1:49.333",
+            "grid": 4
           },
           {
             "pos": 3,
@@ -9754,7 +10042,8 @@
             "time": "+11.586s",
             "pts": 15,
             "team": "red-bull-racing",
-            "bestLap": "1:49.618"
+            "bestLap": "1:49.618",
+            "grid": 2
           },
           {
             "pos": 4,
@@ -9764,7 +10053,8 @@
             "time": "+17.245s",
             "pts": 12,
             "team": "Ferrari",
-            "bestLap": "1:49.454"
+            "bestLap": "1:49.454",
+            "grid": 5
           },
           {
             "pos": 5,
@@ -9774,7 +10064,8 @@
             "time": "+18.988s",
             "pts": 10,
             "team": "McLaren",
-            "bestLap": "1:49.562"
+            "bestLap": "1:49.562",
+            "grid": 6
           },
           {
             "pos": 6,
@@ -9784,7 +10075,8 @@
             "time": "+23.307s",
             "pts": 8,
             "team": "red-bull-racing",
-            "bestLap": "1:49.298"
+            "bestLap": "1:49.298",
+            "grid": 21
           },
           {
             "pos": 7,
@@ -9795,7 +10087,8 @@
             "pts": 6,
             "team": "McLaren",
             "bestLap": "1:48.890",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 13
           },
           {
             "pos": 8,
@@ -9805,7 +10098,8 @@
             "time": "+49.140s",
             "pts": 4,
             "team": "Audi",
-            "bestLap": "1:50.334"
+            "bestLap": "1:50.334",
+            "grid": 8
           },
           {
             "pos": 9,
@@ -9815,7 +10109,8 @@
             "time": "+50.406s",
             "pts": 2,
             "team": "Racing Bulls",
-            "bestLap": "1:50.536"
+            "bestLap": "1:50.536",
+            "grid": 7
           },
           {
             "pos": 10,
@@ -9825,7 +10120,8 @@
             "time": "+76.037s",
             "pts": 1,
             "team": "Alpine",
-            "bestLap": "1:51.162"
+            "bestLap": "1:51.162",
+            "grid": 11
           },
           {
             "pos": 11,
@@ -9835,7 +10131,8 @@
             "time": "+76.991s",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:51.101"
+            "bestLap": "1:51.101",
+            "grid": 10
           },
           {
             "pos": 12,
@@ -9845,7 +10142,8 @@
             "time": "+77.523s",
             "pts": 0,
             "team": "Racing Bulls",
-            "bestLap": "1:51.075"
+            "bestLap": "1:51.075",
+            "grid": 9
           },
           {
             "pos": 13,
@@ -9855,7 +10153,8 @@
             "time": "+78.348s",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:50.503"
+            "bestLap": "1:50.503",
+            "grid": 12
           },
           {
             "pos": 14,
@@ -9865,7 +10164,8 @@
             "time": "+94.465s",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:51.109"
+            "bestLap": "1:51.109",
+            "grid": 14
           },
           {
             "pos": 15,
@@ -9875,7 +10175,8 @@
             "time": "+104.684s",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:51.894"
+            "bestLap": "1:51.894",
+            "grid": 15
           },
           {
             "pos": 16,
@@ -9885,7 +10186,8 @@
             "time": "+105.856s",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:51.363"
+            "bestLap": "1:51.363",
+            "grid": 19
           },
           {
             "pos": 17,
@@ -9895,7 +10197,8 @@
             "time": "+110.925s",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:51.900"
+            "bestLap": "1:51.900",
+            "grid": 16
           },
           {
             "pos": 18,
@@ -9905,7 +10208,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:52.011"
+            "bestLap": "1:52.011",
+            "grid": 17
           },
           {
             "pos": 19,
@@ -9915,7 +10219,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:52.948"
+            "bestLap": "1:52.948",
+            "grid": 22
           },
           {
             "pos": 20,
@@ -9925,7 +10230,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:53.980"
+            "bestLap": "1:53.980",
+            "grid": 20
           },
           {
             "pos": 21,
@@ -9935,7 +10241,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:53.477"
+            "bestLap": "1:53.477",
+            "grid": 18
           },
           {
             "pos": 22,
@@ -9944,7 +10251,8 @@
             "laps": "0",
             "time": "DNF",
             "pts": 0,
-            "team": "mercedes"
+            "team": "mercedes",
+            "grid": 3
           }
         ]
       }
@@ -10712,7 +11020,8 @@
             "time": "1:39:56.180",
             "pts": 25,
             "team": "McLaren",
-            "bestLap": "1:22.491"
+            "bestLap": "1:22.491",
+            "grid": 1
           },
           {
             "pos": 2,
@@ -10722,7 +11031,8 @@
             "time": "+15.080s",
             "pts": 18,
             "team": "red-bull-racing",
-            "bestLap": "1:23.433"
+            "bestLap": "1:23.433",
+            "grid": 4
           },
           {
             "pos": 3,
@@ -10732,7 +11042,8 @@
             "time": "+18.728s",
             "pts": 15,
             "team": "mercedes",
-            "bestLap": "1:22.415"
+            "bestLap": "1:22.415",
+            "grid": 7
           },
           {
             "pos": 4,
@@ -10743,7 +11054,8 @@
             "pts": 12,
             "team": "Ferrari",
             "bestLap": "1:22.000",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 2
           },
           {
             "pos": 5,
@@ -10753,7 +11065,8 @@
             "time": "+24.540s",
             "pts": 10,
             "team": "Ferrari",
-            "bestLap": "1:22.300"
+            "bestLap": "1:22.300",
+            "grid": 5
           },
           {
             "pos": 6,
@@ -10763,7 +11076,8 @@
             "time": "+55.488s",
             "pts": 8,
             "team": "red-bull-racing",
-            "bestLap": "1:23.218"
+            "bestLap": "1:23.218",
+            "grid": 8
           },
           {
             "pos": 7,
@@ -10773,7 +11087,8 @@
             "time": "+57.503s",
             "pts": 6,
             "team": "mercedes",
-            "bestLap": "1:22.589"
+            "bestLap": "1:22.589",
+            "grid": 6
           },
           {
             "pos": 8,
@@ -10783,7 +11098,8 @@
             "time": "+1 Lap",
             "pts": 4,
             "team": "Racing Bulls",
-            "bestLap": "1:23.900"
+            "bestLap": "1:23.900",
+            "grid": 11
           },
           {
             "pos": 9,
@@ -10793,7 +11109,8 @@
             "time": "+1 Lap",
             "pts": 2,
             "team": "Audi",
-            "bestLap": "1:23.964"
+            "bestLap": "1:23.964",
+            "grid": 10
           },
           {
             "pos": 10,
@@ -10803,7 +11120,8 @@
             "time": "+1 Lap",
             "pts": 1,
             "team": "Racing Bulls",
-            "bestLap": "1:25.931"
+            "bestLap": "1:25.931",
+            "grid": 9
           },
           {
             "pos": 11,
@@ -10813,7 +11131,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:24.783"
+            "bestLap": "1:24.783",
+            "grid": 14
           },
           {
             "pos": 12,
@@ -10823,7 +11142,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:22.871"
+            "bestLap": "1:22.871",
+            "grid": 12
           },
           {
             "pos": 13,
@@ -10833,7 +11153,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:24.718"
+            "bestLap": "1:24.718",
+            "grid": 20
           },
           {
             "pos": 14,
@@ -10843,7 +11164,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:23.679"
+            "bestLap": "1:23.679",
+            "grid": 16
           },
           {
             "pos": 15,
@@ -10853,7 +11175,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:24.624"
+            "bestLap": "1:24.624",
+            "grid": 13
           },
           {
             "pos": 16,
@@ -10863,7 +11186,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:25.889"
+            "bestLap": "1:25.889",
+            "grid": 15
           },
           {
             "pos": 17,
@@ -10873,7 +11197,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:25.403"
+            "bestLap": "1:25.403",
+            "grid": 19
           },
           {
             "pos": 18,
@@ -10883,7 +11208,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:24.864"
+            "bestLap": "1:24.864",
+            "grid": 18
           },
           {
             "pos": 19,
@@ -10893,7 +11219,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:25.884"
+            "bestLap": "1:25.884",
+            "grid": 17
           },
           {
             "pos": 20,
@@ -10903,7 +11230,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "McLaren",
-            "bestLap": "1:23.896"
+            "bestLap": "1:23.896",
+            "grid": 3
           },
           {
             "pos": 21,
@@ -10913,7 +11241,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:26.342"
+            "bestLap": "1:26.342",
+            "grid": 22
           },
           {
             "pos": 22,
@@ -10923,7 +11252,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:27.959"
+            "bestLap": "1:27.959",
+            "grid": 21
           }
         ]
       }
@@ -11314,7 +11644,8 @@
             "time": "30:25.318",
             "pts": 8,
             "team": "Mercedes-AMG",
-            "bestLap": "1:14.936"
+            "bestLap": "1:14.936",
+            "grid": 1
           },
           {
             "pos": 2,
@@ -11324,7 +11655,8 @@
             "time": "+1.360s",
             "pts": 7,
             "team": "Ferrari",
-            "bestLap": "1:15.049"
+            "bestLap": "1:15.049",
+            "grid": 3
           },
           {
             "pos": 3,
@@ -11335,7 +11667,8 @@
             "pts": 6,
             "team": "McLaren",
             "bestLap": "1:14.881",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 2
           },
           {
             "pos": 4,
@@ -11345,7 +11678,8 @@
             "time": "+5.581s",
             "pts": 5,
             "team": "Mercedes-AMG",
-            "bestLap": "1:14.990"
+            "bestLap": "1:14.990",
+            "grid": 5
           },
           {
             "pos": 5,
@@ -11355,7 +11689,8 @@
             "time": "+10.185s",
             "pts": 4,
             "team": "McLaren",
-            "bestLap": "1:15.324"
+            "bestLap": "1:15.324",
+            "grid": 4
           },
           {
             "pos": 6,
@@ -11365,7 +11700,8 @@
             "time": "+10.529s",
             "pts": 3,
             "team": "Red Bull",
-            "bestLap": "1:15.443"
+            "bestLap": "1:15.443",
+            "grid": 6
           },
           {
             "pos": 7,
@@ -11375,7 +11711,8 @@
             "time": "+12.188s",
             "pts": 2,
             "team": "Ferrari",
-            "bestLap": "1:15.557"
+            "bestLap": "1:15.557",
+            "grid": 7
           },
           {
             "pos": 8,
@@ -11385,7 +11722,8 @@
             "time": "+42.510s",
             "pts": 1,
             "team": "Alpine",
-            "bestLap": "1:16.895"
+            "bestLap": "1:16.895",
+            "grid": 8
           },
           {
             "pos": 9,
@@ -11395,7 +11733,8 @@
             "time": "+44.437s",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:16.922"
+            "bestLap": "1:16.922",
+            "grid": 9
           },
           {
             "pos": 10,
@@ -11405,7 +11744,8 @@
             "time": "+44.971s",
             "pts": 0,
             "team": "Racing Bulls",
-            "bestLap": "1:16.886"
+            "bestLap": "1:16.886",
+            "grid": 10
           },
           {
             "pos": 11,
@@ -11415,7 +11755,8 @@
             "time": "+47.471s",
             "pts": 0,
             "team": "Red Bull",
-            "bestLap": "1:16.909"
+            "bestLap": "1:16.909",
+            "grid": 11
           },
           {
             "pos": 12,
@@ -11425,7 +11766,8 @@
             "time": "+54.466s",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:16.718"
+            "bestLap": "1:16.718",
+            "grid": 13
           },
           {
             "pos": 13,
@@ -11435,7 +11777,8 @@
             "time": "+56.483s",
             "pts": 0,
             "team": "Racing Bulls",
-            "bestLap": "1:16.925"
+            "bestLap": "1:16.925",
+            "grid": 12
           },
           {
             "pos": 14,
@@ -11445,7 +11788,8 @@
             "time": "+66.098s",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:17.138"
+            "bestLap": "1:17.138",
+            "grid": 15
           },
           {
             "pos": 15,
@@ -11455,7 +11799,8 @@
             "time": "+66.588s",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:17.137"
+            "bestLap": "1:17.137",
+            "grid": 17
           },
           {
             "pos": 16,
@@ -11465,7 +11810,8 @@
             "time": "+74.632s",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:17.673"
+            "bestLap": "1:17.673",
+            "grid": 16
           },
           {
             "pos": 17,
@@ -11475,7 +11821,8 @@
             "time": "+74.650s",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:17.713"
+            "bestLap": "1:17.713",
+            "grid": 18
           },
           {
             "pos": 18,
@@ -11485,7 +11832,8 @@
             "time": "+75.284s",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:17.449"
+            "bestLap": "1:17.449",
+            "grid": 22
           },
           {
             "pos": 19,
@@ -11495,7 +11843,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:17.710"
+            "bestLap": "1:17.710",
+            "grid": 19
           },
           {
             "pos": 20,
@@ -11505,7 +11854,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:17.431"
+            "bestLap": "1:17.431",
+            "grid": 21
           },
           {
             "pos": 21,
@@ -11515,7 +11865,8 @@
             "time": "+3 Laps",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:17.462"
+            "bestLap": "1:17.462",
+            "grid": 20
           },
           {
             "pos": 22,
@@ -11525,7 +11876,8 @@
             "time": "+17 Laps",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:17.706"
+            "bestLap": "1:17.706",
+            "grid": 14
           }
         ]
       },
@@ -11717,7 +12069,8 @@
             "time": "2:04:44.859",
             "pts": 25,
             "team": "McLaren",
-            "bestLap": "1:14.321"
+            "bestLap": "1:14.321",
+            "grid": 1
           },
           {
             "pos": 2,
@@ -11727,7 +12080,8 @@
             "time": "+11.536s",
             "pts": 18,
             "team": "Mercedes-AMG",
-            "bestLap": "1:14.571"
+            "bestLap": "1:14.571",
+            "grid": 3
           },
           {
             "pos": 3,
@@ -11737,7 +12091,8 @@
             "time": "+15.906s",
             "pts": 15,
             "team": "Mercedes-AMG",
-            "bestLap": "1:15.393"
+            "bestLap": "1:15.393",
+            "grid": 2
           },
           {
             "pos": 4,
@@ -11747,7 +12102,8 @@
             "time": "+16.755s",
             "pts": 12,
             "team": "Ferrari",
-            "bestLap": "1:14.566"
+            "bestLap": "1:14.566",
+            "grid": 5
           },
           {
             "pos": 5,
@@ -11758,7 +12114,8 @@
             "pts": 10,
             "team": "Ferrari",
             "bestLap": "1:14.230",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 6
           },
           {
             "pos": 6,
@@ -11768,7 +12125,8 @@
             "time": "+32.332s",
             "pts": 8,
             "team": "McLaren",
-            "bestLap": "1:14.303"
+            "bestLap": "1:14.303",
+            "grid": 4
           },
           {
             "pos": 7,
@@ -11778,7 +12136,8 @@
             "time": "+79.915s",
             "pts": 6,
             "team": "Red Bull",
-            "bestLap": "1:15.435"
+            "bestLap": "1:15.435",
+            "grid": 8
           },
           {
             "pos": 8,
@@ -11788,7 +12147,8 @@
             "time": "+1 Lap",
             "pts": 4,
             "team": "Audi",
-            "bestLap": "1:16.048"
+            "bestLap": "1:16.048",
+            "grid": 13
           },
           {
             "pos": 9,
@@ -11798,7 +12158,8 @@
             "time": "+1 Lap",
             "pts": 2,
             "team": "Aston Martin",
-            "bestLap": "1:16.946"
+            "bestLap": "1:16.946",
+            "grid": 18
           },
           {
             "pos": 10,
@@ -11808,7 +12169,8 @@
             "time": "+1 Lap",
             "pts": 1,
             "team": "Alpine",
-            "bestLap": "1:16.220"
+            "bestLap": "1:16.220",
+            "grid": 11
           },
           {
             "pos": 11,
@@ -11818,7 +12180,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Racing Bulls",
-            "bestLap": "1:16.639"
+            "bestLap": "1:16.639",
+            "grid": 12
           },
           {
             "pos": 12,
@@ -11828,7 +12191,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Racing Bulls",
-            "bestLap": "1:16.653"
+            "bestLap": "1:16.653",
+            "grid": 10
           },
           {
             "pos": 13,
@@ -11838,7 +12202,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:15.515"
+            "bestLap": "1:15.515",
+            "grid": 9
           },
           {
             "pos": 14,
@@ -11848,7 +12213,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:15.578"
+            "bestLap": "1:15.578",
+            "grid": 14
           },
           {
             "pos": 15,
@@ -11858,7 +12224,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:17.149"
+            "bestLap": "1:17.149",
+            "grid": 22
           },
           {
             "pos": 16,
@@ -11868,7 +12235,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:17.328"
+            "bestLap": "1:17.328",
+            "grid": 17
           },
           {
             "pos": 17,
@@ -11878,7 +12246,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:17.147"
+            "bestLap": "1:17.147",
+            "grid": 16
           },
           {
             "pos": 18,
@@ -11888,7 +12257,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:17.822"
+            "bestLap": "1:17.822",
+            "grid": 21
           },
           {
             "pos": 19,
@@ -11898,7 +12268,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:17.588"
+            "bestLap": "1:17.588",
+            "grid": 15
           },
           {
             "pos": 20,
@@ -11908,7 +12279,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:17.883"
+            "bestLap": "1:17.883",
+            "grid": 19
           },
           {
             "pos": 21,
@@ -11918,7 +12290,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:37.522"
+            "bestLap": "1:37.522",
+            "grid": 20
           },
           {
             "pos": 22,
@@ -11927,7 +12300,8 @@
             "laps": "0",
             "time": "DNF",
             "pts": 0,
-            "team": "Red Bull"
+            "team": "Red Bull",
+            "grid": 7
           }
         ]
       }
@@ -12699,7 +13073,8 @@
             "pts": 25,
             "team": "Mercedes-AMG",
             "bestLap": "1:23.504",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 19
           },
           {
             "pos": 2,
@@ -12709,7 +13084,8 @@
             "time": "+3.857s",
             "pts": 18,
             "team": "Mercedes-AMG",
-            "bestLap": "1:24.390"
+            "bestLap": "1:24.390",
+            "grid": 2
           },
           {
             "pos": 3,
@@ -12719,7 +13095,8 @@
             "time": "+14.718s",
             "pts": 15,
             "team": "Red Bull",
-            "bestLap": "1:24.242"
+            "bestLap": "1:24.242",
+            "grid": 5
           },
           {
             "pos": 4,
@@ -12729,7 +13106,8 @@
             "time": "+19.056s",
             "pts": 12,
             "team": "McLaren",
-            "bestLap": "1:24.864"
+            "bestLap": "1:24.864",
+            "grid": 8
           },
           {
             "pos": 5,
@@ -12739,7 +13117,8 @@
             "time": "+19.253s",
             "pts": 10,
             "team": "McLaren",
-            "bestLap": "1:25.125"
+            "bestLap": "1:25.125",
+            "grid": 6
           },
           {
             "pos": 6,
@@ -12749,7 +13128,8 @@
             "time": "+24.655s",
             "pts": 8,
             "team": "Ferrari",
-            "bestLap": "1:25.300"
+            "bestLap": "1:25.300",
+            "grid": 4
           },
           {
             "pos": 7,
@@ -12759,7 +13139,8 @@
             "time": "+27.351s",
             "pts": 6,
             "team": "Alpine",
-            "bestLap": "1:24.927"
+            "bestLap": "1:24.927",
+            "grid": 1
           },
           {
             "pos": 8,
@@ -12769,7 +13150,8 @@
             "time": "+45.136s",
             "pts": 4,
             "team": "Racing Bulls",
-            "bestLap": "1:26.028"
+            "bestLap": "1:26.028",
+            "grid": 9
           },
           {
             "pos": 9,
@@ -12779,7 +13161,8 @@
             "time": "+47.353s",
             "pts": 2,
             "team": "Alpine",
-            "bestLap": "1:24.933"
+            "bestLap": "1:24.933",
+            "grid": 7
           },
           {
             "pos": 10,
@@ -12789,7 +13172,8 @@
             "time": "+58.187s",
             "pts": 1,
             "team": "Racing Bulls",
-            "bestLap": "1:26.320"
+            "bestLap": "1:26.320",
+            "grid": 15
           },
           {
             "pos": 11,
@@ -12799,7 +13183,8 @@
             "time": "+65.187s",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:26.188"
+            "bestLap": "1:26.188",
+            "grid": 10
           },
           {
             "pos": 12,
@@ -12809,7 +13194,8 @@
             "time": "+66.187s",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:24.364"
+            "bestLap": "1:24.364",
+            "grid": 12
           },
           {
             "pos": 13,
@@ -12819,7 +13205,8 @@
             "time": "+74.117s",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:25.683"
+            "bestLap": "1:25.683",
+            "grid": 13
           },
           {
             "pos": 14,
@@ -12829,7 +13216,8 @@
             "time": "+75.609s",
             "pts": 0,
             "team": "Red Bull",
-            "bestLap": "1:25.578"
+            "bestLap": "1:25.578",
+            "grid": 22
           },
           {
             "pos": 15,
@@ -12839,7 +13227,8 @@
             "time": "+78.958s",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:26.356"
+            "bestLap": "1:26.356",
+            "grid": 11
           },
           {
             "pos": 16,
@@ -12849,7 +13238,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:25.711"
+            "bestLap": "1:25.711",
+            "grid": 14
           },
           {
             "pos": 17,
@@ -12859,7 +13249,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:25.341"
+            "bestLap": "1:25.341",
+            "grid": 20
           },
           {
             "pos": 18,
@@ -12869,7 +13260,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:26.914"
+            "bestLap": "1:26.914",
+            "grid": 17
           },
           {
             "pos": 19,
@@ -12879,7 +13271,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:27.325"
+            "bestLap": "1:27.325",
+            "grid": 16
           },
           {
             "pos": 20,
@@ -12889,7 +13282,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:28.415"
+            "bestLap": "1:28.415",
+            "grid": 18
           },
           {
             "pos": 21,
@@ -12899,7 +13293,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:27.961"
+            "bestLap": "1:27.961",
+            "grid": 21
           },
           {
             "pos": 22,
@@ -12909,7 +13304,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Ferrari",
-            "bestLap": "1:29.695"
+            "bestLap": "1:29.695",
+            "grid": 3
           }
         ]
       }
@@ -13666,7 +14062,8 @@
             "time": "1:34:23.754",
             "pts": 25,
             "team": "Mercedes-AMG",
-            "bestLap": "1:36.030"
+            "bestLap": "1:36.030",
+            "grid": 2
           },
           {
             "pos": 2,
@@ -13676,7 +14073,8 @@
             "time": "+4.351s",
             "pts": 18,
             "team": "Red Bull",
-            "bestLap": "1:36.760"
+            "bestLap": "1:36.760",
+            "grid": 3
           },
           {
             "pos": 3,
@@ -13686,7 +14084,8 @@
             "time": "+5.089s",
             "pts": 15,
             "team": "McLaren",
-            "bestLap": "1:36.680"
+            "bestLap": "1:36.680",
+            "grid": 1
           },
           {
             "pos": 4,
@@ -13696,7 +14095,8 @@
             "time": "+29.116s",
             "pts": 12,
             "team": "Ferrari",
-            "bestLap": "1:36.063"
+            "bestLap": "1:36.063",
+            "grid": 5
           },
           {
             "pos": 5,
@@ -13707,7 +14107,8 @@
             "pts": 10,
             "team": "Mercedes-AMG",
             "bestLap": "1:35.587",
-            "fastestLap": true
+            "fastestLap": true,
+            "grid": 6
           },
           {
             "pos": 6,
@@ -13717,7 +14118,8 @@
             "time": "+86.746s",
             "pts": 8,
             "team": "Red Bull",
-            "bestLap": "1:36.846"
+            "bestLap": "1:36.846",
+            "grid": 8
           },
           {
             "pos": 7,
@@ -13727,7 +14129,8 @@
             "time": "+94.281s",
             "pts": 6,
             "team": "Alpine",
-            "bestLap": "1:37.321"
+            "bestLap": "1:37.321",
+            "grid": 9
           },
           {
             "pos": 8,
@@ -13737,7 +14140,8 @@
             "time": "+95.839s",
             "pts": 4,
             "team": "McLaren",
-            "bestLap": "1:37.226"
+            "bestLap": "1:37.226",
+            "grid": 7
           },
           {
             "pos": 9,
@@ -13747,7 +14151,8 @@
             "time": "+1 Lap",
             "pts": 2,
             "team": "Racing Bulls",
-            "bestLap": "1:38.211"
+            "bestLap": "1:38.211",
+            "grid": 10
           },
           {
             "pos": 10,
@@ -13757,7 +14162,8 @@
             "time": "+1 Lap",
             "pts": 1,
             "team": "Audi",
-            "bestLap": "1:38.114"
+            "bestLap": "1:38.114",
+            "grid": 11
           },
           {
             "pos": 11,
@@ -13767,7 +14173,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:38.119"
+            "bestLap": "1:38.119",
+            "grid": 13
           },
           {
             "pos": 12,
@@ -13777,7 +14184,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Alpine",
-            "bestLap": "1:38.141"
+            "bestLap": "1:38.141",
+            "grid": 14
           },
           {
             "pos": 13,
@@ -13787,7 +14195,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Audi",
-            "bestLap": "1:37.837"
+            "bestLap": "1:37.837",
+            "grid": 12
           },
           {
             "pos": 14,
@@ -13797,7 +14206,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Racing Bulls",
-            "bestLap": "1:38.396"
+            "bestLap": "1:38.396",
+            "grid": 15
           },
           {
             "pos": 15,
@@ -13807,7 +14217,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:39.397"
+            "bestLap": "1:39.397",
+            "grid": 16
           },
           {
             "pos": 16,
@@ -13817,7 +14228,8 @@
             "time": "+1 Lap",
             "pts": 0,
             "team": "Haas",
-            "bestLap": "1:37.308"
+            "bestLap": "1:37.308",
+            "grid": 22
           },
           {
             "pos": 17,
@@ -13827,7 +14239,8 @@
             "time": "+2 Laps",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:39.003"
+            "bestLap": "1:39.003",
+            "grid": 17
           },
           {
             "pos": 18,
@@ -13837,7 +14250,8 @@
             "time": "+3 Laps",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:39.130"
+            "bestLap": "1:39.130",
+            "grid": 19
           },
           {
             "pos": 19,
@@ -13847,7 +14261,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Williams",
-            "bestLap": "1:40.195"
+            "bestLap": "1:40.195",
+            "grid": 20
           },
           {
             "pos": 20,
@@ -13857,7 +14272,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Cadillac",
-            "bestLap": "1:41.116"
+            "bestLap": "1:41.116",
+            "grid": 18
           },
           {
             "pos": 21,
@@ -13867,7 +14283,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Aston Martin",
-            "bestLap": "1:43.462"
+            "bestLap": "1:43.462",
+            "grid": 21
           },
           {
             "pos": 22,
@@ -13877,7 +14294,8 @@
             "time": "DNF",
             "pts": 0,
             "team": "Ferrari",
-            "bestLap": "1:39.839"
+            "bestLap": "1:39.839",
+            "grid": 4
           }
         ]
       }

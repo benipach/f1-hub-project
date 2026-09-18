@@ -57,9 +57,11 @@
             const me = race.find(r => r.driver === id);
             if(!me) continue;
 
-            const quali  = sessionResults(gp, 'qualifying').find(r => r.driver === id);
             const sprint = sessionResults(gp, 'sprintRace').find(r => r.driver === id);
             const retired = isRetired(me);
+            // Parrilla real (con penalizaciones), o la quali si la temporada
+            // todavía no tiene el campo — ver shared/grid.js.
+            const start = startingGridFor(gp, 'race')[id] ?? null;
 
             rounds.push({
                 round: gp.round,
@@ -67,7 +69,8 @@
                 fullName: gp.name,           // "Hungarian Grand Prix", para el texto corrido
                 code: gpCode(gp.name),
                 flag: flagUrlFor(gp, refs),
-                grid: quali?.pos ?? null,
+                grid: start?.pos ?? null,
+                gridLabel: gridLabel(start),
                 finish: me.pos,
                 retired,
                 pts: (me.pts || 0) + (sprint?.pts || 0),
@@ -96,11 +99,10 @@
     function bestRacecraft(season){
         const gained = {};
         for(const gp of Object.values(season)){
-            const grid = {};
-            for(const q of sessionResults(gp, 'qualifying')) grid[q.driver] = q.pos;
+            const grid = startingGridFor(gp, 'race');
             for(const r of sessionResults(gp, 'race')){
                 if(isRetired(r) || typeof r.pos !== 'number') continue;
-                const g = grid[r.driver];
+                const g = grid[r.driver]?.pos;
                 if(typeof g !== 'number') continue;
                 const delta = g - r.pos;
                 if(delta > 0) gained[r.driver] = (gained[r.driver] || 0) + delta;
@@ -184,7 +186,7 @@
                     <td class="season-round-num season-col-round">R${r.round}</td>
                     <th scope="row" class="season-round-name">${r.flag ? `<img class="season-round-flag" src="${r.flag}" alt="" loading="lazy">` : ''}<span class="season-round-name-full">${r.fullName}</span><span class="season-round-name-code">${r.code}</span></th>
                     <td class="season-round-result">
-                        <span class="season-round-grid">${r.grid != null ? 'P' + r.grid : '—'}</span>
+                        <span class="season-round-grid">${r.gridLabel}</span>
                         <span class="season-round-arrow" aria-hidden="true"></span>
                         <span class="season-round-finish">${r.retired ? 'DNF' : 'P' + r.finish}</span>
                     </td>
@@ -312,7 +314,7 @@
                                 const r = rounds[items[0].dataIndex];
                                 const delta = r.grid != null && !r.retired ? r.grid - r.finish : null;
                                 const lines = [
-                                    `Grid    ${r.grid != null ? 'P' + r.grid : '—'}`,
+                                    `Grid    ${r.gridLabel}`,
                                     `Finish  ${r.retired ? 'DNF (classified P' + r.finish + ')' : 'P' + r.finish}`,
                                 ];
                                 if(delta !== null && delta !== 0){
@@ -392,7 +394,7 @@
                 : avg < -0.2 ? `lost <b>${Math.abs(avg).toFixed(1)}</b> places per race on average`
                 : `finished roughly where he started`;
             const bgText = bg && (bg.grid - bg.finish) > 0
-                ? ` Best drive: <b>${bg.fullName}</b>, P${bg.grid} to P${bg.finish}.`
+                ? ` Best drive: <b>${bg.fullName}</b>, ${bg.gridLabel} to P${bg.finish}.`
                 : '';
             note.innerHTML = `The gap between the two lines is racecraft — he ${gainText}.${bgText}`
                 + (stats.dnfs ? ` <b>${stats.dnfs}</b> retirement${stats.dnfs > 1 ? 's' : ''} shown in red.` : '');

@@ -131,7 +131,7 @@
             : isStreak
                 ? `${m.streakLength} wins in a row`
                 : m.labels.length === 1 && m.labels[0] === 'First pole'
-                    ? `P${m.grid} on the grid`
+                    ? 'P1 in qualifying'
                     : `Finished P${m.pos}`;
         return `
             <li class="bio-moment" data-kind="${isTitle ? 'title' : isWin ? 'win' : 'normal'}">

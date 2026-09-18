@@ -93,7 +93,11 @@ for (const file of files) {
                 iso: isoFor(gp),
                 date: (gp.sessions.race.date || '').slice(0, 10),
                 pos: r.pos,
-                grid: q?.pos ?? null,
+                // quali: posición en la clasificación (de acá salen las poles).
+                // grid:  posición real de largada, con penalizaciones (0 = pit
+                //        lane); si la temporada no la tiene, la quali.
+                quali: q?.pos ?? null,
+                grid: typeof r.grid === 'number' ? r.grid : (q?.pos ?? null),
                 pts: (r.pts || 0) + (s?.pts || 0),
                 dnf: isRetired(r),
                 fl: Boolean(r.fastestLap),
@@ -233,7 +237,7 @@ function buildEras(races) {
             points: e.races.reduce((a, r) => a + r.pts, 0),
             wins: eraWins.length,
             podiums: finished.filter(r => r.pos <= 3).length,
-            poles: e.races.filter(r => r.grid === 1).length,
+            poles: e.races.filter(r => r.quali === 1).length,
             best: bestRace ? bestRace.pos : null,
             bestRace,                            // insumo del hito "best result in the team"
             firstWin: eraWins[0] ?? null,        // insumos de "first/last win with the team"
@@ -334,7 +338,7 @@ for (const [driverId, races] of byDriver) {
         milestone(races.find(r => r.pts > 0), 'First points'),
         milestone(finished.find(r => r.pos <= 3), 'First podium'),
         milestone(firstWinRace, 'First win'),
-        milestone(races.find(r => r.grid === 1), 'First pole'),
+        milestone(races.find(r => r.quali === 1), 'First pole'),
         streakMilestone,
         // Un hito por cada título, en el GP donde quedó sellado.
         ...titleYears
@@ -377,7 +381,7 @@ for (const [driverId, races] of byDriver) {
         races:   lastDateOf(races),
         wins:    lastDateOf(finished.filter(r => r.pos === 1)),
         podiums: lastDateOf(finished.filter(r => r.pos <= 3)),
-        poles:   lastDateOf(races.filter(r => r.grid === 1)),
+        poles:   lastDateOf(races.filter(r => r.quali === 1)),
         // Los puntos suben sólo en las carreras donde sumó, así que la fecha
         // del total es la de la última vez que puntuó.
         points:  lastDateOf(races.filter(r => r.pts > 0)),
@@ -399,7 +403,7 @@ for (const [driverId, races] of byDriver) {
         points: races.reduce((a, r) => a + r.pts, 0),
         wins: finished.filter(r => r.pos === 1).length,
         podiums: finished.filter(r => r.pos <= 3).length,
-        poles: races.filter(r => r.grid === 1).length,
+        poles: races.filter(r => r.quali === 1).length,
         titleYears,
         titles,
         bestFinish,
