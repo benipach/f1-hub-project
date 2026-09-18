@@ -201,13 +201,16 @@
     z-index: 1;
 }
 
+/* Cabecera y celdas calcadas de .data-table th/td en grandprix.css, para que
+   las dos tablas del sitio se lean igual. */
 .standings-table th {
     height: 44px;
     padding: 0 20px;
     text-align: left;
     font-family: 'F1-Regular';
-    font-size: 11px;
-    letter-spacing: 1px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.1px;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.35);
     background: var(--base-700);
@@ -220,6 +223,7 @@
     padding: 0 20px;
     color: var(--text-light);
     font-size: 16px;
+    letter-spacing: 0.1px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     background: transparent;
     transition: background 0.15s ease;
@@ -231,12 +235,12 @@
     background: rgba(255, 255, 255, 0.035);
 }
 
-/* ---- POS CELL ---- */
+/* ---- POS CELL (= .res-pos de grandprix.css) ---- */
 .st-pos {
     width: 25px;
     text-align: center;
     font-family: 'F1-Regular';
-    font-size: 14px;
+    font-size: 16px;
     color: rgba(255, 255, 255, 0.4);
 }
 
@@ -261,10 +265,16 @@
     flex-shrink: 0;
 }
 
-/* ---- DRIVER NUMBER ---- */
+/* ---- DRIVER NUMBER (= .res-driver-number de grandprix.css) ----
+   Más chico y en negrita que el nombre, con ancho fijo alineado a la
+   derecha: así los "#1", "#63" y "#100" terminan todos en la misma vertical
+   y los nombres arrancan parejos. */
 .st-driver-num {
     font-family: 'F1-Regular';
-    font-size: 16px;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    line-height: 1;
     flex-shrink: 0;
     text-align: right;
     min-width: 32px;
@@ -287,7 +297,6 @@
 
 .st-country span {
     font-family: 'F1-Regular';
-    font-size: 14px;
     color: var(--text-light);
     white-space: nowrap;
 }
@@ -301,33 +310,38 @@
 
 .team-name {
     font-family: 'F1-Regular';
-    font-size: 14px;
     color: var(--text-light);
     white-space: nowrap;
 }
 
-/* ---- POINTS CELL ---- */
+/* ---- POINTS CELL (= .res-pts) ---- */
 .st-pts {
     text-align: center;
     font-family: 'F1-Regular';
-    font-size: 14px;
+    font-size: 16px;
     color: var(--text-light);
 }
 
-/* ---- GAP CELL ---- */
+/* ---- GAP CELL (= .res-time) ---- */
 .st-gap {
     font-family: 'F1-Regular';
-    color: rgba(255, 255, 255, 0.45);
-    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 16px;
 }
 
-/* ---- VISIBILITY HELPERS ---- */
+/* ---- VISIBILITY HELPERS ----
+   Nombre completo en escritorio, sólo apellido en el celular — mismo par de
+   clases que usa la tabla de resultados de grandprix. */
 .constructor-short { display: none; }
 
+.driver-fullname,
 .driver-lastname {
     font-family: 'F1-Regular';
     color: var(--text-light);
+    white-space: nowrap;
 }
+
+.driver-lastname { display: none; }
 
 
 
@@ -545,6 +559,9 @@
         font-size: 11px;
         min-width: 28px;
     }
+
+    .driver-fullname { display: none; }
+    .driver-lastname { display: inline; }
 
     .team-name {
         font-size: 0.75rem;

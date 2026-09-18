@@ -179,9 +179,13 @@
                 ? `<img class="st-team-logo" src="img/teams/${esc(s.meta.teamSlug)}-logo.png" alt="" onerror="this.remove()">`
                 : '';
 
+            // Misma celda que la tabla de resultados de grandprix.html:
+            // número en el color del equipo, "Nombre APELLIDO" en escritorio y
+            // sólo el apellido en el celular.
             const nameCell = kind === 'drivers'
                 ? `<div class="st-driver">
                        ${s.meta.number ? `<span class="st-driver-num" style="color:${color}">#${s.meta.number}</span>` : ''}
+                       <span class="driver-fullname">${esc(s.meta.fullNameUpper)}</span>
                        <span class="driver-lastname">${esc(s.meta.lastName)}</span>
                    </div>`
                 : `<div class="st-driver">${logo}<span class="constructor-fullname">${esc(s.meta.teamName)}</span><span class="constructor-short">${esc(s.meta.shortTeamName)}</span></div>`;
@@ -569,6 +573,9 @@
                     ...teamMeta(slug),
                     label: d?.lastName || row.driver.replace(/-/g, ' '),
                     lastName: d?.lastName || row.driver.replace(/-/g, ' '),
+                    fullNameUpper: d
+                        ? `${d.firstName} ${String(d.lastName).toUpperCase()}`
+                        : row.driver.replace(/-/g, ' '),
                     number: row.number ?? null,
                     countryName: country?.name || null,
                     flagUrl: isoFlagUrl(country?.isoCode),
