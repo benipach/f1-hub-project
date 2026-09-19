@@ -2,7 +2,8 @@
   "ags": {
     "id": "ags",
     "name": "AGS",
-    "country": "france"
+    "country": "france",
+    "base": "gonfaron"
   },
   "alfa-romeo": {
     "id": "alfa-romeo",
@@ -147,7 +148,8 @@
     "id": "cadillac",
     "name": "Cadillac",
     "country": "usa",
-    "color": "#AAAAAD"
+    "color": "#AAAAAD",
+    "base": "silverstone"
   },
   "caterham": {
     "id": "caterham",
@@ -395,7 +397,8 @@
   "pacific": {
     "id": "pacific",
     "name": "Pacific",
-    "country": "united-kingdom"
+    "country": "united-kingdom",
+    "base": "thetford"
   },
   "penske": {
     "id": "penske",

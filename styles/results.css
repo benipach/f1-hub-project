@@ -25,14 +25,15 @@
 }
 
 /* ---- TABLE CARD (no max-height, grows with content) ---- */
+/* Mismo aspecto que .standings-table-wrap (championship.css): degradado,
+   borde fino, y sin hover en el contenedor. */
 .results-table-wrap {
-    background: rgb(20,20,30);
+    background: linear-gradient(135deg, var(--base-700) 0%, var(--base-800) 100%);
     border: 1px solid rgba(255,255,255,0.05);
     border-radius: 16px;
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
-    transition: border-color 0.25s ease;
 }
 
 .results-table-wrap::-webkit-scrollbar { height: 4px; }
@@ -40,9 +41,6 @@
 .results-table-wrap::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
 .results-table-wrap::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
 
-.results-table-wrap:hover {
-    border-color: rgba(255,255,255,0.14);
-}
 
 .results-table {
     width: 100%;
@@ -52,24 +50,32 @@
     font-size: 14px;
 }
 
+/* Cabecera calcada de .data-table th (grandprix.css): misma tipografía,
+   tamaño y fondo en todas las tablas del sitio. */
 .results-table th {
     height: 44px;
     padding: 0 20px;
     text-align: left;
     font-family: 'F1-Regular', sans-serif;
-    font-size: 11px;
-    letter-spacing: 1px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.1px;
     text-transform: uppercase;
     color: rgba(255,255,255,0.35);
-    border-bottom: 1px solid rgba(255,255,255,0.07);
+    background: var(--base-700);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
     white-space: nowrap;
 }
 
 .results-table td {
-    height: 56px;
+    height: 32px;
     padding: 0 20px;
     color: var(--text-light);
+    font-size: 16px;
+    letter-spacing: 0.1px;
     border-bottom: 1px solid rgba(255,255,255,0.04);
+    background: transparent;
+    transition: background 0.15s ease;
     white-space: nowrap;
 }
 
@@ -91,15 +97,18 @@
     outline: none;
 }
 
+/* Columna de ronda = .res-pos / .st-pos: mismo tamaño y mismo gris. */
 .results-round {
-    color: rgba(255,255,255,0.35);
+    width: 25px;
+    text-align: center;
+    color: rgba(255,255,255,0.4);
     font-family: 'F1-Regular', sans-serif;
-    font-size: 13px;
+    font-size: 16px;
 }
 
 .results-gp {
     font-family: 'F1-Regular', sans-serif;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .results-flag {
@@ -107,8 +116,10 @@
 }
 
 .results-flag img {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
+    border-radius: 2px;
+    object-fit: cover;
     vertical-align: middle;
     margin-bottom: 2px;
 }
@@ -119,6 +130,7 @@
 
 .results-date {
     color: rgba(255,255,255,0.6);
+    font-size: 16px;
 }
 
 .results-winner {
@@ -142,8 +154,10 @@
 .sprint-badge {
     display: inline-flex;
     align-items: center;
-    padding: 4px 10px;
+    height: 20px;
+    padding: 0 8px;
     border-radius: 6px;
+    line-height: 1;
     background: rgba(225,6,0,0.1);
     border: 1px solid rgba(225,6,0,0.2);
     color: var(--primary-red);
@@ -157,11 +171,13 @@
 }
 
 .res-duration-col {
-    color: rgba(255,255,255,0.55);
+    color: rgba(255,255,255,0.6);
+    font-size: 16px;
 }
 
 .res-laps-col {
     color: rgba(255,255,255,0.55);
+    font-size: 16px;
 }
 
 /* ---- RESPONSIVE ---- */
@@ -181,6 +197,21 @@
 }
 
 /* ---- SESSION TABS ---- */
+/* Calcadas de #session-tabs-container / .session-tab-bar de grandprix.css:
+   misma tipografía, mismo indicador rojo, misma animación y mismo
+   comportamiento en móvil. Cualquier cambio de aspecto se hace allá y se
+   copia acá. */
+#results-tabs-container {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+#results-tabs-container.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .session-tab-bar {
     position: relative;
     display: flex;
@@ -188,7 +219,6 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     margin-bottom: 0;
     flex-wrap: wrap;
-    animation: tabFadeIn 0.4s ease 0.1s backwards;
 }
 
 .session-tab-indicator {
@@ -206,8 +236,9 @@
     border-bottom: 2px solid transparent;
     background: none;
     color: var(--text-dim);
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 11px;
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: 14px;
     letter-spacing: 1px;
     text-transform: uppercase;
     cursor: pointer;
@@ -225,22 +256,22 @@
 
 .session-tab-panel {
     display: none;
-    padding-top: 2rem;
+    padding-top: 2.5rem;
 }
 
 .session-tab-panel.active {
     display: block;
-    animation: tabFadeIn 0.3s ease;
+    animation: tabFadeIn 0.35s ease;
 }
 
 @keyframes tabFadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateX(var(--tab-slide-x, 0px)); }
+    to   { opacity: 1; transform: translateX(0); }
 }
 
 .tab-label-short { display: none; }
 
-@media (max-width: 500px) {
+@media (max-width: 500px){
     .session-tab-btn { padding: 0.6rem 12px; font-size: 0.65rem; flex: 1; text-align: center; white-space: normal; }
     .tab-label-short { display: inline; }
     .tab-label-full  { display: none; }

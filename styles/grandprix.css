@@ -1158,16 +1158,13 @@ color: var(--text-dim);
 }
 
 /* ---- SHARED TABLE SYSTEM ---- */
+/* Mismo aspecto que .standings-table-wrap (championship.css): degradado,
+   borde fino, y sin hover en el contenedor. */
 .race-table-wrap {
 overflow-y: auto;
-background: rgb(20,20,30);
+background: linear-gradient(135deg, var(--base-700) 0%, var(--base-800) 100%);
 border: 1px solid rgba(255,255,255,0.05);
 border-radius: 16px;
-transition: border-color 0.25s ease;
-}
-
-.race-table-wrap:hover {
-border-color: rgba(255,255,255,0.14);
 }
 
 .data-table {
@@ -1194,8 +1191,8 @@ font-size: 14px;
 letter-spacing: 0.1px;
 text-transform: uppercase;
 color: rgba(255,255,255,0.35);
-background: rgb(20,20,30);
-border-bottom: 1px solid rgba(255,255,255,0.07);
+background: var(--base-700);
+border-bottom: 1px solid rgba(255,255,255,0.04);
 white-space: nowrap;
 }
 

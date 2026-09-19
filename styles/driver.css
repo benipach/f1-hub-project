@@ -557,10 +557,11 @@
     }
 
     /* ── Detalle ronda a ronda (tabla) ── */
+    /* Mismo aspecto que .standings-table-wrap (championship.css). */
     .season-table-wrap {
         background: linear-gradient(135deg, var(--base-700) 0%, var(--base-800) 100%);
-        border: 1px solid rgba(255,255,255,0.06);
-        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 16px;
         overflow: hidden;
     }
 
@@ -583,14 +584,17 @@
     .season-table .is-center { text-align: center; }
     .season-table .is-right  { text-align: right; }
 
+    /* Cabecera calcada de .data-table th (grandprix.css). */
     .season-table thead th {
         height: 44px;
-        border-bottom: 1px solid rgba(255,255,255,0.07);
+        border-bottom: 1px solid rgba(255,255,255,0.04);
         font-family: 'F1-Regular';
         font-size: 14px;
         font-weight: 600;
+        letter-spacing: 0.1px;
         text-transform: uppercase;
         color: rgba(255,255,255,0.35);
+        background: var(--base-700);
         white-space: nowrap;
     }
 

@@ -199,6 +199,8 @@ function renderSessionTabs(gp, ctx) {
     });
 
     window.addEventListener('resize', () => moveIndicator(tabBar.querySelector('.session-tab-btn.active')));
+    // Re-medir cuando carga la fuente F1: los botones cambian de ancho.
+    document.fonts?.ready.then(() => moveIndicator(tabBar.querySelector('.session-tab-btn.active')));
 
     for (const [jsonKey, htmlKey] of available) renderSessionPanel(gp, jsonKey, htmlKey, ctx);
     activate(defaultHtmlKey);

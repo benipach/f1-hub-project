@@ -2,6 +2,9 @@
 // Pure logic lives in shared/*.js; this file only touches the DOM.
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // archive.html también carga este archivo (para renderRaceCards), pero
+    // ahí el año lo elige el usuario: sólo el index arranca solo.
+    if (!document.getElementById('hero-image')) return;
     try {
         const [latest, circuits, cities, countries, teams, drivers] = await Promise.all([
             loadLatest('.'),
@@ -215,8 +218,7 @@ function bindSessionHoverCta(container) {
 
 // ── Season calendar (race cards) ───────────────────────────────────────────
 
-function renderRaceCards(season, ctx) {
-    const calendar = document.querySelector('.race-calendar');
+function renderRaceCards(season, ctx, calendar = document.querySelector('.race-calendar')) {
     if (!calendar) return;
 
     calendar.querySelectorAll('.race-card').forEach(el => el.remove());
@@ -372,6 +374,9 @@ function initRaceCardReveal() {
     const title = document.getElementById('calendar-title');
     if (!cards.length) return;
 
+    // Sin animación de entrada para las tarjetas que ya están en pantalla al
+    // renderizar (archive cambia de año con la página ya scrolleada): si no,
+    // quedan invisibles hasta que el observer las vea "entrar".
     _cardRevealObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if (!entry.isIntersecting) return;
