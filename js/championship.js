@@ -1,9 +1,15 @@
-// ── 2026 CHAMPIONSHIP — progresión de puntos + tabla de posiciones ──
+// ── CHAMPIONSHIP — progresión de puntos + tabla de posiciones ──
 //
-// Se alimenta de data/seasons/season2026.json + drivers/teams/circuits/cities/
+// Se alimenta de data/seasons/season{año}.json + drivers/teams/circuits/cities/
 // countries. Reemplaza al gráfico SVG hecho a mano que había antes: el eje, el
 // tooltip y el resaltado ahora son los mismos de la curva de forma del piloto
 // (Chart.js), así las dos páginas se leen igual.
+//
+// Expone window.renderChampionship(root, year): championship.html lo llama
+// una vez con la temporada vigente (data/latest.json), y archive.html cada
+// vez que se elige un año del selector, sobre el mismo marcado. Se puede
+// volver a llamar sobre el mismo root: destruye los gráficos y listeners de
+// la vuelta anterior antes de dibujar.
 //
 // La idea del gráfico: una tabla dice quién va ganando, una línea dice *cómo* se
 // llegó hasta ahí. Con 22 pilotos superpuestos eso sólo se lee si se puede aislar
@@ -13,12 +19,8 @@
 // gpCode()/gpShortLabel() vienen de js/shared/gp.js.
 
 (function(){
-    const SEASON_YEAR = 2026;
     const BASE = './data';
     const TWEMOJI_BASE = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/';
-
-    const root = document.getElementById('championship');
-    if(!root) return;
 
     // ── Helpers de datos ───────────────────────────────────────────────────
     const sessionResults = (gp, key) => {
@@ -118,7 +120,7 @@
                 const key = keyOf(row);
                 if(!key) continue;
                 const entry = ensure(key);
-                const slot = entry.perRound[i] || { pts: 0, sprintPts: 0, pos: null, retired: false };
+                const slot = entry.perRound[i] || { pts: 0, sprintPts: 0, pos: null, retired: false, won: false, cars: 0, dnfs: 0, best: null };
 
                 slot.pts += row.pts || 0;
                 if(row.sprint){
@@ -126,11 +128,17 @@
                 } else {
                     // El puesto y el abandono son los de la carrera larga; el sprint
                     // sólo aporta puntos.
+                    const retired = isRetired(row);
                     slot.pos = groupOf ? null : row.pos ?? null;
-                    slot.retired = groupOf ? false : isRetired(row);
-                    if(!groupOf && !isRetired(row)){
-                        if(row.pos === 1) entry.wins++;
+                    slot.retired = groupOf ? false : retired;
+                    // Para la columna Form: en un equipo cuentan los dos autos
+                    // (ganó si alguno ganó; "DNF" sólo si no llegó ninguno).
+                    slot.cars++;
+                    if(retired) slot.dnfs++;
+                    if(!retired){
+                        if(row.pos === 1){ entry.wins++; slot.won = true; }
                         if(row.pos <= 3) entry.podiums++;
+                        if(typeof row.pos === 'number' && (slot.best == null || row.pos < slot.best)) slot.best = row.pos;
                     }
                 }
 
@@ -168,7 +176,31 @@
     }
 
     // ── Tabla ──────────────────────────────────────────────────────────────
-    function renderTable(wrap, series, kind){
+
+    // "Form": las últimas 5 carreras como puntitos. Dorado ganó, verde puntuó,
+    // gris no puntuó, rojo abandonó (en un equipo, los dos autos). Es lo único
+    // que la curva acumulada no muestra de un vistazo: cómo viene ÚLTIMAMENTE.
+    const FORM_LENGTH = 5;
+    function formHtml(s, rounds){
+        const cells = [];
+        for(let i = Math.max(0, rounds.length - FORM_LENGTH); i < rounds.length; i++){
+            const slot = s.perRound[i];
+            const round = rounds[i];
+            let cls = 'is-absent', label = 'did not start';
+            if(slot){
+                const dnf = slot.cars > 0 && slot.dnfs === slot.cars;
+                if(slot.won){ cls = 'is-win'; label = 'won'; }
+                else if(dnf){ cls = 'is-dnf'; label = 'retired'; }
+                else if(slot.pts > 0){ cls = 'is-points'; label = `+${slot.pts}`; }
+                else { cls = 'is-none'; label = 'no points'; }
+                if(slot.best != null && !slot.won) label = `P${slot.best} · ${label}`;
+            }
+            cells.push(`<i class="st-form-dot ${cls}" title="${esc(round.name)} · ${esc(label)}"></i>`);
+        }
+        return `<div class="st-form">${cells.join('')}</div>`;
+    }
+
+    function renderTable(wrap, series, kind, { rounds = [] } = {}){
         const leader = series[0]?.total ?? 0;
 
         const rows = series.map((s, i) => {
@@ -190,6 +222,8 @@
                    </div>`
                 : `<div class="st-driver">${logo}<span class="constructor-fullname">${esc(s.meta.teamName)}</span><span class="constructor-short">${esc(s.meta.shortTeamName)}</span></div>`;
 
+            // Pilotos: país. Equipos: sede (ciudad + bandera del país), con
+            // el mismo estilo de celda.
             const countryCell = kind === 'drivers'
                 ? `<td class="st-col-country">
                        <div class="st-country">
@@ -197,7 +231,12 @@
                            <span>${esc(s.meta.countryName || '—')}</span>
                        </div>
                    </td>`
-                : '';
+                : `<td class="st-col-country">
+                       <div class="st-country">
+                           ${s.meta.baseFlagUrl ? `<img class="st-flag" src="${esc(s.meta.baseFlagUrl)}" alt="" loading="lazy">` : ''}
+                           <span>${esc(s.meta.baseName || '—')}</span>
+                       </div>
+                   </td>`;
 
             const teamCell = kind === 'drivers'
                 ? `<td class="st-col-team"><div class="st-team-cell">${logo}<span class="team-name">${esc(s.meta.teamName)}</span></div></td>`
@@ -209,8 +248,11 @@
                     <td>${nameCell}</td>
                     ${countryCell}
                     ${teamCell}
+                    <td class="st-num st-col-wins">${s.wins || 0}</td>
+                    <td class="st-num st-col-podiums">${s.podiums || 0}</td>
                     <td class="st-pts">${s.total}</td>
                     <td class="st-gap">${gap}</td>
+                    <td class="st-col-form">${formHtml(s, rounds)}</td>
                 </tr>`;
         }).join('');
 
@@ -220,10 +262,13 @@
                     <tr>
                         <th>Pos</th>
                         <th>${kind === 'drivers' ? 'Driver' : 'Constructor'}</th>
-                        ${kind === 'drivers' ? '<th class="st-col-country">Country</th>' : ''}
+                        <th class="st-col-country">${kind === 'drivers' ? 'Country' : 'Base'}</th>
                         ${kind === 'drivers' ? '<th class="st-col-team">Team</th>' : ''}
+                        <th class="st-num st-col-wins">Wins</th>
+                        <th class="st-num st-col-podiums">Podiums</th>
                         <th style="text-align:center">Pts</th>
                         <th>Gap</th>
+                        <th class="st-col-form">Form</th>
                     </tr>
                 </thead>
                 <tbody>${rows}</tbody>
@@ -376,15 +421,24 @@
     // mismo enfoque. Las piezas del recuadro son las mismas que en la página del
     // piloto: cabecera, franja, lienzo y una nota al pie sacada de los datos.
     function mountPanel({ panel, kind, rounds, series }){
+        // Re-render (archive cambia de año sobre el mismo panel): tirar el
+        // gráfico y los listeners de la vuelta anterior, si los hay.
+        panel._chart?.destroy();
+        panel._abort?.abort();
+        const abort = new AbortController();
+        const { signal } = abort;
+        panel._abort = abort;
+
         const canvas = panel.querySelector('.champ-form-canvas canvas');
         const tableWrap = panel.querySelector('.standings-table-wrap');
         const badge = panel.querySelector('.champ-form-badge');
         const note = panel.querySelector('.champ-form-note');
+        badge.hidden = true;
 
         let focusId = null;
         const focused = () => series.find(s => s.id === focusId) || null;
 
-        renderTable(tableWrap, series, kind);
+        renderTable(tableWrap, series, kind, { rounds });
         const chart = makeChart(canvas, rounds, series, focused);
         const isPhone = window.matchMedia('(max-width: 700px)').matches;
         const basePointRadius = isPhone ? 2 : 3;
@@ -471,16 +525,16 @@
 
             if(id && Math.hypot(dx, dy) <= 45) setFocus(id);
             else clearFocus();
-        });
+        }, { signal });
 
         badge.addEventListener('click', e => {
             if(e.target.closest('.champ-form-badge-clear')) clearFocus();
-        });
+        }, { signal });
 
         tableWrap.addEventListener('click', e => {
             const row = e.target.closest('.st-row');
             if(row) setFocus(row.dataset.series);
-        });
+        }, { signal });
 
         tableWrap.addEventListener('keydown', e => {
             if(e.key !== 'Enter' && e.key !== ' ') return;
@@ -488,20 +542,22 @@
             if(!row) return;
             e.preventDefault();
             setFocus(row.dataset.series);
-        });
+        }, { signal });
 
         document.addEventListener('keydown', e => {
             if(e.key === 'Escape' && focusId) clearFocus();
-        });
+        }, { signal });
 
         paint();
+        panel._chart = chart;
         return chart;
     }
 
     // ── Pestañas ───────────────────────────────────────────────────────────
-    function initTabs(){
+    function initTabs(root){
         const bar = root.querySelector('.champ-tab-bar');
-        if(!bar) return;
+        if(!bar || bar.dataset.ready) return;
+        bar.dataset.ready = '1';
 
         const indicator = document.createElement('span');
         indicator.className = 'tab-indicator';
@@ -512,54 +568,81 @@
             indicator.style.width = `${btn.offsetWidth}px`;
         };
 
-        bar.querySelectorAll('.tab-btn').forEach(btn => {
+        // Igual que en grandprix.js: el panel entra deslizándose desde el
+        // lado de la pestaña que se dejó.
+        const buttons = [...bar.querySelectorAll('.tab-btn')];
+        buttons.forEach((btn, nextIndex) => {
             btn.addEventListener('click', () => {
-                bar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                const prevIndex = buttons.findIndex(b => b.classList.contains('active'));
+                const direction = prevIndex === -1 || nextIndex === prevIndex ? 0 : (nextIndex > prevIndex ? 1 : -1);
+                buttons.forEach(b => b.classList.remove('active'));
                 root.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
                 btn.classList.add('active');
-                root.querySelector(`#tab-${btn.dataset.tab}`)?.classList.add('active');
+                const panel = root.querySelector(`#tab-${btn.dataset.tab}`);
+                if (panel) {
+                    panel.style.setProperty('--tab-slide-x', direction > 0 ? '24px' : direction < 0 ? '-24px' : '0px');
+                    panel.classList.add('active');
+                }
                 move(btn);
             });
         });
 
         const active = bar.querySelector('.tab-btn.active') || bar.querySelector('.tab-btn');
         if(active) requestAnimationFrame(() => move(active));
+        // Re-medir cuando carga la fuente F1: los botones cambian de ancho.
+        document.fonts?.ready.then(() => { const c = bar.querySelector('.tab-btn.active'); if(c) move(c); });
         window.addEventListener('resize', () => {
             const current = bar.querySelector('.tab-btn.active');
             if(current) move(current);
         });
     }
 
-    // ── Arranque ───────────────────────────────────────────────────────────
-    (async function init(){
-        initTabs();
+    // ── Catálogos compartidos (no cambian con el año): se piden una sola vez ──
+    let sharedPromise = null;
+    function loadShared(){
+        return (sharedPromise ??= Promise.all([
+            fetch(`${BASE}/drivers.json`).then(r => r.json()),
+            fetch(`${BASE}/teams.json`).then(r => r.json()),
+            fetch(`${BASE}/circuits.json`).then(r => r.json()),
+            fetch(`${BASE}/cities.json`).then(r => r.json()),
+            fetch(`${BASE}/countries.json`).then(r => r.json()),
+        ]).then(([drivers, teams, circuits, cities, countries]) => ({ drivers, teams, circuits, cities, countries })));
+    }
+
+    // ── Render ─────────────────────────────────────────────────────────────
+    // Devuelve true si dibujó algo, false si la temporada no tiene carreras.
+    async function renderChampionship(root, year){
+        initTabs(root);
+        root.classList.remove('is-empty');
 
         let season, drivers, teams, circuits, cities, countries;
         try {
-            [season, drivers, teams, circuits, cities, countries] = await Promise.all([
-                fetch(`${BASE}/seasons/season${SEASON_YEAR}.json`).then(r => r.json()),
-                fetch(`${BASE}/drivers.json`).then(r => r.json()),
-                fetch(`${BASE}/teams.json`).then(r => r.json()),
-                fetch(`${BASE}/circuits.json`).then(r => r.json()),
-                fetch(`${BASE}/cities.json`).then(r => r.json()),
-                fetch(`${BASE}/countries.json`).then(r => r.json()),
+            [season, { drivers, teams, circuits, cities, countries }] = await Promise.all([
+                fetch(`${BASE}/seasons/season${year}.json`).then(r => { if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }),
+                loadShared(),
             ]);
         } catch (err) {
-            console.error('No se pudo cargar el campeonato', SEASON_YEAR, err);
+            console.error('No se pudo cargar el campeonato', year, err);
             root.classList.add('is-empty');
-            return;
+            return false;
         }
 
         const rounds = buildRounds(season, { circuits, cities, countries });
-        if(!rounds.length){ root.classList.add('is-empty'); return; }
+        if(!rounds.length){ root.classList.add('is-empty'); return false; }
 
         const teamMeta = slug => {
             const team = teams[slug];
+            // Sede del equipo: teams.json → cities.json → countries.json, el
+            // mismo recorrido que la nacionalidad de un piloto.
+            const baseCity = cities[team?.base] || null;
+            const baseCountry = baseCity ? (countries[baseCity.country] || null) : null;
             return {
                 teamSlug: slug,
                 teamName: team?.name || slug.replace(/-/g, ' '),
                 shortTeamName: (team?.name || slug).split(' ').slice(0, 2).join(' '),
                 color: team?.color || '#ffffff',
+                baseName: baseCity?.name || null,
+                baseFlagUrl: isoFlagUrl(baseCountry?.isoCode),
             };
         };
 
@@ -600,7 +683,7 @@
         if(typeof Chart === 'undefined'){
             console.error('Chart.js no está disponible');
             root.classList.add('is-empty');
-            return;
+            return false;
         }
 
         await (document.fonts?.ready ?? Promise.resolve());
@@ -621,5 +704,24 @@
             rounds,
             series: teamSeries,
         });
-    })();
+        return true;
+    }
+
+    window.renderChampionship = renderChampionship;
+
+    // ── Arranque en championship.html ──────────────────────────────────────
+    // La temporada vigente sale de data/latest.json, igual que en el index.
+    // archive.html tiene su propio root (#archive-championship) y llama a
+    // renderChampionship() desde archive.js con el año elegido.
+    const root = document.getElementById('championship');
+    if(root){
+        fetch(`${BASE}/latest.json`)
+            .then(r => r.json())
+            .then(({ latestSeason }) => {
+                const h1 = document.querySelector('.champ-header h1');
+                if(h1 && latestSeason) h1.textContent = `${latestSeason} Championship`;
+                return renderChampionship(root, latestSeason);
+            })
+            .catch(err => { console.error('No se pudo resolver la temporada vigente', err); root.classList.add('is-empty'); });
+    }
 })();

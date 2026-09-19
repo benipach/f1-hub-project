@@ -14,13 +14,23 @@
     <title>F1 Hub | Archive</title>
     <link rel="icon" href="img/icon.png">
     <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/index.css">
     <link rel="stylesheet" href="./styles/championship.css">
     <link rel="stylesheet" href="./styles/archive.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script src="./js/twemoji.js"></script>
-    <script src="./js/grandprix.js"></script>
-    <script src="./js/teams.js"></script>
-    <script src="./js/navbar.js" defer></script>
+    <!-- Mismas piezas que el index (tarjetas de carrera) y championship
+         (gráfico + tablas), reutilizadas tal cual: archive.js sólo elige el
+         año y las llama. -->
+    <script src="./js/shared/api.js" defer></script>
+    <script src="./js/shared/format.js" defer></script>
+    <script src="./js/shared/teams.js" defer></script>
+    <script src="./js/shared/grid.js" defer></script>
+    <script src="./js/shared/gp.js" defer></script>
+    <script src="./js/pages/index.js" defer></script>
+    <script src="./js/championship.js" defer></script>
     <script src="./js/archive.js" defer></script>
+    <script src="./js/navbar.js" defer></script>
 </head>
 <body>
 
@@ -43,100 +53,82 @@
             <li><a href="./drivers.html">Drivers</a></li>
             <li><a href="./teams.html">Teams</a></li>
             <li><a href="./live.html">Live</a></li>
+            <li><a href="./archive.html">Archive</a></li>
         </ul>
     </nav>
 </header>
 
 <main>
 
-    <!-- ── HEADER ── -->
+    <!-- ── HEADER: título + selector de temporada ── -->
     <div class="champ-header archive-header">
         <div class="archive-title-row">
-            <h1 id="archive-title">ARCHIVE</h1>
-
-            <!-- Dropdown selector de temporada -->
+            <h1 id="archive-title">Archive</h1>
             <div class="archive-season-select-wrap">
-                <select id="archive-season-select" class="archive-season-select">
-                    <option value="" disabled selected>Select season…</option>
-                    <!-- Se llena dinámicamente con archive.js -->
+                <label class="archive-season-label" for="archive-season-select">Season</label>
+                <select id="archive-season-select" class="archive-season-select" aria-label="Season">
+                    <!-- Se llena con las temporadas disponibles (archive.js) -->
                 </select>
             </div>
         </div>
-        <p id="archive-subtitle">Select a season to explore</p>
+        <p id="archive-subtitle">Pick a season to see its calendar, results and championship.</p>
     </div>
 
-    <!-- ── CONTENIDO (oculto hasta que se elija un año) ── -->
-    <div id="archive-content" class="archive-content" hidden>
+    <!-- ── CAMPEONATO: mismo marcado que championship.html, lo dibuja
+         js/championship.js (renderChampionship) con el año elegido. ── -->
+    <div id="archive-championship" class="archive-championship">
 
-        <!-- Tabs Drivers / Teams -->
-        <div class="tab-bar archive-tab-bar">
-            <button class="tab-btn active" data-tab="archive-drivers">Drivers</button>
-            <button class="tab-btn" data-tab="archive-constructors">Teams</button>
+        <div class="tab-bar champ-tab-bar">
+            <button class="tab-btn active" data-tab="drivers">Drivers</button>
+            <button class="tab-btn" data-tab="constructors">Teams</button>
         </div>
 
         <div class="champ-content">
 
-            <!-- DRIVERS TAB -->
-            <div id="tab-archive-drivers" class="tab-panel active">
-                <p class="section-title">Drivers Standings</p>
-                <div class="standings-table-wrap" id="archive-drivers-table-wrap"></div>
-
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <span class="chart-title">Cumulative points per race</span>
-                        <div class="filter-wrapper">
-                            <button class="filter-btn" id="archive-driver-filter-btn">
-                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 3h12M3 7h8M5 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                                Drivers
-                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <div class="filter-dropdown" id="archive-driver-filter-dropdown">
-                                <button class="filter-all-btn" id="archive-driver-select-all">Deselect all</button>
-                                <div class="filter-divider"></div>
-                                <div id="archive-driver-filter-items"></div>
-                            </div>
-                        </div>
+        <div id="tab-drivers" class="tab-panel active">
+            <h2 class="section-title">Season progress</h2>
+            <div class="champ-form">
+                <div class="champ-form-head">
+                    <h3 class="champ-form-title">Points curve</h3>
+                    <div class="champ-form-legend">
+                        <span class="champ-form-legend-item is-lead">First driver</span>
+                        <span class="champ-form-legend-item is-teammate">Team mate</span>
                     </div>
-                    <div id="archive-driverChart" class="f1-svg-chart"></div>
                 </div>
+                <p class="champ-form-badge" hidden></p>
+                <div class="champ-form-canvas"><canvas></canvas></div>
+                <p class="champ-form-note"></p>
             </div>
-
-            <!-- CONSTRUCTORS TAB -->
-            <div id="tab-archive-constructors" class="tab-panel">
-                <p class="section-title">Teams Standings</p>
-                <div class="standings-table-wrap" id="archive-constructors-table-wrap"></div>
-
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <span class="chart-title">Cumulative points per race</span>
-                        <div class="filter-wrapper">
-                            <button class="filter-btn" id="archive-constructor-filter-btn">
-                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 3h12M3 7h8M5 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                                Teams
-                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <div class="filter-dropdown" id="archive-constructor-filter-dropdown">
-                                <button class="filter-all-btn" id="archive-constructor-select-all">Deselect all</button>
-                                <div class="filter-divider"></div>
-                                <div id="archive-constructor-filter-items"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="archive-constructorChart" class="f1-svg-chart"></div>
-                </div>
-            </div>
-
+            <h2 class="section-title">Drivers standings</h2>
+            <div class="standings-table-wrap"></div>
         </div>
 
-        <!-- ── CALENDARIO DE LA TEMPORADA ── -->
-        <section class="race-calendar archive-calendar" id="archive-calendar">
-            <div class="calendar-header">
-                <h2 class="calendar-title in-view" id="archive-calendar-title">Season Calendar</h2>
+        <div id="tab-constructors" class="tab-panel">
+            <h2 class="section-title">Season progress</h2>
+            <div class="champ-form">
+                <div class="champ-form-head">
+                    <h3 class="champ-form-title">Points curve</h3>
+                </div>
+                <p class="champ-form-badge" hidden></p>
+                <div class="champ-form-canvas"><canvas></canvas></div>
+                <p class="champ-form-note"></p>
             </div>
-            <!-- Cards generadas dinámicamente por archive.js -->
-        </section>
+            <h2 class="section-title">Teams standings</h2>
+            <div class="standings-table-wrap"></div>
+        </div>
 
+        </div>
     </div>
+
+    <p class="archive-empty" id="archive-empty" hidden>No results loaded for this season yet.</p>
+
+    <!-- ── CALENDARIO: mismas tarjetas que el index, las dibuja
+         js/pages/index.js (renderRaceCards). ── -->
+    <section class="race-calendar archive-calendar" id="archive-calendar">
+        <div class="calendar-header">
+            <h2 class="calendar-title in-view" id="archive-calendar-title">Season Calendar</h2>
+        </div>
+    </section>
 
 </main>
 

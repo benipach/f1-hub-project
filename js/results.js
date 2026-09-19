@@ -67,12 +67,12 @@ const COUNTRY_MAP = {
 // posLabel: header for the driver column (Winner / Pole / P1).
 // sprintCol: whether to show the "Sprint" weekend-format badge column.
 const SESSION_DEFS = [
-    { key: 'fp1',         label: 'FP1',              title: 'Free Practice 1',  timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: true,  posLabel: 'P1',     sprintCol: true  },
-    { key: 'fp2',         label: 'FP2',              title: 'Free Practice 2',  timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: true,  posLabel: 'P1',     sprintCol: true  },
-    { key: 'fp3',         label: 'FP3',              title: 'Free Practice 3',  timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: true,  posLabel: 'P1',     sprintCol: true  },
+    { key: 'fp1',         label: 'Practice 1',       labelShort: 'FP1', title: 'Free Practice 1',  timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: true,  posLabel: 'P1',     sprintCol: true  },
+    { key: 'fp2',         label: 'Practice 2',       labelShort: 'FP2', title: 'Free Practice 2',  timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: true,  posLabel: 'P1',     sprintCol: true  },
+    { key: 'fp3',         label: 'Practice 3',       labelShort: 'FP3', title: 'Free Practice 3',  timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: true,  posLabel: 'P1',     sprintCol: true  },
     { key: 'sprintQualy', label: 'Sprint Qualifying', labelShort: 'SQ', title: 'Sprint Qualifying', timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: false, posLabel: 'Pole',   sprintCol: false },
-    { key: 'sprintRace',  label: 'Sprint Race',      labelShort: 'SR', title: 'Sprint Race',       timeField: 'time',    timeLabel: 'Duration',  hasLaps: true,  posLabel: 'Winner', sprintCol: false },
-    { key: 'qualifying',  label: 'Qualifying',       labelShort: 'Qualy', title: 'Qualifying',       timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: false, posLabel: 'Pole',   sprintCol: true  },
+    { key: 'sprintRace',  label: 'Sprint',           labelShort: 'SR', title: 'Sprint Race',       timeField: 'time',    timeLabel: 'Duration',  hasLaps: true,  posLabel: 'Winner', sprintCol: false },
+    { key: 'qualifying',  label: 'Qualifying',       title: 'Qualifying',       timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: false, posLabel: 'Pole',   sprintCol: true  },
     { key: 'race',        label: 'Race',             title: 'Race',             timeField: 'time',    timeLabel: 'Duration',  hasLaps: true,  posLabel: 'Winner', sprintCol: true  },
 ];
 
@@ -212,20 +212,38 @@ function initResultsTabs() {
         } else {
             btn.textContent = def.label;
         }
-        btn.addEventListener('click', () => {
-            tabBar.querySelectorAll('.session-tab-btn').forEach(b => b.classList.remove('active'));
-            allPanels.forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
-            panel.classList.add('active');
-            moveIndicator(indicator, btn);
-        });
+        btn.dataset.session = def.key;
+        btn.addEventListener('click', () => activate(def.key));
         tabBar.appendChild(btn);
     });
 
+    // Igual que en grandprix.js: el panel entra deslizándose desde el lado de
+    // la pestaña que se dejó (izquierda o derecha).
+    const order = SESSION_DEFS.map(d => d.key);
+    let previousKey = DEFAULT_KEY;
+    function activate(key) {
+        const prevIndex = order.indexOf(previousKey);
+        const nextIndex = order.indexOf(key);
+        const direction = nextIndex === prevIndex ? 0 : (nextIndex > prevIndex ? 1 : -1);
+
+        tabBar.querySelectorAll('.session-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.session === key));
+        allPanels.forEach(p => {
+            const isActive = p.id === `tab-panel-${key}`;
+            if (isActive) p.style.setProperty('--tab-slide-x', direction > 0 ? '24px' : direction < 0 ? '-24px' : '0px');
+            p.classList.toggle('active', isActive);
+        });
+        moveIndicator(indicator, tabBar.querySelector(`.session-tab-btn[data-session="${key}"]`));
+        previousKey = key;
+    }
+
     document.getElementById(`tab-panel-${DEFAULT_KEY}`)?.classList.add('active');
+    document.getElementById('results-tabs-container')?.classList.add('in-view');
 
     const defaultBtn = tabBar.querySelector('.session-tab-btn.active') || tabBar.querySelector('.session-tab-btn');
     if (defaultBtn) moveIndicator(indicator, defaultBtn);
+    // Las pestañas se miden antes de que cargue la fuente F1: cuando entra,
+    // los botones cambian de ancho y el indicador queda corrido. Se re-mide.
+    document.fonts?.ready.then(() => moveIndicator(indicator, tabBar.querySelector('.session-tab-btn.active')));
     window.addEventListener('resize', () => {
         const activeBtn = tabBar.querySelector('.session-tab-btn.active');
         if (activeBtn) moveIndicator(indicator, activeBtn);
