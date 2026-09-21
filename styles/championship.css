@@ -29,6 +29,15 @@
     background: rgba(255, 255, 255, 0.07);
 }
 
+/* Título y selector de temporada en la misma fila (igual que en Results). */
+.champ-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
 .champ-header h1 {
     margin-bottom: 0.5rem;
     color: var(--text-light);
@@ -100,6 +109,12 @@
 @media (max-width: 500px) {
     .champ-header {
         padding: 100px 0 2rem;
+    }
+
+    .champ-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
     }
 
     /* Permite scroll horizontal si hay muchas pestañas en móvil */
@@ -177,7 +192,7 @@
 /* ================================================== */
 
 /* Este es el aspecto de referencia para TODAS las tablas del sitio
-   (.race-table-wrap en grandprix.css, .results-table-wrap en results.css,
+   (.race-table-wrap en result-table.css, .results-table-wrap en results.css,
    .season-table-wrap en driver.css copian estos mismos valores): degradado
    base-700 → base-800, borde fino, radio 16. Y sin hover en el contenedor:
    el hover es de las filas, la caja no reacciona al mouse. */
@@ -549,6 +564,13 @@
 /* Si los datos de la temporada no cargan, la página no deja cajas vacías. */
 #championship.is-empty .champ-form,
 #championship.is-empty .standings-table-wrap { display: none; }
+
+/* Al cambiar de año se atenúa lo que ya está en vez de vaciarlo. */
+#championship.is-loading {
+    opacity: 0.45;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
 
 /* Mismos saltos que .season-form en driver.css. */
 @media (max-width: 900px) {

@@ -14,21 +14,11 @@
     <title>F1 Hub | Archive</title>
     <link rel="icon" href="img/icon.png">
     <link rel="stylesheet" href="./styles/style.css">
-    <link rel="stylesheet" href="./styles/index.css">
-    <link rel="stylesheet" href="./styles/championship.css">
     <link rel="stylesheet" href="./styles/archive.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script src="./js/twemoji.js"></script>
-    <!-- Mismas piezas que el index (tarjetas de carrera) y championship
-         (gráfico + tablas), reutilizadas tal cual: archive.js sólo elige el
-         año y las llama. -->
+    <!-- Una tarjeta por temporada (data/seasons-index.json). El detalle vive
+         en results.html?season=AAAA y championship.html?season=AAAA. -->
     <script src="./js/shared/api.js" defer></script>
-    <script src="./js/shared/format.js" defer></script>
-    <script src="./js/shared/teams.js" defer></script>
-    <script src="./js/shared/grid.js" defer></script>
-    <script src="./js/shared/gp.js" defer></script>
-    <script src="./js/pages/index.js" defer></script>
-    <script src="./js/championship.js" defer></script>
     <script src="./js/archive.js" defer></script>
     <script src="./js/navbar.js" defer></script>
 </head>
@@ -60,75 +50,21 @@
 
 <main>
 
-    <!-- ── HEADER: título + selector de temporada ── -->
-    <div class="champ-header archive-header">
-        <div class="archive-title-row">
-            <h1 id="archive-title">Archive</h1>
-            <div class="archive-season-select-wrap">
-                <label class="archive-season-label" for="archive-season-select">Season</label>
-                <select id="archive-season-select" class="archive-season-select" aria-label="Season">
-                    <!-- Se llena con las temporadas disponibles (archive.js) -->
-                </select>
-            </div>
-        </div>
-        <p id="archive-subtitle">Pick a season to see its calendar, results and championship.</p>
-    </div>
-
-    <!-- ── CAMPEONATO: mismo marcado que championship.html, lo dibuja
-         js/championship.js (renderChampionship) con el año elegido. ── -->
-    <div id="archive-championship" class="archive-championship">
-
-        <div class="tab-bar champ-tab-bar">
-            <button class="tab-btn active" data-tab="drivers">Drivers</button>
-            <button class="tab-btn" data-tab="constructors">Teams</button>
-        </div>
-
-        <div class="champ-content">
-
-        <div id="tab-drivers" class="tab-panel active">
-            <h2 class="section-title">Season progress</h2>
-            <div class="champ-form">
-                <div class="champ-form-head">
-                    <h3 class="champ-form-title">Points curve</h3>
-                    <div class="champ-form-legend">
-                        <span class="champ-form-legend-item is-lead">First driver</span>
-                        <span class="champ-form-legend-item is-teammate">Team mate</span>
-                    </div>
-                </div>
-                <p class="champ-form-badge" hidden></p>
-                <div class="champ-form-canvas"><canvas></canvas></div>
-                <p class="champ-form-note"></p>
-            </div>
-            <h2 class="section-title">Drivers standings</h2>
-            <div class="standings-table-wrap"></div>
-        </div>
-
-        <div id="tab-constructors" class="tab-panel">
-            <h2 class="section-title">Season progress</h2>
-            <div class="champ-form">
-                <div class="champ-form-head">
-                    <h3 class="champ-form-title">Points curve</h3>
-                </div>
-                <p class="champ-form-badge" hidden></p>
-                <div class="champ-form-canvas"><canvas></canvas></div>
-                <p class="champ-form-note"></p>
-            </div>
-            <h2 class="section-title">Teams standings</h2>
-            <div class="standings-table-wrap"></div>
-        </div>
-
-        </div>
-    </div>
-
-    <p class="archive-empty" id="archive-empty" hidden>No results loaded for this season yet.</p>
-
-    <!-- ── CALENDARIO: mismas tarjetas que el index, las dibuja
-         js/pages/index.js (renderRaceCards). ── -->
-    <section class="race-calendar archive-calendar" id="archive-calendar">
-        <div class="calendar-header">
-            <h2 class="calendar-title in-view" id="archive-calendar-title">Season Calendar</h2>
+    <!-- ── HERO: título + números del archivo (archive.js los completa) ── -->
+    <section class="archive-hero">
+        <div class="archive-hero-glow" aria-hidden="true"></div>
+        <img src="./img/trophies/wdc.png" alt="" class="archive-hero-trophy" aria-hidden="true">
+        <div class="archive-hero-content">
+            <p class="archive-hero-kicker" id="archive-kicker">Formula 1</p>
+            <h1>Archive</h1>
+            <div class="archive-hero-meta" id="archive-meta"></div>
         </div>
     </section>
+
+    <!-- ── TEMPORADAS: una sección por década, una tarjeta por año (archive.js) ── -->
+    <div class="archive-decades" id="archive-seasons"></div>
+
+    <p class="archive-empty" id="archive-empty" hidden>No seasons available.</p>
 
 </main>
 

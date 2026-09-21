@@ -481,3 +481,65 @@ nav ul li a:hover::after {
         grid-template-columns: 1fr;
     }
 }
+
+/* ========================================== */
+/*               SEASON SELECT                */
+/* ========================================== */
+
+/* Selector de temporada. Es el mismo en Results, Championship y Archive:
+   un año en la URL (?season=2019) y este <select> para cambiarlo. */
+.season-select-wrap {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.season-select-label {
+    font-family: 'F1-Regular';
+    font-size: 11px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+}
+
+.season-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: rgba(255, 255, 255, 0.05);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='rgba(255,255,255,0.4)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: var(--text-light);
+    cursor: pointer;
+    font-family: 'F1-Black';
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    padding: 0.5rem 2.4rem 0.5rem 1rem;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    min-width: 140px;
+}
+
+.season-select:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.season-select:focus {
+    outline: none;
+    border-color: var(--primary-red);
+}
+
+.season-select option {
+    background-color: #1a1a2e;
+    color: var(--text-light);
+    font-family: 'F1-Regular';
+    font-size: 1rem;
+}
+
+@media (max-width: 600px) {
+    .season-select-wrap { width: 100%; }
+    .season-select { flex: 1; min-width: unset; }
+}

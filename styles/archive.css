@@ -1,73 +1,167 @@
 /* ============================================================ */
 /*  archive.css                                                  */
-/*  Sólo lo propio de Archive. El campeonato (gráfico + tablas)  */
-/*  hereda championship.css y las tarjetas de carrera index.css, */
-/*  porque son literalmente los mismos componentes.              */
+/*  El índice de temporadas: hero con los números del archivo y  */
+/*  una tarjeta por año, agrupadas por década, que linkea a      */
+/*  results.html?season=AAAA y championship.html?season=AAAA.    */
+/*                                                                */
+/*  Las tarjetas hablan el mismo idioma que .drivercard           */
+/*  (drivers.css): fondo teñido con el color del equipo, número   */
+/*  gigante de marca de agua, logo que entra al hover, tarjeta    */
+/*  que se eleva. Toda la animación usa la misma curva suave.     */
 /* ============================================================ */
 
-/* ── HEADER: título + selector en la misma fila ─────────────── */
-.archive-title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-    flex-wrap: wrap;
+:root {
+    --archive-ease: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-.archive-season-select-wrap {
-    flex-shrink: 0;
+/* ── HERO ───────────────────────────────────────────────────── */
+/* Misma estructura que .drivers-hero pero sin foto: el trofeo del
+   campeonato, enorme y apagado, hace de imagen de fondo. */
+.archive-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 160px 0 3.5rem;
+}
+
+.archive-hero::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.archive-hero-glow {
+    position: absolute;
+    top: -20%;
+    right: 0;
+    width: 60%;
+    height: 140%;
+    background: radial-gradient(ellipse 50% 60% at 70% 50%, rgba(232, 185, 35, 0.10) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.archive-hero-trophy {
+    position: absolute;
+    right: 10%;
+    /* la navbar fija tapa los primeros 60px del hero: se centra en lo visible */
+    top: calc(50% + 30px);
+    height: 78%;
+    transform: translateY(-50%) rotate(6deg);
+    opacity: 0.13;
+    filter: drop-shadow(0 0 60px rgba(232, 185, 35, 0.25));
+    pointer-events: none;
+    user-select: none;
+    animation: archiveTrophyIn 1.4s var(--archive-ease) both;
+}
+
+@keyframes archiveTrophyIn {
+    from { opacity: 0; transform: translateY(-44%) rotate(12deg); }
+    to   { opacity: 0.13; transform: translateY(-50%) rotate(6deg); }
+}
+
+.archive-hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: var(--content-width);
+    margin-inline: auto;
+    padding-inline: var(--content-gutter);
+}
+
+.archive-hero-kicker {
+    margin-bottom: 10px;
+    font-family: 'F1-Regular';
+    font-size: clamp(0.5rem, 1.5vw, 0.9rem);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.archive-hero h1 {
+    margin: 0;
+    font-family: 'F1-Black';
+    font-size: clamp(2.5rem, 8vw, 6rem);
+    line-height: 0.9;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+
+/* Igual que .drivers-hero-meta. */
+.archive-hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.archive-hero-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-family: 'F1-Regular';
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    animation: archiveRise 0.6s var(--archive-ease) both;
+}
+
+.archive-hero-meta-item:nth-child(2) { animation-delay: 80ms; }
+.archive-hero-meta-item:nth-child(3) { animation-delay: 160ms; }
+.archive-hero-meta-item:nth-child(4) { animation-delay: 240ms; }
+
+.archive-hero-meta-item strong {
+    font-family: 'F1-Bold';
+    font-size: 24px;
+    line-height: 1;
+    font-weight: normal;
+    color: var(--text-light);
+}
+
+@keyframes archiveRise {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── DÉCADAS ────────────────────────────────────────────────── */
+.archive-decades {
+    max-width: var(--content-width);
+    margin-inline: auto;
+    padding: 72px var(--content-gutter) 128px;
+    display: flex;
+    flex-direction: column;
+    gap: 72px;
+}
+
+/* = .section-title de championship.css / driver.css. */
+.section-title {
     display: flex;
     align-items: center;
     gap: 12px;
-}
-
-.archive-season-label {
-    font-family: 'F1-Regular';
-    font-size: 11px;
-    letter-spacing: 1.4px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.45);
-}
-
-.archive-season-select {
-    appearance: none;
-    -webkit-appearance: none;
-    background-color: rgba(255, 255, 255, 0.05);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='rgba(255,255,255,0.4)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
+    margin: 0 0 2rem;
     color: var(--text-light);
-    cursor: pointer;
     font-family: 'F1-Black';
-    font-size: 1.1rem;
-    letter-spacing: 1px;
-    padding: 0.5rem 2.4rem 0.5rem 1rem;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-    min-width: 140px;
+    font-size: clamp(24px, 4vw, 48px);
+    text-transform: uppercase;
 }
 
-.archive-season-select:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.25);
+.section-title::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--primary-red);
 }
 
-.archive-season-select:focus {
-    outline: none;
-    border-color: var(--primary-red);
+.archive-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
 }
-
-.archive-season-select option {
-    background-color: #1a1a2e;
-    color: var(--text-light);
-    font-family: 'F1-Regular';
-    font-size: 1rem;
-}
-
-/* ── CAMPEONATO ─────────────────────────────────────────────── */
-/* Mismo bloque que #championship en championship.html; sólo el id cambia. */
-.archive-championship.is-empty { display: none; }
 
 .archive-empty {
     max-width: var(--content-width);
@@ -77,40 +171,299 @@
     color: var(--text-dim);
 }
 
-/* ── CALENDARIO ─────────────────────────────────────────────── */
-/* .race-calendar (index.css) ya trae la grilla y el ancho; acá sólo el
-   respiro con lo de arriba. */
-.archive-calendar {
-    padding-top: 3rem;
+/* ── TARJETA ────────────────────────────────────────────────── */
+.archive-card {
+    --tint: color-mix(in srgb, var(--accent) 16%, var(--base-800));
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 280px;
+    padding: 20px 20px 18px 24px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+    background:
+        radial-gradient(ellipse 80% 60% at 100% 0%, color-mix(in srgb, var(--accent) 18%, transparent) 0%, transparent 60%),
+        linear-gradient(160deg, var(--tint) 0%, var(--base-800) 100%);
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+        opacity 0.6s var(--archive-ease),
+        transform 0.6s var(--archive-ease);
 }
 
-/* En el archivo no hay "próxima carrera": todas las tarjetas son de carreras
-   ya corridas, así que entran directo, sin la animación de aparición del
-   index (que las deja invisibles hasta que el observer las ve entrar). */
-.archive-calendar .race-card {
+.archive-card.in-view {
     opacity: 1;
-    transform: none;
-    transition: none;
+    transform: translateY(0);
 }
 
-/* ── CARGA ──────────────────────────────────────────────────── */
-/* Al cambiar de año se atenúa lo que ya está en vez de vaciarlo, para que
-   la página no parpadee. */
-.archive-championship.is-loading,
-.archive-calendar.is-loading {
-    opacity: 0.45;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
+/* Al hover sólo se eleva, como .drivercard: sin cambiar el borde ni agregar
+   sombra; la vida la ponen el año de fondo y el logo que entra. */
+.archive-card:hover,
+.archive-card:focus-visible {
+    transform: translateY(-6px);
+    outline: none;
 }
+
+/* Franja izquierda, como .dc-stripe-left. */
+.archive-card-stripe {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--accent);
+    z-index: 3;
+}
+
+/* Año gigante de fondo (= .driver-number): apagado, y al hover sube, crece y
+   se enciende con el color del equipo. */
+.archive-card-year-bg {
+    position: absolute;
+    right: 12px;
+    bottom: -10px;
+    font-family: 'F1-Black';
+    font-size: 5.5rem;
+    line-height: 1;
+    letter-spacing: -3px;
+    color: var(--accent);
+    opacity: 0.12;
+    text-shadow: var(--accent) 0 0 75px;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+    transition: opacity 0.6s var(--archive-ease), transform 0.6s var(--archive-ease);
+}
+
+.archive-card:hover .archive-card-year-bg,
+.archive-card:focus-visible .archive-card-year-bg {
+    opacity: 0.28;
+    transform: translateY(-10px);
+}
+
+/* Logo del equipo campeón (= .drivercard::after): entra desde la derecha. */
+.archive-card-logo-bg {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    opacity: 0;
+    transform: translateX(60px);
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity 0.5s var(--archive-ease), transform 0.6s var(--archive-ease);
+}
+
+.archive-card:hover .archive-card-logo-bg,
+.archive-card:focus-visible .archive-card-logo-bg {
+    opacity: 0.9;
+    transform: translateX(0);
+}
+
+/* Cabecera: el año; el estado va pegado a la esquina superior derecha. */
+.archive-card-head {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: baseline;
+}
+
+.archive-card-year {
+    font-family: 'F1-Regular';
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    color: var(--text-light);
+}
+
+/* Esquina superior derecha. Al hover baja para dejarle el lugar al logo
+   del equipo, que entra justo ahí. */
+.archive-card-status {
+    /* Al ras del padding de la tarjeta: arriba a la altura del año, y a la
+       derecha en el mismo borde que el resto del contenido. Es hijo directo
+       de .archive-card (no de la cabecera) para que top/right se midan desde
+       la tarjeta. */
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: transform 0.6s var(--archive-ease);
+}
+
+.archive-card:hover .archive-card-status,
+.archive-card:focus-visible .archive-card-status {
+    transform: translateY(46px);
+}
+
+.archive-card-status {
+    font-family: 'F1-Regular';
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+    white-space: nowrap;
+}
+
+.archive-card-status.is-live { color: var(--primary-red); }
+
+.archive-card-status i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--primary-red);
+    box-shadow: 0 0 8px var(--primary-red);
+    animation: archivePulse 1.6s ease-in-out infinite;
+}
+
+@keyframes archivePulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.3; }
+}
+
+/* Campeón (= .driver-details h3: nombre chico, apellido grande). */
+.archive-card-champ,
+.archive-card-team {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.archive-card-label {
+    font-family: 'F1-Regular';
+    font-size: 11px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.archive-card-name {
+    display: flex;
+    flex-direction: column;
+    line-height: 0.95;
+    text-transform: uppercase;
+    color: #ffffff;
+}
+
+.archive-card-first {
+    font-family: 'F1-Regular';
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+
+.archive-card-last {
+    font-family: 'F1-Regular';
+    font-size: 28px;
+    letter-spacing: 0.5px;
+}
+
+.archive-card-sub {
+    font-family: 'F1-Regular';
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.archive-card-team { margin-top: auto; }
+
+.archive-card-team-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'F1-Regular';
+    font-size: 15px;
+    letter-spacing: 0.1px;
+    color: var(--text-light);
+}
+
+.archive-card-team-name > span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.archive-card-team-name img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    opacity: 0.9;
+    flex-shrink: 0;
+}
+
+.archive-card-none {
+    font-family: 'F1-Regular';
+    font-size: 14px;
+    color: var(--text-dim);
+}
+
+/* Acciones (= .dc-cta): apagadas; al hover se encienden. */
+.archive-card-actions {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.archive-card-link {
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+}
+
+.archive-card-link span {
+    display: inline-block;
+    transition: transform 0.6s var(--archive-ease);
+}
+
+.archive-card:hover .archive-card-link { color: var(--text-light); }
+.archive-card-link:hover { color: var(--accent) !important; }
+.archive-card-link:hover span { transform: translateX(4px); }
 
 /* ── RESPONSIVE ─────────────────────────────────────────────── */
-@media (max-width: 600px) {
-    .archive-title-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
+@media (max-width: 1100px) {
+    .archive-hero { padding-top: 130px; }
+    .archive-grid { grid-template-columns: repeat(3, 1fr); }
+    .archive-hero-trophy { right: 2%; }
+}
 
-    .archive-season-select-wrap { width: 100%; }
-    .archive-season-select { flex: 1; min-width: unset; }
+@media (max-width: 700px) {
+    .archive-grid { grid-template-columns: repeat(2, 1fr); }
+    .archive-hero-meta { gap: 1.5rem; }
+    .archive-hero-trophy { display: none; }
+}
+
+@media (max-width: 500px) {
+    .archive-hero { padding: 100px 0 2rem; }
+    .archive-decades { padding-top: 48px; gap: 48px; }
+    .archive-grid { grid-template-columns: 1fr; gap: 14px; }
+    .archive-card { min-height: 0; padding: 18px 18px 16px 20px; }
+    .archive-card-status { top: 18px; right: 18px; }
+    .archive-card-logo-bg { right: 18px; }
+    .archive-card-year-bg { font-size: 4.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .archive-card,
+    .archive-card-year-bg,
+    .archive-card-logo-bg,
+    .archive-card-link span,
+    .archive-hero-trophy,
+    .archive-hero-meta-item { transition: none; animation: none; }
+    .archive-card-status i { animation: none; }
 }

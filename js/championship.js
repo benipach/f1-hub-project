@@ -710,18 +710,58 @@
     window.renderChampionship = renderChampionship;
 
     // ── Arranque en championship.html ──────────────────────────────────────
-    // La temporada vigente sale de data/latest.json, igual que en el index.
-    // archive.html tiene su propio root (#archive-championship) y llama a
-    // renderChampionship() desde archive.js con el año elegido.
+    // El año va en la URL (?season=2019) y se cambia con el selector de la
+    // cabecera; sin parámetro se abre la temporada vigente (data/latest.json).
+    // Las temporadas disponibles salen de data/seasons-index.json
+    // (loadSeasonsSummary, js/shared/api.js).
     const root = document.getElementById('championship');
     if(root){
-        fetch(`${BASE}/latest.json`)
-            .then(r => r.json())
-            .then(({ latestSeason }) => {
-                const h1 = document.querySelector('.champ-header h1');
-                if(h1 && latestSeason) h1.textContent = `${latestSeason} Championship`;
-                return renderChampionship(root, latestSeason);
-            })
-            .catch(err => { console.error('No se pudo resolver la temporada vigente', err); root.classList.add('is-empty'); });
+        const select = document.getElementById('champ-season-select');
+        const h1 = document.querySelector('.champ-header h1');
+        const sub = document.getElementById('champHeaderSub');
+        let rendering = 0;
+
+        async function showSeason(year){
+            const ticket = ++rendering;
+            document.title = `F1 Hub | ${year} Championship`;
+            if(h1) h1.textContent = `${year} Championship`;
+            root.classList.add('is-loading');
+            const ok = await renderChampionship(root, year);
+            if(ticket !== rendering) return;
+            root.classList.remove('is-loading');
+            if(!ok && sub) sub.textContent = `No results loaded for the ${year} season yet.`;
+        }
+
+        function setUrlYear(year){
+            const url = new URL(window.location.href);
+            url.searchParams.set('season', year);
+            history.replaceState(null, '', url);
+        }
+
+        (async () => {
+            try {
+                const [seasons, latest] = await Promise.all([loadSeasonsSummary('.'), loadLatest('.')]);
+                const years = seasons.map(s => s.year).sort((a, b) => b - a);
+                if(select) select.innerHTML = years.map(y => `<option value="${y}">${y}</option>`).join('');
+
+                const latestYear = Number(latest?.latestSeason) || years[0];
+                const requested = Number(new URLSearchParams(location.search).get('season'));
+                const initial = years.includes(requested) ? requested : latestYear;
+
+                if(select){
+                    select.value = String(initial);
+                    select.addEventListener('change', () => {
+                        const year = Number(select.value);
+                        setUrlYear(year);
+                        showSeason(year);
+                    });
+                }
+                setUrlYear(initial);
+                await showSeason(initial);
+            } catch (err) {
+                console.error('No se pudo resolver la temporada', err);
+                root.classList.add('is-empty');
+            }
+        })();
     }
 })();
