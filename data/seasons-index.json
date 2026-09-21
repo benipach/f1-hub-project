@@ -1,0 +1,919 @@
+{
+  "seasons": [
+    {
+      "year": 1990,
+      "rounds": 16,
+      "raced": 16,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "ayrton-senna",
+        "name": "Ayrton Senna",
+        "points": 78,
+        "wins": 6,
+        "teamId": "mclaren",
+        "teamName": "McLaren"
+      },
+      "teamChampion": {
+        "id": "mclaren",
+        "name": "McLaren",
+        "points": 121
+      }
+    },
+    {
+      "year": 1991,
+      "rounds": 16,
+      "raced": 16,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "ayrton-senna",
+        "name": "Ayrton Senna",
+        "points": 96,
+        "wins": 7,
+        "teamId": "mclaren",
+        "teamName": "McLaren"
+      },
+      "teamChampion": {
+        "id": "mclaren",
+        "name": "McLaren",
+        "points": 139
+      }
+    },
+    {
+      "year": 1992,
+      "rounds": 16,
+      "raced": 16,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "nigel-mansell",
+        "name": "Nigel Mansell",
+        "points": 108,
+        "wins": 9,
+        "teamId": "williams",
+        "teamName": "Williams"
+      },
+      "teamChampion": {
+        "id": "williams",
+        "name": "Williams",
+        "points": 164
+      }
+    },
+    {
+      "year": 1993,
+      "rounds": 16,
+      "raced": 16,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "alain-prost",
+        "name": "Alain Prost",
+        "points": 99,
+        "wins": 7,
+        "teamId": "williams",
+        "teamName": "Williams"
+      },
+      "teamChampion": {
+        "id": "williams",
+        "name": "Williams",
+        "points": 168
+      }
+    },
+    {
+      "year": 1994,
+      "rounds": 16,
+      "raced": 16,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "michael-schumacher",
+        "name": "Michael Schumacher",
+        "points": 92,
+        "wins": 8,
+        "teamId": "benetton",
+        "teamName": "Benetton"
+      },
+      "teamChampion": {
+        "id": "williams",
+        "name": "Williams",
+        "points": 118
+      }
+    },
+    {
+      "year": 1995,
+      "rounds": 17,
+      "raced": 17,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "michael-schumacher",
+        "name": "Michael Schumacher",
+        "points": 102,
+        "wins": 9,
+        "teamId": "benetton",
+        "teamName": "Benetton"
+      },
+      "teamChampion": {
+        "id": "benetton",
+        "name": "Benetton",
+        "points": 147
+      }
+    },
+    {
+      "year": 1996,
+      "rounds": 16,
+      "raced": 16,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "damon-hill",
+        "name": "Damon Hill",
+        "points": 97,
+        "wins": 8,
+        "teamId": "williams",
+        "teamName": "Williams"
+      },
+      "teamChampion": {
+        "id": "williams",
+        "name": "Williams",
+        "points": 175
+      }
+    },
+    {
+      "year": 1997,
+      "rounds": 17,
+      "raced": 17,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "jacques-villeneuve",
+        "name": "Jacques Villeneuve",
+        "points": 81,
+        "wins": 7,
+        "teamId": "williams",
+        "teamName": "Williams"
+      },
+      "teamChampion": {
+        "id": "williams",
+        "name": "Williams",
+        "points": 123
+      }
+    },
+    {
+      "year": 1998,
+      "rounds": 16,
+      "raced": 16,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "mika-hakkinen",
+        "name": "Mika Häkkinen",
+        "points": 100,
+        "wins": 8,
+        "teamId": "mclaren",
+        "teamName": "McLaren"
+      },
+      "teamChampion": {
+        "id": "mclaren",
+        "name": "McLaren",
+        "points": 156
+      }
+    },
+    {
+      "year": 1999,
+      "rounds": 16,
+      "raced": 16,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "mika-hakkinen",
+        "name": "Mika Häkkinen",
+        "points": 76,
+        "wins": 5,
+        "teamId": "mclaren",
+        "teamName": "McLaren"
+      },
+      "teamChampion": {
+        "id": "ferrari",
+        "name": "Ferrari",
+        "points": 128
+      }
+    },
+    {
+      "year": 2000,
+      "rounds": 17,
+      "raced": 17,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "michael-schumacher",
+        "name": "Michael Schumacher",
+        "points": 108,
+        "wins": 9,
+        "teamId": "ferrari",
+        "teamName": "Ferrari"
+      },
+      "teamChampion": {
+        "id": "ferrari",
+        "name": "Ferrari",
+        "points": 170
+      }
+    },
+    {
+      "year": 2001,
+      "rounds": 17,
+      "raced": 17,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "michael-schumacher",
+        "name": "Michael Schumacher",
+        "points": 123,
+        "wins": 9,
+        "teamId": "ferrari",
+        "teamName": "Ferrari"
+      },
+      "teamChampion": {
+        "id": "ferrari",
+        "name": "Ferrari",
+        "points": 179
+      }
+    },
+    {
+      "year": 2002,
+      "rounds": 17,
+      "raced": 17,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "michael-schumacher",
+        "name": "Michael Schumacher",
+        "points": 144,
+        "wins": 11,
+        "teamId": "ferrari",
+        "teamName": "Ferrari"
+      },
+      "teamChampion": {
+        "id": "ferrari",
+        "name": "Ferrari",
+        "points": 221
+      }
+    },
+    {
+      "year": 2003,
+      "rounds": 16,
+      "raced": 16,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "michael-schumacher",
+        "name": "Michael Schumacher",
+        "points": 93,
+        "wins": 6,
+        "teamId": "ferrari",
+        "teamName": "Ferrari"
+      },
+      "teamChampion": {
+        "id": "ferrari",
+        "name": "Ferrari",
+        "points": 158
+      }
+    },
+    {
+      "year": 2004,
+      "rounds": 18,
+      "raced": 18,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "michael-schumacher",
+        "name": "Michael Schumacher",
+        "points": 148,
+        "wins": 13,
+        "teamId": "ferrari",
+        "teamName": "Ferrari"
+      },
+      "teamChampion": {
+        "id": "ferrari",
+        "name": "Ferrari",
+        "points": 262
+      }
+    },
+    {
+      "year": 2005,
+      "rounds": 19,
+      "raced": 19,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "fernando-alonso",
+        "name": "Fernando Alonso",
+        "points": 133,
+        "wins": 7,
+        "teamId": "renault",
+        "teamName": "Renault"
+      },
+      "teamChampion": {
+        "id": "renault",
+        "name": "Renault",
+        "points": 191
+      }
+    },
+    {
+      "year": 2006,
+      "rounds": 18,
+      "raced": 18,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "fernando-alonso",
+        "name": "Fernando Alonso",
+        "points": 134,
+        "wins": 7,
+        "teamId": "renault",
+        "teamName": "Renault"
+      },
+      "teamChampion": {
+        "id": "renault",
+        "name": "Renault",
+        "points": 206
+      }
+    },
+    {
+      "year": 2007,
+      "rounds": 17,
+      "raced": 17,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "kimi-raikkonen",
+        "name": "Kimi Räikkönen",
+        "points": 110,
+        "wins": 6,
+        "teamId": "ferrari",
+        "teamName": "Ferrari"
+      },
+      "teamChampion": {
+        "id": "mclaren",
+        "name": "McLaren",
+        "points": 218
+      }
+    },
+    {
+      "year": 2008,
+      "rounds": 18,
+      "raced": 18,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "lewis-hamilton",
+        "name": "Lewis Hamilton",
+        "points": 98,
+        "wins": 5,
+        "teamId": "mclaren",
+        "teamName": "McLaren"
+      },
+      "teamChampion": {
+        "id": "ferrari",
+        "name": "Ferrari",
+        "points": 172
+      }
+    },
+    {
+      "year": 2009,
+      "rounds": 17,
+      "raced": 17,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "jenson-button",
+        "name": "Jenson Button",
+        "points": 95,
+        "wins": 6,
+        "teamId": "brawn-gp",
+        "teamName": "Brawn GP"
+      },
+      "teamChampion": {
+        "id": "brawn-gp",
+        "name": "Brawn GP",
+        "points": 172
+      }
+    },
+    {
+      "year": 2010,
+      "rounds": 19,
+      "raced": 19,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "sebastian-vettel",
+        "name": "Sebastian Vettel",
+        "points": 256,
+        "wins": 5,
+        "teamId": "red-bull-racing",
+        "teamName": "Red Bull Racing"
+      },
+      "teamChampion": {
+        "id": "red-bull-racing",
+        "name": "Red Bull Racing",
+        "points": 498
+      }
+    },
+    {
+      "year": 2011,
+      "rounds": 19,
+      "raced": 19,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "sebastian-vettel",
+        "name": "Sebastian Vettel",
+        "points": 392,
+        "wins": 11,
+        "teamId": "red-bull-racing",
+        "teamName": "Red Bull Racing"
+      },
+      "teamChampion": {
+        "id": "red-bull-racing",
+        "name": "Red Bull Racing",
+        "points": 650
+      }
+    },
+    {
+      "year": 2012,
+      "rounds": 20,
+      "raced": 20,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "sebastian-vettel",
+        "name": "Sebastian Vettel",
+        "points": 281,
+        "wins": 5,
+        "teamId": "red-bull-racing",
+        "teamName": "Red Bull Racing"
+      },
+      "teamChampion": {
+        "id": "red-bull-racing",
+        "name": "Red Bull Racing",
+        "points": 460
+      }
+    },
+    {
+      "year": 2013,
+      "rounds": 19,
+      "raced": 19,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "sebastian-vettel",
+        "name": "Sebastian Vettel",
+        "points": 397,
+        "wins": 13,
+        "teamId": "red-bull-racing",
+        "teamName": "Red Bull Racing"
+      },
+      "teamChampion": {
+        "id": "red-bull-racing",
+        "name": "Red Bull Racing",
+        "points": 596
+      }
+    },
+    {
+      "year": 2014,
+      "rounds": 19,
+      "raced": 19,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "lewis-hamilton",
+        "name": "Lewis Hamilton",
+        "points": 384,
+        "wins": 11,
+        "teamId": "mercedes",
+        "teamName": "Mercedes"
+      },
+      "teamChampion": {
+        "id": "mercedes",
+        "name": "Mercedes",
+        "points": 701
+      }
+    },
+    {
+      "year": 2015,
+      "rounds": 19,
+      "raced": 19,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "lewis-hamilton",
+        "name": "Lewis Hamilton",
+        "points": 381,
+        "wins": 10,
+        "teamId": "mercedes",
+        "teamName": "Mercedes"
+      },
+      "teamChampion": {
+        "id": "mercedes",
+        "name": "Mercedes",
+        "points": 703
+      }
+    },
+    {
+      "year": 2016,
+      "rounds": 21,
+      "raced": 21,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "nico-rosberg",
+        "name": "Nico Rosberg",
+        "points": 385,
+        "wins": 9,
+        "teamId": "mercedes",
+        "teamName": "Mercedes"
+      },
+      "teamChampion": {
+        "id": "mercedes",
+        "name": "Mercedes",
+        "points": 765
+      }
+    },
+    {
+      "year": 2017,
+      "rounds": 20,
+      "raced": 20,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "lewis-hamilton",
+        "name": "Lewis Hamilton",
+        "points": 363,
+        "wins": 9,
+        "teamId": "mercedes",
+        "teamName": "Mercedes"
+      },
+      "teamChampion": {
+        "id": "mercedes",
+        "name": "Mercedes",
+        "points": 668
+      }
+    },
+    {
+      "year": 2018,
+      "rounds": 21,
+      "raced": 21,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "lewis-hamilton",
+        "name": "Lewis Hamilton",
+        "points": 408,
+        "wins": 11,
+        "teamId": "mercedes",
+        "teamName": "Mercedes"
+      },
+      "teamChampion": {
+        "id": "mercedes",
+        "name": "Mercedes",
+        "points": 655
+      }
+    },
+    {
+      "year": 2019,
+      "rounds": 21,
+      "raced": 21,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "lewis-hamilton",
+        "name": "Lewis Hamilton",
+        "points": 413,
+        "wins": 11,
+        "teamId": "mercedes",
+        "teamName": "Mercedes"
+      },
+      "teamChampion": {
+        "id": "mercedes",
+        "name": "Mercedes",
+        "points": 739
+      }
+    },
+    {
+      "year": 2020,
+      "rounds": 17,
+      "raced": 17,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "lewis-hamilton",
+        "name": "Lewis Hamilton",
+        "points": 347,
+        "wins": 11,
+        "teamId": "mercedes",
+        "teamName": "Mercedes"
+      },
+      "teamChampion": {
+        "id": "mercedes",
+        "name": "Mercedes",
+        "points": 573
+      }
+    },
+    {
+      "year": 2021,
+      "rounds": 22,
+      "raced": 22,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "sprintRace",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "max-verstappen",
+        "name": "Max Verstappen",
+        "points": 395.5,
+        "wins": 10,
+        "teamId": "red-bull-racing",
+        "teamName": "Red Bull Racing"
+      },
+      "teamChampion": {
+        "id": "mercedes",
+        "name": "Mercedes",
+        "points": 613.5
+      }
+    },
+    {
+      "year": 2022,
+      "rounds": 22,
+      "raced": 22,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "sprintRace",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "max-verstappen",
+        "name": "Max Verstappen",
+        "points": 454,
+        "wins": 15,
+        "teamId": "red-bull-racing",
+        "teamName": "Red Bull Racing"
+      },
+      "teamChampion": {
+        "id": "red-bull-racing",
+        "name": "Red Bull Racing",
+        "points": 759
+      }
+    },
+    {
+      "year": 2023,
+      "rounds": 22,
+      "raced": 22,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "sprintRace",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "max-verstappen",
+        "name": "Max Verstappen",
+        "points": 575,
+        "wins": 19,
+        "teamId": "red-bull-racing",
+        "teamName": "Red Bull Racing"
+      },
+      "teamChampion": {
+        "id": "red-bull-racing",
+        "name": "Red Bull Racing",
+        "points": 860
+      }
+    },
+    {
+      "year": 2024,
+      "rounds": 24,
+      "raced": 24,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "sprintRace",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "max-verstappen",
+        "name": "Max Verstappen",
+        "points": 437,
+        "wins": 9,
+        "teamId": "red-bull-racing",
+        "teamName": "Red Bull Racing"
+      },
+      "teamChampion": {
+        "id": "mclaren",
+        "name": "McLaren",
+        "points": 666
+      }
+    },
+    {
+      "year": 2025,
+      "rounds": 24,
+      "raced": 24,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "sprintRace",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "lando-norris",
+        "name": "Lando Norris",
+        "points": 423,
+        "wins": 7,
+        "teamId": "mclaren",
+        "teamName": "McLaren"
+      },
+      "teamChampion": {
+        "id": "mclaren",
+        "name": "McLaren",
+        "points": 833
+      }
+    },
+    {
+      "year": 2026,
+      "rounds": 23,
+      "raced": 14,
+      "sessions": [
+        "fp1",
+        "fp2",
+        "fp3",
+        "sprintQualy",
+        "sprintRace",
+        "qualifying",
+        "race"
+      ],
+      "driverChampion": {
+        "id": "kimi-antonelli",
+        "name": "Kimi Antonelli",
+        "points": 292,
+        "wins": 8,
+        "teamId": "mercedes",
+        "teamName": "Mercedes"
+      },
+      "teamChampion": {
+        "id": "mercedes",
+        "name": "Mercedes",
+        "points": 503
+      }
+    }
+  ]
+}
