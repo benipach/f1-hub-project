@@ -43,6 +43,17 @@ async function loadSeasonsIndex(base = '.') {
     return (_seasonsIdxCache = checks.filter(Boolean).sort((a, b) => a - b));
 }
 
+// data/seasons-index.json (scripts/build-seasons-index.js): una entrada por
+// temporada con rondas, campeones y qué sesiones tienen resultados. Es lo que
+// usan los selectores de año de Results/Championship y las tarjetas de Archive,
+// en vez de sondear 70 archivos con HEAD como hace loadSeasonsIndex().
+let _seasonsSummaryCache = null;
+async function loadSeasonsSummary(base = '.') {
+    if (_seasonsSummaryCache) return _seasonsSummaryCache;
+    const data = await apiFetch(`${base}/data/seasons-index.json`);
+    return (_seasonsSummaryCache = (data.seasons ?? []).sort((a, b) => a.year - b.year));
+}
+
 function getRequestedSeasonYear(available) {
     const param = Number(new URLSearchParams(window.location.search).get('season'));
     return (param && available.includes(param)) ? param : available[available.length - 1];
