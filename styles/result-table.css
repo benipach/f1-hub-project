@@ -1,0 +1,346 @@
+/* ============================================================ */
+/*  result-table.css                                             */
+/*  La tabla de clasificación de una sesión (buildResultTable en */
+/*  js/shared/result-table.js). La usan grandsprix/grandprix.html */
+/*  (una por sesión) y results.html (desplegada bajo cada         */
+/*  carrera). Se carga antes del CSS de cada página.              */
+/*                                                                */
+/*  .race-table-wrap / .data-table es el aspecto de referencia de */
+/*  todas las tablas del sitio (.standings-table en               */
+/*  championship.css, .season-table en driver.css y               */
+/*  .results-table en results.css copian estos valores).          */
+/* ============================================================ */
+
+/* ---- SHARED TABLE SYSTEM ---- */
+/* Mismo aspecto que .standings-table-wrap (championship.css): degradado,
+   borde fino, y sin hover en el contenedor. */
+.race-table-wrap {
+overflow-y: auto;
+background: linear-gradient(135deg, var(--base-700) 0%, var(--base-800) 100%);
+border: 1px solid rgba(255,255,255,0.05);
+border-radius: 16px;
+}
+
+.data-table {
+width: 100%;
+border-collapse: separate;
+border-spacing: 0;
+font-family: 'F1-Regular', sans-serif;
+font-size: 14px;
+}
+
+.data-table thead tr {
+position: sticky;
+top: 0;
+z-index: 1;
+}
+
+.data-table th {
+height: 44px;
+padding: 0 20px;
+text-align: left;
+font-family: 'F1-Regular';
+font-weight: 600;
+font-size: 14px;
+letter-spacing: 0.1px;
+text-transform: uppercase;
+color: rgba(255,255,255,0.35);
+background: var(--base-700);
+border-bottom: 1px solid rgba(255,255,255,0.04);
+white-space: nowrap;
+}
+
+.data-table td {
+height: 32px;
+padding: 0 20px;
+color: var(--text-light);
+border-bottom: 1px solid rgba(255,255,255,0.04);
+background: transparent;
+transition: background 0.15s ease;
+font-size: 16px;
+letter-spacing: 0.1px;
+}
+
+.data-table tbody tr:last-child td { border-bottom: none; }
+
+.data-table tbody tr:hover td {
+background: rgba(255,255,255,0.035);
+}
+
+.data-table tbody tr.row-no-time {
+opacity: 0.5;
+}
+.qualy-separator td {
+height: 32px;
+line-height: 32px;
+padding: 0;
+overflow: hidden;
+box-sizing: border-box;
+background: rgba(255, 0, 25, 0.05);
+border-top: none;
+border-bottom: none;
+}
+
+.qualy-separator-inner {
+display: flex;
+align-items: center;
+justify-content: center;
+width: 100%;
+height: 100%;
+}
+
+.qualy-separator-line {
+flex: 1 1 auto;
+min-width: 20px;
+height: 1px;
+background: rgba(255, 0, 25, 0.4);
+}
+
+.qualy-separator-label {
+flex: 0 0 auto;
+padding: 0 16px;
+white-space: nowrap;
+text-align: center;
+font-family: 'F1-Regular';
+font-size: 16px;
+letter-spacing: 0.6px;
+color: var(--primary-red);
+text-transform: uppercase;
+}
+
+/* ---- RESULT TABLE SPECIFICS ---- */
+.res-pos {
+width: 25px;
+text-align: center;
+font-family: 'F1-Regular';
+font-size: 16px;
+color: rgba(255,255,255,0.4);
+}
+
+#race-card .res-pos.top3,
+#sprint-race-card .res-pos.top3 {
+font-family: 'F1-Regular';
+font-weight: 600;
+}
+
+#race-card .data-table tbody tr:nth-child(1) .res-pos.top3,
+#sprint-race-card .data-table tbody tr:nth-child(1) .res-pos.top3 {
+color: #f7d774;
+}
+
+#race-card .data-table tbody tr:nth-child(2) .res-pos.top3,
+#sprint-race-card .data-table tbody tr:nth-child(2) .res-pos.top3 {
+color: #d6d6d6;
+}
+
+#race-card .data-table tbody tr:nth-child(3) .res-pos.top3,
+#sprint-race-card .data-table tbody tr:nth-child(3) .res-pos.top3 {
+color: #cd9a63;
+}
+
+.res-driver {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.res-driver-number {
+font-family: 'F1-Regular';
+font-weight: 600;
+font-size: 13px;
+letter-spacing: 0.5px;
+text-align: right;
+line-height: 1;
+min-width: 32px;
+}
+
+.res-team {
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.res-team-logo {
+width: 20px;
+height: 20px;
+object-fit: contain;
+flex-shrink: 0;
+opacity: 0.9;
+}
+
+.res-team-logo-placeholder {
+width: 20px;
+height: 20px;
+flex-shrink: 0;
+}
+
+.res-driver-team-logo {
+width: 20px;
+height: 20px;
+object-fit: contain;
+flex-shrink: 0;
+opacity: 0.9;
+display: none;
+}
+
+.res-time {
+font-family: 'F1-Regular';
+color: rgba(255,255,255,0.6);
+font-size: 16px;
+}
+
+.res-time.is-fastest {
+color: rgb(176,56,216);
+}
+
+.res-pts {
+text-align: center;
+font-family: 'F1-Regular';
+font-size: 16px;
+color: var(--text-light);
+}
+
+.res-gap-col { width: 90px; white-space: nowrap; }
+
+.res-laps-col { width: 70px; white-space: nowrap; }
+
+.res-laps {
+text-align: center;
+font-family: 'F1-Regular';
+font-size: 16px;
+color: rgba(255,255,255,0.55);
+white-space: nowrap;
+}
+
+.res-gap {
+font-family: 'F1-Regular';
+font-size: 16px;
+color: rgba(255,255,255,0.45);
+white-space: nowrap;
+}
+
+.res-team-col { white-space: nowrap; }
+
+.qualy-divider td {
+height: 32px;
+padding: 0 20px;
+background: rgba(255,255,255,0.03);
+border-bottom: 1px solid rgba(255,255,255,0.06);
+font-family: 'F1-Regular';
+font-size: 14px;
+letter-spacing: 1px;
+text-align: center;
+text-transform: uppercase;
+color: var(--text-light);
+}
+.res-time-col { white-space: nowrap; }
+
+/* ---- GRID DELTA ---- */
+.res-delta-col {
+width: 40px;
+padding: 0;
+}
+
+.res-delta-cell {
+width: 40px;
+padding: 0;
+text-align: left;
+}
+
+.res-delta {
+display: flex;
+align-items: center;
+justify-content: flex-start;
+gap: 4px;
+font-family: 'F1-Bold';
+font-size: 12px;
+letter-spacing: 0.5px;
+white-space: nowrap;
+}
+
+.res-delta-arrow {
+width: 16px;
+height: 16px;
+flex-shrink: 0;
+}
+
+.data-table td.res-delta-cell {
+padding: 0;
+vertical-align: middle;
+}
+
+.res-delta--up   { color: #22c55e; }
+.res-delta--down { color: var(--primary-red); }
+
+.res-delta--same,
+.res-delta--none {
+color: rgba(255,255,255,0.2);
+font-family: 'F1-Regular', sans-serif;
+font-size: 14px;
+letter-spacing: 0;
+}
+
+/* ---- NATIONALITY ---- */
+.res-nat-col {
+width: auto;
+white-space: nowrap;
+}
+
+.data-table td.res-nat {
+width: auto;
+white-space: nowrap;
+padding: 0 20px;
+font-family: 'F1-Regular', sans-serif;
+font-size: 14px;
+letter-spacing: 0.5px;
+color: var(--text-light);
+}
+
+.data-table td.res-nat img {
+width: 18px;
+height: 18px;
+vertical-align: middle;
+margin-right: 7px;
+margin-bottom: 2px;
+}
+
+.race-table-wrap::-webkit-scrollbar { width: 4px; }
+.race-table-wrap::-webkit-scrollbar-track { background: transparent; }
+.race-table-wrap::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+.race-table-wrap::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+.driver-lastname { display: none; }
+
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 1100px) {
+    .data-table th,
+    .data-table td { padding: 0 12px; }
+}
+
+@media (max-width: 500px) {
+    .data-table { font-size: 13px; }
+
+    .data-table td,
+    .data-table th { padding: 0 10px; }
+
+    /* En celular la tabla se queda con Pos, piloto (con el logo del equipo
+       al lado) y tiempo/puntos: fuera la columna Team, el delta contra la
+       parrilla y la mejor vuelta. */
+    .data-table .res-team-cell,
+    .data-table th.res-team-col,
+    .data-table td.res-delta-cell,
+    .data-table th.res-delta-col,
+    .data-table th.res-bestlap-col,
+    .data-table td.res-bestlap { display: none; }
+
+    /* En las prácticas la columna Laps tampoco entra. */
+    .race-table-wrap[data-session^="fp"] .res-laps-col,
+    .race-table-wrap[data-session^="fp"] .res-laps { display: none; }
+
+    .res-driver-number { display: none; }
+    .res-driver-team-logo { display: inline-block; }
+
+    .driver-fullname { display: none; }
+    .driver-lastname { display: inline; }
+}
