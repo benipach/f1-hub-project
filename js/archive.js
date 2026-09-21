@@ -1,125 +1,164 @@
-// archive.js — cualquier temporada pasada, con las mismas piezas del sitio.
+// archive.js — el índice de temporadas.
 //
-// No dibuja nada propio: elige el año y llama a lo que ya existe.
-//   - renderChampionship(root, year)   → js/championship.js (gráfico + tablas)
-//   - renderRaceCards(season, ctx, el) → js/pages/index.js (tarjetas de carrera
-//                                        con el podio, igual que en la portada)
-// Así, cualquier mejora que se le haga a championship.html o al index llega
-// al archivo sola.
+// Archive ya no repite el campeonato y el calendario con un selector de año:
+// eso lo hacen results.html y championship.html con ?season=AAAA. Acá va una
+// tarjeta por temporada (campeón, equipo campeón, cuántas carreras), agrupadas
+// por década, que linkea a esas dos páginas. Los datos salen de
+// data/seasons-index.json, precalculado por scripts/build-seasons-index.js,
+// así la página pide un solo JSON chico en vez de 37 season files.
 //
-// El año va en la URL (?season=2019), así se puede linkear y compartir; sin
-// parámetro se abre la última temporada terminada.
+// La tarjeta habla el mismo idioma que las de drivers.html: fondo teñido con
+// el color del equipo del campeón, año gigante de marca de agua, logo que
+// entra al hover y la tarjeta que se eleva.
 
 (function(){
-    const select   = document.getElementById('archive-season-select');
-    const champ    = document.getElementById('archive-championship');
-    const calendar = document.getElementById('archive-calendar');
-    const title    = document.getElementById('archive-title');
-    const subtitle = document.getElementById('archive-subtitle');
-    const calTitle = document.getElementById('archive-calendar-title');
-    const empty    = document.getElementById('archive-empty');
-    if(!select || !champ || !calendar) return;
+    const grid  = document.getElementById('archive-seasons');
+    const empty = document.getElementById('archive-empty');
+    const meta  = document.getElementById('archive-meta');
+    const kicker = document.getElementById('archive-kicker');
+    if(!grid) return;
 
-    const gpCount = season => Object.values(season).filter(gp => !gp.cancelled).length;
-    const racedCount = season => Object.values(season)
-        .filter(gp => Array.isArray(gp.sessions?.race?.results) && gp.sessions.race.results.length).length;
+    const esc = v => String(v ?? '')
+        .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;').replaceAll("'", '&#039;');
 
-    let ctx = null;          // catálogos compartidos (circuits, cities, …)
-    let rendering = 0;       // para descartar renders viejos si el usuario cambia rápido
+    const logoSrc = teamId => teamId ? `./img/teams/${esc(teamId)}-logo.png` : null;
 
-    async function showSeason(year){
-        const ticket = ++rendering;
-        document.title = `F1 Hub | ${year} Archive`;
-        if(title) title.textContent = `${year} Season`;
-        if(calTitle) calTitle.textContent = `${year} Season Calendar`;
-
-        // Estado de carga: se atenúa lo anterior en vez de vaciarlo, así no
-        // parpadea la página al cambiar de año.
-        champ.classList.add('is-loading');
-        calendar.classList.add('is-loading');
-
-        let season;
-        try {
-            season = await loadSeason('.', year);
-        } catch (err) {
-            console.error('No se pudo cargar la temporada', year, err);
-            if(ticket !== rendering) return;
-            champ.classList.remove('is-loading');
-            calendar.classList.remove('is-loading');
-            champ.classList.add('is-empty');
-            calendar.querySelectorAll('.race-card').forEach(el => el.remove());
-            if(empty){ empty.hidden = false; empty.textContent = `Couldn't load the ${year} season.`; }
-            return;
-        }
-        if(ticket !== rendering) return;
-
-        const raced = racedCount(season);
-        if(subtitle){
-            subtitle.textContent = raced
-                ? `${raced} of ${gpCount(season)} rounds with results.`
-                : 'No results loaded for this season yet.';
-        }
-
-        // Campeonato (gráfico + tablas). Si la temporada no tiene carreras
-        // corridas, renderChampionship devuelve false y se oculta el bloque.
-        const hasChamp = await renderChampionship(champ, year);
-        if(ticket !== rendering) return;
-        if(empty) empty.hidden = hasChamp;
-
-        // Calendario con las tarjetas de carrera y el podio de cada una.
-        renderRaceCards(season, ctx, calendar);
-        if(typeof twemoji !== 'undefined') twemoji.parse(calendar, { folder: 'svg', ext: '.svg' });
-
-        champ.classList.remove('is-loading');
-        calendar.classList.remove('is-loading');
+    // "Max Verstappen" → nombre chico arriba, apellido grande abajo, como en
+    // las tarjetas de pilotos.
+    function splitName(full){
+        const parts = String(full || '').trim().split(' ');
+        const last = parts.length > 1 ? parts.pop() : '';
+        return { first: parts.join(' '), last };
     }
 
-    function setUrlYear(year){
-        const url = new URL(window.location.href);
-        url.searchParams.set('season', year);
-        history.replaceState(null, '', url);
+    function card(season, teams, latestYear){
+        const { year, rounds, raced, driverChampion: dc, teamChampion: tc } = season;
+        const inProgress = year === latestYear && raced < rounds;
+        const accent = teams[dc?.teamId]?.color || '#8a8a95';
+        const { first, last } = splitName(dc?.name);
+        const champLogo = logoSrc(dc?.teamId);
+        const teamLogo = logoSrc(tc?.id);
+
+        const status = inProgress
+            ? `<span class="archive-card-status is-live"><i></i>Live · ${raced}/${rounds}</span>`
+            : `<span class="archive-card-status">${rounds} rounds</span>`;
+
+        const body = dc ? `
+            <div class="archive-card-champ">
+                <span class="archive-card-label">${inProgress ? 'Championship leader' : 'World Champion'}</span>
+                <span class="archive-card-name">
+                    <span class="archive-card-first">${esc(first)}</span>
+                    <span class="archive-card-last">${esc(last || first)}</span>
+                </span>
+                <span class="archive-card-sub">${esc(dc.teamName ?? '')}${dc.wins ? ` · ${dc.wins} win${dc.wins === 1 ? '' : 's'}` : ''}</span>
+            </div>
+            <div class="archive-card-team">
+                <span class="archive-card-label">${inProgress ? 'Leading team' : 'Constructors'}</span>
+                <span class="archive-card-team-name">
+                    ${teamLogo ? `<img src="${teamLogo}" alt="" onerror="this.remove()">` : ''}
+                    <span>${esc(tc?.name ?? '—')}</span>
+                </span>
+                ${tc ? `<span class="archive-card-sub">${tc.points} pts</span>` : ''}
+            </div>`
+            : `<p class="archive-card-none">No results loaded yet.</p>`;
+
+        return `
+            <article class="archive-card" style="--accent:${accent}" data-href="./results.html?season=${year}" tabindex="0">
+                <span class="archive-card-stripe" aria-hidden="true"></span>
+                <span class="archive-card-year-bg" aria-hidden="true">${year}</span>
+                ${champLogo ? `<img class="archive-card-logo-bg" src="${champLogo}" alt="" aria-hidden="true" onerror="this.remove()">` : ''}
+
+                ${status}
+                <div class="archive-card-head">
+                    <span class="archive-card-year">${year}</span>
+                </div>
+
+                ${body}
+
+                <div class="archive-card-actions">
+                    <a class="archive-card-link" href="./results.html?season=${year}">Results <span aria-hidden="true">→</span></a>
+                    <a class="archive-card-link" href="./championship.html?season=${year}">Championship <span aria-hidden="true">→</span></a>
+                </div>
+            </article>`;
+    }
+
+    // Los números de la cabecera: cuántas temporadas, carreras, campeones
+    // distintos, y quién tiene más títulos en el archivo.
+    function renderMeta(seasons){
+        if(!meta) return;
+        const finished = seasons.filter(s => s.driverChampion && s.raced >= s.rounds);
+        const titles = new Map();
+        for(const s of finished){
+            const id = s.driverChampion.id;
+            titles.set(id, { name: s.driverChampion.name, n: (titles.get(id)?.n || 0) + 1 });
+        }
+        const most = [...titles.values()].sort((a, b) => b.n - a.n);
+        const top = most[0];
+        const tied = most.filter(t => t.n === top?.n).map(t => splitName(t.name).last || t.name);
+        const races = seasons.reduce((n, s) => n + s.raced, 0);
+
+        const item = (label, value) => `<div class="archive-hero-meta-item">${label}<strong>${value}</strong></div>`;
+        meta.innerHTML = [
+            item('Seasons', seasons.length),
+            item('Grands Prix', races),
+            item('Champions', titles.size),
+            top ? item('Most titles', `${top.n}× ${esc(tied.slice(0, 2).join(' · '))}`) : '',
+        ].join('');
     }
 
     (async function init(){
-        let years, latest;
+        let seasons, teams, latest;
         try {
-            let circuits, cities, countries, teams, drivers;
-            [years, latest, circuits, cities, countries, teams, drivers] = await Promise.all([
-                loadSeasonsIndex('.'),
-                loadLatest('.'),
-                loadCircuits('.'), loadCities('.'), loadCountries('.'), loadTeams('.'), loadDrivers('.'),
-            ]);
-            ctx = { circuits, cities, countries, teams, drivers };
+            [seasons, teams, latest] = await Promise.all([loadSeasonsSummary('.'), loadTeams('.'), loadLatest('.')]);
         } catch (err) {
-            console.error('No se pudo iniciar el archivo', err);
-            if(subtitle) subtitle.textContent = "Couldn't load the seasons list.";
+            console.error('No se pudo cargar el índice de temporadas', err);
+            if(empty){ empty.hidden = false; empty.textContent = "Couldn't load the seasons list."; }
             return;
         }
 
-        if(!years.length){
-            if(subtitle) subtitle.textContent = 'No seasons available.';
+        if(!seasons.length){
+            if(empty) empty.hidden = false;
             return;
         }
 
-        // Más nueva primero. La temporada vigente también está: ver el año en
-        // curso desde acá es válido, aunque tenga su propia página.
-        const sorted = [...years].sort((a, b) => b - a);
-        select.innerHTML = sorted.map(y => `<option value="${y}">${y}</option>`).join('');
+        const latestYear = Number(latest?.latestSeason) || null;
+        const sorted = [...seasons].sort((a, b) => b.year - a.year);
+        if(kicker) kicker.textContent = `Formula 1 · ${sorted[sorted.length - 1].year}–${sorted[0].year}`;
+        renderMeta(seasons);
 
-        // Por defecto, la última temporada terminada (la anterior a la vigente).
-        const current = Number(latest?.latestSeason) || sorted[0];
-        const requested = Number(new URLSearchParams(location.search).get('season'));
-        const fallback = sorted.find(y => y < current) ?? sorted[0];
-        const initial = years.includes(requested) ? requested : fallback;
+        // Una sección por década, más nueva primero.
+        const decades = new Map();
+        for(const s of sorted){
+            const d = Math.floor(s.year / 10) * 10;
+            if(!decades.has(d)) decades.set(d, []);
+            decades.get(d).push(s);
+        }
+        grid.innerHTML = [...decades.entries()].map(([decade, list]) => `
+            <section class="archive-decade">
+                <h2 class="section-title">${decade}s</h2>
+                <div class="archive-grid">${list.map(s => card(s, teams, latestYear)).join('')}</div>
+            </section>`).join('');
 
-        select.value = String(initial);
-        select.addEventListener('change', () => {
-            const year = Number(select.value);
-            setUrlYear(year);
-            showSeason(year);
+        // La tarjeta entera lleva a los resultados del año; los links de
+        // abajo siguen siendo links normales (Championship va a otra página).
+        grid.querySelectorAll('.archive-card').forEach(c => {
+            const go = () => { window.location.href = c.dataset.href; };
+            c.addEventListener('click', e => { if(!e.target.closest('a')) go(); });
+            c.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target === c) go(); });
         });
 
-        setUrlYear(initial);
-        await showSeason(initial);
+        // Las tarjetas entran escalonadas a medida que aparecen en pantalla.
+        const cards = [...grid.querySelectorAll('.archive-card')];
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if(!entry.isIntersecting) return;
+                entry.target.classList.add('in-view');
+                observer.unobserve(entry.target);
+            });
+        }, { threshold: 0.1 });
+        cards.forEach((c, i) => { c.style.transitionDelay = `${(i % 4) * 70}ms`; observer.observe(c); });
+        // Una vez que entraron, el delay no tiene que frenar el hover.
+        cards.forEach(c => c.addEventListener('transitionend', () => { c.style.transitionDelay = ''; }, { once: true }));
     })();
 })();

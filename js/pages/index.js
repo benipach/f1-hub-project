@@ -2,8 +2,6 @@
 // Pure logic lives in shared/*.js; this file only touches the DOM.
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // archive.html también carga este archivo (para renderRaceCards), pero
-    // ahí el año lo elige el usuario: sólo el index arranca solo.
     if (!document.getElementById('hero-image')) return;
     try {
         const [latest, circuits, cities, countries, teams, drivers] = await Promise.all([

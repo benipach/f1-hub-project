@@ -6,6 +6,11 @@
 }
 
 .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
     margin-bottom: 24px;
 }
 
@@ -89,13 +94,139 @@
 }
 
 .results-row:hover td,
-.results-row:focus-visible td {
+.results-row:focus-visible td,
+.results-row.is-open td {
     background: rgba(255,255,255,0.035);
 }
 
 .results-row:focus-visible {
     outline: none;
 }
+
+/* ---- EXPAND (chevron al final de la fila) ---- */
+.results-expand-col,
+.results-expand {
+    width: 24px;
+    padding-left: 0 !important;
+    text-align: right;
+}
+
+.results-expand-icon {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-right: 1.5px solid rgba(255,255,255,0.3);
+    border-bottom: 1.5px solid rgba(255,255,255,0.3);
+    transform: rotate(45deg) translateY(-2px);
+    transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1), border-color 0.2s ease;
+}
+
+.results-row:hover .results-expand-icon { border-color: rgba(255,255,255,0.6); }
+.results-row.is-open .results-expand-icon {
+    transform: rotate(225deg) translateY(-2px);
+    border-color: var(--primary-red);
+}
+
+/* ---- DETAIL (clasificación completa desplegada bajo la fila) ---- */
+/* Es la misma .race-table-wrap/.data-table de la página del GP
+   (styles/result-table.css), metida en una celda que ocupa toda la fila.
+
+   La fila de detalle siempre existe, plegada: la celda no tiene padding ni
+   borde, y adentro una grilla pasa de 0fr a 1fr. Así la altura se anima de
+   verdad (la tabla se estira, las filas de abajo bajan acompañando) en vez
+   de aparecer de golpe. El contenido hace un fade corto encima. */
+.results-table > tbody > tr.results-detail > td {
+    height: auto;
+    padding: 0;
+    border-bottom: none;
+    background: rgba(255,255,255,0.02);
+    white-space: normal;
+}
+
+/* La fila de GP es la que dibuja la línea divisoria; la última no la lleva
+   salvo que esté abierta (ahí separa la fila de su detalle). */
+.results-table > tbody > tr.results-row:nth-last-child(2):not(.is-open) > td { border-bottom: none; }
+
+.results-detail-grid {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.results-detail.is-open .results-detail-grid {
+    grid-template-rows: 1fr;
+}
+
+.results-detail-inner {
+    min-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.3s ease, transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.results-detail.is-open .results-detail-inner {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.4s ease 0.1s, transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.results-detail-body {
+    padding: 0 20px 20px;
+}
+
+.results-detail-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 14px 0 12px;
+}
+
+.results-detail-title {
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+}
+
+.results-detail-link {
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.results-detail-link:hover { color: var(--primary-red); }
+
+/* La tabla desplegada va sobre el fondo de la celda, sin su propia tarjeta:
+   dos degradados anidados se ven como una caja dentro de otra. */
+.results-detail .race-table-wrap {
+    background: var(--base-800);
+    border-color: rgba(255,255,255,0.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .results-detail-grid,
+    .results-detail-inner,
+    .results-expand-icon { transition: none; }
+}
+
+/* ---- CARGA ---- */
+/* Al cambiar de año se atenúa lo que ya está en vez de vaciarlo. */
+#results-tabs-container.is-loading {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+#results-tabs-container[hidden] { display: none; }
 
 /* Columna de ronda = .res-pos / .st-pos: mismo tamaño y mismo gris. */
 .results-round {
@@ -194,6 +325,9 @@
 
     .results-gp-full { display: none; }
     .results-gp-short { display: inline; }
+
+    .results-detail-body { padding: 0 8px 14px; }
+    .results-detail-head { padding: 12px 4px 10px; }
 }
 
 /* ---- SESSION TABS ---- */

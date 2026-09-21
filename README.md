@@ -13,8 +13,9 @@ A modern web portal for Formula 1 enthusiasts, covering the full 2026 season wit
 | Driver Profile | `drivers/driver.html?driver=<id>` | Full driver page with 2026 stats, charts, career history, and gallery |
 | Teams | `teams.html` | Overview of all 2026 constructors |
 | Team Profile | `teams/team.html?team=<id>` | Full team page with 2026 stats, driver cards, lineage timeline, history chart, and gallery |
-| Championship | `championship.html` | Driver and constructor standings tables and cumulative points charts |
-| Results | `results.html` | Past race results *(page in progress)* |
+| Championship | `championship.html?season=<year>` | Driver and constructor standings tables and cumulative points charts, for any season on record |
+| Results | `results.html?season=<year>` | Every session of a season, one row per Grand Prix; each row expands into the full classification |
+| Archive | `archive.html` | One card per season (champions, rounds) linking to that year's results and championship |
 | Race Detail | `races/race.html?gp=<id>` | Per-GP session schedule, results, circuit overview, weather, and race history |
 
 ---
