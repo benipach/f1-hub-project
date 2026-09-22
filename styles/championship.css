@@ -472,10 +472,260 @@
     border-top-color: rgba(255,255,255,0.45);
 }
 
+/* ---- RANURAS QUE SE ABREN ----
+   La franja del enfocado y la bandeja de comparación viven en una ranura
+   cuya altura anima js/championship.js (revealTo) en píxeles enteros, con la
+   misma curva que el resto del sitio. No es grid 0fr→1fr como en Results
+   porque esta tarjeta tiene border-radius y una altura fraccionaria haría
+   temblar el borde inferior durante la animación. Acá sólo va el fade y el
+   "aterrizaje" del contenido. */
+.champ-form-reveal {
+    height: 0;
+    overflow: hidden;
+}
+
+.champ-form-reveal-inner > * {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.985);
+    transform-origin: top center;
+    transition:
+        opacity 0.3s ease,
+        transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.champ-form-reveal.is-open .champ-form-reveal-inner > * {
+    opacity: 1;
+    transform: none;
+    transition:
+        opacity 0.4s ease 0.1s,
+        transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* ---- BOTON COMPARE ---- */
+.champ-form-tools {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.champ-compare-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 9px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    color: var(--text-dim);
+    font-family: 'F1-Regular';
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+        background 0.35s cubic-bezier(0.32, 0.72, 0, 1),
+        border-color 0.35s cubic-bezier(0.32, 0.72, 0, 1),
+        color 0.35s ease,
+        transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.champ-compare-toggle:hover {
+    color: var(--text-light);
+    border-color: rgba(255,255,255,0.22);
+}
+
+.champ-compare-toggle:active { transform: scale(0.96); }
+
+/* Icono: dos barritas que se emparejan al activar. */
+.champ-compare-toggle-icon {
+    position: relative;
+    width: 14px;
+    height: 10px;
+    flex-shrink: 0;
+}
+
+.champ-compare-toggle-icon::before,
+.champ-compare-toggle-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 14px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition:
+        transform 0.45s cubic-bezier(0.32, 0.72, 0, 1),
+        width 0.45s cubic-bezier(0.32, 0.72, 0, 1),
+        background 0.35s ease;
+}
+
+.champ-compare-toggle-icon::before { top: 2px; width: 10px; }
+.champ-compare-toggle-icon::after  { top: 6px; width: 14px; }
+
+.champ-compare-toggle[aria-pressed="true"] {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.3);
+    color: var(--text-light);
+}
+
+.champ-compare-toggle[aria-pressed="true"] .champ-compare-toggle-icon::before {
+    width: 14px;
+    transform: translateY(-1px);
+}
+
+.champ-compare-toggle[aria-pressed="true"] .champ-compare-toggle-icon::after {
+    transform: translateY(1px);
+}
+
+/* ---- BANDEJA A vs B ---- */
+.champ-compare {
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+}
+
+.champ-compare-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 12px;
+}
+
+.champ-compare-slot {
+    --slot-color: rgba(255,255,255,0.35);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 38px;
+    padding: 6px 10px 6px 12px;
+    border-radius: 9px;
+    border: 1px solid color-mix(in srgb, var(--slot-color) 40%, transparent);
+    background: color-mix(in srgb, var(--slot-color) 12%, transparent);
+    font-family: 'F1-Regular';
+    font-size: 12px;
+    letter-spacing: 0.6px;
+    color: var(--text-light);
+    animation: champ-slot-in 0.5s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+.champ-compare-slot.is-empty {
+    border-style: dashed;
+    border-color: rgba(255,255,255,0.18);
+    background: transparent;
+    color: var(--text-dim);
+    padding-right: 14px;
+}
+
+@keyframes champ-slot-in {
+    from { opacity: 0; transform: scale(0.94); }
+    to   { opacity: 1; transform: none; }
+}
+
+.champ-compare-slot-hint {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.champ-compare-logo {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+.champ-compare-name {
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: var(--slot-color);
+}
+
+.champ-compare-sub {
+    color: var(--text-dim);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.champ-compare-remove {
+    margin-left: 2px;
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    color: var(--text-dim);
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.champ-compare-remove:hover {
+    background: rgba(255,255,255,0.14);
+    color: var(--text-light);
+}
+
+.champ-compare-remove:active { transform: scale(0.9); }
+
+.champ-compare-vs {
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+}
+
+.champ-compare-close { margin-left: auto; }
+
+/* El resumen (quien lidera y por cuanto) solo existe con dos elegidos, y
+   abre con la misma ranura animada. */
+.champ-compare-summary-reveal {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+        grid-template-rows 0.5s cubic-bezier(0.32, 0.72, 0, 1),
+        opacity 0.4s ease;
+}
+
+.champ-compare-summary-reveal.is-open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    transition-delay: 0s, 0.1s;
+}
+
+.champ-compare-summary {
+    min-height: 0;
+    overflow: hidden;
+    margin: 0;
+    font-family: 'F1-Regular';
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dim);
+}
+
+.champ-compare-summary-reveal.is-open .champ-compare-summary {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.champ-compare-summary b {
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+
 /* Misma ranura y misma forma que .season-racecraft-badge, pero pintada con el
    color del equipo enfocado en vez del dorado. */
-.champ-form-badge[hidden] { display: none; }
-
 .champ-form-badge {
     display: flex;
     align-items: center;
@@ -494,8 +744,16 @@
     color: var(--focus-color);
 }
 
+/* Logo del equipo, primero de todo, del mismo tamaño que en la bandeja. */
+.champ-form-badge-logo {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    margin-right: 2px;
+}
+
 .champ-form-badge-sub {
-    font-weight: 400;
+    font-weight: 600;
     letter-spacing: 0.4px;
     text-transform: none;
     color: var(--text-dim);
@@ -508,7 +766,8 @@
     background: none;
     color: var(--text-dim);
     font-family: 'F1-Regular';
-    font-size: 11px;
+    font-size: 12px;
+    font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
     cursor: pointer;
@@ -527,21 +786,30 @@
     padding-top: 14px;
     border-top: 1px solid rgba(255,255,255,0.06);
     font-family: 'F1-Regular';
+    font-weight: 600;
     font-size: 13px;
     line-height: 1.6;
     color: var(--text-dim);
 }
 
 .champ-form-note b {
-    font-family: 'F1-Bold';
+    text-transform: uppercase;
     color: var(--text-light);
-    font-weight: normal;
 }
 
 /* ---- FOCO COMPARTIDO CON LA TABLA ---- */
-.st-row {
-    cursor: pointer;
-    transition: opacity 0.2s ease, background 0.15s ease;
+.st-row { cursor: pointer; }
+
+.st-row td {
+    transition: background 0.4s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* La atenuación va sobre el contenido de cada celda y no sobre el <tr>: una
+   fila de tabla no puede ir a una capa propia, así que animar su opacidad
+   obliga a repintar la tabla entera en cada frame y se ve a los tirones. El
+   contenido (spans, logos, puntitos) se repinta sólo en su rectángulo. */
+.st-row td > * {
+    transition: opacity 0.45s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .st-row.is-focused td {
@@ -554,7 +822,22 @@
     box-shadow: inset 3px 0 0 var(--row-color);
 }
 
-.st-row.is-dimmed { opacity: 0.4; }
+.st-row.is-dimmed td > * { opacity: 0.4; }
+
+/* Bajo el mouse (o con el mouse sobre su línea del gráfico): una versión más
+   suave del foco, en el color del equipo, para que tabla y gráfico hablen
+   del mismo piloto. */
+.standings-table tbody tr.st-row.is-hover td {
+    background: color-mix(in srgb, var(--row-color) 9%, transparent);
+}
+
+.st-row.is-hover .st-pos { color: var(--row-color); }
+
+.st-row.is-hover td:first-child {
+    box-shadow: inset 3px 0 0 color-mix(in srgb, var(--row-color) 55%, transparent);
+}
+
+.st-pos { transition: color 0.3s ease; }
 
 .st-row:focus-visible {
     outline: 2px solid var(--row-color);
@@ -585,6 +868,12 @@
     .champ-form-legend-item { font-size: 11px; }
     .champ-form-note { font-size: 12px; margin-top: 12px; }
     .champ-form-badge-clear { margin-left: 0; }
+    .champ-form-tools { gap: 12px; width: 100%; justify-content: space-between; }
+    .champ-compare { padding: 10px 12px; }
+    .champ-compare-slot { min-height: 34px; padding: 5px 8px 5px 10px; }
+    .champ-compare-name { font-size: 12px; }
+    .champ-compare-sub { display: none; }
+    .champ-compare-close { margin-left: auto; }
 }
 
 @media (max-width: 1100px) {

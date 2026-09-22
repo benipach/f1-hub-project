@@ -259,7 +259,7 @@
   },
   "honda": {
     "id": "honda",
-    "name": "Honda Racing F1",
+    "name": "Honda",
     "base": "brackley",
     "color": "#EBEBE1"
   },
@@ -358,7 +358,7 @@
   },
   "mercedes": {
     "id": "mercedes",
-    "name": "Mercedes",
+    "name": "Mercedes-AMG",
     "base": "brackley",
     "country": "germany",
     "color": "#2BFFDB"
@@ -412,7 +412,7 @@
   },
   "prost": {
     "id": "prost",
-    "name": "Prost",
+    "name": "Prost GP",
     "base": "guyancourt"
   },
   "racing-point": {

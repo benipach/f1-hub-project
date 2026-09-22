@@ -84,12 +84,24 @@
                 <div class="champ-form">
                     <div class="champ-form-head">
                         <h3 class="champ-form-title">Points curve</h3>
-                        <div class="champ-form-legend">
-                            <span class="champ-form-legend-item is-lead">First driver</span>
-                            <span class="champ-form-legend-item is-teammate">Team mate</span>
+                        <div class="champ-form-tools">
+                            <div class="champ-form-legend">
+                                <span class="champ-form-legend-item is-lead">First driver</span>
+                                <span class="champ-form-legend-item is-teammate">Team mate</span>
+                            </div>
+                            <button type="button" class="champ-compare-toggle" aria-pressed="false">
+                                <span class="champ-compare-toggle-icon" aria-hidden="true"></span>Compare
+                            </button>
                         </div>
                     </div>
-                    <p class="champ-form-badge" hidden></p>
+                    <!-- Dos ranuras que se abren/cierran animadas: la franja del
+                         piloto enfocado y la bandeja de comparación (A vs B). -->
+                    <div class="champ-form-reveal" data-reveal="badge">
+                        <div class="champ-form-reveal-inner"><p class="champ-form-badge"></p></div>
+                    </div>
+                    <div class="champ-form-reveal" data-reveal="compare">
+                        <div class="champ-form-reveal-inner"><div class="champ-compare"></div></div>
+                    </div>
                     <div class="champ-form-canvas">
                         <canvas></canvas>
                     </div>
@@ -108,8 +120,18 @@
                 <div class="champ-form">
                     <div class="champ-form-head">
                         <h3 class="champ-form-title">Points curve</h3>
+                        <div class="champ-form-tools">
+                            <button type="button" class="champ-compare-toggle" aria-pressed="false">
+                                <span class="champ-compare-toggle-icon" aria-hidden="true"></span>Compare
+                            </button>
+                        </div>
                     </div>
-                    <p class="champ-form-badge" hidden></p>
+                    <div class="champ-form-reveal" data-reveal="badge">
+                        <div class="champ-form-reveal-inner"><p class="champ-form-badge"></p></div>
+                    </div>
+                    <div class="champ-form-reveal" data-reveal="compare">
+                        <div class="champ-form-reveal-inner"><div class="champ-compare"></div></div>
+                    </div>
                     <div class="champ-form-canvas">
                         <canvas></canvas>
                     </div>
