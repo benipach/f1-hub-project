@@ -167,7 +167,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const currentSeasonEntry = history.find(s => s.year === CURRENT_SEASON_YEAR);
 
-        document.getElementById('meta-country').textContent   = teamInfo.country;
         document.getElementById('meta-base').textContent      = teamInfo.city;
         document.getElementById('meta-founded').textContent   = debutYear;
         document.getElementById('meta-principal').textContent = currentSeasonEntry?.principal || teamInfo.principal || '—';

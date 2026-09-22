@@ -2,7 +2,6 @@
   "ags": {
     "id": "ags",
     "name": "AGS",
-    "country": "france",
     "base": "gonfaron"
   },
   "alfa-romeo": {
@@ -26,18 +25,15 @@
     "id": "alpine",
     "name": "Alpine",
     "base": "enstone",
-    "country": "france",
     "color": "#006FBA"
   },
   "alta": {
     "id": "alta",
-    "name": "Alta",
-    "country": "united-kingdom"
+    "name": "Alta"
   },
   "amon": {
     "id": "amon",
-    "name": "Amon",
-    "country": "new-zealand"
+    "name": "Amon"
   },
   "andrea-moda": {
     "id": "andrea-moda",
@@ -47,13 +43,11 @@
   "anglo-american-racers": {
     "id": "anglo-american-racers",
     "name": "Anglo American Racers",
-    "country": "usa",
     "base": "rye"
   },
   "apollon": {
     "id": "apollon",
-    "name": "Apollon",
-    "country": "switzerland"
+    "name": "Apollon"
   },
   "arrows": {
     "id": "arrows",
@@ -62,13 +56,11 @@
   },
   "arzani-volpini": {
     "id": "arzani-volpini",
-    "name": "Arzani-Volpini",
-    "country": "italy"
+    "name": "Arzani-Volpini"
   },
   "aston-martin-1959": {
     "id": "aston-martin-1959",
-    "name": "Aston Martin",
-    "country": "united-kingdom"
+    "name": "Aston Martin"
   },
   "aston-martin": {
     "id": "aston-martin",
@@ -78,13 +70,11 @@
   },
   "ats-1963": {
     "id": "ats-1963",
-    "name": "ATS",
-    "country": "italy"
+    "name": "ATS"
   },
   "ats": {
     "id": "ats",
     "name": "ATS",
-    "country": "germany",
     "base": "bicester"
   },
   "bar": {
@@ -104,8 +94,7 @@
   },
   "bellasi": {
     "id": "bellasi",
-    "name": "Bellasi",
-    "country": "switzerland"
+    "name": "Bellasi"
   },
   "bms-scuderia-italia": {
     "id": "bms-scuderia-italia",
@@ -114,13 +103,11 @@
   },
   "boro": {
     "id": "boro",
-    "name": "Boro",
-    "country": "united-kingdom"
+    "name": "Boro"
   },
   "brabham": {
     "id": "brabham",
     "name": "Brabham",
-    "country": "australia",
     "base": "weybridge"
   },
   "brawn-gp": {
@@ -136,18 +123,15 @@
   },
   "brp": {
     "id": "brp",
-    "name": "BRP",
-    "country": "united-kingdom"
+    "name": "BRP"
   },
   "bugatti": {
     "id": "bugatti",
-    "name": "Bugatti",
-    "country": "france"
+    "name": "Bugatti"
   },
   "cadillac": {
     "id": "cadillac",
     "name": "Cadillac",
-    "country": "usa",
     "color": "#AAAAAD",
     "base": "silverstone"
   },
@@ -168,8 +152,7 @@
   },
   "courage": {
     "id": "courage",
-    "name": "Courage",
-    "country": "france"
+    "name": "Courage"
   },
   "dallara": {
     "id": "dallara",
@@ -183,13 +166,11 @@
   },
   "derrington-francis": {
     "id": "derrington-francis",
-    "name": "Derrington-Francis",
-    "country": "united-kingdom"
+    "name": "Derrington-Francis"
   },
   "eagle": {
     "id": "eagle",
     "name": "Eagle",
-    "country": "usa",
     "base": "rye"
   },
   "ensign": {
@@ -211,7 +192,6 @@
   "fittipaldi": {
     "id": "fittipaldi",
     "name": "Fittipaldi",
-    "country": "brazil",
     "base": "reading"
   },
   "fondmetal": {
@@ -223,7 +203,6 @@
     "id": "force-india",
     "name": "Force India",
     "base": "silverstone",
-    "country": "india",
     "color": "#F07D00"
   },
   "forti": {
@@ -254,8 +233,7 @@
   },
   "honda-1964": {
     "id": "honda-1964",
-    "name": "Honda",
-    "country": "japan"
+    "name": "Honda"
   },
   "honda": {
     "id": "honda",
@@ -270,8 +248,7 @@
   },
   "iso-marlboro": {
     "id": "iso-marlboro",
-    "name": "Iso-Marlboro",
-    "country": "united-kingdom"
+    "name": "Iso-Marlboro"
   },
   "jaguar": {
     "id": "jaguar",
@@ -281,23 +258,19 @@
   "jordan": {
     "id": "jordan",
     "name": "Jordan",
-    "base": "silverstone",
-    "country": "ireland"
+    "base": "silverstone"
   },
   "klenk": {
     "id": "klenk",
-    "name": "Klenk",
-    "country": "germany"
+    "name": "Klenk"
   },
   "kojima": {
     "id": "kojima",
-    "name": "Kojima",
-    "country": "japan"
+    "name": "Kojima"
   },
   "kurtis-kraft": {
     "id": "kurtis-kraft",
-    "name": "Kurtis Kraft",
-    "country": "usa"
+    "name": "Kurtis Kraft"
   },
   "larrousse": {
     "id": "larrousse",
@@ -337,7 +310,6 @@
   "marussia": {
     "id": "marussia",
     "name": "Marussia",
-    "country": "russia",
     "base": "banbury"
   },
   "maserati": {
@@ -360,14 +332,12 @@
     "id": "mercedes",
     "name": "Mercedes-AMG",
     "base": "brackley",
-    "country": "germany",
     "color": "#2BFFDB"
   },
   "midland": {
     "id": "midland",
     "name": "Midland",
-    "base": "silverstone",
-    "country": "netherlands"
+    "base": "silverstone"
   },
   "minardi": {
     "id": "minardi",
@@ -376,18 +346,15 @@
   },
   "modena": {
     "id": "modena",
-    "name": "Modena",
-    "country": "united-kingdom"
+    "name": "Modena"
   },
   "maki": {
     "id": "maki",
-    "name": "Maki",
-    "country": "japan"
+    "name": "Maki"
   },
   "martini": {
     "id": "martini",
-    "name": "Martini",
-    "country": "france"
+    "name": "Martini"
   },
   "osella": {
     "id": "osella",
@@ -397,13 +364,11 @@
   "pacific": {
     "id": "pacific",
     "name": "Pacific",
-    "country": "united-kingdom",
     "base": "thetford"
   },
   "penske": {
     "id": "penske",
-    "name": "Penske",
-    "country": "usa"
+    "name": "Penske"
   },
   "porsche": {
     "id": "porsche",
@@ -431,14 +396,12 @@
     "id": "red-bull-racing",
     "name": "Red Bull Racing",
     "base": "milton-keynes",
-    "country": "austria",
     "color": "#22477A"
   },
   "renault": {
     "id": "renault",
     "name": "Renault",
     "base": "enstone",
-    "country": "france",
     "color": "#FFCD2C"
   },
   "rial": {
@@ -448,8 +411,7 @@
   },
   "rob-walker-racing": {
     "id": "rob-walker-racing",
-    "name": "Rob Walker Racing",
-    "country": "united-kingdom"
+    "name": "Rob Walker Racing"
   },
   "sauber": {
     "id": "sauber",
@@ -466,7 +428,6 @@
     "id": "audi",
     "name": "Audi",
     "base": "hinwil",
-    "country": "germany",
     "color": "#FF2E2E"
   },
   "shadow": {
@@ -482,13 +443,11 @@
   "spyker": {
     "id": "spyker",
     "name": "Spyker",
-    "base": "silverstone",
-    "country": "netherlands"
+    "base": "silverstone"
   },
   "spirit": {
     "id": "spirit",
-    "name": "Spirit",
-    "country": "united-kingdom"
+    "name": "Spirit"
   },
   "stewart": {
     "id": "stewart",
@@ -498,7 +457,6 @@
   "super-aguri": {
     "id": "super-aguri",
     "name": "Super Aguri",
-    "country": "japan",
     "base": "leafield"
   },
   "surtees": {
@@ -509,7 +467,6 @@
   "theodore": {
     "id": "theodore",
     "name": "Theodore",
-    "country": "hong-kong",
     "base": "woking"
   },
   "toleman": {
@@ -526,7 +483,6 @@
   "toyota": {
     "id": "toyota",
     "name": "Toyota",
-    "country": "japan",
     "base": "cologne"
   },
   "tyrrell": {
@@ -553,7 +509,6 @@
   "wolf": {
     "id": "wolf",
     "name": "Wolf",
-    "country": "canada",
     "base": "reading"
   },
   "zakspeed": {
