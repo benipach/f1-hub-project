@@ -120,11 +120,14 @@
                 const key = keyOf(row);
                 if(!key) continue;
                 const entry = ensure(key);
-                const slot = entry.perRound[i] || { pts: 0, sprintPts: 0, pos: null, retired: false, won: false, cars: 0, dnfs: 0, best: null };
+                const slot = entry.perRound[i] || { pts: 0, sprintPts: 0, pos: null, retired: false, sprintPos: null, sprintRetired: false, won: false, cars: 0, dnfs: 0, best: null };
 
                 slot.pts += row.pts || 0;
                 if(row.sprint){
                     slot.sprintPts += row.pts || 0;
+                    // Puesto del sprint sólo para el tooltip del gráfico.
+                    slot.sprintPos = groupOf ? null : row.pos ?? null;
+                    slot.sprintRetired = groupOf ? false : isRetired(row);
                 } else {
                     // El puesto y el abandono son los de la carrera larga; el sprint
                     // sólo aporta puntos.
@@ -244,14 +247,14 @@
 
             return `
                 <tr class="st-row" data-series="${esc(s.id)}" style="--row-color:${color}" tabindex="0" role="button" aria-pressed="false">
-                    <td class="st-pos">${pos}</td>
+                    <td class="st-pos"><span>${pos}</span></td>
                     <td>${nameCell}</td>
                     ${countryCell}
                     ${teamCell}
-                    <td class="st-num st-col-wins">${s.wins || 0}</td>
-                    <td class="st-num st-col-podiums">${s.podiums || 0}</td>
-                    <td class="st-pts">${s.total}</td>
-                    <td class="st-gap">${gap}</td>
+                    <td class="st-num st-col-wins"><span>${s.wins || 0}</span></td>
+                    <td class="st-num st-col-podiums"><span>${s.podiums || 0}</span></td>
+                    <td class="st-pts"><span>${s.total}</span></td>
+                    <td class="st-gap"><span>${gap}</span></td>
                     <td class="st-col-form">${formHtml(s, rounds)}</td>
                 </tr>`;
         }).join('');
@@ -283,6 +286,41 @@
     // hay 22 series en vez de 2, así que el radio de los puntos arranca más
     // chico y crece al enfocar una.
 
+    // Tooltip centrado encima del punto; si arriba no entra (las últimas rondas
+    // del líder rozan el techo del gráfico), cae debajo del punto. Chart.js
+    // deja que el posicionador devuelva xAlign/yAlign y pisan a los de options.
+    const TOOLTIP_GAP = 22;
+    Chart.Tooltip.positioners.aboveOrBelow = function(elements, eventPosition){
+        const el = elements[0]?.element;
+        if(!el) return false;
+        const { top } = this.chart.chartArea;
+        const height = this.height || 96;          // 0 antes del primer dibujo
+        const fits = el.y - TOOLTIP_GAP - height >= top;
+        return { x: el.x, y: el.y, xAlign: 'center', yAlign: fits ? 'bottom' : 'top' };
+    };
+
+    // Logo del equipo para el tooltip. Chart.js acepta un canvas como
+    // pointStyle pero lo dibuja a tamaño natural, así que el PNG se reduce una
+    // sola vez a una teja de 18px (contain) y se cachea por equipo. La teja
+    // existe desde el primer llamado; el logo aparece cuando termina de cargar.
+    const LOGO_TILE = 18;
+    const logoTiles = new Map();
+    function logoTile(slug){
+        if(!slug) return null;
+        if(logoTiles.has(slug)) return logoTiles.get(slug);
+        const tile = document.createElement('canvas');
+        tile.width = tile.height = LOGO_TILE;
+        logoTiles.set(slug, tile);
+        const img = new Image();
+        img.onload = () => {
+            const k = Math.min(LOGO_TILE / img.naturalWidth, LOGO_TILE / img.naturalHeight);
+            const w = img.naturalWidth * k, h = img.naturalHeight * k;
+            tile.getContext('2d').drawImage(img, (LOGO_TILE - w) / 2, (LOGO_TILE - h) / 2, w, h);
+        };
+        img.src = `./img/teams/${slug}-logo.png`;
+        return tile;
+    }
+
     // Dibuja, sobre la serie enfocada, cuántos puntos sumó en cada carrera. Es el
     // dato que la curva acumulada esconde: la línea sube, pero no dice de cuánto
     // fue cada escalón. Equivale a la banda del podio del gráfico del piloto:
@@ -299,9 +337,17 @@
 
             const { ctx } = chart;
             ctx.save();
-            ctx.font = "10px 'F1-Regular', sans-serif";
+            // Número suelto sobre cada punto, sin cápsula: el color de la
+            // serie (rojo para DNF) y un halo oscuro para despegarlo de la
+            // grilla y de las curvas grises de fondo. El halo es un strokeText
+            // y no shadowBlur: la sombra se recalcula en cada frame de la
+            // animación y en un canvas de este tamaño se nota como tirones.
+            ctx.font = "600 12px 'F1-Regular', sans-serif";
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
+            ctx.lineJoin = 'round';
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = 'rgba(10,10,20,0.85)';
 
             meta.data.forEach((point, i) => {
                 const slot = focus.perRound[i];
@@ -311,31 +357,185 @@
                 const label = dnf ? 'DNF' : `+${slot.pts}`;
                 if(!dnf && !slot.pts) return;          // un cero no merece una etiqueta
 
-                const w = ctx.measureText(label).width + 12;
-                const h = 15;
-                const x = point.x;
-                const y = point.y - 17;
-
-                ctx.fillStyle = dnf ? 'rgba(217,86,79,0.92)' : 'rgba(10,10,20,0.9)';
-                ctx.strokeStyle = dnf ? 'rgba(217,86,79,0.92)' : withAlpha(focus.meta.color, 0.85);
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.roundRect(x - w / 2, y - h / 2, w, h, 7);
-                ctx.fill();
-                ctx.stroke();
-
-                ctx.fillStyle = dnf ? '#fff' : withAlpha(focus.meta.color, 1);
-                ctx.fillText(label, x, y + 0.5);
+                ctx.fillStyle = dnf ? 'rgba(217,86,79,1)' : withAlpha(focus.meta.color, 1);
+                ctx.strokeText(label, point.x, point.y - 15);
+                ctx.fillText(label, point.x, point.y - 15);
             });
 
             ctx.restore();
         },
     };
 
-    function makeChart(canvas, rounds, series, getFocus){
+    // Abre o cierra una ranura animando su altura en píxeles ENTEROS. Con
+    // grid-template-rows 0fr→1fr la altura de la tarjeta queda fraccionaria
+    // en cada frame y, como tiene border-radius, el borde inferior se dibuja
+    // antialiasado en una posición distinta cada vez: se ve como un tembleque
+    // en la línea mientras se abre. Redondeando, la fracción de la tarjeta
+    // no cambia durante la animación y el borde queda quieto.
+    const REVEAL_MS = 550;
+    const revealEase = cubicBezier(0.32, 0.72, 0, 1);
+    function revealTo(el, open){
+        const inner = el.firstElementChild;
+        const from = el.getBoundingClientRect().height;
+        const to = open ? Math.round(inner.getBoundingClientRect().height) : 0;
+        el.classList.toggle('is-open', open);
+        cancelAnimationFrame(el._raf);
+        if(from === to && !(open && el.style.height === 'auto')){
+            el.style.height = open ? 'auto' : '0px';
+            return;
+        }
+        el.style.height = `${Math.round(from)}px`;
+        const start = performance.now();
+        const step = now => {
+            const t = Math.min(1, (now - start) / REVEAL_MS);
+            const h = Math.round(from + (to - from) * revealEase(t));
+            el.style.height = `${h}px`;
+            if(t < 1) el._raf = requestAnimationFrame(step);
+            else if(open) el.style.height = 'auto';   // el contenido puede crecer después
+        };
+        el._raf = requestAnimationFrame(step);
+    }
+
+    // cubic-bezier(x1, y1, x2, y2) como función t → progreso, la misma curva
+    // que usan las transiciones CSS del sitio.
+    function cubicBezier(x1, y1, x2, y2){
+        const ax = 1 - 3 * x2 + 3 * x1, bx = 3 * x2 - 6 * x1, cx = 3 * x1;
+        const ay = 1 - 3 * y2 + 3 * y1, by = 3 * y2 - 6 * y1, cy = 3 * y1;
+        const sx = t => ((ax * t + bx) * t + cx) * t;
+        const sy = t => ((ay * t + by) * t + cy) * t;
+        const dx = t => (3 * ax * t + 2 * bx) * t + cx;
+        return x => {
+            let t = x;
+            for(let i = 0; i < 6; i++){
+                const d = dx(t);
+                if(Math.abs(d) < 1e-6) break;
+                t -= (sx(t) - x) / d;
+            }
+            return sy(Math.max(0, Math.min(1, t)));
+        };
+    }
+
+    // Comparación de dos series: entre los puntos de cada ronda se dibuja un
+    // conector vertical y, al lado, la diferencia acumulada (+32, +45…) en el
+    // color del que va adelante. `progress` (0→1) lo anima mountPanel: el
+    // conector crece desde el punto de abajo y la cifra aparece al final.
+    const comparePlugin = {
+        id: 'compare',
+
+        // Los dos gruesos van en capas distintas: los conectores debajo de las
+        // series (así los puntos quedan encima) y las cifras por arriba de todo.
+        beforeDatasetsDraw(chart, _args, opts){
+            const cmp = comparePlugin._resolve(chart, opts);
+            if(!cmp) return;
+            const { ctx } = chart;
+            ctx.save();
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.setLineDash([]);
+            comparePlugin._each(cmp, ({ x, top, bottom, lead }) => {
+                const len = (bottom - top) * cmp.progress;
+                ctx.strokeStyle = withAlpha(lead.meta.color, 0.55 * cmp.progress);
+                ctx.beginPath();
+                ctx.moveTo(x, bottom);
+                ctx.lineTo(x, bottom - len);
+                ctx.stroke();
+            });
+            ctx.restore();
+        },
+
+        afterDatasetsDraw(chart, _args, opts){
+            const cmp = comparePlugin._resolve(chart, opts);
+            if(!cmp) return;
+            const { ctx, chartArea } = chart;
+            const isPhone = chart.width < 520;
+            const labelEvery = isPhone ? Math.ceil(cmp.ptsA.length / 8) : 1;
+
+            ctx.save();
+            ctx.font = `600 ${isPhone ? 11 : 12}px 'F1-Regular', sans-serif`;
+            ctx.textBaseline = 'middle';
+            ctx.globalAlpha = Math.max(0, (cmp.progress - 0.55) / 0.45);
+            ctx.lineJoin = 'round';
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = 'rgba(10,10,20,0.85)';
+            comparePlugin._each(cmp, ({ i, x, top, bottom, lead, diff }) => {
+                // Cifra: sólo si el hueco da para leerla, y no todas en celular.
+                if(bottom - top < 16 || i % labelEvery) return;
+                const label = `+${Math.abs(diff)}`;
+                const w = ctx.measureText(label).width;
+                const right = x + 7 + w <= chartArea.right;
+                ctx.textAlign = right ? 'left' : 'right';
+                ctx.fillStyle = lead.meta.color;
+                ctx.strokeText(label, right ? x + 7 : x - 7, (top + bottom) / 2);
+                ctx.fillText(label, right ? x + 7 : x - 7, (top + bottom) / 2);
+            });
+            ctx.restore();
+        },
+
+        // Estado común a las dos capas: puntos y valores de las dos series.
+        _resolve(chart, opts){
+            const cmp = opts.compare?.();
+            if(!cmp || cmp.progress <= 0) return null;
+            const idxA = chart.data.datasets.findIndex(d => d.seriesId === cmp.a.id);
+            const idxB = chart.data.datasets.findIndex(d => d.seriesId === cmp.b.id);
+            if(idxA < 0 || idxB < 0) return null;
+            return {
+                ...cmp,
+                ptsA: chart.getDatasetMeta(idxA).data,
+                ptsB: chart.getDatasetMeta(idxB).data,
+                valA: chart.data.datasets[idxA].data,
+                valB: chart.data.datasets[idxB].data,
+            };
+        },
+
+        // Recorre las rondas con dato en las dos series y diferencia no nula.
+        _each(cmp, fn){
+            cmp.ptsA.forEach((pa, i) => {
+                const pb = cmp.ptsB[i];
+                if(!pb || cmp.valA[i] == null || cmp.valB[i] == null) return;
+                const diff = cmp.valA[i] - cmp.valB[i];
+                if(!diff) return;
+                fn({
+                    i, diff,
+                    x: pa.x,
+                    top: Math.min(pa.y, pb.y),
+                    bottom: Math.max(pa.y, pb.y),
+                    lead: diff > 0 ? cmp.a : cmp.b,
+                });
+            });
+        },
+    };
+
+    // Serie cuyo trazo pasa a menos de `radius` px del mouse, o null. Recorre
+    // los segmentos entre puntos consecutivos de cada línea visible, así el
+    // hover responde en cualquier parte de la curva y no sólo sobre un punto.
+    function seriesNear(chart, mx, my, radius = 12){
+        const { chartArea } = chart;
+        if(mx < chartArea.left || mx > chartArea.right || my < chartArea.top || my > chartArea.bottom) return null;
+        let best = null, bestD = radius;
+        chart.data.datasets.forEach((ds, i) => {
+            const meta = chart.getDatasetMeta(i);
+            if(meta.hidden) return;
+            const pts = meta.data;
+            for(let k = 1; k < pts.length; k++){
+                const a = pts[k - 1], b = pts[k];
+                if(a.skip || b.skip) continue;
+                const vx = b.x - a.x, vy = b.y - a.y;
+                const len2 = vx * vx + vy * vy || 1;
+                const t = Math.max(0, Math.min(1, ((mx - a.x) * vx + (my - a.y) * vy) / len2));
+                const d = Math.hypot(mx - (a.x + t * vx), my - (a.y + t * vy));
+                if(d < bestD){ bestD = d; best = ds.seriesId; }
+            }
+        });
+        return best;
+    }
+
+    function makeChart(canvas, rounds, series, getFocus, getCompare, onHover){
         // En celular la tarjeta es angosta: el gráfico va casi cuadrado (más alto)
         // y con puntos/tipografía más chicos para que no quede apretado.
         const isPhone = window.matchMedia('(max-width: 700px)').matches;
+
+        // Que los logos ya estén cargados la primera vez que aparece el tooltip.
+        series.forEach(s => logoTile(s.meta.teamSlug));
 
         const datasets = series.map(s => ({
             seriesId: s.id,
@@ -355,11 +555,18 @@
 
         return new Chart(canvas.getContext('2d'), {
             type: 'line',
-            plugins: [roundPointsPlugin],
+            plugins: [roundPointsPlugin, comparePlugin],
             data: { labels: rounds.map(r => r.code), datasets },
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
+                animation: { duration: 650, easing: 'easeOutQuart' },
+                // El resaltado al pasar el mouse es más corto que el de un toque:
+                // tiene que seguir la mano, no llegar después.
+                transitions: { hover: { animation: { duration: 220, easing: 'easeOutQuart' } } },
+                // Pasar cerca de una línea la resalta (y a su fila); lejos, nada.
+                // Se mide contra el trazo entero, no sólo contra los puntos.
+                onHover: (event, _els, chart) => onHover?.(seriesNear(chart, event.x, event.y), event.native),
                 aspectRatio: isPhone ? 0.95 : 2.9,
                 // 'index' mostraría las 22 series juntas; con esta cantidad de
                 // líneas el tooltip tiene que hablar de una sola.
@@ -368,14 +575,14 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            font: { size: isPhone ? 10 : 11 },
+                            font: { size: isPhone ? 10 : 11, weight: 600 },
                             maxTicksLimit: isPhone ? 6 : 9,
                         },
                         grid: { color: 'rgba(255,255,255,0.05)' },
                     },
                     x: {
                         ticks: {
-                            font: { size: isPhone ? 9 : 11 },
+                            font: { size: isPhone ? 9 : 11, weight: 600 },
                             maxRotation: isPhone ? 90 : 50,
                             autoSkip: false,
                         },
@@ -385,27 +592,44 @@
                 plugins: {
                     legend: { display: false },
                     roundPoints: { focus: getFocus },
+                    compare: { compare: getCompare },
                     tooltip: {
                         backgroundColor: 'rgba(10,10,20,0.94)',
                         borderColor: 'rgba(255,255,255,0.12)',
                         borderWidth: 1,
                         padding: 12,
-                        displayColors: false,
+                        // La "caja de color" de la línea del nombre es el logo
+                        // del equipo (ver logoTile).
+                        displayColors: true,
+                        usePointStyle: true,
+                        boxWidth: LOGO_TILE,
+                        boxHeight: LOGO_TILE,
+                        boxPadding: 6,
+                        // Ver Chart.Tooltip.positioners.aboveOrBelow. El aire es
+                        // para no tapar la etiqueta de puntos (+25) del punto.
+                        position: 'aboveOrBelow',
+                        caretPadding: TOOLTIP_GAP,
+                        caretSize: 6,
                         titleFont: { size: 13 },
                         bodyFont: { size: 12 },
                         callbacks: {
-                            title: items => {
-                                const r = rounds[items[0].dataIndex];
-                                return `R${r.round} · ${r.name} GP`;
+                            title: items => `Round ${rounds[items[0].dataIndex].round}`,
+                            label: item => {
+                                const s = series.find(x => x.id === item.dataset.seriesId);
+                                return s?.meta.label || item.dataset.label;
                             },
-                            label: () => '',
+                            labelPointStyle: item => {
+                                const s = series.find(x => x.id === item.dataset.seriesId);
+                                return { pointStyle: logoTile(s?.meta.teamSlug) || 'circle', rotation: 0 };
+                            },
                             afterBody: items => {
                                 const item = items[0];
+                                const r = rounds[item.dataIndex];
                                 const s = series.find(x => x.id === item.dataset.seriesId);
                                 const slot = s?.perRound[item.dataIndex];
-                                const lines = [s?.meta.label || item.dataset.label];
-                                if(slot?.pos) lines.push(`Finish  ${slot.retired ? 'DNF' : 'P' + slot.pos}`);
-                                lines.push(`Round   +${slot?.pts ?? 0}${slot?.sprintPts ? ` (incl. ${slot.sprintPts} sprint)` : ''}`);
+                                const lines = [`${r.name} GP`];
+                                if(slot?.pos) lines.push(`Race    ${slot.retired ? 'DNF' : 'P' + slot.pos}`);
+                                if(slot?.sprintPos) lines.push(`Sprint  ${slot.sprintRetired ? 'DNF' : 'P' + slot.sprintPos}`);
                                 lines.push(`Total   ${item.parsed.y} pts`);
                                 return lines;
                             },
@@ -433,15 +657,66 @@
         const tableWrap = panel.querySelector('.standings-table-wrap');
         const badge = panel.querySelector('.champ-form-badge');
         const note = panel.querySelector('.champ-form-note');
-        badge.hidden = true;
+        const reveals = {
+            badge: panel.querySelector('.champ-form-reveal[data-reveal="badge"]'),
+            compare: panel.querySelector('.champ-form-reveal[data-reveal="compare"]'),
+        };
+        const tray = panel.querySelector('.champ-compare');
+        const compareToggle = panel.querySelector('.champ-compare-toggle');
+        const subject = kind === 'drivers' ? 'driver' : 'team';
 
+        // Dos modos excluyentes: foco (una serie) o comparación (hasta dos).
         let focusId = null;
-        const focused = () => series.find(s => s.id === focusId) || null;
+        let compareOn = false;
+        let compareIds = [];
+        const byId = id => series.find(s => s.id === id) || null;
+        const focused = () => compareOn ? null : byId(focusId);
+        const compared = () => compareOn ? compareIds.map(byId).filter(Boolean) : [];
+        // Serie bajo el mouse (fila de la tabla o línea del gráfico): se
+        // resalta en los dos lados, por encima de lo elegido con un toque.
+        let hoverId = null;
+
+        // Sólo cuenta como hover un movimiento real del puntero. Cuando la
+        // franja se abre y empuja la tabla y el gráfico hacia abajo, Chrome
+        // dispara mouseover/mousemove por cada fila que pasa bajo el cursor
+        // quieto; sin este filtro el hover recorre la tabla fila por fila
+        // durante toda la animación y se ve como un tartamudeo.
+        let lastPointer = null;
+        const pointerMoved = e => {
+            if(!e || e.clientX == null) return true;
+            const moved = !lastPointer || lastPointer.x !== e.clientX || lastPointer.y !== e.clientY;
+            lastPointer = { x: e.clientX, y: e.clientY };
+            return moved;
+        };
+
+        // Animación del conector/cifras de la comparación (ver comparePlugin).
+        // Chart.js anima colores y radios por su cuenta; esto corre a la par.
+        const overlay = { progress: 0, raf: 0, pair: null };
+        const getCompare = () => overlay.pair && overlay.progress > 0
+            ? { a: overlay.pair[0], b: overlay.pair[1], progress: overlay.progress }
+            : null;
 
         renderTable(tableWrap, series, kind, { rounds });
-        const chart = makeChart(canvas, rounds, series, focused);
+        const chart = makeChart(canvas, rounds, series, focused, getCompare, (id, e) => { if(pointerMoved(e)) setHover(id); });
         const isPhone = window.matchMedia('(max-width: 700px)').matches;
         const basePointRadius = isPhone ? 2 : 3;
+
+        function animateOverlay(target){
+            cancelAnimationFrame(overlay.raf);
+            const from = overlay.progress;
+            if(from === target) return;
+            const start = performance.now();
+            const dur = target > from ? 750 : 380;
+            const ease = t => 1 - Math.pow(1 - t, 4);
+            const step = now => {
+                const t = Math.min(1, (now - start) / dur);
+                overlay.progress = from + (target - from) * ease(t);
+                chart.draw();
+                if(t < 1) overlay.raf = requestAnimationFrame(step);
+                else if(target === 0) overlay.pair = null;
+            };
+            overlay.raf = requestAnimationFrame(step);
+        }
 
         // Nota al pie: una línea editorial calculada, igual que la del piloto.
         // Es lo que se lee cuando no hay nada enfocado.
@@ -457,97 +732,225 @@
             });
 
             const gap = second ? leader.total - second.total : 0;
-            const subject = kind === 'drivers' ? 'driver' : 'team';
             note.innerHTML = `<b>${esc(leader.meta.label)}</b> leads on <b>${leader.total}</b> points`
                 + (second ? `, <b>${gap}</b> clear of ${esc(second.meta.label)}` : '')
                 + ` after <b>${rounds.length}</b> rounds.`
                 + (winners.size ? ` <b>${winners.size}</b> different ${winners.size > 1 ? `${subject}s have` : `${subject} has`} won a race so far.` : '')
-                + ` Tap a line — or a row in the table — to follow one ${subject}.`;
+                + ` Tap a line — or a row in the table — to follow one ${subject}, or hit Compare to put two side by side.`;
         })();
 
-        function paint(){
+        const openReveal = (key, open) => revealTo(reveals[key], open);
+
+        function slotHtml(s, i){
+            if(!s) return `
+                <div class="champ-compare-slot is-empty">
+                    <span class="champ-compare-slot-hint">${i === 0 ? `Pick a ${subject}` : `Pick another ${subject}`}</span>
+                </div>`;
+            const pos = series.indexOf(s) + 1;
+            const logo = s.meta.teamSlug
+                ? `<img class="champ-compare-logo" src="img/teams/${esc(s.meta.teamSlug)}-logo.png" alt="" onerror="this.remove()">`
+                : '';
+            return `
+                <div class="champ-compare-slot is-filled" style="--slot-color:${s.meta.color}" data-series="${esc(s.id)}">
+                    ${logo}
+                    <span class="champ-compare-name">${esc(s.meta.label)}</span>
+                    <span class="champ-compare-sub">P${pos} · ${s.total} pts</span>
+                    <button type="button" class="champ-compare-remove" aria-label="Remove ${esc(s.meta.label)}">×</button>
+                </div>`;
+        }
+
+        function summaryHtml(a, b){
+            if(!a || !b) return '';
+            const diff = a.total - b.total;
+            if(!diff) return `<b>Level</b> on ${a.total} points.`;
+            const lead = diff > 0 ? a : b, trail = diff > 0 ? b : a;
+            // Ronda en la que la diferencia fue más grande.
+            let peak = 0, peakRound = null;
+            a.data.forEach((va, i) => {
+                const vb = b.data[i];
+                if(va == null || vb == null) return;
+                const d = Math.abs(va - vb);
+                if(d > peak){ peak = d; peakRound = rounds[i]; }
+            });
+            return `<b style="color:${lead.meta.color}">${esc(lead.meta.label)}</b> leads ${esc(trail.meta.label)} by <b>${Math.abs(diff)}</b>`
+                + (peakRound && peak !== Math.abs(diff) ? ` · widest gap <b>${peak}</b> after the ${esc(peakRound.name)} GP` : '')
+                + '.';
+        }
+
+        function renderTray(){
+            const [a, b] = compared();
+            const key = `${a?.id ?? ''}|${b?.id ?? ''}`;
+            if(tray.dataset.key === key) return;
+            tray.dataset.key = key;
+            tray.innerHTML = `
+                <div class="champ-compare-row">
+                    ${slotHtml(a, 0)}
+                    <span class="champ-compare-vs">vs</span>
+                    ${slotHtml(b, 1)}
+                    <button type="button" class="champ-form-badge-clear champ-compare-close">Close</button>
+                </div>
+                <div class="champ-compare-summary-reveal${a && b ? ' is-open' : ''}">
+                    <p class="champ-compare-summary">${summaryHtml(a, b)}</p>
+                </div>`;
+        }
+
+        function paint(mode){
             const active = focused();
+            const pair = compared();
+            const lit = new Set(pair.length ? pair.map(s => s.id) : active ? [active.id] : []);
+            const dimming = lit.size > 0;
+            const hover = hoverId && !lit.has(hoverId) ? hoverId : null;
 
             chart.data.datasets.forEach(ds => {
                 const s = series.find(x => x.id === ds.seriesId);
-                const isActive = active && ds.seriesId === active.id;
-                const dim = active && !isActive;
+                const isLit = lit.has(ds.seriesId);
+                const isHover = ds.seriesId === hover;
+                const dim = dimming && !isLit && !isHover;
 
-                ds.borderColor = dim ? withAlpha(s.meta.color, 0.13) : s.meta.color;
-                ds.borderWidth = isActive ? 3.2 : dim ? 1.2 : (isPhone ? 2 : 2.5);
-                ds.pointRadius = isActive ? 5 : dim ? 0 : basePointRadius;
+                // Sin nada elegido, el mouse sólo levanta la suya: el resto
+                // apenas se atenúa para que no se pierda el contexto.
+                const restAlpha = dimming ? (pair.length === 2 ? 0.07 : 0.13) : hover ? 0.35 : 1;
+                ds.borderColor = isLit || isHover ? s.meta.color : withAlpha(s.meta.color, restAlpha);
+                ds.borderWidth = isLit ? 3.2 : isHover ? 3 : dim ? 1.2 : (isPhone ? 2 : 2.5);
+                ds.pointRadius = isLit ? 5 : isHover ? 4 : dim ? 0 : basePointRadius;
                 ds.pointBackgroundColor = s.meta.color;
                 ds.pointBorderColor = s.meta.color;
-                ds.order = isActive ? -1 : 0;
+                ds.order = isLit ? -2 : isHover ? -1 : 0;
             });
-            chart.update();
+            chart.update(mode);
+
+            if(pair.length === 2){ overlay.pair = pair; animateOverlay(1); }
+            else animateOverlay(0);
 
             tableWrap.querySelectorAll('.st-row').forEach(row => {
-                const on = active && row.dataset.series === active.id;
-                row.classList.toggle('is-focused', Boolean(on));
-                row.classList.toggle('is-dimmed', Boolean(active && !on));
+                const on = lit.has(row.dataset.series);
+                const hov = row.dataset.series === hover;
+                row.classList.toggle('is-focused', on);
+                row.classList.toggle('is-hover', hov);
+                row.classList.toggle('is-dimmed', dimming && !on && !hov);
                 row.setAttribute('aria-pressed', on ? 'true' : 'false');
             });
 
+            compareToggle.setAttribute('aria-pressed', compareOn ? 'true' : 'false');
+            panel.querySelector('.champ-form').classList.toggle('is-comparing', compareOn);
+            if(compareOn) renderTray();
+            openReveal('compare', compareOn);
+
             if(!active){
-                badge.hidden = true;
+                openReveal('badge', false);
+                badge.dataset.key = '';
                 return;
             }
 
+            openReveal('badge', true);
+            // Sólo se reconstruye al cambiar de enfocado: paint() también corre
+            // con cada hover, y rehacer el innerHTML volvía a pedir el logo
+            // (y a quitarlo si no existía), moviendo todo lo de abajo.
+            if(badge.dataset.key === active.id) return;
+            badge.dataset.key = active.id;
+
             const pos = series.indexOf(active) + 1;
-            const best = active.perRound.reduce((m, s) => Math.max(m, s?.pts || 0), 0);
+            // Mejor puesto de carrera de la temporada (slot.best: en un equipo es
+            // el mejor de sus dos autos).
+            const best = active.perRound.reduce((m, s) => (s?.best != null && (m == null || s.best < m)) ? s.best : m, null);
             const scored = active.perRound.filter(s => s?.pts > 0).length;
             const dnfs = active.perRound.filter(s => s?.retired).length;
 
-            badge.hidden = false;
             panel.querySelector('.champ-form').style.setProperty('--focus-color', active.meta.color);
+            const badgeLogo = active.meta.teamSlug
+                ? `<img class="champ-form-badge-logo" src="img/teams/${esc(active.meta.teamSlug)}-logo.png" alt="" onerror="this.remove()">`
+                : '';
             badge.innerHTML = `
+                ${badgeLogo}
                 ${esc(active.meta.label)}
                 <span class="champ-form-badge-sub">
-                    P${pos} · ${active.total} pts · best round +${best}
+                    P${pos} · ${active.total} pts${best != null ? ` · best result P${best}` : ''}
                     · scored in ${scored} of ${rounds.length}${dnfs ? ` · ${dnfs} DNF${dnfs > 1 ? 's' : ''}` : ''}
                 </span>
                 <button type="button" class="champ-form-badge-clear">Clear</button>`;
         }
 
-        const setFocus = id => { focusId = focusId === id ? null : id; paint(); };
-        const clearFocus = () => { focusId = null; paint(); };
+        // Un toque elige: en foco alterna la serie; en comparación llena la
+        // primera ranura libre (o reemplaza la segunda si ya hay dos), y tocar
+        // una elegida la saca.
+        const pick = id => {
+            if(!compareOn){ focusId = focusId === id ? null : id; return paint(); }
+            if(compareIds.includes(id)) compareIds = compareIds.filter(x => x !== id);
+            else if(compareIds.length < 2) compareIds = [...compareIds, id];
+            else compareIds = [compareIds[0], id];
+            paint();
+        };
+        const clearAll = () => { focusId = null; compareIds = []; compareOn = false; paint(); };
+        // Un mousemove puede llegar más de una vez por frame: el repintado del
+        // hover se agrupa en un solo requestAnimationFrame.
+        let hoverRaf = 0;
+        const setHover = id => {
+            if(id === hoverId) return;
+            hoverId = id;
+            if(hoverRaf) return;
+            hoverRaf = requestAnimationFrame(() => { hoverRaf = 0; paint('hover'); });
+        };
+        const setCompare = on => {
+            compareOn = on;
+            // El enfocado pasa a ser el primero de la comparación, y al revés.
+            if(on && focusId){ compareIds = [focusId]; focusId = null; }
+            if(!on){ focusId = compareIds[0] ?? null; compareIds = []; }
+            paint();
+        };
 
-        // Tocar la línea (o cerca de ella) enfoca; tocar el vacío suelta el foco.
+        // Tocar la línea (o cerca de ella) elige; tocar el vacío suelta el foco.
         canvas.addEventListener('click', event => {
             const hit = chart.getElementsAtEventForMode(event, 'nearest', { intersect: false, axis: 'xy' }, true)[0];
-            if(!hit) return clearFocus();
+            if(!hit) return compareOn ? null : clearAll();
 
             const rect = canvas.getBoundingClientRect();
             const dx = (event.clientX - rect.left) - hit.element.x;
             const dy = (event.clientY - rect.top) - hit.element.y;
             const id = chart.data.datasets[hit.datasetIndex]?.seriesId;
 
-            if(id && Math.hypot(dx, dy) <= 45) setFocus(id);
-            else clearFocus();
+            if(id && Math.hypot(dx, dy) <= 45) pick(id);
+            else if(!compareOn) clearAll();
         }, { signal });
 
         badge.addEventListener('click', e => {
-            if(e.target.closest('.champ-form-badge-clear')) clearFocus();
+            if(e.target.closest('.champ-form-badge-clear')) clearAll();
+        }, { signal });
+
+        compareToggle.addEventListener('click', () => setCompare(!compareOn), { signal });
+
+        tray.addEventListener('click', e => {
+            if(e.target.closest('.champ-compare-close')) return setCompare(false);
+            const remove = e.target.closest('.champ-compare-remove');
+            if(remove) pick(remove.closest('.champ-compare-slot').dataset.series);
         }, { signal });
 
         tableWrap.addEventListener('click', e => {
             const row = e.target.closest('.st-row');
-            if(row) setFocus(row.dataset.series);
+            if(row) pick(row.dataset.series);
         }, { signal });
+
+        // Hover en la tabla → su línea; salir del gráfico o de la tabla lo suelta.
+        tableWrap.addEventListener('mousemove', e => {
+            if(!pointerMoved(e)) return;
+            const row = e.target.closest('.st-row');
+            setHover(row ? row.dataset.series : null);
+        }, { signal });
+        tableWrap.addEventListener('mouseleave', () => setHover(null), { signal });
+        canvas.addEventListener('mouseleave', () => setHover(null), { signal });
 
         tableWrap.addEventListener('keydown', e => {
             if(e.key !== 'Enter' && e.key !== ' ') return;
             const row = e.target.closest('.st-row');
             if(!row) return;
             e.preventDefault();
-            setFocus(row.dataset.series);
+            pick(row.dataset.series);
         }, { signal });
 
         document.addEventListener('keydown', e => {
-            if(e.key === 'Escape' && focusId) clearFocus();
+            if(e.key === 'Escape' && (focusId || compareOn)) clearAll();
         }, { signal });
 
+        tray.dataset.key = '';
         paint();
         panel._chart = chart;
         return chart;
