@@ -12,7 +12,7 @@
   },
   "alfa-romeo-sauber": {
     "id": "alfa-romeo-sauber",
-    "name": "Alfa Romeo F1 Team",
+    "name": "Alfa Romeo",
     "base": "hinwil"
   },
   "alphatauri": {
@@ -29,11 +29,12 @@
   },
   "alta": {
     "id": "alta",
-    "name": "Alta"
+    "name": "Alta GP",
+    "base": "surbiton"
   },
   "amon": {
     "id": "amon",
-    "name": "Amon"
+    "name": "Amon Racing"
   },
   "andrea-moda": {
     "id": "andrea-moda",
@@ -51,16 +52,18 @@
   },
   "arrows": {
     "id": "arrows",
-    "name": "Arrows",
+    "name": "Arrows GP",
     "base": "leafield"
   },
   "arzani-volpini": {
     "id": "arzani-volpini",
-    "name": "Arzani-Volpini"
+    "name": "Arzani-Volpini",
+    "base": "milan"
   },
   "aston-martin-1959": {
     "id": "aston-martin-1959",
-    "name": "Aston Martin"
+    "name": "Aston Martin",
+    "base": "newport-pagnell"
   },
   "aston-martin": {
     "id": "aston-martin",
@@ -70,12 +73,13 @@
   },
   "ats-1963": {
     "id": "ats-1963",
-    "name": "ATS"
+    "name": "ATS",
+    "base": "bologna"
   },
   "ats": {
     "id": "ats",
     "name": "ATS",
-    "base": "bicester"
+    "base": "bad-durkheim"
   },
   "bar": {
     "id": "bar",
@@ -84,7 +88,7 @@
   },
   "bmw-sauber": {
     "id": "bmw-sauber",
-    "name": "BMW Sauber",
+    "name": "BMW",
     "base": "hinwil"
   },
   "benetton": {
@@ -94,7 +98,8 @@
   },
   "bellasi": {
     "id": "bellasi",
-    "name": "Bellasi"
+    "name": "Bellasi",
+    "base": "novara"
   },
   "bms-scuderia-italia": {
     "id": "bms-scuderia-italia",
@@ -103,12 +108,13 @@
   },
   "boro": {
     "id": "boro",
-    "name": "Boro"
+    "name": "Boro Racing",
+    "base": "bovenkerk"
   },
   "brabham": {
     "id": "brabham",
-    "name": "Brabham",
-    "base": "weybridge"
+    "name": "Brabham Racing",
+    "base": "milton-keynes"
   },
   "brawn-gp": {
     "id": "brawn-gp",
@@ -123,11 +129,13 @@
   },
   "brp": {
     "id": "brp",
-    "name": "BRP"
+    "name": "BRP",
+    "base": "tring"
   },
   "bugatti": {
     "id": "bugatti",
-    "name": "Bugatti"
+    "name": "Bugatti",
+    "base": "molsheim"
   },
   "cadillac": {
     "id": "cadillac",
@@ -142,17 +150,13 @@
   },
   "coloni": {
     "id": "coloni",
-    "name": "Coloni",
+    "name": "Coloni Racing",
     "base": "passignano-sul-trasimeno"
   },
   "cooper": {
     "id": "cooper",
     "name": "Cooper",
     "base": "surbiton"
-  },
-  "courage": {
-    "id": "courage",
-    "name": "Courage"
   },
   "dallara": {
     "id": "dallara",
@@ -233,7 +237,8 @@
   },
   "honda-1964": {
     "id": "honda-1964",
-    "name": "Honda"
+    "name": "Honda",
+    "base": "tokyo"
   },
   "honda": {
     "id": "honda",
@@ -248,7 +253,8 @@
   },
   "iso-marlboro": {
     "id": "iso-marlboro",
-    "name": "Iso-Marlboro"
+    "name": "Iso-Marlboro",
+    "base": "reading"
   },
   "jaguar": {
     "id": "jaguar",
@@ -266,11 +272,13 @@
   },
   "kojima": {
     "id": "kojima",
-    "name": "Kojima"
+    "name": "Kojima",
+    "base": "kyoto"
   },
   "kurtis-kraft": {
     "id": "kurtis-kraft",
-    "name": "Kurtis Kraft"
+    "name": "Kurtis Kraft",
+    "base": "glendale"
   },
   "larrousse": {
     "id": "larrousse",
@@ -280,7 +288,7 @@
   "ligier": {
     "id": "ligier",
     "name": "Ligier",
-    "base": "vichy"
+    "base": "magny-cours"
   },
   "lola": {
     "id": "lola",
@@ -346,20 +354,23 @@
   },
   "modena": {
     "id": "modena",
-    "name": "Modena"
+    "name": "Modena",
+    "base": "modena"
   },
   "maki": {
     "id": "maki",
-    "name": "Maki"
+    "name": "Maki",
+    "base": "tokyo"
   },
   "martini": {
     "id": "martini",
-    "name": "Martini"
+    "name": "Martini",
+    "base": "magny-cours"
   },
   "osella": {
     "id": "osella",
     "name": "Osella",
-    "base": "verolengo"
+    "base": "volpiano"
   },
   "pacific": {
     "id": "pacific",
@@ -368,7 +379,8 @@
   },
   "penske": {
     "id": "penske",
-    "name": "Penske"
+    "name": "Penske",
+    "base": "poole"
   },
   "porsche": {
     "id": "porsche",
@@ -411,7 +423,8 @@
   },
   "rob-walker-racing": {
     "id": "rob-walker-racing",
-    "name": "Rob Walker Racing"
+    "name": "Rob Walker Racing",
+    "base": "dorking"
   },
   "sauber": {
     "id": "sauber",
@@ -447,7 +460,8 @@
   },
   "spirit": {
     "id": "spirit",
-    "name": "Spirit"
+    "name": "Spirit",
+    "base": "slough"
   },
   "stewart": {
     "id": "stewart",
@@ -467,7 +481,7 @@
   "theodore": {
     "id": "theodore",
     "name": "Theodore",
-    "base": "woking"
+    "base": "hong-kong"
   },
   "toleman": {
     "id": "toleman",
