@@ -322,24 +322,24 @@
 .drivercard.team-mclaren .dc-label::before { background-image: url('../img/teams/mclaren-logo.png'); }
 .drivercard.team-haas .dc-label::before { background-image: url('../img/teams/haas-logo.png'); }
 .drivercard.team-alpine .dc-label::before { background-image: url('../img/teams/alpine-logo.png'); }
-.drivercard.team-red-bull .dc-label::before { background-image: url('../img/teams/redbull-logo.png'); }
-.drivercard.team-racing-bulls .dc-label::before { background-image: url('../img/teams/racingbulls-logo.png'); }
+.drivercard.team-red-bull .dc-label::before { background-image: url('../img/teams/red-bull-racing-logo.png'); }
+.drivercard.team-racing-bulls .dc-label::before { background-image: url('../img/teams/racing-bulls-logo.png'); }
 .drivercard.team-audi .dc-label::before { background-image: url('../img/teams/audi-logo.png'); }
 .drivercard.team-williams .dc-label::before { background-image: url('../img/teams/williams-logo.png'); }
 .drivercard.team-cadillac .dc-label::before { background-image: url('../img/teams/cadillac-logo.png'); }
-.drivercard.team-aston-martin .dc-label::before { background-image: url('../img/teams/astonmartin-logo.png'); }
+.drivercard.team-aston-martin .dc-label::before { background-image: url('../img/teams/aston-martin-logo.png'); }
 
 .drivercard.team-mercedes::after { background-image: url('../img/teams/mercedes-logo.png'); }
 .drivercard.team-ferrari::after { background-image: url('../img/teams/ferrari-logo.png'); }
 .drivercard.team-mclaren::after { background-image: url('../img/teams/mclaren-logo.png'); }
 .drivercard.team-haas::after { background-image: url('../img/teams/haas-logo.png'); }
 .drivercard.team-alpine::after { background-image: url('../img/teams/alpine-logo.png'); }
-.drivercard.team-red-bull::after { background-image: url('../img/teams/redbull-logo.png'); }
-.drivercard.team-racing-bulls::after { background-image: url('../img/teams/racingbulls-logo.png'); }
+.drivercard.team-red-bull::after { background-image: url('../img/teams/red-bull-racing-logo.png'); }
+.drivercard.team-racing-bulls::after { background-image: url('../img/teams/racing-bulls-logo.png'); }
 .drivercard.team-audi::after { background-image: url('../img/teams/audi-logo.png'); }
 .drivercard.team-williams::after { background-image: url('../img/teams/williams-logo.png'); }
 .drivercard.team-cadillac::after { background-image: url('../img/teams/cadillac-logo.png'); }
-.drivercard.team-aston-martin::after { background-image: url('../img/teams/astonmartin-logo.png'); }
+.drivercard.team-aston-martin::after { background-image: url('../img/teams/aston-martin-logo.png'); }
 
 .driver-details h3 {
     font-family: 'F1-Regular';

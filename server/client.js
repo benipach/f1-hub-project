@@ -42,6 +42,9 @@ const TOPICS = [
   "SessionData",
   "TrackStatus",
   "WeatherData",
+  // Mensajes de Race Control (banderas, SC/VSC, investigaciones, sanciones,
+  // track limits, DRS) para el panel de live.html.
+  "RaceControlMessages",
 ];
 
 // Local, persistent state built from merged deltas. One key per topic.
