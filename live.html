@@ -19,9 +19,10 @@
     <link rel="stylesheet" href="./styles/live.css">
     <script src="./js/twemoji.js" defer></script>
     <script src="./js/navbar.js" defer></script>
+    <script src="./js/shared/teams.js" defer></script>
     <script src="./js/live.js" defer></script>
 </head>
-<body>
+<body class="live-body">
 
 <header class="navbar">
     <a href="./index.html" class="logo-container">
@@ -47,166 +48,105 @@
     </nav>
 </header>
 
-<main class="live-page">
-    <div class="live-hero-row">
-        <div class="hero-title-row">
-            <h1 class="hero-gp-name" id="hero-gp-name">–</h1>
-            <div class="hero-session-status" id="hero-session-status"></div>
+<main class="live-app" id="live-map-view-content">
+    <div class="live-app-topbar">
+        <div class="mapview-fs-ident">
+            <h1 class="mapview-fs-name" id="mapview-fs-name">–</h1>
+            <div class="hero-session-status mapview-fs-session-status" id="mapview-fs-session-status"></div>
+            <span class="delay-indicator" id="delay-indicator" hidden title="Live data is being held back to match the TV broadcast (Customize → TV sync)"></span>
         </div>
-        <div class="session-weather live-hero-weather" id="live-weather"></div>
-    </div>
-
-    <div class="results-table-wrap" id="live-table-wrap">
-        <button class="table-fullscreen-btn" id="live-table-fullscreen-btn" type="button" aria-label="Pantalla completa">
-            <svg class="icon-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
-                <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
-                <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
-                <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
-            </svg>
-            <svg class="icon-collapse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8 3v3a2 2 0 0 1-2 2H3"></path>
-                <path d="M21 8h-3a2 2 0 0 1-2-2V3"></path>
-                <path d="M3 16h3a2 2 0 0 1 2 2v3"></path>
-                <path d="M16 21v-3a2 2 0 0 1 2-2h3"></path>
-            </svg>
-        </button>
-        <table class="results-table live-table">
-            <thead id="live-thead">
-                <tr>
-                    <th class="live-col-pos live-col-roomy">Pos</th>
-                    <th class="live-delta-col"></th>
-                    <th class="live-col-roomy">Driver</th>
-                    <th class="live-col-roomy">Gap</th>
-                    <th class="live-col-roomy">Interval</th>
-                    <th class="live-sector-col live-col-tight-first">S1</th>
-                    <th class="live-sector-col live-col-tight-mid">S2</th>
-                    <th class="live-sector-col live-col-tight-mid">S3</th>
-                    <th class="live-col-tight-mid">Last Lap</th>
-                    <th class="live-col-tight-last">Best Lap</th>
-                    <th class="live-col-roomy">Tyres</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="live-rows">
-                <tr><td colspan="12" class="results-empty">Waiting for session data…</td></tr>
-            </tbody>
-        </table>
-    </div>
-</main>
-
-<section class="map-view-section">
-    <div class="map-view-content" id="live-map-view-content">
-        <button class="table-fullscreen-btn" id="live-map-fullscreen-btn" type="button" aria-label="Pantalla completa">
-            <svg class="icon-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
-                <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
-                <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
-                <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
-            </svg>
-            <svg class="icon-collapse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8 3v3a2 2 0 0 1-2 2H3"></path>
-                <path d="M21 8h-3a2 2 0 0 1-2-2V3"></path>
-                <path d="M3 16h3a2 2 0 0 1 2 2v3"></path>
-                <path d="M16 21v-3a2 2 0 0 1 2-2h3"></path>
-            </svg>
-        </button>
-        <div class="mapview-fs-header" id="mapview-fs-header">
-            <div class="mapview-fs-ident">
-                <span class="mapview-fs-name" id="mapview-fs-name">–</span>
-                <div class="hero-session-status mapview-fs-session-status" id="mapview-fs-session-status"></div>
-            </div>
+        <div class="live-app-topbar-side">
             <div class="session-weather mapview-fs-weather" id="mapview-fs-weather"></div>
         </div>
+    </div>
 
-        <div class="mapview-panels-row">
-        <div class="mapview-panel mapview-panel--table">
-            <div class="mapview-panel-title">Live Timing</div>
+    <div class="mapview-panels-row">
+        <section class="mapview-panel mapview-panel--table">
             <div class="results-table-wrap">
                 <table class="results-table live-table live-table--compact">
                     <thead id="live-thead-2">
                         <tr>
                             <th class="live-col-pos live-col-roomy">Pos</th>
                             <th class="live-delta-col"></th>
-                            <th class="live-col-roomy">Driver</th>
+                            <th class="live-col-roomy live-col-driver">Driver</th>
+                            <th class="live-col-status"></th>
+                            <th class="live-col-roomy">Gap</th>
                             <th class="live-col-roomy">Interval</th>
-                            <th class="live-sector-col live-col-tight-first">S1</th>
+                            <th class="live-col-tight-first">Last Lap</th>
+                            <th class="live-sector-col live-col-tight-mid">S1</th>
                             <th class="live-sector-col live-col-tight-mid">S2</th>
-                            <th class="live-sector-col live-col-tight-mid">S3</th>
-                            <th class="live-col-tight-last">Last Lap</th>
+                            <th class="live-sector-col live-col-tight-last">S3</th>
                             <th class="live-col-roomy">Tyres</th>
                         </tr>
                     </thead>
                     <tbody id="live-rows-2">
-                        <tr><td colspan="9" class="results-empty">Waiting for session data…</td></tr>
+                        <tr><td colspan="11" class="results-empty">Waiting for session data…</td></tr>
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
 
-        <div class="mapview-panel mapview-panel--map">
-            <div class="mapview-panel-title">Track Map</div>
+        <section class="mapview-panel mapview-panel--map">
             <div class="circuit-map-wrap" id="circuit-map-wrap">
                 <img id="circuit-map-img" class="circuit-map-img" alt="">
                 <div id="circuit-position-overlay" class="circuit-position-overlay"></div>
+                <p class="track-note" id="track-note" hidden>Positions estimated from timing data</p>
+                <div class="live-map-controls">
+                    <button class="live-ctrl-btn live-view-btn" id="live-view-btn" type="button" aria-label="Customize table" title="Customize table" aria-expanded="false" aria-controls="live-view-panel">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4 21v-7"></path>
+                            <path d="M4 10V3"></path>
+                            <path d="M12 21v-9"></path>
+                            <path d="M12 8V3"></path>
+                            <path d="M20 21v-5"></path>
+                            <path d="M20 12V3"></path>
+                            <path d="M1 14h6"></path>
+                            <path d="M9 8h6"></path>
+                            <path d="M17 16h6"></path>
+                        </svg>
+                    </button>
+                    <button class="live-ctrl-btn live-fs-btn" id="live-fullscreen-btn" type="button" aria-label="Full screen" title="Full screen">
+                        <svg class="icon-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+                            <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+                            <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+                            <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+                        </svg>
+                        <svg class="icon-collapse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M8 3v3a2 2 0 0 1-2 2H3"></path>
+                            <path d="M21 8h-3a2 2 0 0 1-2-2V3"></path>
+                            <path d="M3 16h3a2 2 0 0 1 2 2v3"></path>
+                            <path d="M16 21v-3a2 2 0 0 1 2-2h3"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
-        </div>
-        </div>
+
+            <!-- Race Control: lo llena live.js (renderRaceControl). -->
+            <section class="race-control" id="race-control" aria-label="Race control messages">
+                <ol class="rc-list" id="rc-list"></ol>
+            </section>
+
+            <!-- Panel "Customize table": lo llena live.js (initViewPanel). -->
+            <div class="live-view-panel" id="live-view-panel" role="dialog" aria-labelledby="live-view-panel-title" tabindex="-1" hidden>
+                <div class="lvp-head">
+                    <h3 class="lvp-title" id="live-view-panel-title">Customize table</h3>
+                    <button class="lvp-close" type="button" data-action="close" aria-label="Close">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M18 6 6 18"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="lvp-body" id="live-view-panel-body"></div>
+                <div class="lvp-foot">
+                    <button class="lvp-btn" type="button" data-action="reset">Reset to default</button>
+                    <button class="lvp-btn lvp-btn--primary" type="button" data-action="close">Done</button>
+                </div>
+            </div>
+
+        </section>
     </div>
-</section>
-
-<footer class="footer">
-    <div class="footer-grid">
-        <div class="footer-brand">
-            <a href="./index.html" class="footer-logo">
-                <img src="img/logo.png" alt="F1 Hub Logo" class="footer-logo-img">
-            </a>
-            <p class="footer-tagline">
-                Your go-to source for F1 schedules, standings,<br>
-                and race data — all in your local time.
-            </p>
-        </div>
-
-        <div class="footer-links">
-            <p class="footer-col-title">Navigate</p>
-            <ul>
-                <li><a href="./index.html#calendar">Calendar</a></li>
-                <li><a href="./championship.html">Championship</a></li>
-                <li><a href="./results.html">Results</a></li>
-                <li><a href="./drivers.html">Drivers</a></li>
-                <li><a href="./teams.html">Teams</a></li>
-                <li><a href="./live.html">Live</a></li>
-                <li><a href="./archive.html">Archive</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-links">
-            <p class="footer-col-title">External</p>
-            <ul>
-                <li><a href="https://www.formula1.com" target="_blank">Formula 1 Official</a></li>
-                <li><a href="https://www.fia.com" target="_blank">FIA</a></li>
-                <li><a href="https://openf1.org" target="_blank">OpenF1 API</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-links">
-            <p class="footer-col-title">Developer</p>
-            <ul>
-                <li><a href="https://benipach.github.io/portfolio" target="_blank">Portfolio</a></li>
-                <li><a href="https://github.com/benipach" target="_blank">GitHub</a></li>
-                <li><a href="https://linkedin.com/in/benicio-pacheco" target="_blank">LinkedIn</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="footer-bottom">
-        <span class="footer-copyright">
-            &copy; 2026 F1 Hub &mdash; Unofficial fan project. Not affiliated with Formula 1.
-        </span>
-        <span class="footer-timezone">
-            All times shown in your local timezone
-        </span>
-    </div>
-</footer>
+</main>
 </body>
 </html>

@@ -1,29 +1,16 @@
-/* ---- PAGE LAYOUT ---- */
-.live-page {
-    max-width: var(--content-width);
-    margin-inline: auto;
-    padding: var(--content-rhythm) var(--content-gutter);
+/* ---- PAGE LAYOUT ----
+   La página es solo la app de timing: una barra superior (GP, sesión y
+   clima) y dos paneles, tabla y mapa (con el botón de pantalla completa). En
+   escritorio ocupa exacto el alto de la ventana debajo del navbar, sin
+   scroll de página; en pantallas angostas los paneles se apilan y la
+   página scrollea normal (ver APP SHELL más abajo). --nav-h copia el alto
+   del .navbar fijo de style.css. */
+.live-body {
+    --nav-h: 60px;
 }
 
-/* ---- MAP VIEW SECTION ----
-   Alineada a la izquierda (no centrada): el margen izquierdo se calcula del
-   mismo contenedor que usa .live-page, así los dos bloques arrancan en la misma
-   vertical sin repetir el porcentaje a mano. */
-.map-view-section {
-    width: var(--content-width);
-    margin: 64px auto 128px calc((100% - var(--content-width)) / 2);
-}
-
-.map-view-content {
-    display: flex;
-    align-items: stretch;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.map-view-content .results-table-wrap {
-    flex: 1 1 0;
-    min-width: 0;
+@media (max-width: 500px) {
+    .live-body { --nav-h: 50px; }
 }
 
 /* ---- CIRCUIT MAP (Map View) ----
@@ -47,29 +34,93 @@
     border-color: rgba(255,255,255,0.14);
 }
 
-/* Rough first pass, not calibrated per circuit yet — inset matches the
-   wrap's own padding so dots line up with the image area beneath them. */
+/* ---- TRACK MAP (SVG) ----
+   Contenedor del mapa dibujado por live.js (drawTrackMap()): pista, curvas
+   y autos en el mismo SVG y en el mismo sistema de coordenadas, así los
+   autos caen exactamente sobre la línea. El inset coincide con el padding
+   del wrap. */
 .circuit-position-overlay {
     position: absolute;
     inset: 24px;
     pointer-events: none;
 }
 
-.pos-dot {
+.track-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.track-outline,
+.track-line {
+    fill: none;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+.track-outline {
+    stroke: rgba(255,255,255,0.08);
+}
+
+.track-line {
+    stroke: rgba(255,255,255,0.55);
+}
+
+.track-start {
+    stroke: var(--primary-red, #e10600);
+    stroke-linecap: round;
+}
+
+.track-corners text {
+    fill: rgba(255,255,255,0.4);
+    font-family: 'F1-Regular', sans-serif;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+/* Cada auto se desliza a su posición nueva en vez de saltar: live.js
+   recalcula cada 0.5s (updatePositionOverlay) y la transición dura lo
+   mismo, así el movimiento queda continuo. */
+.track-car {
+    transition: transform 0.5s linear;
+}
+
+/* Aviso de que las posiciones son estimadas (sin Position.z, ver
+   ESTIMATED CAR POSITIONS en live.js). Abajo a la izquierda del mapa, lejos
+   de los botones. */
+.track-note {
     position: absolute;
-    transform: translate(-50%, -50%);
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.9);
-    color: #000;
+    left: 16px;
+    bottom: 16px;
+    margin: 0;
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.4);
+    pointer-events: none;
+}
+
+.track-note[hidden] {
+    display: none;
+}
+
+.track-car circle {
+    stroke: rgba(0,0,0,0.6);
+    stroke-width: 0;
+}
+
+.track-car text {
     font-family: 'F1-Bold', sans-serif;
-    font-size: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap;
-    transition: left 0.2s linear, top 0.2s linear;
+    paint-order: stroke;
+    stroke: rgba(9,9,14,0.85);
+    stroke-width: 0.25em;
+    stroke-linejoin: round;
+}
+
+/* Con el mapa en SVG, el PNG queda solo de respaldo. */
+.circuit-map-wrap.has-track .circuit-map-img {
+    display: none;
 }
 
 /* Los layouts oficiales de F1 no son todos iguales: algunos (Hungaroring)
@@ -92,33 +143,6 @@
     display: none;
 }
 
-/* Just the driver code text, nudged 1px down — separate from .pos-dot's
-   own transform (which anchors the circle to its X/Y position and
-   shouldn't be touched by this cosmetic tweak). */
-.pos-dot-label {
-    transform: translate(-1px, 1px);
-}
-
-/* ---- GP NAME BANNER (top of the page) ---- */
-/* ---- GP NAME + FLAG + CIRCUIT (copied from index.css's .hero-title-row /
-   .hero-gp-name / .hero-gp-flag / .hero-underline — same markup, same
-   classes, same look as the homepage hero) ---- */
-.live-hero-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    flex-wrap: wrap;
-    margin: 0 0 4px 0;
-}
-
-.hero-title-row {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-}
-
 /* ---- SESSION CLOCK (label + countdown/stopwatch, next to the GP name) ---- */
 .hero-session-status {
     display: flex;
@@ -133,6 +157,7 @@
 .hero-session-status .status-flag {
     font-family: 'F1-Regular', sans-serif;
     font-size: 16px;
+    font-weight: 600;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     padding: 5px 10px;
@@ -159,6 +184,7 @@
 
 .hero-session-status .status-session-name {
     font-family: 'F1-Regular', sans-serif;
+    font-weight: 600;
     font-size: 18px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
@@ -169,6 +195,7 @@
 .hero-session-status .status-clock {
     font-family: 'F1-Regular', sans-serif;
     font-size: 18px;
+    font-weight: 600;
     color: var(--text-light);
     letter-spacing: 0.5px;
     white-space: nowrap;
@@ -226,20 +253,21 @@
 .swc-stat {
     display: flex;
     flex-direction: column;
-    gap: 6px;
     min-width: 74px;
 }
 
 .swc-stat-value {
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 26px;
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
     color: var(--text-light);
     line-height: 1;
 }
 
 .swc-stat-label {
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 12px;
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     color: var(--text-dim);
@@ -262,79 +290,6 @@
     flex-shrink: 0;
 }
 
-/* ---- LIVE WEATHER CARD (compact variant of race.html's session-weather-card) ---- */
-.live-hero-weather {
-    margin-left: auto;
-}
-
-.live-hero-weather .session-weather-card {
-    padding: 12px 18px;
-    gap: 18px;
-}
-
-.live-hero-weather .swc-condition {
-    gap: 10px;
-    padding-right: 18px;
-}
-
-.live-hero-weather .swc-condition-icon {
-    font-size: 1.6rem;
-}
-
-.live-hero-weather .swc-stats {
-    gap: 20px;
-}
-
-.live-hero-weather .swc-stat {
-    min-width: 0;
-    gap: 3px;
-}
-
-.live-hero-weather .swc-stat-value {
-    font-size: 18px;
-}
-
-@media (max-width: 900px) {
-    .live-hero-weather { margin-left: 0; }
-}
-
-@media (max-width: 500px) {
-    .live-hero-weather .session-weather-card {
-        padding: 12px 16px;
-        gap: 12px;
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .live-hero-weather .swc-condition {
-        width: 100%;
-        padding-right: 0;
-        padding-bottom: 10px;
-        border-right: none;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    .live-hero-weather .swc-stats {
-        width: 100%;
-        gap: 12px;
-    }
-    .live-hero-weather .swc-stat { min-width: calc(50% - 6px); }
-}
-
-.hero-gp-name {
-    font-size: 48px;
-    margin: 0;
-    line-height: 1;
-    font-family: 'F1-Black';
-    text-transform: uppercase;
-}
-
-@media (max-width: 1100px) {
-    .hero-gp-name { font-size: 28px; }
-}
-
-@media (max-width: 600px) {
-    .hero-gp-name { font-size: 22px; }
-}
-
 /* ---- ROW HEIGHT (overrides results.css's 56px, since live.css loads after it) ---- */
 .live-table td {
     height: 32px;
@@ -343,6 +298,10 @@
 .live-table th,
 .live-table td {
     letter-spacing: 0.1px;
+}
+
+.live-table th {
+    font-size: 14px;
 }
 
 .live-table td {
@@ -382,12 +341,39 @@
     padding-right: 15px;
 }
 
-/* FP1/FP2/FP3: Best Lap uses .live-col-tight-first (see MAIN_THEAD_NODELTA /
-   COMPACT_THEAD_NODELTA in live.js) — same class Q/SQ uses for Best Lap, so
-   this can't be a bare class rule. body.is-fp-session (toggled in
-   updateTableHeaders()) scopes it to FP only. */
-body.is-fp-session .live-table .live-col-tight-first {
+/* FP1/FP2/FP3: Best Lap gets a little more room on its right. It carries
+   .live-col-best (see buildTableColumns() in live.js) and body.is-fp-session
+   (toggled in render()) scopes this to FP only. */
+body.is-fp-session .live-table .live-col-best.live-col-tight-first {
     padding-right: 15px;
+}
+
+/* ---- DRIVER NUMBER (Customize table → Driver number) ----
+   Calcado de .st-driver-num (championship.css): "#63" en el color del
+   equipo, alineado a la derecha en un ancho fijo para que los nombres de
+   abajo arranquen todos en la misma vertical. */
+.live-driver-num {
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    flex-shrink: 0;
+    text-align: right;
+    min-width: 32px;
+}
+
+/* ---- TEAM COLUMN (Customize table → Team: Name column) ----
+   Nombre del equipo de teams.json, a la derecha del piloto (el padding
+   lo da .live-col-roomy). En una sola línea: "Red Bull Racing" partido
+   en dos rompería la altura de la fila. */
+.live-table td.live-col-team {
+    white-space: nowrap;
+}
+
+/* "George Russell" no se parte en dos líneas. */
+.live-table td.live-col-driver {
+    white-space: nowrap;
 }
 
 /* ---- DELTA INDICATOR (copied from race.css) ---- */
@@ -458,12 +444,25 @@ body.is-fp-session .live-table .live-col-tight-first {
 }
 
 /* ---- PODIUM COLORS (same convention as race.css .res-pos.top3) ---- */
-#live-rows tr:nth-child(1) .res-pos.top3,
 #live-rows-2 tr:nth-child(1) .res-pos.top3 { font-family: 'F1-Bold'; color: #f7d774; }
-#live-rows tr:nth-child(2) .res-pos.top3,
 #live-rows-2 tr:nth-child(2) .res-pos.top3 { font-family: 'F1-Bold'; color: #d6d6d6; }
-#live-rows tr:nth-child(3) .res-pos.top3,
 #live-rows-2 tr:nth-child(3) .res-pos.top3 { font-family: 'F1-Bold'; color: #cd9a63; }
+
+/* ---- ZEBRA ROWS ----
+   Filas intercaladas para no perder la línea al leer de punta a punta
+   (Driver → Tyres cruza toda la pantalla). "of .results-row" cuenta solo
+   filas de pilotos: los separadores de corte de la Qualy no desfasan el
+   patrón. La fila de vuelta rápida se excluye porque su violeta va en el
+   <tr> y un fondo en los <td> lo taparía. */
+.live-table--compact tbody tr.results-row:nth-child(even of .results-row):not(.live-row--fastest-map) td {
+    background: rgba(255,255,255,0.045);
+}
+
+/* Hover bien marcado (results.css usa 0.035, que acá casi no se
+   distinguiría de la fila gris). */
+.live-table.live-table--compact tbody tr.results-row:not(.live-row--fastest-map):hover td {
+    background: rgba(255,255,255,0.1);
+}
 
 /* Soft purple background for the compact Map View row of the session
    fastest lap holder. */
@@ -561,17 +560,27 @@ body.is-fp-session .live-table .live-col-tight-first {
     color: var(--primary-red);
 }
 
-/* ---- TYRE ICON + LAPS (fallback while totalLaps isn't known yet) ---- */
-/* Same pattern as .res-team (logo + surname): plain flex, no height or
-   vertical-align tricks — that's the structure that actually centers
-   correctly inside a table cell. */
-.tyre-history {
+/* ---- TYRES ----
+   Una insignia por stint: ícono del compuesto + vueltas hechas con ese
+   juego, en el color del compuesto (tyreStintBadgeHTML() en live.js).
+   "Current set" muestra solo la última; "All stints" las pone todas en
+   fila, de la más vieja a la actual, con la misma letra y el mismo color.
+   Plain flex, no height or vertical-align tricks — that's the structure
+   that actually centers correctly inside a table cell. */
+.tyre-stints {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 16px;
+    white-space: nowrap;
 }
 
-.tyre-history img {
+.tyre-fresh {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.tyre-icon-img {
     display: block;
     object-fit: contain;
     width: 22px;
@@ -605,117 +614,27 @@ body.is-fp-session .live-table .live-col-tight-first {
     border: 1.5px dashed rgba(255,255,255,0.2);
 }
 
-.tyre-laps {
-    align-self: center;
-    font-size: 12px;
-    line-height: 22px;
-    color: #ffffff;
-    letter-spacing: normal;
-    margin-left: -2px;
-}
-
-/* ---- TYRE LAP COUNT BADGE (Qualifying / Sprint Qualifying) ----
-   Swaps in for the full stint timeline during Q/SQ — see
-   tyreCompoundBadgeHTML() in live.js. Just the current compound icon plus
-   the lap count on that set; no bar, since there's no pit strategy worth a
-   timeline in a qualifying segment. */
-.tyre-fresh {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
 .tyre-fresh-label {
     font-family: 'F1-Regular', sans-serif;
     font-size: 16px;
     letter-spacing: 0.2px;
 }
 
-/* Same palette as .tyre-seg--* below — the label matches whatever
-   compound icon it's sitting next to. */
+/* El número va del color del compuesto que tiene al lado. */
 .tyre-fresh-label--soft   { color: rgb(254, 0, 0); }
 .tyre-fresh-label--medium { color: rgb(255, 211, 1); }
 .tyre-fresh-label--hard   { color: rgb(255, 255, 255); }
 .tyre-fresh-label--inter  { color: rgb(0, 188, 66); }
 .tyre-fresh-label--wet    { color: rgb(2, 87, 206); }
 
-/* ---- TYRE TIMELINE (current-stint bar) ----
-   Replaces .tyre-history when totalLaps is known. Three widths doing
-   three different jobs (not just width:100%, which made the browser's
-   table layout treat 96px as the column's only real size signal and
-   collapse every stint into a squished mess with barely any visible gap
-   — width alone isn't the "preferred" size a table's auto layout uses):
-     - width: 220px   -> the PREFERRED size. This is what tells the
-       table's column-width algorithm "I'd like to be this wide" so it
-       actually gets that space when the page has room — same visual
-       size as the old fixed-width version, restoring proper spacing
-       between stints (gap length must stay proportional to lap count).
-     - max-width: 100% -> the OVERFLOW GUARD. % resolves against the
-       <td>'s own content-box width, so this never lets the track render
-       wider than whatever room the cell actually has — this is what
-       stops it from spilling past the cell's padding when the table
-       genuinely doesn't have 220px to give it.
-     - min-width: 96px -> the FLOOR. Below this the track stops shrinking
-       and the cell may need horizontal scroll instead — needed so the
-       icons/label never get so small they're illegible.
-   The 22px/30px reserved-edge math that keeps the first icon and the
-   last stint's lap count from poking out past this box lives in
-   tyreTimelineHTML() in live.js (see the comment there) — it has to be
-   done there, in the per-segment left/width calc(), because a plain %
-   can't reserve fixed pixel space in a box whose actual rendered width
-   varies (220px normally, less under space pressure). */
-.tyre-timeline {
-    position: relative;
-    width: 220px;
-    max-width: 100%;
-    min-width: 96px;
-    height: 20px;
-}
-
-.tyre-segment {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 2px;
-    border-radius: 2px;
-    background: rgba(255, 255, 255, 0.08);
-    box-sizing: border-box;
-    padding-left: 22px;
-    padding-right: 22px;
-    background-clip: content-box;
-}
-
-.tyre-seg--soft    { background: rgb(254, 0, 0);    color: rgb(254, 0, 0); }
-.tyre-seg--medium  { background: rgb(255, 211, 1);  color: rgb(255, 211, 1); }
-.tyre-seg--hard    { background: rgb(255, 255, 255); color: rgb(255, 255, 255); }
-.tyre-seg--inter   { background: rgb(0, 188, 66);   color: rgb(0, 188, 66); }
-.tyre-seg--wet     { background: rgb(2, 87, 206);   color: rgb(2, 87, 206); }
-.tyre-seg--unknown { background: rgba(255, 255, 255, 0.15); color: #ffffff; }
-
-.tyre-segment-icon {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translate(-100%, -50%);
-    display: flex;
-    z-index: 2;
-    /* Opaque circular backing behind the compound icon. Without this, the
-       PNG's transparent corners let the .tyre-segment color bleed through
-       around the icon (looks like the bar "atraviesa por detrás" it) —
-       this backdrop stops the bar cleanly at the icon's edge instead. */
-    background: #0b0d10;
-    border-radius: 50%;
-}
-
-.tyre-segment-laps {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translate(100%, -50%);
-    padding-left: 4px;
+/* ---- MUTED CELL TEXT (Gap / Interval / tyre placeholder) ----
+   Mismo look que .results-date de results.css, pero propio: esa clase se
+   oculta en pantallas <=500px (columna Date del calendario), y al usarla
+   acá la celda Gap desaparecía en el celular mientras el <th> seguía,
+   corriendo todas las columnas una posición a la izquierda. */
+.live-muted {
+    color: rgba(255,255,255,0.6);
     font-size: 16px;
-    color: inherit;
-    white-space: nowrap;
 }
 
 /* ---- STATUS TEXT ----
@@ -771,7 +690,7 @@ body.is-fp-session .live-table .live-col-tight-first {
 }
 
 .live-sector-col {
-    font-size: 13px;
+    font-size: 14px;
     opacity: 0.85;
 }
 
@@ -842,155 +761,62 @@ body.is-fp-session .live-table .live-col-tight-first {
 .live-microsector--unavailable { background: rgba(255,255,255,0.12); }
 
 
-/* ---- FULLSCREEN BUTTON ----
-   Same visual pattern as race.html's .track-zoom-btn (circular, hidden
-   until hover, red on hover/focus, always visible on touch devices) —
-   just swapped for an expand/collapse icon since this toggles a table
-   instead of opening an image modal. */
-.table-fullscreen-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 20;
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(10,10,20,0.85);
-    border: 1px solid rgba(255,255,255,0.18);
-    border-radius: 50%;
-    color: var(--text-light);
-    cursor: pointer;
-    opacity: 0;
-    transform: scale(0.85);
-    pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-}
+/* ---- APP SHELL ----
+   Lo que antes era la vista "pantalla completa" de tabla + mapa ahora es
+   la página entera. Fija debajo del navbar para que llene la ventana justa
+   (los dos paneles usan TODO el alto restante, sin espacio muerto abajo),
+   pegada y separada solo por líneas de 1px, como un dashboard de timing. */
+.live-app {
+    --app-bg: rgb(9,9,14);
+    --app-panel: rgb(14,14,21);
+    --app-line: rgba(255,255,255,0.09);
+    /* Ancho de la columna derecha: la usan el panel del mapa y la celda
+       del clima de la barra superior, así quedan exactamente alineados. */
+    --app-side-col: clamp(340px, 31%, 640px);
 
-#live-table-wrap:hover .table-fullscreen-btn,
-#live-map-view-content:hover .table-fullscreen-btn,
-.table-fullscreen-btn:focus-visible,
-.table-fullscreen-btn.is-fullscreen {
-    opacity: 1;
-    transform: scale(1);
-    pointer-events: auto;
-}
-
-.table-fullscreen-btn:hover,
-.table-fullscreen-btn:focus-visible {
-    background: var(--primary-red);
-    border-color: var(--primary-red);
-}
-
-.table-fullscreen-btn svg {
-    width: 16px;
-    height: 16px;
-    display: block;
-    flex-shrink: 0;
-    pointer-events: none;
-}
-
-/* Icon swap: expand icon by default, collapse icon once fullscreen */
-.table-fullscreen-btn .icon-collapse { display: none; }
-.table-fullscreen-btn.is-fullscreen .icon-expand { display: none; }
-.table-fullscreen-btn.is-fullscreen .icon-collapse { display: block; }
-
-@media (hover: none) {
-    .table-fullscreen-btn {
-        opacity: 1;
-        transform: scale(1);
-        pointer-events: auto;
-    }
-}
-
-/* ---- FULLSCREEN TARGETS ----
-   #live-table-wrap = the big table alone (simple overlay, unchanged).
-   #live-map-view-content = the whole "app" view: top bar + timing panel +
-   track map panel, laid out as a real application shell (see below). */
-#live-table-wrap,
-#live-map-view-content {
-    position: relative;
-}
-
-#live-table-wrap.is-fullscreen {
     position: fixed;
-    inset: 0;
-    z-index: 999;
-    margin: 0;
-    padding: 8px;
-    background: rgb(8,8,14);
-    overflow: auto;
-    display: flex;
-    justify-content: center;
+    top: var(--nav-h);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    background: var(--app-bg);
+    overflow: hidden;
 }
 
-/* ---- HIDE SCROLLBARS (scroll keeps working, just no visible bar) ----
-   Covers every scrollable table container on this page: the fullscreen
-   wraps above and the sticky-header scroll area inside the Map View
-   table panel (live.js's syncMapHeight()/is-fullscreen toggle target
-   these same elements, so the ids/selectors match 1:1). */
-#live-table-wrap,
-#live-map-view-content,
-#live-map-view-content .results-table-wrap,
+/* Pantalla completa: tapa también el navbar (z-index 100 en style.css).
+   Donde hay Fullscreen API, live.js además esconde las barras del
+   navegador; esto cubre el resto (iPhone) y el instante de transición. */
+.live-app.is-fullscreen {
+    top: 0;
+    z-index: 999;
+}
+
+/* ---- HIDE SCROLLBARS (scroll keeps working, just no visible bar) ---- */
+.live-app,
 .mapview-panel--table .results-table-wrap {
     scrollbar-width: none;       /* Firefox */
     -ms-overflow-style: none;    /* old Edge/IE */
 }
 
-#live-table-wrap::-webkit-scrollbar,
-#live-map-view-content::-webkit-scrollbar,
-#live-map-view-content .results-table-wrap::-webkit-scrollbar,
+.live-app::-webkit-scrollbar,
 .mapview-panel--table .results-table-wrap::-webkit-scrollbar {
     display: none;               /* Chrome/Safari/Edge (Chromium) */
 }
 
-/* ---- MAP VIEW FULLSCREEN = APPLICATION SHELL ----
-   Antes esto eran tres cards flotando sobre un fondo negro (tabla,
-   weather y mapa, cada una con su borde y su radius, separadas por gaps
-   y con aire de sobra abajo). Ahora es una sola interfaz: una barra
-   superior a lo ancho con GP + reloj + clima, y debajo dos paneles que
-   ocupan TODO el alto restante, pegados y separados solo por una línea
-   de 1px, como un dashboard de timing de verdad. */
-#live-map-view-content.is-fullscreen {
-    --app-bg: rgb(9,9,14);
-    --app-panel: rgb(14,14,21);
-    --app-line: rgba(255,255,255,0.09);
-    --app-topbar-h: 68px;
-
-    position: fixed;
-    inset: 0;
-    z-index: 999;
-    margin: 0;
-    padding: 0;
-    background: var(--app-bg);
-    display: grid;
-    grid-template-rows: var(--app-topbar-h) minmax(0, 1fr);
-    overflow: hidden;
-}
-
 /* ---- TOP BAR ----
-   Una sola franja a lo ancho: bandera + nombre del GP, estado/reloj de
-   sesión y, empujado a la derecha, el clima (ya sin card propia: acá es
-   parte de la barra). Fuera de fullscreen la barra entera no existe. */
-.mapview-fs-header {
-    display: none;
-}
-
-#live-map-view-content.is-fullscreen .mapview-fs-header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 24px;
+   Una sola franja a lo ancho: bandera + nombre del GP y estado/reloj de
+   sesión a la izquierda; clima a la derecha. Mismas columnas que
+   .mapview-panels-row, así el clima queda justo encima del mapa, con el
+   mismo ancho y la misma línea divisoria. */
+.live-app-topbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--app-side-col);
     min-width: 0;
-    padding: 0 64px 0 20px;
+    min-height: 68px;
     background: var(--app-panel);
     border-bottom: 1px solid var(--app-line);
-    overflow: hidden;
 }
 
 .mapview-fs-ident {
@@ -998,17 +824,30 @@ body.is-fp-session .live-table .live-col-tight-first {
     align-items: center;
     gap: 20px;
     min-width: 0;
+    padding: 10px 20px;
 }
 
-#live-map-view-content.is-fullscreen .mapview-fs-session-status {
+/* Celda del clima: siempre existe (aunque todavía no haya datos) para que
+   la columna y su divisoria no aparezcan y desaparezcan. */
+.live-app-topbar-side {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    padding: 10px 16px;
+    border-left: 1px solid var(--app-line);
+}
+
+.mapview-fs-session-status {
     gap: 16px;
     padding-left: 20px;
     border-left: 1px solid var(--app-line);
 }
 
 .mapview-fs-name {
+    margin: 0;
     font-family: 'F1-Black', sans-serif;
-    font-size: 26px;
+    font-weight: normal;
+    font-size: 36px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     line-height: 1;
@@ -1022,15 +861,17 @@ img.emoji {
     margin-left: 0;
 }
 
-/* El clima deja de ser una card: se integra en la barra (sin fondo, sin
-   borde, sin radius) y queda alineado a la derecha. */
+/* El clima no es una card acá: se integra en la barra (sin fondo, sin
+   borde, sin radius). */
 .mapview-fs-weather {
-    margin-left: auto;
+    flex: 1 1 auto;
     min-width: 0;
 }
 
-#live-map-view-content.is-fullscreen .mapview-fs-weather .session-weather-card {
-    width: auto;
+/* Reparte los datos a lo ancho de toda la columna, de borde a borde. */
+.mapview-fs-weather .session-weather-card {
+    width: 100%;
+    justify-content: space-between;
     padding: 0;
     gap: 20px;
     background: transparent;
@@ -1040,14 +881,14 @@ img.emoji {
     flex-wrap: nowrap;
 }
 
-#live-map-view-content.is-fullscreen .mapview-fs-weather .session-weather-card:hover {
+.mapview-fs-weather .session-weather-card:hover {
     border-color: transparent;
 }
 
 .mapview-fs-weather .swc-condition {
     gap: 10px;
     padding-right: 20px;
-    border-right: 1px solid var(--app-line, rgba(255,255,255,0.09));
+    border-right: 1px solid var(--app-line);
 }
 
 .mapview-fs-weather .swc-condition-icon {
@@ -1055,8 +896,9 @@ img.emoji {
 }
 
 .mapview-fs-weather .swc-stats {
-    gap: 22px;
+    gap: 16px;
     flex-wrap: nowrap;
+    justify-content: space-between;
 }
 
 .mapview-fs-weather .swc-stat {
@@ -1065,107 +907,465 @@ img.emoji {
 }
 
 .mapview-fs-weather .swc-stat-value {
-    font-size: 17px;
+    font-size: 20px;
 }
 
 .mapview-fs-weather .swc-stat-label {
-    font-size: 10px;
+    font-size: 14px;
     letter-spacing: 0.8px;
 }
 
+/* ---- MAP CONTROLS (Customize table + Full screen) ----
+   Esquina inferior derecha del panel del mapa, como en YouTube. Solo
+   íconos, pero siempre visibles (no aparecen recién al pasar el mouse);
+   los tooltips los ponen el HTML y live.js. */
+.live-map-controls {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    z-index: 20;
+    display: flex;
+    gap: 8px;
+    transition: opacity 0.4s ease;
+}
+
+/* Sin movimiento por unos segundos (initControlsAutoHide() en live.js):
+   se desvanecen y dejan de recibir clics hasta que el mouse se mueva. */
+.live-map-controls.is-idle {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.live-ctrl-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    margin: 0;
+    color: var(--text-light, #fff);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.live-ctrl-btn:hover,
+.live-ctrl-btn:focus-visible,
+.live-view-btn[aria-expanded="true"] {
+    background: var(--primary-red);
+    border-color: var(--primary-red);
+}
+
+.live-ctrl-btn:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.live-ctrl-btn svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+    flex-shrink: 0;
+}
+
+/* Full screen: el ícono se da vuelta mientras está activo. */
+.live-fs-btn .icon-collapse { display: none; }
+.live-fs-btn.is-fullscreen .icon-expand { display: none; }
+.live-fs-btn.is-fullscreen .icon-collapse { display: block; }
+
+/* ---- CUSTOMIZE TABLE PANEL ----
+   Tapa la columna derecha entera (mapa + Race Control, y también los
+   botones: se cierra con Done, la X o Esc), así la tabla sigue a la vista
+   y cada cambio se ve en vivo. En pantallas angostas pasa a ser una hoja
+   fija desde abajo. */
+.live-view-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    font-family: 'F1-Regular', sans-serif;
+    background: var(--app-panel);
+    border-bottom: 1px solid var(--app-line);
+}
+
+.live-view-panel[hidden] {
+    display: none;
+}
+
+.live-view-panel:focus {
+    outline: none;
+}
+
+.lvp-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex: 0 0 auto;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--app-line);
+}
+
+.lvp-title {
+    margin: 0;
+    font-family: 'F1-Regular', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-light, #fff);
+}
+
+.lvp-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    color: var(--text-light, #fff);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.lvp-close:hover,
+.lvp-close:focus-visible {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.22);
+}
+
+.lvp-close svg {
+    width: 20px;
+    height: 20px;
+}
+
+.lvp-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 4px 16px 16px;
+}
+
+.lvp-section + .lvp-section {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--app-line);
+}
+
+.lvp-section-title {
+    margin: 12px 0 6px;
+    font-family: 'F1-Regular', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+
+.lvp-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Fila entera clickeable, bien alta: fácil de tocar con el dedo o de
+   acertar con el mouse. El checkbox real queda invisible pero enfocable;
+   .lvp-box es el dibujo. */
+.lvp-check {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 40px;
+    padding: 0 8px;
+    margin: 0 -8px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1px;
+    color: var(--text-light, #fff);
+    cursor: pointer;
+}
+
+.lvp-check:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.lvp-check input,
+.lvp-seg input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    pointer-events: none;
+}
+
+.lvp-box {
+    position: relative;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 5px;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.lvp-check input:checked + .lvp-box {
+    background: var(--primary-red);
+    border-color: var(--primary-red);
+}
+
+/* Tilde dibujada con dos bordes de un rectángulo rotado. */
+.lvp-check input:checked + .lvp-box::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 5px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.lvp-check input:focus-visible + .lvp-box {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.lvp-check-label {
+    flex: 1 1 auto;
+}
+
+.lvp-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1px;
+    color: var(--text-dim);
+    white-space: nowrap;
+}
+
+.lvp-lock {
+    width: 12px;
+    height: 12px;
+}
+
+/* Bloqueadas (Position, Driver) o no disponibles en esta sesión. */
+.lvp-check.is-disabled {
+    cursor: default;
+}
+
+.lvp-check.is-disabled:hover {
+    background: transparent;
+}
+
+.lvp-check.is-disabled .lvp-check-label,
+.lvp-check.is-disabled .lvp-box {
+    opacity: 0.5;
+}
+
+.lvp-field + .lvp-field {
+    margin-top: 14px;
+}
+
+.lvp-field-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1px;
+    color: var(--text-light, #fff);
+}
+
+/* Botones segmentados: todas las opciones a la vista, la elegida en rojo. */
+.lvp-segmented {
+    display: flex;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.lvp-seg {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    cursor: pointer;
+}
+
+.lvp-seg + .lvp-seg {
+    border-left: 1px solid rgba(255,255,255,0.22);
+}
+
+.lvp-seg span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 4px 6px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1px;
+    line-height: 1.2;
+    text-align: center;
+    color: rgba(255,255,255,0.75);
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.lvp-seg:hover span {
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+}
+
+.lvp-seg input:checked + span {
+    background: var(--primary-red);
+    color: #fff;
+}
+
+.lvp-seg input:focus-visible + span {
+    outline: 2px solid #fff;
+    outline-offset: -4px;
+}
+
+.lvp-foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    flex: 0 0 auto;
+    padding: 12px 16px;
+    border-top: 1px solid var(--app-line);
+}
+
+.lvp-btn {
+    height: 40px;
+    padding: 0 16px;
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-light, #fff);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.lvp-btn:hover,
+.lvp-btn:focus-visible {
+    background: rgba(255,255,255,0.08);
+}
+
+.lvp-btn--primary {
+    background: var(--primary-red);
+    border-color: var(--primary-red);
+}
+
+.lvp-btn--primary:hover,
+.lvp-btn--primary:focus-visible {
+    background: var(--primary-red);
+    filter: brightness(1.15);
+}
+
+.lvp-btn:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+    .live-view-panel {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        max-height: 80vh;
+        z-index: 1000;
+        border-top: 1px solid rgba(255,255,255,0.22);
+        border-bottom: none;
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -12px 40px rgba(0,0,0,0.6);
+    }
+}
+
+/* Ni el valor ni la etiqueta se parten nunca ("1.5 km/h", "WIND SPEED"). */
+.mapview-fs-weather .swc-stat-value,
+.mapview-fs-weather .swc-stat-label {
+    white-space: nowrap;
+}
+
+/* Con valores de 20px y etiquetas de 14px, los 5 datos en fila necesitan
+   ~560px, y la columna del mapa (31% del ancho) recién llega a eso cerca
+   de los 1900px. Por debajo pasan a 3 columnas en dos filas, con el ícono
+   del cielo a la izquierda ocupando las dos. Columnas "auto" (del ancho
+   de su contenido) y no iguales: con 1fr, "WIND SPEED" se pisaba con la
+   columna de al lado. */
+@media (min-width: 901px) and (max-width: 1880px) {
+    .mapview-fs-weather .swc-stats {
+        display: grid;
+        grid-template-columns: repeat(3, auto);
+        justify-content: space-between;
+        gap: 8px 12px;
+    }
+}
+
+/* Pantallas más chicas: todo baja en la misma proporción (valor/etiqueta)
+   para que las dos filas sigan entrando en la columna. */
 @media (max-width: 1400px) {
-    .mapview-fs-weather .swc-stats { gap: 16px; }
-    .mapview-fs-weather .swc-stat-value { font-size: 15px; }
+    .mapview-fs-weather .swc-stat-value { font-size: 18px; }
+    .mapview-fs-weather .swc-stat-label { font-size: 12px; }
     .mapview-fs-name { font-size: 22px; }
 }
 
 @media (max-width: 1100px) {
-    #live-map-view-content.is-fullscreen { --app-topbar-h: 58px; }
     .mapview-fs-name { font-size: 18px; }
-    .mapview-fs-weather .swc-stats { gap: 12px; }
-    .mapview-fs-weather .swc-stat-value { font-size: 14px; }
+    .mapview-fs-weather .swc-stat-value { font-size: 16px; }
+    .mapview-fs-weather .swc-stat-label { font-size: 11px; }
+    /* Menos aire alrededor del ícono del cielo para que las dos columnas
+       de etiquetas largas (WIND SPEED / WIND DIR) no se toquen. */
+    .mapview-fs-weather .session-weather-card { gap: 12px; }
+    .mapview-fs-weather .swc-condition { padding-right: 12px; }
 }
 
 /* ---- PANELS ROW ----
-   Outside fullscreen: display:contents makes this div invisible to
-   layout, so .mapview-panel--table/--map act as direct children of
-   .map-view-content exactly like before (same flex row, same gap).
-
-   In fullscreen: dos columnas que llenan el alto restante entero — sin
-   gap, sin max-height, sin espacio muerto abajo. La única separación es
-   el borde izquierdo del panel del mapa. */
+   Dos columnas que llenan el alto restante entero — sin gap, sin
+   max-height, sin espacio muerto abajo. La única separación es el borde
+   izquierdo del panel del mapa. */
 .mapview-panels-row {
-    display: contents;
-}
-
-#live-map-view-content.is-fullscreen .mapview-panels-row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) clamp(340px, 31%, 640px);
-    gap: 0;
+    grid-template-columns: minmax(0, 1fr) var(--app-side-col);
     min-height: 0;
     overflow: hidden;
 }
 
-/* ---- PANELS ----
-   Structurally always in the DOM but visually inert outside fullscreen
-   (title strip hidden, no chrome), so the normal Map View stays
-   pixel-identical to before. */
 .mapview-panel {
     display: flex;
     flex-direction: column;
-    flex: 1 1 0;
-    min-width: 0;
-}
-
-#live-map-view-content.is-fullscreen .mapview-panel {
     min-width: 0;
     min-height: 0;
     background: var(--app-bg);
-    border: none;
-    border-radius: 0;
     overflow: hidden;
 }
 
-#live-map-view-content.is-fullscreen .mapview-panel--map {
+.mapview-panel--map {
+    position: relative;   /* ancla de los botones y del panel Customize */
     background: var(--app-panel);
     border-left: 1px solid var(--app-line);
-    padding: 0;
-}
-
-/* Franja de título de cada panel (con acento rojo), al estilo de un
-   dashboard: identifica la región en vez de dejar dos bloques sueltos. */
-.mapview-panel-title {
-    display: none;
-}
-
-#live-map-view-content.is-fullscreen .mapview-panel-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 0 0 auto;
-    height: 32px;
-    padding: 0 16px;
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 11px;
-    letter-spacing: 1.4px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.45);
-    background: rgba(255,255,255,0.02);
-    border-bottom: 1px solid var(--app-line);
-}
-
-#live-map-view-content.is-fullscreen .mapview-panel-title::before {
-    content: "";
-    width: 3px;
-    height: 12px;
-    border-radius: 2px;
-    background: var(--primary-red, #e10600);
-    flex-shrink: 0;
 }
 
 /* Table panel: the inner wrap becomes the scroll container so the
    thead can stick to the top of the panel, not the whole viewport. */
-#live-map-view-content.is-fullscreen .mapview-panel--table .results-table-wrap {
+.mapview-panel--table .results-table-wrap {
     flex: 1 1 0;
     min-height: 0;
     overflow-y: auto;
@@ -1178,7 +1378,7 @@ img.emoji {
 /* height:100% reparte el alto sobrante entre las filas en vez de dejar un
    hueco muerto abajo del último piloto (si el contenido no entra, la tabla
    crece igual y el wrap scrollea como siempre). */
-#live-map-view-content.is-fullscreen .mapview-panel--table .live-table {
+.mapview-panel--table .live-table {
     border-collapse: collapse;
     border-spacing: 0;
     height: 100%;
@@ -1187,14 +1387,30 @@ img.emoji {
 /* Con las filas estiradas, las barras de microsectores pinchadas al tope
    de la fila quedaban lejísimo de su tiempo (parecían de la fila de
    arriba). Acá se anclan justo encima del número, no al borde. */
-#live-map-view-content.is-fullscreen .mapview-panel--table .live-microsectors {
+.mapview-panel--table .live-microsectors {
     top: 50%;
     transform: translateY(-16px);
 }
 
+/* Solo microsectores (sin tiempos): las barras vuelven al flujo normal y
+   quedan centradas en la fila, más anchas para que se lean solas. */
+.mapview-panel--table .live-sector-cell--micro-only .live-microsectors {
+    position: static;
+    transform: none;
+}
+
+/* Barras verticales: igual de finas que junto al tiempo (~5px, lo que
+   mide cada una repartida sobre el ancho del número) y tan altas como el
+   texto de la fila (16px). */
+.mapview-panel--table .live-sector-cell--micro-only .live-microsector {
+    flex: 0 0 auto;
+    width: 5px;
+    height: 16px;
+}
+
 /* Header pegado al tope del panel (no del viewport) y a la misma altura
    de fila que el resto de la tabla. */
-#live-map-view-content.is-fullscreen .mapview-panel--table .live-table thead th {
+.mapview-panel--table .live-table thead th {
     position: sticky;
     top: 0;
     z-index: 5;
@@ -1205,7 +1421,7 @@ img.emoji {
 
 /* Map panel: strip circuit-map-wrap's own chrome so the panel is the
    only chrome — avoids a double frame. */
-#live-map-view-content.is-fullscreen .circuit-map-wrap {
+.mapview-panel--map .circuit-map-wrap {
     flex: 1 1 0;
     min-height: 0;
     border: none;
@@ -1215,43 +1431,421 @@ img.emoji {
     padding: 20px;
 }
 
-#live-map-view-content.is-fullscreen .circuit-position-overlay {
+.mapview-panel--map .circuit-position-overlay {
     inset: 20px;
 }
 
-/* Botón de salir: dentro de la barra superior, cuadrado y siempre
-   visible mientras la interfaz está en pantalla completa. */
-#live-map-view-content.is-fullscreen .table-fullscreen-btn {
-    top: calc(var(--app-topbar-h) / 2);
-    right: 16px;
-    transform: translateY(-50%);
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: rgba(255,255,255,0.06);
-    border-color: var(--app-line);
+/* ---- RACE CONTROL ----
+   Debajo del mapa, en la misma columna: ~40% del alto, con scroll propio.
+   El más nuevo arriba (renderRaceControl() en live.js). */
+.race-control {
+    flex: 0 0 40%;
+    min-height: 0;
+    overflow-y: auto;
+    border-top: 1px solid var(--app-line);
+    /* Mismo fondo que la tabla (su fila "negra"); ver ZEBRA más abajo. */
+    background: var(--app-bg);
+    scrollbar-width: none;
 }
 
-#live-map-view-content.is-fullscreen .table-fullscreen-btn:hover,
-#live-map-view-content.is-fullscreen .table-fullscreen-btn:focus-visible {
-    background: var(--primary-red);
-    border-color: var(--primary-red);
+.race-control::-webkit-scrollbar {
+    display: none;
 }
 
-@media (max-width: 1100px) {
+.race-control[hidden] {
+    display: none;
 }
 
-@media (max-width: 700px) {
-    .map-view-content { flex-direction: column; }
-    .map-view-content .results-table-wrap { flex-basis: auto; width: 100%; }
-    .circuit-map-wrap { width: 100%; }
+.rc-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.rc-item {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--app-line);
+    font-family: 'F1-Regular', sans-serif;
+}
+
+/* Filas intercaladas negro / gris, los mismos colores que la tabla de
+   posiciones (ZEBRA ROWS). Va por posición en la lista, así que cuando
+   entra un mensaje nuevo arriba el patrón se reacomoda solo. */
+.rc-item:nth-child(even) {
+    background: rgba(255,255,255,0.045);
+}
+
+/* Recién llegado: arranca resaltado y se apaga solo. */
+.rc-item.is-new {
+    animation: rc-flash 4s ease-out;
+}
+
+@keyframes rc-flash {
+    from { background: rgba(255,255,255,0.12); }
+    to   { background: transparent; }
+}
+
+.rc-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    white-space: nowrap;
+}
+
+.rc-body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 8px;
+    min-width: 0;
+}
+
+.rc-text {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.1px;
+    color: var(--text-light);
+    overflow-wrap: anywhere;
+}
+
+.rc-chip {
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    padding: 14px 8px;
+    border-radius: 4px;
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    background: rgba(255,255,255,0.12);
+}
+
+.rc-chip--green     { background: rgba(62,224,106,0.18);  color: #3ee06a; }
+.rc-chip--yellow    { background: rgba(255,211,1,0.18);   color: rgb(255,211,1); }
+.rc-chip--red       { background: rgba(255,0,25,0.22);    color: #ff4d4d; }
+.rc-chip--blue      { background: rgba(71,150,255,0.2);   color: rgb(110,170,255); }
+.rc-chip--sc        { background: rgba(255,211,1,0.18);   color: rgb(255,211,1); }
+.rc-chip--penalty   { background: rgba(255,0,25,0.22);    color: #ff4d4d; }
+.rc-chip--drs       { background: rgba(255,255,255,0.1);  color: rgba(255,255,255,0.8); }
+.rc-chip--info      { background: rgba(255,255,255,0.1);  color: rgba(255,255,255,0.8); }
+.rc-chip--lap       { background: rgba(255,255,255,0.1);  color: rgba(255,255,255,0.8); }
+.rc-chip--chequered { background: #fff;                   color: #000; }
+.rc-chip--bw        { background: rgba(255,255,255,0.1);  color: #fff; }
+
+.rc-empty {
+    padding: 16px;
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dim);
+}
+
+/* ---- NARROW SCREENS ----
+   Tabla y mapa lado a lado no entran: se apilan (tabla arriba, mapa
+   abajo) y la página scrollea normal en vez de encajar en la ventana. */
+@media (max-width: 900px) {
+    .live-app {
+        position: static;
+        display: block;
+        margin-top: var(--nav-h);
+        overflow: visible;
+    }
+
+    .live-app.is-fullscreen {
+        position: fixed;
+        inset: 0;
+        margin-top: 0;
+        overflow-y: auto;
+    }
+
+    .live-app-topbar {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 12px 16px;
+    }
+
+    .mapview-fs-ident {
+        flex-wrap: wrap;
+        row-gap: 8px;
+        padding: 0;
+    }
+
+    .mapview-fs-session-status {
+        padding-left: 0;
+        border-left: none;
+    }
+
+    .live-app-topbar-side {
+        padding: 0;
+        border-left: none;
+    }
+
+    .live-app-topbar-side:has(.mapview-fs-weather:empty) {
+        display: none;
+    }
+
+    .mapview-fs-weather .session-weather-card {
+        justify-content: flex-start;
+    }
+
+    .mapview-fs-weather .session-weather-card,
+    .mapview-fs-weather .swc-stats {
+        flex-wrap: wrap;
+    }
+
+    .mapview-panels-row {
+        display: flex;
+        flex-direction: column;
+        overflow: visible;
+    }
+
+    .mapview-panel {
+        overflow: visible;
+    }
+
+    .mapview-panel--table .results-table-wrap {
+        flex: none;
+        overflow-x: auto;
+        overflow-y: visible;
+    }
+
+    .mapview-panel--table .live-table {
+        height: auto;
+    }
+
+    /* Dentro de un wrap con scroll horizontal el sticky no sirve de nada. */
+    .mapview-panel--table .live-table thead th {
+        position: static;
+    }
+
+    .mapview-panel--map {
+        border-left: none;
+        border-top: 1px solid var(--app-line);
+    }
+
+    .mapview-panel--map .circuit-map-wrap {
+        flex: none;
+        height: min(80vw, 440px);
+    }
+
+    .race-control {
+        flex: none;
+        max-height: 320px;
+    }
 }
 
 @media (max-width: 500px) {
-    .map-view-section { margin: 32px auto 48px auto; }
     .results-table th,
     .results-table td { padding: 0 12px; }
-    .tyre-history img { width: 17px; height: 17px; }
+    .tyre-icon-img { width: 17px; height: 17px; }
     .tyre-icon-fallback { width: 17px; height: 17px; font-size: 10px; }
-    .tyre-timeline { min-width: 76px; }
+}
+
+/* ---- MAP + RACE CONTROL: el mapa, con lo justo ----
+   Con Race Control visible, el recuadro del mapa deja de estirarse a todo
+   el alto disponible (quedaban franjas vacías enormes arriba y abajo de la
+   pista) y mide lo que mide la pista: el SVG vuelve al flujo normal con
+   height:auto, así su viewBox fija la proporción. Abajo queda solo la
+   franja para los botones y el aviso de posiciones estimadas. Race Control
+   se lleva el resto de la columna. Tope de 60vh por si un circuito es muy
+   alargado. Va al final para pisar también la altura fija del celular. */
+.mapview-panel--map.has-race-control .circuit-map-wrap.has-track {
+    flex: 0 0 auto;
+    height: auto;
+    padding: 16px 20px 64px;
+}
+
+/* El wrap es flex centrado: sin ancho explícito, el contenedor se
+   encogería al ancho por defecto de un SVG (300px) y la pista saldría
+   chiquita en medio de la columna. */
+.mapview-panel--map.has-race-control .circuit-map-wrap.has-track .circuit-position-overlay {
+    position: static;
+    flex: 1 1 auto;
+    width: 100%;
+}
+
+.mapview-panel--map.has-race-control .circuit-map-wrap.has-track .track-svg {
+    height: auto;
+    max-height: 60vh;
+}
+
+.mapview-panel--map.has-race-control .circuit-map-wrap.has-track ~ .race-control {
+    flex: 1 1 0;
+}
+
+/* ---- PANELS ON/OFF (Customize → Panels) ----
+   Track map apagado: del mapa queda solo una franja finita al pie de la
+   columna con los botones (Customize / Full screen), para poder volver a
+   prenderlo. Race Control, si está, se lleva todo el alto. */
+.mapview-panel--map.map-off .circuit-map-wrap,
+.mapview-panel--map.map-off .circuit-map-wrap.has-track {
+    order: 2;
+    flex: 0 0 64px;
+    height: 64px;
+    padding: 0;
+}
+
+.mapview-panel--map.map-off .circuit-map-img,
+.mapview-panel--map.map-off .circuit-position-overlay,
+.mapview-panel--map.map-off .track-note {
+    display: none;
+}
+
+.mapview-panel--map.map-off .race-control {
+    flex: 1 1 0;
+    border-top: none;
+}
+
+/* Mapa y Race Control apagados: la tabla ocupa todo el ancho. La columna
+   derecha pasa a ser una capa transparente encima del costado derecho de
+   la tabla, solo para los botones (abajo a la derecha) y para el panel
+   Customize cuando se abre. */
+.live-app.no-side .mapview-panels-row {
+    position: relative;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.live-app.no-side .mapview-panel--map {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: var(--app-side-col);
+    justify-content: flex-end;
+    background: transparent;
+    border: none;
+    pointer-events: none;
+}
+
+.live-app.no-side .mapview-panel--map .circuit-map-wrap {
+    background: transparent;
+}
+
+.live-app.no-side .live-map-controls,
+.live-app.no-side .live-view-panel {
+    pointer-events: auto;
+}
+
+@media (max-width: 900px) {
+    /* En el celular la columna ya va debajo de la tabla: nada que superponer,
+       solo la franja con los botones. */
+    .live-app.no-side .mapview-panel--map {
+        position: static;
+        width: auto;
+        pointer-events: auto;
+    }
+}
+
+/* ---- TV SYNC (Customize → TV sync) ----
+   Control de demora: botones − / + grandes (de a 5 s) y el número en el
+   medio, que también se puede escribir. */
+.lvp-stepper {
+    display: flex;
+    align-items: stretch;
+    width: max-content;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.lvp-step {
+    width: 44px;
+    min-height: 40px;
+    padding: 0;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 20px;
+    line-height: 1;
+    color: var(--text-light, #fff);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.lvp-step:hover,
+.lvp-step:focus-visible {
+    background: rgba(255,255,255,0.08);
+}
+
+.lvp-step:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -4px;
+}
+
+.lvp-delay-value {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 10px;
+    border-left: 1px solid rgba(255,255,255,0.22);
+    border-right: 1px solid rgba(255,255,255,0.22);
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 16px;
+    color: var(--text-light, #fff);
+}
+
+.lvp-delay-value input {
+    width: 4ch;
+    padding: 0;
+    font: inherit;
+    text-align: right;
+    color: inherit;
+    background: transparent;
+    border: none;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.lvp-delay-value input::-webkit-outer-spin-button,
+.lvp-delay-value input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.lvp-delay-value input:focus-visible {
+    outline: none;
+}
+
+.lvp-delay-value:focus-within {
+    background: rgba(255,255,255,0.06);
+}
+
+.lvp-help {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 1.4;
+    color: rgba(255,255,255,0.45);
+}
+
+/* Chip "DELAY 30s" al lado del reloj de sesión (solo con demora > 0). */
+.delay-indicator {
+    display: inline-flex;
+    align-items: center;
+    height: 26px;
+    padding: 0 10px;
+    border-radius: 6px;
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.1);
+}
+
+.delay-indicator[hidden] {
+    display: none;
 }
