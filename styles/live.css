@@ -227,6 +227,21 @@
     color: #f5b74a;
 }
 
+/* Reloj en pausa: los números y el ícono alineados al centro, con el ícono
+   del mismo color y un poco más bajo que los dígitos (como en la tele). */
+.hero-session-status .status-clock--paused {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-clock-pause {
+    width: 0.62em;
+    height: 0.74em;
+    flex-shrink: 0;
+    fill: currentColor;
+}
+
 @media (max-width: 600px) {
     .hero-session-status { flex-wrap: wrap; }
     .hero-session-status .status-flag { font-size: 11px; padding: 4px 8px; }
@@ -938,16 +953,24 @@ img.emoji {
 }
 
 /* ---- MAP CONTROLS (Customize table + Full screen) ----
-   Esquina inferior derecha del panel del mapa, como en YouTube. Solo
-   íconos, pero siempre visibles (no aparecen recién al pasar el mouse);
-   los tooltips los ponen el HTML y live.js. */
+   Esquina inferior derecha del panel del mapa, como en YouTube. Una sola
+   cápsula con los dos botones, separados por una línea finita, con el mismo
+   lenguaje que el cartel de estado de pista (esquina de enfrente, misma
+   altura) y la brújula: fondo oscuro translúcido, borde fino, sombra. Solo
+   íconos; los tooltips los ponen el HTML y live.js. */
 .live-map-controls {
     position: absolute;
     right: 16px;
     bottom: 16px;
     z-index: 20;
     display: flex;
-    gap: 8px;
+    overflow: hidden;
+    background: rgba(16,16,22,0.9);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
     transition: opacity 0.4s ease;
 }
 
@@ -962,33 +985,43 @@ img.emoji {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 40px;
     padding: 0;
     margin: 0;
-    color: var(--text-light, #fff);
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.22);
-    border-radius: 8px;
+    color: rgba(255,255,255,0.75);
+    background: transparent;
+    border: none;
+    border-radius: 0;
     cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+/* Línea finita entre los dos botones. */
+.live-ctrl-btn + .live-ctrl-btn {
+    border-left: 1px solid rgba(255,255,255,0.12);
 }
 
 .live-ctrl-btn:hover,
-.live-ctrl-btn:focus-visible,
+.live-ctrl-btn:focus-visible {
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+}
+
+/* Customize abierto: ícono rojo con un fondo rojizo suave. */
 .live-view-btn[aria-expanded="true"] {
-    background: var(--primary-red);
-    border-color: var(--primary-red);
+    color: var(--primary-red, #e10600);
+    background: rgba(225,6,0,0.14);
 }
 
 .live-ctrl-btn:focus-visible {
     outline: 2px solid #fff;
-    outline-offset: 2px;
+    outline-offset: -3px;
 }
 
 .live-ctrl-btn svg {
-    width: 20px;
-    height: 20px;
+    width: 19px;
+    height: 19px;
     display: block;
     flex-shrink: 0;
 }
@@ -1025,104 +1058,185 @@ img.emoji {
     outline: none;
 }
 
+/* Entrada suave al abrir (se desliza un poco desde la derecha). */
+.live-view-panel:not([hidden]) {
+    animation: lvp-enter 0.18s ease-out;
+}
+
+@keyframes lvp-enter {
+    from { opacity: 0; transform: translateX(12px); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* Salida: el camino inverso, un poco más rápida. live.js oculta el panel
+   recién cuando termina (ver close() en initViewPanel). */
+.live-view-panel.is-closing {
+    animation: lvp-exit 0.15s ease-in forwards;
+    pointer-events: none;
+}
+
+@keyframes lvp-exit {
+    from { opacity: 1; transform: none; }
+    to   { opacity: 0; transform: translateX(12px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .live-view-panel:not([hidden]),
+    .live-view-panel.is-closing { animation: none; }
+}
+
+/* Encabezado: título + "Changes apply instantly" y la X. */
 .lvp-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
     flex: 0 0 auto;
-    padding: 14px 16px;
+    padding: 16px 16px 14px 20px;
     border-bottom: 1px solid var(--app-line);
 }
 
 .lvp-title {
     margin: 0;
-    font-family: 'F1-Regular', sans-serif;
-    font-weight: 600;
-    font-size: 18px;
-    letter-spacing: 0.5px;
+    font-family: 'F1-Bold', sans-serif;
+    font-weight: normal;
+    font-size: 17px;
+    letter-spacing: 0.3px;
     text-transform: uppercase;
     color: var(--text-light, #fff);
+}
+
+.lvp-subtitle {
+    margin: 3px 0 0;
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
 }
 
 .lvp-close {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
     padding: 0;
-    color: var(--text-light, #fff);
-    background: transparent;
-    border: 1px solid transparent;
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
     border-radius: 8px;
     cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
 }
 
 .lvp-close:hover,
 .lvp-close:focus-visible {
-    background: rgba(255,255,255,0.08);
-    border-color: rgba(255,255,255,0.22);
+    color: #fff;
+    background: rgba(255,255,255,0.1);
 }
 
 .lvp-close svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
 }
 
+/* Cuerpo con scroll propio: tarjetas agrupadas por tema. */
 .lvp-body {
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
-    padding: 4px 16px 16px;
+    padding: 4px 16px 20px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.15) transparent;
 }
 
-.lvp-section + .lvp-section {
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid var(--app-line);
+.lvp-section {
+    margin-top: 16px;
 }
 
 .lvp-section-title {
-    margin: 12px 0 6px;
+    margin: 0 0 8px 4px;
     font-family: 'F1-Regular', sans-serif;
     font-weight: 600;
-    font-size: 16px;
-    letter-spacing: 1.4px;
+    font-size: 11px;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: var(--text-light);
+    color: rgba(255,255,255,0.45);
 }
 
-.lvp-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+.lvp-card {
+    overflow: hidden;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
 }
 
-/* Fila entera clickeable, bien alta: fácil de tocar con el dedo o de
-   acertar con el mouse. El checkbox real queda invisible pero enfocable;
-   .lvp-box es el dibujo. */
-.lvp-check {
+/* Fila: nombre a la izquierda, interruptor (o candado) a la derecha. Toda
+   la fila es clickeable. */
+.lvp-row {
+    position: relative;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
-    min-height: 40px;
-    padding: 0 8px;
-    margin: 0 -8px;
-    border-radius: 6px;
+    min-height: 46px;
+    padding: 8px 14px;
     font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.1px;
     color: var(--text-light, #fff);
     cursor: pointer;
+    transition: background 0.15s ease;
 }
 
-.lvp-check:hover {
-    background: rgba(255,255,255,0.05);
+.lvp-card > * + * {
+    border-top: 1px solid rgba(255,255,255,0.06);
 }
 
-.lvp-check input,
-.lvp-seg input {
+.lvp-row:hover {
+    background: rgba(255,255,255,0.03);
+}
+
+.lvp-row.is-locked,
+.lvp-row.is-disabled,
+.lvp-row--stacked {
+    cursor: default;
+}
+
+.lvp-row.is-locked:hover,
+.lvp-row.is-disabled:hover,
+.lvp-row--stacked:hover {
+    background: transparent;
+}
+
+.lvp-row-label {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.lvp-row.is-locked .lvp-row-label,
+.lvp-row.is-disabled .lvp-row-label {
+    color: rgba(255,255,255,0.5);
+}
+
+.lvp-row-note {
+    font-size: 11.5px;
+    line-height: 1.35;
+    color: rgba(255,255,255,0.4);
+}
+
+.lvp-locked {
+    display: flex;
+    color: rgba(255,255,255,0.35);
+}
+
+.lvp-lock {
+    width: 15px;
+    height: 15px;
+}
+
+/* Interruptor: el checkbox real queda invisible pero enfocable; .lvp-switch
+   es el dibujo (pista + perilla). */
+.lvp-switch-input {
     position: absolute;
     opacity: 0;
     width: 1px;
@@ -1131,92 +1245,71 @@ img.emoji {
     pointer-events: none;
 }
 
-.lvp-box {
+.lvp-switch {
     position: relative;
     flex-shrink: 0;
-    width: 20px;
+    width: 36px;
     height: 20px;
-    border: 2px solid rgba(255,255,255,0.4);
-    border-radius: 5px;
-    transition: background 0.15s ease, border-color 0.15s ease;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.16);
+    transition: background 0.2s ease;
 }
 
-.lvp-check input:checked + .lvp-box {
-    background: var(--primary-red);
-    border-color: var(--primary-red);
-}
-
-/* Tilde dibujada con dos bordes de un rectángulo rotado. */
-.lvp-check input:checked + .lvp-box::after {
+.lvp-switch::after {
     content: "";
     position: absolute;
-    left: 5px;
-    top: 1px;
-    width: 5px;
-    height: 10px;
-    border: solid #fff;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    transition: transform 0.2s ease;
 }
 
-.lvp-check input:focus-visible + .lvp-box {
+.lvp-switch-input:checked + .lvp-switch {
+    background: var(--primary-red, #e10600);
+}
+
+.lvp-switch-input:checked + .lvp-switch::after {
+    transform: translateX(16px);
+}
+
+.lvp-switch-input:disabled + .lvp-switch {
+    opacity: 0.35;
+}
+
+.lvp-switch-input:focus-visible + .lvp-switch {
     outline: 2px solid #fff;
     outline-offset: 2px;
 }
 
-.lvp-check-label {
-    flex: 1 1 auto;
+/* Opción de formato debajo de su fila (p. ej. el estilo de Team). */
+.lvp-option {
+    padding: 10px 14px 14px;
+    background: rgba(0,0,0,0.14);
 }
 
-.lvp-hint {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.1px;
-    color: var(--text-dim);
-    white-space: nowrap;
+.lvp-option[hidden] {
+    display: none;
 }
 
-.lvp-lock {
-    width: 12px;
-    height: 12px;
-}
-
-/* Bloqueadas (Position, Driver) o no disponibles en esta sesión. */
-.lvp-check.is-disabled {
-    cursor: default;
-}
-
-.lvp-check.is-disabled:hover {
-    background: transparent;
-}
-
-.lvp-check.is-disabled .lvp-check-label,
-.lvp-check.is-disabled .lvp-box {
-    opacity: 0.5;
-}
-
-.lvp-field + .lvp-field {
-    margin-top: 14px;
-}
-
-.lvp-field-label {
+.lvp-option-label {
     display: block;
     margin-bottom: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.1px;
-    color: var(--text-light, #fff);
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
 }
 
-/* Botones segmentados: todas las opciones a la vista, la elegida en rojo. */
+/* Botones segmentados: una pista oscura con la opción elegida resaltada. */
 .lvp-segmented {
     display: flex;
-    border: 1px solid rgba(255,255,255,0.22);
-    border-radius: 8px;
-    overflow: hidden;
+    gap: 2px;
+    padding: 3px;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 9px;
 }
 
 .lvp-seg {
@@ -1226,85 +1319,176 @@ img.emoji {
     cursor: pointer;
 }
 
-.lvp-seg + .lvp-seg {
-    border-left: 1px solid rgba(255,255,255,0.22);
+.lvp-seg input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    pointer-events: none;
 }
 
 .lvp-seg span {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 38px;
+    min-height: 32px;
     padding: 4px 6px;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.1px;
+    border-radius: 6px;
+    font-size: 12.5px;
     line-height: 1.2;
     text-align: center;
-    color: rgba(255,255,255,0.75);
+    color: rgba(255,255,255,0.6);
     transition: background 0.15s ease, color 0.15s ease;
 }
 
 .lvp-seg:hover span {
-    background: rgba(255,255,255,0.06);
     color: #fff;
 }
 
 .lvp-seg input:checked + span {
-    background: var(--primary-red);
     color: #fff;
+    background: var(--primary-red, #e10600);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.35);
 }
 
 .lvp-seg input:focus-visible + span {
     outline: 2px solid #fff;
-    outline-offset: -4px;
+    outline-offset: -2px;
 }
 
+/* TV sync: la fila lleva la explicación abajo y el control − / + a la
+   derecha. */
+.lvp-row--stacked {
+    align-items: center;
+}
+
+.lvp-stepper {
+    display: flex;
+    align-items: stretch;
+    flex-shrink: 0;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 9px;
+    overflow: hidden;
+}
+
+.lvp-step {
+    width: 36px;
+    min-height: 34px;
+    padding: 0;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 18px;
+    line-height: 1;
+    color: rgba(255,255,255,0.75);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.lvp-step:hover,
+.lvp-step:focus-visible {
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+}
+
+.lvp-step:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -3px;
+}
+
+.lvp-delay-value {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 8px;
+    border-left: 1px solid rgba(255,255,255,0.08);
+    border-right: 1px solid rgba(255,255,255,0.08);
+    font-size: 15px;
+    color: var(--text-light, #fff);
+}
+
+.lvp-delay-value input {
+    width: 3.5ch;
+    padding: 0;
+    font: inherit;
+    text-align: right;
+    color: inherit;
+    background: transparent;
+    border: none;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.lvp-delay-value input::-webkit-outer-spin-button,
+.lvp-delay-value input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.lvp-delay-value input:focus-visible {
+    outline: none;
+}
+
+.lvp-delay-value:focus-within {
+    background: rgba(255,255,255,0.06);
+}
+
+/* Pie: "Reset to default" como texto, "Done" como botón principal. */
 .lvp-foot {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     gap: 8px;
     flex: 0 0 auto;
     padding: 12px 16px;
     border-top: 1px solid var(--app-line);
+    background: rgba(0,0,0,0.15);
 }
 
 .lvp-btn {
-    height: 40px;
-    padding: 0 16px;
+    height: 38px;
+    padding: 0 18px;
     font-family: 'F1-Regular', sans-serif;
-    font-size: 13px;
     font-weight: 600;
-    letter-spacing: 0.5px;
+    font-size: 13px;
+    letter-spacing: 0.3px;
     text-transform: uppercase;
     color: var(--text-light, #fff);
     background: transparent;
-    border: 1px solid rgba(255,255,255,0.22);
-    border-radius: 8px;
+    border: 1px solid transparent;
+    border-radius: 9px;
     cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease;
+    transition: background 0.15s ease, color 0.15s ease, filter 0.15s ease;
 }
 
-.lvp-btn:hover,
-.lvp-btn:focus-visible {
-    background: rgba(255,255,255,0.08);
+.lvp-btn--ghost {
+    padding: 0 10px;
+    color: rgba(255,255,255,0.55);
+}
+
+.lvp-btn--ghost:hover,
+.lvp-btn--ghost:focus-visible {
+    color: #fff;
+    background: rgba(255,255,255,0.06);
 }
 
 .lvp-btn--primary {
-    background: var(--primary-red);
-    border-color: var(--primary-red);
+    background: var(--primary-red, #e10600);
+    box-shadow: 0 2px 8px rgba(225,6,0,0.3);
 }
 
 .lvp-btn--primary:hover,
 .lvp-btn--primary:focus-visible {
-    background: var(--primary-red);
-    filter: brightness(1.15);
+    filter: brightness(1.12);
 }
 
 .lvp-btn:focus-visible {
     outline: 2px solid #fff;
     outline-offset: 2px;
 }
+
 
 @media (max-width: 900px) {
     .live-view-panel {
@@ -1572,6 +1756,20 @@ img.emoji {
     color: var(--text-dim);
 }
 
+/* Tabla sin datos ("No session data yet" y los avisos de conexión): mismo
+   estilo que el vacío de Race Control, arriba a la izquierda en vez de
+   centrado en el medio de la tabla (results.css lo centra). */
+.live-table td.results-empty {
+    height: auto;
+    padding: 16px;
+    text-align: left;
+    vertical-align: top;
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dim);
+}
+
 /* ---- NARROW SCREENS ----
    Tabla y mapa lado a lado no entran: se apilan (tabla arriba, mapa
    abajo) y la página scrollea normal en vez de encajar en la ventana. */
@@ -1768,87 +1966,6 @@ img.emoji {
         width: auto;
         pointer-events: auto;
     }
-}
-
-/* ---- TV SYNC (Customize → TV sync) ----
-   Control de demora: botones − / + grandes (de a 5 s) y el número en el
-   medio, que también se puede escribir. */
-.lvp-stepper {
-    display: flex;
-    align-items: stretch;
-    width: max-content;
-    border: 1px solid rgba(255,255,255,0.22);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.lvp-step {
-    width: 44px;
-    min-height: 40px;
-    padding: 0;
-    font-family: 'F1-Bold', sans-serif;
-    font-size: 20px;
-    line-height: 1;
-    color: var(--text-light, #fff);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: background 0.15s ease;
-}
-
-.lvp-step:hover,
-.lvp-step:focus-visible {
-    background: rgba(255,255,255,0.08);
-}
-
-.lvp-step:focus-visible {
-    outline: 2px solid #fff;
-    outline-offset: -4px;
-}
-
-.lvp-delay-value {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    padding: 0 10px;
-    border-left: 1px solid rgba(255,255,255,0.22);
-    border-right: 1px solid rgba(255,255,255,0.22);
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 16px;
-    color: var(--text-light, #fff);
-}
-
-.lvp-delay-value input {
-    width: 4ch;
-    padding: 0;
-    font: inherit;
-    text-align: right;
-    color: inherit;
-    background: transparent;
-    border: none;
-    -moz-appearance: textfield;
-    appearance: textfield;
-}
-
-.lvp-delay-value input::-webkit-outer-spin-button,
-.lvp-delay-value input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.lvp-delay-value input:focus-visible {
-    outline: none;
-}
-
-.lvp-delay-value:focus-within {
-    background: rgba(255,255,255,0.06);
-}
-
-.lvp-help {
-    margin: 8px 0 0;
-    font-size: 12px;
-    line-height: 1.4;
-    color: rgba(255,255,255,0.45);
 }
 
 /* Chip "DELAY 30s" al lado del reloj de sesión (solo con demora > 0). */
