@@ -1,9 +1,22 @@
 // ── PILOTOS QUE YA RECIBIERON LA BANDERA A CUADROS ────────────────────────
-// En cualquier sesión, el piloto que cruza la meta con la bandera a cuadros
-// afuera terminó: su vuelta final (Last Lap, Best Lap, S1-S3, microsectores,
-// vueltas) queda congelada y la vuelta de enfriamiento o la entrada a boxes
-// ya no la pisan. Quien todavía no cruzó sigue en vivo aunque la sesión ya
-// haya terminado o el reloj esté en 0:00.
+// REGLA (igual para todos, sin casos especiales):
+//   - Cuando cae la bandera a cuadros, cada piloto termina su sesión la
+//     PRIMERA vez que cruza la meta después de ese momento.
+//   - La vuelta que completa en ese cruce es la que se muestra (Last Lap,
+//     Best Lap, S1-S3, microsectores, vueltas), y ahí queda congelado:
+//     nada posterior (vuelta a boxes, enfriamiento) la pisa.
+//   - Quien está en boxes cuando cae la bandera no vuelve a cruzar: queda
+//     con lo último que completó (su línea en vivo, que ya no cambia).
+//
+// "Antes o después de la bandera" se decide con las horas del feed, no con
+// el orden en que llegan los mensajes ni con el reloj local en 0:00:
+//   - la bandera: el primer "Finished" de SessionData.StatusSeries o el
+//     mensaje de Race Control de bandera a cuadros, el que sea antes;
+//   - cada cruce: la hora del mensaje del feed que trajo la vuelta nueva.
+// Como el cruce puede llegar antes que el aviso de la bandera (en carrera
+// el líder recibe la bandera justo al cruzar), se guardan los últimos
+// cruces de cada piloto y se decide recién cuando se conoce la hora de la
+// bandera.
 //
 // Se calcula acá en el relay (y no en la página) porque el relay está
 // conectado siempre: ve todos los cruces aunque nadie tenga la página
@@ -15,12 +28,12 @@
 // luz verde — misma lógica que qualifyingPartStart() en js/live.js.
 
 const FROZEN_LINE_FIELDS = ["LastLapTime", "BestLapTime", "Sectors", "NumberOfLaps"];
-// En carrera el líder recibe la bandera al cruzar, y su vuelta puede llegar
-// un instante antes que el aviso de bandera a cuadros.
-const LEADER_FLAG_WINDOW_MS = 20 * 1000;
 // La Last Lap y el tiempo de S3 pueden llegar en mensajes separados: por
-// unos segundos después de congelar se sigue completando esa vuelta.
+// unos segundos después de cada cruce se sigue completando esa vuelta.
 const FINISH_CAPTURE_MS = 3000;
+// Cruces guardados por piloto mientras no se conoce la bandera: alcanza con
+// los últimos, la bandera nunca llega vueltas enteras después.
+const MAX_PENDING_CROSSINGS = 3;
 const LAP_SUM_TOLERANCE_MS = 250;
 
 let tracker = null;
@@ -54,10 +67,6 @@ function isQualifyingLike(state) {
   return name.includes("qualifying") || name.includes("shootout");
 }
 
-function isRaceLike(state) {
-  const name = sessionName(state);
-  return !!name && !name.includes("practice") && !isQualifyingLike(state);
-}
 
 function currentQualifyingPart(state) {
   const series = state.SessionData?.Series;
@@ -99,22 +108,35 @@ function currentTimingPart(state) {
   return start && !start.started ? part - 1 : part;
 }
 
-// Bandera a cuadros del período en curso: SessionStatus terminado, o un
-// mensaje de Race Control de bandera a cuadros desde la luz verde del
-// segmento (el de Q1 no cuenta en Q2).
-function sessionEnded(state) {
+function isChequeredMessage(m) {
+  return !!m && (String(m.Flag || "").toUpperCase() === "CHEQUERED" || /^CHEQUERED FLAG/i.test(String(m.Message || "")));
+}
+
+// Hora (ms, del feed) en que cayó la bandera a cuadros del período en curso;
+// null si todavía no cayó. Solo cuenta lo que pasó desde que arrancó el
+// período (la bandera de Q1 no vale en Q2). Se prefiere el "Finished" de
+// StatusSeries (trae milésimas) al mensaje de Race Control (llega al
+// segundo, y redondeado para abajo podría meter como "después de la
+// bandera" un cruce de medio segundo antes). Si el estado dice terminado
+// pero no hay ninguna hora, vale la del mensaje que trajo el estado.
+function flagTimeMs(state, periodStartMs, fallbackMs) {
+  const data = state.SessionData || {};
+  const finished = Object.values(data.StatusSeries || {})
+    .filter((e) => e && e.SessionStatus === "Finished")
+    .map((e) => utcMs(e.Utc))
+    .filter((ms) => ms != null && ms >= periodStartMs);
+  if (finished.length) return Math.min(...finished);
+
+  const chequered = Object.values(state.RaceControlMessages?.Messages || {})
+    .filter(isChequeredMessage)
+    .map((m) => utcMs(m.Utc))
+    .filter((ms) => ms != null && ms >= periodStartMs);
+  if (chequered.length) return Math.min(...chequered);
+
   const status = state.SessionStatus?.Status;
-  if (status === "Finished" || status === "Finalised" || status === "Ends") return true;
-  const start = qualifyingPartStart(state);
-  const fromMs = start && start.started ? start.ms : null;
-  const messages = Object.values(state.RaceControlMessages?.Messages || {});
-  return messages.some((m) => {
-    if (!m) return false;
-    const chequered = String(m.Flag || "").toUpperCase() === "CHEQUERED" || /^CHEQUERED FLAG/i.test(String(m.Message || ""));
-    if (!chequered || fromMs == null) return chequered;
-    const ms = utcMs(m.Utc);
-    return ms == null || ms >= fromMs;
-  });
+  if (status !== "Finished" && status !== "Finalised" && status !== "Ends") return null;
+  tracker.fallbackFlagMs ??= fallbackMs; // la primera vez que se vio, fija
+  return tracker.fallbackFlagMs;
 }
 
 function lapMarker(line) {
@@ -134,74 +156,75 @@ function isCompleteLap(line) {
   return Math.abs(sumMs - lapMs) <= LAP_SUM_TOLERANCE_MS;
 }
 
-function freezeLine(num, line, now) {
+function frozenFields(line) {
   const frozen = {};
   for (const field of FROZEN_LINE_FIELDS) {
     if (line[field] !== undefined) frozen[field] = structuredClone(line[field]);
   }
-  tracker.lines[num] = frozen;
-  tracker.finishedAt[num] ??= now;
+  return frozen;
 }
 
-// Actualiza state.FinishedLines. Devuelve true si cambió (hay que
-// mandárselo a la página).
-export function updateFinishedLines(state, now = Date.now()) {
+// Actualiza state.FinishedLines. feedTimestamp: la hora del mensaje del
+// feed que se acaba de aplicar (sin ella, p. ej. con el snapshot inicial,
+// la hora local). Devuelve true si cambió (hay que mandárselo a la página).
+export function updateFinishedLines(state, feedTimestamp) {
   const lines = state.TimingData?.Lines;
   const sessionKey = state.SessionInfo?.Key ?? null;
   if (!lines || sessionKey == null) return false;
 
+  const now = utcMs(feedTimestamp) ?? Date.now();
   const part = currentTimingPart(state);
-  let changed = false;
   if (!tracker || tracker.sessionKey !== sessionKey || tracker.part !== part) {
-    tracker = { sessionKey, part, markers: {}, markerChangedAt: {}, chequeredSeen: false, lines: {}, finishedAt: {} };
-    changed = true;
+    const start = qualifyingPartStart(state);
+    tracker = {
+      sessionKey,
+      part,
+      periodStartMs: part >= 2 && start && start.started ? start.ms : 0,
+      markers: {},
+      crossings: {}, // num → [{ ms, line }], de más viejo a más nuevo
+      fallbackFlagMs: null,
+    };
   }
 
-  const crossed = [];
+  const flagMs = flagTimeMs(state, tracker.periodStartMs, now);
+  const finishedCrossing = (num) => (tracker.crossings[num] || []).find((c) => flagMs != null && c.ms >= flagMs);
+
   for (const [num, line] of Object.entries(lines)) {
     if (!line || typeof line !== "object") continue;
     const marker = lapMarker(line);
     const previous = tracker.markers[num];
     tracker.markers[num] = marker;
+    const list = tracker.crossings[num] || (tracker.crossings[num] = []);
+
+    // Ya terminó: nada posterior cuenta. Solo se completa esa misma vuelta
+    // unos segundos (S3 puede llegar después que la Last Lap).
+    const done = finishedCrossing(num);
+    if (done) {
+      if (now - done.ms <= FINISH_CAPTURE_MS && done === list[list.length - 1] && !isCompleteLap(done.line)) {
+        done.line = frozenFields(line);
+      }
+      continue;
+    }
+
     // La primera vez que se ve a un piloto no es un cruce de meta.
     if (previous !== undefined && previous !== marker) {
-      tracker.markerChangedAt[num] = now;
-      crossed.push(num);
-    }
-  }
-
-  for (const num of Object.keys(tracker.lines)) {
-    const line = lines[num];
-    if (line && now - tracker.finishedAt[num] <= FINISH_CAPTURE_MS && !isCompleteLap(tracker.lines[num])) {
-      freezeLine(num, line, now);
-      changed = true;
-    }
-  }
-
-  if (sessionEnded(state)) {
-    if (!tracker.chequeredSeen) {
-      tracker.chequeredSeen = true;
-      if (isRaceLike(state)) {
-        for (const [num, line] of Object.entries(lines)) {
-          const changedAt = tracker.markerChangedAt[num];
-          if (String(line?.Position) === "1" && changedAt != null && now - changedAt <= LEADER_FLAG_WINDOW_MS) {
-            freezeLine(num, line, now);
-            changed = true;
-          }
-        }
-      }
+      list.push({ ms: now, line: frozenFields(line) });
+      if (list.length > MAX_PENDING_CROSSINGS) list.shift();
     } else {
-      for (const num of crossed) {
-        if (!tracker.lines[num]) {
-          freezeLine(num, lines[num], now);
-          changed = true;
-        }
+      const last = list[list.length - 1];
+      if (last && now - last.ms <= FINISH_CAPTURE_MS && !isCompleteLap(last.line)) {
+        last.line = frozenFields(line);
       }
     }
   }
 
-  if (changed) {
-    state.FinishedLines = { sessionKey, part, lines: structuredClone(tracker.lines) };
+  const finished = {};
+  for (const num of Object.keys(tracker.crossings)) {
+    const done = finishedCrossing(num);
+    if (done) finished[num] = done.line;
   }
+  const next = { sessionKey, part, flagUtcMs: flagMs, lines: finished };
+  const changed = JSON.stringify(next) !== JSON.stringify(state.FinishedLines);
+  if (changed) state.FinishedLines = structuredClone(next);
   return changed;
 }

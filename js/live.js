@@ -284,10 +284,11 @@ function getSectorTimes(line) {
 // en la tabla se muestra una sola vuelta:
 //   - Vuelta en curso (algún Sectors[i].Value con tiempo): solo los
 //     sectores ya hechos en esta vuelta, en orden desde S1; el resto vacío.
-//   - Recién cruzó meta (F1 vacía todos los Value y deja PreviousValue):
-//     los tres PreviousValue, que son la vuelta que acaba de terminar, solo
-//     si suman la Last Lap. Si no suman (p. ej. la vuelta terminó en boxes
-//     y S3 nunca se marcó), no se muestra nada antes que mezclar.
+//     Al cruzar la meta F1 NO vacía los sectores (verificado en la Qualy de
+//     Bakú 2026): los tres siguen con tiempo, que es la vuelta terminada,
+//     hasta que el S1 de la vuelta siguiente pisa el primero.
+//   - Todos vacíos: los tres PreviousValue, solo si suman la Last Lap. Si
+//     no suman, no se muestra nada antes que mezclar.
 // `live`: el sector que se está corriendo ahora (sus microsectores van en
 // vivo); los que vienen después todavía no se corrieron en esta vuelta.
 // null si se muestra la vuelta terminada.
@@ -404,9 +405,9 @@ function updateTimingBests() {
     const sessionKey = String(info.Key ?? info.Path ?? info.Name ?? '');
     const part = currentTimingPart();
     if (!timingBests || timingBests.sessionKey !== sessionKey) {
-        timingBests = { sessionKey, part, overall: {}, personal: {}, stale: {}, sawStart: !hasAnyTimes(lines), ...emptyFinishState() };
+        timingBests = { sessionKey, part, overall: {}, personal: {}, stale: {}, sawStart: !hasAnyTimes(lines) };
     } else if (timingBests.part !== part) {
-        timingBests = { sessionKey, part, overall: {}, personal: {}, stale: staleSnapshot(lines), sawStart: true, ...emptyFinishState() };
+        timingBests = { sessionKey, part, overall: {}, personal: {}, stale: staleSnapshot(lines), sawStart: true };
     }
 
     for (const [num, line] of Object.entries(lines)) {
@@ -433,108 +434,19 @@ function updateTimingBests() {
         const bestMs = lapTimeToMs(periodBestLapValue(line, part, timingBests.sawStart));
         if (bestMs != null) recordBest(num, 'lap', bestMs);
     }
-
-    trackChequeredFinishers(lines);
 }
 
 // ── PILOTOS QUE YA RECIBIERON LA BANDERA A CUADROS ────────────────────────
-// En cualquier sesión, el piloto que cruza la meta con la bandera a cuadros
-// afuera terminó: su fila se congela con esa vuelta (Last Lap, Best Lap,
-// S1-S3, microsectores, vueltas) y la vuelta de enfriamiento o la entrada
-// a boxes ya no la pisan. Quien todavía no cruzó sigue en vivo, aunque la
-// sesión ya haya terminado o el reloj esté en 0:00. Posición, gap y estado
-// (PIT, etc.) siguen siempre en vivo.
+// La regla y el cálculo viven en el relay (server/finishers.js): cada piloto
+// queda congelado con la vuelta que completa en su primer cruce de meta
+// después de la bandera a cuadros (hora del feed, no reloj local), igual
+// para todos. El relay ve todos los cruces aunque la página se abra o
+// recargue tarde, y lo manda como el tema FinishedLines.
 //
-// "Cruzó la meta" = cambió su NumberOfLaps o su Last Lap. Como es por
-// período (ver updateTimingBests), en qualy se libera todo con la luz
-// verde del segmento siguiente.
-//
-// Lo principal lo calcula el relay (server/finishers.js, tema
-// FinishedLines), que ve todos los cruces aunque la página se abra tarde.
-// Esto de acá es el respaldo para cuando el relay no lo manda.
-const FROZEN_LINE_FIELDS = ['LastLapTime', 'BestLapTime', 'Sectors', 'NumberOfLaps'];
-// En carrera el líder recibe la bandera al cruzar, y su vuelta puede llegar
-// un instante antes que el mensaje de bandera a cuadros.
-const LEADER_FLAG_WINDOW_MS = 20 * 1000;
-
-// La Last Lap y el tiempo de S3 pueden llegar en mensajes separados: por
-// unos segundos después de congelar se sigue copiando esa misma vuelta
-// (en 3 s no se completa otra vuelta) para no dejar S3 vacío para siempre.
-const FINISH_CAPTURE_MS = 3000;
-
-function emptyFinishState() {
-    return { lapMarkers: {}, lapMarkerChangedAt: {}, chequeredSeen: false, finished: {}, finishedAt: {} };
-}
-
-// Vuelta completa: los tres sectores de la misma vuelta y suman la Last Lap.
-function isCompleteLap(line) {
-    const times = displayedSectors(line).times;
-    const lapMs = lapTimeToMs(line.LastLapTime && line.LastLapTime.Value);
-    if (lapMs == null || !times.every(Boolean)) return false;
-    const sumMs = times.reduce((sum, v) => sum + lapTimeToMs(v), 0);
-    return Math.abs(sumMs - lapMs) <= LAP_SUM_TOLERANCE_MS;
-}
-
-function lapMarker(line) {
-    return `${line.NumberOfLaps ?? ''}|${(line.LastLapTime && line.LastLapTime.Value) || ''}`;
-}
-
-function freezeFinishedLine(num, line) {
-    const frozen = {};
-    for (const field of FROZEN_LINE_FIELDS) {
-        if (line[field] !== undefined) frozen[field] = JSON.parse(JSON.stringify(line[field]));
-    }
-    timingBests.finished[num] = frozen;
-    timingBests.finishedAt[num] ??= Date.now();
-}
-
-function trackChequeredFinishers(lines) {
-    const tb = timingBests;
-    const now = Date.now();
-    const crossed = [];
-    for (const [num, line] of Object.entries(lines)) {
-        if (!line || typeof line !== 'object') continue;
-        const marker = lapMarker(line);
-        const previous = tb.lapMarkers[num];
-        tb.lapMarkers[num] = marker;
-        // La primera vez que se ve a un piloto no es un cruce de meta.
-        if (previous !== undefined && previous !== marker) {
-            tb.lapMarkerChangedAt[num] = now;
-            crossed.push(num);
-        }
-    }
-
-    for (const num of Object.keys(tb.finished)) {
-        const line = lines[num];
-        if (line && now - tb.finishedAt[num] <= FINISH_CAPTURE_MS && !isCompleteLap(tb.finished[num])) {
-            freezeFinishedLine(num, line);
-        }
-    }
-
-    if (!sessionEnded()) return;
-
-    if (!tb.chequeredSeen) {
-        tb.chequeredSeen = true;
-        if (currentSessionKind() === 'race') {
-            for (const [num, line] of Object.entries(lines)) {
-                const changedAt = tb.lapMarkerChangedAt[num];
-                if (String(line && line.Position) === '1' && changedAt != null && now - changedAt <= LEADER_FLAG_WINDOW_MS) {
-                    freezeFinishedLine(num, line);
-                }
-            }
-        }
-        return;
-    }
-
-    for (const num of crossed) {
-        if (!tb.finished[num]) freezeFinishedLine(num, lines[num]);
-    }
-}
-
-// Pilotos congelados según el relay (server/finishers.js), si el relay lo
-// manda y es del mismo período que se está mostrando. El relay ve todos los
-// cruces de meta aunque la página se haya abierto o recargado después de
-// la bandera; lo de trackChequeredFinishers() queda para un relay viejo.
+// Acá solo se usa: para esos pilotos, Last Lap, Best Lap, S1-S3,
+// microsectores y vueltas salen de la fila congelada. Posición, gap y estado
+// siguen en vivo. En qualy se libera todo con la luz verde del segmento
+// siguiente (FinishedLines es por período).
 function relayFinishedLines() {
     const finished = state.FinishedLines;
     if (!finished || typeof finished !== 'object') return null;
@@ -545,7 +457,7 @@ function relayFinishedLines() {
 
 function finishedLineFor(num) {
     const fromRelay = relayFinishedLines();
-    return (fromRelay ? fromRelay[num] : timingBests && timingBests.finished[num]) || null;
+    return (fromRelay && fromRelay[num]) || null;
 }
 
 // La línea que muestra la tabla: la congelada para quien ya terminó.
@@ -1742,10 +1654,12 @@ function buildTableColumns(view) {
                 const time = cols.sectors ? `<span class="live-sector-time">${value ?? '-'}</span>` : '';
                 // Sectores que todavía no se corrieron en esta vuelta: las
                 // barras que tengan son de la vuelta anterior, van en gris.
+                // Con la fila congelada (bandera a cuadros) las barras son las
+                // de la vuelta final, no las de la vuelta de enfriamiento.
                 const notYetRun = r.sectorView.live != null && idx > r.sectorView.live;
-                const segments = getSegments(r.line, idx + 1);
+                const segments = getSegments(r.shown, idx + 1);
                 const bars = cols.microsectors
-                    ? microsectorsHTML(notYetRun ? segments.map(() => 0) : segments, isStaleSegments(r.num, r.line, idx + 1))
+                    ? microsectorsHTML(notYetRun ? segments.map(() => 0) : segments, isStaleSegments(r.num, r.shown, idx + 1))
                     : '';
                 const colorClass = cols.sectors ? timingClass(r.num, `s${idx + 1}`, value) : '';
                 const microOnly = cols.sectors ? '' : ' live-sector-cell--micro-only';
@@ -1887,7 +1801,7 @@ function render() {
         const rowHtmls = rows.map(({ num, line }, i) => {
             const driver = driverList[num] || {};
             // Quien ya recibió la bandera a cuadros muestra su vuelta final
-            // (ver trackChequeredFinishers); el resto, la línea en vivo.
+            // (ver relayFinishedLines); el resto, la línea en vivo.
             const shown = shownTimingLine(num, line);
             const lastLap = shown.LastLapTime || {};
             const bestLap = shown.BestLapTime || {};
@@ -1922,6 +1836,7 @@ function render() {
                 lapClass: timingClass(num, 'lap', lastLap.Value),
                 bestLap,
                 bestLapClass,
+                shown,
                 sectorView: displayedSectors(shown),
                 sectorsBlanked: blankSectorsAfterPos != null && posNum > blankSectorsAfterPos,
             };
