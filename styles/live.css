@@ -52,29 +52,49 @@
     overflow: visible;
 }
 
+/* Pista: un borde gris oscuro ancho y, encima, la línea (de color por
+   sector, o neutra mientras no hay tiempos de sector). Mismo lenguaje que
+   el mapa oficial de F1. */
 .track-outline,
-.track-line {
+.track-line,
+.track-sector {
     fill: none;
     stroke-linejoin: round;
     stroke-linecap: round;
 }
 
 .track-outline {
-    stroke: rgba(255,255,255,0.08);
+    stroke: rgb(38,38,48);
 }
 
 .track-line {
-    stroke: rgba(255,255,255,0.55);
+    stroke: rgba(255,255,255,0.7);
 }
 
-.track-start {
-    stroke: var(--primary-red, #e10600);
-    stroke-linecap: round;
+/* Colores de sector del mapa oficial. */
+.track-sector--s1 { stroke: rgb(232,0,45); }
+.track-sector--s2 { stroke: rgb(0,161,255); }
+.track-sector--s3 { stroke: rgb(255,211,1); }
+/* Bandera a cuadros en la largada: grilla de cuadraditos (startFlagHTML()
+   en live.js). */
+.track-flag-white { fill: #fff; }
+.track-flag-black { fill: #111; }
+
+.track-direction {
+    fill: var(--text-light);
+}
+
+/* Números de curva en circulitos. */
+.track-corners circle {
+    fill: rgb(24,24,32);
+    stroke: rgba(255,255,255,0.35);
+    /* stroke-width lo pone live.js en px de pantalla (1px) */
 }
 
 .track-corners text {
-    fill: rgba(255,255,255,0.4);
+    fill: var(--text-light);
     font-family: 'F1-Regular', sans-serif;
+    font-weight: 600;
     text-anchor: middle;
     dominant-baseline: central;
 }
@@ -87,12 +107,12 @@
 }
 
 /* Aviso de que las posiciones son estimadas (sin Position.z, ver
-   ESTIMATED CAR POSITIONS en live.js). Abajo a la izquierda del mapa, lejos
-   de los botones. */
+   ESTIMATED CAR POSITIONS en live.js). Arriba a la izquierda del mapa (abajo
+   a la izquierda va el estado de pista). */
 .track-note {
     position: absolute;
     left: 16px;
-    bottom: 16px;
+    top: 16px;
     margin: 0;
     font-family: 'F1-Regular', sans-serif;
     font-size: 11px;
@@ -105,16 +125,18 @@
     display: none;
 }
 
+/* Punto del color del equipo con anillo oscuro (live.js le pone el grosor
+   según el tamaño del punto), así se despega de la línea de color. */
 .track-car circle {
-    stroke: rgba(0,0,0,0.6);
-    stroke-width: 0;
+    stroke: rgb(9,9,14);
 }
 
 .track-car text {
+    fill: #fff;
     font-family: 'F1-Bold', sans-serif;
     paint-order: stroke;
-    stroke: rgba(9,9,14,0.85);
-    stroke-width: 0.25em;
+    stroke: rgba(9,9,14,0.9);
+    stroke-width: 0.3em;
     stroke-linejoin: round;
 }
 
@@ -1848,4 +1870,323 @@ img.emoji {
 
 .delay-indicator[hidden] {
     display: none;
+}
+
+/* ---- WIND ON THE MAP (updateWindOverlay() en live.js) ----
+   Líneas finitas que cruzan el mapa hacia donde sopla el viento. El
+   contenedor se gira al ángulo del viento y es más grande que el mapa, así
+   al girarlo no quedan esquinas vacías; las líneas corren de izquierda a
+   derecha dentro de él. Solo aparece con viento fuerte. */
+.track-wind {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.track-wind[hidden] {
+    display: none;
+}
+
+.track-wind-field {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 170%;
+    height: 170%;
+    transform: translate(-50%, -50%) rotate(var(--wind-angle, 0deg));
+}
+
+.track-wind-streak {
+    position: absolute;
+    left: -15%;
+    width: var(--len, 60px);
+    height: 1px;
+    border-radius: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,var(--wind-opacity, 0.25)), transparent);
+    animation: track-wind-streak calc(var(--wind-duration, 4s) * var(--jitter, 1)) linear infinite;
+    animation-delay: var(--delay, 0s);
+}
+
+@keyframes track-wind-streak {
+    from { left: -15%; }
+    to   { left: 105%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .track-wind-streak { animation: none; left: 45%; }
+}
+
+/* Brújula, estilo apps de mapas: disco oscuro con anillo fino (como los
+   botones del mapa); el dial (72 marcas y la punta roja) gira hacia el
+   norte del circuito; la N del centro queda siempre derecha.
+   Vive en la esquina de abajo a la derecha, la misma de los botones: solo
+   se ve cuando ellos se esconden solos (.controls-idle, que pone
+   initControlsAutoHide() en live.js) y se desvanece cuando vuelven. */
+.track-compass {
+    position: absolute;
+    right: 16px;
+    bottom: 12px;
+    z-index: 5;
+    width: 52px;
+    height: 52px;
+    pointer-events: none;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.45));
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.circuit-map-wrap.controls-idle .track-compass {
+    opacity: 1;
+}
+
+.track-compass[hidden] {
+    display: none;
+}
+
+.track-compass svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.track-compass-bezel {
+    fill: rgba(16,16,22,0.9);
+    stroke: rgba(255,255,255,0.2);
+    stroke-width: 1;
+}
+
+.track-compass-tick {
+    stroke-linecap: round;
+}
+
+/* Cuatro largos/grosores (buildCompassTicks() en live.js). */
+.track-compass-tick--cardinal { stroke: rgba(255,255,255,0.7);  stroke-width: 1.4; }
+.track-compass-tick--major    { stroke: rgba(255,255,255,0.5);  stroke-width: 1.1; }
+.track-compass-tick--minor    { stroke: rgba(255,255,255,0.35); stroke-width: 0.8; }
+.track-compass-tick--fine     { stroke: rgba(255,255,255,0.2);  stroke-width: 0.6; }
+
+.track-compass-pointer {
+    fill: var(--primary-red, #e10600);
+}
+
+.track-compass-n {
+    fill: var(--text-light);
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 11px;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+/* Mapa apagado: tampoco viento ni brújula. */
+.mapview-panel--map.map-off .track-wind,
+.mapview-panel--map.map-off .track-compass {
+    display: none;
+}
+
+/* ---- MAP ANNOTATIONS (MAP ANNOTATIONS en live.js) ---- */
+
+/* Bandera amarilla en un tramo de comisarios: el tramo se pinta encima de
+   la pista y titila; doble amarilla, más rápido. */
+.track-flag-sector {
+    fill: none;
+    stroke: rgb(255,211,1);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    animation: track-flag-blink 1.2s ease-in-out infinite;
+}
+
+.track-flag-sector--double {
+    animation-duration: 0.6s;
+}
+
+@keyframes track-flag-blink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.25; }
+}
+
+/* SC / VSC / roja: la pista entera se tiñe con un latido suave. */
+.track-status-line {
+    fill: none;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.track-status--sc .track-status-line,
+.track-status--vsc .track-status-line {
+    stroke: rgb(255,211,1);
+    animation: track-status-pulse 2s ease-in-out infinite;
+}
+
+.track-status--red .track-status-line {
+    stroke: rgb(255,40,40);
+    animation: track-status-pulse 2s ease-in-out infinite;
+}
+
+@keyframes track-status-pulse {
+    0%, 100% { opacity: 0.9; }
+    50%      { opacity: 0.45; }
+}
+
+/* Estado de pista: esquina de abajo a la izquierda, a la altura de los
+   botones de la otra esquina (updateTrackStatus() en live.js). */
+.track-status-banner {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    z-index: 6;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 8px;
+    font-family: 'F1-Regular', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+}
+
+.track-status-banner[hidden] { display: none; }
+
+/* Sectores afectados ("SECTOR 11"), más livianos que el nombre. */
+.track-status-banner-detail {
+    font-family: 'F1-Regular', sans-serif;
+    font-weight: 600;
+    opacity: 0.75;
+}
+
+.track-status-banner--sc,
+.track-status-banner--vsc,
+.track-status-banner--yellow { background: rgb(255,211,1); color: #111; }
+.track-status-banner--red    { background: rgb(225,20,20); color: #fff; }
+
+/* Bandera a cuadros: fondo blanco con un cuadradito a cuadros adelante. */
+.track-status-banner--chequered { background: #fff; color: #111; }
+
+.track-status-banner--chequered::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    background: repeating-conic-gradient(#111 0% 25%, #fff 0% 50%) 0 0 / 8px 8px;
+    box-shadow: 0 0 0 1px #111;
+}
+
+/* Peleas en pista: franja blanca sobre el tramo de pista entre los dos
+   autos (el grosor lo pone live.js en px de pantalla). */
+.track-battle {
+    fill: none;
+    stroke: rgba(255,255,255,0.85);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Autos: se pueden señalar (tooltip) y cliquear (seguir). */
+.track-car {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.track-car-hit {
+    fill: transparent;
+}
+
+.track-car-dot {
+    transition: r 0.2s ease;
+}
+
+/* Seguido: anillo blanco alrededor del punto. Los demás, atenuados. */
+.track-car.is-followed .track-car-dot {
+    stroke: #fff;
+}
+
+.track-car.is-dimmed {
+    opacity: 0.3;
+}
+
+/* Fila del piloto seguido en la tabla: franja del color de acento a la
+   izquierda y fondo apenas más claro. */
+.live-table tbody tr.is-followed td {
+    background: rgba(255,255,255,0.1);
+}
+
+.live-table tbody tr.is-followed td:first-child {
+    box-shadow: inset 3px 0 0 var(--primary-red, #e10600);
+}
+
+/* Tooltip de un auto: arriba del punto, con una flechita abajo. */
+.track-tooltip {
+    position: absolute;
+    z-index: 7;
+    transform: translate(-50%, calc(-100% - 12px));
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(16,16,22,0.96);
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.55);
+    font-family: 'F1-Regular', sans-serif;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.track-tooltip[hidden] { display: none; }
+
+.track-tooltip::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    width: 8px;
+    height: 8px;
+    transform: translateX(-50%) rotate(45deg);
+    background: rgba(16,16,22,0.96);
+    border-right: 1px solid rgba(255,255,255,0.18);
+    border-bottom: 1px solid rgba(255,255,255,0.18);
+}
+
+.track-tooltip-name {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'F1-Bold', sans-serif;
+    font-size: 14px;
+    color: var(--text-light);
+}
+
+.track-tooltip-name .live-driver-num {
+    min-width: 0;
+}
+
+.track-tooltip-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+}
+
+.track-tooltip-tyre .tyre-icon-img {
+    width: 18px;
+    height: 18px;
+}
+
+.track-tooltip-tyre .tyre-fresh-label {
+    font-size: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .track-flag-sector,
+    .track-status-line { animation: none; }
+    .track-status--sc .track-status-line,
+    .track-status--vsc .track-status-line,
+    .track-status--red .track-status-line { opacity: 0.8; }
 }
