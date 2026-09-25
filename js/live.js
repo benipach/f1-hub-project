@@ -1093,7 +1093,10 @@ function getLiveWeather() {
         air_temperature:  w.AirTemp,
         track_temperature: w.TrackTemp,
         humidity:         w.Humidity,
-        wind_speed:       Number(w.WindSpeed) / 3.6, // feed sends km/h; renderer expects m/s
+        // El feed manda WindSpeed en m/s (según FastF1, que lee este mismo feed),
+        // que es lo que espera el renderer; antes se dividía por 3.6 creyendo
+        // que venía en km/h y el viento se mostraba 3.6 veces más bajo.
+        wind_speed:       Number(w.WindSpeed),
         wind_direction:   w.WindDirection,
         rainfall:         w.Rainfall,
     };
@@ -1414,6 +1417,8 @@ function render() {
     updateLiveWeather();
     updateCircuitMap();
     renderRaceControl();
+    updateWindOverlay();
+    updateTrackAnnotations();
 
     const timingLines = (state.TimingData && state.TimingData.Lines) || {};
     const driverList = state.DriverList || {};
@@ -1530,7 +1535,7 @@ function render() {
             };
 
             return `
-                <tr class="results-row ${line.Retired ? 'live-row--retired' : ''}${fastestRowClass}${isEliminated ? ' live-row--eliminated' : ''}">
+                <tr data-num="${num}" class="results-row ${line.Retired ? 'live-row--retired' : ''}${fastestRowClass}${isEliminated ? ' live-row--eliminated' : ''}${followedDriver === num ? ' is-followed' : ''}">
                     ${columns.map((c) => c.td(r)).join('')}
                 </tr>
             `;
@@ -1538,6 +1543,7 @@ function render() {
         tbody2.innerHTML = withQualySeparators(rowHtmls, cutoffLines, tableColspan);
     }
 
+    refreshTrackSectors();
     trackCarProgress();
     updatePositionOverlay();
 }
@@ -1630,6 +1636,28 @@ function rcUtcTimeChip(utc) {
     return `<span class="rc-chip rc-chip--lap">${hh}:${mm}</span>`;
 }
 
+// F1 le pega la hora al final de muchos mensajes: "IMPEDING (16:33:21)" o
+// "... LAP 3 12:03:58". Ya se muestra la vuelta o la hora en su chip, así
+// que se saca.
+function rcStripTime(text) {
+    return String(text).replace(/\s*(?:TIMED AT\s*)?\(?\b\d{1,2}:\d{2}:\d{2}\)?\s*$/i, '');
+}
+
+// Motivo de un incidente/sanción, con los autos que nombre en el mismo
+// formato de piloto: "IMPEDING CAR 14 (ALO)" → "IMPEDING #14 ALONSO".
+function rcReasonHTML(reason) {
+    const text = rcStripTime(reason);
+    const pattern = /CARS? (\d+) \((\w+)\)/gi;
+    let html = '';
+    let lastIndex = 0;
+    for (const found of text.matchAll(pattern)) {
+        html += escapeHTML(text.slice(lastIndex, found.index));
+        html += rcDriverHTML(found[1], found[2]);
+        lastIndex = found.index + found[0].length;
+    }
+    return html + escapeHTML(text.slice(lastIndex));
+}
+
 // "23 (ALB) AND 55 (SAI)" → "#23 ALBON & #55 SAINZ".
 function rcDriversHTML(carsText) {
     const cars = [...String(carsText).matchAll(/(\d+) \((\w+)\)/g)];
@@ -1644,7 +1672,8 @@ function rcDriversHTML(carsText) {
 // html el texto (vacío = solo la etiqueta). Para sumar una nueva, agregar
 // un objeto a la lista. `ctx` trae datos que dependen de los mensajes
 // anteriores (p. ej. cuántos track limits lleva cada auto). Si ninguna
-// regla coincide, se muestra el mensaje original.
+// regla coincide, se muestra el mensaje original. Si show() devuelve null,
+// el mensaje no se muestra (los que no interesan).
 const RC_REWRITES = [
     {
         // GREEN LIGHT - PIT EXIT OPEN → [GREEN LIGHT] PIT EXIT OPEN
@@ -1653,15 +1682,30 @@ const RC_REWRITES = [
     },
     {
         // CAR 16 (LEC) TIME 1:45.221 DELETED - TRACK LIMITS AT TURN 15 LAP 3 12:03:58
-        //   → [TRACK LIMITS] 1° WARNING | #16 LECLERC
+        //   Carrera/Sprint → [TRACK LIMITS] 1° WARNING | #16 LECLERC
+        //   Práctica/Qualy → [TRACK LIMITS] LAP DELETED | #16 LECLERC
+        // Las advertencias solo cuentan (y suman para sanción) en carrera.
         match: /^CAR (\d+) \((\w+)\) (?:TIME|LAP) .*DELETED - TRACK LIMITS/i,
         show: ([, number, code], ctx) => {
+            const chip = { label: 'Track limits', cls: 'info' };
+            if (!ctx.isRace) return { chip, html: `LAP DELETED | ${rcDriverHTML(number, code)}` };
             ctx.trackLimits[number] = (ctx.trackLimits[number] || 0) + 1;
-            return {
-                chip: { label: 'Track limits', cls: 'info' },
-                html: `${ctx.trackLimits[number]}° WARNING | ${rcDriverHTML(number, code)}`,
-            };
+            return { chip, html: `${ctx.trackLimits[number]}° WARNING | ${rcDriverHTML(number, code)}` };
         },
+    },
+    {
+        // Vuelta borrada por cualquier otro motivo (DOUBLE YELLOW, RED FLAG…):
+        // CAR 5 (BOR) TIME 2:26.624 DELETED - DOUBLE YELLOW AT TURN 14 …
+        // → no se muestra. Va después de la de track limits, que ya las
+        // agarró primero.
+        match: /^CAR \d+ \(\w+\) (?:TIME|LAP) .*DELETED\b/i,
+        show: () => null,
+    },
+    {
+        // FIRST CAR TO TAKE THE FLAG - CAR 5 (BOR) (o "…THE CHEQUERED FLAG") → no
+        // se muestra (el CHEQUERED FLAG de al lado ya dice que terminó).
+        match: /FIRST CAR TO TAKE (?:THE )?(?:CHEQUERED )?FLAG/i,
+        show: () => null,
     },
     {
         // DOUBLE YELLOW IN TRACK SECTOR 11 → [DOUBLE YELLOW] SECTOR 11
@@ -1704,13 +1748,26 @@ const RC_REWRITES = [
         },
     },
     {
+        // Incidentes, con todas las variantes que manda F1 (con o sin "FIA
+        // STEWARDS:", con o sin "TURN 1", y en cualquier etapa):
         // INCIDENT INVOLVING CARS 23 (ALB) AND 55 (SAI) NOTED - CAUSING A COLLISION
         //   → [INCIDENT NOTED] #23 ALBON & #55 SAINZ | CAUSING A COLLISION
-        match: /^INCIDENT INVOLVING CARS? (.+?) NOTED - (.+)$/i,
-        show: ([, cars, reason]) => ({
-            chip: { label: 'Incident noted', cls: 'info' },
-            html: `${rcDriversHTML(cars)} | ${escapeHTML(reason)}`,
-        }),
+        // INCIDENT INVOLVING CAR 12 (ANT) NOTED - IMPEDING CAR 14 (ALO)
+        //   → [INCIDENT NOTED] #12 ANTONELLI | IMPEDING #14 ALONSO
+        // FIA STEWARDS: INCIDENT INVOLVING CAR 12 (ANT) UNDER INVESTIGATION - IMPEDING
+        //   → [UNDER INVESTIGATION] #12 ANTONELLI | IMPEDING
+        match: /^(?:FIA STEWARDS: )?(?:TURN \d+ )?INCIDENT INVOLVING CARS? (.+?) (NOTED|UNDER INVESTIGATION|WILL BE INVESTIGATED AFTER THE (?:SESSION|RACE)|REVIEWED(?:,? NO FURTHER (?:INVESTIGATION|ACTION))?)(?: - (.+))?$/i,
+        show: ([, cars, stage, reason]) => {
+            const s = stage.toUpperCase();
+            const label = s === 'NOTED' ? 'Incident noted'
+                : s === 'UNDER INVESTIGATION' ? 'Under investigation'
+                : s.startsWith('WILL BE INVESTIGATED') ? 'Investigation after session'
+                : 'No further action';
+            return {
+                chip: { label, cls: 'info' },
+                html: `${rcDriversHTML(cars)}${reason ? ` | ${rcReasonHTML(reason)}` : ''}`,
+            };
+        },
     },
     {
         // FIA STEWARDS: 5 SECOND TIME PENALTY FOR CAR 55 (SAI) - CAUSING A COLLISION
@@ -1720,29 +1777,35 @@ const RC_REWRITES = [
         match: /^FIA STEWARDS: (.+?) PENALTY FOR CAR (\d+) \((\w+)\)(?: - (.+))?$/i,
         show: ([, kind, number, code, reason]) => ({
             chip: { label: `${kind.replace(/\s+TIME$/i, '')} penalty`, cls: 'penalty' },
-            html: `${rcDriverHTML(number, code)}${reason ? ` | ${escapeHTML(reason)}` : ''}`,
+            html: `${rcDriverHTML(number, code)}${reason ? ` | ${rcReasonHTML(reason)}` : ''}`,
         }),
     },
 ];
 
-// Cómo se muestra cada mensaje ({ chip, html }), en orden cronológico (los
-// contadores como el de track limits dependen de lo que pasó antes).
+// Cómo se muestra cada mensaje ({ message, chip, html }), en orden
+// cronológico, sin los ocultos. Va en orden porque los
+// contadores (como el de track limits) dependen de lo que pasó antes.
 function rcDisplayItems(messages) {
     const ctx = {
         trackLimits: {},
         isRace: currentSessionKind() === 'race',
         startMs: sessionStartMs(),
     };
-    return messages.map((m) => {
-        for (const rule of RC_REWRITES) {
-            const found = rule.match.exec(m.Message);
-            if (found) {
-                const shown = rule.show(found, ctx, m);
-                return { chip: shown.chip || rcChip(m), html: shown.html };
-            }
+    const items = [];
+    for (const m of messages) {
+        // La hora del final se saca ANTES de buscar la regla, así las
+        // reglas ven el mensaje limpio (y los anclados con $ coinciden).
+        const text = rcStripTime(m.Message);
+        const rule = RC_REWRITES.find((r) => r.match.test(text));
+        if (!rule) {
+            items.push({ message: m, chip: rcChip(m), html: escapeHTML(text) });
+            continue;
         }
-        return { chip: rcChip(m), html: escapeHTML(m.Message) };
-    });
+        const shown = rule.show(rule.match.exec(text), ctx, m);
+        // null = mensaje que no interesa: afuera de la lista.
+        if (shown) items.push({ message: m, chip: shown.chip || rcChip(m), html: shown.html });
+    }
+    return items;
 }
 
 // Etiqueta de color según el tipo de mensaje. null = sin etiqueta.
@@ -1796,28 +1859,28 @@ function renderRaceControl() {
     // contadores, como el de track limits, necesitan los anteriores) y
     // recién después se recortan a los últimos RC_MAX_MESSAGES.
     const allMessages = raceControlMessages();
-    const allItems = rcDisplayItems(allMessages);
     const startMs = sessionStartMs();
-    const messages = allMessages.slice(-RC_MAX_MESSAGES);
-    const items = allItems.slice(-RC_MAX_MESSAGES);
-    // La hora de largada entra en la firma: si llega después que los
-    // mensajes, hay que redibujar (la duración de CHEQUERED FLAG depende de ella).
-    const signature = `${startMs}|` + (messages.length
-        ? `${messages.length}|${messages[messages.length - 1].Utc}|${messages[messages.length - 1].Message}`
+    const sessionKind = currentSessionKind();
+    // La hora de largada y el tipo de sesión entran en la firma: la duración
+    // de CHEQUERED FLAG y el formato de track limits dependen de ellos.
+    const last = allMessages[allMessages.length - 1];
+    const signature = `${startMs}|${sessionKind}|` + (last
+        ? `${allMessages.length}|${last.Utc}|${last.Message}`
         : 'empty');
     if (signature === rcLastSignature) return;
     rcLastSignature = signature;
 
-    if (messages.length === 0) {
+    // Los mensajes ocultos (ver RC_REWRITES) ya no están en items.
+    const items = rcDisplayItems(allMessages).slice(-RC_MAX_MESSAGES);
+    if (items.length === 0) {
         list.innerHTML = '<li class="rc-empty">No race control messages yet</li>';
         return;
     }
 
-    list.innerHTML = messages.map((m, i) => {
+    list.innerHTML = items.map(({ message: m, chip, html }) => {
         const id = `${m.Utc}|${m.Message}`;
         const isNew = rcPrimed && !rcSeen.has(id);
         rcSeen.add(id);
-        const { chip, html } = items[i];
         // La vuelta ("L 14") como una etiqueta más. Solo si el mensaje no
         // trae vuelta, la hora del mensaje en UTC ("12:50").
         const meta = m.Lap
@@ -1891,7 +1954,9 @@ function loadTrackMap() {
         .then((data) => {
             if (trackMapRequestId !== requestId) return; // cambió de sesión mientras tanto
             trackMap = buildTrackGeometry(data);
+            trackSectorShares = null; // circuito nuevo: sectores de nuevo
             drawTrackMap();
+            refreshTrackSectors(); // si ya hay tiempos de sector, pintarlos ya
             updatePositionOverlay();
         })
         .catch(() => {
@@ -1936,16 +2001,18 @@ function buildTrackGeometry(data) {
     // Número de cada curva, corrido hacia afuera de la pista en la
     // dirección que indica la API (angle está en el sistema original, así
     // que el corrimiento se hace antes de rotar).
-    const labelOffset = span * 0.035;
+    // Curvas: dónde está cada una y hacia qué lado queda "afuera" (angle,
+    // en el sistema original, pasado a un vector ya rotado). El número se
+    // ubica recién al dibujar (placeCornerLabels), que es donde se conoce
+    // el tamaño real en pantalla.
     const corners = (data.corners || [])
         .filter((c) => c && c.trackPosition)
         .map((c) => {
             const rad = ((Number(c.angle) || 0) * Math.PI) / 180;
-            const pos = toView(
-                c.trackPosition.x + Math.cos(rad) * labelOffset,
-                c.trackPosition.y + Math.sin(rad) * labelOffset,
-            );
-            return { number: c.number, x: pos.x, y: pos.y };
+            const at = toView(c.trackPosition.x, c.trackPosition.y);
+            const ahead = toView(c.trackPosition.x + Math.cos(rad), c.trackPosition.y + Math.sin(rad));
+            const len = Math.hypot(ahead.x - at.x, ahead.y - at.y) || 1;
+            return { number: c.number, at, dir: { x: (ahead.x - at.x) / len, y: (ahead.y - at.y) / len } };
         });
 
     // Tiempo de cada punto dentro de la vuelta de referencia, normalizado a
@@ -1982,58 +2049,714 @@ function buildTrackGeometry(data) {
 
     const refLapSeconds = Number(data.candidateLap && data.candidateLap.lapTime);
 
+    // Tramo de pista entre dos fracciones de vuelta (para pintar sectores):
+    // los puntos del trazado que caen adentro, más los dos extremos exactos.
+    // Sectores de comisarios (los de "YELLOW IN TRACK SECTOR 11"): la API
+    // da dónde empieza cada uno; cada sector va desde ese punto hasta el
+    // comienzo del siguiente, siguiendo el trazado.
+    const nearestIndex = (p) => {
+        let best = 0;
+        let bestDist = Infinity;
+        points.forEach((q, i) => {
+            const d = (q.x - p.x) ** 2 + (q.y - p.y) ** 2;
+            if (d < bestDist) { bestDist = d; best = i; }
+        });
+        return best;
+    };
+    const marshalStarts = (data.marshalSectors || [])
+        .filter((s) => s && s.trackPosition && Number.isFinite(Number(s.number)))
+        .map((s) => ({ number: Number(s.number), index: nearestIndex(toView(s.trackPosition.x, s.trackPosition.y)) }))
+        .sort((a, b) => a.index - b.index);
+    const marshalSegments = {};
+    marshalStarts.forEach((s, i) => {
+        const next = marshalStarts[(i + 1) % marshalStarts.length];
+        const segment = [];
+        for (let k = s.index; segment.length <= points.length; k = (k + 1) % points.length) {
+            segment.push(points[k]);
+            if (k === next.index && segment.length > 1) break;
+        }
+        marshalSegments[s.number] = segment;
+    });
+
+    const lapSegmentPoints = (from, to) => [
+        pointAtLapFraction(from),
+        ...points.filter((_, i) => lapFractions[i] > from && lapFractions[i] < to),
+        pointAtLapFraction(to),
+    ];
+
     return {
         toView,
+        rotation: angle,
         points,
         corners,
         pointAtLapFraction,
+        lapSegmentPoints,
+        marshalSegments,
         refLapMs: refLapSeconds > 0 ? refLapSeconds * 1000 : null,
         viewBox: [minX - pad, minY - pad, maxX - minX + pad * 2, maxY - minY + pad * 2],
         span,
     };
 }
 
-function trackPathD(points) {
-    return points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ') + ' Z';
+function trackPathD(points, closed = true) {
+    const d = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+    return closed ? `${d} Z` : d;
 }
 
-// Línea de largada: un trazo corto perpendicular a la pista en el primer
-// punto del trazado (la vuelta de referencia arranca en la meta).
-function startLineD(points, length) {
-    const [a, b] = points;
-    const dx = b.x - a.x;
-    const dy = b.y - a.y;
-    const len = Math.hypot(dx, dy) || 1;
-    const nx = (-dy / len) * length;
-    const ny = (dx / len) * length;
-    return `M${(a.x - nx).toFixed(1)} ${(a.y - ny).toFixed(1)} L${(a.x + nx).toFixed(1)} ${(a.y + ny).toFixed(1)}`;
+// Dirección de la pista en el punto `index` del trazado (vector unitario).
+function trackDirection(points, index) {
+    const a = points[index];
+    const b = points[(index + 3) % points.length];
+    const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+    return { x: (b.x - a.x) / len, y: (b.y - a.y) / len };
 }
 
-// Dibuja la pista (una vez por circuito) y alterna entre SVG y PNG.
-function drawTrackMap() {
+// Bandera a cuadros de verdad en la línea de largada (primer punto del
+// trazado: la vuelta de referencia arranca en la meta): una grilla de
+// cuadraditos blancos y negros alternados, `cols` a lo largo de la pista y
+// `rows` cruzándola, girada según la dirección de la recta.
+function startFlagHTML(points, cell, cols = 3, rows = 6) {
+    const a = points[0];
+    const dir = trackDirection(points, 0);
+    const angle = (Math.atan2(dir.y, dir.x) * 180) / Math.PI;
+    const x0 = (-cols / 2) * cell;
+    const y0 = (-rows / 2) * cell;
+    let squares = '';
+    for (let c = 0; c < cols; c++) {
+        for (let r = 0; r < rows; r++) {
+            const cls = (c + r) % 2 === 0 ? 'track-flag-white' : 'track-flag-black';
+            squares += `<rect class="${cls}" x="${(x0 + c * cell).toFixed(1)}" y="${(y0 + r * cell).toFixed(1)}" width="${cell.toFixed(1)}" height="${cell.toFixed(1)}"></rect>`;
+        }
+    }
+    return `<g class="track-flag" transform="translate(${a.x.toFixed(1)} ${a.y.toFixed(1)}) rotate(${angle.toFixed(1)})">${squares}</g>`;
+}
+
+// Flechita que marca el sentido de giro: al costado de la bandera a
+// cuadros, apuntando a lo largo de la recta. Va del lado de la pista con
+// más espacio libre (la recta de largada suele tener otro tramo cerca).
+// `gap` = cuánto se separa del centro de la pista.
+function directionArrowPoints(points, size, gap) {
+    const p = points[0];
+    const dir = trackDirection(points, 0);
+    const clearance = (sign) => {
+        const cx = p.x - dir.y * gap * sign;
+        const cy = p.y + dir.x * gap * sign;
+        return Math.min(...points.map((q) => Math.hypot(q.x - cx, q.y - cy)));
+    };
+    const sign = clearance(1) >= clearance(-1) ? 1 : -1;
+    const side = { x: -dir.y * sign, y: dir.x * sign };
+    const cx = p.x + side.x * gap;
+    const cy = p.y + side.y * gap;
+    // Flecha larga y angosta (punta + cola con muesca), bien legible aun
+    // chiquita; un triángulo tan ancho como largo se leía como un "▼".
+    const at = (along, across) => ({ x: cx + dir.x * size * along + side.x * size * across, y: cy + dir.y * size * along + side.y * size * across });
+    const shape = [at(1.4, 0), at(-0.2, 0.7), at(0.1, 0), at(-0.2, -0.7)];
+    return shape.map((q) => `${q.x.toFixed(1)},${q.y.toFixed(1)}`).join(' ');
+}
+
+// ── SECTORES DEL MAPA ──
+// El mapa pinta S1 / S2 / S3 como el mapa oficial. Dónde termina cada
+// sector sale de los tiempos de sector de la sesión (mediana entre todos
+// los autos con los tres tiempos), pasado a fracción de vuelta, igual que
+// la posición estimada de los autos. Se fija la primera vez que hay datos
+// (recalcularlo cada vuelta haría "bailar" los límites). Sin datos, la
+// pista va en un solo color.
+let trackSectorShares = null;
+
+function sessionSectorShares() {
+    const lines = (state.TimingData && state.TimingData.Lines) || {};
+    const shares = [];
+    for (const line of Object.values(lines)) {
+        const ms = getSectorTimes(line).map((s) => lapTimeToMs(s && s.value));
+        if (ms.every((v) => v != null && v > 0)) {
+            const total = ms[0] + ms[1] + ms[2];
+            shares.push(ms.map((v) => v / total));
+        }
+    }
+    if (shares.length === 0) return null;
+    const median = (values) => {
+        const sorted = values.slice().sort((a, b) => a - b);
+        return sorted[Math.floor(sorted.length / 2)];
+    };
+    const raw = [0, 1, 2].map((s) => median(shares.map((x) => x[s])));
+    const total = raw[0] + raw[1] + raw[2];
+    return raw.map((v) => v / total);
+}
+
+// Llamado desde render(): la primera vez que hay tiempos de sector,
+// redibuja la pista con los sectores de color.
+function refreshTrackSectors() {
+    if (!trackMap || trackSectorShares) return;
+    const shares = sessionSectorShares();
+    if (!shares) return;
+    trackSectorShares = shares;
+    drawTrackMap();
+    updatePositionOverlay();
+}
+
+// Unidades del SVG que entran en un píxel de pantalla. Los tamaños del mapa
+// (grosor de pista, números de curva, autos) se piensan en píxeles, así se
+// ven iguales en un mapa chico que en uno grande. Con "meet" manda el lado
+// más ajustado; si el contenedor todavía no tiene alto (el SVG le da el alto
+// en el modo "con lo justo"), manda el ancho.
+function trackUnitsPerPx(element, viewBox) {
+    const rect = element.getBoundingClientRect();
+    if (rect.width <= 0) return null;
+    const byWidth = viewBox[2] / rect.width;
+    return rect.height > 0 ? Math.max(byWidth, viewBox[3] / rect.height) : byWidth;
+}
+
+// Distancia de un punto al trazado (a los tramos entre puntos, no solo a
+// los puntos: si no, un número podía quedar encima de la línea entre dos).
+function distanceToTrack(p, points) {
+    let best = Infinity;
+    for (let i = 0; i < points.length; i++) {
+        const a = points[i];
+        const b = points[(i + 1) % points.length];
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const len2 = dx * dx + dy * dy || 1;
+        const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / len2));
+        const d = Math.hypot(p.x - (a.x + dx * t), p.y - (a.y + dy * t));
+        if (d < best) best = d;
+    }
+    return best;
+}
+
+// Índice del tramo del trazado más cercano a un punto.
+function nearestTrackSegment(p, points) {
+    let best = 0;
+    let bestDist = Infinity;
+    for (let i = 0; i < points.length; i++) {
+        const a = points[i];
+        const b = points[(i + 1) % points.length];
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const len2 = dx * dx + dy * dy || 1;
+        const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / len2));
+        const d = Math.hypot(p.x - (a.x + dx * t), p.y - (a.y + dy * t));
+        if (d < bestDist) { bestDist = d; best = i; }
+    }
+    return best;
+}
+
+// Ubica el número de cada curva como en el mapa oficial: lo más cerca
+// posible de su curva, del lado que tenga lugar, y siempre del lado de SU
+// curva (el tramo de pista más cercano al número tiene que ser el de esa
+// curva; si no, un número podía terminar del otro lado de una recta, junto
+// a otra curva).
+//
+// Para cada curva se arma una lista de lugares posibles (24 direcciones, a
+// distancias crecientes), ordenada de mejor a peor: más cerca primero y, a
+// igual distancia, el lado que indica la API. Después se ubican en orden y,
+// si una curva no encuentra lugar libre, se vuelve atrás y la anterior
+// prueba su siguiente opción (la 5 le hace lugar a la 6). Con tope de
+// intentos: si no alcanza, se ubican de a una como se pueda.
+function placeCornerLabels(corners, points, upx) {
+    const labelRadius = 9 * upx;       // círculo del número
+    const trackHalf = 7.2 * upx;       // medio ancho de la pista con su borde
+    const clearTrack = trackHalf + labelRadius + 1.5 * upx;
+    const clearLabel = labelRadius * 2 + 2 * upx;
+    const rings = [0, 5, 11, 18, 26].map((extra) => clearTrack + (0.5 + extra) * upx);
+    const directions = Array.from({ length: 24 }, (_, i) => (i * Math.PI) / 12);
+    const window = Math.max(6, Math.round(points.length * 0.03));
+    const circularGap = (a, b) => {
+        const d = Math.abs(a - b) % points.length;
+        return Math.min(d, points.length - d);
+    };
+
+    const options = corners.map((c) => {
+        const preferred = Math.atan2(c.dir.y, c.dir.x);
+        const own = nearestTrackSegment(c.at, points);
+        const deviation = (angle) => {
+            const d = Math.abs(angle - preferred) % (2 * Math.PI);
+            return d > Math.PI ? 2 * Math.PI - d : d;
+        };
+        const list = [];
+        rings.forEach((ring, ringIndex) => {
+            directions.forEach((angle) => {
+                const p = { x: c.at.x + Math.cos(angle) * ring, y: c.at.y + Math.sin(angle) * ring };
+                if (distanceToTrack(p, points) < clearTrack) return;
+                if (circularGap(nearestTrackSegment(p, points), own) > window) return;
+                list.push({ ...p, cost: ringIndex * 10 + deviation(angle) });
+            });
+        });
+        list.sort((a, b) => a.cost - b.cost);
+        // Última opción: pegado del lado de la API (por si no hay nada libre).
+        list.push({ x: c.at.x + c.dir.x * rings[0], y: c.at.y + c.dir.y * rings[0], cost: Infinity, fallback: true });
+        return list;
+    });
+
+    const fits = (p, placed) => p.fallback || placed.every((q) => Math.hypot(q.x - p.x, q.y - p.y) >= clearLabel);
+
+    // Búsqueda con vuelta atrás, con tope para no colgarse nunca.
+    const placed = [];
+    const choice = new Array(corners.length).fill(-1);
+    let steps = 0;
+    let i = 0;
+    while (i < corners.length && steps < 20000) {
+        steps++;
+        let next = choice[i] + 1;
+        while (next < options[i].length && (options[i][next].fallback || !fits(options[i][next], placed))) next++;
+        if (next < options[i].length) {
+            choice[i] = next;
+            placed[i] = options[i][next];
+            i++;
+        } else if (i === 0) {
+            break;
+        } else {
+            choice[i] = -1;
+            placed.length = i - 1;
+            i--;
+        }
+    }
+
+    // Si la búsqueda no cerró, cada uno se queda con lo mejor que encuentre.
+    if (i < corners.length) {
+        placed.length = 0;
+        options.forEach((list) => placed.push(list.find((p) => fits(p, placed)) || list[list.length - 1]));
+    }
+    return corners.map((c, k) => ({ number: c.number, x: placed[k].x, y: placed[k].y }));
+}
+
+// Dibuja la pista (una vez por circuito, más una cuando llegan los
+// sectores y otra si cambia el tamaño) y alterna entre SVG y PNG.
+function drawTrackMap(isRetry = false) {
     const host = document.getElementById('circuit-position-overlay');
     const wrap = document.getElementById('circuit-map-wrap');
     if (!host || !wrap) return;
 
     wrap.classList.toggle('has-track', !!trackMap);
+    // Brújula y viento dependen de la rotación del circuito.
+    updateWindOverlay();
     if (!trackMap) {
         host.innerHTML = '';
         return;
     }
 
     const { points, corners, viewBox, span } = trackMap;
-    const trackWidth = span * 0.014;
-    const cornerFont = span * 0.022;
+    const upx = trackUnitsPerPx(host, viewBox) || span / 500;
+    trackMap.unitsPerPx = upx;
+    const w = 6 * upx;
+
+    // Pista: borde + línea. Con sectores, la línea va en tres tramos de
+    // color; sin sectores, un solo tramo neutro.
+    let lineHTML;
+    if (trackSectorShares) {
+        const [s1, s2] = trackSectorShares;
+        const bounds = [[0, s1], [s1, s1 + s2], [s1 + s2, 1]];
+        lineHTML = bounds.map(([from, to], i) =>
+            `<path class="track-sector track-sector--s${i + 1}" d="${trackPathD(trackMap.lapSegmentPoints(from, to), false)}" style="stroke-width:${w.toFixed(1)}"></path>`,
+        ).join('');
+    } else {
+        lineHTML = `<path class="track-line" d="${trackPathD(points)}" style="stroke-width:${w.toFixed(1)}"></path>`;
+    }
+
+    const labels = placeCornerLabels(corners, points, upx);
     host.innerHTML = `
         <svg class="track-svg" viewBox="${viewBox.map((v) => v.toFixed(1)).join(' ')}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Track map">
-            <path class="track-outline" d="${trackPathD(points)}" style="stroke-width:${(trackWidth * 2.2).toFixed(1)}"></path>
-            <path class="track-line" d="${trackPathD(points)}" style="stroke-width:${trackWidth.toFixed(1)}"></path>
-            <path class="track-start" d="${startLineD(points, trackWidth * 1.6)}" style="stroke-width:${(trackWidth * 0.7).toFixed(1)}"></path>
-            <g class="track-corners" style="font-size:${cornerFont.toFixed(1)}px">
-                ${corners.map((c) => `<text x="${c.x.toFixed(1)}" y="${c.y.toFixed(1)}">${c.number}</text>`).join('')}
+            <path class="track-outline" d="${trackPathD(points)}" style="stroke-width:${(w * 2.4).toFixed(1)}"></path>
+            ${lineHTML}
+            <!-- SC / VSC / bandera roja: la pista entera se tiñe (ver
+                 updateTrackStatus). -->
+            <path class="track-status-line" d="${trackPathD(points)}" style="stroke-width:${w.toFixed(1)}"></path>
+            <!-- Banderas amarillas por tramo de comisarios (updateTrackFlags). -->
+            <g class="track-flags" style="stroke-width:${(w * 1.6).toFixed(1)}"></g>
+            ${startFlagHTML(points, w * 0.7)}
+            <polygon class="track-direction" points="${directionArrowPoints(points, w * 1.6, w * 4)}"></polygon>
+            <g class="track-corners">
+                ${labels.map((c) => `
+                    <g transform="translate(${c.x.toFixed(1)} ${c.y.toFixed(1)})">
+                        <circle r="${(9 * upx).toFixed(1)}" style="stroke-width:${upx.toFixed(2)}"></circle>
+                        <text style="font-size:${(9 * upx).toFixed(1)}px">${c.number}</text>
+                    </g>`).join('')}
             </g>
+            <!-- Peleas en pista: tramo entre autos a menos de 1 s (updateBattles). -->
+            <g class="track-battles" style="stroke-width:${(w * 0.45).toFixed(1)}"></g>
             <g class="track-cars"></g>
         </svg>`;
+    trackFlagsSignature = null; // capas nuevas: redibujar banderas
+    updateTrackAnnotations();
+
+    // Con el SVG ya puesto se sabe su tamaño real (el tope de alto puede
+    // achicarlo): si la escala era otra, se redibuja una vez con la buena.
+    const svg = host.querySelector('.track-svg');
+    const realUpx = svg && trackUnitsPerPx(svg, viewBox);
+    if (!isRetry && realUpx && Math.abs(realUpx - upx) / upx > 0.08) drawTrackMap(true);
+}
+
+// Si cambia el tamaño de la ventana, cambia la escala: se redibuja para que
+// números y autos sigan midiendo lo mismo en pantalla.
+let trackResizeTimer = null;
+window.addEventListener('resize', () => {
+    clearTimeout(trackResizeTimer);
+    trackResizeTimer = setTimeout(() => {
+        if (!trackMap) return;
+        drawTrackMap();
+        updatePositionOverlay();
+    }, 150);
+});
+
+// ── WIND ON THE MAP ───────────────────────────────────────────────────────
+// El sistema de coordenadas de F1 está orientado al norte: X = este,
+// Y = norte (comparado contra el trazado geográfico real de los 24
+// circuitos del calendario: todos coinciden a menos de 3°, ninguno
+// espejado). Así que el norte del mapa es ese eje con la misma rotación de
+// MultiViewer que se le aplica a la pista.
+//
+// Brújula: siempre visible con el mapa, arriba a la izquierda.
+// Viento: líneas finitas que cruzan el mapa hacia donde sopla, solo si
+// supera WIND_MIN_MS. Más viento = más rápidas y un poco más visibles.
+const WIND_MIN_MS = 3;       // ~11 km/h: por debajo, ni se anima
+const WIND_STREAKS = 14;
+
+// Ángulo en pantalla (grados, 0 = derecha, sentido horario) de un vector
+// geográfico (x = este, y = norte), con la rotación del mapa.
+function screenAngleOfGeoVector(gx, gy) {
+    const rad = ((trackMap && trackMap.rotation) || 0) * Math.PI / 180;
+    const vx = gx * Math.cos(rad) - gy * Math.sin(rad);
+    const vy = gy * Math.cos(rad) + gx * Math.sin(rad);
+    return Math.atan2(-vy, vx) * 180 / Math.PI; // -vy: en SVG la Y crece para abajo
+}
+
+// Marcas del dial, una cada 5°, con cuatro largos como una brújula real:
+// cardinales (cada 90°) las más largas, cada 45° medianas, cada 15° cortas
+// y el resto muy cortas y tenues. Se arman una sola vez.
+function buildCompassTicks(compass) {
+    const group = compass.querySelector('.track-compass-ticks');
+    if (!group || group.childElementCount) return;
+    const outer = 15.5;
+    let html = '';
+    for (let deg = 0; deg < 360; deg += 5) {
+        const kind = deg % 90 === 0 ? 'cardinal' : deg % 45 === 0 ? 'major' : deg % 15 === 0 ? 'minor' : 'fine';
+        const inner = { cardinal: 11, major: 12.4, minor: 13.6, fine: 14.4 }[kind];
+        const rad = (deg * Math.PI) / 180;
+        const sin = Math.sin(rad);
+        const cos = -Math.cos(rad); // 0° = arriba
+        html += `<line class="track-compass-tick track-compass-tick--${kind}" x1="${(sin * outer).toFixed(2)}" y1="${(cos * outer).toFixed(2)}" x2="${(sin * inner).toFixed(2)}" y2="${(cos * inner).toFixed(2)}"></line>`;
+    }
+    group.innerHTML = html;
+}
+
+function updateCompass() {
+    const compass = document.getElementById('track-compass');
+    if (!compass) return;
+    compass.hidden = !trackMap;
+    if (!trackMap) return;
+
+    buildCompassTicks(compass);
+
+    // Solo gira el dial (marcas + punta roja), que en reposo apunta para
+    // arriba (-90°); el disco y la N del centro quedan quietos y derechos.
+    const north = screenAngleOfGeoVector(0, 1);
+    const dial = compass.querySelector('.track-compass-dial');
+    if (dial) dial.setAttribute('transform', `rotate(${(north + 90).toFixed(1)})`);
+}
+
+// Las líneas se crean una sola vez, con largo, altura y demora al azar, así
+// no salen todas juntas ni en fila.
+function ensureWindStreaks(field) {
+    if (field.childElementCount) return;
+    for (let i = 0; i < WIND_STREAKS; i++) {
+        const streak = document.createElement('span');
+        streak.className = 'track-wind-streak';
+        streak.style.top = `${(4 + Math.random() * 92).toFixed(1)}%`;
+        streak.style.setProperty('--len', `${Math.round(40 + Math.random() * 70)}px`);
+        streak.style.setProperty('--delay', `${(-Math.random() * 6).toFixed(2)}s`);
+        streak.style.setProperty('--jitter', (0.75 + Math.random() * 0.5).toFixed(2));
+        field.appendChild(streak);
+    }
+}
+
+function updateWindOverlay() {
+    updateCompass();
+    const overlay = document.getElementById('track-wind');
+    if (!overlay) return;
+
+    const w = state.WeatherData;
+    const speed = w ? Number(w.WindSpeed) : NaN;      // m/s
+    const from = w ? Number(w.WindDirection) : NaN;   // grados, de dónde viene
+    const active = !!trackMap && Number.isFinite(speed) && Number.isFinite(from) && speed >= WIND_MIN_MS;
+    overlay.hidden = !active;
+    if (!active) return;
+
+    const field = overlay.querySelector('.track-wind-field');
+    ensureWindStreaks(field);
+
+    // Sopla HACIA el lado opuesto de donde viene (dirección meteorológica).
+    const toward = (from + 180) * Math.PI / 180;
+    const angle = screenAngleOfGeoVector(Math.sin(toward), Math.cos(toward));
+    // 3 m/s → cruza en ~5 s; 12 m/s o más → en ~1.5 s.
+    const duration = Math.max(1.5, Math.min(5, 15 / speed));
+    const opacity = Math.max(0.18, Math.min(0.4, speed / 30));
+    field.style.setProperty('--wind-angle', `${angle.toFixed(1)}deg`);
+    field.style.setProperty('--wind-duration', `${duration.toFixed(2)}s`);
+    field.style.setProperty('--wind-opacity', opacity.toFixed(2));
+}
+
+// ── MAP ANNOTATIONS: banderas, estado de pista, peleas, seguir, tooltip ───
+
+// Banderas amarillas activas por sector de comisarios, a partir de los
+// mensajes de Race Control en orden: "YELLOW / DOUBLE YELLOW IN TRACK
+// SECTOR n" prende el tramo, "CLEAR IN TRACK SECTOR n" lo apaga, y un
+// TRACK CLEAR / bandera roja / bandera a cuadros apaga todo.
+// Devuelve { número de sector: 'yellow' | 'double' }.
+//
+// Solo con la sesión en marcha, y nada después de la bandera a cuadros:
+// Race Control sigue mostrando amarillas mientras sacan autos o grúas de
+// la pista con la sesión ya terminada, y esas nunca reciben su CLEAR (el
+// feed deja de mandar). Antes quedaban prendidas para siempre, con la
+// pista en TRACK CLEAR (pasó en la FP2 de Baku: sectores 2 y 11).
+function activeSectorFlags() {
+    const flags = {};
+    if (!sessionIsRunning()) return flags;
+    for (const m of raceControlMessages()) {
+        if (String(m.Flag || '').toUpperCase() === 'CHEQUERED' || /^CHEQUERED FLAG/i.test(String(m.Message || ''))) {
+            return {};
+        }
+        const flag = String(m.Flag || '').toUpperCase();
+        const text = String(m.Message || '').toUpperCase();
+        let sector = m.Scope === 'Sector' && Number.isFinite(Number(m.Sector)) ? Number(m.Sector) : null;
+        let kind = flag;
+        if (sector == null) {
+            const found = /^(DOUBLE YELLOW|YELLOW|CLEAR) IN TRACK SECTOR (\d+)/.exec(text);
+            if (found) { kind = found[1]; sector = Number(found[2]); }
+        }
+        if (sector != null) {
+            if (kind === 'DOUBLE YELLOW') flags[sector] = 'double';
+            else if (kind === 'YELLOW') flags[sector] = 'yellow';
+            else if (kind === 'CLEAR' || kind === 'GREEN') delete flags[sector];
+            continue;
+        }
+        const clearsAll = (m.Scope === 'Track' && (flag === 'CLEAR' || flag === 'GREEN' || flag === 'RED' || flag === 'CHEQUERED'))
+            || /^TRACK CLEAR/.test(text) || text === 'RED FLAG' || text === 'CHEQUERED FLAG';
+        if (clearsAll) Object.keys(flags).forEach((k) => delete flags[k]);
+    }
+    return flags;
+}
+
+let trackFlagsSignature = null;
+
+function updateTrackFlags() {
+    const layer = document.querySelector('#circuit-position-overlay .track-flags');
+    if (!layer || !trackMap) return;
+    const flags = activeSectorFlags();
+    const signature = JSON.stringify(flags);
+    if (signature === trackFlagsSignature) return;
+    trackFlagsSignature = signature;
+    layer.innerHTML = Object.entries(flags)
+        .filter(([sector]) => trackMap.marshalSegments[sector])
+        .map(([sector, kind]) => `<path class="track-flag-sector track-flag-sector--${kind}" d="${trackPathD(trackMap.marshalSegments[sector], false)}"></path>`)
+        .join('');
+}
+
+// Estado de pista, en la esquina de abajo a la izquierda del mapa: lo más
+// importante que esté pasando, en este orden: bandera roja, SC, VSC, doble
+// amarilla, amarilla y, con la sesión terminada, bandera a cuadros. Con la
+// pista limpia, la esquina queda vacía.
+// Con SC / VSC / roja, además, la pista entera se tiñe (amarillo o rojo,
+// con un latido suave). TrackStatus: 2 = amarilla, 4 = SC, 5 = roja,
+// 6 = VSC, 7 = VSC terminando.
+const TRACK_STATUS_TINTS = {
+    4: { cls: 'sc', text: 'Safety car' },
+    6: { cls: 'vsc', text: 'Virtual safety car' },
+    7: { cls: 'vsc', text: 'VSC ending' },
+    5: { cls: 'red', text: 'Red flag' },
+};
+
+function sessionEnded() {
+    const status = state.SessionStatus && state.SessionStatus.Status;
+    if (status === 'Finished' || status === 'Finalised' || status === 'Ends') return true;
+    return raceControlMessages().some((m) => String(m.Flag || '').toUpperCase() === 'CHEQUERED');
+}
+
+// "SECTOR 11" / "SECTORS 10, 11" con los tramos de ese tipo de bandera.
+function sectorsLabel(flags, kind) {
+    const sectors = Object.keys(flags).filter((s) => flags[s] === kind).map(Number).sort((a, b) => a - b);
+    if (sectors.length === 0) return '';
+    return `${sectors.length === 1 ? 'Sector' : 'Sectors'} ${sectors.join(', ')}`;
+}
+
+function currentTrackBadge() {
+    const status = String((state.TrackStatus && state.TrackStatus.Status) || '');
+    const tint = TRACK_STATUS_TINTS[status];
+    if (tint) return { cls: tint.cls, text: tint.text, detail: '' };
+
+    const flags = activeSectorFlags();
+    const doubles = sectorsLabel(flags, 'double');
+    if (doubles) return { cls: 'yellow', text: 'Double yellow', detail: doubles };
+    const yellows = sectorsLabel(flags, 'yellow');
+    if (yellows || status === '2') return { cls: 'yellow', text: 'Yellow flag', detail: yellows };
+
+    if (sessionEnded()) return { cls: 'chequered', text: 'Chequered flag', detail: '' };
+    return null;
+}
+
+function updateTrackStatus() {
+    const wrap = document.getElementById('circuit-map-wrap');
+    const badge = document.getElementById('track-status-banner');
+    if (!wrap) return;
+    const status = String((state.TrackStatus && state.TrackStatus.Status) || '');
+    const tint = trackMap ? TRACK_STATUS_TINTS[status] : null;
+    ['sc', 'vsc', 'red'].forEach((cls) => wrap.classList.toggle(`track-status--${cls}`, !!tint && tint.cls === cls));
+    if (!badge) return;
+
+    const info = trackMap ? currentTrackBadge() : null;
+    badge.hidden = !info;
+    if (!info) return;
+    badge.className = `track-status-banner track-status-banner--${info.cls}`;
+    badge.innerHTML = `<span class="track-status-banner-text">${escapeHTML(info.text)}</span>`
+        + (info.detail ? `<span class="track-status-banner-detail">${escapeHTML(info.detail)}</span>` : '');
+}
+
+// Todo lo que depende de mensajes / estado (no de las posiciones): se llama
+// en cada render y cuando se dibuja la pista.
+function updateTrackAnnotations() {
+    updateTrackFlags();
+    updateTrackStatus();
+}
+
+// Peleas en pista (solo Carrera/Sprint): dos autos seguidos a menos de
+// BATTLE_GAP_SECONDS se marcan resaltando el tramo de pista entre los dos
+// (siguiendo el trazado, no en línea recta: una recta cortaba por adentro
+// del circuito). El intervalo es el real del feed; los puntos, estimados.
+const BATTLE_GAP_SECONDS = 1;
+
+function battleIntervalSeconds(line, aheadLine) {
+    const fromFeed = gapSeconds(intervalToAheadValue(line));
+    if (fromFeed != null) return fromFeed;
+    const gap = gapSeconds(gapToLeaderValue(line));
+    const aheadGap = Number(aheadLine.Position) === 1 ? 0 : gapSeconds(gapToLeaderValue(aheadLine));
+    return gap != null && aheadGap != null ? gap - aheadGap : null;
+}
+
+// Índice del punto del trazado más cercano a una posición del mapa.
+function nearestTrackIndex(p) {
+    const points = trackMap.points;
+    let best = 0;
+    let bestDist = Infinity;
+    for (let i = 0; i < points.length; i++) {
+        const d = (points[i].x - p.x) ** 2 + (points[i].y - p.y) ** 2;
+        if (d < bestDist) { bestDist = d; best = i; }
+    }
+    return best;
+}
+
+// Tramo del trazado desde el auto de atrás hasta el de adelante, siguiendo
+// la pista (hacia adelante, dando la vuelta si cruza la meta). null si es
+// más largo que BATTLE_MAX_LAP_SHARE: con posiciones estimadas puede pasar
+// que dos autos a 0.6 s queden dibujados lejos, y un tramo gigante confunde.
+const BATTLE_MAX_LAP_SHARE = 0.08;
+
+function battleSegment(behind, ahead) {
+    const points = trackMap.points;
+    const from = nearestTrackIndex(behind);
+    const to = nearestTrackIndex(ahead);
+    const steps = (to - from + points.length) % points.length;
+    if (steps === 0 || steps > points.length * BATTLE_MAX_LAP_SHARE) return null;
+    const segment = [behind];
+    for (let k = 1; k < steps; k++) segment.push(points[(from + k) % points.length]);
+    segment.push(ahead);
+    return segment;
+}
+
+function updateBattles(positions) {
+    const layer = document.querySelector('#circuit-position-overlay .track-battles');
+    if (!layer) return;
+    if (currentSessionKind() !== 'race') {
+        layer.innerHTML = '';
+        return;
+    }
+    const lines = (state.TimingData && state.TimingData.Lines) || {};
+    const order = Object.keys(lines)
+        .filter((num) => lines[num] && Number(lines[num].Position) > 0)
+        .sort((a, b) => Number(lines[a].Position) - Number(lines[b].Position));
+    let html = '';
+    for (let i = 1; i < order.length; i++) {
+        const num = order[i];
+        const ahead = order[i - 1];
+        if (!positions[num] || !positions[ahead]) continue;
+        const interval = battleIntervalSeconds(lines[num], lines[ahead]);
+        if (interval == null || interval < 0 || interval >= BATTLE_GAP_SECONDS) continue;
+        const segment = battleSegment(positions[num], positions[ahead]);
+        if (segment) html += `<path class="track-battle" d="${trackPathD(segment, false)}"></path>`;
+    }
+    layer.innerHTML = html;
+}
+
+// Seguir a un piloto: clic en su fila de la tabla o en su auto del mapa. Su
+// punto se agranda con un anillo, los demás se atenúan y la fila queda
+// marcada. Otro clic lo suelta.
+let followedDriver = null;
+
+function setFollowedDriver(num) {
+    followedDriver = followedDriver === num ? null : num;
+    document.querySelectorAll('#live-rows-2 tr[data-num]').forEach((tr) => {
+        tr.classList.toggle('is-followed', tr.dataset.num === followedDriver);
+    });
+    updatePositionOverlay();
+}
+
+// Tooltip al pasar el mouse por un auto: número y apellido, posición, gap
+// y neumático. Sigue al auto mientras se mueve.
+let tooltipDriver = null;
+
+function tooltipHTML(num) {
+    const driver = (state.DriverList || {})[num] || {};
+    const line = ((state.TimingData && state.TimingData.Lines) || {})[num] || {};
+    const appLine = ((state.TimingAppData && state.TimingAppData.Lines) || {})[num];
+    const pos = line.Position ? `P${escapeHTML(line.Position)}` : '';
+    const gap = Number(line.Position) === 1 ? 'Leader' : (formatGap(gapToLeaderValue(line)) || '');
+    const name = driver.LastName ? driver.LastName.toUpperCase() : driverCode(driver, num);
+    return `
+        <div class="track-tooltip-name">${driverNumberHTML(driver, num)} ${escapeHTML(name)}</div>
+        <div class="track-tooltip-info">
+            ${pos ? `<span>${pos}</span>` : ''}
+            ${gap ? `<span>${escapeHTML(gap)}</span>` : ''}
+            <span class="track-tooltip-tyre">${tyreCompoundBadgeHTML(appLine)}</span>
+        </div>`;
+}
+
+function updateTooltip() {
+    const tooltip = document.getElementById('track-tooltip');
+    const wrap = document.getElementById('circuit-map-wrap');
+    if (!tooltip || !wrap) return;
+    const car = tooltipDriver && document.querySelector(`#circuit-position-overlay .track-car[data-num="${tooltipDriver}"]`);
+    if (!car) {
+        tooltip.hidden = true;
+        return;
+    }
+    tooltip.innerHTML = tooltipHTML(tooltipDriver);
+    tooltip.hidden = false;
+    const dot = car.querySelector('.track-car-dot').getBoundingClientRect();
+    const box = wrap.getBoundingClientRect();
+    tooltip.style.left = `${dot.left + dot.width / 2 - box.left}px`;
+    tooltip.style.top = `${dot.top - box.top}px`;
+}
+
+function initMapInteractions() {
+    const overlay = document.getElementById('circuit-position-overlay');
+    const rows = document.getElementById('live-rows-2');
+    if (overlay) {
+        overlay.addEventListener('mouseover', (e) => {
+            const car = e.target.closest('.track-car');
+            if (car) { tooltipDriver = car.dataset.num; updateTooltip(); }
+        });
+        overlay.addEventListener('mouseout', (e) => {
+            const car = e.target.closest('.track-car');
+            if (car && !car.contains(e.relatedTarget)) { tooltipDriver = null; updateTooltip(); }
+        });
+        overlay.addEventListener('click', (e) => {
+            const car = e.target.closest('.track-car');
+            if (car) setFollowedDriver(car.dataset.num);
+        });
+    }
+    if (rows) {
+        rows.addEventListener('click', (e) => {
+            const tr = e.target.closest('tr[data-num]');
+            if (tr) setFollowedDriver(tr.dataset.num);
+        });
+    }
 }
 
 // La muestra más nueva de Position.z (por Timestamp, no por posición en
@@ -2199,28 +2922,42 @@ function updatePositionOverlay() {
     if (note) note.hidden = !!exact || Object.keys(positions).length === 0;
 
     const driverList = state.DriverList || {};
-    const dotRadius = trackMap.span * 0.013;
-    const labelSize = trackMap.span * 0.024;
+    // Tamaños en píxeles de pantalla (ver trackUnitsPerPx): punto de 5px y
+    // sigla de 11px, sea cual sea el tamaño del mapa.
+    const upx = trackMap.unitsPerPx || trackMap.span / 500;
+    const dotRadius = 5 * upx;
+    const labelSize = 11 * upx;
 
     for (const num of Object.keys(positions)) {
         let car = layer.querySelector(`[data-num="${num}"]`);
         if (!car) {
             car = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-            car.setAttribute('class', 'track-car');
             car.dataset.num = num;
-            car.innerHTML = '<circle></circle><text></text>';
+            // track-car-hit: zona invisible más grande que el punto, para
+            // poder acertarle con el mouse o el dedo (hover / seguir).
+            car.innerHTML = '<circle class="track-car-hit"></circle><circle class="track-car-dot"></circle><text></text>';
             layer.appendChild(car);
         }
 
+        const followed = followedDriver === num;
+        car.setAttribute('class', `track-car${followed ? ' is-followed' : ''}${followedDriver && !followed ? ' is-dimmed' : ''}`);
+        // El seguido va arriba de todos (en SVG manda el orden en el DOM).
+        if (followed && layer.lastChild !== car) layer.appendChild(car);
+
         const driver = driverList[num] || {};
         const color = driverMapColor(driver);
-        const circle = car.firstChild;
-        const label = car.lastChild;
-        circle.setAttribute('r', dotRadius.toFixed(1));
+        const hit = car.querySelector('.track-car-hit');
+        const circle = car.querySelector('.track-car-dot');
+        const label = car.querySelector('text');
+        const radius = followed ? dotRadius * 1.6 : dotRadius;
+        hit.setAttribute('r', (12 * upx).toFixed(1));
+        circle.setAttribute('r', radius.toFixed(1));
         circle.setAttribute('fill', color);
-        label.setAttribute('x', (dotRadius * 1.5).toFixed(1));
+        circle.setAttribute('stroke-width', (radius * 0.4).toFixed(1));
+        label.setAttribute('x', (radius * 1.5).toFixed(1));
         label.setAttribute('y', (labelSize * 0.35).toFixed(1));
-        label.setAttribute('fill', color);
+        // Sigla en blanco (no del color del equipo): sobre los sectores de
+        // color se leía mal. El color del equipo ya lo lleva el punto.
         label.style.fontSize = `${labelSize.toFixed(1)}px`;
         label.textContent = driverCode(driver, num);
 
@@ -2232,6 +2969,9 @@ function updatePositionOverlay() {
     for (const car of [...layer.children]) {
         if (!positions[car.dataset.num]) car.remove();
     }
+
+    updateBattles(positions);
+    updateTooltip();
 }
 
 // Entre mensajes del feed los autos estimados siguen avanzando: se
@@ -2425,6 +3165,7 @@ function initControlsAutoHide() {
     const controls = document.querySelector('.live-map-controls');
     const panel = document.getElementById('live-view-panel');
     if (!controls) return;
+    const mapWrap = controls.closest('.circuit-map-wrap');
 
     let timer = null;
 
@@ -2442,10 +3183,13 @@ function initControlsAutoHide() {
             return;
         }
         controls.classList.add('is-idle');
+        // Con los botones escondidos, en esa misma esquina aparece la brújula.
+        if (mapWrap) mapWrap.classList.add('controls-idle');
     }
 
     function wake() {
         controls.classList.remove('is-idle');
+        if (mapWrap) mapWrap.classList.remove('controls-idle');
         schedule();
     }
 
@@ -2509,6 +3253,7 @@ function initFullscreenButton() {
 
 initViewPanel();
 initControlsAutoHide();
+initMapInteractions();
 initFullscreenButton();
 applyTableView();
 updateDelayIndicator();

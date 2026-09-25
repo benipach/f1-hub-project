@@ -89,7 +89,28 @@
         <section class="mapview-panel mapview-panel--map">
             <div class="circuit-map-wrap" id="circuit-map-wrap">
                 <img id="circuit-map-img" class="circuit-map-img" alt="">
+                <!-- Viento: líneas que cruzan el mapa (solo con viento fuerte) y
+                     brújula con el norte real del circuito. Ver WIND ON THE MAP
+                     en live.js. -->
+                <div class="track-wind" id="track-wind" hidden aria-hidden="true"><div class="track-wind-field"></div></div>
                 <div id="circuit-position-overlay" class="circuit-position-overlay"></div>
+                <div class="track-compass" id="track-compass" hidden title="North">
+                    <svg viewBox="-20 -20 40 40" aria-hidden="true">
+                        <circle class="track-compass-bezel" r="18.5"></circle>
+                        <!-- El dial (marcas + punta roja) gira hacia el norte del
+                             circuito; la N del centro queda siempre derecha. -->
+                        <g class="track-compass-dial">
+                            <!-- Las marcas (una cada 5°) las agrega live.js. -->
+                            <g class="track-compass-ticks"></g>
+                            <path class="track-compass-pointer" d="M0 -18.5 L4 -11 L0 -12.6 L-4 -11 Z"></path>
+                        </g>
+                        <text class="track-compass-n" x="0" y="0.5">N</text>
+                    </svg>
+                </div>
+                <!-- Estado de pista (abajo a la izquierda: roja, SC, VSC, amarillas,
+                     bandera a cuadros) y tooltip de cada auto (ver MAP ANNOTATIONS en live.js). -->
+                <div class="track-status-banner" id="track-status-banner" hidden></div>
+                <div class="track-tooltip" id="track-tooltip" hidden></div>
                 <p class="track-note" id="track-note" hidden>Positions estimated from timing data</p>
                 <div class="live-map-controls">
                     <button class="live-ctrl-btn live-view-btn" id="live-view-btn" type="button" aria-label="Customize table" title="Customize table" aria-expanded="false" aria-controls="live-view-panel">
