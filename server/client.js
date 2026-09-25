@@ -13,6 +13,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import zlib from "node:zlib";
 import http from "node:http";
+import { updateFinishedLines } from "./finishers.js";
 
 const URL = "https://livetiming.formula1.com/signalrcore";
 // El puerto lo puede fijar el host donde se despliegue (Render, Railway,
@@ -55,13 +56,18 @@ const state = {};
 // `state` above always tracks the raw live feed. What we actually SEND to
 // the frontend is `displayState`, governed by this: while a session is
 // live, displayState mirrors state directly (live = top priority, always).
-// The moment a session ends, we freeze a snapshot of it. That snapshot
-// stays visible for 24h — UNLESS a *different* session goes live sooner
-// (e.g. FP1 -> Qualifying same day), in which case we drop the freeze
-// immediately and go back to mirroring live data.
+// The freeze only kicks in when F1 starts sending a *different* session
+// (new SessionInfo.Key) that isn't live yet: that snapshot of the last
+// session stays visible for 24h, or until the new session goes live
+// (e.g. FP1 -> Qualifying same day).
+//
+// Antes se congelaba apenas SessionStatus dejaba de ser "Started", o sea
+// justo en la bandera a cuadros (y con bandera roja, y entre Q1/Q2/Q3): la
+// página dejaba de actualizarse con autos todavía terminando la vuelta.
+// Ahora, mientras siga siendo la misma sesión, se sigue mandando todo.
 const FREEZE_DURATION_MS = 24 * 60 * 60 * 1000;
 let frozen = null; // { sessionKey, data, frozenAt } | null
-let mirroring = true; // true = displayState === state right now
+let lastLiveKey = null; // SessionInfo.Key de la última sesión que estuvo en "Started"
 
 function currentSessionKey() {
   return state.SessionInfo?.Key ?? null;
@@ -112,20 +118,14 @@ function updateSessionTiming() {
 // update (see onUpdate below) — it's just a couple of property reads
 // unless a transition actually happened.
 function updateDisplayState() {
-  const liveNow = isSessionLive();
   const sessionKey = currentSessionKey();
 
-  if (liveNow) {
-    if (frozen && frozen.sessionKey !== sessionKey) {
+  if (isSessionLive()) {
+    lastLiveKey = sessionKey;
+    if (frozen) {
       console.log(`[session] new session started (key=${sessionKey}), dropping frozen snapshot`);
       frozen = null;
     }
-    mirroring = true;
-  } else if (mirroring) {
-    // Was live, isn't anymore: the session just ended. Freeze it.
-    frozen = { sessionKey, data: structuredClone(state), frozenAt: Date.now() };
-    mirroring = false;
-    console.log(`[session] session ended, freezing results for 24h (key=${sessionKey})`);
   }
 
   if (frozen && Date.now() - frozen.frozenAt > FREEZE_DURATION_MS) {
@@ -340,10 +340,31 @@ function mergeState(target, patch) {
   return target;
 }
 
+// Se llama ANTES de mezclar un SessionInfo nuevo en `state`: si F1 pasó a
+// otra sesión, se congela la anterior tal como terminó, antes de que los
+// datos nuevos la pisen.
+function freezeIfNewSession(sessionInfoPatch) {
+  const nextKey = sessionInfoPatch?.Key;
+  if (frozen || lastLiveKey == null || nextKey == null || nextKey === lastLiveKey) return;
+  frozen = { sessionKey: lastLiveKey, data: structuredClone(state), frozenAt: Date.now() };
+  console.log(`[session] new session (key=${nextKey}) not live yet, freezing results of key=${lastLiveKey} for 24h`);
+}
+
 function onUpdate(topic) {
+  const wasFrozen = !!frozen;
   updateDisplayState();
   updateSessionTiming();
-  broadcast(topic);
+  // Pilotos que ya recibieron la bandera a cuadros (ver finishers.js). Va
+  // ANTES del tema que lo provocó: así, con el cruce de meta, la página
+  // ya tiene la fila congelada cuando llega la vuelta de enfriamiento.
+  const finishedChanged = updateFinishedLines(state);
+  // Al soltar el congelado el front tiene TODO de la sesión vieja: se le
+  // manda el estado entero, no solo este tema.
+  if (wasFrozen && !frozen) broadcastFullSnapshot();
+  else {
+    if (finishedChanged) broadcast("FinishedLines");
+    broadcast(topic);
+  }
 
   // TEMP DEBUG — confirm the real shape of these three topics against your
   // live feed, then delete these three blocks once verified.
@@ -405,6 +426,8 @@ connection.on("feed", (topic, rawPatch, timestamp) => {
     console.log("[debug] DriverList raw:", JSON.stringify(patch).slice(0, 1500));
   }
 
+  if (topic === "SessionInfo") freezeIfNewSession(patch);
+
   if (!state[topic]) {
     state[topic] = patch; // first message for this topic: seed as-is
     console.log(`[state] ${topic} seeded`);
@@ -434,6 +457,7 @@ async function main() {
     // would otherwise never arrive if we joined mid-session.
     const initial = await connection.invoke("Subscribe", TOPICS);
     if (initial && typeof initial === "object") {
+      if (initial.SessionInfo) freezeIfNewSession(initial.SessionInfo);
       for (const topic of Object.keys(initial)) {
         const decoded = decodeIfCompressed(topic, initial[topic]);
         if (decoded == null) continue;
@@ -445,6 +469,7 @@ async function main() {
       // un front ya conectado se queda con el estado parcial de antes.
       updateDisplayState();
       updateSessionTiming();
+      updateFinishedLines(state);
       broadcastFullSnapshot();
     }
   } catch (err) {

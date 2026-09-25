@@ -700,6 +700,23 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
     letter-spacing: 1px;
 }
 
+/* Ya recibió la bandera a cuadros: blanco (no color de equipo) con una
+   mini bandera a cuadros, mismo tamaño que PIT/OUT. */
+.live-status-badge--chequered {
+    gap: 4px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.live-chequered-icon {
+    width: 10px;
+    height: 10px;
+    flex: none;
+    border-radius: 1px;
+    background-color: #fff;
+    background-image: conic-gradient(#111 25%, transparent 0 50%, #111 0 75%, transparent 0);
+    background-size: 5px 5px;
+}
+
 .live-status-team {
     font-weight: bold;
     text-transform: uppercase;
