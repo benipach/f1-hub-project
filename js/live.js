@@ -536,7 +536,7 @@ function connect() {
     const ws = new WebSocket(relayUrl);
 
     ws.onopen = () => {
-        setConnectionNotice('Waiting for session data…');
+        setConnectionNotice('No session data yet');
     };
 
     ws.onmessage = (event) => {
@@ -817,6 +817,11 @@ function clockElapsedSeconds(clock) {
     return (Date.now() - lastClockUpdateLocalTime) / 1000;
 }
 
+// Ícono de pausa del reloj (bandera roja o reloj detenido). SVG y no el
+// carácter "⏸": ese lo dibuja cada sistema a su manera (más chico, más
+// bajo, otro grosor) y quedaba desalineado con los números.
+const PAUSE_ICON_SVG = '<svg class="status-clock-pause" viewBox="0 0 10 12" aria-label="Paused" role="img"><rect x="1" y="1" width="2.6" height="10" rx="0.8"></rect><rect x="6.4" y="1" width="2.6" height="10" rx="0.8"></rect></svg>';
+
 function updateSessionClock() {
     const el = document.getElementById('mapview-fs-session-status');
     if (!el) return;
@@ -856,7 +861,7 @@ function updateSessionClock() {
     const html = `
         <span class="status-flag status-flag--${flag.color}">${flag.text}</span>
         <span class="status-session-name">${fullLabel}</span>
-        <span class="status-clock${paused ? ' status-clock--paused' : ''}">${clockText}${paused ? ' ⏸' : ''}</span>
+        <span class="status-clock${paused ? ' status-clock--paused' : ''}">${clockText}${paused ? PAUSE_ICON_SVG : ''}</span>
     `;
     el.innerHTML = html;
 }
@@ -1200,12 +1205,12 @@ const VIEW_OPTIONS = {
         choices: [['code', 'Short name'], ['surname', 'Last name'], ['full', 'Full name']],
     },
     team: {
-        label: 'Team',
+        label: 'Show as',
         dependsOn: 'team',
         choices: [['inline', 'Logo by driver'], ['column', 'Name column']],
     },
     tyres: {
-        label: 'Tyres',
+        label: 'Show as',
         dependsOn: 'tyres',
         choices: [['history', 'All stints'], ['current', 'Current set']],
     },
@@ -1491,7 +1496,7 @@ function render() {
     const tbody2 = document.getElementById('live-rows-2');
 
     if (rows.length === 0) {
-        if (tbody2) tbody2.innerHTML = `<tr><td colspan="${tableColspan}" class="results-empty">Waiting for session data…</td></tr>`;
+        if (tbody2) tbody2.innerHTML = `<tr><td colspan="${tableColspan}" class="results-empty">No session data yet</td></tr>`;
         return;
     }
 
@@ -2998,33 +3003,48 @@ function currentSessionKind() {
     return sessionKindFromMeta(deriveSessionMeta(state.SessionInfo));
 }
 
-function viewCheckboxHTML(col, view, kind) {
+// Cómo se agrupan las columnas en el panel (el orden de la TABLA sigue
+// siendo el de VIEW_COLUMNS). Cada opción de formato va justo debajo de lo
+// que modifica: "Driver names" dentro de Driver, el estilo de Team debajo
+// de Team, el de neumáticos debajo de Tyres.
+const VIEW_PANEL_GROUPS = [
+    { title: 'Driver', keys: ['pos', 'driver', 'number', 'team', 'status'] },
+    { title: 'Timing', keys: ['gap', 'interval', 'bestLap', 'lastLap', 'sectors', 'microsectors'] },
+    { title: 'Race', keys: ['delta', 'tyres', 'laps'] },
+];
+const VIEW_OPTION_AFTER = { driver: 'driverName', team: 'team', tyres: 'tyres' };
+
+// Una fila: nombre a la izquierda, interruptor a la derecha. Las fijas
+// (Position, Driver) llevan un candado en lugar del interruptor; las que no
+// aplican a esta sesión, el interruptor deshabilitado y una nota.
+function viewToggleRowHTML(col, view, kind) {
+    if (col.locked) {
+        return `
+            <div class="lvp-row is-locked">
+                <span class="lvp-row-label">${col.label}</span>
+                <span class="lvp-locked" title="Always shown">${LOCK_ICON_SVG}</span>
+            </div>`;
+    }
     const unavailable = col.raceOnly && kind !== 'race';
-    const disabled = col.locked || unavailable;
-    const hint = col.locked ? `${LOCK_ICON_SVG}Always shown`
-        : unavailable ? 'Race &amp; Sprint only' : '';
     return `
-        <li>
-            <label class="lvp-check${disabled ? ' is-disabled' : ''}">
-                <input type="checkbox" data-col="${col.key}"${view.cols[col.key] ? ' checked' : ''}${disabled ? ' disabled' : ''}>
-                <span class="lvp-box" aria-hidden="true"></span>
-                <span class="lvp-check-label">${col.label}</span>
-                ${hint ? `<span class="lvp-hint">${hint}</span>` : ''}
-            </label>
-        </li>`;
+        <label class="lvp-row${unavailable ? ' is-disabled' : ''}">
+            <span class="lvp-row-label">
+                ${col.label}
+                ${unavailable ? '<span class="lvp-row-note">Race &amp; Sprint only</span>' : ''}
+            </span>
+            <input type="checkbox" class="lvp-switch-input" role="switch" data-col="${col.key}"${view.cols[col.key] ? ' checked' : ''}${unavailable ? ' disabled' : ''}>
+            <span class="lvp-switch" aria-hidden="true"></span>
+        </label>`;
 }
 
-function viewPanelBodyHTML(kind) {
-    const view = effectiveView(kind);
-
-    const columnItems = VIEW_COLUMNS.map((col) => viewCheckboxHTML(col, view, kind)).join('');
-    const panelItems = VIEW_PANELS.map((col) => viewCheckboxHTML(col, view, kind)).join('');
-
-    // Los botones que dependen de una casilla apagada ni se muestran
-    // (syncDependentOptions() los vuelve a mostrar al prenderla).
-    const optionGroups = Object.entries(VIEW_OPTIONS).map(([name, opt]) => `
-        <div class="lvp-field"${opt.dependsOn ? ` data-depends="${opt.dependsOn}"` : ''}${opt.dependsOn && !view.cols[opt.dependsOn] ? ' hidden' : ''}>
-            <span class="lvp-field-label" id="lvp-label-${name}">${opt.label}</span>
+// Botones segmentados de una opción de formato. Los que dependen de un
+// interruptor apagado ni aparecen (syncDependentOptions() los muestra al
+// prenderlo).
+function viewOptionHTML(name, view) {
+    const opt = VIEW_OPTIONS[name];
+    return `
+        <div class="lvp-option"${opt.dependsOn ? ` data-depends="${opt.dependsOn}"` : ''}${opt.dependsOn && !view.cols[opt.dependsOn] ? ' hidden' : ''}>
+            <span class="lvp-option-label" id="lvp-label-${name}">${opt.label}</span>
             <div class="lvp-segmented" role="radiogroup" aria-labelledby="lvp-label-${name}">
                 ${opt.choices.map(([value, text]) => `
                     <label class="lvp-seg">
@@ -3032,36 +3052,45 @@ function viewPanelBodyHTML(kind) {
                         <span>${text}</span>
                     </label>`).join('')}
             </div>
-        </div>`).join('');
+        </div>`;
+}
 
+function viewCardHTML(title, inner) {
     return `
         <section class="lvp-section">
-            <h4 class="lvp-section-title">Columns</h4>
-            <ul class="lvp-list">${columnItems}</ul>
-        </section>
-        <section class="lvp-section">
-            <h4 class="lvp-section-title">Panels</h4>
-            <ul class="lvp-list">${panelItems}</ul>
-        </section>
-        <section class="lvp-section">
-            <h4 class="lvp-section-title">Display</h4>
-            ${optionGroups}
-        </section>
-        <section class="lvp-section">
-            <h4 class="lvp-section-title">TV sync</h4>
-            <div class="lvp-field">
-                <span class="lvp-field-label" id="lvp-label-delay">Delay</span>
-                <div class="lvp-stepper" role="group" aria-labelledby="lvp-label-delay">
-                    <button type="button" class="lvp-step" data-action="delay-minus" aria-label="${DELAY_STEP_SECONDS} seconds less">&minus;</button>
-                    <label class="lvp-delay-value">
-                        <input type="number" min="0" max="${DELAY_MAX_SECONDS}" step="1" inputmode="numeric" value="${delaySeconds()}" data-delay aria-label="Delay in seconds">
-                        <span aria-hidden="true">s</span>
-                    </label>
-                    <button type="button" class="lvp-step" data-action="delay-plus" aria-label="${DELAY_STEP_SECONDS} seconds more">+</button>
-                </div>
-                <p class="lvp-help">Holds the live data back so it doesn't spoil what you see on TV.</p>
-            </div>
+            <h4 class="lvp-section-title">${title}</h4>
+            <div class="lvp-card">${inner}</div>
         </section>`;
+}
+
+function viewPanelBodyHTML(kind) {
+    const view = effectiveView(kind);
+    const byKey = Object.fromEntries(VIEW_COLUMNS.map((col) => [col.key, col]));
+
+    const groups = VIEW_PANEL_GROUPS.map((group) => viewCardHTML(group.title, group.keys.map((key) => {
+        const option = VIEW_OPTION_AFTER[key];
+        return viewToggleRowHTML(byKey[key], view, kind) + (option ? viewOptionHTML(option, view) : '');
+    }).join('')));
+
+    const panels = viewCardHTML('Panels', VIEW_PANELS.map((col) => viewToggleRowHTML(col, view, kind)).join(''));
+
+    const tvSync = viewCardHTML('TV sync', `
+        <div class="lvp-row lvp-row--stacked">
+            <span class="lvp-row-label">
+                Broadcast delay
+                <span class="lvp-row-note">Holds the live data back so it doesn't spoil what you see on TV</span>
+            </span>
+            <div class="lvp-stepper" role="group" aria-label="Broadcast delay">
+                <button type="button" class="lvp-step" data-action="delay-minus" aria-label="${DELAY_STEP_SECONDS} seconds less">&minus;</button>
+                <label class="lvp-delay-value">
+                    <input type="number" min="0" max="${DELAY_MAX_SECONDS}" step="1" inputmode="numeric" value="${delaySeconds()}" data-delay aria-label="Delay in seconds">
+                    <span aria-hidden="true">s</span>
+                </label>
+                <button type="button" class="lvp-step" data-action="delay-plus" aria-label="${DELAY_STEP_SECONDS} seconds more">+</button>
+            </div>
+        </div>`);
+
+    return groups.join('') + panels + tvSync;
 }
 
 // Muestra u oculta los botones que dependen de una casilla, sin redibujar
@@ -3092,7 +3121,22 @@ function initViewPanel() {
     const panel = document.getElementById('live-view-panel');
     if (!btn || !panel) return;
 
+    // Cierre con animación de salida (.is-closing en live.css): el panel se
+    // oculta de verdad recién cuando termina. Tope de 300 ms por si el
+    // navegador no dispara animationend; sin animación si el sistema pide
+    // reducir movimiento.
+    let closeTimer = null;
+
+    function finishClose() {
+        clearTimeout(closeTimer);
+        panel.classList.remove('is-closing');
+        panel.hidden = true;
+    }
+
     function open() {
+        // Si se reabre justo mientras se cerraba, se corta la salida.
+        clearTimeout(closeTimer);
+        panel.classList.remove('is-closing');
         renderViewPanel(currentSessionKind());
         panel.hidden = false;
         btn.setAttribute('aria-expanded', 'true');
@@ -3100,14 +3144,20 @@ function initViewPanel() {
     }
 
     function close() {
-        if (panel.hidden) return;
-        panel.hidden = true;
+        if (panel.hidden || panel.classList.contains('is-closing')) return;
         btn.setAttribute('aria-expanded', 'false');
         btn.focus();
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            finishClose();
+            return;
+        }
+        panel.classList.add('is-closing');
+        panel.addEventListener('animationend', finishClose, { once: true });
+        closeTimer = setTimeout(finishClose, 300);
     }
 
     btn.addEventListener('click', () => {
-        if (panel.hidden) open();
+        if (panel.hidden || panel.classList.contains('is-closing')) open();
         else close();
     });
 

@@ -80,7 +80,7 @@
                         </tr>
                     </thead>
                     <tbody id="live-rows-2">
-                        <tr><td colspan="11" class="results-empty">Waiting for session data…</td></tr>
+                        <tr><td colspan="11" class="results-empty">No session data yet</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -151,7 +151,10 @@
             <!-- Panel "Customize table": lo llena live.js (initViewPanel). -->
             <div class="live-view-panel" id="live-view-panel" role="dialog" aria-labelledby="live-view-panel-title" tabindex="-1" hidden>
                 <div class="lvp-head">
-                    <h3 class="lvp-title" id="live-view-panel-title">Customize table</h3>
+                    <div class="lvp-head-text">
+                        <h3 class="lvp-title" id="live-view-panel-title">Customize</h3>
+                        <p class="lvp-subtitle">Changes apply instantly</p>
+                    </div>
                     <button class="lvp-close" type="button" data-action="close" aria-label="Close">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M18 6 6 18"></path>
@@ -161,7 +164,7 @@
                 </div>
                 <div class="lvp-body" id="live-view-panel-body"></div>
                 <div class="lvp-foot">
-                    <button class="lvp-btn" type="button" data-action="reset">Reset to default</button>
+                    <button class="lvp-btn lvp-btn--ghost" type="button" data-action="reset">Reset to default</button>
                     <button class="lvp-btn lvp-btn--primary" type="button" data-action="close">Done</button>
                 </div>
             </div>
