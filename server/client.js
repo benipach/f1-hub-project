@@ -350,14 +350,14 @@ function freezeIfNewSession(sessionInfoPatch) {
   console.log(`[session] new session (key=${nextKey}) not live yet, freezing results of key=${lastLiveKey} for 24h`);
 }
 
-function onUpdate(topic) {
+function onUpdate(topic, feedTimestamp) {
   const wasFrozen = !!frozen;
   updateDisplayState();
   updateSessionTiming();
   // Pilotos que ya recibieron la bandera a cuadros (ver finishers.js). Va
   // ANTES del tema que lo provocó: así, con el cruce de meta, la página
   // ya tiene la fila congelada cuando llega la vuelta de enfriamiento.
-  const finishedChanged = updateFinishedLines(state);
+  const finishedChanged = updateFinishedLines(state, feedTimestamp);
   // Al soltar el congelado el front tiene TODO de la sesión vieja: se le
   // manda el estado entero, no solo este tema.
   if (wasFrozen && !frozen) broadcastFullSnapshot();
@@ -435,7 +435,7 @@ connection.on("feed", (topic, rawPatch, timestamp) => {
     mergeState(state[topic], patch);
     console.log(`[${timestamp}] ${topic} updated`);
   }
-  onUpdate(topic);
+  onUpdate(topic, timestamp);
 });
 
 connection.onreconnecting((err) => {
