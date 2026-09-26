@@ -2,263 +2,418 @@
 /*               HERO               */
 /* ================================ */
 
-/* Container */
-.drivers-hero {
+/* Una franja por piloto, con el color de su equipo arriba. La franja activa
+   (hover, foco o .is-open) se abre y muestra al piloto a color; el resto queda
+   en gris. Por defecto no hay ninguna abierta; en táctil, .is-open la pone
+   el primer toque (ver script). */
+.livery-hero {
+    /* Alto del bloque del título: los logos de equipo se apoyan justo encima */
+    --lv-title: clamp(64px, 10vw, 160px);
+    --lv-pad-b: 56px;
+    /* Base de los logos: título + kicker (14px + 10px de margen) + 28px de aire */
+    --lv-logo-b: calc(var(--lv-pad-b) + var(--lv-title) * 0.88 + 30px + 28px);
+    --lv-logo-h: 72px;   /* alto de los logos; el nombre vertical arranca encima */
     position: relative;
     min-height: 100vh;
-    display: flex;
-    align-items: flex-end;
     overflow: hidden;
+    background: var(--base-900);
 }
 
-.drivers-hero-bg {
+.lv-strip {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 35%;
-    z-index: 0;
-    filter: brightness(0.75) saturate(0.75);
+    inset: 60px 0 0 0;
+    display: flex;
 }
 
-.drivers-hero-bg-img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 35%;
-    z-index: 0;
-    filter: brightness(0.75) saturate(0.75);
+/* Los dos pilotos de un equipo, con un solo logo compartido. Crece de 2 a 6
+   cuando se abre uno de los suyos (1 + 5), así cada franja mantiene la misma
+   proporción que si no hubiera contenedor. */
+.lv-pair {
+    position: relative;
+    display: flex;
+    flex: 2 1 0;
+    min-width: 0;
+    transition: all 0.5s ease;
 }
 
-.drivers-hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        to bottom,
-        rgba(10,10,20,0) 40%,
-        rgba(10,10,20,1) 100%
-    );
-    z-index: 1;
+.lv-slice {
+    --lv-dim: brightness(0.5);
+    --lv-label: clamp(28px, 2.8vw, 60px);   /* rótulo vertical: ~ancho de una franja cerrada */
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+    text-decoration: none;
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--c) 30%, #07070b), #07070b 85%);
+    border-right: 1px solid rgba(0,0,0,0.6);
+    outline: none;
+    transition: all 0.5s ease;
 }
 
-.drivers-hero-season-bg {
+.lv-slice::before {
+    content: '';
     position: absolute;
-    right: 5%;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--c);
+    z-index: 3;
+}
+
+.lv-photo {
+    position: absolute;
+    left: 50%;
     bottom: 0;
-    font-family: 'F1-Black', sans-serif;
-    font-size: clamp(200px, 30vw, 380px);
-    line-height: 0.85;
-    color: rgba(255,255,255,0.1);
-    letter-spacing: -8px;
-    z-index: 1;
-    user-select: none;
+    height: 78%;
+    width: auto;
+    max-width: none;
+    object-fit: cover;
+    object-position: top center;
+    transform: translateX(-50%);
+    filter: var(--lv-dim);
+    transition: all 0.5s ease;
+}
+
+/* Rótulos verticales, solo el contorno en el color del equipo.
+   Apellido: arriba a la derecha; el código (PIA) se ve en la franja cerrada y
+   al abrirla aparece con un fundido el resto (STRI), como continuación.
+   Nombre: abajo a la izquierda, terminando justo arriba del logo. */
+.lv-name,
+.lv-given {
+    position: absolute;
+    z-index: 3;
+    writing-mode: vertical-rl;
+    font-family: 'F1-Black';
+    font-size: var(--lv-label);
+    line-height: 1;
+    letter-spacing: 0.1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--c);
+}
+
+/* Centrado en la franja cerrada; al abrirla se corre al borde derecho. Se
+   anima con left (no right) para poder pasar de un anclaje al otro. La ida
+   es instantánea (salta al borde y lo sigue mientras la franja crece); la
+   vuelta dura 0.5s. */
+.lv-name {
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.5s ease;
+}
+
+/* Girado 180°: se lee de abajo hacia arriba, mirando al lado opuesto del apellido */
+.lv-given {
+    left: 10px;
+    bottom: calc(var(--lv-logo-b) + var(--lv-logo-h) + 16px);
+    rotate: 180deg;
+}
+
+/* Lo que solo se ve con la franja abierta: el resto del apellido, el nombre
+   y el número gigante. Entran todos con el mismo fundido. */
+.lv-rest,
+.lv-given,
+.lv-bignum {
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+/* Número de carrera gigante arriba a la izquierda, detrás de la foto (va
+   antes que ella en el HTML, así queda debajo). */
+.lv-bignum {
+    position: absolute;
+    top: 20px;
+    left: 10px;
+    font-family: 'F1-Black';
+    font-size: clamp(100px, 10vw, 210px);
+    line-height: 0.8;
+    white-space: nowrap;
+    color: color-mix(in srgb, var(--c) 30%, transparent);
+}
+
+.lv-slice.is-champion .lv-bignum {
+    background: linear-gradient(135deg, #B78E3F, #F5E0B5, #B78E3F);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.lv-slice.is-champion:is(:hover, :focus-visible, .is-open) .lv-bignum { opacity: 0.5; }
+
+/* Logo del equipo, al pie y por encima del degradé del título (z-index 6).
+   Vive en un separador de ancho cero entre las dos franjas, así queda siempre
+   sobre el borde entre ambas (centrado en reposo) sin animar su posición.
+   Su base es --lv-logo-b (ver .livery-hero). */
+.lv-logo-slot {
+    position: relative;
+    flex: 0 0 0;
+}
+
+.lv-logo {
+    position: absolute;
+    left: 0;
+    bottom: var(--lv-logo-b);
+    z-index: 6;
+    width: min(120px, 8vw);
+    height: var(--lv-logo-h);
+    object-fit: contain;
+    transform: translateX(-50%);
     pointer-events: none;
 }
 
-.drivers-hero-content {
-    position: relative;
-    z-index: 2;
-    padding: 0 5% 4rem;
-    width: 100%;
+/* Estado abierto */
+.lv-slice:hover,
+.lv-slice:focus-visible,
+.lv-slice.is-open { flex-grow: 5; }
+
+.lv-slice:hover .lv-photo,
+.lv-slice:focus-visible .lv-photo,
+.lv-slice.is-open .lv-photo { filter: none; }
+
+.lv-slice:is(:hover, :focus-visible, .is-open) :is(.lv-rest, .lv-given, .lv-bignum) { opacity: 1; }
+.lv-slice:is(:hover, :focus-visible, .is-open) .lv-name { left: calc(100% - 10px); transform: translateX(-100%); transition: none; }
+
+/* Mientras se explora otra franja, la abierta por defecto se cierra */
+.lv-strip:is(:hover, :focus-within) .lv-slice.is-open:not(:hover, :focus-visible) { flex-grow: 1; }
+.lv-strip:is(:hover, :focus-within) .lv-slice.is-open:not(:hover, :focus-visible) .lv-photo { filter: var(--lv-dim); }
+.lv-strip:is(:hover, :focus-within) .lv-slice.is-open:not(:hover, :focus-visible) :is(.lv-rest, .lv-given, .lv-bignum) { opacity: 0; }
+.lv-strip:is(:hover, :focus-within) .lv-slice.is-open:not(:hover, :focus-visible) .lv-name { left: 50%; transform: translateX(-50%); transition: all 0.5s ease; }
+
+@media (min-width: 901px) {
+    .lv-pair:has(> .lv-slice:is(:hover, :focus-visible, .is-open)) { flex-grow: 6; }
+    .lv-strip:is(:hover, :focus-within) .lv-pair:has(> .is-open):not(:has(> .lv-slice:is(:hover, :focus-visible))) { flex-grow: 2; }
 }
 
-.drivers-hero-title {
-    margin-bottom: 24px;
+/* Título sobre la franja, con degradé hacia el contenido */
+.lv-copy {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 10% var(--lv-pad-b);
+    background: linear-gradient(to top, var(--base-800) 25%, transparent);
+    pointer-events: none;
 }
 
-.drivers-hero-season {
-    font-family: 'F1-Regular', sans-serif;
-    font-size: clamp(16px, 2.5vw, 48px);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.5);
-    line-height: 0.85;
-}
-
-.drivers-hero-content h1 {
-    font-family: 'F1-Black', sans-serif;
-    font-size: clamp(3rem, 10vw, 8rem);
-    text-transform: uppercase;
-    line-height: 0.9;
-    color: #ffffff;
+.lv-copy h1 {
     margin: 0;
-}
-
-.drivers-hero-meta {
-    width: 55%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(255,255,255,0.2);
-}
-
-.drivers-hero-meta-item {
-    display: flex;
-    flex-direction: column;
-    font-family: 'F1-Regular';
-    font-size: 16px;
-    letter-spacing: 0.5px;
+    font-family: 'F1-Black';
+    font-size: var(--lv-title);
+    line-height: 0.88;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.5);
+    color: #ffffff;
 }
 
-.drivers-hero-meta-item strong {
-    font-family: 'F1-Bold';
-    font-size: 24px;
-    letter-spacing: 0.5px;
-    line-height: 1;
-    color: var(--text-light);
-    font-weight: normal;
+/* El script arma el título letra por letra; hasta entonces no se muestra */
+.lv-copy h1:not(.is-ready) { visibility: hidden; }
+
+/* Cada letra es un bloque suelto: sin esto las palabras se cortarían en mobile */
+.lv-copy h1 > span { white-space: nowrap; }
+
+/* Año solo con contorno; sus dígitos entran desde arriba */
+.lv-year {
+    --lv-char-from: -0.35em;
+    color: transparent;
+    -webkit-text-stroke: 0.018em #ffffff;
 }
 
-@media (max-width: 1100px) {
-    .drivers-hero-meta { width: 75%; gap: 1.5rem; }
-    .drivers-hero-season-bg { font-size: clamp(120px, 26vw, 240px); }
+/* Al cargar, las letras suben de a una y se asientan */
+.lv-char {
+    display: inline-block;
+    animation: lv-char-in 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(0.15s + var(--i) * 0.05s);
 }
 
-@media (max-width: 500px) {
-    .drivers-hero {
-        min-height: 50vh;
+@keyframes lv-char-in {
+    from {
+        opacity: 0;
+        transform: translateY(var(--lv-char-from, 0.35em));
+        filter: blur(8px);
     }
-    .drivers-hero-meta { width: 100%; gap: 1rem; }
-    .drivers-hero-season-bg { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lv-char { animation: none; }
+}
+
+/* Pantallas táctiles / chicas: franjas de ancho fijo con scroll horizontal.
+   El primer toque abre la franja y el segundo entra al perfil (ver script). */
+@media (max-width: 900px) {
+    /* El título baja (padding 12px) pero los logos quedan donde estaban
+       (calculados con 32px), así se separan del texto */
+    .livery-hero {
+        min-height: 85vh;
+        --lv-pad-b: 12px;
+        --lv-logo-h: 40px;
+        --lv-logo-b: calc(32px + var(--lv-title) * 0.88 + 30px + 28px);
+    }
+    .lv-strip {
+        overflow-x: auto;
+        scroll-snap-type: x proximity;
+        scrollbar-width: none;
+    }
+    .lv-strip::-webkit-scrollbar { display: none; }
+    .lv-pair { flex: 0 0 auto; }
+    .lv-logo { width: 48px; }
+    .lv-slice {
+        flex: 0 0 44px;
+        scroll-snap-align: start;
+    }
+    .lv-slice:hover,
+    .lv-slice:focus-visible,
+    .lv-slice.is-open { flex: 0 0 min(220px, 60vw); }
+    .lv-strip:is(:hover, :focus-within) .lv-slice.is-open:not(:hover, :focus-visible) { flex: 0 0 44px; }
+    .lv-copy { padding: 100px 16px var(--lv-pad-b); }
+    /* "The Grid" arriba y el año solo en la línea de abajo. En flex los
+       espacios entre palabras no cuentan, por eso el column-gap. */
+    .lv-copy h1 {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        column-gap: 0.25em;
+    }
+    .lv-year { order: 1; flex-basis: 100%; }
 }
 
 /* ================================ */
 /*           DRIVER CARDS           */
 /* ================================ */
 
+/* Un bloque por equipo, en el orden del de constructores (lo ordena el
+   script, igual que el hero): logo y nombre arriba, y sus dos pilotos
+   debajo como una sola pieza. */
 .drivers-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 56px 24px;
     margin-inline: auto;
     padding: var(--content-rhythm) var(--content-gutter);
     max-width: var(--content-width);
 }
 
-.drivercard {
-    position: relative;
-    height: 280px;
+.dc-team-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid color-mix(in srgb, var(--dc-color) 45%, transparent);
+    text-transform: uppercase;
+}
+
+/* Relleno entre el logo y el nombre: ocupa el espacio libre y empuja el nombre
+   a la derecha. En hover del par se encoge y el nombre se pega al logo (se
+   anima flex-grow porque margin-left: auto no transiciona). El margen negativo
+   anula el gap de más que agrega. */
+.dc-team-head::before {
+    content: '';
+    order: 1;
+    flex-grow: 1;
+    margin-left: -14px;
+    transition: all 0.5s ease;
+}
+
+.dc-team:has(.dc-pair:hover) .dc-team-head::before {
+    flex-grow: 0;
+}
+
+.dc-team-logo {
+    width: 56px;
+    height: 40px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+/* Nombre del equipo (el de teams.json) a la derecha, solo el contorno como
+   los códigos de las tarjetas */
+.dc-team-full {
+    order: 2;
+    font-family: 'F1-Black';
+    font-size: 34px;
+    line-height: 1.05;
+    letter-spacing: 0.1px;
+    text-align: right;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--dc-color);
+    cursor: default;
+    transition: all 0.5s ease;
+}
+
+/* En hover el nombre se rellena con el color del equipo. El contorno se
+   desvanece porque marca las uniones internas de la fuente y ensucia la letra
+   (se cambia el color y no el grosor: el grosor no transiciona y saltaba). */
+.dc-team-full:hover {
+    color: var(--dc-color);
+    -webkit-text-stroke-color: transparent;
+}
+
+/* Las dos tarjetas pegadas: esquinas redondeadas y borde solo por fuera. La
+   franja del equipo de la segunda hace de separador. */
+.dc-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
     border-radius: 16px;
     overflow: hidden;
-    text-decoration: none;
     border: 1px solid rgba(255,255,255,0.07);
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
+}
+
+/* En reposo: número arriba y código abajo, en el color del equipo. En hover:
+   entran apellido y nombre arriba, el número baja, entran bandera y logo y la
+   foto baja. */
+.drivercard {
+    --dc-badges-h: 48px;   /* alto del bloque bandera/logo (lo marca el logo) */
+    --dc-last-size: 44px;  /* apellido; el nombre va justo debajo */
+    --dc-h: 280px;         /* alto de la tarjeta */
+    container-type: inline-size;   /* para medir recorridos con cqw */
+    position: relative;
+    height: var(--dc-h);
+    overflow: hidden;
+    text-decoration: none;
+    background: var(--dc-bg);
     cursor: pointer;
-    opacity: 0;
-    transform: translateY(28px);
-    transition: all 0.5s ease;
 }
 
-.drivercard::after {
-    content: '';
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 48px;
-    height: 48px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    opacity: 0.9;
-    pointer-events: none;
-    z-index: 3;
-    transform: translateX(500%);
-    transition: all 0.5s ease;
-}
-
-.drivercard:hover::after {
-    transform: translateX(0);
-}
+/* Entrada al aparecer en pantalla: la tarjeta sube y se asienta, y después la
+   franja del equipo se dibuja de arriba hacia abajo. --dc-delay lo pone el
+   script para escalonar las que entran juntas. */
+.drivercard:not(.visible) { opacity: 0; }
 
 .drivercard.visible {
-    opacity: 1;
-    transform: translateY(0);
+    animation: dc-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: var(--dc-delay, 0s);
 }
 
-.drivercard:hover {
-    transform: translateY(-6px);
+.drivercard.visible .dc-stripe-left {
+    transform-origin: top;
+    animation: dc-stripe-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--dc-delay, 0s) + 0.25s);
 }
 
-/* Número de fondo */
-.driver-number {
-    position: absolute;
-    bottom: 0;
-    left: 12px;
-    font-family: 'F1-Black', sans-serif;
-    font-size: 3rem;
-    line-height: 1;
-    text-transform: uppercase;
-    color: var(--dc-color);
-    opacity: 0.25;
-    white-space: nowrap;
-    pointer-events: none;
-    z-index: 1;
-    transition: all 0.5s ease;
-    text-shadow: var(--dc-color) 0 0 75px;
+@keyframes dc-in {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.97);
+    }
 }
 
-.drivercard:hover .driver-number {
-    opacity: 1;
-    transform: translateY(-150%) translateX(50%) scale(2);
+@keyframes dc-stripe-in {
+    from { transform: scaleY(0); }
 }
 
-.driver-number.champion {
-    background: linear-gradient(135deg, #B78E3F, #F5E0B5, #B78E3F);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    opacity: 0.6;
-    shadow: 0 0 8px rgba(191, 149, 63, 0.4);
+@media (prefers-reduced-motion: reduce) {
+    .drivercard.visible,
+    .drivercard.visible .dc-stripe-left { animation: none; }
 }
 
-.driver-flag {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    margin-right: -2px;
-    margin-left: 0;
-    font-size: 3.5rem;
-    line-height: 1;
-    text-transform: uppercase;
-    color: var(--dc-color);
-    white-space: nowrap;
-    pointer-events: none;
-    z-index: 1;
-    transform: translateX(-500%);
-    transition: all 0.5s ease;
-    text-shadow: var(--dc-color) 0 0 75px;
-}
-
-.drivercard:hover .driver-flag {
-    transform: translateX(0);
-}
-
-/* Foto del piloto */
-.driver-img {
-    position: absolute;
-    bottom: 0;
-    right: -10px;
-    height: 90%;
-    object-fit: contain;
-    z-index: 2;
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
-    transform: translateY(67%) scale(2.5);
-    transition: transform 0.5s ease;
-}
-
-.drivercard:hover .driver-img {
-    transform: translateY(130%) translateX(-50%) scale(3.5);
-}
-
-/* Stripe izquierda */
 .dc-stripe-left {
     position: absolute;
     left: 0;
@@ -269,138 +424,306 @@
     z-index: 4;
 }
 
-.dc-stripe-left.champion{
-    background: linear-gradient(135deg, #B78E3F, #F5E0B5, #B78E3F);
-}
-
-/* Info arriba a la izquierda */
-.driver-details {
-    position: relative;
+.dc-number,
+.dc-code,
+.dc-name,
+.dc-first,
+.dc-badges {
+    position: absolute;
+    left: 22px;
     z-index: 3;
-    padding: 12px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    transition: transform 0.5s ease;
-}
-
-.drivercard:hover .driver-details {
-    transform: translateY(-40%);
-}
-
-.driver-details .dc-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: 'F1-Regular';
-    font-size: 16px;
-    letter-spacing: 0.5px;
+    font-family: 'F1-Black';
+    line-height: 0.85;
     text-transform: uppercase;
+    white-space: nowrap;
     color: var(--dc-color);
-}
-.drivercard.team-mercedes .dc-label::before,
-.drivercard.team-ferrari .dc-label::before,
-.drivercard.team-mclaren .dc-label::before,
-.drivercard.team-haas .dc-label::before,
-.drivercard.team-alpine .dc-label::before,
-.drivercard.team-red-bull .dc-label::before,
-.drivercard.team-racing-bulls .dc-label::before,
-.drivercard.team-audi .dc-label::before,
-.drivercard.team-williams .dc-label::before,
-.drivercard.team-cadillac .dc-label::before,
-.drivercard.team-aston-martin .dc-label::before {
-    content: '';
-    display: inline-block;
-    width: 32px;
-    height: 32px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-}
-.drivercard.team-mercedes .dc-label::before { background-image: url('../img/teams/mercedes-logo.png'); }
-.drivercard.team-ferrari .dc-label::before { background-image: url('../img/teams/ferrari-logo.png'); }
-.drivercard.team-mclaren .dc-label::before { background-image: url('../img/teams/mclaren-logo.png'); }
-.drivercard.team-haas .dc-label::before { background-image: url('../img/teams/haas-logo.png'); }
-.drivercard.team-alpine .dc-label::before { background-image: url('../img/teams/alpine-logo.png'); }
-.drivercard.team-red-bull .dc-label::before { background-image: url('../img/teams/red-bull-racing-logo.png'); }
-.drivercard.team-racing-bulls .dc-label::before { background-image: url('../img/teams/racing-bulls-logo.png'); }
-.drivercard.team-audi .dc-label::before { background-image: url('../img/teams/audi-logo.png'); }
-.drivercard.team-williams .dc-label::before { background-image: url('../img/teams/williams-logo.png'); }
-.drivercard.team-cadillac .dc-label::before { background-image: url('../img/teams/cadillac-logo.png'); }
-.drivercard.team-aston-martin .dc-label::before { background-image: url('../img/teams/aston-martin-logo.png'); }
-
-.drivercard.team-mercedes::after { background-image: url('../img/teams/mercedes-logo.png'); }
-.drivercard.team-ferrari::after { background-image: url('../img/teams/ferrari-logo.png'); }
-.drivercard.team-mclaren::after { background-image: url('../img/teams/mclaren-logo.png'); }
-.drivercard.team-haas::after { background-image: url('../img/teams/haas-logo.png'); }
-.drivercard.team-alpine::after { background-image: url('../img/teams/alpine-logo.png'); }
-.drivercard.team-red-bull::after { background-image: url('../img/teams/red-bull-racing-logo.png'); }
-.drivercard.team-racing-bulls::after { background-image: url('../img/teams/racing-bulls-logo.png'); }
-.drivercard.team-audi::after { background-image: url('../img/teams/audi-logo.png'); }
-.drivercard.team-williams::after { background-image: url('../img/teams/williams-logo.png'); }
-.drivercard.team-cadillac::after { background-image: url('../img/teams/cadillac-logo.png'); }
-.drivercard.team-aston-martin::after { background-image: url('../img/teams/aston-martin-logo.png'); }
-
-.driver-details h3 {
-    font-family: 'F1-Regular';
-    font-size: 32px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    line-height: 0.8;
-    color: #ffffff;
-    margin: 0;
-}
-
-.driver-details h3 span {
-    font-size: 16px;
-    line-height: 1;
-}
-
-.driver-details p {
-    font-family: 'F1-Regular';
-    font-size: 0.75rem;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    margin: 0;
-}
-
-.dc-cta {
-    font-family: 'F1-Regular';
-    font-size: 16px;
-    letter-spacing: 0;
-    text-transform: uppercase;
-    opacity: 0;
-    margin-top: 6px;
-    transform: translateY(-32px);
+    pointer-events: none;
     transition: all 0.5s ease;
 }
 
-.drivercard:hover .dc-cta {
-    color: var(--dc-color);
-    opacity: 100;
+/* Relleno en reposo; en hover pasa a solo el contorno, como .dc-code. El
+   trazo tiene siempre 1.5px y solo cambia de transparente a color: el grosor
+   no se anima, así que al salir desaparecía de golpe en vez de fundirse. */
+.dc-number {
+    top: 5%;
+    font-size: 56px;
+    -webkit-text-stroke: 1.5px transparent;
 }
 
+/* Número, código, nombre y etiqueta proyectan un resplandor en el color del equipo */
+.dc-number,
+.dc-code,
+.dc-name,
+.dc-first,
+.dc-tag {
+    --dc-glow: var(--dc-color);
+    text-shadow:
+        0 0 60px color-mix(in srgb, var(--dc-glow) 30%, transparent),
+        0 0 140px color-mix(in srgb, var(--dc-glow) 26%, transparent);
+}
+
+/* Carril del código y del nombre: detrás de la foto (z-index 2) y recortado
+   antes del borde derecho, así al entrar o salir por la derecha quedan
+   ocultos tras el piloto y no se los ve pasar por la franja que la foto no
+   cubre. */
+.dc-track {
+    position: absolute;
+    inset: 0 15% 0 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* En reposo va solo con el contorno, como los códigos del hero */
+.dc-code {
+    bottom: -4px;
+    font-size: 72px;
+    letter-spacing: 0.1px;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--dc-color);
+}
+
+.dc-name {
+    top: 14px;
+}
+
+/* Esperan fuera de la tarjeta y en hover entran deslizándose, sin fundido:
+   el apellido desde la izquierda (22px = left de .dc-name) y el nombre, justo
+   debajo, desde la derecha (100cqw = ancho de la tarjeta) por su carril. */
+.dc-last {
+    display: block;
+    font-size: var(--dc-last-size);
+    transform: translateX(calc(-100% - 22px));
+    transition: all 0.5s ease;
+}
+
+.dc-first {
+    top: calc(14px + var(--dc-last-size) * 0.85);
+    font-size: 26px;
+    transform: translateX(100cqw);
+}
+
+.dc-badges {
+    bottom: 14px;   /* mismas distancias que el apellido: 22px al costado (left) y 14px al borde (top de .dc-name) */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Esperan fuera de la tarjeta y en hover entran deslizándose, sin fundido:
+   la bandera desde la izquierda (22px = left de .dc-badges) y el logo desde
+   abajo (14px = bottom de .dc-badges), desde 60px más lejos para que llegue
+   más rápido. */
+.dc-flag,
+.dc-logo {
+    transition: all 0.5s ease;
+}
+
+/* Los SVG de bandera de Twemoji dejan aire transparente arriba y abajo (el
+   dibujo ocupa 26 de 36 de alto): la caja se ajusta a esa proporción y
+   object-fit recorta el aire, así coincide con la bandera visible. */
+.dc-flag {
+    width: 64px;
+    height: calc(64px * 26 / 36);
+    object-fit: cover;
+    transform: translateX(calc(-100% - 22px));
+}
+
+.dc-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    transform: translateY(calc(100% + 14px + 60px));
+}
+
+/* En hover el número queda 12px (= gap bandera-logo) por encima de la bandera
+   y el logo: 14px de margen + su alto + 12px + el alto del número (0.85em). */
+.drivercard:hover .dc-number {
+    top: calc(100% - 14px - var(--dc-badges-h) - 12px - 0.85em);
+    color: transparent;
+    -webkit-text-stroke-color: var(--dc-color);
+}
+
+.drivercard:hover .dc-code { transform: translateX(100cqw); }   /* sale por la derecha, sin fundido */
+.drivercard:hover :is(.dc-last, .dc-first, .dc-flag, .dc-logo) { transform: none; }
+
+/* Campeón: número y franja en dorado. Un degradado no se anima, así que el
+   relleno va en una copia del número (data-text) que en hover se funde con
+   opacity, igual que el relleno de los demás números. */
+.drivercard.is-champion .dc-stripe-left { background: linear-gradient(135deg, #B78E3F, #F5E0B5, #B78E3F); }
+.drivercard.is-champion .dc-number { color: transparent; }
+
+/* Resplandor dorado; las capas del número no lo heredan porque con
+   background-clip: text la sombra se pintaría encima del degradado */
+.drivercard.is-champion :is(.dc-number, .dc-code, .dc-tag) { --dc-glow: #D4AF6A; }
+.drivercard.is-champion :is(.dc-code, .dc-tag, .dc-number)::before,
+.drivercard.is-champion :is(.dc-code, .dc-tag, .dc-number)::after { text-shadow: none; }
+
+.drivercard.is-champion .dc-number::before {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #B78E3F, #F5E0B5, #B78E3F);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-stroke-width: 0;
+    transition: all 0.5s ease;
+}
+
+.drivercard.is-champion:hover .dc-number::before { opacity: 0; }
+
+/* Etiqueta de la tarjeta ("DEF CHAMP", "7X WDC", "ROOKIE"): en vertical,
+   pegada al borde derecho y a 4px del de abajo. Solo el contorno, en el color
+   del equipo (en el campeón, dorado: ver más abajo). Espera fuera de la
+   tarjeta y en hover cae desde arriba, sin fundido. */
+.dc-tag {
+    position: absolute;
+    bottom: 4px;
+    right: 0;
+    z-index: 3;
+    writing-mode: vertical-rl;
+    /* sideways alinea tamaños distintos por la línea base (no por el centro,
+       como hace por defecto en vertical): la "x" chica apoya en el mismo piso */
+    text-orientation: sideways;
+    font-family: 'F1-Black';
+    font-size: 32px;   /* tope para que "DEF CHAMP" (la más larga) entre en el alto de la tarjeta */
+    line-height: 1;
+    letter-spacing: 0.1px;
+    white-space: nowrap;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--dc-color);
+    /* El mismo resplandor que el resto, algo más intenso */
+    text-shadow:
+        0 0 60px color-mix(in srgb, var(--dc-glow) 45%, transparent),
+        0 0 140px color-mix(in srgb, var(--dc-glow) 38%, transparent);
+    pointer-events: none;
+    /* su alto (100%) + el de la tarjeta (280px) lo dejan arriba, fuera de ella */
+    transform: translateY(calc(-100% - 280px));
+    transition: all 0.5s ease;
+}
+
+.drivercard:hover .dc-tag { transform: none; }
+
+/* La "x" de "7x WDC", más chica que el número */
+.dc-tag-x { font-size: 22px; }
+
+/* Contorno dorado en degradado. El trazo no acepta degradados, así que son dos
+   capas del mismo texto: abajo el trazo en dorado oscuro y encima una copia
+   (data-text) en dorado claro, visible solo en el centro gracias a la máscara
+   diagonal. Queda el mismo #B78E3F → #F5E0B5 → #B78E3F del número. */
+.drivercard.is-champion :is(.dc-code, .dc-tag) {
+    -webkit-text-stroke: 1.5px #B78E3F;
+}
+
+.drivercard.is-champion :is(.dc-code, .dc-tag, .dc-number)::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    -webkit-text-stroke-color: #F5E0B5;
+    -webkit-mask-image: linear-gradient(135deg, transparent, #000, transparent);
+    mask-image: linear-gradient(135deg, transparent, #000, transparent);
+}
+
+/* El número del campeón tiene las dos capas del contorno siempre puestas,
+   transparentes en reposo: en hover se funde el relleno dorado y aparece el
+   contorno degradado, y al salir lo mismo al revés */
+.drivercard.is-champion .dc-number::after {
+    -webkit-text-stroke-color: transparent;
+    transition: all 0.5s ease;
+}
+
+.drivercard.is-champion:hover .dc-number { -webkit-text-stroke-color: #B78E3F; }
+
+.drivercard.is-champion:hover .dc-number::after { -webkit-text-stroke-color: #F5E0B5; }
+
+/* Foto del piloto: recorte de medio cuerpo; en hover baja para dejarle lugar
+   al nombre */
+.driver-img {
+    position: absolute;
+    bottom: 0;
+    left: calc(100% + 10px);   /* = right: -10px, con left para poder animarlo */
+    height: 90%;
+    object-fit: contain;
+    z-index: 2;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+    transform: translateX(-100%) translateY(67%) scale(2.5);
+    transition: all 0.5s ease;
+}
+
+/* En hover: centrada un poco a la derecha (70%, relativo al ancho) y más abajo */
+.drivercard:hover .driver-img {
+    left: 70%;
+    /* Más grande (2.9) y bajada lo suficiente para que la cabeza quede debajo
+       del apellido y el nombre (que terminan a ~73px del borde de arriba). */
+    transform: translateX(-50%) translateY(108%) scale(2.9);
+}
+
+/* Con etiqueta, un poco más hacia el centro que el resto:
+   le deja lugar a la etiqueta del borde derecho */
+.drivercard:has(.dc-tag):hover .driver-img { left: 63%; }
+
 /* Fondos por equipo */
-.team-mercedes      { background: rgb(6, 38, 32); }
-.team-ferrari       { background: rgb(38, 0, 3); }
-.team-mclaren       { background: rgb(38, 20, 0); }
-.team-red-bull      { background: rgb(5, 5, 27); }
-.team-aston-martin  { background: rgb(3, 21, 18); }
-.team-alpine        { background: rgb(3, 12, 27); }
-.team-williams      { background: rgb(3, 15, 27); }
-.team-racing-bulls  { background: rgb(8, 8, 27); }
-.team-haas          { background: rgb(21, 21, 21); }
-.team-audi          { background: rgb(27, 5, 5); }
-.team-cadillac      { background: rgb(21, 21, 8); }
+.team-mercedes      { --dc-bg: rgb(6, 38, 32); }
+.team-ferrari       { --dc-bg: rgb(38, 0, 3); }
+.team-mclaren       { --dc-bg: rgb(38, 20, 0); }
+.team-red-bull      { --dc-bg: rgb(5, 5, 27); }
+.team-aston-martin  { --dc-bg: rgb(3, 21, 18); }
+.team-alpine        { --dc-bg: rgb(3, 12, 27); }
+.team-williams      { --dc-bg: rgb(3, 15, 27); }
+.team-racing-bulls  { --dc-bg: rgb(8, 8, 27); }
+.team-haas          { --dc-bg: rgb(21, 21, 21); }
+.team-audi          { --dc-bg: rgb(27, 5, 5); }
+.team-cadillac      { --dc-bg: rgb(21, 21, 8); }
 
 /* Responsive */
-@media (max-width: 1100px) {
-    .drivers-grid { grid-template-columns: repeat(3, 1fr); }
+/* Un equipo por fila antes de que las tarjetas queden más angostas que las
+   originales (~300px), y con tope para que tampoco se estiren de más */
+@media (max-width: 1500px) {
+    .drivers-grid { grid-template-columns: minmax(0, 760px); justify-content: center; }
+}
+
+@media (max-width: 560px) {
+    .dc-pair { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 500px) {
-    .drivers-grid { grid-template-columns: 1fr; }
-    .drivercard { height: 220px; }
-    .driver-number { font-size: 2.75rem; }
-    .driver-img { right: 50px; }
+    .dc-team-logo { width: 44px; height: 32px; }
+    .dc-team-full { font-size: 24px; }
+    .drivercard { --dc-h: 220px; }
+    .dc-number { font-size: 44px; }
+    .dc-code { font-size: 58px; }
+    .dc-first { font-size: 20px; }
+    .dc-tag { font-size: 25px; }
+    .dc-tag-x { font-size: 17px; }
+    .dc-flag { width: 52px; height: calc(52px * 26 / 36); }
+    .dc-logo { width: 40px; height: 40px; }
+    .drivercard { --dc-badges-h: 40px; --dc-last-size: 36px; }
+    .driver-img { left: calc(100% - 50px); }
+}
+
+/* Celulares (sin hover, o pantalla del mismo corte que el hero): las tarjetas
+   y el nombre del equipo quedan fijos en su estado de hover */
+@media (hover: none), (max-width: 900px) {
+    .dc-team-head::before { flex-grow: 0; }
+    .dc-team-full {
+        color: var(--dc-color);
+        -webkit-text-stroke-color: transparent;
+    }
+
+    .drivercard .dc-number {
+        top: calc(100% - 14px - var(--dc-badges-h) - 12px - 0.85em);
+        color: transparent;
+        -webkit-text-stroke-color: var(--dc-color);
+    }
+    .drivercard .dc-code { transform: translateX(100cqw); }
+    .drivercard :is(.dc-last, .dc-first, .dc-flag, .dc-logo, .dc-tag) { transform: none; }
+    .drivercard .driver-img {
+        left: 70%;
+        transform: translateX(-50%) translateY(108%) scale(2.9);
+    }
+    .drivercard:has(.dc-tag) .driver-img { left: 63%; }
+
+    .drivercard.is-champion .dc-number { -webkit-text-stroke-color: #B78E3F; }
+    .drivercard.is-champion .dc-number::before { opacity: 0; }
+    .drivercard.is-champion .dc-number::after { -webkit-text-stroke-color: #F5E0B5; }
 }
