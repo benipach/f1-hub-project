@@ -100,6 +100,9 @@ for (const file of files) {
                 grid: typeof r.grid === 'number' ? r.grid : (q?.pos ?? null),
                 pts: (r.pts || 0) + (s?.pts || 0),
                 dnf: isRetired(r),
+                // Figura en la carrera pero no largó: no cuenta como largada
+                // para el récord de "most race starts".
+                dns: /DNS/i.test(String(r.time || '')),
                 fl: Boolean(r.fastestLap),
                 team: r.team,
                 number: r.number ?? null,
@@ -247,6 +250,173 @@ function buildEras(races) {
     });
 }
 
+// ── RÉCORDS HISTÓRICOS ──────────────────────────────────────────────────────
+// Se repasan todas las carreras de la base en orden, llevando el total de cada
+// piloto en cada categoría, y se anota cuándo alguien pasa a tener el récord.
+// "All-time" quiere decir all-time *dentro de la base*: no se agrega ningún
+// número de afuera. Hoy la base arranca en 1990 y no tiene qualy completa antes
+// de 2003 ni vueltas rápidas antes de 2004, así que los primeros récords de cada
+// categoría salen de lo que haya; a medida que se amplíen los season files, el
+// resultado se corrige solo.
+//
+// Estados de un piloto en una categoría: sin récord, co-dueño (empatado arriba)
+// o único dueño. Los hitos salen de los cambios de estado:
+//   · sin récord → co-dueño     "Equalled all-time record"
+//   · sin récord → único dueño  "Broke all-time record"
+//   · co-dueño → único dueño    "Broke", salvo que en esa misma racha ya hubiera
+//     sido único dueño (estiró un récord que ya era suyo: no se repite).
+// Estirar un récord propio no genera hito; perderlo y recuperarlo, sí.
+//
+// Cuando nadie tenía todavía nada en la categoría (la primera carrera de la base,
+// o el primer año con poles o vueltas rápidas cargadas) no hay récord previo que
+// batir ni igualar: se toma como punto de partida, sin hito.
+const RECORDS = [
+    { key: 'titles',      amount: null },   // se suma en el GP donde se selló el título
+    { key: 'wins',        amount: r => !r.dnf && r.pos === 1 ? 1 : 0 },
+    { key: 'podiums',     amount: r => !r.dnf && r.pos <= 3 ? 1 : 0 },
+    { key: 'poles',       amount: r => r.quali === 1 ? 1 : 0 },
+    { key: 'points',      amount: r => r.pts || 0 },
+    { key: 'fastestLaps', amount: r => r.fl ? 1 : 0 },
+    { key: 'starts',      amount: r => r.dns ? 0 : 1 },
+];
+
+const raceKey = r => `${r.year}-${String(r.round).padStart(2, '0')}`;
+
+// Todas las filas de todas las carreras, agrupadas por carrera.
+const raceRows = new Map();   // raceKey → [{ driverId, race }]
+for (const [driverId, races] of byDriver) {
+    for (const race of races) {
+        const k = raceKey(race);
+        if (!raceRows.has(k)) raceRows.set(k, []);
+        raceRows.get(k).push({ driverId, race });
+    }
+}
+
+// Títulos: cuentan en la carrera donde quedaron sellados. Si no se puede
+// determinar esa carrera, el título no entra en el récord (no se inventa fecha).
+const clinchByRace = new Map();   // raceKey → { driverId, race }
+for (const [year, champId] of seasonChampions) {
+    const race = findClinchRace(year, champId);
+    if (race) clinchByRace.set(raceKey(race), { driverId: champId, race });
+}
+
+const recordMilestones = new Map();   // driverId → [milestone]
+const addRecordMilestone = (driverId, m) => {
+    if (!recordMilestones.has(driverId)) recordMilestones.set(driverId, []);
+    recordMilestones.get(driverId).push(m);
+};
+
+const placeOf = race => ({ year: race.year, gp: race.gp, date: race.date });
+
+for (const { key, amount } of RECORDS) {
+    const totals = new Map();       // driverId → total acumulado
+    let recordValue = 0;
+    let holders = new Set();
+    // Racha de cada dueño actual: sus hitos, si ya fue único dueño en ella y
+    // quién lo igualó por última vez (se borra si él vuelve a despegarse).
+    const tenures = new Map();      // driverId → { events, everSole, equalledBy }
+
+    // Al cerrar una racha (o al final, si sigue abierta) se completa el último
+    // hito con lo que pasó después: hasta dónde lo estiró y quién lo alcanzó.
+    // Si lo superaron, el tope es el récord que tenía antes de esa carrera: lo
+    // que haya sumado en la misma carrera en que lo pasaron ya no fue récord.
+    const closeTenure = (driverId, surpassedBy, heldValue) => {
+        const t = tenures.get(driverId);
+        tenures.delete(driverId);
+        const last = t?.events[t.events.length - 1];
+        if (!last) return;
+        const peak = heldValue ?? (totals.get(driverId) || 0);
+        if (peak > last.record.value) last.record.peak = peak;
+        if (surpassedBy) last.record.after = { type: 'surpassed', ...surpassedBy };
+        else if (t.equalledBy) last.record.after = { type: 'equalled', ...t.equalledBy };
+        else last.record.current = true;
+    };
+
+    for (const k of [...raceRows.keys()].sort()) {
+        const changed = [];
+        const bump = (driverId, race, n) => {
+            if (!n) return;
+            totals.set(driverId, (totals.get(driverId) || 0) + n);
+            changed.push({ driverId, race });
+        };
+
+        if (key === 'titles') {
+            const c = clinchByRace.get(k);
+            if (c) bump(c.driverId, c.race, 1);
+        } else {
+            for (const { driverId, race } of raceRows.get(k)) bump(driverId, race, amount(race));
+        }
+        if (!changed.length) continue;
+
+        const top = Math.max(recordValue, ...changed.map(c => totals.get(c.driverId)));
+        const atTop = changed.filter(c => totals.get(c.driverId) === top);
+        const prevValue = recordValue;
+        const prevHolders = holders;
+
+        if (top > prevValue) {
+            holders = new Set(atTop.map(c => c.driverId));
+            // Los que quedaron abajo pierden el récord: superado por quien lo pasó.
+            const by = atTop[0];
+            for (const id of prevHolders) {
+                if (!holders.has(id)) closeTenure(id, { by: by.driverId, ...placeOf(by.race) }, prevValue);
+            }
+        } else if (top === prevValue) {
+            holders = new Set([...prevHolders, ...atTop.map(c => c.driverId)]);
+        } else {
+            continue;
+        }
+        recordValue = top;
+
+        const sole = holders.size === 1;
+        for (const { driverId, race } of atTop) {
+            const wasHolder = prevHolders.has(driverId);
+            let t = tenures.get(driverId);
+            if (!t) {
+                t = { events: [], everSole: false, equalledBy: null };
+                tenures.set(driverId, t);
+            }
+
+            // Pasar la cifra del récord anterior es romperlo, aunque otro que
+            // tampoco lo tenía llegue al mismo número en esa carrera. Sólo es
+            // "equalled" si queda empatado con alguien que ya era dueño.
+            const passedOldOwners = top > prevValue && ![...prevHolders].some(id => holders.has(id));
+            let kind = null;
+            if (prevValue > 0) {
+                if (!wasHolder) kind = sole || passedOldOwners ? 'broke' : 'equalled';
+                else if (sole && !t.everSole) kind = 'broke';
+            }
+            if (sole || kind === 'broke') t.everSole = true;
+            if (sole) t.equalledBy = null;
+
+            if (kind) {
+                const m = milestone(race, kind === 'broke' ? 'Broke all-time record' : 'Equalled all-time record');
+                m.record = { key, kind, value: totals.get(driverId) };
+                t.events.push(m);
+                addRecordMilestone(driverId, m);
+            }
+
+            // Quien lo alcanza deja anotado, en la racha de los que ya lo tenían,
+            // que lo igualaron.
+            if (!wasHolder && !sole) {
+                for (const id of prevHolders) {
+                    if (holders.has(id)) tenures.get(id).equalledBy = { by: driverId, ...placeOf(race) };
+                }
+            }
+        }
+    }
+
+    for (const id of [...tenures.keys()]) closeTenure(id, null);
+}
+
+// Si un piloto igualó un récord y más adelante lo rompió (aunque en el medio lo
+// haya perdido), queda sólo "Broke": el "Equalled" previo sobra.
+for (const [driverId, list] of recordMilestones) {
+    recordMilestones.set(driverId, list.filter(m =>
+        m.record.kind !== 'equalled'
+        || !list.some(b => b.record.kind === 'broke' && b.record.key === m.record.key && b.date > m.date)
+    ));
+}
+
 const careers = {};
 
 for (const [driverId, races] of byDriver) {
@@ -361,6 +531,8 @@ for (const [driverId, races] of byDriver) {
         ...eras
             .filter(e => e.bestRace && !isWinRace(e.bestRace))
             .map(e => milestone(e.bestRace, 'Best result in the team')),
+        // Récords históricos (ver RÉCORDS HISTÓRICOS más arriba).
+        ...(recordMilestones.get(driverId) || []),
     ].filter(Boolean);
 
     // Insumos que no van al JSON.
@@ -382,6 +554,7 @@ for (const [driverId, races] of byDriver) {
         wins:    lastDateOf(finished.filter(r => r.pos === 1)),
         podiums: lastDateOf(finished.filter(r => r.pos <= 3)),
         poles:   lastDateOf(races.filter(r => r.quali === 1)),
+        fastestLaps: lastDateOf(races.filter(r => r.fl)),
         // Los puntos suben sólo en las carreras donde sumó, así que la fecha
         // del total es la de la última vez que puntuó.
         points:  lastDateOf(races.filter(r => r.pts > 0)),
@@ -404,6 +577,7 @@ for (const [driverId, races] of byDriver) {
         wins: finished.filter(r => r.pos === 1).length,
         podiums: finished.filter(r => r.pos <= 3).length,
         poles: races.filter(r => r.quali === 1).length,
+        fastestLaps: races.filter(r => r.fl).length,
         titleYears,
         titles,
         bestFinish,

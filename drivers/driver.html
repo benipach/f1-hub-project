@@ -19,15 +19,14 @@
     <script src="../js/shared/gp.js" defer></script>
     <script src="../js/shared/teams.js" defer></script>
     <script src="../js/shared/grid.js" defer></script>
+    <script src="../js/driver-reveal.js" defer></script>
     <script src="../js/driver-data.js" defer></script>
-    <script src="../js/driver-header.js" defer></script>
-    <script src="../js/driver-season.js" defer></script>
+    <script src="../js/driver-header.js" defer></script>    <script src="../js/driver-season.js" defer></script>
     <script src="../js/driver-career.js" defer></script>
     <script src="../js/driver-bio.js" defer></script>
     <script src="../js/twemoji.js" defer></script>
     <script src="../js/navbar.js" defer></script>
-    <link rel="stylesheet" href="../styles/driver.css">
-</head>
+    <link rel="stylesheet" href="../styles/driver.css"></head>
 <body>
 
     <header class="navbar">
@@ -53,25 +52,8 @@
     </header>
 
     <main>
-        <section class="driver-hero">
-            <img id="hero-img" class="driver-hero-bg" src="">
-            <div class="driver-hero-overlay"></div>
-            <div id="hero-number" class="driver-number-bg"></div>
-
-            <div class="driver-hero-content">
-                <div class="driver-hero-title">
-                    <p id="driver-hero-first-name" class="driver-hero-first-name"></p>
-                    <h1 id="driver-hero-last-name" class="driver-hero-last-name"></h1>
-                </div>
-                <div class="driver-hero-meta">
-                    <div class="driver-hero-meta-item">Nationality<strong id="meta-nationality">-</strong></div>
-                    <div class="driver-hero-meta-item">Date of birth<strong id="meta-dob">-</strong></div>
-                    <div class="driver-hero-meta-item">Age<strong id="meta-age">-</strong></div>
-                    <div class="driver-hero-meta-item">Car number<strong id="meta-number">-</strong></div>
-                    <div class="driver-hero-meta-item">World titles<strong id="meta-titles">-</strong></div>
-                </div>
-            </div>
-        </section>
+        <!-- Hero poblado desde datos reales por js/driver-header.js. -->
+        <section class="driver-hero" id="driverHero"></section>
 
         <div class="driver-content">
 
@@ -141,6 +123,7 @@
                             <button type="button" class="career-board-tab" data-cat="podiums">Podiums</button>
                             <button type="button" class="career-board-tab" data-cat="poles">Poles</button>
                             <button type="button" class="career-board-tab" data-cat="points">Points</button>
+                            <button type="button" class="career-board-tab" data-cat="fastestLaps">Fastest laps</button>
                             <button type="button" class="career-board-tab" data-cat="races">Races</button>
                         </div>
                     </div>
