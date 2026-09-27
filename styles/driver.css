@@ -2,106 +2,296 @@
     /*               DRIVER PAGE STYLES                 */
     /* ================================================ */
 
-    /* ── HERO ── */
+    /* ── HERO ──
+       Panel del color del equipo (--team, lo pone driver-header.js) cortado en
+       diagonal sobre la foto del piloto. Un borde luminoso de la misma forma, 10px
+       más ancho, marca el corte. */
     .driver-hero {
+        --team: var(--primary-red);
+        --slant: 12vw;   /* con vh se comía el panel en pantallas altas */
         position: relative;
-        min-height: 100vh;
         display: flex;
-        align-items: flex-end;
+        min-height: 100vh;
         overflow: hidden;
+        background: var(--base-900);
+        color: var(--text-light);
     }
 
-    .driver-hero-bg {
+    /* :where() deja el reset sin especificidad, así no pisa los márgenes de abajo */
+    :where(.driver-hero) :where(p, h1, dl, dd, figure) { margin: 0; }
+
+    .driver-hero-photo {
         position: absolute;
-        inset: 0;
+        top: 0;
+        bottom: 0;
+        left: 36%;
+        right: 0;
+    }
+
+    .driver-hero-photo > img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        object-position: center 35%;
-        z-index: 0;
-        filter: brightness(0.75) saturate(0.75);
+        object-position: 55% 25%;
     }
 
-    .driver-hero-overlay {
+    .driver-hero-photo::after {
+        content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(
-            to bottom,
-            rgba(10,10,20,0) 40%,
-            rgba(10,10,20,1) 100%
-        );
-        z-index: 1;
+        background: linear-gradient(to bottom, rgba(6,6,9,0.35), transparent 25%, transparent 70%, var(--base-800));
     }
 
-    .driver-number-bg {
+    .driver-hero-edge,
+    .driver-hero-panel {
         position: absolute;
-        right: 5%;
+        top: 0;
         bottom: 0;
-        font-family: 'F1-Black', sans-serif;
-        font-size: clamp(200px, 30vw, 380px);
-        line-height: 0.85;
-        color: rgba(255,255,255,0.1);
-        letter-spacing: -8px;
-        z-index: 1;
-        user-select: none;
-        pointer-events: none;
+        left: 0;
+        clip-path: polygon(0 0, 100% 0, calc(100% - var(--slant)) 100%, 0 100%);
     }
 
-    .driver-hero-content {
+    .driver-hero-edge {
+        width: calc(52% + 10px);
+        background: var(--team);
+    }
+
+    .driver-hero-panel {
+        width: 52%;
+        display: flex;
+        flex-direction: column;
+        padding: 100px calc(var(--slant) + 40px) 8vh 5%;
+        background: linear-gradient(165deg, color-mix(in srgb, var(--team) 42%, var(--base-900)) 0%, var(--base-900) 70%);
+    }
+
+    /* El número ocupa sólo el espacio que queda entre la cabecera y el nombre:
+       es un contenedor de tamaño y la letra se mide con su alto (cqh), así con
+       la insignia de campeón se achica en vez de pisar el nombre. */
+    .driver-hero-numbox {
+        flex: 1 1 0;
+        min-height: 0;
+        display: flex;
+        align-items: flex-end;
+        margin: 28px 0 20px;
+        container-type: size;
+    }
+
+    /* Número de carrera gigante, sólo el contorno. Con line-height 0.8 la caja
+       mide 0.8em: 125cqh la deja justo del alto del contenedor. */
+    .driver-hero-num {
+        margin-left: -0.06em;
+        font-family: 'F1-Black';
+        font-size: min(36vh, 125cqh);
+        line-height: 0.8;
+        color: transparent;
+        -webkit-text-stroke: 2px color-mix(in srgb, color-mix(in srgb, var(--team) 72%, white) 30%, transparent);
+        user-select: none;
+    }
+
+    .driver-hero-body {
         position: relative;
-        z-index: 2;
-        padding: 0 5% 4rem;
         width: 100%;
     }
 
-    /* Driver name */
-    .driver-hero-title { margin-bottom: 24px; }
-
-    .driver-hero-first-name {
-        font-family: 'F1-Regular';
-        font-size: clamp(16px, 2.5vw, 48px);
-        letter-spacing: 0px;
-        text-transform: uppercase;
-        color: rgba(255,255,255,0.5);
-        line-height: 0.85;
-    }
-
-    .driver-hero-last-name {
-        font-family: 'F1-Black', sans-serif;
-        font-size: clamp(3rem, 10vw, 8rem);
-        text-transform: uppercase;
-        color: var(--text-light);
-        line-height: 0.9;
-        margin: 0;
-    }
-
-    /* Meta row */
-    .driver-hero-meta {
-        width: 55%;
+    /* Cabecera del panel: nacionalidad y equipo, cada uno con su etiqueta, con
+       una barra del color del equipo al costado */
+    .driver-hero-id {
         display: flex;
-        flex-wrap: wrap;
-        gap: 2.5rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid rgba(255,255,255,0.2);
+        align-self: flex-start;
+        border-left: 3px solid var(--team);
     }
 
-    .driver-hero-meta-item {
-        display: flex;
-        flex-direction: column;
+    .driver-hero-id div { padding: 2px 28px 2px 16px; }
+
+    .driver-hero-id div + div {
+        padding-left: 28px;
+        border-left: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .driver-hero-id dt {
+        margin-bottom: 10px;
         font-family: 'F1-Regular';
-        font-size: 16px;
+        font-weight: 600;
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+    }
+
+    .driver-hero-id dd {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 18px;
         letter-spacing: 0.5px;
         text-transform: uppercase;
-        color: rgba(255,255,255,0.5);
+        white-space: nowrap;
     }
 
-    .driver-hero-meta-item strong {
-        font-family: 'F1-Bold';
-        font-size: 24px;
-        letter-spacing: 0.5px;
+    .driver-hero-flag {
+        width: 28px;
+        height: 28px;
+    }
+
+    .driver-hero-logo {
+        height: 28px;
+        width: auto;
+    }
+
+    .driver-hero-first {
+        margin-bottom: -0.05em;   /* pegado al apellido, sin tocarlo */
+        font-family: 'F1-Black';
         line-height: 1;
-        color: var(--text-light);
+        font-size: clamp(20px, 2.2vw, 40px);
+        text-transform: uppercase;
+    }
+
+    /* El ancho de la letra de F1-Black ronda 0.86em: con el largo del apellido
+       (--len) los nombres largos se achican para no pisar la diagonal. */
+    .driver-hero-last {
+        font-family: 'F1-Black';
         font-weight: normal;
+        font-size: min(7vw, calc(38vw / (var(--len) * 0.86)));
+        line-height: 0.95;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    /* Insignia de campeón: la cantidad de títulos en dorado entre laureles, y
+       los años al lado. Mismo dorado que .lv-slice.is-champion (drivers.css). */
+    .driver-hero-crown {
+        display: inline-flex;
+        align-items: center;
+        gap: 18px;
+        margin-top: 24px;
+        padding: 12px 28px 12px 14px;
+        background: linear-gradient(90deg, rgba(232,199,122,0.14), rgba(232,199,122,0) 90%);
+        border-left: 3px solid #E8C77A;
+    }
+
+    .driver-hero-crown-count {
+        display: flex;
+        align-items: center;
+    }
+
+    .driver-hero-crown-count img {
+        height: 58px;
+        width: auto;
+    }
+
+    .driver-hero-crown-count span {
+        margin: 0 -2px;
+        font-family: 'F1-Black';
+        font-size: 48px;
+        line-height: 1;
+        background: linear-gradient(135deg, #B78E3F, #F5E0B5, #B78E3F);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .driver-hero-crown-label {
+        font-family: 'F1-Black';
+        font-size: 18px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #E8C77A;
+    }
+
+    .driver-hero-crown-years {
+        margin-top: 4px;
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 1px;
+        color: color-mix(in srgb, #E8C77A 70%, var(--text-dim));
+    }
+
+    .driver-hero-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        margin-top: 40px;
+        border-top: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .driver-hero-stats div { padding-top: 16px; }
+
+    .driver-hero-stats div + div {
+        padding-left: 20px;
+        border-left: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .driver-hero-stats dd {
+        font-family: 'F1-Black';
+        font-size: clamp(28px, 2.8vw, 52px);
+        line-height: 1;
+        color: transparent;
+        -webkit-text-stroke: 1.5px var(--text-light);   /* sólo el contorno, como el número de carrera */
+    }
+
+    .driver-hero-stats dt {
+        margin-top: 6px;
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+    }
+
+    .driver-hero-since {
+        margin-top: 36px;
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--text-dim);
+    }
+
+    /* Mismo peso que el resto de la línea: sólo cambia el color */
+    .driver-hero-since b {
+        font-weight: inherit;
+        color: var(--text-light);
+    }
+
+    /* Celular: la foto arriba y el panel abajo, con la diagonal cruzada */
+    @media (max-width: 900px) {
+        .driver-hero { --slant: 0px; flex-direction: column; }
+        .driver-hero-photo { position: relative; left: 0; height: 52vh; flex: none; }
+        .driver-hero-edge { display: none; }
+        .driver-hero-panel {
+            position: relative;
+            width: 100%;
+            flex: 1;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: stretch;
+            margin-top: -8vh;
+            padding: calc(8vh + 24px) 20px 48px;
+            clip-path: polygon(0 8vh, 100% 0, 100% 100%, 0 100%);
+        }
+        /* El panel crece con el contenido: el número va con tamaño fijo */
+        .driver-hero-numbox { flex: none; margin: 16px 0 12px; container-type: normal; }
+        .driver-hero-num { font-size: 22vh; }
+        .driver-hero-id div { padding: 0 16px 0 12px; }
+        .driver-hero-id div + div { padding-left: 16px; }
+        .driver-hero-id dt { margin-bottom: 6px; font-size: 9px; letter-spacing: 1px; }
+        .driver-hero-id dd { gap: 8px; font-size: 13px; }
+        .driver-hero-flag,
+        .driver-hero-logo { height: 20px; }
+        .driver-hero-flag { width: 20px; }
+        .driver-hero-last { font-size: min(14vw, calc(90vw / (var(--len) * 0.86))); }
+        .driver-hero-crown { gap: 12px; margin-top: 18px; padding: 10px 16px 10px 10px; }
+        .driver-hero-crown-count img { height: 44px; }
+        .driver-hero-crown-count span { font-size: 36px; }
+        .driver-hero-crown-label { font-size: 14px; }
+        .driver-hero-crown-years { font-size: 11px; }
+        .driver-hero-stats { margin-top: 28px; }
+        .driver-hero-stats div + div { padding-left: 12px; }
+        .driver-hero-stats dd { font-size: 26px; }
+        .driver-hero-stats dt { font-size: 10px; letter-spacing: 1px; }
+        .driver-hero-since { margin-top: 24px; }
     }
 
     /* ── CONTENT ── */
@@ -132,27 +322,9 @@
         background: var(--primary-red);
     }
 
-    /* ── Ajustes generales para celular: menos padding lateral, menos aire entre
-       secciones, tipografías del hero más chicas ── */
+    /* ── Ajustes generales para celular: menos padding lateral y menos aire entre
+       secciones ── */
     @media (max-width: 700px) {
-        .driver-hero-content { padding: 0 20px 2.5rem; }
-        .driver-hero-last-name { font-size: clamp(2.4rem, 13vw, 4rem); }
-        .driver-hero-first-name { font-size: clamp(13px, 4vw, 20px); }
-
-        .driver-hero-meta {
-            width: 100%;
-            gap: 1rem 1.75rem;
-            padding-top: 1.25rem;
-        }
-        .driver-hero-meta-item { font-size: 12px; }
-        .driver-hero-meta-item strong { font-size: 19px; }
-
-        /* El número gigante de fondo ya no pisa el contenido. */
-        .driver-number-bg {
-            font-size: clamp(120px, 44vw, 200px);
-            opacity: 0.6;
-        }
-
         .section-title { font-size: clamp(22px, 7vw, 32px); margin-bottom: 1.5rem; }
 
         .driver-info,
@@ -164,7 +336,6 @@
     /* ── DRIVER INFO (variant J) ── */
     .driver-info {
         --team-color: var(--primary-red);   /* driver-header.js lo pisa con el color real */
-        --team-accent: color-mix(in srgb, var(--team-color) 78%, white);   /* legible sobre fondo oscuro */
         position: relative;
         display: flex;
         gap: 44px;
@@ -189,11 +360,6 @@
         align-self: stretch;
         overflow: hidden;
         background:
-            repeating-linear-gradient(
-                118deg,
-                transparent 0 17px,
-                color-mix(in srgb, var(--team-color) 8%, transparent) 17px 19px
-            ),
             linear-gradient(
                 125deg,
                 color-mix(in srgb, var(--team-color) 26%, transparent) 0%,
@@ -243,74 +409,130 @@
         position: relative;
         z-index: 1;
         flex: 1;
-        padding: 44px 52px 44px 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 36px;
+        padding: 40px 48px 40px 0;
     }
 
-    .driver-info-teamlogo {
-        position: absolute;
-        z-index: 0;
-        bottom: 28px;
-        right: 32px;
-        height: 120px;
-        width: auto;
-        object-fit: contain;
-        opacity: 0.14;
-        filter: grayscale(1);
+    /* Cabecera tipo licencia: sigla gigante, número en placa del equipo y el
+       nombre completo alineado a la derecha */
+    .driver-info-head {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
-    .driver-info-flag {
-        width: 20px;
-        height: 20px;
-        vertical-align: -4px;
-        margin-right: 8px;
-    }
-
-    .driver-info-name {
+    .driver-info-code {
         font-family: 'F1-Black';
-        font-size: 28px;
-        letter-spacing: 0.5px;
+        font-size: 56px;
+        line-height: 0.85;
+        letter-spacing: 1px;
         text-transform: uppercase;
-        margin: 0 0 24px;
         color: var(--text-light);
     }
 
-    .driver-info-number {
-        margin-left: 16px;
-        color: var(--team-accent);
+    .driver-info-plate {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 56px;
+        height: 48px;
+        padding: 0 12px;
+        font-family: 'F1-Black';
+        font-size: 28px;
+        color: #fff;
+        background: var(--team-color);
+        border-radius: 6px;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
 
-    .driver-info-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 22px 40px;
-    }
-
-    .driver-info-item {
-        padding-left: 12px;
-        border-left: 2px solid rgba(255,255,255,0.1);
-    }
-
-    .driver-info-key {
-        display: block;
+    .driver-info-fullname {
+        margin-left: auto;
         font-family: 'F1-Regular';
-        font-size: 12px;
         font-weight: 600;
+        font-size: 14px;
+        letter-spacing: 2px;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
         color: var(--text-dim);
     }
 
-    .driver-info-value {
-        display: block;
+    /* Tres datos grandes, con el mismo lenguaje que las estadísticas del hero */
+    .driver-info-tiles {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        margin: 0;
+    }
+
+    .driver-info-tiles div + div {
+        padding-left: 28px;
+        border-left: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .driver-info-tiles dt,
+    .driver-info-label {
+        margin: 0 0 10px;
         font-family: 'F1-Regular';
-        font-size: 20px;
-        letter-spacing: 0.3px;
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+    }
+
+    .driver-info-tiles dd {
+        margin: 0;
+        font-family: 'F1-Black';
+        font-size: 44px;
+        line-height: 1;
         color: var(--text-light);
     }
 
-    .driver-info-value--accent {
-        color: var(--primary-red);
+    .driver-info-sub {
+        display: block;
+        margin: 10px 0 0;
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 13px;
+        color: var(--text-dim);
     }
+
+    .driver-info-flag {
+        width: 16px;
+        height: 16px;
+        margin-right: 7px;
+        vertical-align: -3px;
+    }
+
+    /* Equipos: una tarjeta por etapa, con el color del equipo en el filo */
+    .driver-info-teams ul {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .driver-info-teams li {
+        padding: 12px 16px;
+        background: rgba(255,255,255,0.03);
+        border-left: 3px solid var(--c);
+        border-radius: 0 6px 6px 0;
+    }
+
+    .driver-info-team {
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 16px;
+        text-transform: uppercase;
+        color: var(--text-light);
+    }
+
+    .driver-info-teams .driver-info-sub { margin-top: 4px; font-size: 12px; }
 
     @media (max-width: 700px) {
         .driver-info {
@@ -319,12 +541,16 @@
             gap: 0;
         }
         .driver-info-visual { width: 100%; height: 260px; }
-        .driver-info-facts { padding: 24px 20px; }
-        .driver-info-grid { grid-template-columns: 1fr 1fr; gap: 16px 20px; }
-        .driver-info-teamlogo { display: none; }
-        .driver-info-name { font-size: 21px; margin-bottom: 20px; }
-        .driver-info-number { margin-left: 10px; }
-        .driver-info-value { font-size: 17px; }
+        .driver-info-facts { gap: 28px; padding: 24px 20px; }
+        .driver-info-head { flex-wrap: wrap; gap: 12px; padding-bottom: 20px; }
+        .driver-info-code { font-size: 44px; }
+        .driver-info-plate { min-width: 46px; height: 40px; font-size: 22px; }
+        .driver-info-fullname { flex-basis: 100%; margin-left: 0; font-size: 12px; }
+        .driver-info-tiles div + div { padding-left: 14px; }
+        .driver-info-tiles dt { font-size: 10px; letter-spacing: 1px; }
+        .driver-info-tiles dd { font-size: 30px; }
+        .driver-info-sub { font-size: 11px; }
+        .driver-info-teams ul { grid-template-columns: 1fr 1fr; }
     }
 
     /* ══ 2026 SEASON ══
@@ -540,20 +766,180 @@
 
     .season-form-canvas { position: relative; }
 
+    /* ── Tooltip del Form curve (formTooltip en driver-season.js) ──
+       Tarjeta con el filo del color del equipo arriba. Se ubica con transform,
+       así al pasar de un punto a otro se desliza. */
+    .form-tip {
+        --c: var(--primary-red);
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 5;
+        min-width: 230px;
+        padding: 14px 16px;
+        background: rgba(10,10,15,0.94);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-top: 3px solid var(--c);
+        border-radius: 10px;
+        box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        pointer-events: none;
+        opacity: 0;
+        transition: all 0.2s ease;
+    }
+
+    .form-tip.is-visible { opacity: 1; }
+
+    .form-tip-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .form-tip-flag {
+        width: 18px;
+        height: 18px;
+    }
+
+    .form-tip-round {
+        padding: 2px 6px;
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 11px;
+        letter-spacing: 1px;
+        color: var(--text-dim);
+        background: rgba(255,255,255,0.07);
+        border-radius: 4px;
+    }
+
+    .form-tip-gp {
+        font-family: 'F1-Black';
+        font-size: 14px;
+        text-transform: uppercase;
+        color: var(--text-light);
+        white-space: nowrap;
+    }
+
+    /* Largada → llegada, con los puestos ganados o perdidos */
+    .form-tip-race {
+        display: flex;
+        align-items: flex-end;
+        gap: 14px;
+        padding: 12px 0;
+    }
+
+    .form-tip-race > div {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .form-tip-key {
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+    }
+
+    .form-tip-pos {
+        font-family: 'F1-Black';
+        font-size: 26px;
+        line-height: 1;
+        color: var(--text-light);
+    }
+
+    .form-tip-pos.is-podium { color: #E8C77A; }
+    .form-tip-pos.is-dnf { color: #d9564f; }
+
+    .form-tip-arrow {
+        width: 22px;
+        height: 12px;
+        margin-bottom: 7px;
+        color: var(--text-dim);
+    }
+
+    .form-tip-delta {
+        margin: 0 0 3px auto;
+        padding: 4px 8px;
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 12px;
+        color: var(--text-dim);
+        background: rgba(255,255,255,0.07);
+        border-radius: 999px;
+    }
+
+    .form-tip-delta.is-up   { color: #22c55e; background: rgba(34,197,94,0.12); }
+    .form-tip-delta.is-down { color: #d9564f; background: rgba(217,86,79,0.12); }
+
+    .form-tip-foot {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px 10px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .form-tip-pts {
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+    }
+
+    .form-tip-pts b {
+        margin-right: 2px;
+        font-family: 'F1-Black';
+        font-weight: normal;
+        font-size: 20px;
+        letter-spacing: 0;
+        color: var(--text-light);
+    }
+
+    .form-tip-sprint {
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 11px;
+        color: var(--text-dim);
+    }
+
+    .form-tip-badge {
+        padding: 3px 8px;
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 10px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        border-radius: 4px;
+    }
+
+    /* Violeta de la vuelta rápida, como en las transmisiones */
+    .form-tip-badge.is-fl  { color: #C792FF; background: rgba(162,89,255,0.18); }
+    .form-tip-badge.is-dnf { color: #d9564f; background: rgba(217,86,79,0.14); }
+
     .season-form-note {
         margin: 16px 0 0;
         padding-top: 14px;
         border-top: 1px solid rgba(255,255,255,0.06);
         font-family: 'F1-Regular';
+        font-weight: 600;
         font-size: 13px;
         line-height: 1.6;
         color: var(--text-dim);
     }
 
+    /* Igual que .champ-form-note b (championship.css) */
     .season-form-note b {
-        font-family: 'F1-Bold';
+        text-transform: uppercase;
         color: var(--text-light);
-        font-weight: normal;
     }
 
     /* ── Detalle ronda a ronda (tabla) ── */
@@ -866,9 +1252,9 @@
         overflow: hidden;
         padding: 40px 32px 34px;
         border-radius: 14px;
-        border: 1px solid rgba(232,185,35,0.22);
+        border: 1px solid rgba(232,199,122,0.22);
         background:
-            radial-gradient(ellipse 70% 120% at 50% 0%, rgba(232,185,35,0.13) 0%, transparent 65%),
+            radial-gradient(ellipse 70% 120% at 50% 0%, rgba(232,199,122,0.12) 0%, transparent 65%),
             linear-gradient(135deg, var(--base-700) 0%, var(--base-800) 100%);
         text-align: center;
     }
@@ -880,7 +1266,7 @@
         top: 0; left: 0;
         width: 100%;
         height: 2px;
-        background: linear-gradient(90deg, transparent 0%, #E2B84B 20%, #F5E17A 50%, #E2B84B 80%, transparent 100%);
+        background: linear-gradient(90deg, transparent 0%, #B78E3F 20%, #F5E0B5 50%, #B78E3F 80%, transparent 100%);
     }
 
     .career-champion-mark {
@@ -903,11 +1289,11 @@
         font-size: clamp(64px, 11vw, 128px);
         line-height: 0.9;
         letter-spacing: -2px;
-        background: linear-gradient(135deg, #ac821a 0%, #C9A84C 18%, #F5E17A 38%, #D4A843 54%, #FFF3B8 68%, #E2B84B 100%);
+        background: linear-gradient(135deg, #B78E3F, #F5E0B5, #B78E3F);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        filter: drop-shadow(0 4px 18px rgba(232,185,35,0.25));
+        filter: drop-shadow(0 4px 18px rgba(232,199,122,0.2));
     }
 
     .career-champion-count i {
@@ -938,7 +1324,7 @@
     }
 
     .career-champion-year {
-        --title-color: var(--gold, #e8b923);
+        --title-color: #E8C77A;
         position: relative;
         display: flex;
         flex-direction: column;
@@ -954,7 +1340,7 @@
 
     .career-champion-year:hover {
         transform: translateY(-3px);
-        border-color: rgba(232,185,35,0.35);
+        border-color: rgba(232,199,122,0.35);
     }
 
     .career-champion-year:hover .career-champion-teamlogo {
@@ -997,7 +1383,7 @@
         font-family: 'F1-Black';
         font-size: 26px;
         letter-spacing: 0.5px;
-        background: linear-gradient(135deg, #ac821a 0%, #C9A84C 20%, #F5E17A 40%, #D4A843 55%, #F5E17A 75%, #E2B84B 100%);
+        background: linear-gradient(135deg, #B78E3F, #F5E0B5, #B78E3F);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -1022,7 +1408,7 @@
     /* ── Cifras con su puesto ── */
     .career-standing {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(6, 1fr);
         background: linear-gradient(135deg, var(--base-700) 0%, var(--base-800) 100%);
         border: 1px solid rgba(255,255,255,0.06);
         border-radius: 12px;
@@ -1044,7 +1430,8 @@
         font-family: 'F1-Black';
         font-size: clamp(30px, 4vw, 44px);
         line-height: 1;
-        color: var(--text-light);
+        color: transparent;
+        -webkit-text-stroke: 1.5px var(--text-light);   /* sólo el contorno, como las estadísticas del hero */
     }
 
     .career-stat-label {
@@ -1102,12 +1489,28 @@
     }
 
     .career-board-tabs {
+        position: relative;
         display: flex;
         flex-wrap: wrap;
         gap: 4px;
     }
 
+    /* Pastilla clara (--team-accent) que se desliza detrás de la pestaña
+       activa; driver-career.js le copia posición y tamaño. Sin transición
+       hasta .is-ready, así la primera vez aparece en su lugar. */
+    .career-board-pill {
+        position: absolute;
+        z-index: 0;
+        border-radius: 999px;
+        background: var(--team-accent);
+        pointer-events: none;
+    }
+
+    .career-board-pill.is-ready { transition: all 0.3s ease; }
+
     .career-board-tab {
+        position: relative;
+        z-index: 1;
         padding: 7px 15px;
         border: none;
         border-radius: 999px;
@@ -1119,17 +1522,14 @@
         text-transform: uppercase;
         color: var(--text-dim);
         cursor: pointer;
-        transition: background .18s ease, color .18s ease;
+        transition: all 0.3s ease;
     }
 
     .career-board-tab:hover { color: var(--text-light); }
 
-    /* Pastilla clara (--team-accent) con texto oscuro: legible con cualquier
-       color de equipo, incluidos los casi blancos. */
-    .career-board-tab.is-active {
-        background: var(--team-accent);
-        color: var(--base-900);
-    }
+    /* Texto oscuro sobre la pastilla clara: legible con cualquier color de
+       equipo, incluidos los casi blancos. */
+    .career-board-tab.is-active { color: var(--base-900); }
 
     .career-board {
         list-style: none;
@@ -1261,10 +1661,9 @@
     }
 
     @media (max-width: 900px) {
-        .career-standing { grid-template-columns: repeat(2, 1fr); }
-        .career-stat:nth-child(2n) { border-right: none; }
-        .career-stat:nth-child(n+3) { border-top: 1px solid rgba(255,255,255,0.05); }
-        .career-stat:last-child { grid-column: 1 / -1; }
+        .career-standing { grid-template-columns: repeat(3, 1fr); }
+        .career-stat:nth-child(3n) { border-right: none; }
+        .career-stat:nth-child(n+4) { border-top: 1px solid rgba(255,255,255,0.05); }
         .career-champion-trophy { width: 60px; height: 60px; }
         .career-champion-year { min-width: 116px; padding: 14px 14px 12px; }
         .career-board-wrap { padding: 20px 18px 16px; }
@@ -1285,6 +1684,10 @@
         .career-stat-value { font-size: clamp(26px, 8vw, 40px); }
         .career-stat-rank { font-size: 12px; }
 
+        .career-crown-label--modest { font-size: 12px; letter-spacing: 1px; gap: 6px; }
+        .career-crown-label--modest span { letter-spacing: 1px; }
+        .career-crown-label--modest strong { font-size: 22px; }
+
         .career-board-head { flex-direction: column; align-items: flex-start; }
         .career-board-title { font-size: 14px; }
         .career-board-tab { padding: 6px 12px; font-size: 11px; }
@@ -1300,303 +1703,466 @@
     }
 
 
-    /* ══ BIOGRAPHY ══
-       El recorrido de la carrera como una espina vertical que cambia de color al
-       cambiar de equipo. A diferencia del resto de la página no usa tarjetas: acá
-       manda la línea y el color, para que no se lea como un widget de datos más. */
+    /* ══ CAREER JOURNEY ══
+       Una cinta con un casillero por año (la carrera entera de un vistazo) y un
+       capítulo por equipo: bloque de identidad a la izquierda (se queda fijo al
+       scrollear las etapas largas), cifras y los hitos en grilla de tarjetas.
+       Los títulos usan el mismo dorado que el hero (#E8C77A). */
     .driver-bio {
         margin-bottom: 96px;
     }
 
     .driver-bio.is-empty { display: none; }
 
-    .bio-lead {
-        margin: 0 0 40px;
+    /* ── Cinta de carrera ── */
+    .jr-ribbon { margin-bottom: 56px; }
+
+    .jr-ribbon-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+    }
+
+    .jr-ribbon-summary,
+    .jr-ribbon-legend {
+        margin: 0;
         font-family: 'F1-Regular';
-        font-size: 18px;
-        letter-spacing: 0.2px;
+        font-weight: 600;
+        font-size: 15px;
         color: var(--text-dim);
     }
 
-    .bio-eras {
-        list-style: none;
-        margin: 0;
-        padding: 0;
+    .jr-ribbon-summary b {
+        font-weight: inherit;
+        color: var(--text-light);
     }
 
-    .bio-era {
-        --era-color: var(--primary-red);
-        position: relative;
-        padding: 0 0 44px 40px;
-    }
-
-    /* La espina, en el color del equipo de esa era. Arranca en el centro del
-       nodo (queda tapada por él) para que no haya un hueco entre los dos. */
-    .bio-era::before {
-        content: '';
-        position: absolute;
-        left: 10px;
-        top: 14px;
-        bottom: 0;
-        width: 2px;
-        background: var(--era-color);
-        opacity: 0.45;
-    }
-
-    /* El último tramo se desvanece en vez de cortarse seco. */
-    .bio-era:last-child::before {
-        background: linear-gradient(to bottom, var(--era-color) 0%, transparent 100%);
-        opacity: 0.45;
-        bottom: 12px;
-    }
-
-    /* El nodo cuadrado que abre cada era. Centrado verticalmente con la fila
-       del título: la fila mide 28px (min-height de .bio-era-head), así que
-       top = 28/2 - 16/2 = 6px. */
-    .bio-era::after {
-        content: '';
-        position: absolute;
-        left: 3px;
-        top: 6px;
-        width: 16px;
-        height: 16px;
-        border-radius: 4px;
-        background: var(--era-color);
-        box-shadow: 0 0 0 4px var(--base-800);
-    }
-
-    /* Todo lo de la fila (logo, nombre, años, badge de títulos y la regla)
-       centrado en un mismo eje. Con baseline cada pieza caía a distinta
-       altura porque tienen tamaños de fuente distintos, el badge tiene
-       padding y la regla ni siquiera tiene texto. line-height 1 en los textos
-       para que el alto de cada uno sea el de su tipografía, sin aire extra. */
-    .bio-era-head {
+    .jr-ribbon-legend {
         display: flex;
         align-items: center;
-        flex-wrap: wrap;
-        gap: 12px;
-        min-height: 28px;
-        margin-bottom: 6px;
+        gap: 8px;
+        font-size: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
     }
 
-    /* Logo del equipo de esta era, al lado del nombre. */
-    .bio-era-logo {
-        align-self: center;
-        height: 24px;
+    .jr-ribbon-legend i {
+        width: 14px;
+        height: 4px;
+        border-radius: 2px;
+        background: #E8C77A;
+    }
+
+    .jr-years {
+        display: flex;
+        gap: 3px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .jr-year {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .jr-year i {
+        display: block;
+        height: 14px;
+        background: var(--c);
+        border-radius: 2px;
+    }
+
+    .jr-year.is-gap i {
+        background: repeating-linear-gradient(90deg, rgba(255,255,255,0.14) 0 3px, transparent 3px 6px);
+    }
+
+    /* Título: marca dorada arriba del casillero y el año en dorado */
+    .jr-year.is-title i { box-shadow: 0 -5px 0 -1px #E8C77A; }
+
+    /* Sólo se rotula el año donde arranca cada equipo, y el último */
+    .jr-year span {
+        display: block;
+        margin-top: 8px;
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 11px;
+        white-space: nowrap;
+        color: var(--text-dim);
+        visibility: hidden;
+    }
+
+    .jr-year.is-start span,
+    .jr-year:last-child span { visibility: visible; }
+
+    .jr-year:last-child span { text-align: right; }
+
+    .jr-year.is-title span { color: #E8C77A; }
+
+    /* ── Capítulos por equipo ── */
+    .jr-eras {
+        display: flex;
+        flex-direction: column;
+        gap: 56px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .jr-era {
+        --c: var(--primary-red);
+        --ink: color-mix(in srgb, var(--c) 65%, white);   /* legible sobre oscuro */
+        display: grid;
+        grid-template-columns: 260px minmax(0, 1fr);
+        gap: 40px;
+        align-items: start;
+    }
+
+    /* Bloque de identidad del equipo, sobre su color */
+    .jr-era-id {
+        position: sticky;
+        top: 84px;
+        padding: 24px 24px 26px;
+        background: linear-gradient(160deg, color-mix(in srgb, var(--c) 24%, transparent) 0%, transparent 75%);
+        border-left: 3px solid var(--c);
+        border-radius: 0 10px 10px 0;
+    }
+
+    .jr-era-index {
+        display: block;
+        margin-bottom: 18px;
+        font-family: 'F1-Black';
+        font-size: 44px;
+        line-height: 0.8;
+        color: transparent;
+        -webkit-text-stroke: 1.5px var(--ink);
+    }
+
+    .jr-era-logo {
+        display: block;
+        height: 34px;
         width: auto;
-        max-width: 88px;
+        max-width: 120px;
+        margin-bottom: 14px;
         object-fit: contain;
     }
 
-    .bio-era-team {
+    .jr-era-team {
         margin: 0;
-        font-family: 'F1-Regular';
-        font-size: 22px;
-        line-height: 1;
-        font-weight: 600;
-        letter-spacing: 0.5px;
+        font-family: 'F1-Black';
+        font-size: 24px;
+        line-height: 1.05;
         text-transform: uppercase;
         color: var(--text-light);
     }
 
-    .bio-era-years {
+    .jr-era-years {
+        margin: 8px 0 0;
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 0.5px;
+        color: var(--ink);
+    }
+
+    .jr-era-titles {
+        display: inline-block;
+        margin: 16px 0 0;
+        padding: 5px 10px;
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 11px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #E8C77A;
+        background: rgba(232,199,122,0.12);
+        border: 1px solid rgba(232,199,122,0.3);
+        border-radius: 4px;
+    }
+
+    /* Cifras: números de contorno, como en el hero y Career stats */
+    .jr-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        margin: 0;
+        padding-top: 6px;
+    }
+
+    .jr-stats div {
+        padding: 0 20px;
+        border-left: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .jr-stats div:first-child {
+        padding-left: 0;
+        border-left: none;
+    }
+
+    .jr-stats dd {
+        margin: 0;
+        font-family: 'F1-Black';
+        font-size: 34px;
+        line-height: 1;
+        color: transparent;
+        -webkit-text-stroke: 1.5px var(--text-light);
+    }
+
+    .jr-stats dt {
+        margin-top: 8px;
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 11px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+    }
+
+    /* Lectura secundaria (19%, 8.3 / race) en su propio renglón */
+    .jr-stats dt span {
+        display: block;
+        margin-top: 3px;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        color: var(--ink);
+    }
+
+    /* Hitos en grilla de tarjetas */
+    .jr-moments {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 10px;
+        margin: 28px 0 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .jr-moment {
+        padding: 14px 16px 16px;
+        background: linear-gradient(135deg, var(--base-700) 0%, var(--base-800) 100%);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-top: 2px solid color-mix(in srgb, var(--c) 70%, transparent);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .jr-moment:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255,255,255,0.14);
+    }
+
+    .jr-moment-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .jr-moment-label {
+        margin: 0;
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 11px;
+        line-height: 1.4;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+    }
+
+    .jr-moment-chip {
+        flex-shrink: 0;
+        padding: 3px 8px;
+        font-family: 'F1-Regular';
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-light);
+        background: rgba(255,255,255,0.08);
+        border-radius: 4px;
+    }
+
+    .jr-moment-gp {
+        margin: 0;
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 16px;
+        color: var(--text-light);
+    }
+
+    .jr-moment-flag {
+        width: 18px;
+        height: 18px;
+        margin-right: 8px;
+        vertical-align: -3px;
+    }
+
+    .jr-moment-date {
+        margin: 6px 0 0;
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 12px;
+        color: var(--text-dim);
+    }
+
+    /* Victoria: la etiqueta se enciende y la ficha va en claro */
+    .jr-moment[data-kind="win"] .jr-moment-label { color: var(--text-light); }
+
+    .jr-moment[data-kind="win"] .jr-moment-chip {
+        color: var(--base-900);
+        background: var(--text-light);
+    }
+
+    /* Título: tarjeta dorada */
+    .jr-moment[data-kind="title"] {
+        background: linear-gradient(135deg, rgba(232,199,122,0.14) 0%, rgba(232,199,122,0.03) 100%);
+        border-color: rgba(232,199,122,0.25);
+        border-top-color: #E8C77A;
+    }
+
+    .jr-moment[data-kind="title"] .jr-moment-label { color: #E8C77A; }
+
+    .jr-moment[data-kind="title"] .jr-moment-chip {
+        color: var(--base-900);
+        background: linear-gradient(135deg, #B78E3F, #F5E0B5, #B78E3F);
+    }
+
+    /* Récord histórico: violeta, el color de "lo mejor de todos" en F1.
+       Igualarlo va más apagado que romperlo. */
+    .jr-moment[data-kind="record"] {
+        background: linear-gradient(135deg, rgba(168,85,247,0.16) 0%, rgba(168,85,247,0.03) 100%);
+        border-color: rgba(168,85,247,0.28);
+        border-top-color: #A855F7;
+    }
+
+    .jr-moment[data-kind="record"][data-record="equalled"] {
+        background: linear-gradient(135deg, rgba(168,85,247,0.07) 0%, var(--base-800) 100%);
+        border-top-style: dashed;
+    }
+
+    .jr-moment[data-kind="record"] .jr-moment-top { margin-bottom: 6px; }
+    .jr-moment[data-kind="record"] .jr-moment-label { color: #C084FC; }
+
+    .jr-moment-record {
+        margin: 0 0 12px;
         font-family: 'F1-Regular';
         font-weight: 600;
         font-size: 14px;
-        line-height: 1;
-        letter-spacing: 1px;
-        color: var(--era-color);
-    }
-
-    .bio-era-titles {
-        padding: 4px 9px 3px;
-        border-radius: 999px;
-        line-height: 1;
-        background: rgba(232,185,35,0.14);
-        font-family: 'F1-Regular';
-        font-weight: 600;
-        font-size: 11px;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        color: var(--gold, #e8b923);
-    }
-
-    /* Regla fina que acompaña al nombre del equipo hacia la derecha. */
-    .bio-era-rule {
-        order: 99;
-        flex: 1;
-        min-width: 24px;
-        height: 1px;
-        background: linear-gradient(90deg, var(--era-color) 0%, transparent 100%);
-        opacity: 0.35;
-    }
-
-    /* Franja de stats de la era. Coherente con el resto de la biografía: nada
-       de tarjetas, sólo cifras separadas por filetes de 1px. Los filetes salen
-       del truco gap + fondo: el contenedor es el color de la línea y cada celda
-       tapa con el fondo de la página, así las divisiones quedan bien también
-       cuando la fila se parte en dos en pantallas chicas. */
-    .bio-era-stats {
-        list-style: none;
-        margin: 0 0 28px;
-        padding: 0;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1px;
-        background: rgba(255,255,255,0.08);
-    }
-
-    .bio-era-stat {
-        position: relative;
-        flex: 1 1 120px;
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        padding: 14px 22px 16px;
-        background: var(--base-800);
-    }
-
-    .bio-era-stat:first-child { padding-left: 0; }
-
-    .bio-era-stat-value {
-        font-family: 'F1-Black';
-        font-size: 28px;
-        line-height: 1;
-        letter-spacing: 0.5px;
+        line-height: 1.35;
         color: var(--text-light);
     }
 
-    .bio-era-stat-label {
-        font-family: 'F1-Regular';
-        font-weight: 600;
-        font-size: 10px;
-        letter-spacing: 1.4px;
-        line-height: 1;
-        text-transform: uppercase;
-        color: var(--text-light);
-        opacity: 0.85;
-    }
+    .jr-moment-record span { color: #C084FC; }
 
-    /* Lectura secundaria: "14% of races", "8.8 per race". */
-    .bio-era-stat-sub {
+    .jr-moment-note {
+        margin: 8px 0 0;
+        padding-top: 8px;
+        border-top: 1px solid rgba(255,255,255,0.06);
         font-family: 'F1-Regular';
         font-size: 11px;
-        line-height: 1;
-        letter-spacing: 0.2px;
+        line-height: 1.45;
         color: var(--text-dim);
     }
 
-    /* Barra de ratio pegada al piso de la celda, del color del equipo. */
-    .bio-era-stat-bar {
-        position: absolute;
-        left: 22px;
-        right: 22px;
-        bottom: 0;
-        height: 2px;
-        background: rgba(255,255,255,0.08);
-        overflow: hidden;
+    .jr-moment-note + .jr-moment-note {
+        margin-top: 2px;
+        padding-top: 0;
+        border-top: none;
     }
 
-    .bio-era-stat:first-child .bio-era-stat-bar { left: 0; }
+    @media (max-width: 900px) {
+        .jr-era {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 20px;
+        }
 
-    .bio-era-stat-bar i {
-        display: block;
-        height: 100%;
-        background: var(--era-color);
-    }
-
-    /* ── Hitos dentro de cada era ── */
-    .bio-moments {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .bio-moment {
-        position: relative;
-    }
-
-    /* El punto se apoya sobre la espina, que está a 40px a la izquierda. */
-    .bio-moment-dot {
-        position: absolute;
-        left: -35px;
-        top: 5px;
-        width: 11px;
-        height: 11px;
-        border-radius: 50%;
-        background: var(--base-800);
-        border: 2px solid var(--era-color);
-    }
-
-    /* Victorias y títulos se marcan en oro; el título con un halo más fuerte. */
-    .bio-moment[data-kind="win"] .bio-moment-dot,
-    .bio-moment[data-kind="title"] .bio-moment-dot {
-        background: var(--gold, #e8b923);
-        border-color: var(--gold, #e8b923);
-        box-shadow: 0 0 0 4px rgba(232,185,35,0.16);
-    }
-
-    .bio-moment[data-kind="title"] .bio-moment-dot {
-        width: 13px;
-        height: 13px;
-        left: -36px;
-        box-shadow: 0 0 0 5px rgba(232,185,35,0.22);
-    }
-
-    .bio-moment-label {
-        margin: 0 0 3px;
-        font-family: 'F1-Regular';
-        font-weight: 900;
-        font-size: 12px;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        color: var(--text-dim);
-    }
-
-    .bio-moment[data-kind="win"] .bio-moment-label,
-    .bio-moment[data-kind="title"] .bio-moment-label {
-        color: var(--gold, #e8b923);
-    }
-
-    .bio-moment-gp {
-        margin: 0 0 3px;
-        font-family: 'F1-Regular';
-        font-size: 17px;
-        letter-spacing: 0.2px;
-        color: var(--text-light);
-    }
-
-    .bio-moment-flag {
-        width: 18px;
-        height: 18px;
-        vertical-align: middle;
-        margin-right: 8px;
-        margin-bottom: 3px;
-    }
-
-    .bio-moment-meta {
-        margin: 0;
-        font-family: 'F1-Regular';
-        font-size: 13px;
-        letter-spacing: 0.2px;
-        color: var(--text-dim);
+        /* El bloque de identidad pasa a ser la cabecera del capítulo */
+        .jr-era-id {
+            position: static;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            column-gap: 16px;
+            padding: 16px 18px;
+        }
+        .jr-era-index { grid-row: span 3; margin: 0; font-size: 36px; }
+        .jr-era-logo { display: none; }
+        .jr-era-team { font-size: 19px; }
+        .jr-era-years { margin-top: 4px; font-size: 12px; }
+        .jr-era-titles { justify-self: start; margin-top: 8px; }
     }
 
     @media (max-width: 700px) {
-        .bio-lead { font-size: 15px; margin-bottom: 26px; }
-        .bio-era { padding-left: 28px; padding-bottom: 34px; }
-        .bio-era::before { left: 7px; }
-        .bio-era::after { left: 0; top: 7px; width: 14px; height: 14px; }
-        .bio-era-team { font-size: 17px; }
-        .bio-era-years { font-size: 12px; }
-        .bio-era-stat { flex-basis: calc(33.333% - 1px); padding: 12px 14px 14px; }
-        .bio-era-stat:first-child { padding-left: 14px; }
-        .bio-era-stat:first-child .bio-era-stat-bar { left: 14px; }
-        .bio-era-stat-bar { left: 14px; right: 14px; }
-        .bio-era-stat-value { font-size: 22px; }
-        .bio-moment-dot { left: -25px; width: 9px; height: 9px; }
-        .bio-moment-gp { font-size: 15px; }
+        .jr-ribbon { margin-bottom: 40px; }
+        .jr-ribbon-head { flex-direction: column; gap: 8px; }
+        .jr-ribbon-summary { font-size: 13px; }
+        .jr-years { gap: 2px; }
+        .jr-year i { height: 10px; }
+        /* No entran todos los rótulos: sólo el primero y el último */
+        .jr-year.is-start span { visibility: hidden; }
+        .jr-year:first-child span,
+        .jr-year:last-child span { visibility: visible; font-size: 10px; }
+
+        .jr-eras { gap: 40px; }
+        .jr-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 18px; }
+        .jr-stats div { padding: 0 12px; }
+        .jr-stats div:nth-child(3n + 1) { padding-left: 0; border-left: none; }
+        .jr-stats dd { font-size: 26px; }
+        .jr-stats dt { font-size: 10px; letter-spacing: 1px; }
+        .jr-moments { grid-template-columns: minmax(0, 1fr); margin-top: 22px; }
     }
+    /* ── ANIMACIONES DE ENTRADA ──
+       js/driver-reveal.js marca cada bloque con .reveal y data-reveal (la
+       variante) apenas aparece, y le suma .is-in cuando entra en pantalla. Todos
+       comparten la misma transición; lo único que cambia es la demora de la
+       cascada (--delay). Al terminar, el script quita las clases y cada elemento
+       vuelve a sus propias transiciones.
+       La transición va sólo con .is-in: ocultar tiene que ser instantáneo, si
+       no el paso a oculto también se anima y el elemento apenas se mueve. */
+    .reveal.is-in {
+        transition: all 0.7s ease;
+        transition-delay: var(--delay, 0ms);
+    }
+
+    .reveal:not(.is-in) { opacity: 0; }
+
+    .reveal[data-reveal="rise"]:not(.is-in)  { transform: translateY(28px); }
+    .reveal[data-reveal="left"]:not(.is-in)  { transform: translateX(-36px); }
+    .reveal[data-reveal="drop"]:not(.is-in)  { transform: translateY(-12px); }
+    .reveal[data-reveal="pop"]:not(.is-in)   { transform: scale(0.9); }
+    .reveal[data-reveal="zoom"]:not(.is-in)  { transform: scale(1.08); }
+
+    /* Hero: el panel del equipo se despliega desde la izquierda, con la misma
+       forma que tiene (cuatro puntos, así el navegador puede interpolarla) */
+    .reveal[data-reveal="wipe"]:not(.is-in) {
+        opacity: 1;
+        clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    }
+
+    /* Títulos de sección: el texto entra desde la izquierda y la línea roja se
+       estira detrás */
+    .reveal[data-reveal="title"]:not(.is-in) { transform: translateX(-24px); }
+
+    .section-title.reveal.is-in::after {
+        transform-origin: left center;
+        transition: all 0.7s ease;
+        transition-delay: var(--delay, 0ms);
+    }
+
+    .section-title.reveal:not(.is-in)::after { transform: scaleX(0); transform-origin: left center; }
+
+    /* Barras que crecen desde 0: la de avance de la temporada y las del ranking
+       all-time. El !important pisa el ancho que traen en línea. */
+    .season-band-cell.reveal.is-in .season-band-progress-fill,
+    .career-board-wrap.reveal.is-in .career-board-bar > span {
+        transition: all 0.7s ease;
+        transition-delay: var(--delay, 0ms);
+    }
+
+    .season-band-cell.reveal:not(.is-in) .season-band-progress-fill,
+    .career-board-wrap.reveal:not(.is-in) .career-board-bar > span {
+        width: 0 !important;
+    }
+
+    /* Con "reducir movimiento" activado driver-reveal.js no marca nada, así
+       que la página aparece tal cual, sin animaciones. */

@@ -219,9 +219,152 @@
         }
     };
 
+    // ── Trazado de izquierda a derecha ──
+    // Las líneas (y sus puntos) se dibujan dentro de un recorte que se abre de
+    // izquierda a derecha según chart.$drawProgress (0 → 1); ejes, grilla y las
+    // zonas de arriba quedan fijos. Va después de zonesPlugin en la lista, así
+    // el recorte no las tapa. chart.$drawIn() lo anima: lo llama
+    // driver-reveal.js cuando el gráfico entra en pantalla.
+    const DRAW_IN_MS = 1200;
+
+    const drawInPlugin = {
+        id: 'seasonDrawIn',
+        beforeDatasetsDraw(chart){
+            const p = chart.$drawProgress ?? 1;
+            if(p >= 1) return;
+            const { ctx, chartArea } = chart;
+            // Desde el borde del canvas (no del área) para que el primer punto
+            // no aparezca cortado por la mitad.
+            const x = chartArea.left + (chartArea.right - chartArea.left) * p;
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(0, 0, x, chart.height);
+            ctx.clip();
+            chart.$drawClipped = true;
+        },
+        afterDatasetsDraw(chart){
+            if(!chart.$drawClipped) return;
+            chart.$drawClipped = false;
+            chart.ctx.restore();
+        },
+    };
+
+    function addDrawIn(chart){
+        const ease = t => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        chart.$drawIn = (delay = 0) => {
+            chart.$drawProgress = 0;
+            chart.draw();
+            let start = null;
+            const tick = now => {
+                if(start === null) start = now + delay;
+                const t = Math.min(Math.max((now - start) / DRAW_IN_MS, 0), 1);
+                chart.$drawProgress = ease(t);
+                chart.draw();
+                if(t < 1) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+        };
+
+        // Si la sección todavía espera su animación de entrada, el gráfico queda
+        // vacío hasta que driver-reveal.js lo dispare. Si ya entró (las fuentes
+        // tardaron más que el scroll), se traza ahora. Sin animaciones de
+        // entrada (no hay data-reveal), se muestra completo.
+        const block = chart.canvas.closest('[data-reveal]');
+        if(!block) return;
+        if(block.classList.contains('reveal') && !block.classList.contains('is-in')) {
+            chart.$drawProgress = 0;
+            chart.draw();
+        } else {
+            chart.$drawIn();
+        }
+    }
+
     // La parrilla 2026 es de 22 autos: el eje va siempre P1→P22, fijo, para que
     // todos los pilotos usen la misma escala y la línea nunca quede cortada.
     const GRID_SIZE = 22;
+    const Y_PAD = 0.6;
+
+    // ── Tooltip del Form curve ──
+    // Tarjeta con la ronda, largada → llegada con los puestos ganados/perdidos,
+    // los puntos y las insignias (vuelta rápida, abandono). Vive dentro de
+    // .season-form-canvas y sigue al punto de la carrera.
+    function formTipHtml(r){
+        const delta = r.grid != null && !r.retired ? r.grid - r.finish : null;
+        const deltaChip = delta === null ? ''
+            : delta > 0 ? `<span class="form-tip-delta is-up">▲ ${delta}</span>`
+            : delta < 0 ? `<span class="form-tip-delta is-down">▼ ${-delta}</span>`
+            : `<span class="form-tip-delta">=</span>`;
+        const finishCls = r.retired ? 'is-dnf' : r.finish <= 3 ? 'is-podium' : '';
+
+        return `
+            <div class="form-tip-head">
+                ${r.flag ? `<img class="form-tip-flag" src="${r.flag}" alt="">` : ''}
+                <span class="form-tip-round">R${r.round}</span>
+                <span class="form-tip-gp">${r.name} GP</span>
+            </div>
+            <div class="form-tip-race">
+                <div>
+                    <span class="form-tip-key">Grid</span>
+                    <span class="form-tip-pos">${r.gridLabel}</span>
+                </div>
+                <svg class="form-tip-arrow" viewBox="0 0 24 12" aria-hidden="true"><path d="M0 6h20M15 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+                <div>
+                    <span class="form-tip-key">Finish</span>
+                    <span class="form-tip-pos ${finishCls}">${r.retired ? 'DNF' : 'P' + r.finish}</span>
+                </div>
+                ${deltaChip}
+            </div>
+            <div class="form-tip-foot">
+                <span class="form-tip-pts"><b>${r.pts}</b> pts</span>
+                ${r.sprintPts ? `<span class="form-tip-sprint">incl. ${r.sprintPts} sprint</span>` : ''}
+                ${r.fastestLap ? `<span class="form-tip-badge is-fl">Fastest lap</span>` : ''}
+                ${r.retired ? `<span class="form-tip-badge is-dnf">Classified P${r.finish}</span>` : ''}
+            </div>
+        `;
+    }
+
+    function formTooltip(rounds, teamColor){
+        return ({ chart, tooltip }) => {
+            const wrap = chart.canvas.parentNode;
+            let el = wrap.querySelector('.form-tip');
+            if(!el){
+                el = document.createElement('div');
+                el.className = 'form-tip';
+                wrap.appendChild(el);
+            }
+
+            if(tooltip.opacity === 0){
+                el.classList.remove('is-visible');
+                return;
+            }
+
+            // Se ancla al punto de la carrera (dataset 1), no al de la largada.
+            const point = tooltip.dataPoints.find(p => p.datasetIndex === 1) || tooltip.dataPoints[0];
+            const r = rounds[point.dataIndex];
+            el.style.setProperty('--c', teamColor);
+            el.innerHTML = formTipHtml(r);
+
+            // Abajo del punto; si no entra, arriba. Horizontalmente centrada y
+            // sin salirse del gráfico.
+            const gap = 14;
+            const w = el.offsetWidth, h = el.offsetHeight;
+            const { x, y } = point.element;
+            const left = Math.min(Math.max(x - w / 2, 0), wrap.clientWidth - w);
+            const top = y + gap + h <= wrap.clientHeight ? y + gap : Math.max(y - gap - h, 0);
+
+            // Si estaba oculta aparece en su lugar (sin viajar desde el punto
+            // anterior); si ya se veía, se desliza.
+            if(!el.classList.contains('is-visible')){
+                el.style.transition = 'none';
+                el.style.transform = `translate(${left}px, ${top}px)`;
+                void el.offsetWidth;
+                el.style.transition = '';
+            } else {
+                el.style.transform = `translate(${left}px, ${top}px)`;
+            }
+            el.classList.add('is-visible');
+        };
+    }
 
     function renderChart(canvas, rounds, teamColor){
         const labels = rounds.map(r => r.code);
@@ -233,9 +376,9 @@
         const pointColors = rounds.map(r => r.retired ? '#d9564f' : teamColor);
         const pointRadius = rounds.map(r => (r.retired ? 6 : 5) - (isPhone ? 2 : 0));
 
-        return new Chart(canvas.getContext('2d'), {
+        const chart = new Chart(canvas.getContext('2d'), {
             type: 'line',
-            plugins: [zonesPlugin],
+            plugins: [zonesPlugin, drawInPlugin],
             data: {
                 labels,
                 datasets: [
@@ -249,7 +392,7 @@
                         pointBorderColor: 'rgba(255,255,255,0.45)',
                         pointRadius: isPhone ? 2.5 : 3.5,
                         pointHoverRadius: 5,
-                        tension: 0.25,
+                        cubicInterpolationMode: 'monotone',
                         spanGaps: true,
                         order: 2,
                     },
@@ -262,7 +405,9 @@
                         pointBorderColor: pointColors,
                         pointRadius,
                         pointHoverRadius: 7,
-                        tension: 0.25,
+                        // Monótona: la curva nunca se pasa del dato, así no se
+                        // escapa por encima de P1 ni por debajo de P22.
+                        cubicInterpolationMode: 'monotone',
                         order: 1,
                     },
                 ],
@@ -271,15 +416,29 @@
                 responsive: true,
                 maintainAspectRatio: true,
                 aspectRatio: isPhone ? 0.95 : 2.9,
+                // Sin la animación de carga de Chart.js (los puntos subiendo
+                // desde abajo): la entrada la hace drawInPlugin. El hover
+                // conserva la suya, que va por transitions.active.
+                animation: { duration: 0 },
                 interaction: { mode: 'index', intersect: false },
                 scales: {
                     y: {
                         reverse: true,
-                        min: 1,
-                        max: GRID_SIZE,
+                        // Medio puesto de aire en cada punta: si el eje termina
+                        // justo en P1/P22, el trazo y los puntos de un ganador (o
+                        // del último) quedan cortados contra el borde.
+                        min: 1 - Y_PAD,
+                        max: GRID_SIZE + Y_PAD,
+                        // Con ese margen las marcas se armarían en decimales:
+                        // se fijan a mano en P1, P4 … P22 (P1, P8 … en celular).
+                        afterBuildTicks: axis => {
+                            const step = isPhone ? 7 : 3;
+                            axis.ticks = Array.from(
+                                { length: Math.floor((GRID_SIZE - 1) / step) + 1 },
+                                (_, i) => ({ value: 1 + i * step }),
+                            );
+                        },
                         ticks: {
-                            // stepSize 3 → P1, P4 … P22 (arranca y termina justo).
-                            stepSize: isPhone ? 7 : 3,
                             callback: v => 'P' + v,
                             font: { size: isPhone ? 10 : 11 },
                         },
@@ -296,39 +455,16 @@
                 },
                 plugins: {
                     legend: { display: false },
+                    // Tarjeta propia en HTML en lugar del tooltip de texto de Chart.js.
                     tooltip: {
-                        backgroundColor: 'rgba(10,10,20,0.94)',
-                        borderColor: 'rgba(255,255,255,0.12)',
-                        borderWidth: 1,
-                        padding: 12,
-                        displayColors: false,
-                        titleFont: { size: 13 },
-                        bodyFont: { size: 12 },
-                        callbacks: {
-                            title: items => {
-                                const r = rounds[items[0].dataIndex];
-                                return `R${r.round} · ${r.name} GP`;
-                            },
-                            label: () => '',
-                            afterBody: items => {
-                                const r = rounds[items[0].dataIndex];
-                                const delta = r.grid != null && !r.retired ? r.grid - r.finish : null;
-                                const lines = [
-                                    `Grid    ${r.gridLabel}`,
-                                    `Finish  ${r.retired ? 'DNF (classified P' + r.finish + ')' : 'P' + r.finish}`,
-                                ];
-                                if(delta !== null && delta !== 0){
-                                    lines.push(`${delta > 0 ? 'Gained' : 'Lost'}  ${Math.abs(delta)} place${Math.abs(delta) > 1 ? 's' : ''}`);
-                                }
-                                lines.push(`Points  ${r.pts}${r.sprintPts ? ` (incl. ${r.sprintPts} sprint)` : ''}`);
-                                if(r.fastestLap) lines.push('Fastest lap');
-                                return lines;
-                            },
-                        },
+                        enabled: false,
+                        external: formTooltip(rounds, teamColor),
                     },
                 },
             },
         });
+        addDrawIn(chart);
+        return chart;
     }
 
     // ── Arranque ───────────────────────────────────────────────────────────

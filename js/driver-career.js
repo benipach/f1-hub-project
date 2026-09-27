@@ -19,6 +19,7 @@
         { key: 'podiums', label: 'Podiums' },
         { key: 'poles',   label: 'Poles' },
         { key: 'points',  label: 'Points' },
+        { key: 'fastestLaps', label: 'Fastest laps' },
         { key: 'races',   label: 'Races' },
     ];
 
@@ -92,7 +93,7 @@
 
                     <ul class="career-champion-list">
                         ${titles.map(t => `
-                            <li class="career-champion-year" style="--title-color:${t.color || 'var(--gold, #e8b923)'}">
+                            <li class="career-champion-year" style="--title-color:${t.color || '#E8C77A'}">
                                 ${t.teamId ? `<img src="../img/teams/${t.teamId}-logo.png" alt="${t.team}" class="career-champion-teamlogo" onerror="this.remove()">` : ''}
                                 <img src="../img/trophies/wdc.png" alt="World Championship ${t.year}" class="career-champion-trophy">
                                 <span class="career-champion-season">${t.year}</span>
@@ -210,6 +211,24 @@
         const ORDER = CATEGORIES.map(c => c.key);
         let current = null;
 
+        // Pastilla que se desliza de una pestaña a la otra en vez de saltar:
+        // copia la posición y el tamaño de la pestaña activa.
+        const tabBar = root.querySelector('.career-board-tabs');
+        const pill = document.createElement('span');
+        pill.className = 'career-board-pill';
+        tabBar?.prepend(pill);
+
+        function placePill(){
+            const active = tabs.find(t => t.dataset.cat === current);
+            if(!active) return;
+            pill.style.left   = `${active.offsetLeft}px`;
+            pill.style.top    = `${active.offsetTop}px`;
+            pill.style.width  = `${active.offsetWidth}px`;
+            pill.style.height = `${active.offsetHeight}px`;
+        }
+
+        window.addEventListener('resize', placePill);
+
         function show(key){
             if(key === current) return;                 // tocar la pestaña activa no hace nada
             const prev = current ? ORDER.indexOf(current) : -1;
@@ -218,6 +237,7 @@
             current = key;
 
             tabs.forEach(t => t.classList.toggle('is-active', t.dataset.cat === key));
+            placePill();
             renderBoard(board, rankings[key], names);
 
             board.classList.remove('is-switching');
@@ -228,5 +248,10 @@
 
         tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.cat)));
         show('wins');
+
+        // La primera posición va sin animación; recién después se desliza.
+        requestAnimationFrame(() => pill.classList.add('is-ready'));
+        // Las fuentes pueden cargar después y cambiar el ancho de las pestañas.
+        document.fonts?.ready.then(placePill);
     })();
 })();

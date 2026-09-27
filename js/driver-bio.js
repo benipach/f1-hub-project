@@ -1,9 +1,13 @@
-// ── BIOGRAPHY — el recorrido de la carrera, contado por equipos ──
+// ── CAREER JOURNEY — el recorrido de la carrera, contado por equipos ──
 //
 // Todo sale de data/careers.json, que genera scripts/build-careers.js a partir de
 // los season files. Nada de prosa hardcodeada: los hitos (debut, primeros puntos,
-// primer podio, primera victoria, primera pole) se derivan de resultados reales,
-// así la sección se arma sola para cualquier piloto del dataset.
+// primer podio, primera victoria, primera pole, títulos) se derivan de resultados
+// reales, así la sección se arma sola para cualquier piloto del dataset.
+//
+// Dos piezas: una cinta con un casillero por año pintado con el color del equipo
+// (la carrera entera de un vistazo), y un capítulo por equipo con su bloque de
+// identidad, sus cifras y los hitos como grilla de tarjetas.
 
 (function(){
     const TWEMOJI_BASE = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/';
@@ -28,7 +32,7 @@
     };
 
     // "2015, 2016" → "2015–2016";  "2016, 2017, 2026" → "2016–2017 · 2026"
-    // Importante: el dataset no tiene 2018-2025, así que un rango corrido mentiría.
+    // Un rango corrido mentiría si hay temporadas sin correr en el medio.
     function seasonLabel(seasons){
         const runs = [];
         for(const y of seasons){
@@ -42,45 +46,8 @@
     }
 
     const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
-
     const fmtNum = n => Number(n).toLocaleString('en-US');
-
-    // Franja de stats de la era. Sin tarjetas (la sección entera va sin
-    // tarjetas, ver driver.css): una sola línea de cifras separadas por
-    // filetes, y debajo de las que son un ratio (wins, podiums, poles) una
-    // barra fina del color del equipo con el porcentaje sobre las carreras de
-    // esa era — 5 podios en 37 carreras y 5 en 120 no cuentan lo mismo.
-    // Points lleva el promedio por carrera por el mismo motivo.
-    function eraStats(era){
-        const races = era.races || 0;
-        const pct = n => races ? Math.round((n / races) * 100) : 0;
-        const rate = n => ({ pct: pct(n), sub: `${pct(n)}% of races` });
-
-        const items = [
-            { label: 'Races',   value: races },
-            { label: 'Wins',    value: era.wins,    ...rate(era.wins) },
-            { label: 'Podiums', value: era.podiums, ...rate(era.podiums) },
-            { label: 'Poles',   value: era.poles,   ...rate(era.poles) },
-            { label: 'Points',  value: era.points,  sub: races ? `${(era.points / races).toFixed(1)} per race` : null },
-        ];
-        // era.best es la mejor POSICIÓN DE LLEGADA en una carrera de esa etapa
-        // (ver build-careers.js: sale de bestRace), no el mejor puesto en un
-        // campeonato — por eso el subtítulo lo aclara. Sólo se muestra si el
-        // piloto no ganó con ese equipo: con una victoria, "Best: P1" repite
-        // lo que ya dice la celda de Wins.
-        if(era.best != null && !era.wins){
-            items.push({ label: 'Best', value: `P${era.best}`, sub: 'race finish' });
-        }
-
-        return `<ul class="bio-era-stats">${items.map(({ label, value, sub, pct }) => `
-            <li class="bio-era-stat">
-                <span class="bio-era-stat-value">${typeof value === 'number' ? fmtNum(value) : value}</span>
-                <span class="bio-era-stat-label">${label}</span>
-                ${sub ? `<span class="bio-era-stat-sub">${sub}</span>` : ''}
-                ${pct != null ? `<span class="bio-era-stat-bar" aria-hidden="true"><i style="width:${pct}%"></i></span>` : ''}
-            </li>
-        `).join('')}</ul>`;
-    }
+    const pad2 = n => String(n).padStart(2, '0');
 
     // Varios hitos pueden caer en la misma carrera — ganar en el primer podio es
     // justamente lo interesante — así que se muestran como un solo momento.
@@ -121,63 +88,178 @@
         .map((l, i) => i === 0 ? l : l.charAt(0).toLowerCase() + l.slice(1))
         .join(' & ');
 
-    function milestoneHtml(m){
+    // ── Cinta de carrera: un casillero por año, del debut a la última temporada ──
+    // Un año con dos equipos (Verstappen 2016) se pinta con el último; un año sin
+    // carreras queda como hueco rayado. Los títulos llevan una marca dorada.
+    function ribbonHtml(career){
+        const seasons = career.seasons;
+        const from = seasons[0], to = seasons[seasons.length - 1];
+        const titles = career.titleYears || [];
+        const cells = [];
+        let prevTeam = null;
+
+        for(let y = from; y <= to; y++){
+            const era = [...career.eras].reverse().find(e => e.seasons.includes(y)) || null;
+            const starts = era && era.team !== prevTeam;
+            prevTeam = era?.team ?? null;
+            cells.push(`
+                <li class="jr-year${era ? '' : ' is-gap'}${titles.includes(y) ? ' is-title' : ''}${starts ? ' is-start' : ''}"
+                    style="--c:${era?.color || 'transparent'}"
+                    title="${y}${era ? ` · ${era.team}` : ' · No races'}${titles.includes(y) ? ' · World Champion' : ''}">
+                    <i></i><span>${y}</span>
+                </li>
+            `);
+        }
+
+        return `
+            <div class="jr-ribbon">
+                <div class="jr-ribbon-head">
+                    <p class="jr-ribbon-summary">
+                        <b>${plural(career.races, 'race')}</b> across <b>${plural(seasons.length, 'season')}</b>
+                        with <b>${plural(career.eras.length, 'team')}</b>
+                    </p>
+                    ${titles.length ? `<p class="jr-ribbon-legend"><i></i>World title</p>` : ''}
+                </div>
+                <ol class="jr-years">${cells.join('')}</ol>
+            </div>
+        `;
+    }
+
+    // ── Cifras de cada equipo ──
+    // Debajo de las que son un ratio va el porcentaje sobre las carreras de esa
+    // etapa (5 podios en 37 carreras y 5 en 120 no cuentan lo mismo); Points
+    // lleva el promedio por carrera.
+    function eraStats(era){
+        const races = era.races || 0;
+        const pct = n => races ? `${Math.round((n / races) * 100)}%` : '—';
+
+        const items = [
+            { label: 'Races',   value: races },
+            { label: 'Wins',    value: era.wins,    sub: pct(era.wins) },
+            { label: 'Podiums', value: era.podiums, sub: pct(era.podiums) },
+            { label: 'Poles',   value: era.poles,   sub: pct(era.poles) },
+            { label: 'Points',  value: era.points,  sub: races ? `${(era.points / races).toFixed(1)} / race` : null },
+        ];
+        // era.best es la mejor llegada en carrera con ese equipo (no el mejor
+        // campeonato). Sólo si no ganó: con victorias, "P1" repetiría Wins.
+        if(era.best != null && !era.wins){
+            items.push({ label: 'Best finish', value: `P${era.best}` });
+        }
+
+        return `
+            <dl class="jr-stats">
+                ${items.map(({ label, value, sub }) => `
+                    <div>
+                        <dd>${typeof value === 'number' ? fmtNum(value) : value}</dd>
+                        <dt>${label}${sub ? ` <span>${sub}</span>` : ''}</dt>
+                    </div>
+                `).join('')}
+            </dl>
+        `;
+    }
+
+    // ── Hitos como tarjetas ──
+    // Arriba lo que pasó y una ficha con el resultado; abajo el GP y la fecha.
+    function momentHtml(m){
         const flag = flagUrl(m.iso);
         const isTitle = m.labels.some(isTitleLabel);
         const isStreak = m.labels.includes(STREAK_LABEL);
         const isWin = isTitle || isStreak || m.labels.some(isWinLabel);
-        const result = isTitle
-            ? 'Championship secured'
+        const chip = isTitle
+            ? 'WDC'
             : isStreak
-                ? `${m.streakLength} wins in a row`
+                ? `×${m.streakLength}`
                 : m.labels.length === 1 && m.labels[0] === 'First pole'
-                    ? 'P1 in qualifying'
-                    : `Finished P${m.pos}`;
+                    ? 'Pole'
+                    : `P${m.pos}`;
+
         return `
-            <li class="bio-moment" data-kind="${isTitle ? 'title' : isWin ? 'win' : 'normal'}">
-                <span class="bio-moment-dot" aria-hidden="true"></span>
-                <div class="bio-moment-body">
-                    <p class="bio-moment-label">${joinLabels(m.labels)}</p>
-                    <p class="bio-moment-gp">${flag ? `<img class="bio-moment-flag" src="${flag}" alt="" loading="lazy">` : ''}${m.gp} Grand Prix ${m.year}</p>
-                    <p class="bio-moment-meta">${prettyDate(m.date)} &middot; ${result}</p>
+            <li class="jr-moment" data-kind="${isTitle ? 'title' : isWin ? 'win' : 'normal'}">
+                <div class="jr-moment-top">
+                    <p class="jr-moment-label">${joinLabels(m.labels)}</p>
+                    <span class="jr-moment-chip">${chip}</span>
                 </div>
+                <p class="jr-moment-gp">${flag ? `<img class="jr-moment-flag" src="${flag}" alt="" loading="lazy">` : ''}${m.gp} GP</p>
+                <p class="jr-moment-date">${prettyDate(m.date)}${isStreak ? ` · ${m.streakLength} wins in a row` : ''}</p>
             </li>
         `;
     }
 
-    function render(career){
-        // Cada hito se muestra dentro de la era en la que ocurrió, en orden
-        // cronológico (los hitos ya no llegan en orden: los títulos van al final
-        // del array pero pueden ser anteriores a la racha).
-        const eras = career.eras.map(era => ({
-            ...era,
-            moments: mergeSameRace(
-                career.milestones
-                    .filter(m => era.seasons.includes(m.year) && m.team === era.team)
-                    .sort((a, b) => (a.date || '').localeCompare(b.date || ''))
-            ),
-        }));
+    // ── Récords históricos ──
+    // Van en la misma grilla que los demás hitos pero en tarjeta propia (no se
+    // funden con los de la misma carrera: "first win & broke all-time record…"
+    // sería ilegible). Debajo, qué pasó después con ese récord.
+    const RECORD_NAMES = {
+        titles:      ['Most World Championships', 'title', 'titles'],
+        wins:        ['Most wins', 'win', 'wins'],
+        podiums:     ['Most podiums', 'podium', 'podiums'],
+        poles:       ['Most pole positions', 'pole', 'poles'],
+        points:      ['Most points', 'point', 'points'],
+        fastestLaps: ['Most fastest laps', 'fastest lap', 'fastest laps'],
+        starts:      ['Most race starts', 'start', 'starts'],
+    };
 
-        // Sin fila de totales a propósito: Career stats ya los muestra en grande
-        // unos centímetros más abajo, y repetirlos acá sería ruido.
+    function recordHtml(m, nameOf){
+        const { key, kind, value, peak, current, after } = m.record;
+        const [title, one, many] = RECORD_NAMES[key] || [key, '', ''];
+        const flag = flagUrl(m.iso);
+        const count = n => `${fmtNum(n)} ${n === 1 ? one : many}`;
+
+        const notes = [];
+        if(peak != null && !current) notes.push(`Extended it to ${count(peak)}`);
+        if(after){
+            notes.push(`${after.type === 'surpassed' ? 'Surpassed' : 'Equalled'} by ${nameOf(after.by)}
+                &middot; ${after.gp} GP ${after.year}`);
+        }
+        if(current) notes.push(`Current record: ${count(peak ?? value)}`);
+
+        return `
+            <li class="jr-moment" data-kind="record" data-record="${kind}">
+                <div class="jr-moment-top">
+                    <p class="jr-moment-label">${kind === 'broke' ? 'Broke all-time record' : 'Equalled all-time record'}</p>
+                </div>
+                <p class="jr-moment-record">${title} <span>(${fmtNum(value)})</span></p>
+                <p class="jr-moment-gp">${flag ? `<img class="jr-moment-flag" src="${flag}" alt="" loading="lazy">` : ''}${m.gp} GP</p>
+                <p class="jr-moment-date">${prettyDate(m.date)}</p>
+                ${notes.map(n => `<p class="jr-moment-note">${n}</p>`).join('')}
+            </li>
+        `;
+    }
+
+    function render(career, nameOf){
+        // Cada hito va en la etapa en la que ocurrió, en orden cronológico (los
+        // títulos llegan al final del array pero pueden ser anteriores a la racha).
+        // Los récords se intercalan por fecha; en la misma carrera, después del
+        // hito normal.
+        const byDate = (a, b) => (a.date || '').localeCompare(b.date || '');
+        const eras = career.eras.map(era => {
+            const inEra = career.milestones
+                .filter(m => era.seasons.includes(m.year) && m.team === era.team)
+                .sort(byDate);
+            const moments = [
+                ...mergeSameRace(inEra.filter(m => !m.record)).map(m => ({ m, html: momentHtml(m) })),
+                ...inEra.filter(m => m.record).map(m => ({ m, html: recordHtml(m, nameOf), isRecord: true })),
+            ].sort((a, b) => byDate(a.m, b.m) || (a.isRecord ? 1 : 0) - (b.isRecord ? 1 : 0));
+            return { ...era, moments };
+        });
+
         root.innerHTML = `
-            <p class="bio-lead">
-                ${plural(career.races, 'race')} across ${plural(career.seasons.length, 'season')},
-                with ${plural(career.eras.length, 'team')}.
-            </p>
+            ${ribbonHtml(career)}
 
-            <ol class="bio-eras">
-                ${eras.map(era => `
-                    <li class="bio-era" style="--era-color:${era.color || 'var(--primary-red)'}">
-                        <div class="bio-era-head">
-                            <span class="bio-era-rule" aria-hidden="true"></span>
-                            ${era.teamId ? `<img class="bio-era-logo" src="../img/teams/${era.teamId}-logo.png" alt="${era.team}" onerror="this.remove()">` : ''}
-                            <h3 class="bio-era-team">${era.team}</h3>
-                            <span class="bio-era-years">${seasonLabel(era.seasons)}</span>
-                            ${era.titles?.length ? `<span class="bio-era-titles">${plural(era.titles.length, 'title')}</span>` : ''}
+            <ol class="jr-eras">
+                ${eras.map((era, i) => `
+                    <li class="jr-era" style="--c:${era.color || 'var(--primary-red)'}">
+                        <div class="jr-era-id">
+                            <span class="jr-era-index">${pad2(i + 1)}</span>
+                            ${era.teamId ? `<img class="jr-era-logo" src="../img/teams/${era.teamId}-logo.png" alt="" onerror="this.remove()">` : ''}
+                            <h3 class="jr-era-team">${era.team}</h3>
+                            <p class="jr-era-years">${seasonLabel(era.seasons)} · ${plural(era.seasons.length, 'season')}</p>
+                            ${era.titles?.length ? `<p class="jr-era-titles">${era.titles.length}× World Champion</p>` : ''}
                         </div>
-                        ${eraStats(era)}
-                        ${era.moments.length ? `<ul class="bio-moments">${era.moments.map(milestoneHtml).join('')}</ul>` : ''}
+                        <div class="jr-era-main">
+                            ${eraStats(era)}
+                            ${era.moments.length ? `<ul class="jr-moments">${era.moments.map(x => x.html).join('')}</ul>` : ''}
+                        </div>
                     </li>
                 `).join('')}
             </ol>
@@ -185,9 +267,9 @@
     }
 
     (async function init(){
-        let careers;
+        let careers, drivers;
         try {
-            ({ careers } = await window.driverData);
+            ({ careers, drivers } = await window.driverData);
         } catch (err) {
             console.error('No se pudo cargar careers.json', err);
             root.classList.add('is-empty');
@@ -196,6 +278,11 @@
 
         const career = careers[driverId];
         if(!career || !career.eras?.length){ root.classList.add('is-empty'); return; }
-        render(career);
+        // Nombre de quien superó o igualó un récord, desde drivers.json.
+        const nameOf = id => {
+            const d = drivers?.[id];
+            return d ? `${d.firstName} ${d.lastName}` : id.replace(/-/g, ' ');
+        };
+        render(career, nameOf);
     })();
 })();
