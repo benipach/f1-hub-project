@@ -372,21 +372,20 @@ function initRaceCardReveal() {
     const title = document.getElementById('calendar-title');
     if (!cards.length) return;
 
-    // Sin animación de entrada para las tarjetas que ya están en pantalla al
-    // renderizar (archive cambia de año con la página ya scrolleada): si no,
-    // quedan invisibles hasta que el observer las vea "entrar".
+    // Título y tarjetas entran al aparecer en pantalla (la animación está en
+    // index.css). El escalonado cuenta solo los que entran en la misma tanda,
+    // así ninguna tarjeta espera por las de arriba. El título se observa
+    // primero para que, si entra junto con las tarjetas, vaya delante.
     _cardRevealObserver = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-            const idx   = cards.indexOf(entry.target);
-            const delay = idx === -1 ? 0 : (idx % 4) * 40;
-            setTimeout(() => entry.target.classList.add('in-view'), delay);
+        entries.filter(entry => entry.isIntersecting).forEach((entry, i) => {
+            entry.target.style.setProperty('--rc-delay', `${i * 90}ms`);
+            entry.target.classList.add('in-view');
             _cardRevealObserver?.unobserve(entry.target);
         });
     }, { threshold: 0.1 });
 
     requestAnimationFrame(() => requestAnimationFrame(() => {
-        cards.forEach(el => _cardRevealObserver?.observe(el));
         if (title) _cardRevealObserver?.observe(title);
+        cards.forEach(el => _cardRevealObserver?.observe(el));
     }));
 }
