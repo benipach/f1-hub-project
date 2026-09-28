@@ -182,6 +182,55 @@
 .lv-strip:is(:hover, :focus-within) .lv-slice.is-open:not(:hover, :focus-visible) :is(.lv-rest, .lv-given, .lv-bignum) { opacity: 0; }
 .lv-strip:is(:hover, :focus-within) .lv-slice.is-open:not(:hover, :focus-visible) .lv-name { left: 50%; transform: translateX(-50%); transition: all 0.5s ease; }
 
+/* Entrada: el script las ordena según el campeonato y recién ahí las muestra
+   (.is-ready), así no cambian de lugar mientras entran. Suben en cascada de
+   izquierda a derecha (--i lo pone el script), la franja del equipo se dibuja
+   de izquierda a derecha y el logo aparece entre sus dos pilotos. Con
+   backwards (no both) la animación suelta la franja al terminar y el hover
+   sigue funcionando igual. */
+.lv-strip:not(.is-ready) { visibility: hidden; }
+
+.lv-strip.is-ready .lv-slice {
+    animation: lv-slice-in 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation-delay: calc(0.1s + var(--i) * 0.04s);
+}
+
+.lv-strip.is-ready .lv-slice::before {
+    transform-origin: left;
+    animation: lv-bar-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation-delay: calc(0.4s + var(--i) * 0.04s);
+}
+
+.lv-strip.is-ready .lv-logo {
+    animation: lv-logo-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation-delay: calc(0.8s + var(--i) * 0.04s);
+}
+
+@keyframes lv-slice-in {
+    from {
+        opacity: 0;
+        transform: translateY(40%);
+    }
+}
+
+@keyframes lv-bar-in {
+    from { transform: scaleX(0); }
+}
+
+/* translate (no transform) para no pisar el translateX(-50%) que lo centra */
+@keyframes lv-logo-in {
+    from {
+        opacity: 0;
+        translate: 0 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lv-strip.is-ready .lv-slice,
+    .lv-strip.is-ready .lv-slice::before,
+    .lv-strip.is-ready .lv-logo { animation: none; }
+}
+
 @media (min-width: 901px) {
     .lv-pair:has(> .lv-slice:is(:hover, :focus-visible, .is-open)) { flex-grow: 6; }
     .lv-strip:is(:hover, :focus-within) .lv-pair:has(> .is-open):not(:has(> .lv-slice:is(:hover, :focus-visible))) { flex-grow: 2; }
@@ -225,11 +274,13 @@
     -webkit-text-stroke: 0.018em #ffffff;
 }
 
-/* Al cargar, las letras suben de a una y se asientan */
+/* Al cargar, las letras suben de a una y se asientan. Arrancan cuando ya
+   pasaron las franjas y la mayoría de los logos, así el título entra casi
+   solo y no compite con ellos. */
 .lv-char {
     display: inline-block;
     animation: lv-char-in 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-    animation-delay: calc(0.15s + var(--i) * 0.05s);
+    animation-delay: calc(1.4s + var(--i) * 0.05s);
 }
 
 @keyframes lv-char-in {

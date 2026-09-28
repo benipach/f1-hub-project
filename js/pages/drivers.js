@@ -108,6 +108,17 @@ function renderTitle(year) {
     title.classList.add('is-ready');
 }
 
+// Numera las franjas en su orden final para la entrada en cascada y las
+// muestra. Cada logo toma el número de su lugar, entre sus dos pilotos.
+function revealHero() {
+    const strip = document.querySelector('.lv-strip');
+    let i = 0;
+    for (const el of strip.querySelectorAll('.lv-slice, .lv-logo')) {
+        el.style.setProperty('--i', el.classList.contains('lv-logo') ? i - 0.5 : i++);
+    }
+    strip.classList.add('is-ready');
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     if (!document.querySelector('.lv-strip')) return;
     let latest;
@@ -116,15 +127,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (err) {
         console.error('Error loading drivers page data:', err);
     }
-    renderTitle(latest?.latestSeason);
     loadTeams('.').then(fillTeamNames).catch(err => console.error('Error loading drivers page data:', err));
-    if (!latest) return;
-    try {
-        const season = await loadSeason('.', latest.latestSeason);
-        const standings = computeStandings(season);
-        sortHero(standings);
-        sortGrid(standings);
-    } catch (err) {
-        console.error('Error loading drivers page data:', err);
+    if (latest) {
+        try {
+            const season = await loadSeason('.', latest.latestSeason);
+            const standings = computeStandings(season);
+            sortHero(standings);
+            sortGrid(standings);
+        } catch (err) {
+            console.error('Error loading drivers page data:', err);
+        }
     }
+    // Con o sin datos: si no cargan, entran en el orden del HTML. El título
+    // va a la par del hero para que su delay se cuente desde el mismo momento.
+    renderTitle(latest?.latestSeason);
+    revealHero();
 });
