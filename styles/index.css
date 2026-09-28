@@ -483,14 +483,6 @@
     font-size: 56px;
     text-transform: uppercase;
     line-height: 0.9;
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity 0.4s ease 0.25s, transform 0.4s ease 0.25s;
-}
-
-.calendar-title.in-view {
-    opacity: 1;
-    transform: translateY(0);
 }
 
 /* Grupo derecho: < ANIO > */
@@ -545,14 +537,7 @@
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 12px;
-    transition: all 0.3s ease, opacity 0.4s ease, transform 0.4s ease;
-    opacity: 0;
-    transform: translateY(6px);
-}
-
-.race-card.in-view {
-    opacity: 1;
-    transform: translateY(0);
+    transition: all 0.3s ease;
 }
 
 .race-card::before {
@@ -813,12 +798,10 @@
 
 .race-card-finished {
     background-color: var(--base-700);
-    opacity: 0.67;
 }
 
 .race-card-finished:hover {
     background-color: var(--base-600);
-    opacity: 1;
 }
 
 .race-card-finished .race-card-content h3 {
@@ -1024,6 +1007,164 @@
 
 @media (max-width: 500px) {
     .race-calendar { grid-template-columns: 1fr; }
+}
+
+/* Entrada */
+
+/* Todo espera oculto hasta que el observer le pone .in-view (ver index.js).
+   Las tarjetas que entran juntas se escalonan con --rc-delay. Las animaciones
+   van con backwards (no both): al terminar sueltan los elementos, así el
+   hover que levanta la tarjeta sigue funcionando. */
+.calendar-title:not(.in-view),
+.race-card:not(.in-view) { opacity: 0; }
+
+/* Título: se descubre de izquierda a derecha, arrancando por la barra roja */
+.calendar-title.in-view {
+    animation: cal-title-in 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+/* Tarjeta: sube desenfocada y se asienta */
+.race-card.in-view {
+    animation: rc-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation-delay: var(--rc-delay, 0s);
+}
+
+/* La franja de color de arriba se dibuja de izquierda a derecha */
+.race-card.in-view::before {
+    transform-origin: left;
+    animation: rc-bar-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation-delay: calc(var(--rc-delay, 0s) + 0.25s);
+}
+
+/* Contenido de las tarjetas chicas: ronda, nombre, fecha, estado, podio y
+   botón suben de a uno, detrás de la tarjeta */
+.race-card.in-view .race-card-content > *,
+.race-card.in-view .race-card-top3-row {
+    animation: rc-part-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation-delay: calc(var(--rc-delay, 0s) + 0.2s + var(--j, 0) * 0.06s);
+}
+
+.race-card-content > :nth-child(2) { --j: 1; }
+.race-card-content > :nth-child(3) { --j: 2; }
+.race-card-content > :nth-child(4) { --j: 3; }
+.race-card-content > :nth-child(5) { --j: 4; }
+.race-card-content > :nth-child(6) { --j: 5; }
+
+/* Podio: los tres puestos entran desde la izquierda, uno detrás del otro,
+   cuando la tabla ya está en su lugar */
+.race-card.in-view .race-card-top3-row { animation-name: rc-row-in; }
+.race-card-top3-row:nth-child(1) { --j: 5; }
+.race-card-top3-row:nth-child(2) { --j: 6; }
+.race-card-top3-row:nth-child(3) { --j: 7; }
+
+/* Próxima carrera: la foto se descubre de izquierda a derecha mientras se
+   aleja; la info entra desde la izquierda de a una línea; el trazado del
+   circuito gira hasta su lugar; y los días del cronograma suben de a uno,
+   cada uno con sus sesiones detrás. */
+.race-card-next.in-view .race-card-next-photo {
+    animation: rc-wipe-in 1s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation-delay: calc(var(--rc-delay, 0s) + 0.2s);
+}
+
+.race-card-next.in-view .race-card-next-photo img {
+    animation: rc-zoom-in 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation-delay: calc(var(--rc-delay, 0s) + 0.2s);
+}
+
+.race-card-next.in-view .race-card-next-info > * {
+    animation: rc-row-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation-delay: calc(var(--rc-delay, 0s) + 0.4s + var(--j, 0) * 0.08s);
+}
+
+.race-card-next-info > :nth-child(2) { --j: 1; }
+.race-card-next-info > :nth-child(3) { --j: 2; }
+.race-card-next-info > :nth-child(4) { --j: 3; }
+
+.race-card-next.in-view .race-card-next-layout {
+    animation: rc-layout-in 1s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation-delay: calc(var(--rc-delay, 0s) + 0.55s);
+}
+
+.race-card-next.in-view .schedule-day {
+    animation: rc-part-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation-delay: calc(var(--rc-delay, 0s) + 0.7s + var(--j, 0) * 0.1s);
+}
+
+.race-card-next.in-view .schedule-session {
+    animation: rc-row-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation-delay: calc(var(--rc-delay, 0s) + 0.9s + var(--j, 0) * 0.1s + var(--k, 0) * 0.06s);
+}
+
+.schedule-day:nth-child(2) { --j: 1; }
+.schedule-day:nth-child(3) { --j: 2; }
+.schedule-day:nth-child(4) { --j: 3; }
+
+/* Sesiones de cada día (el primer hijo es el título del día) */
+.schedule-session:nth-child(3) { --k: 1; }
+.schedule-session:nth-child(4) { --k: 2; }
+
+@keyframes cal-title-in {
+    from {
+        clip-path: inset(-20% 100% -20% 0);
+        transform: translateX(-24px);
+    }
+    to { clip-path: inset(-20% -5% -20% 0); }
+}
+
+@keyframes rc-in {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.96);
+        filter: blur(6px);
+    }
+}
+
+@keyframes rc-bar-in {
+    from { transform: scaleX(0); }
+}
+
+@keyframes rc-part-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+}
+
+@keyframes rc-row-in {
+    from {
+        opacity: 0;
+        transform: translateX(-16px);
+    }
+}
+
+@keyframes rc-wipe-in {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0); }
+}
+
+@keyframes rc-zoom-in {
+    from { transform: scale(1.25); }
+}
+
+@keyframes rc-layout-in {
+    from {
+        opacity: 0;
+        transform: scale(0.85) rotate(-8deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .calendar-title.in-view,
+    .race-card.in-view,
+    .race-card.in-view::before,
+    .race-card.in-view .race-card-content > *,
+    .race-card.in-view .race-card-top3-row,
+    .race-card-next.in-view .race-card-next-photo,
+    .race-card-next.in-view .race-card-next-photo img,
+    .race-card-next.in-view .race-card-next-info > *,
+    .race-card-next.in-view .race-card-next-layout,
+    .race-card-next.in-view .schedule-day,
+    .race-card-next.in-view .schedule-session { animation: none; }
 }
 
 /* Animation */
