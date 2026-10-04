@@ -371,16 +371,16 @@
 
 .live-table .live-col-tight-first {
     padding-left: 15px;
-    padding-right: 5px;
+    padding-right: 8px;
 }
 
 .live-table .live-col-tight-mid {
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
 .live-table .live-col-tight-last {
-    padding-left: 5px;
+    padding-left: 8px;
     padding-right: 15px;
 }
 
@@ -490,6 +490,53 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
 #live-rows-2 tr:nth-child(1) .res-pos.top3 { font-family: 'F1-Bold'; color: #f7d774; }
 #live-rows-2 tr:nth-child(2) .res-pos.top3 { font-family: 'F1-Bold'; color: #d6d6d6; }
 #live-rows-2 tr:nth-child(3) .res-pos.top3 { font-family: 'F1-Bold'; color: #cd9a63; }
+
+/* ---- COLUMN WIDTHS ----
+   Fixed widths (the <colgroup> that sizeTableColumns() in live.js fills in):
+   a value changing never moves the columns. The empty last column takes the
+   spare width. */
+.live-table.has-fixed-columns {
+    table-layout: fixed;
+}
+
+.live-table .live-col-fill {
+    padding: 0;
+}
+
+/* Times right-aligned: the decimal point always lands in the same place. */
+.live-table .live-num {
+    text-align: right;
+}
+
+/* Hidden copy of the table the widths are measured on: each column at the
+   width of its content, on one line. */
+.live-table.live-table--probe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: auto;
+    table-layout: auto;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.live-table--probe th,
+.live-table--probe td {
+    white-space: nowrap;
+}
+
+/* ---- POSITION CHANGES ----
+   When a driver changes place the row slides from where it was to its new
+   place (patchTableRows() in live.js), above the others while it moves. */
+#live-rows-2 tr.is-moving {
+    position: relative;
+    z-index: 1;
+    transition: all 0.5s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #live-rows-2 tr.is-moving { transition: none; }
+}
 
 /* ---- ZEBRA ROWS ----
    Alternating rows so you don't lose the line when reading end to end

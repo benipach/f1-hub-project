@@ -1592,10 +1592,13 @@ function buildTableColumns(view) {
     };
 
     const columns = [];
-    const add = (th, td) => columns.push({ th, td });
+    // samples: the widest values the column can hold, to size it (see
+    // COLUMN WIDTHS); sampleHTML when they're markup instead of text.
+    const add = (th, td, sizing = {}) => columns.push({ th, td, ...sizing });
 
     add('<th class="live-col-pos live-col-roomy">Pos</th>',
-        (r) => `<td class="res-pos live-col-roomy${r.isTop3 ? ' top3' : ''}">${r.line.Position ?? r.posNum}</td>`);
+        (r) => `<td class="res-pos live-col-roomy${r.isTop3 ? ' top3' : ''}">${r.line.Position ?? r.posNum}</td>`,
+        { samples: ['20'] });
 
     if (cols.delta) {
         add('<th class="live-delta-col"></th>',
@@ -1620,27 +1623,37 @@ function buildTableColumns(view) {
         add('<th class="live-col-status"></th>',
             (r) => `<td class="live-col-status">${r.chequered
                 ? '<span class="live-status-wrap"><span class="live-status-badge live-status-badge--chequered" title="Took the chequered flag"><span class="live-chequered-icon" aria-hidden="true"></span>FIN</span></span>'
-                : r.statusLabel ? `<span class="live-status-wrap"><span class="live-status-badge" style="color:${r.teamColor}">${r.statusLabel}</span></span>` : ''}</td>`);
+                : r.statusLabel ? `<span class="live-status-wrap"><span class="live-status-badge" style="color:${r.teamColor}">${r.statusLabel}</span></span>` : ''}</td>`,
+            { samples: [
+                '<span class="live-status-wrap"><span class="live-status-badge">OUT</span></span>',
+                '<span class="live-status-wrap"><span class="live-status-badge live-status-badge--chequered"><span class="live-chequered-icon"></span>FIN</span></span>',
+            ], sampleHTML: true });
     }
 
+    // Times go right-aligned (.live-num): with the decimal point always in the
+    // same place, a value changing only moves its left edge, and only a bit.
     if (cols.gap) {
-        add('<th class="live-col-roomy">Gap</th>',
-            (r) => `<td class="live-muted live-col-roomy">${r.gapText}</td>`);
+        add('<th class="live-col-roomy live-num">Gap</th>',
+            (r) => `<td class="live-muted live-col-roomy live-num">${r.gapText}</td>`,
+            { samples: ['Leader', '+100.000', '+20 Laps'] });
     }
 
     if (cols.interval) {
-        add('<th class="live-col-roomy">Interval</th>',
-            (r) => `<td class="live-muted live-col-roomy">${r.intervalText}</td>`);
+        add('<th class="live-col-roomy live-num">Interval</th>',
+            (r) => `<td class="live-muted live-col-roomy live-num">${r.intervalText}</td>`,
+            { samples: ['Leader', '+40.000', '+20 Laps'] });
     }
 
     if (cols.bestLap) {
-        add(`<th class="live-col-best ${pad('bestLap')}">Best Lap</th>`,
-            (r) => `<td class="live-col-best ${r.bestLapClass} ${pad('bestLap')}">${r.bestLap.Value ?? '-'}</td>`);
+        add(`<th class="live-col-best ${pad('bestLap')} live-num">Best Lap</th>`,
+            (r) => `<td class="live-col-best ${r.bestLapClass} ${pad('bestLap')} live-num">${r.bestLap.Value ?? '-'}</td>`,
+            { samples: ['1:40.000'] });
     }
 
     if (cols.lastLap) {
-        add(`<th class="${pad('lastLap')}">Last Lap</th>`,
-            (r) => `<td class="${r.lapClass} ${pad('lastLap')}">${r.lastLap.Value ?? '-'}</td>`);
+        add(`<th class="${pad('lastLap')} live-num">Last Lap</th>`,
+            (r) => `<td class="${r.lapClass} ${pad('lastLap')} live-num">${r.lastLap.Value ?? '-'}</td>`,
+            { samples: ['1:40.000'] });
     }
 
     if (showSectors) {
@@ -1662,7 +1675,7 @@ function buildTableColumns(view) {
                 const colorClass = cols.sectors ? timingClass(r.num, `s${idx + 1}`, value) : '';
                 const microOnly = cols.sectors ? '' : ' live-sector-cell--micro-only';
                 return `<td class="live-sector-cell ${cls} ${colorClass}${microOnly}"><span class="live-sector-wrap">${bars}${time}</span></td>`;
-            });
+            }, cols.sectors ? { samples: ['40.000'] } : {});
         });
     }
 
@@ -1673,9 +1686,15 @@ function buildTableColumns(view) {
     }
 
     if (cols.laps) {
-        add('<th class="live-col-roomy">Laps</th>',
-            (r) => `<td class="live-col-roomy">${r.line.NumberOfLaps ?? '-'}</td>`);
+        add('<th class="live-col-roomy live-num">Laps</th>',
+            (r) => `<td class="live-col-roomy live-num">${r.line.NumberOfLaps ?? '-'}</td>`,
+            { samples: ['70'] });
     }
+
+    // Takes the spare width, so the columns above stay together on the left.
+    add('<th class="live-col-fill" aria-hidden="true"></th>',
+        () => '<td class="live-col-fill"></td>',
+        { fill: true });
 
     return columns;
 }
@@ -1845,12 +1864,260 @@ function render() {
                 </tr>
             `;
         });
-        tbody2.innerHTML = withQualySeparators(rowHtmls, cutoffLines, tableColspan);
+        patchTableRows(tbody2, withQualySeparators(rowHtmls, cutoffLines, tableColspan));
+        sizeTableColumns(columns);
     }
 
     refreshTrackSectors();
     trackCarProgress();
     updatePositionOverlay();
+}
+
+// ── COLUMN WIDTHS ─────────────────────────────────────────────────────────
+// The table used to size each column by what it held at that moment, and
+// share out the spare width by it too: a single number changing moved every
+// column a few pixels. Now each column gets the width of the widest value it
+// can hold (its `samples`: "1:40.000", "+100.000", "+20 Laps"...) or its
+// header, whichever is wider, and the table is laid out with those fixed
+// widths (table-layout: fixed in live.css). The spare width goes to the empty
+// last column, so the rest stay together on the left.
+//
+// The widths are measured on a hidden copy of the table (same classes, so the
+// same fonts and padding) holding the real rows plus one row per sample. They
+// only depend on the columns and the drivers, so they're measured again only
+// when the columns change, a row comes or goes, the fonts finish loading or,
+// as a safety net, something no longer fits (e.g. a longer tyre history).
+let columnWidthsKey = null;
+
+function measureColumnWidths(table, columns, rows) {
+    const probe = table.cloneNode(false);
+    probe.removeAttribute('id');
+    probe.classList.add('live-table--probe');
+    probe.classList.remove('has-fixed-columns');
+    const head = table.tHead.cloneNode(true);
+    head.removeAttribute('id');
+    probe.appendChild(head);
+
+    const body = document.createElement('tbody');
+    for (const row of rows) body.appendChild(row.cloneNode(true));
+    const sampleRows = Math.max(0, ...columns.map((c) => (c.samples ? c.samples.length : 0)));
+    for (let k = 0; k < sampleRows; k++) {
+        const row = rows[0].cloneNode(true);
+        columns.forEach((c, i) => {
+            const sample = c.samples && c.samples[k];
+            const cell = row.cells[i];
+            if (sample == null || !cell) return;
+            const target = cell.querySelector('.live-sector-time') || cell;
+            if (c.sampleHTML) target.innerHTML = sample;
+            else target.textContent = sample;
+        });
+        body.appendChild(row);
+    }
+    probe.appendChild(body);
+
+    table.parentNode.appendChild(probe);
+    const widths = [...head.rows[0].cells].map((th) => th.getBoundingClientRect().width);
+    probe.remove();
+    return widths;
+}
+
+function columnsOverflow(rows) {
+    return rows.some((row) => [...row.cells].some((td) => !td.classList.contains('live-col-fill') && td.scrollWidth > td.clientWidth + 1));
+}
+
+function sizeTableColumns(columns) {
+    const tbody = document.getElementById('live-rows-2');
+    const table = tbody && tbody.closest('table');
+    if (!table || !table.tHead) return;
+    const rows = [...tbody.querySelectorAll(':scope > tr[data-num]')];
+    if (!rows.length) return;
+
+    const key = `${lastHeaderHTML}|${rows.length}`;
+    if (key === columnWidthsKey && !columnsOverflow(rows)) return;
+    columnWidthsKey = key;
+
+    const widths = measureColumnWidths(table, columns, rows);
+    let colgroup = table.querySelector(':scope > colgroup');
+    if (!colgroup) {
+        colgroup = document.createElement('colgroup');
+        table.insertBefore(colgroup, table.firstChild);
+    }
+    colgroup.innerHTML = columns
+        .map((c, i) => (c.fill ? '<col>' : `<col style="width:${Math.ceil(widths[i])}px">`))
+        .join('');
+    table.classList.add('has-fixed-columns');
+}
+
+// Measured with the fallback font they'd be wrong: once the F1 font is in,
+// they're measured again.
+if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => { columnWidthsKey = null; });
+}
+
+// ── ROW TRANSITIONS ───────────────────────────────────────────────────────
+// The table used to be rebuilt with innerHTML on every update, so when two
+// drivers swapped places the rows jumped. Now each driver's <tr> is kept
+// (only its content and class are updated) and only the rows that change
+// place are moved, so the rest keep animating undisturbed. A row that moved
+// starts where it was drawn (even mid-animation) and slides to its new place
+// (.is-moving in live.css).
+function rowTranslateY(tr) {
+    if (!tr.classList.contains('is-moving')) return 0;
+    const transform = getComputedStyle(tr).transform;
+    return transform && transform !== 'none' ? new DOMMatrixReadOnly(transform).m42 : 0;
+}
+
+// ── NUMBER TRANSITIONS ────────────────────────────────────────────────────
+// When a number in the table changes (gap, interval, lap and sector times,
+// laps...), it doesn't swap at once: it counts up or down to the new value in
+// the same 0.5s ease as the rows. If it changes again mid-count, it carries on
+// from the value on screen. Only between values with the same shape
+// ("+1.234" → "+0.987", "1:35.130" → "1:34.802"); "Leader", "-" or "+1 LAP"
+// → "+2 LAPS" just change.
+const NUMBER_TWEEN_MS = 500;
+const numberTweens = new Map(); // "num|cell" → { from, to, start, shape, toText, node }
+let numberTweenFrame = null;
+
+// "+1.234" → { prefix '', sign '+', minutes: false, decimals: 3, value 1.234, suffix '' }
+function parseTweenable(text) {
+    const m = /^(\D*?)([+-]?)(?:(\d+):)?(\d+)(?:\.(\d+))?(\D*)$/.exec(text);
+    if (!m || !/\d/.test(text)) return null;
+    const seconds = Number(`${m[4]}.${m[5] || '0'}`) + (m[3] != null ? Number(m[3]) * 60 : 0);
+    return {
+        prefix: m[1],
+        plus: m[2] === '+',
+        minutes: m[3] != null,
+        decimals: (m[5] || '').length,
+        suffix: m[6],
+        value: m[2] === '-' ? -seconds : seconds,
+    };
+}
+
+function formatTweenable(shape, value) {
+    const scale = 10 ** shape.decimals;
+    const total = Math.round(Math.abs(value) * scale);
+    let body;
+    // "1:00.500" → "59.900" goes through "1:00.2", not "60.2".
+    if (shape.minutes || (shape.minutesAbove60 && total >= 60 * scale)) {
+        const minutes = Math.floor(total / (60 * scale));
+        const seconds = ((total - minutes * 60 * scale) / scale).toFixed(shape.decimals);
+        body = `${minutes}:${seconds.padStart(shape.decimals ? shape.decimals + 3 : 2, '0')}`;
+    } else {
+        body = (total / scale).toFixed(shape.decimals);
+    }
+    const sign = value < 0 && total > 0 ? '-' : shape.plus ? '+' : '';
+    return `${shape.prefix}${sign}${body}${shape.suffix}`;
+}
+
+// CSS's "ease" (cubic-bezier(0.25, 0.1, 0.25, 1)), so it matches the rows.
+function cssEase(t) {
+    const curve = (a, b, s) => 3 * a * s * (1 - s) ** 2 + 3 * b * s * s * (1 - s) + s ** 3;
+    let lo = 0;
+    let hi = 1;
+    let s = t;
+    for (let i = 0; i < 20; i++) {
+        s = (lo + hi) / 2;
+        if (curve(0.25, 0.25, s) < t) lo = s; else hi = s;
+    }
+    return curve(0.1, 1, s);
+}
+
+// Every text inside the row's cells that holds a number, keyed by cell and
+// order inside the cell (the same key before and after updating the row).
+function numericTextNodes(tr) {
+    const found = new Map();
+    [...tr.cells].forEach((td, cellIndex) => {
+        const walker = document.createTreeWalker(td, NodeFilter.SHOW_TEXT);
+        let k = 0;
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+            if (parseTweenable(node.nodeValue)) found.set(`${tr.dataset.num}|${cellIndex}.${k++}`, node);
+        }
+    });
+    return found;
+}
+
+function stepNumberTweens() {
+    const now = performance.now();
+    for (const [key, tween] of numberTweens) {
+        const t = Math.min(1, (now - tween.start) / NUMBER_TWEEN_MS);
+        if (tween.node.isConnected) {
+            tween.node.nodeValue = t < 1 ? formatTweenable(tween.shape, tween.from + (tween.to - tween.from) * cssEase(t)) : tween.toText;
+        }
+        if (t >= 1) numberTweens.delete(key);
+    }
+    numberTweenFrame = numberTweens.size ? requestAnimationFrame(stepNumberTweens) : null;
+}
+
+// After the row's content was replaced: each number that changed starts
+// counting from what was on screen (`previous`), and the ones still counting
+// keep going on the new text node.
+function tweenRowNumbers(tr, previous) {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    for (const [key, node] of numericTextNodes(tr)) {
+        const toText = node.nodeValue;
+        const running = numberTweens.get(key);
+        if (running && running.toText === toText) {
+            running.node = node;
+            continue;
+        }
+        const shownText = previous.get(key);
+        const from = shownText != null && parseTweenable(shownText);
+        const to = parseTweenable(toText);
+        if (!from || from.prefix !== to.prefix || from.suffix !== to.suffix || from.value === to.value) {
+            numberTweens.delete(key);
+            continue;
+        }
+        const shape = { ...to, minutesAbove60: from.minutes };
+        numberTweens.set(key, { from: from.value, to: to.value, start: performance.now(), shape, toText, node });
+        node.nodeValue = shownText;
+    }
+    if (numberTweens.size && !numberTweenFrame) numberTweenFrame = requestAnimationFrame(stepNumberTweens);
+}
+
+function patchTableRows(tbody, html) {
+    const template = document.createElement('template');
+    template.innerHTML = html;
+
+    const oldRows = {};
+    const before = {};
+    tbody.querySelectorAll(':scope > tr[data-num]').forEach((tr) => {
+        oldRows[tr.dataset.num] = tr;
+        before[tr.dataset.num] = { top: tr.offsetTop, shift: rowTranslateY(tr) };
+    });
+
+    const nodes = [...template.content.children].map((fresh) => {
+        const old = fresh.dataset.num && oldRows[fresh.dataset.num];
+        if (!old) return fresh;
+        old.className = fresh.className + (old.classList.contains('is-moving') ? ' is-moving' : '');
+        const previous = new Map([...numericTextNodes(old)].map(([key, node]) => [key, node.nodeValue]));
+        old.innerHTML = fresh.innerHTML;
+        tweenRowNumbers(old, previous);
+        return old;
+    });
+    // In order, touching as few rows as possible.
+    nodes.forEach((node, i) => {
+        if (tbody.children[i] !== node) tbody.insertBefore(node, tbody.children[i] || null);
+    });
+    while (tbody.children.length > nodes.length) tbody.lastElementChild.remove();
+
+    if (!tbody.dataset.rowTransitions) {
+        tbody.dataset.rowTransitions = 'on';
+        tbody.addEventListener('transitionend', (e) => {
+            if (e.propertyName === 'transform' && e.target.matches('tr.is-moving')) e.target.classList.remove('is-moving');
+        });
+    }
+
+    for (const [num, tr] of Object.entries(oldRows)) {
+        if (!tr.isConnected) continue;
+        const moved = before[num].top - tr.offsetTop;
+        if (Math.abs(moved) < 1) continue;
+        tr.style.transition = 'none';
+        tr.style.transform = `translateY(${moved + before[num].shift}px)`;
+        tr.getBoundingClientRect(); // commits the starting point before animating
+        tr.style.transition = '';
+        tr.classList.add('is-moving');
+        tr.style.transform = '';
+    }
 }
 
 // ── RACE CONTROL ──────────────────────────────────────────────────────────
