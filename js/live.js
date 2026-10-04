@@ -2254,9 +2254,21 @@ function fetchTrackData(key, year) {
         });
 }
 
+// Circuits the API doesn't have (it starts in 2018, so Sepang isn't there):
+// the same format, built from a real lap in the archived Position.z, in
+// data/track-layouts/{Circuit.Key}.json.
+function fetchLocalTrackData(key) {
+    return fetch(`./data/track-layouts/${key}.json`)
+        .then((res) => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.json();
+        });
+}
+
 // Requests the layout of the session's circuit (once per circuit and
 // year). If the session's year isn't loaded in the API yet, it tries
 // the previous one: the layout almost never changes from one year to the next.
+// If the API doesn't have the circuit at all, it uses the local layout.
 function loadTrackMap() {
     const target = sessionCircuitTarget();
     if (!target) return;
@@ -2266,6 +2278,7 @@ function loadTrackMap() {
 
     fetchTrackData(target.key, target.year)
         .catch(() => fetchTrackData(target.key, target.year - 1))
+        .catch(() => fetchLocalTrackData(target.key))
         .then((data) => {
             if (trackMapRequestId !== requestId) return; // the session changed in the meantime
             trackMap = buildTrackGeometry(data);
