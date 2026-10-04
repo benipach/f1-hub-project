@@ -55,12 +55,18 @@
 /* Track: a wide dark grey border and, on top, the line (colored by
    sector, or neutral while there are no sector times). Same language as
    F1's official map. */
+.track-edge,
 .track-outline,
 .track-line,
 .track-sector {
     fill: none;
     stroke-linejoin: round;
     stroke-linecap: round;
+}
+
+/* Thin white edge around the border, like the official map. */
+.track-edge {
+    stroke: rgba(255,255,255,0.85);
 }
 
 .track-outline {
@@ -72,9 +78,9 @@
 }
 
 /* Sector colors from the official map. */
-.track-sector--s1 { stroke: rgb(232,0,45); }
-.track-sector--s2 { stroke: rgb(0,161,255); }
-.track-sector--s3 { stroke: rgb(255,211,1); }
+.track-sector--s1 { stroke: #F41076; }
+.track-sector--s2 { stroke: #FFDE00; }
+.track-sector--s3 { stroke: #4399E2; }
 /* Chequered flag at the start line: a grid of small squares (startFlagHTML()
    in live.js). */
 .track-flag-white { fill: #fff; }
@@ -86,13 +92,13 @@
 
 /* Corner numbers in small circles. */
 .track-corners circle {
-    fill: rgb(24,24,32);
-    stroke: rgba(255,255,255,0.35);
+    fill: #fff;
+    stroke: #000;
     /* stroke-width is set by live.js in screen px (1px) */
 }
 
 .track-corners text {
-    fill: var(--text-light);
+    fill: #000;
     font-family: 'F1-Regular', sans-serif;
     font-weight: 600;
     text-anchor: middle;
@@ -2123,6 +2129,8 @@ img.emoji {
 
 /* Yellow flag in a marshal sector: the stretch is painted over
    the track and blinks; double yellow, faster. */
+/* Blinks between yellow and orange (not with opacity: the S2 color under
+   it is yellow too, and a faded yellow over it didn't change anything). */
 .track-flag-sector {
     fill: none;
     stroke: rgb(255,211,1);
@@ -2136,11 +2144,12 @@ img.emoji {
 }
 
 @keyframes track-flag-blink {
-    0%, 100% { opacity: 1; }
-    50%      { opacity: 0.25; }
+    0%, 100% { stroke: rgb(255,211,1); }
+    50%      { stroke: rgb(255,120,0); }
 }
 
-/* SC / VSC / red: the whole track is tinted with a soft pulse. */
+/* SC / VSC: the whole track is tinted with a soft pulse. Red flag: solid
+   red, no pulse. */
 .track-status-line {
     fill: none;
     stroke-linejoin: round;
@@ -2157,7 +2166,7 @@ img.emoji {
 
 .track-status--red .track-status-line {
     stroke: rgb(255,40,40);
-    animation: track-status-pulse 2s ease-in-out infinite;
+    opacity: 1;
 }
 
 @keyframes track-status-pulse {
@@ -2320,7 +2329,8 @@ img.emoji {
 @media (prefers-reduced-motion: reduce) {
     .track-flag-sector,
     .track-status-line { animation: none; }
+    /* Without the blink, orange: it stands out from every sector color. */
+    .track-flag-sector { stroke: rgb(255,120,0); }
     .track-status--sc .track-status-line,
-    .track-status--vsc .track-status-line,
-    .track-status--red .track-status-line { opacity: 0.8; }
+    .track-status--vsc .track-status-line { opacity: 0.8; }
 }

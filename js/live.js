@@ -2666,6 +2666,8 @@ function drawTrackMap(isRetry = false) {
     const upx = trackUnitsPerPx(host, viewBox) || span / 500;
     trackMap.unitsPerPx = upx;
     const w = 6 * upx;
+    // The colored line goes a bit thinner than w, inside the same border.
+    const lineW = 3 * upx;
 
     // Track: border + line. With sectors, the line goes in three colored
     // stretches; without sectors, a single neutral stretch.
@@ -2674,22 +2676,24 @@ function drawTrackMap(isRetry = false) {
         const [s1, s2] = trackSectorShares;
         const bounds = [[0, s1], [s1, s1 + s2], [s1 + s2, 1]];
         lineHTML = bounds.map(([from, to], i) =>
-            `<path class="track-sector track-sector--s${i + 1}" d="${trackPathD(trackMap.lapSegmentPoints(from, to), false)}" style="stroke-width:${w.toFixed(1)}"></path>`,
+            `<path class="track-sector track-sector--s${i + 1}" d="${trackPathD(trackMap.lapSegmentPoints(from, to), false)}" style="stroke-width:${lineW.toFixed(1)}"></path>`,
         ).join('');
     } else {
-        lineHTML = `<path class="track-line" d="${trackPathD(points)}" style="stroke-width:${w.toFixed(1)}"></path>`;
+        lineHTML = `<path class="track-line" d="${trackPathD(points)}" style="stroke-width:${lineW.toFixed(1)}"></path>`;
     }
 
     const labels = placeCornerLabels(corners, points, upx);
     host.innerHTML = `
         <svg class="track-svg" viewBox="${viewBox.map((v) => v.toFixed(1)).join(' ')}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Track map">
+            <!-- Thin white edge around the border (2px per side). -->
+            <path class="track-edge" d="${trackPathD(points)}" style="stroke-width:${(w * 2.4 + 4 * upx).toFixed(1)}"></path>
             <path class="track-outline" d="${trackPathD(points)}" style="stroke-width:${(w * 2.4).toFixed(1)}"></path>
             ${lineHTML}
             <!-- SC / VSC / red flag: the whole track gets tinted (see
                  updateTrackStatus). -->
-            <path class="track-status-line" d="${trackPathD(points)}" style="stroke-width:${w.toFixed(1)}"></path>
-            <!-- Yellow flags per marshal sector (updateTrackFlags). -->
-            <g class="track-flags" style="stroke-width:${(w * 1.6).toFixed(1)}"></g>
+            <path class="track-status-line" d="${trackPathD(points)}" style="stroke-width:${lineW.toFixed(1)}"></path>
+            <!-- Yellow flags per marshal sector (updateTrackFlags), on the line itself. -->
+            <g class="track-flags" style="stroke-width:${lineW.toFixed(1)}"></g>
             ${startFlagHTML(points, w * 0.7)}
             <polygon class="track-direction" points="${directionArrowPoints(points, w * 1.6, w * 4)}"></polygon>
             <g class="track-corners">
