@@ -1844,8 +1844,9 @@ function render() {
             // by best lap), so painting it purple is redundant there.
             const bestLapClass = (bestMs != null && bestMs === sessionBestMs && !isPracticeSession && !isQualiSession) ? 'live-lap--fastest' : '';
             // The full purple row highlight only makes sense in Race/Sprint
-            // (bestLapClass is already empty in FP and Q/SQ).
-            const fastestRowClass = bestLapClass ? ' live-row--fastest-map' : '';
+            // (bestLapClass is already empty in FP and Q/SQ), and only without
+            // the Best Lap column: with it, the purple time already says it.
+            const fastestRowClass = bestLapClass && !view.cols.bestLap ? ' live-row--fastest-map' : '';
             const isEliminated = dimAfterPos != null && posNum > dimAfterPos;
 
             // Everything the columns may need (see
