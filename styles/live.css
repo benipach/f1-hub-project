@@ -2195,8 +2195,9 @@ img.emoji {
     50%      { stroke: rgb(255,120,0); }
 }
 
-/* SC / VSC: the whole track is tinted with a soft pulse. Red flag: solid
-   red, no pulse. */
+/* Safety car: the whole track blinks yellow / orange, like a yellow flag
+   sector. VSC: tinted yellow with a soft pulse. Red flag: solid red, no
+   pulse. */
 .track-status-line {
     fill: none;
     stroke-linejoin: round;
@@ -2205,7 +2206,12 @@ img.emoji {
     pointer-events: none;
 }
 
-.track-status--sc .track-status-line,
+.track-status--sc .track-status-line {
+    stroke: rgb(255,211,1);
+    opacity: 1;
+    animation: track-flag-blink 1.2s ease-in-out infinite;
+}
+
 .track-status--vsc .track-status-line {
     stroke: rgb(255,211,1);
     animation: track-status-pulse 2s ease-in-out infinite;
@@ -2378,6 +2384,7 @@ img.emoji {
     .track-status-line { animation: none; }
     /* Without the blink, orange: it stands out from every sector color. */
     .track-flag-sector { stroke: rgb(255,120,0); }
-    .track-status--sc .track-status-line,
     .track-status--vsc .track-status-line { opacity: 0.8; }
+    /* Like the yellow flag sectors: orange without the blink. */
+    .track-status--sc .track-status-line { stroke: rgb(255,120,0); }
 }
