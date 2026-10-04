@@ -177,11 +177,32 @@ function getWeekendRange(gp) {
   return { start: Math.min(...dates), end: Math.max(...dates) };
 }
 
-// The "current" GP is the first one (in round order) whose weekend hasn't
-// finished yet. During a race weekend, that's this weekend. Between
-// weekends, that's the upcoming one. After the last race of the season,
-// falls back to the final GP.
-function getCurrentGP(seasonData, now = new Date()) {
+// SessionInfo.StartDate comes in the track's local time, without an offset;
+// GmtOffset ("08:00:00", "-05:00:00") says how far that is from UTC.
+function sessionStartUtc(sessionInfo) {
+  const start = sessionInfo?.StartDate;
+  if (!start) return null;
+  const local = Date.parse(/Z|[+-]\d\d:?\d\d$/.test(start) ? start : `${start}Z`);
+  if (!Number.isFinite(local)) return null;
+  const match = /^(-)?(\d+):(\d+)/.exec(sessionInfo.GmtOffset || "");
+  const offsetMs = match ? (match[1] ? -1 : 1) * (Number(match[2]) * 60 + Number(match[3])) * 60 * 1000 : 0;
+  return local - offsetMs;
+}
+
+// Slack around a weekend when matching the feed's session against it: the
+// season file's times and the feed's don't line up to the minute, and
+// weekends are always several days apart.
+const WEEKEND_MATCH_SLACK_MS = 24 * 60 * 60 * 1000;
+
+// The "current" GP is the one the session loaded in the feed belongs to:
+// the name and the map have to match the data on screen. The feed keeps the
+// last session (the race) until F1 loads the next one, so going only by the
+// date switched to the next GP as soon as the race's endDate passed, showing
+// the next circuit with the previous race's data.
+// With no session in the feed (or one outside every weekend, e.g. testing),
+// it's the first GP (in round order) whose weekend hasn't finished yet.
+// After the last race of the season, falls back to the final GP.
+function getCurrentGP(seasonData, sessionInfo, now = new Date()) {
   const gps = Object.entries(seasonData)
     .map(([slug, gp]) => ({ slug, ...gp, weekend: getWeekendRange(gp) }))
     .filter((gp) => gp.weekend && !gp.cancelled)
@@ -189,9 +210,14 @@ function getCurrentGP(seasonData, now = new Date()) {
 
   if (!gps.length) return null;
 
+  const sessionMs = sessionStartUtc(sessionInfo);
+  const fromSession = sessionMs != null && gps.find((gp) =>
+    sessionMs >= gp.weekend.start - WEEKEND_MATCH_SLACK_MS &&
+    sessionMs <= gp.weekend.end + WEEKEND_MATCH_SLACK_MS);
+
   const nowMs = now.getTime();
   const upcoming = gps.find((gp) => gp.weekend.end >= nowMs);
-  const gp = upcoming || gps[gps.length - 1];
+  const gp = fromSession || upcoming || gps[gps.length - 1];
 
   return {
     slug: gp.slug,
@@ -207,17 +233,22 @@ function getCurrentGP(seasonData, now = new Date()) {
   };
 }
 
+// Each state (the live one and the frozen snapshot, if any) gets the GP of
+// its own session, so whatever is sent always shows the right name.
 function refreshCurrentGP() {
   try {
     const seasonData = loadSeasonData();
-    const currentGP = getCurrentGP(seasonData);
-    if (!currentGP) {
-      console.error(`[gp] ${seasonPath()} has no GP with valid dates`);
-      return;
+    const shown = getDisplayState().CurrentGP?.slug;
+    for (const target of frozen ? [state, frozen.data] : [state]) {
+      const currentGP = getCurrentGP(seasonData, target.SessionInfo);
+      if (!currentGP) {
+        console.error(`[gp] ${seasonPath()} has no GP with valid dates`);
+        return;
+      }
+      target.CurrentGP = currentGP;
     }
-    const changed = state.CurrentGP?.slug !== currentGP.slug;
-    state.CurrentGP = currentGP;
-    if (changed) {
+    const currentGP = getDisplayState().CurrentGP;
+    if (currentGP.slug !== shown) {
       console.log(`[gp] now: ${currentGP.name} (round ${currentGP.round})`);
       broadcast("CurrentGP");
     }
@@ -436,6 +467,8 @@ connection.on("feed", (topic, rawPatch, timestamp) => {
     console.log(`[${timestamp}] ${topic} updated`);
   }
   onUpdate(topic, timestamp);
+  // A new session can belong to another GP (the first one of the next weekend).
+  if (topic === "SessionInfo") refreshCurrentGP();
 });
 
 connection.onreconnecting((err) => {
@@ -470,6 +503,9 @@ async function main() {
       updateDisplayState();
       updateSessionTiming();
       updateFinishedLines(state);
+      // The snapshot replaced SessionInfo: the GP is recomputed before sending,
+      // so the frontend doesn't get the new session with the previous GP.
+      refreshCurrentGP();
       broadcastFullSnapshot();
     }
   } catch (err) {
