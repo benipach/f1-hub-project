@@ -468,6 +468,20 @@ function hasTakenChequered(num) {
     return !!finishedLineFor(num);
 }
 
+// Out of the race. F1 often doesn't send Retired for a car that retires: in
+// the 2026 Baku race only 2 of the 7 retirements had it (Monza and Barcelona:
+// the same). What it always sends is Stopped (car stopped), and a few minutes
+// later ShowPosition: false. So in a race or sprint, Stopped also counts,
+// unless the car already took the chequered flag (stopping on the cool-down
+// lap isn't retiring). Not in practice or qualifying: a car stopped there
+// isn't out of anything. If F1 takes Stopped back (it happened in Monza during
+// a red flag), the car comes back.
+function isLineRetired(num, line) {
+    if (!line) return false;
+    if (line.Retired) return true;
+    return !!line.Stopped && currentSessionKind() === 'race' && !hasTakenChequered(num);
+}
+
 // The driver's best lap in the current period, according to the feed.
 // - In qualifying F1 sends BestLapTimes with one entry per segment ([0] = Q1,
 //   [1] = Q2, [2] = Q3): if present, it's exact.
@@ -1824,6 +1838,7 @@ function render() {
             const bestLap = shown.BestLapTime || {};
             const bestMs = lapTimeToMs(bestLap.Value);
             const posNum = i + 1;
+            const retired = isLineRetired(num, line);
 
             // In FP and Q/SQ the fastest lap is always P1's (table's sorted
             // by best lap), so painting it purple is redundant there.
@@ -1845,8 +1860,8 @@ function render() {
                 teamColor: TEAM_COLOR_MAP[driver.TeamName] || 'rgba(255,255,255,0.9)',
                 // Already took the chequered flag: that says more than the PIT/OUT
                 // of the cool-down lap.
-                chequered: !line.Retired && hasTakenChequered(num),
-                statusLabel: line.Retired ? 'RETIRED' : line.InPit ? 'PIT' : line.PitOut ? 'OUT' : '',
+                chequered: !retired && hasTakenChequered(num),
+                statusLabel: retired ? 'OUT' : line.InPit ? 'PIT' : line.PitOut ? 'OUT' : '',
                 gapText: gapCellText(line, posNum, leaderBestMs, allowGapFallback),
                 intervalText: intervalCellText(line, posNum, i > 0 ? rows[i - 1].line : null, allowGapFallback),
                 lastLap,
@@ -1859,7 +1874,7 @@ function render() {
             };
 
             return `
-                <tr data-num="${num}" class="results-row ${line.Retired ? 'live-row--retired' : ''}${fastestRowClass}${isEliminated ? ' live-row--eliminated' : ''}${followedDriver === num ? ' is-followed' : ''}">
+                <tr data-num="${num}" class="results-row ${retired ? 'live-row--retired' : ''}${fastestRowClass}${isEliminated ? ' live-row--eliminated' : ''}${followedDriver === num ? ' is-followed' : ''}">
                     ${columns.map((c) => c.td(r)).join('')}
                 </tr>
             `;
@@ -3649,7 +3664,7 @@ function estimatedCarPositions() {
     for (const num of Object.keys(lines)) {
         const line = lines[num];
         const progress = carProgress[num];
-        if (!progress || line.InPit || line.Retired) {
+        if (!progress || line.InPit || isLineRetired(num, line)) {
             delete carShown[num]; // when it comes back, it appears where it is
             continue;
         }
@@ -3674,7 +3689,7 @@ function exactCarPositions() {
         const { X, Y, Status } = entries[num] || {};
         const line = lines[num];
         if (typeof X !== 'number' || typeof Y !== 'number' || Status === 'OFF') continue;
-        if (line && line.Retired) continue;
+        if (isLineRetired(num, line)) continue;
         positions[num] = trackMap.toView(X, Y);
     }
     return positions;
