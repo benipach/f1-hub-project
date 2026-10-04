@@ -52,7 +52,7 @@ function gpShortName(gp) { return gp.name.replace(/Grand Prix/i, 'GP'); }
 
 // ── Team helper (temporary name→slug bridge, see file header) ─────────────
 
-// resolveTeamId() / resolveTeam() vienen de shared/teams.js (cargado antes).
+// resolveTeamId() / resolveTeam() come from shared/teams.js (loaded first).
 
 function teamLogoPath(teamId) {
     return teamId ? `./img/teams/${teamId}-logo.png` : null;
@@ -64,7 +64,7 @@ function resolveDriverCode(rawDriver, driversData) {
 
 // ── Position delta (grid → finish) ─────────────────────────────────────────
 
-// Parrilla real con penalizaciones (shared/grid.js), con fallback a la quali.
+// Actual grid with penalties (shared/grid.js), falling back to qualifying.
 function getGridPosition(gp, driverKey) {
     return startingPositionFor(gp, 'race', driverKey);
 }
@@ -372,10 +372,10 @@ function initRaceCardReveal() {
     const title = document.getElementById('calendar-title');
     if (!cards.length) return;
 
-    // Título y tarjetas entran al aparecer en pantalla (la animación está en
-    // index.css). El escalonado cuenta solo los que entran en la misma tanda,
-    // así ninguna tarjeta espera por las de arriba. El título se observa
-    // primero para que, si entra junto con las tarjetas, vaya delante.
+    // The title and cards enter as they appear on screen (the animation is in
+    // index.css). The stagger only counts those entering in the same batch,
+    // so no card waits for the ones above. The title is observed
+    // first so that, if it enters together with the cards, it goes first.
     _cardRevealObserver = new IntersectionObserver(entries => {
         entries.filter(entry => entry.isIntersecting).forEach((entry, i) => {
             entry.target.style.setProperty('--rc-delay', `${i * 90}ms`);

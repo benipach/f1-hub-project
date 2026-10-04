@@ -13,9 +13,9 @@
     --text-light: rgb(220,220,220);
     --text-dim: rgb(170,170,170);
 
-    /* Colores de equipo. Espejo de data/teams.json (la fuente de verdad que
-       usan las páginas dinámicas); las tarjetas estáticas de drivers.html y
-       teams.html los toman de acá vía --dc-color / --tc-color. */
+    /* Team colors. A mirror of data/teams.json (the source of truth the
+       dynamic pages use); the static cards in drivers.html and
+       teams.html take them from here via --dc-color / --tc-color. */
     --f1-mercedes:     #2BFFDB;
     --f1-ferrari:      #FF0019;
     --f1-mclaren:      #FF7F00;
@@ -32,15 +32,15 @@
     --scrollbar-color: rgba(255,255,255,0.15);
     --scrollbar-hover: rgba(255,255,255,0.3);
 
-    /* Contenedor de contenido. Una sola definición para todo el sitio: los
-       valores son los de .driver-content, que es la referencia. Cada página
-       centra su bloque principal con estos tokens (o directo con .page-content)
-       en vez de inventar su propio porcentaje, así el borde izquierdo cae en la
-       misma vertical al saltar de una página a otra.
-       En celular el ancho pasa a 100% y el aire lateral lo da el gutter. */
+    /* Content container. A single definition for the whole site: the
+       values are those of .driver-content, which is the reference. Each page
+       centers its main block with these tokens (or directly with .page-content)
+       instead of inventing its own percentage, so the left edge falls on the
+       same vertical when jumping from one page to another.
+       On phones the width becomes 100% and the side spacing comes from the gutter. */
     --content-width: 80%;
     --content-gutter: 0px;
-    --content-rhythm: 128px;   /* aire vertical entre el hero/navbar y el contenido */
+    --content-rhythm: 128px;   /* vertical space between the hero/navbar and the content */
 }
 
 @media (max-width: 700px) {
@@ -55,9 +55,9 @@
 /*               PAGE CONTAINER               */
 /* ========================================== */
 
-/* El bloque principal de una página. Equivale a escribir a mano
-   max-width: var(--content-width); margin-inline: auto; y existe para que las
-   páginas nuevas no tengan que redefinirlo. */
+/* A page's main block. Equivalent to writing by hand
+   max-width: var(--content-width); margin-inline: auto; and it exists so
+   new pages don't have to redefine it. */
 .page-content {
     max-width: var(--content-width);
     margin-inline: auto;
@@ -300,185 +300,360 @@ nav ul li a:hover::after {
 /*               FOOTER               */
 /* ================================== */
 
+/* The HTML is built by js/footer.js. The end of the page is the finish line: on top a
+   chequered flag strip, and at the very bottom the site's name, giant,
+   outline only and cut off by the edge. */
 .footer {
     position: relative;
-    padding: 48px 5% 0;
+    overflow: hidden;
     font-family: 'F1-Regular';
     background: var(--base-900);
 }
 
-/* Top red line */
-.footer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(225,6,0,0.5) 25%,
-        var(--primary-red) 50%,
-        rgba(225,6,0,0.5) 75%,
-        transparent 100%
-    );
+/* A chequered flag that fades towards the sides, with the red line
+   below */
+.footer-flag {
+    height: 14px;
+    background: repeating-conic-gradient(rgba(255,255,255,0.09) 0 25%, transparent 0 50%) 0 0 / 14px 14px;
+    border-bottom: 1px solid var(--primary-red);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
 }
 
-/* Grid */
-.footer-grid {
+.footer-inner {
+    position: relative;
+    z-index: 1;
+    max-width: var(--content-width);
+    margin-inline: auto;
+    padding: 72px var(--content-gutter) 0;
+}
+
+/* Brand on the left, link columns on the right */
+.footer-top {
     display: grid;
-    grid-template-columns: 1.6fr 1fr 1fr;
-    gap: 48px;
-    padding-bottom: 40px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-/* Brand column */
-.footer-brand {
-    display: flex;
-    flex-direction: column;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr);
+    gap: 64px;
+    padding-bottom: 56px;
 }
 
 .footer-logo {
     display: inline-block;
-    margin-bottom: 14px;
-    transition: all 0.2s ease;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
 }
 
 .footer-logo:hover {
     opacity: 0.75;
-    transform: translateY(-2px);
 }
 
 .footer-logo-img {
+    display: block;
     width: auto;
-    height: 25px;
+    height: 32px;
 }
 
 .footer-tagline {
-    max-width: 260px;
-    margin-bottom: 20px;
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 14px;
+    max-width: 420px;
+    margin-bottom: 24px;
+    color: rgba(255,255,255,0.45);
+    font-size: 15px;
     line-height: 1.7;
 }
 
-/* Social Buttons */
-.footer-social {
-    display: flex;
-    gap: 8px;
-}
-
-.social-btn {
-    display: flex;
+/* The visitor's time zone, as a label with a red dot */
+.footer-tz {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.4);
+    gap: 10px;
+    padding: 8px 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 999px;
+    background: rgba(255,255,255,0.03);
+    color: rgba(255,255,255,0.4);
     font-size: 12px;
-    font-family: 'F1-Bold';
     letter-spacing: 0.5px;
-    text-decoration: none;
-    transition: all 0.2s ease;
+    text-transform: uppercase;
 }
 
-.social-btn:hover {
-    background: rgba(232, 0, 45, 0.12);
-    border-color: rgba(232, 0, 45, 0.3);
-    color: rgba(255, 255, 255, 0.9);
-    transform: translateY(-2px);
+.footer-tz strong {
+    color: var(--text-light);
+    font-weight: normal;
 }
 
-/* Link columns */
+.footer-tz-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--primary-red);
+    box-shadow: 0 0 10px var(--primary-red);
+}
+
+.footer-nav {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 32px;
+}
+
 .footer-col-title {
-    margin-bottom: 16px;
-    color: rgba(255, 255, 255, 0.22);
-    font-size: 12px;
-    font-family: 'F1-Bold';
+    margin-bottom: 20px;
+    color: #ffffff;
+    font-family: 'F1-Regular';
+    font-size: 14px;
+    font-weight: 600;
     letter-spacing: 2px;
     text-transform: uppercase;
 }
 
-.footer-links ul {
+.footer-col ul {
     display: flex;
     flex-direction: column;
-    gap: 11px;
+    align-items: flex-start;
+    gap: 12px;
     list-style: none;
 }
 
-.footer-links ul li a {
+/* The same red underline growing from the left as in the navbar */
+.footer-link {
     position: relative;
-    padding-left: 14px;
-    color: rgba(255, 255, 255, 0.42);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255,255,255,0.5);
     font-size: 14px;
     letter-spacing: 0.5px;
     text-decoration: none;
     text-transform: uppercase;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
 }
 
-/* Arrow */
-.footer-links ul li a::before {
-    content: '›';
+.footer-link::after {
+    content: '';
     position: absolute;
     left: 0;
-    color: rgba(232, 0, 45, 0.5);
-    transition: all 0.2s ease;
+    bottom: -4px;
+    width: 0%;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--primary-red);
+    transition: all 0.3s ease;
 }
 
-.footer-links ul li a:hover {
-    padding-left: 18px;
-    color: rgba(255, 255, 255, 0.9);
+.footer-link:hover,
+.footer-link:focus-visible,
+.footer-link[aria-current="page"] {
+    color: #ffffff;
 }
 
-.footer-links ul li a:hover::before {
+.footer-link:hover::after,
+.footer-link:focus-visible::after,
+.footer-link[aria-current="page"]::after {
+    width: 100%;
+}
+
+/* Pages that don't exist yet: the name dimmed, no hover, with the
+   "Soon" label next to it */
+.footer-link.is-soon {
+    color: rgba(255,255,255,0.25);
+    cursor: default;
+}
+
+.footer-link.is-soon::after { display: none; }
+
+.footer-soon {
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 3px;
+    color: rgba(255,255,255,0.4);
+    font-size: 9px;
+    letter-spacing: 1px;
+}
+
+/* External link arrow: on hover it moves diagonally outwards */
+.footer-link-out {
+    width: 11px;
+    height: 11px;
+    color: rgba(255,255,255,0.3);
+    transition: all 0.3s ease;
+}
+
+.footer-link:hover .footer-link-out {
     color: var(--primary-red);
+    transform: translate(2px, -2px);
 }
 
-/* Bottom */
+/* Legal notice: a separate block, with its label, so it reads as such and
+   doesn't get lost among the links */
+.footer-legal {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 16px 32px;
+    padding: 28px 0;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.footer-legal-badge {
+    padding: 5px 10px;
+    border: 1px solid rgba(225,6,0,0.35);
+    border-radius: 4px;
+    background: rgba(225,6,0,0.08);
+    color: #ff6b6b;
+    font-family: 'F1-Regular';
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.footer-legal-text {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 880px;
+    color: rgba(255,255,255,0.35);
+    font-size: 12px;
+    line-height: 1.8;
+    letter-spacing: 0.2px;
+}
+
 .footer-bottom {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-
-    padding: 16px 0;
+    gap: 24px;
+    padding: 24px 0;
 }
 
-.footer-copyright,
-.footer-timezone {
-    color: rgba(255, 255, 255, 0.18);
+.footer-copyright {
+    color: rgba(255,255,255,0.35);
     font-size: 12px;
-    letter-spacing: 0.25px;
+    letter-spacing: 0.3px;
+}
+
+.footer-copyright a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.footer-copyright a:hover {
+    color: var(--primary-red);
+}
+
+.footer-social {
+    display: flex;
+    gap: 10px;
+}
+
+.footer-social-btn {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    color: rgba(255,255,255,0.5);
+    transition: all 0.3s ease;
+}
+
+.footer-social-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.footer-social-btn:hover,
+.footer-social-btn:focus-visible {
+    border-color: rgba(225,6,0,0.45);
+    background: rgba(225,6,0,0.1);
+    color: #ffffff;
+    transform: translateY(-3px);
+}
+
+.footer-top-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: rgba(255,255,255,0.5);
+    font-family: 'F1-Regular';
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.footer-top-btn svg {
+    width: 12px;
+    height: 12px;
+    transition: all 0.3s ease;
+}
+
+.footer-top-btn:hover,
+.footer-top-btn:focus-visible {
+    color: #ffffff;
+}
+
+.footer-top-btn:hover svg {
+    color: var(--primary-red);
+    transform: translateY(-3px);
+}
+
+/* Giant name at the bottom, outline only, cut off by the bottom edge */
+.footer-wordmark {
+    margin-bottom: -0.3em;
+    font-family: 'F1-Black';
+    font-size: clamp(88px, 19vw, 360px);
+    line-height: 1;
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.08);
+    -webkit-mask-image: linear-gradient(to bottom, #000 30%, transparent);
+    mask-image: linear-gradient(to bottom, #000 30%, transparent);
+    pointer-events: none;
+    user-select: none;
 }
 
 /* Responsive */
-@media (max-width: 1100px) {
-    .footer-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 32px;
-    }
-
-    .footer-brand {
-        grid-column: 1 / -1;
-    }
-
-    .footer-bottom {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
+/* With four columns they don't fit next to the brand on small laptops
+   ("Championship" overflowed): the brand moves above the links */
+@media (max-width: 1300px) {
+    .footer-top {
+        grid-template-columns: 1fr;
+        gap: 48px;
     }
 }
 
-@media (max-width: 500px) {
-    .footer-grid {
+@media (max-width: 700px) {
+    .footer-inner { padding-top: 56px; }
+
+    .footer-legal {
         grid-template-columns: 1fr;
+    }
+
+    .footer-legal-badge { justify-self: start; }
+
+    /* Social links on top, then the copyright and the back-to-top last */
+    .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .footer-social { order: -1; }
+}
+
+@media (max-width: 500px) {
+    .footer-nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -486,8 +661,8 @@ nav ul li a:hover::after {
 /*               SEASON SELECT                */
 /* ========================================== */
 
-/* Selector de temporada. Es el mismo en Results, Championship y Archive:
-   un año en la URL (?season=2019) y este <select> para cambiarlo. */
+/* Season selector. It's the same in Results, Championship and Archive:
+   a year in the URL (?season=2019) and this <select> to change it. */
 .season-select-wrap {
     flex-shrink: 0;
     display: flex;

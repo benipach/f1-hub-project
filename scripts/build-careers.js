@@ -1,10 +1,10 @@
-// Genera data/careers.json a partir de todos los data/seasons/season*.json.
+// Generates data/careers.json from all the data/seasons/season*.json files.
 //
-// Por qué precalcular: los season files suman ~7 MB. La sección Biography sólo
-// necesita hitos y eras por piloto, así que se resuelven una vez acá y la página
-// hace un único fetch chico en vez de 20 grandes.
+// Why precompute: the season files add up to ~7 MB. The Biography section only
+// needs milestones and eras per driver, so they're resolved once here and the page
+// makes a single small fetch instead of 20 large ones.
 //
-// Regenerar cuando cambien los datos de temporada:  node scripts/build-careers.js
+// Regenerate whenever season data changes:  node scripts/build-careers.js
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -20,11 +20,11 @@ const circuits = readJson(path.join(ROOT, 'data', 'circuits.json'));
 const cities = readJson(path.join(ROOT, 'data', 'cities.json'));
 const countries = readJson(path.join(ROOT, 'data', 'countries.json'));
 
-// La resolución de equipo (alias + recorte de tokens) vive en js/shared/teams.js,
-// que es un script clásico para el navegador. Se lo evalúa acá tal cual para
-// que el precálculo y el front resuelvan exactamente igual — si no, un piloto
-// podía tener una era "Mercedes-AMG" separada de "Mercedes" sólo porque las
-// carreras de 2026 las cargó el adapter de OpenF1 con otro nombre.
+// Team resolution (aliases + token trimming) lives in js/shared/teams.js,
+// which is a classic browser script. It's evaluated here as-is so that
+// the precomputation and the frontend resolve exactly the same way; otherwise a driver
+// could have a "Mercedes-AMG" era separate from "Mercedes" just because the
+// 2026 races were loaded by the OpenF1 adapter under another name.
 const teamHelpers = new Function(
     fs.readFileSync(path.join(ROOT, 'js', 'shared', 'teams.js'), 'utf8')
     + '\nreturn { resolveTeamId };'
@@ -40,7 +40,7 @@ function resolveTeam(rawId) {
     };
 }
 
-// GP → circuito → ciudad → país → ISO de 2 letras, para la bandera.
+// GP → circuit → city → country → 2-letter ISO, for the flag.
 function isoFor(gp) {
     const city = circuits[gp.circuitId]?.location?.city;
     return countries[cities[city]?.country]?.isoCode || null;
@@ -53,14 +53,14 @@ const sessionResults = (gp, key) => {
 
 const isRetired = row => /DN[FS]/i.test(String(row?.time || ''));
 
-// ── Recorrer todas las temporadas y juntar cada carrera por piloto ──────────
+// ── Walk every season and collect each race per driver ──────────────────────
 const files = fs.readdirSync(SEASONS_DIR)
     .filter(f => /^season\d{4}\.json$/.test(f))
     .sort();
 
-const byDriver = new Map();          // driverId → [race, …] en orden cronológico
+const byDriver = new Map();          // driverId → [race, …] in chronological order
 const seasonChampions = new Map();   // year → driverId
-const seasonStandings = new Map();   // driverId → { year: posición en el campeonato }
+const seasonStandings = new Map();   // driverId → { year: championship position }
 
 for (const file of files) {
     const year = Number(file.match(/\d{4}/)[0]);
@@ -93,15 +93,15 @@ for (const file of files) {
                 iso: isoFor(gp),
                 date: (gp.sessions.race.date || '').slice(0, 10),
                 pos: r.pos,
-                // quali: posición en la clasificación (de acá salen las poles).
-                // grid:  posición real de largada, con penalizaciones (0 = pit
-                //        lane); si la temporada no la tiene, la quali.
+                // quali: qualifying position (poles come from here).
+                // grid:  actual starting position, with penalties (0 = pit
+                //        lane); if the season doesn't have it, the qualifying one.
                 quali: q?.pos ?? null,
                 grid: typeof r.grid === 'number' ? r.grid : (q?.pos ?? null),
                 pts: (r.pts || 0) + (s?.pts || 0),
                 dnf: isRetired(r),
-                // Figura en la carrera pero no largó: no cuenta como largada
-                // para el récord de "most race starts".
+                // Listed in the race but didn't start: doesn't count as a start
+                // for the "most race starts" record.
                 dns: /DNS/i.test(String(r.time || '')),
                 fl: Boolean(r.fastestLap),
                 team: r.team,
@@ -116,10 +116,10 @@ for (const file of files) {
         seasonStandings.get(id)[year] = i + 1;
     });
 
-    // Puntos que todavía quedan por repartir. Un fin de semana se cuenta como
-    // pendiente sólo si su carrera no se corrió; si la carrera ya está, el sprint
-    // (de haberlo) también, aunque falten sus resultados en el JSON. 25 por
-    // carrera + 8 por sprint (F1 2026 no da punto por vuelta rápida).
+    // Points still to be awarded. A weekend counts as
+    // pending only if its race hasn't been run; if the race is in, the sprint
+    // (if there is one) is too, even if its results are missing from the JSON. 25 per
+    // race + 8 per sprint (F1 2026 doesn't award a fastest lap point).
     let pointsLeft = 0;
     for (const gp of gps) {
         if (gp.cancelled) continue;
@@ -128,15 +128,15 @@ for (const file of files) {
         if (gp.sprint) pointsLeft += 8;
     }
 
-    // Campeón sólo si el título está definido: o la temporada terminó (nada por
-    // repartir), o la ventaja del líder sobre el 2º ya supera todos los puntos en
-    // juego, así que es imposible alcanzarlo.
+    // Champion only if the title is decided: either the season is over (nothing left
+    // to award), or the leader's advantage over 2nd already exceeds all the points
+    // in play, so they can't be caught.
     const gap = standings.length >= 2 ? standings[0][1] - standings[1][1] : Infinity;
     const decided = standings.length > 0 && (pointsLeft === 0 || gap > pointsLeft);
     if (decided) seasonChampions.set(year, standings[0][0]);
 }
 
-// ── Armar el registro de cada piloto ────────────────────────────────────────
+// ── Build each driver's record ──────────────────────────────────────────────
 function milestone(race, label) {
     if (!race) return null;
     const t = resolveTeam(race.team);
@@ -158,9 +158,9 @@ function ordinal(n) {
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 
-// La carrera donde un título quedó matemáticamente sellado: se replay la
-// temporada ronda a ronda y se busca la primera en la que la ventaja del campeón
-// sobre el mejor de los demás supera todos los puntos que aún quedaban en juego.
+// The race where a title was mathematically sealed: the season is replayed
+// round by round looking for the first one where the champion's lead
+// over the best of the rest exceeds all the points still in play.
 function findClinchRace(year, champId) {
     let season;
     try { season = readJson(path.join(SEASONS_DIR, `season${year}.json`)); }
@@ -177,7 +177,7 @@ function findClinchRace(year, champId) {
             }
         }
 
-        // Puntos máximos que un rival podría sumar en las rondas que faltan.
+        // Maximum points a rival could score in the remaining rounds.
         let remaining = 0;
         for (let j = i + 1; j < gps.length; j++) {
             remaining += 25;
@@ -203,11 +203,11 @@ function findClinchRace(year, champId) {
             };
         }
     }
-    return null;   // no se pudo verificar el cierre (datos incompletos)
+    return null;   // the clinch couldn't be verified (incomplete data)
 }
 
-// Tramos consecutivos con el mismo equipo. Se agrupa por equipo *resuelto*, así
-// "red-bull" y "red-bull-racing" cuentan como una sola era.
+// Consecutive stretches with the same team. Grouped by *resolved* team, so
+// "red-bull" and "red-bull-racing" count as a single era.
 function buildEras(races) {
     const eras = [];
     for (const r of races) {
@@ -222,17 +222,17 @@ function buildEras(races) {
     return eras.map(e => {
         const finished = e.races.filter(r => !r.dnf);
         const years = [...new Set(e.races.map(r => r.year))].sort();
-        // Carrera con el mejor puesto de esa etapa (la más temprana si hay empate).
+        // Race with the best finish in that stint (the earliest if tied).
         const bestRace = finished.length
             ? finished.reduce((b, r) => (r.pos < b.pos ? r : b))
             : null;
-        const eraWins = finished.filter(r => r.pos === 1);   // ya en orden cronológico
+        const eraWins = finished.filter(r => r.pos === 1);   // already in chronological order
         return {
             teamId: e.teamId,
             team: e.teamName,
             color: e.teamColor,
-            // seasons son los años realmente presentes en los datos: el dataset
-            // no tiene 2018-2025, así que un rango from-to solo mentiría.
+            // seasons are the years actually present in the data: the dataset
+            // doesn't have 2018-2025, so a from-to range would just be lying.
             seasons: years,
             from: years[0],
             to: years[years.length - 1],
@@ -242,36 +242,36 @@ function buildEras(races) {
             podiums: finished.filter(r => r.pos <= 3).length,
             poles: e.races.filter(r => r.quali === 1).length,
             best: bestRace ? bestRace.pos : null,
-            bestRace,                            // insumo del hito "best result in the team"
-            firstWin: eraWins[0] ?? null,        // insumos de "first/last win with the team"
+            bestRace,                            // input for the "best result in the team" milestone
+            firstWin: eraWins[0] ?? null,        // inputs for "first/last win with the team"
             lastWin: eraWins[eraWins.length - 1] ?? null,
             titles: years.filter(y => seasonChampions.get(y) === e.driverId),
         };
     });
 }
 
-// ── RÉCORDS HISTÓRICOS ──────────────────────────────────────────────────────
-// Se repasan todas las carreras de la base en orden, llevando el total de cada
-// piloto en cada categoría, y se anota cuándo alguien pasa a tener el récord.
-// "All-time" quiere decir all-time *dentro de la base*: no se agrega ningún
-// número de afuera. Hoy la base arranca en 1990 y no tiene qualy completa antes
-// de 2003 ni vueltas rápidas antes de 2004, así que los primeros récords de cada
-// categoría salen de lo que haya; a medida que se amplíen los season files, el
-// resultado se corrige solo.
+// ── ALL-TIME RECORDS ────────────────────────────────────────────────────────
+// Every race in the database is walked in order, keeping each driver's total
+// in each category, and noting when someone takes the record.
+// "All-time" means all-time *within the database*: no outside
+// numbers are added. Today the database starts in 1990 and has no complete qualifying before
+// 2003 or fastest laps before 2004, so the first records in each
+// category come from whatever there is; as the season files grow, the
+// result corrects itself.
 //
-// Estados de un piloto en una categoría: sin récord, co-dueño (empatado arriba)
-// o único dueño. Los hitos salen de los cambios de estado:
-//   · sin récord → co-dueño     "Equalled all-time record"
-//   · sin récord → único dueño  "Broke all-time record"
-//   · co-dueño → único dueño    "Broke", salvo que en esa misma racha ya hubiera
-//     sido único dueño (estiró un récord que ya era suyo: no se repite).
-// Estirar un récord propio no genera hito; perderlo y recuperarlo, sí.
+// A driver's states in a category: no record, co-holder (tied at the top)
+// or sole holder. Milestones come from state changes:
+//   · no record → co-holder       "Equalled all-time record"
+//   · no record → sole holder     "Broke all-time record"
+//   · co-holder → sole holder     "Broke", unless in that same streak they had already
+//     been sole holder (extending a record that was already theirs: not repeated).
+// Extending your own record doesn't create a milestone; losing it and getting it back does.
 //
-// Cuando nadie tenía todavía nada en la categoría (la primera carrera de la base,
-// o el primer año con poles o vueltas rápidas cargadas) no hay récord previo que
-// batir ni igualar: se toma como punto de partida, sin hito.
+// When nobody had anything yet in the category (the first race in the database,
+// or the first year with poles or fastest laps loaded) there's no previous record to
+// break or equal: it's taken as the starting point, with no milestone.
 const RECORDS = [
-    { key: 'titles',      amount: null },   // se suma en el GP donde se selló el título
+    { key: 'titles',      amount: null },   // added at the GP where the title was sealed
     { key: 'wins',        amount: r => !r.dnf && r.pos === 1 ? 1 : 0 },
     { key: 'podiums',     amount: r => !r.dnf && r.pos <= 3 ? 1 : 0 },
     { key: 'poles',       amount: r => r.quali === 1 ? 1 : 0 },
@@ -282,7 +282,7 @@ const RECORDS = [
 
 const raceKey = r => `${r.year}-${String(r.round).padStart(2, '0')}`;
 
-// Todas las filas de todas las carreras, agrupadas por carrera.
+// Every row of every race, grouped by race.
 const raceRows = new Map();   // raceKey → [{ driverId, race }]
 for (const [driverId, races] of byDriver) {
     for (const race of races) {
@@ -292,8 +292,8 @@ for (const [driverId, races] of byDriver) {
     }
 }
 
-// Títulos: cuentan en la carrera donde quedaron sellados. Si no se puede
-// determinar esa carrera, el título no entra en el récord (no se inventa fecha).
+// Titles: they count at the race where they were sealed. If that race
+// can't be determined, the title doesn't enter the record (no date is made up).
 const clinchByRace = new Map();   // raceKey → { driverId, race }
 for (const [year, champId] of seasonChampions) {
     const race = findClinchRace(year, champId);
@@ -312,14 +312,14 @@ for (const { key, amount } of RECORDS) {
     const totals = new Map();       // driverId → total acumulado
     let recordValue = 0;
     let holders = new Set();
-    // Racha de cada dueño actual: sus hitos, si ya fue único dueño en ella y
-    // quién lo igualó por última vez (se borra si él vuelve a despegarse).
+    // Streak of each current holder: their milestones, whether they've already been sole holder in it and
+    // who last equalled them (cleared if they pull ahead again).
     const tenures = new Map();      // driverId → { events, everSole, equalledBy }
 
-    // Al cerrar una racha (o al final, si sigue abierta) se completa el último
-    // hito con lo que pasó después: hasta dónde lo estiró y quién lo alcanzó.
-    // Si lo superaron, el tope es el récord que tenía antes de esa carrera: lo
-    // que haya sumado en la misma carrera en que lo pasaron ya no fue récord.
+    // When a streak closes (or at the end, if it's still open) the last
+    // milestone is completed with what happened afterwards: how far they extended it and who caught them.
+    // If they were overtaken, the ceiling is the record they held before that race: whatever
+    // they added in the same race where they were passed was no longer a record.
     const closeTenure = (driverId, surpassedBy, heldValue) => {
         const t = tenures.get(driverId);
         tenures.delete(driverId);
@@ -355,7 +355,7 @@ for (const { key, amount } of RECORDS) {
 
         if (top > prevValue) {
             holders = new Set(atTop.map(c => c.driverId));
-            // Los que quedaron abajo pierden el récord: superado por quien lo pasó.
+            // Those left behind lose the record: beaten by whoever passed them.
             const by = atTop[0];
             for (const id of prevHolders) {
                 if (!holders.has(id)) closeTenure(id, { by: by.driverId, ...placeOf(by.race) }, prevValue);
@@ -376,9 +376,9 @@ for (const { key, amount } of RECORDS) {
                 tenures.set(driverId, t);
             }
 
-            // Pasar la cifra del récord anterior es romperlo, aunque otro que
-            // tampoco lo tenía llegue al mismo número en esa carrera. Sólo es
-            // "equalled" si queda empatado con alguien que ya era dueño.
+            // Passing the previous record's figure is breaking it, even if someone else who
+            // didn't hold it either reaches the same number in that race. It's only
+            // "equalled" if it ends up tied with someone who was already a holder.
             const passedOldOwners = top > prevValue && ![...prevHolders].some(id => holders.has(id));
             let kind = null;
             if (prevValue > 0) {
@@ -395,8 +395,8 @@ for (const { key, amount } of RECORDS) {
                 addRecordMilestone(driverId, m);
             }
 
-            // Quien lo alcanza deja anotado, en la racha de los que ya lo tenían,
-            // que lo igualaron.
+            // Whoever reaches it leaves a note, in the streak of those who already held it,
+            // that they were equalled.
             if (!wasHolder && !sole) {
                 for (const id of prevHolders) {
                     if (holders.has(id)) tenures.get(id).equalledBy = { by: driverId, ...placeOf(race) };
@@ -408,8 +408,8 @@ for (const { key, amount } of RECORDS) {
     for (const id of [...tenures.keys()]) closeTenure(id, null);
 }
 
-// Si un piloto igualó un récord y más adelante lo rompió (aunque en el medio lo
-// haya perdido), queda sólo "Broke": el "Equalled" previo sobra.
+// If a driver equalled a record and later broke it (even if they lost it
+// in between), only "Broke" remains: the earlier "Equalled" is redundant.
 for (const [driverId, list] of recordMilestones) {
     recordMilestones.set(driverId, list.filter(m =>
         m.record.kind !== 'equalled'
@@ -424,7 +424,7 @@ for (const [driverId, races] of byDriver) {
     const finished = races.filter(r => !r.dnf);
 
     const eras = buildEras(races);
-    // titles se resuelve acá porque buildEras no conoce el driverId.
+    // titles is resolved here because buildEras doesn't know the driverId.
     const titleYears = [...seasonChampions.entries()]
         .filter(([, id]) => id === driverId)
         .map(([y]) => y);
@@ -432,9 +432,9 @@ for (const [driverId, races] of byDriver) {
         era.titles = titleYears.filter(y => y >= era.from && y <= era.to);
     }
 
-    // Mejor puesto en un campeonato (y todos los años en que lo consiguió): es lo
-    // que se muestra cuando el piloto no tiene títulos, para que la sección diga
-    // algo igual.
+    // Best finish in a championship (and every year they achieved it): it's what's
+    // shown when the driver has no titles, so the section still says
+    // something.
     const standings = seasonStandings.get(driverId) || {};
     const standingYears = Object.entries(standings).map(([year, pos]) => ({ year: Number(year), pos }));
     const bestPos = standingYears.length ? Math.min(...standingYears.map(s => s.pos)) : null;
@@ -443,8 +443,8 @@ for (const [driverId, races] of byDriver) {
         years: standingYears.filter(s => s.pos === bestPos).map(s => s.year).sort((a, b) => a - b),
     };
 
-    // Cada título con el detalle de esa temporada: sin esto las copas serían
-    // sólo decoración, y la idea es que cada una cuente algo.
+    // Each title with that season's details: without this the trophies would be
+    // just decoration, and the idea is for each one to tell something.
     const titles = titleYears.map(year => {
         const seasonRaces = races.filter(r => r.year === year);
         const seasonFinished = seasonRaces.filter(r => !r.dnf);
@@ -461,12 +461,12 @@ for (const [driverId, races] of byDriver) {
         };
     });
 
-    // Número de auto: el de la temporada más reciente en la que corrió.
+    // Car number: the one from the most recent season they raced in.
     const lastNumbered = [...races].reverse().find(r => r.number != null);
 
-    // Racha de victorias más larga: corrida más larga de carreras consecutivas
-    // ganadas. Sólo tiene sentido a partir de 2 (una victoria suelta no es racha).
-    // Se emite como un hito más de la línea de tiempo, en el GP donde terminó.
+    // Longest winning streak: the longest run of consecutive races
+    // won. Only meaningful from 2 up (a single win isn't a streak).
+    // It's emitted as one more timeline milestone, at the GP where it ended.
     let streakMilestone = null, streakRace = null;
     {
         let run = 0, endRace = null, best = 0, bestEnd = null;
@@ -488,13 +488,13 @@ for (const [driverId, races] of byDriver) {
     const lastWinRace = [...finished].reverse().find(r => r.pos === 1) || null;
     const sameRace = (a, b) => a && b && a.year === b.year && a.round === b.round;
 
-    // Equipos con 2+ victorias: son los únicos que emiten hitos de primera/última
-    // victoria con el equipo.
+    // Teams with 2+ wins: they're the only ones that emit first/last
+    // win with the team milestones.
     const winEras = eras.filter(e => e.wins >= 2);
 
-    // Todas las carreras que ya emiten un hito de victoria. "Best result in the
-    // team" es siempre esa misma victoria cuando cae acá, así que se omite: decir
-    // "first win & best result in the team" es redundante.
+    // Every race that already emits a win milestone. "Best result in the
+    // team" is always that same win when it lands here, so it's skipped: saying
+    // "first win & best result in the team" is redundant.
     const winRaces = [
         firstWinRace,
         ...winEras.map(e => e.firstWin),
@@ -510,43 +510,43 @@ for (const [driverId, races] of byDriver) {
         milestone(firstWinRace, 'First win'),
         milestone(races.find(r => r.quali === 1), 'First pole'),
         streakMilestone,
-        // Un hito por cada título, en el GP donde quedó sellado.
+        // One milestone per title, at the GP where it was sealed.
         ...titleYears
             .sort((a, b) => a - b)
             .map((y, i) => milestone(findClinchRace(y, driverId), `${ordinal(i + 1)} World Title`)),
-        // Primera y última victoria con cada equipo, sólo si ahí ganó 2+ veces.
-        // La "primera con el equipo" se omite si coincide con la primera de la
-        // carrera (si no, "first win" siempre la arrastraría).
+        // First and last win with each team, only if they won there 2+ times.
+        // The "first with the team" is skipped if it matches the first of their
+        // career (otherwise "first win" would always drag it along).
         ...winEras
             .filter(e => !sameRace(e.firstWin, firstWinRace))
             .map(e => milestone(e.firstWin, 'First win with the team')),
-        // Cuando la última victoria con el equipo es además la última de toda
-        // su carrera, aclarar "with the team" sobra y suena a que después ganó
-        // con otro: ahí el hito es, sin más, la última victoria.
+        // When the last win with the team is also the last of their whole
+        // career, adding "with the team" is redundant and suggests they later won
+        // with another one: there the milestone is simply the last win.
         ...winEras
             .map(e => milestone(e.lastWin, sameRace(e.lastWin, lastWinRace) ? 'Last win' : 'Last win with the team')),
-        // Mejor resultado en cada equipo. Último en prioridad. Se omite si esa
-        // carrera ya es un hito de victoria: la victoria lo dice todo y el par
-        // "first win & best result in the team" sobra.
+        // Best result with each team. Lowest priority. Skipped if that
+        // race is already a win milestone: the win says it all and the pair
+        // "first win & best result in the team" is redundant.
         ...eras
             .filter(e => e.bestRace && !isWinRace(e.bestRace))
             .map(e => milestone(e.bestRace, 'Best result in the team')),
-        // Récords históricos (ver RÉCORDS HISTÓRICOS más arriba).
+        // All-time records (see ALL-TIME RECORDS above).
         ...(recordMilestones.get(driverId) || []),
     ].filter(Boolean);
 
-    // Insumos que no van al JSON.
+    // Inputs that don't go into the JSON.
     for (const e of eras) { delete e.bestRace; delete e.firstWin; delete e.lastWin; }
 
-    // ── CUÁNDO LLEGÓ A CADA CIFRA ──────────────────────────────────────────
-    // Fecha del último evento que hizo subir cada contador, o sea el día en
-    // que el piloto alcanzó el total que hoy muestra su ficha. Sirve para
-    // desempatar rankings: entre dos con el mismo número, va primero el que
-    // llegó antes (Schumacher llegó a 5 títulos en 2004, Hamilton a 5 en
-    // 2018, así que con 5 y 5 iría Schumacher arriba).
+    // ── WHEN EACH FIGURE WAS REACHED ───────────────────────────────────────
+    // Date of the last event that raised each counter, i.e. the day
+    // the driver reached the total their profile shows today. It's used to
+    // break ties in rankings: between two with the same number, whoever
+    // got there first goes first (Schumacher reached 5 titles in 2004, Hamilton 5 in
+    // 2018, so with 5 and 5 Schumacher would go on top).
     //
-    // Se calcula acá y no en el front porque el front sólo baja careers.json:
-    // recalcularlo allá obligaría a leer los ~7 MB de season files.
+    // It's computed here and not in the frontend because the frontend only downloads careers.json:
+    // recomputing it there would mean reading the ~7 MB of season files.
     const lastDateOf = list => list.length ? list[list.length - 1].date || null : null;
 
     const achievedAt = {
@@ -555,11 +555,11 @@ for (const [driverId, races] of byDriver) {
         podiums: lastDateOf(finished.filter(r => r.pos <= 3)),
         poles:   lastDateOf(races.filter(r => r.quali === 1)),
         fastestLaps: lastDateOf(races.filter(r => r.fl)),
-        // Los puntos suben sólo en las carreras donde sumó, así que la fecha
-        // del total es la de la última vez que puntuó.
+        // Points only go up in races where they scored, so the date
+        // of the total is the last time they scored.
         points:  lastDateOf(races.filter(r => r.pts > 0)),
-        // Para los títulos vale el día en que quedó sellado el último, que es
-        // justo el hito que ya se calcula arriba.
+        // For titles, the day the last one was sealed counts, which is
+        // exactly the milestone already computed above.
         titles: titleYears.length
             ? (milestones.find(m => m.label === `${ordinal(titleYears.length)} World Title`)?.date ?? null)
             : null,
@@ -567,9 +567,9 @@ for (const [driverId, races] of byDriver) {
 
     careers[driverId] = {
         races: races.length,
-        // Fecha del debut. Se usa como desempate en los rankings para los
-        // pilotos que todavía tienen 0 en una categoría: no hay "cuándo lo
-        // consiguió", pero sí "desde cuándo viene intentándolo".
+        // Debut date. Used as a tiebreaker in rankings for
+        // drivers who still have 0 in a category: there's no "when they
+        // achieved it", but there is "since when they've been trying".
         debut: races[0]?.date ?? null,
         seasons: [...new Set(races.map(r => r.year))].sort(),
         number: lastNumbered?.number ?? null,
@@ -589,4 +589,4 @@ for (const [driverId, races] of byDriver) {
 
 fs.writeFileSync(OUT, JSON.stringify(careers));
 const kb = (fs.statSync(OUT).size / 1024).toFixed(1);
-console.log(`careers.json escrito: ${Object.keys(careers).length} pilotos, ${kb} KB`);
+console.log(`careers.json written: ${Object.keys(careers).length} drivers, ${kb} KB`);

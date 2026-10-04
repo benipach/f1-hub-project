@@ -1,17 +1,17 @@
-// ── 2026 SEASON — curva de forma + resultados ronda a ronda ──
+// ── 2026 SEASON: form curve + round-by-round results ──
 //
-// Se alimenta de data/seasons/season2026.json + data/drivers.json + data/teams.json
-// (+ circuits/cities/countries para la bandera de cada GP).
-// gpCode()/gpShortLabel() vienen de js/shared/gp.js, compartidos con el gráfico
-// del campeonato.
-// Reemplaza al viejo js/drivers.js, que apuntaba a rutas y formas de datos que ya
-// no existen (data/season2026.json en la raíz, driversData.drivers como array, y
-// match de resultados por nombre completo cuando el JSON usa slugs).
+// Fed by data/seasons/season2026.json + data/drivers.json + data/teams.json
+// (+ circuits/cities/countries for each GP's flag).
+// gpCode()/gpShortLabel() come from js/shared/gp.js, shared with the
+// championship chart.
+// Replaces the old js/drivers.js, which pointed to paths and data shapes that
+// no longer exist (data/season2026.json at the root, driversData.drivers as an array, and
+// matching results by full name when the JSON uses slugs).
 
 (function(){
     const SEASON_YEAR = 2026;
-    // drivers/careers/countries/teams vienen del loader compartido (driver-data.js);
-    // acá sólo se piden los archivos propios de la temporada.
+    // drivers/careers/countries/teams come from the shared loader (driver-data.js);
+    // only the season's own files are requested here.
     const SEASON_URL   = '../data/seasons/season2026.json';
     const CIRCUITS_URL = '../data/circuits.json';
     const CITIES_URL   = '../data/cities.json';
@@ -20,7 +20,7 @@
     const root = document.getElementById('season2026');
     if(!root) return;
 
-    // Sin ?driver= la página cae al piloto de referencia, así abre igual desde el disco.
+    // Without ?driver= the page falls back to the reference driver, so it still opens from disk.
     const driverId = new URLSearchParams(location.search).get('driver') || 'max-verstappen';
 
     const sessionResults = (gp, key) => {
@@ -30,12 +30,12 @@
 
     const isRetired = row => /DN[FS]/i.test(String(row?.time || ''));
 
-    // resolveTeamId() viene de js/shared/teams.js: los resultados traen el
-    // equipo a veces como slug, a veces como nombre ("Red Bull") y a veces
-    // como chasis ("red-bull-racing-honda"), y ahí se resuelve al ID real.
+    // resolveTeamId() comes from js/shared/teams.js: results carry the
+    // team sometimes as a slug, sometimes as a name ("Red Bull") and sometimes
+    // as a chassis ("red-bull-racing-honda"), and it's resolved there to the real ID.
 
-    // GP → circuito → ciudad → país → ISO de 2 letras → SVG de Twemoji.
-    // Mismo recorrido que shared/resolve.js, mismo CDN que archive.js.
+    // GP → circuit → city → country → 2-letter ISO → Twemoji SVG.
+    // Same path as shared/resolve.js, same CDN as archive.js.
     function flagUrlFor(gp, refs){
         const city = refs.circuits?.[gp.circuitId]?.location?.city;
         const iso = refs.countries?.[refs.cities?.[city]?.country]?.isoCode;
@@ -46,27 +46,27 @@
         return `${TWEMOJI_BASE}${code}.svg`;
     }
 
-    // ── Cálculo ────────────────────────────────────────────────────────────
+    // ── Calculation ────────────────────────────────────────────────────────
     function buildRounds(season, id, refs){
         const rounds = [];
         const gps = Object.values(season).sort((a, b) => a.round - b.round);
 
         for(const gp of gps){
             const race = sessionResults(gp, 'race');
-            if(!race.length) continue;                        // todavía no se corrió
+            if(!race.length) continue;                        // not run yet
             const me = race.find(r => r.driver === id);
             if(!me) continue;
 
             const sprint = sessionResults(gp, 'sprintRace').find(r => r.driver === id);
             const retired = isRetired(me);
-            // Parrilla real (con penalizaciones), o la quali si la temporada
-            // todavía no tiene el campo — ver shared/grid.js.
+            // Actual grid (with penalties), or the qualifying position if the season
+            // doesn't have the field yet (see shared/grid.js).
             const start = startingGridFor(gp, 'race')[id] ?? null;
 
             rounds.push({
                 round: gp.round,
                 name: gpShortLabel(gp.name),
-                fullName: gp.name,           // "Hungarian Grand Prix", para el texto corrido
+                fullName: gp.name,           // "Hungarian Grand Prix", for running text
                 code: gpCode(gp.name),
                 flag: flagUrlFor(gp, refs),
                 grid: start?.pos ?? null,
@@ -94,8 +94,8 @@
         return Object.entries(totals).sort((a, b) => b[1] - a[1]);
     }
 
-    // El piloto que más puestos ganó en carrera durante la temporada (suma de
-    // grid − finish cuando adelantó). Se marca en su página como el mejor racecraft.
+    // The driver who gained the most places in races during the season (sum of
+    // grid − finish when they moved forward). Marked on their page as the best racecraft.
     function bestRacecraft(season){
         const gained = {};
         for(const gp of Object.values(season)){
@@ -114,7 +114,7 @@
 
     function summarise(rounds){
         const scored = rounds.filter(r => !r.retired && r.grid != null);
-        const deltas = scored.map(r => r.grid - r.finish);   // + = ganó puestos
+        const deltas = scored.map(r => r.grid - r.finish);   // + = gained places
         return {
             points:      rounds.reduce((a, r) => a + r.pts, 0),
             starts:      rounds.length,
@@ -158,11 +158,11 @@
         `;
     }
 
-    // Chevron del indicador de posición, igual que el que usa la tabla del GP.
+    // Position indicator chevron, the same one the GP table uses.
     const deltaArrowSvg = direction =>
         `<svg class="res-delta-arrow" viewBox="0 0 24 24" style="transform:rotate(${direction === 'down' ? 180 : 0}deg)" aria-hidden="true"><path d="M3.5 16 L12 7 L20.5 16" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
-    // delta > 0 = ganó puestos respecto de la largada; null = sin dato (DNF o sin grilla).
+    // delta > 0 = gained places relative to the start; null = no data (DNF or no grid).
     const deltaHtml = delta => {
         if(delta === null) return `<span class="res-delta res-delta--none">—</span>`;
         if(delta > 0) return `<span class="res-delta res-delta--up">${deltaArrowSvg('up')}${delta}</span>`;
@@ -170,11 +170,11 @@
         return `<span class="res-delta res-delta--same">—</span>`;
     };
 
-    // Las filas van de la ronda 1 hacia abajo, en el orden en que se corrieron.
+    // Rows go from round 1 downwards, in the order they were run.
     function renderRounds(tbody, rounds){
         tbody.innerHTML = rounds.map(r => {
             const delta = r.grid != null && !r.retired ? r.grid - r.finish : null;
-            // Cada escalón del podio con su color: oro, plata, bronce.
+            // Each podium step with its color: gold, silver, bronze.
             const outcome = r.retired ? 'dnf'
                 : r.finish === 1 ? 'p1'
                 : r.finish === 2 ? 'p2'
@@ -197,7 +197,7 @@
         }).join('');
     }
 
-    // Banda dorada del podio + línea de corte de puntos, dibujadas bajo las series.
+    // Gold podium band + points cutoff line, drawn below the series.
     const zonesPlugin = {
         id: 'seasonZones',
         beforeDatasetsDraw(chart){
@@ -219,12 +219,12 @@
         }
     };
 
-    // ── Trazado de izquierda a derecha ──
-    // Las líneas (y sus puntos) se dibujan dentro de un recorte que se abre de
-    // izquierda a derecha según chart.$drawProgress (0 → 1); ejes, grilla y las
-    // zonas de arriba quedan fijos. Va después de zonesPlugin en la lista, así
-    // el recorte no las tapa. chart.$drawIn() lo anima: lo llama
-    // driver-reveal.js cuando el gráfico entra en pantalla.
+    // ── Left-to-right drawing ──
+    // The lines (and their dots) are drawn inside a clip that opens from
+    // left to right according to chart.$drawProgress (0 → 1); axes, grid and the
+    // zones above stay fixed. It goes after zonesPlugin in the list, so
+    // the clip doesn't cover them. chart.$drawIn() animates it: it's called by
+    // driver-reveal.js when the chart scrolls into view.
     const DRAW_IN_MS = 1200;
 
     const drawInPlugin = {
@@ -233,8 +233,8 @@
             const p = chart.$drawProgress ?? 1;
             if(p >= 1) return;
             const { ctx, chartArea } = chart;
-            // Desde el borde del canvas (no del área) para que el primer punto
-            // no aparezca cortado por la mitad.
+            // From the canvas edge (not the chart area) so the first point
+            // doesn't appear cut in half.
             const x = chartArea.left + (chartArea.right - chartArea.left) * p;
             ctx.save();
             ctx.beginPath();
@@ -265,10 +265,10 @@
             requestAnimationFrame(tick);
         };
 
-        // Si la sección todavía espera su animación de entrada, el gráfico queda
-        // vacío hasta que driver-reveal.js lo dispare. Si ya entró (las fuentes
-        // tardaron más que el scroll), se traza ahora. Sin animaciones de
-        // entrada (no hay data-reveal), se muestra completo.
+        // If the section is still waiting for its entrance animation, the chart stays
+        // empty until driver-reveal.js triggers it. If it already entered (the fonts
+        // took longer than the scroll), it's drawn now. Without entrance
+        // animations (no data-reveal), it's shown complete.
         const block = chart.canvas.closest('[data-reveal]');
         if(!block) return;
         if(block.classList.contains('reveal') && !block.classList.contains('is-in')) {
@@ -279,15 +279,15 @@
         }
     }
 
-    // La parrilla 2026 es de 22 autos: el eje va siempre P1→P22, fijo, para que
-    // todos los pilotos usen la misma escala y la línea nunca quede cortada.
+    // The 2026 grid has 22 cars: the axis always goes P1→P22, fixed, so that
+    // every driver uses the same scale and the line is never cut off.
     const GRID_SIZE = 22;
     const Y_PAD = 0.6;
 
-    // ── Tooltip del Form curve ──
-    // Tarjeta con la ronda, largada → llegada con los puestos ganados/perdidos,
-    // los puntos y las insignias (vuelta rápida, abandono). Vive dentro de
-    // .season-form-canvas y sigue al punto de la carrera.
+    // ── Form curve tooltip ──
+    // A card with the round, start → finish with places gained/lost,
+    // the points and the badges (fastest lap, retirement). It lives inside
+    // .season-form-canvas and follows the race point.
     function formTipHtml(r){
         const delta = r.grid != null && !r.retired ? r.grid - r.finish : null;
         const deltaChip = delta === null ? ''
@@ -338,22 +338,22 @@
                 return;
             }
 
-            // Se ancla al punto de la carrera (dataset 1), no al de la largada.
+            // Anchored to the race point (dataset 1), not the start one.
             const point = tooltip.dataPoints.find(p => p.datasetIndex === 1) || tooltip.dataPoints[0];
             const r = rounds[point.dataIndex];
             el.style.setProperty('--c', teamColor);
             el.innerHTML = formTipHtml(r);
 
-            // Abajo del punto; si no entra, arriba. Horizontalmente centrada y
-            // sin salirse del gráfico.
+            // Below the point; if it doesn't fit, above. Horizontally centered and
+            // without going outside the chart.
             const gap = 14;
             const w = el.offsetWidth, h = el.offsetHeight;
             const { x, y } = point.element;
             const left = Math.min(Math.max(x - w / 2, 0), wrap.clientWidth - w);
             const top = y + gap + h <= wrap.clientHeight ? y + gap : Math.max(y - gap - h, 0);
 
-            // Si estaba oculta aparece en su lugar (sin viajar desde el punto
-            // anterior); si ya se veía, se desliza.
+            // If it was hidden it appears in place (without traveling from the previous
+            // point); if it was already visible, it slides.
             if(!el.classList.contains('is-visible')){
                 el.style.transition = 'none';
                 el.style.transform = `translate(${left}px, ${top}px)`;
@@ -369,8 +369,8 @@
     function renderChart(canvas, rounds, teamColor){
         const labels = rounds.map(r => r.code);
 
-        // En celular la tarjeta es angosta: el gráfico va casi cuadrado (más alto)
-        // y con puntos/tipografía más chicos para que no quede apretado.
+        // On phones the card is narrow: the chart is almost square (taller)
+        // with smaller dots/type so it doesn't feel cramped.
         const isPhone = window.matchMedia('(max-width: 700px)').matches;
 
         const pointColors = rounds.map(r => r.retired ? '#d9564f' : teamColor);
@@ -405,8 +405,8 @@
                         pointBorderColor: pointColors,
                         pointRadius,
                         pointHoverRadius: 7,
-                        // Monótona: la curva nunca se pasa del dato, así no se
-                        // escapa por encima de P1 ni por debajo de P22.
+                        // Monotone: the curve never overshoots the data, so it doesn't
+                        // escape above P1 or below P22.
                         cubicInterpolationMode: 'monotone',
                         order: 1,
                     },
@@ -416,21 +416,21 @@
                 responsive: true,
                 maintainAspectRatio: true,
                 aspectRatio: isPhone ? 0.95 : 2.9,
-                // Sin la animación de carga de Chart.js (los puntos subiendo
-                // desde abajo): la entrada la hace drawInPlugin. El hover
-                // conserva la suya, que va por transitions.active.
+                // Without Chart.js's load animation (the dots rising
+                // from the bottom): the entrance is done by drawInPlugin. Hover
+                // keeps its own, which goes through transitions.active.
                 animation: { duration: 0 },
                 interaction: { mode: 'index', intersect: false },
                 scales: {
                     y: {
                         reverse: true,
-                        // Medio puesto de aire en cada punta: si el eje termina
-                        // justo en P1/P22, el trazo y los puntos de un ganador (o
-                        // del último) quedan cortados contra el borde.
+                        // Half a place of padding at each end: if the axis ends
+                        // exactly at P1/P22, the line and dots of a winner (or
+                        // of the last car) get cut off against the edge.
                         min: 1 - Y_PAD,
                         max: GRID_SIZE + Y_PAD,
-                        // Con ese margen las marcas se armarían en decimales:
-                        // se fijan a mano en P1, P4 … P22 (P1, P8 … en celular).
+                        // With that margin the ticks would land on decimals:
+                        // they're set by hand at P1, P4 … P22 (P1, P8 … on phones).
                         afterBuildTicks: axis => {
                             const step = isPhone ? 7 : 3;
                             axis.ticks = Array.from(
@@ -455,7 +455,7 @@
                 },
                 plugins: {
                     legend: { display: false },
-                    // Tarjeta propia en HTML en lugar del tooltip de texto de Chart.js.
+                    // A custom HTML card instead of Chart.js's text tooltip.
                     tooltip: {
                         enabled: false,
                         external: formTooltip(rounds, teamColor),
@@ -481,7 +481,7 @@
             countries = shared.countries;
             [season, circuits, cities] = own;
         } catch (err) {
-            console.error('No se pudo cargar la temporada', SEASON_YEAR, err);
+            console.error('Could not load the season', SEASON_YEAR, err);
             root.classList.add('is-empty');
             return;
         }
@@ -512,7 +512,7 @@
             teamName:    team?.name || rounds[rounds.length - 1].team,
         });
 
-        // Marca de mejor racecraft de la temporada, si le corresponde a este piloto.
+        // Season's best racecraft badge, if it belongs to this driver.
         const racecraftKing = bestRacecraft(season);
         const badge = root.querySelector('#seasonRacecraftBadge');
         if(badge && racecraftKing && racecraftKing.id === driverId){
@@ -520,12 +520,12 @@
             badge.hidden = false;
         }
 
-        // Una línea editorial que resume la temporada, calculada de los datos.
+        // An editorial line summarizing the season, computed from the data.
         const note = root.querySelector('#seasonFormNote');
         if(note){
             const avg = stats.avgGain;
             const bg = stats.bestGain;
-            // En pasado: son carreras ya corridas, no una tendencia en curso.
+            // In the past tense: these are races already run, not an ongoing trend.
             const gainText = avg > 0.2 ? `gained <b>${avg.toFixed(1)}</b> places per race on average`
                 : avg < -0.2 ? `lost <b>${Math.abs(avg).toFixed(1)}</b> places per race on average`
                 : `finished roughly where he started`;

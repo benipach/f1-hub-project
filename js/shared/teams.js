@@ -1,26 +1,26 @@
-// shared/teams.js — del campo `team` de un resultado al equipo de data/teams.json.
+// shared/teams.js: from a result's `team` field to the team in data/teams.json.
 //
-// Los season files guardan el equipo de varias formas según quién cargó la
-// carrera:
-//   - slug de teams.json:            "mercedes", "red-bull-racing"
-//   - nombre corto del adapter OpenF1: "Red Bull", "Mercedes-AMG", "Haas"
-//   - constructorId de Ergast:         "red-bull", "rb", "str"
-//   - chasis scrapeado de F1.com:      "red-bull-racing-honda-rbpt",
+// Season files store the team in several ways depending on who loaded the
+// race:
+//   - teams.json slug:               "mercedes", "red-bull-racing"
+//   - OpenF1 adapter short name:     "Red Bull", "Mercedes-AMG", "Haas"
+//   - Ergast constructorId:          "red-bull", "rb", "str"
+//   - chassis scraped from F1.com:   "red-bull-racing-honda-rbpt",
 //                                      "mclaren-mercedes", "aston-martin-aramco-mercedes"
-// Son 145 variantes distintas en el dataset. Slugificar a secas no alcanza,
-// y una tabla a mano tampoco escala, así que resolveTeamId() hace las dos
-// cosas: alias explícitos para las siglas que no se parecen al ID, y para el
-// resto va recortando tokens por la derecha hasta dar con un ID real
+// That's 145 different variants in the dataset. Plain slugifying isn't enough,
+// and a hand-written table doesn't scale either, so resolveTeamId() does both
+// things: explicit aliases for the abbreviations that don't look like the ID, and for the
+// rest it trims tokens from the right until it hits a real ID
 // ("aston-martin-aramco-mercedes" → "aston-martin-aramco" → "aston-martin").
-// El nombre del equipo siempre va primero y el motor después, así que
-// recortar por la derecha nunca cambia de equipo.
+// The team name always comes first and the engine after, so
+// trimming from the right never changes the team.
 //
-// Es un script clásico (define globales): se carga con <script defer> antes
-// del script de cada página. scripts/build-careers.js lo reutiliza tal cual
-// para que el precálculo y el front resuelvan exactamente igual.
+// It's a classic script (defines globals): loaded with <script defer> before
+// each page's script. scripts/build-careers.js reuses it as-is
+// so the precomputation and the frontend resolve exactly the same way.
 
-// Siglas y nombres que no se parecen al ID de teams.json. Todo lo demás lo
-// resuelve el recorte de tokens de resolveTeamId().
+// Abbreviations and names that don't look like the teams.json ID. Everything else is
+// resolved by resolveTeamId()'s token trimming.
 const TEAM_SLUG_ALIASES = {
     'red-bull':             'red-bull-racing',
     'rbr':                  'red-bull-racing',
@@ -46,16 +46,16 @@ function slugifyTeam(rawTeam) {
         .replace(/^-|-$/g, '');
 }
 
-// Sólo alias, sin mirar teams.json. Sirve cuando no hay datos de equipos a
-// mano; con datos, usar resolveTeamId().
+// Aliases only, without looking at teams.json. Useful when there's no team data
+// at hand; with data, use resolveTeamId().
 function teamSlug(rawTeam) {
     const slug = slugifyTeam(rawTeam);
     return TEAM_SLUG_ALIASES[slug] || slug;
 }
 
-// Devuelve el ID de teams.json que corresponde a `rawTeam`, o el slug tal
-// cual (con alias) si no hay ninguno que encaje — así el que llama puede
-// seguir usándolo como clave aunque no tenga color ni logo.
+// Returns the teams.json ID that matches `rawTeam`, or the slug as-is
+// (with aliases) if none fits, so the caller can
+// keep using it as a key even without a color or logo.
 function resolveTeamId(rawTeam, teamsData) {
     const slug = slugifyTeam(rawTeam);
     if (!teamsData) return TEAM_SLUG_ALIASES[slug] || slug;

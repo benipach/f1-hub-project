@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * auto-fill-missing.js
- * Completa resultados y weather raw por sesión en data/seasons/season2026.json.
+ * Fills in results and raw weather per session in data/seasons/season2026.json.
  */
 import { readFile, writeFile, copyFile } from "node:fs/promises";
 import {
@@ -48,36 +48,36 @@ function parseArgs(argv) {
       flags.skip = new Set([...DEFAULT_SKIP_GP_KEYS, ...keys]);
     }
     else if (arg === "--weather") flags.weather = true;
-    // Backfill manual: re-pide weather aunque la sesión ya tenga datos guardados
-    // (útil para sesiones viejas a las que les falta un campo nuevo, ej. wind_direction).
+    // Manual backfill: re-requests weather even if the session already has saved data
+    // (useful for old sessions missing a new field, e.g. wind_direction).
     else if (arg === "--force-weather") { flags.weather = true; flags.forceWeather = true; }
     else if (arg === "--dry-run") flags.dryRun = true;
     else if (arg === "--no-backup") flags.backup = false;
     else if (arg === "--once") { /* no-op */ }
     else if (arg === "--fix-positions") flags.fixPositions = true;
-    // Backfill manual: agrega bestLap a carreras que ya tienen resultados
-    // guardados pero se corrieron antes de que este campo existiera.
+    // Manual backfill: adds bestLap to races that already have saved results
+    // but were run before this field existed.
     else if (arg === "--backfill-bestlap") flags.backfillBestLap = true;
-    // Backfill manual: agrega team/number a resultados (cualquier sesión) guardados
-    // antes del fix que empezó a incluir esos campos en mapPractice/mapQualy.
+    // Manual backfill: adds team/number to results (any session) saved
+    // before the fix that started including those fields in mapPractice/mapQualy.
     else if (arg === "--backfill-driver-info") flags.backfillDriverInfo = true;
-    // Backfill manual: agrega la parrilla de salida real (`grid`, con
-    // penalizaciones) a carreras/sprints guardados antes de que existiera el
-    // campo. Los resultados nuevos ya lo traen solos (ver mapRace).
+    // Manual backfill: adds the actual starting grid (`grid`, with
+    // penalties) to races/sprints saved before the field existed.
+    // New results already include it (see mapRace).
     else if (arg === "--backfill-grid") flags.backfillGrid = true;
-    // Renombra equipos ya guardados según TEAM_NAME_NORMALIZE (ej. "Haas F1 Team" → "Haas"),
-    // sin pegarle a OpenF1: solo reescribe lo que ya está en el JSON.
+    // Renames already saved teams according to TEAM_NAME_NORMALIZE (e.g. "Haas F1 Team" → "Haas"),
+    // without hitting OpenF1: it only rewrites what's already in the JSON.
     else if (arg === "--normalize-teams") flags.normalizeTeams = true;
-    // Backfill manual: re-pide resultados de qualy ya guardados que tengan
-    // DNF/DNS como lapTime, para que pasen a "No time" (ver qualyStatusLabel).
+    // Manual backfill: re-requests saved qualifying results that have
+    // DNF/DNS as lapTime, so they become "No time" (see qualyStatusLabel).
     else if (arg === "--fix-qualy-status") flags.fixQualyStatus = true;
-    else if (arg.startsWith("--interval=")) console.warn("⚠️ --interval ignorado: GitHub Actions agenda las ejecuciones.");
+    else if (arg.startsWith("--interval=")) console.warn("⚠️ --interval ignored: GitHub Actions schedules the runs.");
     else positional.push(arg);
   }
 
   const [seasonPath] = positional;
   if (!seasonPath) {
-    console.error("❌ Falta path JSON. Uso: node auto-fill-missing.js data/seasons/season2026.json");
+    console.error("❌ Missing JSON path. Usage: node auto-fill-missing.js data/seasons/season2026.json");
     process.exit(1);
   }
   return { seasonPath, ...flags };
@@ -90,19 +90,19 @@ async function openf1HasResults(sessionKey) {
 function sessionHasResults(session) {
   return Array.isArray(session?.results) && session.results.length > 0;
 }
-// Sesión de carrera con resultados guardados pero de antes de que existiera
-// el campo bestLap (o donde OpenF1 no tenía vueltas para algún piloto).
+// Race session with saved results but from before the
+// bestLap field existed (or where OpenF1 had no laps for some driver).
 function raceSessionMissingBestLap(session) {
   if (!sessionHasResults(session)) return false;
   return session.results.some((row) => row && row.bestLap === undefined);
 }
-// Resultados (de cualquier sesión) guardados antes de que mapPractice/mapQualy
-// empezaran a incluir number/team: se detectan porque a esas filas les falta "number".
+// Results (from any session) saved before mapPractice/mapQualy
+// started including number/team: detected because those rows are missing "number".
 function sessionMissingDriverInfo(session) {
   if (!sessionHasResults(session)) return false;
   return session.results.some((row) => row && row.number === undefined);
 }
-// Filas de qualy guardadas antes de que DNF/DNS pasaran a mostrarse como "No time".
+// Qualifying rows saved before DNF/DNS started being shown as "No time".
 function sessionHasStaleQualyStatus(resultKey, session) {
   if (!QUALY_LIKE.has(resultKey) || !sessionHasResults(session)) return false;
   return session.results.some((row) => row?.lapTime === "DNF" || row?.lapTime === "DNS");
@@ -129,7 +129,7 @@ function isEmptyWeather(weather) {
 function shouldUpdateWeather(session, openf1Session, forceWeather = false) {
   if (!sessionStarted(session, openf1Session)) return false;
   if (!sessionEnded(session, openf1Session)) return true;
-  if (forceWeather) return true; // backfill manual: repisa aunque ya tenga weather
+  if (forceWeather) return true; // manual backfill: overwrite even if it already has weather
   return isEmptyWeather(session.weather);
 }
 function ensureSessionShape(session) {
@@ -137,17 +137,17 @@ function ensureSessionShape(session) {
   if (!("weather" in session)) session.weather = null;
 }
 
-// Evita pegarle a OpenF1 por GPs que todavía no arrancaron: nada que buscar ahí.
+// Avoids hitting OpenF1 for GPs that haven't started yet: nothing to look for there.
 function gpHasStartedSession(gp) {
   const sessions = Object.values(gp.sessions ?? {});
   return sessions.some((session) => {
     const start = parseDate(session?.date);
-    return start ? start.getTime() <= Date.now() : true; // sin fecha: no arriesgar, procesar igual
+    return start ? start.getTime() <= Date.now() : true; // no date: don't risk it, process anyway
   });
 }
 
-// Evita pegarle a OpenF1 por GPs cuyas sesiones pasadas ya están completas.
-// Con forceWeather=true no saltea nada que ya haya arrancado (backfill manual).
+// Avoids hitting OpenF1 for GPs whose past sessions are already complete.
+// With forceWeather=true it doesn't skip anything that has already started (manual backfill).
 function gpNeedsWork(gp, weatherEnabled, forceWeather = false, backfillBestLap = false, backfillDriverInfo = false, fixQualyStatus = false, backfillGrid = false) {
   return Object.entries(gp.sessions ?? {}).some(([resultKey, session]) => {
     if (!session || typeof session !== "object") return false;
@@ -164,11 +164,11 @@ function gpNeedsWork(gp, weatherEnabled, forceWeather = false, backfillBestLap =
   });
 }
 
-// Migración: results ya guardados con pos:0 (bug viejo de OpenF1) deben
-// renumerarse. 0 nunca es una posición real, así que esas filas se mandan
-// al final (detrás de las posiciones numéricas reales, preservando el
-// orden relativo entre ellas) y se renumera todo 1..N por índice — igual
-// que hace mapRace/mapQualy/mapPractice con datos nuevos. Nada de "NC".
+// Migration: results already saved with pos:0 (an old OpenF1 bug) must be
+// renumbered. 0 is never a real position, so those rows are sent
+// to the end (behind the real numeric positions, keeping their
+// relative order) and everything is renumbered 1..N by index, the same
+// as mapRace/mapQualy/mapPractice do with new data. No "NC".
 function migrateZeroPositions(season) {
   let fixedCount = 0;
   for (const [gpKey, gp] of Object.entries(season)) {
@@ -191,15 +191,15 @@ function migrateZeroPositions(season) {
 
       fixedCount += zeroRows.length;
       for (const row of zeroRows) {
-        console.log(`🔧 ${gpKey}/${resultKey}: ${row.driver ?? "?"} pos 0 → renumerado al final`);
+        console.log(`🔧 ${gpKey}/${resultKey}: ${row.driver ?? "?"} pos 0 → renumbered to the end`);
       }
     }
   }
   return fixedCount;
 }
 
-// Renombra season.results[].team ya guardados usando TEAM_NAME_NORMALIZE
-// (backfill manual: no vuelve a pegarle a OpenF1, solo reescribe strings).
+// Renames already saved season.results[].team using TEAM_NAME_NORMALIZE
+// (manual backfill: doesn't hit OpenF1 again, only rewrites strings).
 function normalizeTeamNamesInSeason(season) {
   let renamed = 0;
   for (const gp of Object.values(season)) {
@@ -225,25 +225,25 @@ async function runOnce(args) {
   if (args.fixPositions) {
     const fixed = migrateZeroPositions(season);
     if (fixed > 0) {
-      console.log(`🔧 Migración pos:0 → NC: ${fixed} fila(s) corregida(s)`);
+      console.log(`🔧 pos:0 → NC migration: ${fixed} row(s) fixed`);
       updatesCount += fixed;
     } else {
-      console.log("🔧 Migración pos:0 → NC: nada para corregir");
+      console.log("🔧 pos:0 → NC migration: nothing to fix");
     }
   }
 
   if (args.normalizeTeams) {
     const renamed = normalizeTeamNamesInSeason(season);
     if (renamed > 0) {
-      console.log(`🏷️ Normalización de equipos: ${renamed} fila(s) renombrada(s)`);
+      console.log(`🏷️ Team normalization: ${renamed} row(s) renamed`);
       updatesCount += renamed;
     } else {
-      console.log("🏷️ Normalización de equipos: nada para renombrar");
+      console.log("🏷️ Team normalization: nothing to rename");
     }
   }
 
   console.log(`🏁 Auto-fill OpenF1 ${args.year}`);
-  if (args.forceWeather) console.log("🔁 --force-weather activo: se re-pide weather aunque ya exista (backfill)");
+  if (args.forceWeather) console.log("🔁 --force-weather on: re-requesting weather even if it already exists (backfill)");
 
   for (const [gpKey, gp] of Object.entries(season)) {
     if (args.skip.has(gpKey)) {
@@ -251,15 +251,15 @@ async function runOnce(args) {
       continue;
     }
     if (!gp?.sessions || typeof gp.sessions !== "object" || Array.isArray(gp.sessions)) {
-      console.warn(`⚠️ ${gpKey}: no tiene gp.sessions; ignorado`);
+      console.warn(`⚠️ ${gpKey}: has no gp.sessions; skipped`);
       continue;
     }
     if (!gpHasStartedSession(gp)) {
-      console.log(`⏭️ ${gpKey}: todavía no arrancó, se saltea sin consultar OpenF1`);
+      console.log(`⏭️ ${gpKey}: hasn't started yet, skipped without querying OpenF1`);
       continue;
     }
     if (!gpNeedsWork(gp, args.weather, args.forceWeather, args.backfillBestLap, args.backfillDriverInfo, args.fixQualyStatus, args.backfillGrid)) {
-      console.log(`⏭️ ${gpKey}: ya está completo, se saltea sin consultar OpenF1`);
+      console.log(`⏭️ ${gpKey}: already complete, skipped without querying OpenF1`);
       continue;
     }
 
@@ -267,11 +267,11 @@ async function runOnce(args) {
     try {
       meeting = await findMeeting(args.year, gpKey, gp);
     } catch (err) {
-      console.warn(`⚠️ ${gpKey}: meeting no encontrado (${err.message})`);
+      console.warn(`⚠️ ${gpKey}: meeting not found (${err.message})`);
       continue;
     }
     if (meeting?.is_cancelled === true) {
-      console.log(`⏭️ ${gpKey}: cancelado en OpenF1`);
+      console.log(`⏭️ ${gpKey}: cancelled in OpenF1`);
       continue;
     }
 
@@ -279,7 +279,7 @@ async function runOnce(args) {
     try {
       openf1Sessions = await buildSessionInfoMap(meeting.meeting_key);
     } catch (err) {
-      console.warn(`⚠️ ${gpKey}: sesiones no disponibles (${err.message})`);
+      console.warn(`⚠️ ${gpKey}: sessions unavailable (${err.message})`);
       continue;
     }
 
@@ -300,7 +300,7 @@ async function runOnce(args) {
           if (weather) {
             session.weather = weather;
             changed = true;
-            console.log(`🌤️ ${gpKey}/${resultKey}: weather actualizado`);
+            console.log(`🌤️ ${gpKey}/${resultKey}: weather updated`);
           }
         } catch (err) {
           console.warn(`⚠️ ${gpKey}/${resultKey}: weather (${err.message})`);
@@ -322,32 +322,32 @@ async function runOnce(args) {
             changed = true;
             console.log(
               needsResults
-                ? `✅ ${gpKey}/${resultKey}: resultados agregados`
+                ? `✅ ${gpKey}/${resultKey}: results added`
                 : needsDriverInfoBackfill
-                ? `🔢 ${gpKey}/${resultKey}: number/team agregado`
+                ? `🔢 ${gpKey}/${resultKey}: number/team added`
                 : needsQualyStatusFix
                 ? `⏱️ ${gpKey}/${resultKey}: DNF/DNS → No time`
-                : `🏎️ ${gpKey}/${resultKey}: bestLap agregado`
+                : `🏎️ ${gpKey}/${resultKey}: bestLap added`
             );
           } else if (needsResults && sessionEnded(session, openf1Session)) {
-            console.log(`⏳ ${gpKey}/${resultKey}: terminada sin resultados OpenF1`);
+            console.log(`⏳ ${gpKey}/${resultKey}: ended without OpenF1 results`);
           }
         } catch (err) {
-          console.warn(`⚠️ ${gpKey}/${resultKey}: resultados (${err.message})`);
+          console.warn(`⚠️ ${gpKey}/${resultKey}: results (${err.message})`);
         }
       }
 
-      // Parrilla de salida para carreras ya guardadas: sólo se completa lo
-      // que falta, sin volver a pedir los resultados.
+      // Starting grid for already saved races: only what's missing is filled in,
+      // without requesting the results again.
       if (args.backfillGrid && RACE_LIKE.has(resultKey) && raceSessionMissingGrid(session)) {
         try {
           const qualyKey = openf1Sessions[GRID_SOURCE_KEY[resultKey]]?.session_key ?? null;
           const added = applyGridToSession(session, await fetchStartingGrid(qualyKey));
           if (added) {
             changed = true;
-            console.log(`🔢 ${gpKey}/${resultKey}: grid agregado a ${added} fila(s)`);
+            console.log(`🔢 ${gpKey}/${resultKey}: grid added to ${added} row(s)`);
           } else {
-            console.log(`⏳ ${gpKey}/${resultKey}: OpenF1 no tiene la parrilla todavía`);
+            console.log(`⏳ ${gpKey}/${resultKey}: OpenF1 doesn't have the grid yet`);
           }
         } catch (err) {
           console.warn(`⚠️ ${gpKey}/${resultKey}: grid (${err.message})`);
@@ -359,11 +359,11 @@ async function runOnce(args) {
   }
 
   if (updatesCount === 0) {
-    console.log("✔️ Sin cambios.");
+    console.log("✔️ No changes.");
     return;
   }
   if (args.dryRun) {
-    console.log(`🧪 Dry run: ${updatesCount} update(s), archivo no escrito.`);
+    console.log(`🧪 Dry run: ${updatesCount} update(s), file not written.`);
     return;
   }
 
@@ -372,10 +372,10 @@ async function runOnce(args) {
     await copyFile(args.seasonPath, `${args.seasonPath}.bak`);
   }
   await writeFile(outPath, JSON.stringify(season, null, 2) + "\n", "utf8");
-  console.log(`✅ JSON actualizado: ${outPath} (${updatesCount} update(s))`);
+  console.log(`✅ JSON updated: ${outPath} (${updatesCount} update(s))`);
 }
 
 runOnce(parseArgs(process.argv.slice(2))).catch((err) => {
-  console.error("❌ Error fatal:", err);
+  console.error("❌ Fatal error:", err);
   process.exit(1);
 });

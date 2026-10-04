@@ -2,17 +2,17 @@
 /*               HERO               */
 /* ================================ */
 
-/* Una franja por piloto, con el color de su equipo arriba. La franja activa
-   (hover, foco o .is-open) se abre y muestra al piloto a color; el resto queda
-   en gris. Por defecto no hay ninguna abierta; en táctil, .is-open la pone
-   el primer toque (ver script). */
+/* One strip per driver, with their team color on top. The active strip
+   (hover, focus or .is-open) opens and shows the driver in color; the rest stay
+   grey. By default none is open; on touch, .is-open is set by
+   the first tap (see script). */
 .livery-hero {
-    /* Alto del bloque del título: los logos de equipo se apoyan justo encima */
+    /* Height of the title block: the team logos sit right on top of it */
     --lv-title: clamp(64px, 10vw, 160px);
     --lv-pad-b: 56px;
-    /* Base de los logos: título + kicker (14px + 10px de margen) + 28px de aire */
+    /* Logo baseline: title + kicker (14px + 10px margin) + 28px of space */
     --lv-logo-b: calc(var(--lv-pad-b) + var(--lv-title) * 0.88 + 30px + 28px);
-    --lv-logo-h: 72px;   /* alto de los logos; el nombre vertical arranca encima */
+    --lv-logo-h: 72px;   /* logo height; the vertical name starts above it */
     position: relative;
     min-height: 100vh;
     overflow: hidden;
@@ -25,9 +25,9 @@
     display: flex;
 }
 
-/* Los dos pilotos de un equipo, con un solo logo compartido. Crece de 2 a 6
-   cuando se abre uno de los suyos (1 + 5), así cada franja mantiene la misma
-   proporción que si no hubiera contenedor. */
+/* A team's two drivers, with a single shared logo. It grows from 2 to 6
+   when one of them opens (1 + 5), so each strip keeps the same
+   proportion it would have without a container. */
 .lv-pair {
     position: relative;
     display: flex;
@@ -38,7 +38,7 @@
 
 .lv-slice {
     --lv-dim: brightness(0.5);
-    --lv-label: clamp(28px, 2.8vw, 60px);   /* rótulo vertical: ~ancho de una franja cerrada */
+    --lv-label: clamp(28px, 2.8vw, 60px);   /* vertical label: ~width of a closed strip */
     position: relative;
     flex: 1 1 0;
     min-width: 0;
@@ -75,10 +75,10 @@
     transition: all 0.5s ease;
 }
 
-/* Rótulos verticales, solo el contorno en el color del equipo.
-   Apellido: arriba a la derecha; el código (PIA) se ve en la franja cerrada y
-   al abrirla aparece con un fundido el resto (STRI), como continuación.
-   Nombre: abajo a la izquierda, terminando justo arriba del logo. */
+/* Vertical labels, outline only in the team color.
+   Surname: top right; the code (PIA) shows on the closed strip and
+   when it opens the rest (STRI) fades in, as a continuation.
+   First name: bottom left, ending just above the logo. */
 .lv-name,
 .lv-given {
     position: absolute;
@@ -94,10 +94,10 @@
     -webkit-text-stroke: 1.5px var(--c);
 }
 
-/* Centrado en la franja cerrada; al abrirla se corre al borde derecho. Se
-   anima con left (no right) para poder pasar de un anclaje al otro. La ida
-   es instantánea (salta al borde y lo sigue mientras la franja crece); la
-   vuelta dura 0.5s. */
+/* Centered on the closed strip; when it opens it moves to the right edge. It's
+   animated with left (not right) so it can switch from one anchor to the other. Going out
+   is instant (it jumps to the edge and follows it while the strip grows); coming
+   back takes 0.5s. */
 .lv-name {
     top: 20px;
     left: 50%;
@@ -105,15 +105,15 @@
     transition: all 0.5s ease;
 }
 
-/* Girado 180°: se lee de abajo hacia arriba, mirando al lado opuesto del apellido */
+/* Rotated 180°: reads from bottom to top, facing the opposite side from the surname */
 .lv-given {
     left: 10px;
     bottom: calc(var(--lv-logo-b) + var(--lv-logo-h) + 16px);
     rotate: 180deg;
 }
 
-/* Lo que solo se ve con la franja abierta: el resto del apellido, el nombre
-   y el número gigante. Entran todos con el mismo fundido. */
+/* What only shows with the strip open: the rest of the surname, the first name
+   and the giant number. They all come in with the same fade. */
 .lv-rest,
 .lv-given,
 .lv-bignum {
@@ -121,8 +121,8 @@
     transition: all 0.5s ease;
 }
 
-/* Número de carrera gigante arriba a la izquierda, detrás de la foto (va
-   antes que ella en el HTML, así queda debajo). */
+/* Giant car number at the top left, behind the photo (it comes
+   before it in the HTML, so it stays underneath). */
 .lv-bignum {
     position: absolute;
     top: 20px;
@@ -143,10 +143,10 @@
 
 .lv-slice.is-champion:is(:hover, :focus-visible, .is-open) .lv-bignum { opacity: 0.5; }
 
-/* Logo del equipo, al pie y por encima del degradé del título (z-index 6).
-   Vive en un separador de ancho cero entre las dos franjas, así queda siempre
-   sobre el borde entre ambas (centrado en reposo) sin animar su posición.
-   Su base es --lv-logo-b (ver .livery-hero). */
+/* Team logo, at the bottom and above the title gradient (z-index 6).
+   It lives in a zero-width spacer between the two strips, so it always sits
+   on the border between them (centered at rest) without animating its position.
+   Its baseline is --lv-logo-b (see .livery-hero). */
 .lv-logo-slot {
     position: relative;
     flex: 0 0 0;
@@ -176,18 +176,18 @@
 .lv-slice:is(:hover, :focus-visible, .is-open) :is(.lv-rest, .lv-given, .lv-bignum) { opacity: 1; }
 .lv-slice:is(:hover, :focus-visible, .is-open) .lv-name { left: calc(100% - 10px); transform: translateX(-100%); transition: none; }
 
-/* Mientras se explora otra franja, la abierta por defecto se cierra */
+/* While another strip is being explored, the one open by default closes */
 .lv-strip:is(:hover, :focus-within) .lv-slice.is-open:not(:hover, :focus-visible) { flex-grow: 1; }
 .lv-strip:is(:hover, :focus-within) .lv-slice.is-open:not(:hover, :focus-visible) .lv-photo { filter: var(--lv-dim); }
 .lv-strip:is(:hover, :focus-within) .lv-slice.is-open:not(:hover, :focus-visible) :is(.lv-rest, .lv-given, .lv-bignum) { opacity: 0; }
 .lv-strip:is(:hover, :focus-within) .lv-slice.is-open:not(:hover, :focus-visible) .lv-name { left: 50%; transform: translateX(-50%); transition: all 0.5s ease; }
 
-/* Entrada: el script las ordena según el campeonato y recién ahí las muestra
-   (.is-ready), así no cambian de lugar mientras entran. Suben en cascada de
-   izquierda a derecha (--i lo pone el script), la franja del equipo se dibuja
-   de izquierda a derecha y el logo aparece entre sus dos pilotos. Con
-   backwards (no both) la animación suelta la franja al terminar y el hover
-   sigue funcionando igual. */
+/* Entrance: the script sorts them by the championship and only then shows them
+   (.is-ready), so they don't change places while entering. They rise in a cascade from
+   left to right (--i is set by the script), the team strip is drawn
+   from left to right and the logo appears between its two drivers. With
+   backwards (not both) the animation releases the strip when it ends and hover
+   keeps working the same. */
 .lv-strip:not(.is-ready) { visibility: hidden; }
 
 .lv-strip.is-ready .lv-slice {
@@ -217,7 +217,7 @@
     from { transform: scaleX(0); }
 }
 
-/* translate (no transform) para no pisar el translateX(-50%) que lo centra */
+/* translate (not transform) so it doesn't override the translateX(-50%) that centers it */
 @keyframes lv-logo-in {
     from {
         opacity: 0;
@@ -236,7 +236,7 @@
     .lv-strip:is(:hover, :focus-within) .lv-pair:has(> .is-open):not(:has(> .lv-slice:is(:hover, :focus-visible))) { flex-grow: 2; }
 }
 
-/* Título sobre la franja, con degradé hacia el contenido */
+/* Title over the strip, with a gradient towards the content */
 .lv-copy {
     position: absolute;
     left: 0;
@@ -261,22 +261,22 @@
     color: #ffffff;
 }
 
-/* El script arma el título letra por letra; hasta entonces no se muestra */
+/* The script builds the title letter by letter; until then it isn't shown */
 .lv-copy h1:not(.is-ready) { visibility: hidden; }
 
-/* Cada letra es un bloque suelto: sin esto las palabras se cortarían en mobile */
+/* Each letter is a separate block: without this, words would break on mobile */
 .lv-copy h1 > span { white-space: nowrap; }
 
-/* Año solo con contorno; sus dígitos entran desde arriba */
+/* Year in outline only; its digits come in from above */
 .lv-year {
     --lv-char-from: -0.35em;
     color: transparent;
     -webkit-text-stroke: 0.018em #ffffff;
 }
 
-/* Al cargar, las letras suben de a una y se asientan. Arrancan cuando ya
-   pasaron las franjas y la mayoría de los logos, así el título entra casi
-   solo y no compite con ellos. */
+/* On load, the letters rise one by one and settle. They start once
+   the strips and most of the logos have passed, so the title enters almost
+   alone and doesn't compete with them. */
 .lv-char {
     display: inline-block;
     animation: lv-char-in 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -295,11 +295,11 @@
     .lv-char { animation: none; }
 }
 
-/* Pantallas táctiles / chicas: franjas de ancho fijo con scroll horizontal.
-   El primer toque abre la franja y el segundo entra al perfil (ver script). */
+/* Touch / small screens: fixed-width strips with horizontal scroll.
+   The first tap opens the strip and the second goes to the profile (see script). */
 @media (max-width: 900px) {
-    /* El título baja (padding 12px) pero los logos quedan donde estaban
-       (calculados con 32px), así se separan del texto */
+    /* The title moves down (12px padding) but the logos stay where they were
+       (computed with 32px), so they separate from the text */
     .livery-hero {
         min-height: 85vh;
         --lv-pad-b: 12px;
@@ -323,8 +323,8 @@
     .lv-slice.is-open { flex: 0 0 min(220px, 60vw); }
     .lv-strip:is(:hover, :focus-within) .lv-slice.is-open:not(:hover, :focus-visible) { flex: 0 0 44px; }
     .lv-copy { padding: 100px 16px var(--lv-pad-b); }
-    /* "The Grid" arriba y el año solo en la línea de abajo. En flex los
-       espacios entre palabras no cuentan, por eso el column-gap. */
+    /* "The Grid" on top and the year alone on the line below. In flex the
+       spaces between words don't count, hence the column-gap. */
     .lv-copy h1 {
         display: flex;
         flex-wrap: wrap;
@@ -338,9 +338,9 @@
 /*           DRIVER CARDS           */
 /* ================================ */
 
-/* Un bloque por equipo, en el orden del de constructores (lo ordena el
-   script, igual que el hero): logo y nombre arriba, y sus dos pilotos
-   debajo como una sola pieza. */
+/* One block per team, in constructors' standings order (sorted by the
+   script, like the hero): logo and name on top, and its two drivers
+   below as a single piece. */
 .drivers-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -360,10 +360,10 @@
     text-transform: uppercase;
 }
 
-/* Relleno entre el logo y el nombre: ocupa el espacio libre y empuja el nombre
-   a la derecha. En hover del par se encoge y el nombre se pega al logo (se
-   anima flex-grow porque margin-left: auto no transiciona). El margen negativo
-   anula el gap de más que agrega. */
+/* Filler between the logo and the name: it takes the free space and pushes the name
+   to the right. On hover over the pair it shrinks and the name moves next to the logo (flex-grow
+   is animated because margin-left: auto doesn't transition). The negative margin
+   cancels the extra gap it adds. */
 .dc-team-head::before {
     content: '';
     order: 1;
@@ -383,8 +383,8 @@
     flex-shrink: 0;
 }
 
-/* Nombre del equipo (el de teams.json) a la derecha, solo el contorno como
-   los códigos de las tarjetas */
+/* Team name (the one from teams.json) on the right, outline only like
+   the codes on the cards */
 .dc-team-full {
     order: 2;
     font-family: 'F1-Black';
@@ -398,16 +398,16 @@
     transition: all 0.5s ease;
 }
 
-/* En hover el nombre se rellena con el color del equipo. El contorno se
-   desvanece porque marca las uniones internas de la fuente y ensucia la letra
-   (se cambia el color y no el grosor: el grosor no transiciona y saltaba). */
+/* On hover the name fills with the team color. The outline
+   fades because it marks the font's internal joins and muddies the letters
+   (the color changes, not the width: width doesn't transition and it jumped). */
 .dc-team-full:hover {
     color: var(--dc-color);
     -webkit-text-stroke-color: transparent;
 }
 
-/* Las dos tarjetas pegadas: esquinas redondeadas y borde solo por fuera. La
-   franja del equipo de la segunda hace de separador. */
+/* The two cards joined: rounded corners and a border on the outside only. The
+   second one's team strip acts as the separator. */
 .dc-pair {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -417,14 +417,14 @@
     border: 1px solid rgba(255,255,255,0.07);
 }
 
-/* En reposo: número arriba y código abajo, en el color del equipo. En hover:
-   entran apellido y nombre arriba, el número baja, entran bandera y logo y la
-   foto baja. */
+/* At rest: number on top and code below, in the team color. On hover:
+   the surname and first name come in on top, the number moves down, the flag and logo come in and the
+   photo moves down. */
 .drivercard {
-    --dc-badges-h: 48px;   /* alto del bloque bandera/logo (lo marca el logo) */
-    --dc-last-size: 44px;  /* apellido; el nombre va justo debajo */
-    --dc-h: 280px;         /* alto de la tarjeta */
-    container-type: inline-size;   /* para medir recorridos con cqw */
+    --dc-badges-h: 48px;   /* height of the flag/logo block (set by the logo) */
+    --dc-last-size: 44px;  /* surname; the first name goes right below */
+    --dc-h: 280px;         /* card height */
+    container-type: inline-size;   /* to measure distances with cqw */
     position: relative;
     height: var(--dc-h);
     overflow: hidden;
@@ -433,9 +433,9 @@
     cursor: pointer;
 }
 
-/* Entrada al aparecer en pantalla: la tarjeta sube y se asienta, y después la
-   franja del equipo se dibuja de arriba hacia abajo. --dc-delay lo pone el
-   script para escalonar las que entran juntas. */
+/* Entrance when scrolled into view: the card rises and settles, and then the
+   team strip is drawn from top to bottom. --dc-delay is set by the
+   script to stagger the ones entering together. */
 .drivercard:not(.visible) { opacity: 0; }
 
 .drivercard.visible {
@@ -492,16 +492,16 @@
     transition: all 0.5s ease;
 }
 
-/* Relleno en reposo; en hover pasa a solo el contorno, como .dc-code. El
-   trazo tiene siempre 1.5px y solo cambia de transparente a color: el grosor
-   no se anima, así que al salir desaparecía de golpe en vez de fundirse. */
+/* Filled at rest; on hover it becomes outline only, like .dc-code. The
+   stroke is always 1.5px and only changes from transparent to the color: the width
+   doesn't animate, so on leave it vanished at once instead of fading. */
 .dc-number {
     top: 5%;
     font-size: 56px;
     -webkit-text-stroke: 1.5px transparent;
 }
 
-/* Número, código, nombre y etiqueta proyectan un resplandor en el color del equipo */
+/* Number, code, name and label cast a glow in the team color */
 .dc-number,
 .dc-code,
 .dc-name,
@@ -513,10 +513,10 @@
         0 0 140px color-mix(in srgb, var(--dc-glow) 26%, transparent);
 }
 
-/* Carril del código y del nombre: detrás de la foto (z-index 2) y recortado
-   antes del borde derecho, así al entrar o salir por la derecha quedan
-   ocultos tras el piloto y no se los ve pasar por la franja que la foto no
-   cubre. */
+/* Lane for the code and the name: behind the photo (z-index 2) and clipped
+   before the right edge, so when entering or leaving on the right they stay
+   hidden behind the driver and you don't see them cross the part of the strip the photo doesn't
+   cover. */
 .dc-track {
     position: absolute;
     inset: 0 15% 0 0;
@@ -525,7 +525,7 @@
     pointer-events: none;
 }
 
-/* En reposo va solo con el contorno, como los códigos del hero */
+/* At rest it's outline only, like the hero codes */
 .dc-code {
     bottom: -4px;
     font-size: 72px;
@@ -538,9 +538,9 @@
     top: 14px;
 }
 
-/* Esperan fuera de la tarjeta y en hover entran deslizándose, sin fundido:
-   el apellido desde la izquierda (22px = left de .dc-name) y el nombre, justo
-   debajo, desde la derecha (100cqw = ancho de la tarjeta) por su carril. */
+/* They wait outside the card and slide in on hover, without a fade:
+   the surname from the left (22px = left of .dc-name) and the first name, right
+   below, from the right (100cqw = card width) along its lane. */
 .dc-last {
     display: block;
     font-size: var(--dc-last-size);
@@ -555,24 +555,24 @@
 }
 
 .dc-badges {
-    bottom: 14px;   /* mismas distancias que el apellido: 22px al costado (left) y 14px al borde (top de .dc-name) */
+    bottom: 14px;   /* same distances as the surname: 22px from the side (left) and 14px from the edge (top of .dc-name) */
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-/* Esperan fuera de la tarjeta y en hover entran deslizándose, sin fundido:
-   la bandera desde la izquierda (22px = left de .dc-badges) y el logo desde
-   abajo (14px = bottom de .dc-badges), desde 60px más lejos para que llegue
-   más rápido. */
+/* They wait outside the card and slide in on hover, without a fade:
+   the flag from the left (22px = left of .dc-badges) and the logo from
+   below (14px = bottom of .dc-badges), from 60px further away so it arrives
+   faster. */
 .dc-flag,
 .dc-logo {
     transition: all 0.5s ease;
 }
 
-/* Los SVG de bandera de Twemoji dejan aire transparente arriba y abajo (el
-   dibujo ocupa 26 de 36 de alto): la caja se ajusta a esa proporción y
-   object-fit recorta el aire, así coincide con la bandera visible. */
+/* Twemoji flag SVGs leave transparent space above and below (the
+   drawing takes 26 of 36 in height): the box matches that ratio and
+   object-fit crops the space, so it matches the visible flag. */
 .dc-flag {
     width: 64px;
     height: calc(64px * 26 / 36);
@@ -587,25 +587,25 @@
     transform: translateY(calc(100% + 14px + 60px));
 }
 
-/* En hover el número queda 12px (= gap bandera-logo) por encima de la bandera
-   y el logo: 14px de margen + su alto + 12px + el alto del número (0.85em). */
+/* On hover the number sits 12px (= flag-logo gap) above the flag
+   and the logo: 14px margin + its height + 12px + the number's height (0.85em). */
 .drivercard:hover .dc-number {
     top: calc(100% - 14px - var(--dc-badges-h) - 12px - 0.85em);
     color: transparent;
     -webkit-text-stroke-color: var(--dc-color);
 }
 
-.drivercard:hover .dc-code { transform: translateX(100cqw); }   /* sale por la derecha, sin fundido */
+.drivercard:hover .dc-code { transform: translateX(100cqw); }   /* exits to the right, without a fade */
 .drivercard:hover :is(.dc-last, .dc-first, .dc-flag, .dc-logo) { transform: none; }
 
-/* Campeón: número y franja en dorado. Un degradado no se anima, así que el
-   relleno va en una copia del número (data-text) que en hover se funde con
-   opacity, igual que el relleno de los demás números. */
+/* Champion: number and strip in gold. A gradient doesn't animate, so the
+   fill goes on a copy of the number (data-text) that fades in on hover with
+   opacity, same as the other numbers' fill. */
 .drivercard.is-champion .dc-stripe-left { background: linear-gradient(135deg, #B78E3F, #F5E0B5, #B78E3F); }
 .drivercard.is-champion .dc-number { color: transparent; }
 
-/* Resplandor dorado; las capas del número no lo heredan porque con
-   background-clip: text la sombra se pintaría encima del degradado */
+/* Gold glow; the number's layers don't inherit it because with
+   background-clip: text the shadow would be painted over the gradient */
 .drivercard.is-champion :is(.dc-number, .dc-code, .dc-tag) { --dc-glow: #D4AF6A; }
 .drivercard.is-champion :is(.dc-code, .dc-tag, .dc-number)::before,
 .drivercard.is-champion :is(.dc-code, .dc-tag, .dc-number)::after { text-shadow: none; }
@@ -623,45 +623,45 @@
 
 .drivercard.is-champion:hover .dc-number::before { opacity: 0; }
 
-/* Etiqueta de la tarjeta ("DEF CHAMP", "7X WDC", "ROOKIE"): en vertical,
-   pegada al borde derecho y a 4px del de abajo. Solo el contorno, en el color
-   del equipo (en el campeón, dorado: ver más abajo). Espera fuera de la
-   tarjeta y en hover cae desde arriba, sin fundido. */
+/* Card label ("DEF CHAMP", "7X WDC", "ROOKIE"): vertical,
+   against the right edge and 4px from the bottom. Outline only, in the team
+   color (gold for the champion: see below). It waits outside the
+   card and drops in from above on hover, without a fade. */
 .dc-tag {
     position: absolute;
     bottom: 4px;
     right: 0;
     z-index: 3;
     writing-mode: vertical-rl;
-    /* sideways alinea tamaños distintos por la línea base (no por el centro,
-       como hace por defecto en vertical): la "x" chica apoya en el mismo piso */
+    /* sideways aligns different sizes on the baseline (not the center,
+       as it does by default in vertical mode): the small "x" sits on the same floor */
     text-orientation: sideways;
     font-family: 'F1-Black';
-    font-size: 32px;   /* tope para que "DEF CHAMP" (la más larga) entre en el alto de la tarjeta */
+    font-size: 32px;   /* cap so "DEF CHAMP" (the longest) fits within the card's height */
     line-height: 1;
     letter-spacing: 0.1px;
     white-space: nowrap;
     color: transparent;
     -webkit-text-stroke: 1.5px var(--dc-color);
-    /* El mismo resplandor que el resto, algo más intenso */
+    /* The same glow as the rest, a bit stronger */
     text-shadow:
         0 0 60px color-mix(in srgb, var(--dc-glow) 45%, transparent),
         0 0 140px color-mix(in srgb, var(--dc-glow) 38%, transparent);
     pointer-events: none;
-    /* su alto (100%) + el de la tarjeta (280px) lo dejan arriba, fuera de ella */
+    /* its height (100%) + the card's (280px) leave it above, outside of it */
     transform: translateY(calc(-100% - 280px));
     transition: all 0.5s ease;
 }
 
 .drivercard:hover .dc-tag { transform: none; }
 
-/* La "x" de "7x WDC", más chica que el número */
+/* The "x" in "7x WDC", smaller than the number */
 .dc-tag-x { font-size: 22px; }
 
-/* Contorno dorado en degradado. El trazo no acepta degradados, así que son dos
-   capas del mismo texto: abajo el trazo en dorado oscuro y encima una copia
-   (data-text) en dorado claro, visible solo en el centro gracias a la máscara
-   diagonal. Queda el mismo #B78E3F → #F5E0B5 → #B78E3F del número. */
+/* Gold gradient outline. Strokes don't accept gradients, so there are two
+   layers of the same text: below, the stroke in dark gold and on top a copy
+   (data-text) in light gold, only visible in the center thanks to the diagonal
+   mask. The result is the same #B78E3F → #F5E0B5 → #B78E3F as the number. */
 .drivercard.is-champion :is(.dc-code, .dc-tag) {
     -webkit-text-stroke: 1.5px #B78E3F;
 }
@@ -675,9 +675,9 @@
     mask-image: linear-gradient(135deg, transparent, #000, transparent);
 }
 
-/* El número del campeón tiene las dos capas del contorno siempre puestas,
-   transparentes en reposo: en hover se funde el relleno dorado y aparece el
-   contorno degradado, y al salir lo mismo al revés */
+/* The champion's number always has both outline layers in place,
+   transparent at rest: on hover the gold fill fades in and the
+   gradient outline appears, and on leave the same in reverse */
 .drivercard.is-champion .dc-number::after {
     -webkit-text-stroke-color: transparent;
     transition: all 0.5s ease;
@@ -687,12 +687,12 @@
 
 .drivercard.is-champion:hover .dc-number::after { -webkit-text-stroke-color: #F5E0B5; }
 
-/* Foto del piloto: recorte de medio cuerpo; en hover baja para dejarle lugar
-   al nombre */
+/* Driver photo: a half-body cut-out; on hover it moves down to make room
+   for the name */
 .driver-img {
     position: absolute;
     bottom: 0;
-    left: calc(100% + 10px);   /* = right: -10px, con left para poder animarlo */
+    left: calc(100% + 10px);   /* = right: -10px, using left so it can be animated */
     height: 90%;
     object-fit: contain;
     z-index: 2;
@@ -701,19 +701,19 @@
     transition: all 0.5s ease;
 }
 
-/* En hover: centrada un poco a la derecha (70%, relativo al ancho) y más abajo */
+/* On hover: centered a bit to the right (70%, relative to the width) and lower */
 .drivercard:hover .driver-img {
     left: 70%;
-    /* Más grande (2.9) y bajada lo suficiente para que la cabeza quede debajo
-       del apellido y el nombre (que terminan a ~73px del borde de arriba). */
+    /* Bigger (2.9) and moved down enough for the head to sit below
+       the surname and first name (which end ~73px from the top edge). */
     transform: translateX(-50%) translateY(108%) scale(2.9);
 }
 
-/* Con etiqueta, un poco más hacia el centro que el resto:
-   le deja lugar a la etiqueta del borde derecho */
+/* With a label, a bit more towards the center than the rest:
+   it leaves room for the label on the right edge */
 .drivercard:has(.dc-tag):hover .driver-img { left: 63%; }
 
-/* Fondos por equipo */
+/* Backgrounds per team */
 .team-mercedes      { --dc-bg: rgb(6, 38, 32); }
 .team-ferrari       { --dc-bg: rgb(38, 0, 3); }
 .team-mclaren       { --dc-bg: rgb(38, 20, 0); }
@@ -727,8 +727,8 @@
 .team-cadillac      { --dc-bg: rgb(21, 21, 8); }
 
 /* Responsive */
-/* Un equipo por fila antes de que las tarjetas queden más angostas que las
-   originales (~300px), y con tope para que tampoco se estiren de más */
+/* One team per row before the cards get narrower than the
+   originals (~300px), with a cap so they don't stretch too much either */
 @media (max-width: 1500px) {
     .drivers-grid { grid-template-columns: minmax(0, 760px); justify-content: center; }
 }
@@ -752,8 +752,8 @@
     .driver-img { left: calc(100% - 50px); }
 }
 
-/* Celulares (sin hover, o pantalla del mismo corte que el hero): las tarjetas
-   y el nombre del equipo quedan fijos en su estado de hover */
+/* Phones (no hover, or a screen at the same breakpoint as the hero): the cards
+   and the team name stay fixed in their hover state */
 @media (hover: none), (max-width: 900px) {
     .dc-team-head::before { flex-grow: 0; }
     .dc-team-full {

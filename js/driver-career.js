@@ -1,12 +1,12 @@
-// ── CAREER STATS — la carrera medida contra todos los demás ──
+// ── CAREER STATS: the career measured against everyone else ──
 //
-// Un número solo no dice nada: "3 victorias" puede ser mucho o poco. Como
-// data/careers.json trae los 120 pilotos del dataset, cada cifra se muestra con
-// su puesto en el ranking y una tabla de posiciones donde se ve dónde cae.
+// A number alone says nothing: "3 wins" can be a lot or a little. Since
+// data/careers.json has all 120 drivers in the dataset, each figure is shown with
+// its ranking position and a standings table where you can see where it falls.
 //
-// Reemplaza al viejo js/driver.js, que traía la temporada hardcodeada e inventada
-// (80 victorias, títulos 2021-2023) y dibujaba un heatmap de 382 celdas cuyo
-// calendario se repetía idéntico durante 19 temporadas.
+// Replaces the old js/driver.js, which had a hardcoded, made-up season
+// (80 wins, titles 2021-2023) and drew a 382-cell heatmap whose
+// calendar repeated identically across 19 seasons.
 
 (function(){
     const root = document.getElementById('driverCareer');
@@ -30,35 +30,35 @@
 
     const fmt = n => Number(n).toLocaleString('en-US');
 
-    // Ranking descendente por categoría, desempatado por antigüedad: entre dos
-    // pilotos con la misma cifra va primero el que la alcanzó antes. Ejemplo:
-    // con 5 títulos cada uno, Schumacher (2004) queda por encima de Hamilton
-    // (2018), porque llegó a ese número catorce años antes.
+    // Descending ranking per category, tiebroken by seniority: between two
+    // drivers with the same figure, whoever reached it first goes first. Example:
+    // with 5 titles each, Schumacher (2004) ranks above Hamilton
+    // (2018), because he reached that number fourteen years earlier.
     //
-    // La fecha sale de careers[id].achievedAt[key], que precalcula
-    // scripts/build-careers.js: es el día del último evento que hizo subir ese
-    // contador, o sea cuándo el piloto llegó al total que muestra hoy.
+    // The date comes from careers[id].achievedAt[key], precomputed by
+    // scripts/build-careers.js: it's the day of the last event that raised that
+    // counter, i.e. when the driver reached the total shown today.
     //
-    // Los que están en 0 no tienen esa fecha, así que se los desempata por su
-    // debut: siguen todos últimos (0 es 0), pero entre ellos manda la
-    // antigüedad. Un piloto de 2001 que nunca ganó queda por encima de uno que
-    // debutó el año pasado, que todavía casi no tuvo oportunidades — antes los
-    // 99 pilotos sin victorias compartían el puesto 32 y un novato aparecía tan
-    // arriba como alguien con veinte años de carrera sin ganar.
+    // Drivers at 0 don't have that date, so they're tiebroken by their
+    // debut: they all stay last (0 is 0), but among them seniority
+    // wins. A 2001 driver who never won ranks above one who
+    // debuted last year and has barely had any chances yet. Previously the
+    // 99 drivers without wins shared 32nd place and a rookie showed up as
+    // high as someone with twenty years of racing without a win.
     //
-    // Como último criterio, el id: así el orden no cambia entre recargas.
+    // As a last criterion, the id: so the order doesn't change between reloads.
     function rankDate(career, key){
         return (career.achievedAt && career.achievedAt[key]) || career.debut || null;
     }
 
     function compareDates(a, b){
         if(a && b) return a < b ? -1 : a > b ? 1 : 0;
-        if(a) return -1;   // sin fecha (ni logro ni debut) va al fondo
+        if(a) return -1;   // no date (neither achievement nor debut) goes to the bottom
         if(b) return 1;
         return 0;
     }
 
-    // Comparten puesto sólo los que empatan en cifra Y fecha: 1,2,2,4.
+    // Only those tied on figure AND date share a position: 1,2,2,4.
     function buildRanking(careers, key){
         const rows = Object.entries(careers)
             .map(([id, c]) => ({ id, value: c[key] || 0, date: rankDate(c, key) }))
@@ -75,9 +75,9 @@
         return rows;
     }
 
-    // Ser campeón no es una estadística más, así que cuando hay títulos la sección
-    // abre con un bloque dorado que domina la pantalla, y cada copa trae el detalle
-    // de esa temporada en lugar de ser puro adorno.
+    // Being champion isn't just another stat, so when there are titles the section
+    // opens with a gold block that dominates the screen, and each trophy carries the details
+    // of that season instead of being pure decoration.
     function renderTitles(el, career){
         const titles = career.titles || [];
         if(titles.length){
@@ -106,8 +106,8 @@
             `;
             return;
         }
-        // Sin títulos igual hay algo que decir: el mejor campeonato que hizo,
-        // con todos los años en que lo consiguió.
+        // Without titles there's still something to say: their best championship,
+        // with every year they achieved it.
         el.classList.remove('is-champion');
         const best = career.bestFinish;
         const years = best?.years ?? (best?.year != null ? [best.year] : []);
@@ -134,10 +134,10 @@
         }).join('');
     }
 
-    // Top 5 más el piloto si quedó afuera, para que siempre se vea dónde cae.
-    // El corte (los puntos suspensivos) sólo va si de verdad hay pilotos
-    // salteados entre el 5º y él: si es el 6º, sigue derecho como una fila más
-    // — un "…" ahí no tapa a nadie y sólo rompe el ritmo de la lista.
+    // Top 5 plus the driver if they're outside it, so you always see where they fall.
+    // The cut (the ellipsis) only goes in if there really are drivers
+    // skipped between 5th and them: if they're 6th, it just continues as one more row,
+    // since an "…" there hides nobody and only breaks the list's rhythm.
     function boardRows(ranking, topN = 5){
         const top = ranking.slice(0, topN);
         if(top.some(r => r.id === driverId)) return { rows: top, gap: false };
@@ -171,7 +171,7 @@
         try {
             ({ careers, drivers } = await window.driverData);
         } catch (err) {
-            console.error('No se pudo cargar careers.json', err);
+            console.error('Could not load careers.json', err);
             root.classList.add('is-empty');
             return;
         }
@@ -179,8 +179,8 @@
         const career = careers[driverId];
         if(!career){ root.classList.add('is-empty'); return; }
 
-        // Los resaltes de la sección (puestos, fila propia, pestaña activa) usan
-        // el color del equipo actual en vez de un rojo fijo.
+        // The section's highlights (positions, own row, active tab) use
+        // the current team's color instead of a fixed red.
         const currentColor = career.eras?.[career.eras.length - 1]?.color;
         if(currentColor) root.style.setProperty('--team-color', currentColor);
 
@@ -198,7 +198,7 @@
         renderTitles(root.querySelector('#careerCrown'), career);
         renderStanding(root.querySelector('#careerStanding'), career, rankings);
 
-        // Cuántos pilotos llegaron a ganar alguna vez: le da escala al número.
+        // How many drivers have ever won: it gives the number scale.
         const winners = Object.values(careers).filter(c => c.wins > 0).length;
         const note = root.querySelector('#careerNote');
         if(note){
@@ -211,8 +211,8 @@
         const ORDER = CATEGORIES.map(c => c.key);
         let current = null;
 
-        // Pastilla que se desliza de una pestaña a la otra en vez de saltar:
-        // copia la posición y el tamaño de la pestaña activa.
+        // A pill that slides from one tab to the other instead of jumping:
+        // it copies the position and size of the active tab.
         const tabBar = root.querySelector('.career-board-tabs');
         const pill = document.createElement('span');
         pill.className = 'career-board-pill';
@@ -230,7 +230,7 @@
         window.addEventListener('resize', placePill);
 
         function show(key){
-            if(key === current) return;                 // tocar la pestaña activa no hace nada
+            if(key === current) return;                 // tapping the active tab does nothing
             const prev = current ? ORDER.indexOf(current) : -1;
             const next = ORDER.indexOf(key);
             const dir = prev === -1 || next === prev ? 0 : (next > prev ? 1 : -1);
@@ -249,9 +249,9 @@
         tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.cat)));
         show('wins');
 
-        // La primera posición va sin animación; recién después se desliza.
+        // The first position has no animation; only afterwards does it slide.
         requestAnimationFrame(() => pill.classList.add('is-ready'));
-        // Las fuentes pueden cargar después y cambiar el ancho de las pestañas.
+        // Fonts may load later and change the tabs' width.
         document.fonts?.ready.then(placePill);
     })();
 })();

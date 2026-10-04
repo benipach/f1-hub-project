@@ -1,29 +1,29 @@
-// shared/result-table.js — la tabla de clasificación de una sesión.
+// shared/result-table.js: a session's classification table.
 //
-// Es la misma tabla en la página del Grand Prix (grandsprix/grandprix.html,
-// una por sesión) y en Results (results.html, desplegada debajo de cada
-// carrera al tocar la fila). Vive acá para que las dos páginas dibujen
-// exactamente lo mismo: columnas, separadores de eliminación de la
-// clasificación, delta contra la parrilla, etc. Los estilos van en
+// It's the same table on the Grand Prix page (grandsprix/grandprix.html,
+// one per session) and on Results (results.html, expanded below each
+// race when the row is tapped). It lives here so both pages draw
+// exactly the same thing: columns, qualifying elimination separators,
+// delta against the grid, etc. The styles go in
 // styles/result-table.css.
 //
 // buildResultTable(results, jsonKey, ctx, gridPositions)
-//   results:       array de filas de la sesión (season file)
+//   results:       array of the session's rows (season file)
 //   jsonKey:       'fp1' | 'fp2' | 'fp3' | 'sprintQualy' | 'sprintRace' |
 //                  'qualifying' | 'race'
-//   ctx:           { teams, drivers, basePath, year } — basePath es la ruta a
-//                  la raíz del sitio ('.' desde results.html, '..' desde
-//                  grandsprix/), para armar la URL de los logos; year decide si
-//                  la clasificación lleva separadores Q1/Q2/Q3 (desde 2006).
-//   gridPositions: Map driver → posición de largada (ver getGridPositions), o
-//                  null si la sesión no es carrera/sprint.
+//   ctx:           { teams, drivers, basePath, year }; basePath is the path to
+//                  the site root ('.' from results.html, '..' from
+//                  grandsprix/), to build the logo URLs; year decides whether
+//                  qualifying gets Q1/Q2/Q3 separators (since 2006).
+//   gridPositions: Map driver → starting position (see getGridPositions), or
+//                  null if the session isn't a race/sprint.
 //
-// Script clásico (define globales), como el resto de js/shared. Necesita
-// shared/teams.js, shared/grid.js y shared/resolve.js cargados antes.
+// Classic script (defines globals), like the rest of js/shared. Needs
+// shared/teams.js, shared/grid.js and shared/resolve.js loaded first.
 
-// Parrilla de salida real de la carrera/sprint (con penalizaciones), o la
-// clasificación correspondiente si la temporada no tiene el campo `grid`
-// — ver shared/grid.js. Map driver → posición numérica (pit lane = último).
+// Actual starting grid for the race/sprint (with penalties), or the
+// corresponding qualifying if the season doesn't have the `grid` field
+// (see shared/grid.js). Map driver → numeric position (pit lane = last).
 function getGridPositions(gp, jsonKey) {
     if (jsonKey !== 'race' && jsonKey !== 'sprintRace') return null;
     const grid = startingGridFor(gp, jsonKey);
@@ -63,8 +63,8 @@ function buildResultTable(results, jsonKey, ctx, gridPositions) {
             html: buildResultRow(r, jsonKey, isRaceLike, isPractice, ctx, gridPositions),
         }));
 
-    // Los separadores de eliminación sólo tienen sentido con el formato
-    // Q1/Q2/Q3 (desde 2006); antes la clasificación era una sola sesión.
+    // Elimination separators only make sense with the
+    // Q1/Q2/Q3 format (since 2006); before that qualifying was a single session.
     const knockoutQualy = isQualy && (ctx.year == null || ctx.year >= 2006);
     const rows = knockoutQualy
         ? withQualyEliminationSeparators(rowsData, jsonKey, headCellsArr.length, results.length)
@@ -76,11 +76,11 @@ function buildResultTable(results, jsonKey, ctx, gridPositions) {
     </table></div>`;
 }
 
-// Q3 siempre son los 10 mejores; Q1 elimina según el tamaño de la parrilla:
-// 20 autos → P16-P20, 22 autos → P17-P22 (2026), 24 autos → P18-P24 (2010-12).
-// O sea, sobreviven n/2 + 5. Inserta una fila divisoria justo después de la
-// última posición que pasa cada corte (el mismo lugar donde live.js las
-// congela cuando termina la sesión).
+// Q3 is always the top 10; Q1 eliminates according to the grid size:
+// 20 cars → P16-P20, 22 cars → P17-P22 (2026), 24 cars → P18-P24 (2010-12).
+// In other words, n/2 + 5 survive. Inserts a divider row right after the
+// last position that makes each cut (the same place where live.js
+// freezes them when the session ends).
 function withQualyEliminationSeparators(rowsData, jsonKey, colspan, fieldSize) {
     const isSprint = jsonKey === 'sprintQualy';
     const q1Survivors = Math.round(fieldSize / 2) + 5;

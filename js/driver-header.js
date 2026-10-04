@@ -1,12 +1,12 @@
-// ── HEADER — el hero y la ficha "Driver info" ──
+// ── HEADER: the hero and the "Driver info" card ──
 //
-// Todo sale de datos reales: drivers.json (nombre, abreviatura, nacionalidad,
-// nacimiento), careers.json (número, debut, temporadas, títulos, equipo actual y
-// totales de carrera) y countries.json (nombre del país + bandera). Nada hardcodeado.
+// Everything comes from real data: drivers.json (name, abbreviation, nationality,
+// birth), careers.json (number, debut, seasons, titles, current team and
+// career totals) and countries.json (country name + flag). Nothing hardcoded.
 //
-// Los tres campos que la versión vieja mostraba a mano y no existen en ningún JSON
-// —nombre completo con segundo nombre, ciudad natal, altura/peso— se reemplazaron
-// por datos que sí tenemos: equipo actual, temporadas y títulos.
+// The three fields the old version showed by hand that don't exist in any JSON
+// (full name with middle name, hometown, height/weight) were replaced
+// with data we do have: current team, seasons and titles.
 
 (function(){
     const TWEMOJI_BASE = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/';
@@ -31,7 +31,7 @@
         return m ? `${Number(m[3])} ${MONTHS[Number(m[2]) - 1]} ${m[1]}` : '—';
     };
 
-    // Edad a hoy, o a la fecha de fallecimiento si la hay.
+    // Age as of today, or as of the date of death if there is one.
     function ageFrom(dob, dod){
         if(!dob) return '—';
         const born = new Date(dob);
@@ -44,8 +44,8 @@
 
     const fmt = n => Number(n || 0).toLocaleString('en-US');
 
-    // Hero "pit wall": panel del color del equipo cortado en diagonal, con el
-    // nombre y los totales de carrera, y la foto del piloto del otro lado.
+    // "Pit wall" hero: a panel in the team color cut diagonally, with the
+    // name and career totals, and the driver's photo on the other side.
     function fillHero(root, driver, career, country, careers){
         const num = career?.number;
         const era = career?.eras?.[career.eras.length - 1] || null;
@@ -54,7 +54,7 @@
         const flag = flagUrl(country?.isoCode);
         const logo = era ? `${IMG_BASE}/teams/${teamSlug(era.teamId || era.team)}-logo.png` : null;
 
-        // Si no corrió la última temporada del dataset, su equipo es "el último".
+        // If they didn't race the dataset's last season, their team is "the last one".
         const latest = Math.max(...Object.values(careers).map(c => c.seasons?.[c.seasons.length - 1] || 0));
 
         if(era?.color) root.style.setProperty('--team', era.color);
@@ -112,19 +112,19 @@
         `;
     }
 
-    // Ficha de perfil: sólo lo que el hero no dice. Sigla y número como placa,
-    // tres datos grandes (edad, debut, temporadas) y los equipos por los que pasó.
+    // Profile card: only what the hero doesn't say. Code and number as a plate,
+    // three big figures (age, debut, seasons) and the teams they've been with.
     function fillInfo(root, driver, career){
         const num = career?.number;
         const eras = career?.eras || [];
         const seasons = career?.seasons || [];
         const currentEra = eras[eras.length - 1] || null;
 
-        // El fondo detrás del recorte del piloto se pinta con el color del equipo
-        // (ver .driver-info-visual en driver.css). Sólo si tenemos un hex real.
+        // The background behind the driver cut-out is painted in the team color
+        // (see .driver-info-visual in driver.css). Only if we have a real hex.
         if(currentEra?.color) root.style.setProperty('--team-color', currentEra.color);
 
-        // El debut sale de los hitos precalculados: GP, bandera y resultado.
+        // The debut comes from the precomputed milestones: GP, flag and result.
         const debut = career?.milestones?.find(m => m.label === 'Debut') || null;
         const debutFlag = flagUrl(debut?.iso);
         const span = (from, to) => from === to ? `${from}` : `${from} — ${to}`;
@@ -191,14 +191,14 @@
         try {
             data = await window.driverData;
         } catch (err) {
-            console.error('No se pudieron cargar los datos del piloto', err);
+            console.error('Could not load the driver data', err);
             if(info) info.classList.add('is-empty');
             return;
         }
 
         const driver = data.drivers[driverId];
         if(!driver){
-            console.error('Piloto no encontrado:', driverId);
+            console.error('Driver not found:', driverId);
             if(info) info.classList.add('is-empty');
             return;
         }

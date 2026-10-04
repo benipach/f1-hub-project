@@ -1,22 +1,22 @@
-// ── PILOTOS QUE YA RECIBIERON LA BANDERA A CUADROS ────────────────────────
-// REGLA (igual para todos, sin casos especiales):
-//   - Cuando cae la bandera a cuadros, cada piloto termina su sesión la
-//     PRIMERA vez que cruza la meta después de ese momento.
-//   - La vuelta que completa en ese cruce es la que se muestra (Last Lap,
-//     Best Lap, S1-S3, microsectores, vueltas), y ahí queda congelado:
-//     nada posterior (vuelta a boxes, enfriamiento) la pisa.
-//   - Quien está en boxes cuando cae la bandera no vuelve a cruzar: queda
-//     con lo último que completó (su línea en vivo, que ya no cambia).
+// ── DRIVERS WHO HAVE ALREADY TAKEN THE CHEQUERED FLAG ─────────────────────
+// RULE (the same for everyone, no special cases):
+//   - When the chequered flag falls, each driver finishes their session the
+//     FIRST time they cross the line after that moment.
+//   - The lap completed on that crossing is the one shown (Last Lap,
+//     Best Lap, S1-S3, mini-sectors, laps), and it stays frozen there:
+//     nothing after it (in-lap, cool-down lap) overwrites it.
+//   - Whoever is in the pits when the flag falls doesn't cross again: they keep
+//     the last thing they completed (their live line, which no longer changes).
 //
-// "Antes o después de la bandera" se decide con las horas del feed, no con
-// el orden en que llegan los mensajes ni con el reloj local en 0:00:
-//   - la bandera: el primer "Finished" de SessionData.StatusSeries o el
-//     mensaje de Race Control de bandera a cuadros, el que sea antes;
-//   - cada cruce: la hora del mensaje del feed que trajo la vuelta nueva.
-// Como el cruce puede llegar antes que el aviso de la bandera (en carrera
-// el líder recibe la bandera justo al cruzar), se guardan los últimos
-// cruces de cada piloto y se decide recién cuando se conoce la hora de la
-// bandera.
+// "Before or after the flag" is decided with the feed's timestamps, not with
+// the order messages arrive in or with the local clock at 0:00:
+//   - the flag: the first "Finished" in SessionData.StatusSeries or the
+//     Race Control chequered flag message, whichever comes first;
+//   - each crossing: the time of the feed message that brought the new lap.
+// Since the crossing can arrive before the flag notice (in a race the
+// leader takes the flag right as they cross), the latest crossings of each
+// driver are stored and the decision is made only once the flag time is
+// known.
 //
 // Refinements (see the functions below for details):
 //   - Race/Sprint: if P1 crossed the line up to 5 s before "Finished", the
@@ -26,21 +26,21 @@
 //   - Cold period: if the flag had already fallen when the period's tracker
 //     was created (relay restarted after the flag), nobody is frozen.
 //
-// Se calcula acá en el relay (y no en la página) porque el relay está
-// conectado siempre: ve todos los cruces aunque nadie tenga la página
-// abierta, así que una página que se abre o recarga después de la bandera
-// igual recibe las filas congeladas. Se publica como el tema
-// "FinishedLines": { sessionKey, part, flagUtcMs, cold, lines: { [num]: campos congelados } }.
+// It's computed here in the relay (not in the page) because the relay is
+// always connected: it sees every crossing even if nobody has the page
+// open, so a page opened or reloaded after the flag still
+// gets the frozen rows. It's published as the topic
+// "FinishedLines": { sessionKey, part, flagUtcMs, cold, lines: { [num]: frozen fields } }.
 //
-// Es por período: la sesión entera, o cada Q1/Q2/Q3 (SQ1/SQ2/SQ3) desde su
-// luz verde — misma lógica que qualifyingPartStart() en js/live.js.
+// It works per period: the whole session, or each Q1/Q2/Q3 (SQ1/SQ2/SQ3) from its
+// green light (same logic as qualifyingPartStart() in js/live.js).
 
 const FROZEN_LINE_FIELDS = ["LastLapTime", "BestLapTime", "Sectors", "NumberOfLaps"];
-// La Last Lap y el tiempo de S3 pueden llegar en mensajes separados: por
-// unos segundos después de cada cruce se sigue completando esa vuelta.
+// The Last Lap and the S3 time can arrive in separate messages: for
+// a few seconds after each crossing, that lap keeps being completed.
 const FINISH_CAPTURE_MS = 3000;
-// Cruces guardados por piloto mientras no se conoce la bandera: alcanza con
-// los últimos, la bandera nunca llega vueltas enteras después.
+// Crossings stored per driver while the flag time is unknown: the latest ones
+// are enough, the flag never arrives whole laps later.
 const MAX_PENDING_CROSSINGS = 3;
 // Race/Sprint: a P1 crossing up to this long before "Finished" is the flag.
 const LEADER_FLAG_WINDOW_MS = 5000;
@@ -51,7 +51,7 @@ const LAP_SUM_TOLERANCE_MS = 250;
 
 let tracker = null;
 
-// F1 manda las horas en UTC sin zona ("2026-09-19T12:03:22").
+// F1 sends times in UTC without a time zone ("2026-09-19T12:03:22").
 function utcMs(utc) {
   if (!utc) return null;
   const iso = /Z|[+-]\d\d:?\d\d$/.test(utc) ? utc : `${utc}Z`;
@@ -90,9 +90,9 @@ function currentQualifyingPart(state) {
   return entries[entries.length - 1].QualifyingPart;
 }
 
-// { ms, started } del segmento de qualy en curso (Q2/Q3); null en Q1 o
-// fuera de qualy. started = ya hubo luz verde (primer "Started" desde el
-// cambio de QualifyingPart, con 60 s de margen).
+// { ms, started } of the current qualifying segment (Q2/Q3); null in Q1 or
+// outside qualifying. started = there's already been a green light (first "Started"
+// since QualifyingPart changed, with a 60 s margin).
 function qualifyingPartStart(state) {
   if (!isQualifyingLike(state)) return null;
   const part = currentQualifyingPart(state);
@@ -153,13 +153,13 @@ function isRaceLike(state) {
   return !!name && !name.includes("practice") && !isQualifyingLike(state);
 }
 
-// Hora (ms, del feed) en que cayó la bandera a cuadros del período en curso;
-// null si todavía no cayó. Solo cuenta lo que pasó desde que arrancó el
-// período (la bandera de Q1 no vale en Q2). Se prefiere el "Finished" de
-// StatusSeries (trae milésimas) al mensaje de Race Control (llega al
-// segundo, y redondeado para abajo podría meter como "después de la
-// bandera" un cruce de medio segundo antes). Si el estado dice terminado
-// pero no hay ninguna hora, vale la del mensaje que trajo el estado.
+// Time (ms, from the feed) when the chequered flag fell for the current period;
+// null if it hasn't fallen yet. Only what happened since the period started
+// counts (the Q1 flag doesn't count in Q2). The StatusSeries "Finished" (which
+// has milliseconds) is preferred over the Race Control message (which comes to
+// the second, and rounded down could count a crossing half a second earlier
+// as "after the flag"). If the status says finished
+// but there's no time at all, the time of the message that brought the status is used.
 //
 // Returns every source separately (for the log) plus the flag time used.
 function flagSources(state, fromMs, fallbackMs) {
@@ -178,7 +178,7 @@ function flagSources(state, fromMs, fallbackMs) {
   if (baseMs == null) {
     const status = state.SessionStatus?.Status;
     if (status === "Finished" || status === "Finalised" || status === "Ends") {
-      tracker.fallbackFlagMs ??= fallbackMs; // la primera vez que se vio, fija
+      tracker.fallbackFlagMs ??= fallbackMs; // fixed the first time it was seen
       baseMs = tracker.fallbackFlagMs;
     }
   }
@@ -235,8 +235,8 @@ function sectorTimes(line) {
   return current.some(Boolean) ? current : [0, 1, 2].map((i) => node(i).PreviousValue || null);
 }
 
-// Los tres sectores de una misma vuelta suman la Last Lap (ver
-// displayedSectors() en js/live.js).
+// The three sectors of a lap add up to the Last Lap (see
+// displayedSectors() in js/live.js).
 // previousS3: S3 of the lap before this crossing. A complete lap needs a new
 // S3, so an old S3 that happens to add up cannot pass the check. A false
 // "incomplete" is harmless: the line just keeps refreshing inside the
@@ -258,9 +258,9 @@ function frozenFields(line) {
   return frozen;
 }
 
-// Actualiza state.FinishedLines. feedTimestamp: la hora del mensaje del
-// feed que se acaba de aplicar (sin ella, p. ej. con el snapshot inicial,
-// la hora local). Devuelve true si cambió (hay que mandárselo a la página).
+// Updates state.FinishedLines. feedTimestamp: the time of the feed message
+// that was just applied (without it, e.g. with the initial snapshot,
+// the local time). Returns true if it changed (it has to be sent to the page).
 export function updateFinishedLines(state, feedTimestamp) {
   const lines = state.TimingData?.Lines;
   const sessionKey = state.SessionInfo?.Key ?? null;
@@ -275,7 +275,7 @@ export function updateFinishedLines(state, feedTimestamp) {
       periodStartMs: periodStartMs(state, part),
       markers: {},
       lastS3: {}, // num → S3 seen on the previous update
-      crossings: {}, // num → [{ ms, line, position, previousS3 }], de más viejo a más nuevo
+      crossings: {}, // num → [{ ms, line, position, previousS3 }], oldest to newest
       fallbackFlagMs: null,
       cold: false,
       loggedFlagSignature: null,
@@ -308,8 +308,8 @@ export function updateFinishedLines(state, feedTimestamp) {
     const s3BeforeThisUpdate = tracker.lastS3[num];
     tracker.lastS3[num] = sectorTimes(line)[2];
 
-    // Ya terminó: nada posterior cuenta. Solo se completa esa misma vuelta
-    // unos segundos (S3 o la Last Lap pueden llegar en otro mensaje).
+    // Already finished: nothing after it counts. Only that same lap is completed
+    // for a few seconds (S3 or the Last Lap can arrive in another message).
     const done = finishedCrossing(num);
     if (done) {
       if (now - done.ms <= FINISH_CAPTURE_MS && done === last && !isCompleteLap(done.line, done.previousS3)) {
@@ -319,7 +319,7 @@ export function updateFinishedLines(state, feedTimestamp) {
     }
 
     const insideCaptureWindow = last && now - last.ms <= FINISH_CAPTURE_MS;
-    // La primera vez que se ve a un piloto no es un cruce de meta.
+    // The first time a driver is seen isn't a line crossing.
     if (previous !== undefined && previous !== marker && !insideCaptureWindow) {
       list.push({ ms: now, line: frozenFields(line), position: String(line.Position ?? ""), previousS3: s3BeforeThisUpdate ?? null });
       if (list.length > MAX_PENDING_CROSSINGS) list.shift();

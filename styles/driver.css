@@ -3,12 +3,12 @@
     /* ================================================ */
 
     /* ── HERO ──
-       Panel del color del equipo (--team, lo pone driver-header.js) cortado en
-       diagonal sobre la foto del piloto. Un borde luminoso de la misma forma, 10px
-       más ancho, marca el corte. */
+       A panel in the team color (--team, set by driver-header.js) cut
+       diagonally over the driver's photo. A glowing border of the same shape, 10px
+       wider, marks the cut. */
     .driver-hero {
         --team: var(--primary-red);
-        --slant: 12vw;   /* con vh se comía el panel en pantallas altas */
+        --slant: 12vw;   /* with vh it ate the panel on tall screens */
         position: relative;
         display: flex;
         min-height: 100vh;
@@ -17,7 +17,7 @@
         color: var(--text-light);
     }
 
-    /* :where() deja el reset sin especificidad, así no pisa los márgenes de abajo */
+    /* :where() gives the reset no specificity, so it doesn't override the margins below */
     :where(.driver-hero) :where(p, h1, dl, dd, figure) { margin: 0; }
 
     .driver-hero-photo {
@@ -64,9 +64,9 @@
         background: linear-gradient(165deg, color-mix(in srgb, var(--team) 42%, var(--base-900)) 0%, var(--base-900) 70%);
     }
 
-    /* El número ocupa sólo el espacio que queda entre la cabecera y el nombre:
-       es un contenedor de tamaño y la letra se mide con su alto (cqh), así con
-       la insignia de campeón se achica en vez de pisar el nombre. */
+    /* The number only takes the space left between the header and the name:
+       it's a size container and the type is measured by its height (cqh), so with
+       the champion badge it shrinks instead of overlapping the name. */
     .driver-hero-numbox {
         flex: 1 1 0;
         min-height: 0;
@@ -76,8 +76,8 @@
         container-type: size;
     }
 
-    /* Número de carrera gigante, sólo el contorno. Con line-height 0.8 la caja
-       mide 0.8em: 125cqh la deja justo del alto del contenedor. */
+    /* Giant car number, outline only. With line-height 0.8 the box
+       is 0.8em tall: 125cqh makes it exactly the container's height. */
     .driver-hero-num {
         margin-left: -0.06em;
         font-family: 'F1-Black';
@@ -93,8 +93,8 @@
         width: 100%;
     }
 
-    /* Cabecera del panel: nacionalidad y equipo, cada uno con su etiqueta, con
-       una barra del color del equipo al costado */
+    /* Panel header: nationality and team, each with its label, with
+       a bar in the team color on the side */
     .driver-hero-id {
         display: flex;
         align-self: flex-start;
@@ -141,15 +141,15 @@
     }
 
     .driver-hero-first {
-        margin-bottom: -0.05em;   /* pegado al apellido, sin tocarlo */
+        margin-bottom: -0.05em;   /* right against the surname, without touching it */
         font-family: 'F1-Black';
         line-height: 1;
         font-size: clamp(20px, 2.2vw, 40px);
         text-transform: uppercase;
     }
 
-    /* El ancho de la letra de F1-Black ronda 0.86em: con el largo del apellido
-       (--len) los nombres largos se achican para no pisar la diagonal. */
+    /* F1-Black's character width is around 0.86em: using the surname's length
+       (--len), long names shrink so they don't overlap the diagonal. */
     .driver-hero-last {
         font-family: 'F1-Black';
         font-weight: normal;
@@ -159,8 +159,8 @@
         white-space: nowrap;
     }
 
-    /* Insignia de campeón: la cantidad de títulos en dorado entre laureles, y
-       los años al lado. Mismo dorado que .lv-slice.is-champion (drivers.css). */
+    /* Champion badge: the number of titles in gold between laurels, and
+       the years next to it. Same gold as .lv-slice.is-champion (drivers.css). */
     .driver-hero-crown {
         display: inline-flex;
         align-items: center;
@@ -228,7 +228,7 @@
         font-size: clamp(28px, 2.8vw, 52px);
         line-height: 1;
         color: transparent;
-        -webkit-text-stroke: 1.5px var(--text-light);   /* sólo el contorno, como el número de carrera */
+        -webkit-text-stroke: 1.5px var(--text-light);   /* outline only, like the car number */
     }
 
     .driver-hero-stats dt {
@@ -249,13 +249,13 @@
         color: var(--text-dim);
     }
 
-    /* Mismo peso que el resto de la línea: sólo cambia el color */
+    /* Same weight as the rest of the line: only the color changes */
     .driver-hero-since b {
         font-weight: inherit;
         color: var(--text-light);
     }
 
-    /* Celular: la foto arriba y el panel abajo, con la diagonal cruzada */
+    /* Phones: the photo on top and the panel below, with the diagonal crossed */
     @media (max-width: 900px) {
         .driver-hero { --slant: 0px; flex-direction: column; }
         .driver-hero-photo { position: relative; left: 0; height: 52vh; flex: none; }
@@ -271,7 +271,7 @@
             padding: calc(8vh + 24px) 20px 48px;
             clip-path: polygon(0 8vh, 100% 0, 100% 100%, 0 100%);
         }
-        /* El panel crece con el contenido: el número va con tamaño fijo */
+        /* The panel grows with its content: the number has a fixed size */
         .driver-hero-numbox { flex: none; margin: 16px 0 12px; container-type: normal; }
         .driver-hero-num { font-size: 22vh; }
         .driver-hero-id div { padding: 0 16px 0 12px; }
@@ -322,8 +322,8 @@
         background: var(--primary-red);
     }
 
-    /* ── Ajustes generales para celular: menos padding lateral y menos aire entre
-       secciones ── */
+    /* ── General phone adjustments: less side padding and less space between
+       sections ── */
     @media (max-width: 700px) {
         .section-title { font-size: clamp(22px, 7vw, 32px); margin-bottom: 1.5rem; }
 
@@ -335,23 +335,23 @@
 
     /* ── DRIVER INFO (variant J) ── */
     .driver-info {
-        --team-color: var(--primary-red);   /* driver-header.js lo pisa con el color real */
+        --team-color: var(--primary-red);   /* driver-header.js overrides it with the real color */
         position: relative;
         display: flex;
         gap: 44px;
-        align-items: stretch;      /* la foto llega arriba y abajo del recuadro */
+        align-items: stretch;      /* the photo reaches the top and bottom of the box */
         margin-bottom: 96px;
-        padding: 0;                /* el padding vive en la columna de texto */
+        padding: 0;                /* the padding lives in the text column */
         background: linear-gradient(135deg, var(--base-700) 0%, var(--base-800) 100%);
         border: 1px solid rgba(255,255,255,0.06);
         border-radius: 12px;
-        overflow: hidden;          /* recorta la foto a las esquinas redondeadas */
+        overflow: hidden;          /* clips the photo to the rounded corners */
     }
 
-    /* Columna de la foto: pegada al borde izquierdo, alto completo de la tarjeta.
-       El fondo detrás del recorte del piloto se arma con el color del equipo
-       (--team-color, que setea driver-header.js): resplandor arriba, cuña
-       diagonal y líneas de velocidad. */
+    /* Photo column: against the left edge, full card height.
+       The background behind the driver cut-out is built with the team color
+       (--team-color, set by driver-header.js): a glow on top, a diagonal
+       wedge and speed lines. */
     .driver-info-visual {
         position: relative;
         z-index: 1;
@@ -373,7 +373,7 @@
             linear-gradient(180deg, var(--base-700) 0%, var(--base-900) 100%);
     }
 
-    /* Filo del color del equipo donde la foto se junta con el texto. */
+    /* An edge in the team color where the photo meets the text. */
     .driver-info-visual::before {
         content: '';
         position: absolute;
@@ -385,7 +385,7 @@
         background: linear-gradient(180deg, var(--team-color) 0%, transparent 85%);
     }
 
-    /* El piloto se hunde en la oscuridad hacia abajo, no flota. */
+    /* The driver sinks into the darkness towards the bottom instead of floating. */
     .driver-info-visual::after {
         content: '';
         position: absolute;
@@ -416,8 +416,8 @@
         padding: 40px 48px 40px 0;
     }
 
-    /* Cabecera tipo licencia: sigla gigante, número en placa del equipo y el
-       nombre completo alineado a la derecha */
+    /* Licence-style header: giant code, number on a team-colored plate and the
+       full name aligned to the right */
     .driver-info-head {
         display: flex;
         align-items: center;
@@ -460,7 +460,7 @@
         color: var(--text-dim);
     }
 
-    /* Tres datos grandes, con el mismo lenguaje que las estadísticas del hero */
+    /* Three big figures, with the same language as the hero stats */
     .driver-info-tiles {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -507,7 +507,7 @@
         vertical-align: -3px;
     }
 
-    /* Equipos: una tarjeta por etapa, con el color del equipo en el filo */
+    /* Teams: one card per stint, with the team color on the edge */
     .driver-info-teams ul {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
@@ -554,9 +554,9 @@
     }
 
     /* ══ 2026 SEASON ══
-       La temporada en curso no se dibuja como la carrera deportiva completa: allá
-       el formato es archivo (grilla de calendario), acá es trayectoria. Banda de
-       situación → curva de forma → detalle por ronda. */
+       The current season isn't drawn like the full racing career: there
+       the format is an archive (calendar grid), here it's a trajectory. Status
+       band → form curve → round-by-round detail. */
     .season-2026 {
         --team-color: #e10600;
         display: flex;
@@ -567,7 +567,7 @@
 
     .season-2026.is-empty { display: none; }
 
-    /* ── Banda de situación ── */
+    /* ── Status band ── */
     .season-band {
         display: grid;
         grid-template-columns: auto auto 1fr auto;
@@ -733,8 +733,8 @@
         border-top-color: rgba(255,255,255,0.45);
     }
 
-    /* Marca de mejor racecraft de la temporada (solo en la página del piloto que
-       más puestos ganó en carrera). */
+    /* Season's best racecraft badge (only on the page of the driver who
+       gained the most places in races). */
     .season-racecraft-badge[hidden] { display: none; }
 
     .season-racecraft-badge {
@@ -766,9 +766,9 @@
 
     .season-form-canvas { position: relative; }
 
-    /* ── Tooltip del Form curve (formTooltip en driver-season.js) ──
-       Tarjeta con el filo del color del equipo arriba. Se ubica con transform,
-       así al pasar de un punto a otro se desliza. */
+    /* ── Form curve tooltip (formTooltip in driver-season.js) ──
+       A card with the team color edge on top. Positioned with transform,
+       so moving from one point to another slides it. */
     .form-tip {
         --c: var(--primary-red);
         position: absolute;
@@ -823,7 +823,7 @@
         white-space: nowrap;
     }
 
-    /* Largada → llegada, con los puestos ganados o perdidos */
+    /* Start → finish, with places gained or lost */
     .form-tip-race {
         display: flex;
         align-items: flex-end;
@@ -921,7 +921,7 @@
         border-radius: 4px;
     }
 
-    /* Violeta de la vuelta rápida, como en las transmisiones */
+    /* Fastest lap purple, as on the broadcasts */
     .form-tip-badge.is-fl  { color: #C792FF; background: rgba(162,89,255,0.18); }
     .form-tip-badge.is-dnf { color: #d9564f; background: rgba(217,86,79,0.14); }
 
@@ -936,14 +936,14 @@
         color: var(--text-dim);
     }
 
-    /* Igual que .champ-form-note b (championship.css) */
+    /* Same as .champ-form-note b (championship.css) */
     .season-form-note b {
         text-transform: uppercase;
         color: var(--text-light);
     }
 
-    /* ── Detalle ronda a ronda (tabla) ── */
-    /* Mismo aspecto que .standings-table-wrap (championship.css). */
+    /* ── Round-by-round detail (table) ── */
+    /* Same look as .standings-table-wrap (championship.css). */
     .season-table-wrap {
         background: linear-gradient(135deg, var(--base-700) 0%, var(--base-800) 100%);
         border: 1px solid rgba(255,255,255,0.05);
@@ -957,8 +957,8 @@
         font-family: 'F1-Regular';
     }
 
-    /* Tipografía alineada con la tabla de resultados del GP (.data-table):
-       todo F1-Regular, celdas de datos a 16px, sin pesos negros ni tamaños dispares. */
+    /* Typography aligned with the GP results table (.data-table):
+       all F1-Regular, data cells at 16px, no black weights or mismatched sizes. */
     .season-table th,
     .season-table td {
         padding: 0 20px;
@@ -1010,16 +1010,16 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 0;          /* deja que la celda ceda espacio antes que las demás */
+        max-width: 0;          /* lets the cell give up space before the others */
         width: 100%;
     }
 
-    /* En celular la columna GP muestra la abreviación (JPN) en vez del nombre
-       completo, y el encabezado Points pasa a "Pts". */
+    /* On phones the GP column shows the abbreviation (JPN) instead of the full
+       name, and the Points header becomes "Pts". */
     .season-round-name-code,
     .season-th-abbr { display: none; }
 
-    /* Bandera del país del GP, mismo tamaño que en la tabla de resultados. */
+    /* The GP country's flag, same size as in the results table. */
     .season-round-flag {
         width: 18px;
         height: 18px;
@@ -1028,10 +1028,10 @@
         margin-bottom: 2px;
     }
 
-    /* Largada y llegada viven en una sola celda: el recorrido entre las dos es
-       el dato interesante, y la flecha lo hace visible de un vistazo.
-       Los hijos van inline-block y no flex: un <td> con display:flex deja de ser
-       table-cell y se despega de la altura de la fila. */
+    /* Start and finish live in a single cell: the path between them is
+       the interesting data, and the arrow makes it visible at a glance.
+       The children are inline-block and not flex: a <td> with display:flex stops being a
+       table-cell and detaches from the row height. */
     .season-round-result {
         text-align: center;
         white-space: nowrap;
@@ -1067,7 +1067,7 @@
         transform: translateY(-50%) rotate(45deg);
     }
 
-    /* El color del resultado alcanza para jerarquizar; no hace falta un peso mayor. */
+    /* The result's color is enough for hierarchy; no heavier weight needed. */
     .season-round-finish {
         display: inline-block;
         vertical-align: middle;
@@ -1082,8 +1082,8 @@
     .season-round[data-outcome="none"]   .season-round-finish { color: var(--text-dim); }
     .season-round[data-outcome="dnf"]    .season-round-finish { color: #d9564f; }
 
-    /* Mismo indicador que la tabla de resultados del GP: chevron verde/rojo
-       hacia arriba o abajo, o un guión gris si no cambió de posición. */
+    /* Same indicator as the GP results table: a green/red chevron
+       up or down, or a grey dash if the position didn't change. */
     .res-delta {
         display: inline-flex;
         align-items: center;
@@ -1144,7 +1144,7 @@
         .season-form-legend-item { font-size: 11px; }
         .season-form-note { font-size: 12px; margin-top: 12px; }
 
-        /* En celular se cae Round; la columna GP usa la abreviación. */
+        /* On phones Round is dropped; the GP column uses the abbreviation. */
         .season-table-wrap { overflow-x: auto; }
         .season-col-round { display: none; }
         .season-round-name-full { display: none; }
@@ -1175,14 +1175,14 @@
 
 
     /* ══ CAREER STATS ══
-       Un número solo no dice si es mucho o poco, así que cada cifra viene con su
-       puesto entre los 120 pilotos y una tabla de posiciones que lo ubica. El
-       lenguaje visual es de ranking y barras comparativas: no lo usa ninguna otra
-       parte de la página. */
+       A number alone doesn't say whether it's a lot or a little, so each figure comes with its
+       position among the 120 drivers and a standings table that places it. The
+       visual language is rankings and comparison bars: no other part
+       of the page uses it. */
     .driver-career {
-        /* --team-color lo setea driver-career.js con el color del equipo actual.
-           --team-accent lo aclara ~22% para que sea legible sobre el fondo oscuro
-           tanto en equipos oscuros (Red Bull) como muy claros (Haas). */
+        /* --team-color is set by driver-career.js with the current team's color.
+           --team-accent lightens it ~22% so it's readable on the dark background
+           for both dark teams (Red Bull) and very light ones (Haas). */
         --team-color: var(--primary-red);
         --team-accent: color-mix(in srgb, var(--team-color) 78%, white);
         display: flex;
@@ -1193,7 +1193,7 @@
 
     .driver-career.is-empty { display: none; }
 
-    /* ── Corona: títulos, o el mejor campeonato si no los hay ── */
+    /* ── Crown: titles, or the best championship if there are none ── */
     .career-crown {
         text-align: center;
     }
@@ -1219,7 +1219,7 @@
         object-fit: contain;
     }
 
-    /* Sin títulos el encabezado baja de tono: es un dato, no una coronación. */
+    /* Without titles the header tones down: it's a stat, not a coronation. */
     .career-crown-label--modest {
         font-family: 'F1-Regular';
         font-weight: 600;
@@ -1243,10 +1243,10 @@
         letter-spacing: 2px;
     }
 
-    /* ══ CAMPEÓN DEL MUNDO ══
-       Un título no es un número más en la fila: cuando el piloto lo tiene, la
-       sección abre con un bloque dorado que se apropia de la pantalla. El resto
-       de la página es oscura y contenida, así que el oro destaca solo. */
+    /* ══ WORLD CHAMPION ══
+       A title isn't just another number in the row: when the driver has one, the
+       section opens with a gold block that takes over the screen. The rest
+       of the page is dark and restrained, so the gold stands out on its own. */
     .career-champion {
         position: relative;
         overflow: hidden;
@@ -1259,7 +1259,7 @@
         text-align: center;
     }
 
-    /* Filo dorado arriba, como el borde de un trofeo. */
+    /* A gold edge on top, like the rim of a trophy. */
     .career-champion::before {
         content: '';
         position: absolute;
@@ -1283,7 +1283,7 @@
         opacity: 0.9;
     }
 
-    /* El número es la pieza principal de toda la sección. */
+    /* The number is the main piece of the whole section. */
     .career-champion-count {
         font-family: 'F1-Black';
         font-size: clamp(64px, 11vw, 128px);
@@ -1312,7 +1312,7 @@
         color: var(--text-light);
     }
 
-    /* ── Una tarjeta por título, con el detalle de esa temporada ── */
+    /* ── One card per title, with that season's details ── */
     .career-champion-list {
         list-style: none;
         margin: 0;
@@ -1347,7 +1347,7 @@
         transform: translateY(-2px);
     }
 
-    /* Barrita con el color del equipo con el que ganó ese título. */
+    /* A small bar in the color of the team they won that title with. */
     .career-champion-year::after {
         content: '';
         position: absolute;
@@ -1360,7 +1360,7 @@
         background: var(--title-color);
     }
 
-    /* Logo del equipo con el que ganó ese título, arriba de la tarjeta. */
+    /* Logo of the team they won that title with, at the top of the card. */
     .career-champion-teamlogo {
         height: 36px;
         width: auto;
@@ -1405,7 +1405,7 @@
         color: var(--text-dim);
     }
 
-    /* ── Cifras con su puesto ── */
+    /* ── Figures with their ranking ── */
     .career-standing {
         display: grid;
         grid-template-columns: repeat(6, 1fr);
@@ -1431,7 +1431,7 @@
         font-size: clamp(30px, 4vw, 44px);
         line-height: 1;
         color: transparent;
-        -webkit-text-stroke: 1.5px var(--text-light);   /* sólo el contorno, como las estadísticas del hero */
+        -webkit-text-stroke: 1.5px var(--text-light);   /* outline only, like the hero stats */
     }
 
     .career-stat-label {
@@ -1444,7 +1444,7 @@
         text-align: center;
     }
 
-    /* El puesto es el dato nuevo, así que va destacado con el color del equipo. */
+    /* The ranking is the new data, so it's highlighted in the team color. */
     .career-stat-rank {
         font-family: 'F1-Regular';
         font-size: 13px;
@@ -1495,9 +1495,9 @@
         gap: 4px;
     }
 
-    /* Pastilla clara (--team-accent) que se desliza detrás de la pestaña
-       activa; driver-career.js le copia posición y tamaño. Sin transición
-       hasta .is-ready, así la primera vez aparece en su lugar. */
+    /* A light pill (--team-accent) that slides behind the active
+       tab; driver-career.js copies its position and size. No transition
+       until .is-ready, so the first time it appears in place. */
     .career-board-pill {
         position: absolute;
         z-index: 0;
@@ -1527,8 +1527,8 @@
 
     .career-board-tab:hover { color: var(--text-light); }
 
-    /* Texto oscuro sobre la pastilla clara: legible con cualquier color de
-       equipo, incluidos los casi blancos. */
+    /* Dark text on the light pill: readable with any team
+       color, including the near-white ones. */
     .career-board-tab.is-active { color: var(--base-900); }
 
     .career-board {
@@ -1546,12 +1546,12 @@
         to   { opacity: 1; transform: translateX(0); }
     }
 
-    /* line-height 1 en las tres celdas de texto: el rank va a 14px y el nombre
-       a 16px, y con el line-height heredado cada caja traía un aire distinto
-       arriba y abajo, así que align-items:center centraba cajas de distinto
-       alto y los glifos quedaban a distinta altura (el número flotaba por
-       encima del nombre). Con la caja igual al cuerpo de la fuente, el centro
-       de la caja es el centro del glifo y las tres columnas quedan en línea. */
+    /* line-height 1 on all three text cells: the rank is 14px and the name
+       16px, and with the inherited line-height each box had different spacing
+       above and below, so align-items:center centered boxes of different
+       heights and the glyphs ended up at different heights (the number floated
+       above the name). With the box equal to the font's body, the center
+       of the box is the center of the glyph and the three columns line up. */
     .career-board-row {
         display: grid;
         grid-template-columns: 34px minmax(90px, 190px) 1fr 68px;
@@ -1580,8 +1580,8 @@
         text-overflow: ellipsis;
     }
 
-    /* En pantallas chicas la columna no alcanza para "Michael Sch...", así que
-       se corta directo al apellido en vez de truncarlo con ellipsis. */
+    /* On small screens the column can't fit "Michael Sch...", so
+       it cuts straight to the surname instead of truncating with an ellipsis. */
     .career-board-name-last { display: none; }
 
     .career-board-bar {
@@ -1607,7 +1607,7 @@
         white-space: nowrap;
     }
 
-    /* La fila del piloto de la página se despega del resto, con su color de equipo. */
+    /* The row of this page's driver stands out from the rest, with its team color. */
     .career-board-row.is-self .career-board-rank,
     .career-board-row.is-self .career-board-name,
     .career-board-row.is-self .career-board-value {
@@ -1623,7 +1623,7 @@
         background: var(--team-accent);
     }
 
-    /* Corte visual cuando el piloto queda fuera del top mostrado. */
+    /* Visual break when the driver falls outside the top shown. */
     .career-board-gap {
         height: 20px;
         display: grid;
@@ -1704,10 +1704,10 @@
 
 
     /* ══ CAREER JOURNEY ══
-       Una cinta con un casillero por año (la carrera entera de un vistazo) y un
-       capítulo por equipo: bloque de identidad a la izquierda (se queda fijo al
-       scrollear las etapas largas), cifras y los hitos en grilla de tarjetas.
-       Los títulos usan el mismo dorado que el hero (#E8C77A). */
+       A strip with one cell per year (the whole career at a glance) and one
+       chapter per team: an identity block on the left (it stays fixed while
+       scrolling long stints), figures and the milestones in a grid of cards.
+       Titles use the same gold as the hero (#E8C77A). */
     .driver-bio {
         margin-bottom: 96px;
     }
@@ -1779,10 +1779,10 @@
         background: repeating-linear-gradient(90deg, rgba(255,255,255,0.14) 0 3px, transparent 3px 6px);
     }
 
-    /* Título: marca dorada arriba del casillero y el año en dorado */
+    /* Title: a gold mark above the cell and the year in gold */
     .jr-year.is-title i { box-shadow: 0 -5px 0 -1px #E8C77A; }
 
-    /* Sólo se rotula el año donde arranca cada equipo, y el último */
+    /* Only the year where each team starts is labeled, plus the last one */
     .jr-year span {
         display: block;
         margin-top: 8px;
@@ -1801,7 +1801,7 @@
 
     .jr-year.is-title span { color: #E8C77A; }
 
-    /* ── Capítulos por equipo ── */
+    /* ── Chapters per team ── */
     .jr-eras {
         display: flex;
         flex-direction: column;
@@ -1813,14 +1813,14 @@
 
     .jr-era {
         --c: var(--primary-red);
-        --ink: color-mix(in srgb, var(--c) 65%, white);   /* legible sobre oscuro */
+        --ink: color-mix(in srgb, var(--c) 65%, white);   /* readable on dark */
         display: grid;
         grid-template-columns: 260px minmax(0, 1fr);
         gap: 40px;
         align-items: start;
     }
 
-    /* Bloque de identidad del equipo, sobre su color */
+    /* The team's identity block, on its color */
     .jr-era-id {
         position: sticky;
         top: 84px;
@@ -1882,7 +1882,7 @@
         border-radius: 4px;
     }
 
-    /* Cifras: números de contorno, como en el hero y Career stats */
+    /* Figures: outline numbers, as in the hero and Career stats */
     .jr-stats {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -1919,7 +1919,7 @@
         color: var(--text-dim);
     }
 
-    /* Lectura secundaria (19%, 8.3 / race) en su propio renglón */
+    /* Secondary reading (19%, 8.3 / race) on its own line */
     .jr-stats dt span {
         display: block;
         margin-top: 3px;
@@ -2005,7 +2005,7 @@
         color: var(--text-dim);
     }
 
-    /* Victoria: la etiqueta se enciende y la ficha va en claro */
+    /* Win: the label lights up and the badge goes light */
     .jr-moment[data-kind="win"] .jr-moment-label { color: var(--text-light); }
 
     .jr-moment[data-kind="win"] .jr-moment-chip {
@@ -2013,7 +2013,7 @@
         background: var(--text-light);
     }
 
-    /* Título: tarjeta dorada */
+    /* Title: a gold card */
     .jr-moment[data-kind="title"] {
         background: linear-gradient(135deg, rgba(232,199,122,0.14) 0%, rgba(232,199,122,0.03) 100%);
         border-color: rgba(232,199,122,0.25);
@@ -2027,8 +2027,8 @@
         background: linear-gradient(135deg, #B78E3F, #F5E0B5, #B78E3F);
     }
 
-    /* Récord histórico: violeta, el color de "lo mejor de todos" en F1.
-       Igualarlo va más apagado que romperlo. */
+    /* All-time record: purple, the "best of all" color in F1.
+       Equalling it is more muted than breaking it. */
     .jr-moment[data-kind="record"] {
         background: linear-gradient(135deg, rgba(168,85,247,0.16) 0%, rgba(168,85,247,0.03) 100%);
         border-color: rgba(168,85,247,0.28);
@@ -2076,7 +2076,7 @@
             gap: 20px;
         }
 
-        /* El bloque de identidad pasa a ser la cabecera del capítulo */
+        /* The identity block becomes the chapter's header */
         .jr-era-id {
             position: static;
             display: grid;
@@ -2098,7 +2098,7 @@
         .jr-ribbon-summary { font-size: 13px; }
         .jr-years { gap: 2px; }
         .jr-year i { height: 10px; }
-        /* No entran todos los rótulos: sólo el primero y el último */
+        /* Not all the labels fit: only the first and the last */
         .jr-year.is-start span { visibility: hidden; }
         .jr-year:first-child span,
         .jr-year:last-child span { visibility: visible; font-size: 10px; }
@@ -2111,14 +2111,14 @@
         .jr-stats dt { font-size: 10px; letter-spacing: 1px; }
         .jr-moments { grid-template-columns: minmax(0, 1fr); margin-top: 22px; }
     }
-    /* ── ANIMACIONES DE ENTRADA ──
-       js/driver-reveal.js marca cada bloque con .reveal y data-reveal (la
-       variante) apenas aparece, y le suma .is-in cuando entra en pantalla. Todos
-       comparten la misma transición; lo único que cambia es la demora de la
-       cascada (--delay). Al terminar, el script quita las clases y cada elemento
-       vuelve a sus propias transiciones.
-       La transición va sólo con .is-in: ocultar tiene que ser instantáneo, si
-       no el paso a oculto también se anima y el elemento apenas se mueve. */
+    /* ── ENTRANCE ANIMATIONS ──
+       js/driver-reveal.js marks each block with .reveal and data-reveal (the
+       variant) as soon as it appears, and adds .is-in when it scrolls into view. They all
+       share the same transition; the only thing that changes is the cascade's
+       delay (--delay). When it's done, the script removes the classes and each element
+       goes back to its own transitions.
+       The transition only applies with .is-in: hiding has to be instant, otherwise
+       the switch to hidden is animated too and the element barely moves. */
     .reveal.is-in {
         transition: all 0.7s ease;
         transition-delay: var(--delay, 0ms);
@@ -2132,15 +2132,15 @@
     .reveal[data-reveal="pop"]:not(.is-in)   { transform: scale(0.9); }
     .reveal[data-reveal="zoom"]:not(.is-in)  { transform: scale(1.08); }
 
-    /* Hero: el panel del equipo se despliega desde la izquierda, con la misma
-       forma que tiene (cuatro puntos, así el navegador puede interpolarla) */
+    /* Hero: the team panel unfolds from the left, with the same
+       shape it has (four points, so the browser can interpolate it) */
     .reveal[data-reveal="wipe"]:not(.is-in) {
         opacity: 1;
         clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
     }
 
-    /* Títulos de sección: el texto entra desde la izquierda y la línea roja se
-       estira detrás */
+    /* Section titles: the text comes in from the left and the red line
+       stretches behind it */
     .reveal[data-reveal="title"]:not(.is-in) { transform: translateX(-24px); }
 
     .section-title.reveal.is-in::after {
@@ -2151,8 +2151,8 @@
 
     .section-title.reveal:not(.is-in)::after { transform: scaleX(0); transform-origin: left center; }
 
-    /* Barras que crecen desde 0: la de avance de la temporada y las del ranking
-       all-time. El !important pisa el ancho que traen en línea. */
+    /* Bars that grow from 0: the season progress one and the all-time
+       ranking ones. The !important overrides their inline width. */
     .season-band-cell.reveal.is-in .season-band-progress-fill,
     .career-board-wrap.reveal.is-in .career-board-bar > span {
         transition: all 0.7s ease;
@@ -2164,5 +2164,5 @@
         width: 0 !important;
     }
 
-    /* Con "reducir movimiento" activado driver-reveal.js no marca nada, así
-       que la página aparece tal cual, sin animaciones. */
+    /* With "reduce motion" on, driver-reveal.js doesn't mark anything, so
+       the page appears as-is, without animations. */

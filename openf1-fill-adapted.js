@@ -21,7 +21,7 @@ const QUALY_LIKE = new Set(["qualifying", "sprintQualy"]);
 const POINTS_TABLE = { 1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1 };
 const SPRINT_POINTS_TABLE = { 1: 8, 2: 7, 3: 6, 4: 5, 5: 4, 6: 3, 7: 2, 8: 1 };
 
-// team_name tal como lo manda OpenF1 → nombre corto que queremos guardar en el JSON.
+// team_name as OpenF1 sends it → the short name we want to store in the JSON.
 const TEAM_NAME_NORMALIZE = {
   "Red Bull Racing": "Red Bull",
   "Haas F1 Team": "Haas",
@@ -93,7 +93,7 @@ function runNextQueued() {
   next();
 }
 
-// Serializa y limita la concurrencia de llamadas a OpenF1 para no disparar 429s.
+// Serializes and limits the concurrency of OpenF1 calls so as not to trigger 429s.
 function withThrottle(task) {
   return new Promise((resolve, reject) => {
     const run = async () => {
@@ -128,17 +128,17 @@ async function fetchWithRetry(url) {
     if (res.status === 404) return { empty: true };
     if (res.status === 429 || res.status >= 500) {
       if (attempt === MAX_RETRIES) {
-        throw new OpenF1Error(`OpenF1 ${res.status} ${res.statusText} tras ${MAX_RETRIES} reintentos (${url})`);
+        throw new OpenF1Error(`OpenF1 ${res.status} ${res.statusText} after ${MAX_RETRIES} retries (${url})`);
       }
       const delay = retryDelay(attempt, res.headers.get("retry-after"));
-      console.warn(`⏳ OpenF1 ${res.status} en ${url} — reintento ${attempt + 1}/${MAX_RETRIES} en ${Math.round(delay)}ms`);
+      console.warn(`⏳ OpenF1 ${res.status} on ${url}, retry ${attempt + 1}/${MAX_RETRIES} in ${Math.round(delay)}ms`);
       await sleep(delay);
       continue;
     }
     if (!res.ok) throw new OpenF1Error(`OpenF1 ${res.status} ${res.statusText} (${url})`);
     return { empty: false, data: await res.json() };
   }
-  throw new OpenF1Error(`OpenF1: reintentos agotados (${url})`);
+  throw new OpenF1Error(`OpenF1: retries exhausted (${url})`);
 }
 
 async function getJSON(path, params = {}) {
@@ -207,7 +207,7 @@ async function findMeeting(year, gpKey, gp = null) {
   if ((!best || bestScore < 50) && Number.isInteger(gp?.round)) {
     best = meetings[gp.round - 1] ?? best;
   }
-  if (!best) throw new OpenF1Error(`No se encontró meeting para ${gpKey} ${year}`);
+  if (!best) throw new OpenF1Error(`No meeting found for ${gpKey} ${year}`);
   MEETING_CACHE.set(cacheKey, best);
   return best;
 }
@@ -250,10 +250,10 @@ function titleCaseName(str) {
     .join(" ");
 }
 
-// El resto del proyecto identifica a los pilotos por slug (nombre completo en
-// minúsculas, sin acentos, separado por guiones). OpenF1 devuelve nombres, así
-// que los convertimos acá; si no, el season file queda con "Valtteri Bottas" y
-// nada lo matchea contra drivers.json / careers.json.
+// The rest of the project identifies drivers by slug (full name in
+// lowercase, without accents, separated by hyphens). OpenF1 returns names, so
+// we convert them here; otherwise the season file ends up with "Valtteri Bottas" and
+// nothing matches it against drivers.json / careers.json.
 function toDriverSlug(str) {
   return String(str ?? "")
     .toLowerCase()
@@ -297,10 +297,10 @@ function resolveDriver(driverNumber, driversByNumber, knownDriverNames = new Set
   return { name, team: driver?.team ?? null, number: driverNumber };
 }
 
-// OpenF1 a veces manda position:0 en vez de null para pilotos aún no
-// clasificados (DNF/DNS/DSQ). 0 nunca es una posición real de carrera, así
-// que se trata igual que una posición ausente en vez de dejar que "gane" el
-// ordenamiento ascendente y termine arriba de todo.
+// OpenF1 sometimes sends position:0 instead of null for drivers not yet
+// classified (DNF/DNS/DSQ). 0 is never a real race position, so
+// it's treated the same as a missing position instead of letting it "win" the
+// ascending sort and end up at the very top.
 function isValidPosition(position) {
   const n = Number(position);
   return Number.isFinite(n) && n > 0;
@@ -315,8 +315,8 @@ function statusLabel(row) {
   if (row?.dnf) return "DNF";
   return null;
 }
-// En qualy, DNF/DNS no aportan info útil (mejor mostrar "No time" vía
-// formatLapTime); solo DSQ es un status real que vale la pena mostrar.
+// In qualifying, DNF/DNS don't add useful info (better to show "No time" via
+// formatLapTime); only DSQ is a real status worth showing.
 function qualyStatusLabel(row) {
   return row?.dsq ? "DSQ" : null;
 }
@@ -419,19 +419,19 @@ function mapRace(results, driversByNumber, knownDriverNames, isSprint, bestLapBy
       mapped.bestLap = formatClock(bestSeconds);
       if (row.driver_number === fastestNumber) mapped.fastestLap = true;
     }
-    // Posición real de largada (ver fetchStartingGrid): no es la de la
-    // clasificación cuando hubo penalizaciones.
+    // Actual starting position (see fetchStartingGrid): it isn't the
+    // qualifying one when there were penalties.
     const grid = gridByNumber.get(row.driver_number);
     if (grid !== undefined) mapped.grid = grid;
     return mapped;
   });
 }
 
-// La parrilla de salida oficial, con penalizaciones aplicadas. OpenF1 la
-// cuelga del session_key de la sesión que la produjo (la Qualifying para la
-// carrera, la Sprint Qualifying para el sprint), no del de la carrera —
-// comprobado contra Monza 2026: pedirla con el key de la carrera devuelve
-// vacío. Devuelve Map<driver_number, position>.
+// The official starting grid, with penalties applied. OpenF1 hangs it
+// off the session_key of the session that produced it (Qualifying for the
+// race, Sprint Qualifying for the sprint), not the race's own,
+// verified against Monza 2026: requesting it with the race's key returns
+// nothing. Returns Map<driver_number, position>.
 async function fetchStartingGrid(qualySessionKey) {
   if (!qualySessionKey) return new Map();
   const rows = await getJSON("/starting_grid", { session_key: qualySessionKey });
@@ -443,11 +443,11 @@ async function fetchStartingGrid(qualySessionKey) {
   return map;
 }
 
-// Para una carrera, la sesión que define su parrilla.
+// For a race, the session that defines its grid.
 const GRID_SOURCE_KEY = { race: "qualifying", sprintRace: "sprintQualy" };
 
-// Agrega `grid` a filas de carrera/sprint ya guardadas que no lo tengan.
-// Devuelve cuántas completó.
+// Adds `grid` to already saved race/sprint rows that don't have it.
+// Returns how many it filled.
 function applyGridToSession(session, gridByNumber) {
   let n = 0;
   for (const row of session?.results ?? []) {
@@ -480,8 +480,8 @@ async function fetchSessionLaps(sessionKey) {
   return getJSON("/laps", { session_key: sessionKey });
 }
 
-// Mejor vuelta por piloto a partir de /laps: ignora vueltas de salida de
-// boxes y duraciones inválidas/nulas (vuelta incompleta, safety car, etc).
+// Best lap per driver from /laps: ignores pit out-laps
+// and invalid/null durations (incomplete lap, safety car, etc).
 function bestLapsByNumber(laps) {
   const best = new Map();
   for (const lap of laps ?? []) {
@@ -504,8 +504,8 @@ async function fillGPSession(gp, year, gpKey, resultKey, knownDriverNames = new 
   if (!resolvedSessionKey) return gp;
 
   const isRaceLike = RACE_LIKE.has(resultKey);
-  // La parrilla sale de la sesión de clasificación correspondiente, así que
-  // hace falta el meeting para ubicarla aunque nos hayan pasado el sessionKey.
+  // The grid comes from the corresponding qualifying session, so
+  // the meeting is needed to locate it even if we were given the sessionKey.
   let gridPromise = Promise.resolve(new Map());
   if (isRaceLike) {
     gridPromise = (async () => {
@@ -531,8 +531,8 @@ function average(samples, key) {
   const nums = samples.map((x) => Number(x?.[key])).filter(Number.isFinite);
   return nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : null;
 }
-// Promedio angular: para wind_direction, promediar 350° y 10° a lo bruto da 180°
-// (mal); esto da ~0° (bien), tratando los grados como vectores en un círculo.
+// Angular mean: for wind_direction, naively averaging 350° and 10° gives 180°
+// (wrong); this gives ~0° (right), treating degrees as vectors on a circle.
 function circularMeanDegrees(samples, key) {
   const degrees = samples.map((x) => Number(x?.[key])).filter(Number.isFinite);
   if (!degrees.length) return null;
