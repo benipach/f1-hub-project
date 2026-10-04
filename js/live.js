@@ -3117,18 +3117,127 @@ function driverMapColor(driver) {
 //
 // Everything is in "lap fraction measured in time": the 3 sectors are
 // split according to that car's sector times, and the mini-sectors in
-// equal parts within each sector. The MultiViewer layout is a
-// real lap with the time of each point, so time fraction →
-// point on the track is direct (TRACK MAP, pointAtLapFraction()).
+// equal parts within each sector until they're calibrated (see MINI-SECTOR
+// CALIBRATION). The MultiViewer layout is a real lap with the time of each
+// point, so time fraction → point on the track is direct (TRACK MAP,
+// pointAtLapFraction()).
 //
 // Between one checkpoint and the next the car advances at the pace of its
 // last lap, never going past the next mini-sector: if the data
-// arrives late, it waits there instead of getting ahead.
+// arrives late, it waits there instead of getting ahead. The dot drawn
+// follows that estimate smoothly (smoothedFrac()) instead of jumping.
 //
 // If a sector has no mini-sectors (according to OpenF1, in races they may not
 // come), that sector counts as a single checkpoint: its time.
-const carProgress = {};     // num → { last, frac, next, at }
+const carProgress = {};     // num → { last, frac, next, at, laps, stale }
 const carSectorShares = {}; // num → [s1, s2, s3] as lap fractions
+const carShown = {};        // num → { frac, at }: where the dot is drawn
+
+// ── MINI-SECTOR CALIBRATION ───────────────────────────────────────────────
+// Mini-sectors are far from equal: in Sepang's S1 the five of them end at
+// 4.3, 6.4, 11.9, 21.6 and 24.6 s. Split in equal parts, the car reached
+// the 4th one at 14.8 s and waited there 7 s for the data, then jumped.
+// So each clean lap (no pits, lap time matching what was measured) records
+// when each car passed each mini-sector, and the median of all of them
+// says where each one ends. With 22 cars, one lap is enough. It's saved per
+// circuit in the browser, so the next session starts calibrated.
+const CALIBRATION_MIN_SAMPLES = 3;
+const CALIBRATION_MAX_SAMPLES = 40;
+const checkpointSamples = {};   // calibration key → { index: [lap fractions] }
+const calibratedEndsCache = {}; // calibration key → [end | null]
+const storedEndsCache = {};     // calibration key → [end | null] | null
+const carLapRecord = {};        // num → { laps, startAt, passes, lastSeen, cleared, pitted, count }
+
+// The same number of mini-sectors can mean another circuit: the key has both.
+function calibrationKey(count) {
+    const target = sessionCircuitTarget();
+    return `${target ? target.key : '?'}:${count}`;
+}
+
+function storedCheckpointEnds(key) {
+    if (!(key in storedEndsCache)) {
+        let value = null;
+        try {
+            const parsed = JSON.parse(localStorage.getItem(`f1hub:checkpoints:${key}`));
+            if (Array.isArray(parsed)) value = parsed;
+        } catch (err) {
+            // No storage (private window, blocked): it calibrates from scratch.
+        }
+        storedEndsCache[key] = value;
+    }
+    return storedEndsCache[key];
+}
+
+function medianOf(values) {
+    const sorted = values.slice().sort((a, b) => a - b);
+    return sorted[Math.floor(sorted.length / 2)];
+}
+
+// Where each checkpoint ends: this session's median if there are enough
+// samples, otherwise what was saved for the circuit, otherwise null.
+function calibratedCheckpointEnds(count) {
+    const key = calibrationKey(count);
+    if (!calibratedEndsCache[key]) {
+        const samples = checkpointSamples[key] || {};
+        const stored = storedCheckpointEnds(key);
+        calibratedEndsCache[key] = Array.from({ length: count }, (_, i) => {
+            const list = samples[i] || [];
+            if (list.length >= CALIBRATION_MIN_SAMPLES) return medianOf(list);
+            return stored && Number.isFinite(stored[i]) ? stored[i] : null;
+        });
+    }
+    return calibratedEndsCache[key];
+}
+
+function addCalibrationSamples(count, record, duration) {
+    const key = calibrationKey(count);
+    const samples = checkpointSamples[key] || (checkpointSamples[key] = {});
+    for (const [index, at] of Object.entries(record.passes)) {
+        const frac = (at - record.startAt) / duration;
+        if (!(frac > 0 && frac < 1.02)) continue;
+        const list = samples[index] || (samples[index] = []);
+        list.push(Math.min(frac, 1));
+        if (list.length > CALIBRATION_MAX_SAMPLES) list.shift();
+    }
+    delete calibratedEndsCache[key];
+    const ends = calibratedCheckpointEnds(count);
+    storedEndsCache[key] = ends;
+    try {
+        localStorage.setItem(`f1hub:checkpoints:${key}`, JSON.stringify(ends));
+    } catch (err) {
+        // Without storage it only lasts for this visit.
+    }
+}
+
+// Follows each car's lap: when it passes each mini-sector and, when the lap
+// ends, whether it was clean enough to calibrate with.
+function recordCheckpointPasses(num, line, laps, last, count, now) {
+    const rec = carLapRecord[num];
+    const inPits = !!(line.InPit || line.PitOut);
+    if (!rec || laps !== rec.laps) {
+        if (rec && laps === rec.laps + 1 && rec.startAt != null && !rec.pitted && !inPits && rec.count === count) {
+            const duration = now - rec.startAt;
+            const lapMs = lapTimeToMs(line.LastLapTime && line.LastLapTime.Value);
+            if (lapMs && Math.abs(duration - lapMs) / lapMs < 0.05) addCalibrationSamples(count, rec, duration);
+        }
+        // The start is only known if the counter changed in front of us
+        // (not on the first data after opening the page).
+        carLapRecord[num] = { laps, startAt: rec ? now : null, passes: {}, lastSeen: -1, cleared: false, pitted: inPits, count };
+        return;
+    }
+    if (inPits) rec.pitted = true;
+    // Until F1 clears the previous lap's mini-sectors they all look passed.
+    if (!rec.cleared) {
+        if (last >= count - 1) return;
+        rec.cleared = true;
+    }
+    if (last > rec.lastSeen) {
+        // If several arrive together only the last one is recorded: the
+        // others didn't really pass at this moment.
+        rec.passes[last] = now;
+        rec.lastSeen = last;
+    }
+}
 
 // How the lap splits across the 3 sectors, taken from the car's own sector
 // times. The last complete split is kept: mid-lap
@@ -3161,6 +3270,16 @@ function lapCheckpoints(num, line) {
         }
         start += shares[s];
     }
+
+    // Calibrated ends where there are any, always increasing and inside the lap.
+    const ends = calibratedCheckpointEnds(checkpoints.length);
+    let floor = 0;
+    checkpoints.forEach((c, i) => {
+        if (ends[i] != null) c.end = ends[i];
+        const ceiling = 1 - (checkpoints.length - 1 - i) * 0.001;
+        c.end = Math.min(Math.max(c.end, floor + 0.001), ceiling);
+        floor = c.end;
+    });
     return checkpoints;
 }
 
@@ -3181,19 +3300,63 @@ function trackCarProgress() {
     const lines = (state.TimingData && state.TimingData.Lines) || {};
     const now = Date.now();
     for (const num of Object.keys(lines)) {
-        const checkpoints = lapCheckpoints(num, lines[num]);
+        const line = lines[num];
+        const checkpoints = lapCheckpoints(num, line);
         let last = -1;
         checkpoints.forEach((c, i) => { if (c.passed) last = i; });
+        const laps = Number(line.NumberOfLaps) || 0;
+        recordCheckpointPasses(num, line, laps, last, checkpoints.length, now);
 
         const prev = carProgress[num];
+        // New lap: the counter goes up at the line, but F1 takes ~4 s to clear
+        // the previous lap's mini-sectors, and until then they all look
+        // passed (the car stayed stuck on the line). The lap starts now.
+        if (prev && laps > prev.laps) {
+            carProgress[num] = { last: -1, frac: 0, next: checkpoints.length ? checkpoints[0].end : 1, at: now, laps, stale: true };
+            continue;
+        }
+        if (prev && prev.stale && last === checkpoints.length - 1) continue;
         if (prev && prev.last === last) continue;
         carProgress[num] = {
             last,
             frac: last < 0 ? 0 : checkpoints[last].end,
             next: checkpoints[last + 1] ? checkpoints[last + 1].end : 1,
             at: now,
+            laps,
+            stale: false,
         };
     }
+}
+
+// Difference b - a between two lap fractions, across the line: (-0.5, 0.5].
+function lapDelta(a, b) {
+    let d = (b - a) % 1;
+    if (d > 0.5) d -= 1;
+    if (d <= -0.5) d += 1;
+    return d;
+}
+
+// Where the dot is drawn: it follows the estimate at the car's pace, a bit
+// faster if it's behind and slower if it's ahead, instead of jumping each time
+// a mini-sector arrives (and crossing the circuit in a straight line during
+// the CSS transition). Never backwards, never over twice the pace, never past
+// the next mini-sector. Only if it's very far off does it jump (pits, page
+// opened mid-lap).
+function smoothedFrac(num, target, limit, lapMs, now) {
+    const shown = carShown[num];
+    if (!shown || now - shown.at > 5000 || Math.abs(lapDelta(shown.frac, target)) > 0.15) {
+        carShown[num] = { frac: target, at: now };
+        return target;
+    }
+    const dt = now - shown.at;
+    const pace = dt / lapMs;
+    const gap = lapDelta(shown.frac, target);
+    let step = pace + gap * Math.min(1, dt / 2000); // closes the gap in ~2 s
+    step = Math.min(Math.max(step, pace * 0.25), pace * 2);
+    step = Math.min(step, Math.max(0, lapDelta(shown.frac, limit)));
+    shown.frac = (shown.frac + step + 1) % 1;
+    shown.at = now;
+    return shown.frac;
 }
 
 function sessionIsRunning() {
@@ -3219,11 +3382,16 @@ function estimatedCarPositions() {
     for (const num of Object.keys(lines)) {
         const line = lines[num];
         const progress = carProgress[num];
-        if (!progress || line.InPit || line.Retired) continue;
+        if (!progress || line.InPit || line.Retired) {
+            delete carShown[num]; // when it comes back, it appears where it is
+            continue;
+        }
 
-        const advanced = progress.frac + (now - progress.at) / carLapMs(line);
-        const frac = Math.min(advanced, progress.next - 0.002);
-        positions[num] = trackMap.pointAtLapFraction(Math.max(0, frac));
+        const lapMs = carLapMs(line);
+        const limit = progress.next - 0.002;
+        const advanced = progress.frac + (now - progress.at) / lapMs;
+        const target = Math.max(0, Math.min(advanced, limit));
+        positions[num] = trackMap.pointAtLapFraction(smoothedFrac(num, target, limit, lapMs, now));
     }
     return positions;
 }
