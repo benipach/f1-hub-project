@@ -1636,11 +1636,11 @@ function buildTableColumns(view) {
     if (cols.status) {
         add('<th class="live-col-status"></th>',
             (r) => `<td class="live-col-status">${r.chequered
-                ? '<span class="live-status-wrap"><span class="live-status-badge live-status-badge--chequered" title="Took the chequered flag"><span class="live-chequered-icon" aria-hidden="true"></span>FIN</span></span>'
+                ? '<span class="live-status-wrap"><span class="live-status-badge live-status-badge--chequered" title="Took the chequered flag"><span class="live-chequered-icon" aria-hidden="true"></span>FINISH</span></span>'
                 : r.statusLabel ? `<span class="live-status-wrap"><span class="live-status-badge" style="color:${r.teamColor}">${r.statusLabel}</span></span>` : ''}</td>`,
             { samples: [
                 '<span class="live-status-wrap"><span class="live-status-badge">OUT</span></span>',
-                '<span class="live-status-wrap"><span class="live-status-badge live-status-badge--chequered"><span class="live-chequered-icon"></span>FIN</span></span>',
+                '<span class="live-status-wrap"><span class="live-status-badge live-status-badge--chequered"><span class="live-chequered-icon"></span>FINISH</span></span>',
             ], sampleHTML: true });
     }
 
@@ -2986,8 +2986,6 @@ function drawTrackMap(isRetry = false) {
                         <text style="font-size:${(9 * upx).toFixed(1)}px">${c.number}</text>
                     </g>`).join('')}
             </g>
-            <!-- Battles on track: stretch between cars less than 1 s apart (updateBattles). -->
-            <g class="track-battles" style="stroke-width:${(w * 0.45).toFixed(1)}"></g>
             <g class="track-cars"></g>
         </svg>`;
     trackFlagsSignature = null; // capas nuevas: redibujar banderas
@@ -3229,74 +3227,6 @@ function updateTrackStatus() {
 function updateTrackAnnotations() {
     updateTrackFlags();
     updateTrackStatus();
-}
-
-// Battles on track (Race/Sprint only): two consecutive cars less than
-// BATTLE_GAP_SECONDS apart are marked by highlighting the stretch of track between them
-// (following the layout, not in a straight line: a straight line cut across the inside
-// of the circuit). The interval is the feed's real one; the dots are estimated.
-const BATTLE_GAP_SECONDS = 1;
-
-function battleIntervalSeconds(line, aheadLine) {
-    const fromFeed = gapSeconds(intervalToAheadValue(line));
-    if (fromFeed != null) return fromFeed;
-    const gap = gapSeconds(gapToLeaderValue(line));
-    const aheadGap = Number(aheadLine.Position) === 1 ? 0 : gapSeconds(gapToLeaderValue(aheadLine));
-    return gap != null && aheadGap != null ? gap - aheadGap : null;
-}
-
-// Index of the layout point closest to a map position.
-function nearestTrackIndex(p) {
-    const points = trackMap.points;
-    let best = 0;
-    let bestDist = Infinity;
-    for (let i = 0; i < points.length; i++) {
-        const d = (points[i].x - p.x) ** 2 + (points[i].y - p.y) ** 2;
-        if (d < bestDist) { bestDist = d; best = i; }
-    }
-    return best;
-}
-
-// Stretch of the layout from the car behind to the car ahead, following
-// the track (forwards, wrapping around if it crosses the line). null if it's
-// longer than BATTLE_MAX_LAP_SHARE: with estimated positions two cars
-// 0.6 s apart can end up drawn far from each other, and a huge stretch is confusing.
-const BATTLE_MAX_LAP_SHARE = 0.08;
-
-function battleSegment(behind, ahead) {
-    const points = trackMap.points;
-    const from = nearestTrackIndex(behind);
-    const to = nearestTrackIndex(ahead);
-    const steps = (to - from + points.length) % points.length;
-    if (steps === 0 || steps > points.length * BATTLE_MAX_LAP_SHARE) return null;
-    const segment = [behind];
-    for (let k = 1; k < steps; k++) segment.push(points[(from + k) % points.length]);
-    segment.push(ahead);
-    return segment;
-}
-
-function updateBattles(positions) {
-    const layer = document.querySelector('#circuit-position-overlay .track-battles');
-    if (!layer) return;
-    if (currentSessionKind() !== 'race') {
-        layer.innerHTML = '';
-        return;
-    }
-    const lines = (state.TimingData && state.TimingData.Lines) || {};
-    const order = Object.keys(lines)
-        .filter((num) => lines[num] && Number(lines[num].Position) > 0)
-        .sort((a, b) => Number(lines[a].Position) - Number(lines[b].Position));
-    let html = '';
-    for (let i = 1; i < order.length; i++) {
-        const num = order[i];
-        const ahead = order[i - 1];
-        if (!positions[num] || !positions[ahead]) continue;
-        const interval = battleIntervalSeconds(lines[num], lines[ahead]);
-        if (interval == null || interval < 0 || interval >= BATTLE_GAP_SECONDS) continue;
-        const segment = battleSegment(positions[num], positions[ahead]);
-        if (segment) html += `<path class="track-battle" d="${trackPathD(segment, false)}"></path>`;
-    }
-    layer.innerHTML = html;
 }
 
 // Follow a driver: click their row in the table or their car on the map. Their
@@ -3761,7 +3691,6 @@ function updatePositionOverlay() {
         if (!positions[car.dataset.num]) car.remove();
     }
 
-    updateBattles(positions);
     updateTooltip();
 }
 
