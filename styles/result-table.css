@@ -1,19 +1,20 @@
 /* ============================================================ */
-/*  result-table.css                                             */
-/*  La tabla de clasificación de una sesión (buildResultTable en */
-/*  js/shared/result-table.js). La usan grandsprix/grandprix.html */
-/*  (una por sesión) y results.html (desplegada bajo cada         */
-/*  carrera). Se carga antes del CSS de cada página.              */
-/*                                                                */
-/*  .race-table-wrap / .data-table es el aspecto de referencia de */
-/*  todas las tablas del sitio (.standings-table en               */
-/*  championship.css, .season-table en driver.css y               */
-/*  .results-table en results.css copian estos valores).          */
+/*  result-table.css                                            */
+/*  A session's classification table (buildResultTable in       */
+/*  js/shared/result-table.js). Used by                         */
+/*  grandsprix/grandprix.html (one per session) and             */
+/*  results.html (expanded below each race). Loaded before      */
+/*  each page's CSS.                                            */
+/*                                                              */
+/*  .race-table-wrap / .data-table is the reference look for    */
+/*  all the site's tables (.standings-table in                  */
+/*  championship.css, .season-table in driver.css and           */
+/*  .results-table in results.css copy these values).           */
 /* ============================================================ */
 
 /* ---- SHARED TABLE SYSTEM ---- */
-/* Mismo aspecto que .standings-table-wrap (championship.css): degradado,
-   borde fino, y sin hover en el contenedor. */
+/* Same look as .standings-table-wrap (championship.css): gradient,
+   thin border, and no hover on the container. */
 .race-table-wrap {
 overflow-y: auto;
 background: linear-gradient(135deg, var(--base-700) 0%, var(--base-800) 100%);
@@ -324,9 +325,9 @@ margin-bottom: 2px;
     .data-table td,
     .data-table th { padding: 0 10px; }
 
-    /* En celular la tabla se queda con Pos, piloto (con el logo del equipo
-       al lado) y tiempo/puntos: fuera la columna Team, el delta contra la
-       parrilla y la mejor vuelta. */
+    /* On phones the table keeps Pos, driver (with the team logo
+       next to it) and time/points: the Team column, the delta against the
+       grid and the best lap are dropped. */
     .data-table .res-team-cell,
     .data-table th.res-team-col,
     .data-table td.res-delta-cell,
@@ -334,7 +335,7 @@ margin-bottom: 2px;
     .data-table th.res-bestlap-col,
     .data-table td.res-bestlap { display: none; }
 
-    /* En las prácticas la columna Laps tampoco entra. */
+    /* In practice sessions the Laps column doesn't fit either. */
     .race-table-wrap[data-session^="fp"] .res-laps-col,
     .race-table-wrap[data-session^="fp"] .res-laps { display: none; }
 

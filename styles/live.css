@@ -1,10 +1,10 @@
 /* ---- PAGE LAYOUT ----
-   La página es solo la app de timing: una barra superior (GP, sesión y
-   clima) y dos paneles, tabla y mapa (con el botón de pantalla completa). En
-   escritorio ocupa exacto el alto de la ventana debajo del navbar, sin
-   scroll de página; en pantallas angostas los paneles se apilan y la
-   página scrollea normal (ver APP SHELL más abajo). --nav-h copia el alto
-   del .navbar fijo de style.css. */
+   The page is just the timing app: a top bar (GP, session and
+   weather) and two panels, table and map (with the fullscreen button). On
+   desktop it takes exactly the window height below the navbar, with no
+   page scroll; on narrow screens the panels stack and the
+   page scrolls normally (see APP SHELL below). --nav-h copies the height
+   of the fixed .navbar in style.css. */
 .live-body {
     --nav-h: 60px;
 }
@@ -35,10 +35,10 @@
 }
 
 /* ---- TRACK MAP (SVG) ----
-   Contenedor del mapa dibujado por live.js (drawTrackMap()): pista, curvas
-   y autos en el mismo SVG y en el mismo sistema de coordenadas, así los
-   autos caen exactamente sobre la línea. El inset coincide con el padding
-   del wrap. */
+   Container for the map drawn by live.js (drawTrackMap()): track, corners
+   and cars in the same SVG and the same coordinate system, so the
+   cars land exactly on the line. The inset matches the wrap's
+   padding. */
 .circuit-position-overlay {
     position: absolute;
     inset: 24px;
@@ -52,9 +52,9 @@
     overflow: visible;
 }
 
-/* Pista: un borde gris oscuro ancho y, encima, la línea (de color por
-   sector, o neutra mientras no hay tiempos de sector). Mismo lenguaje que
-   el mapa oficial de F1. */
+/* Track: a wide dark grey border and, on top, the line (colored by
+   sector, or neutral while there are no sector times). Same language as
+   F1's official map. */
 .track-outline,
 .track-line,
 .track-sector {
@@ -71,12 +71,12 @@
     stroke: rgba(255,255,255,0.7);
 }
 
-/* Colores de sector del mapa oficial. */
+/* Sector colors from the official map. */
 .track-sector--s1 { stroke: rgb(232,0,45); }
 .track-sector--s2 { stroke: rgb(0,161,255); }
 .track-sector--s3 { stroke: rgb(255,211,1); }
-/* Bandera a cuadros en la largada: grilla de cuadraditos (startFlagHTML()
-   en live.js). */
+/* Chequered flag at the start line: a grid of small squares (startFlagHTML()
+   in live.js). */
 .track-flag-white { fill: #fff; }
 .track-flag-black { fill: #111; }
 
@@ -84,11 +84,11 @@
     fill: var(--text-light);
 }
 
-/* Números de curva en circulitos. */
+/* Corner numbers in small circles. */
 .track-corners circle {
     fill: rgb(24,24,32);
     stroke: rgba(255,255,255,0.35);
-    /* stroke-width lo pone live.js en px de pantalla (1px) */
+    /* stroke-width is set by live.js in screen px (1px) */
 }
 
 .track-corners text {
@@ -99,16 +99,16 @@
     dominant-baseline: central;
 }
 
-/* Cada auto se desliza a su posición nueva en vez de saltar: live.js
-   recalcula cada 0.5s (updatePositionOverlay) y la transición dura lo
-   mismo, así el movimiento queda continuo. */
+/* Each car slides to its new position instead of jumping: live.js
+   recomputes every 0.5s (updatePositionOverlay) and the transition lasts the
+   same, so the movement stays continuous. */
 .track-car {
     transition: transform 0.5s linear;
 }
 
-/* Aviso de que las posiciones son estimadas (sin Position.z, ver
-   ESTIMATED CAR POSITIONS en live.js). Arriba a la izquierda del mapa (abajo
-   a la izquierda va el estado de pista). */
+/* Notice that positions are estimated (no Position.z, see
+   ESTIMATED CAR POSITIONS in live.js). Top left of the map (the bottom
+   left holds the track status). */
 .track-note {
     position: absolute;
     left: 16px;
@@ -125,8 +125,8 @@
     display: none;
 }
 
-/* Punto del color del equipo con anillo oscuro (live.js le pone el grosor
-   según el tamaño del punto), así se despega de la línea de color. */
+/* A dot in the team color with a dark ring (live.js sets its width
+   based on the dot size), so it stands out from the colored line. */
 .track-car circle {
     stroke: rgb(9,9,14);
 }
@@ -140,16 +140,16 @@
     stroke-linejoin: round;
 }
 
-/* Con el mapa en SVG, el PNG queda solo de respaldo. */
+/* With the map in SVG, the PNG is only a fallback. */
 .circuit-map-wrap.has-track .circuit-map-img {
     display: none;
 }
 
-/* Los layouts oficiales de F1 no son todos iguales: algunos (Hungaroring)
-   ya vienen con un contorno blanco y se leen bien sobre fondo oscuro, y
-   otros (Monza) son negro puro sobre transparente y prácticamente
-   desaparecen. Los drop-shadow le dibujan ese halo claro a cualquiera de
-   los dos siguiendo el alfa de la imagen, sin tener que retocar assets. */
+/* F1's official layouts aren't all the same: some (Hungaroring)
+   already come with a white outline and read well on a dark background, and
+   others (Monza) are pure black on transparent and practically
+   disappear. The drop-shadows draw that light halo on either of
+   them following the image's alpha, without having to retouch assets. */
 .circuit-map-img {
     width: 100%;
     height: 100%;
@@ -158,9 +158,9 @@
             drop-shadow(0 0 3px rgba(255,255,255,0.45));
 }
 
-/* Hasta que updateCircuitMap() sepa qué circuito es, el <img> no tiene
-   src y el navegador dibuja su placeholder roto (un recuadro enorme, más
-   el halo de arriba). Mejor que no ocupe nada. */
+/* Until updateCircuitMap() knows which circuit it is, the <img> has no
+   src and the browser draws its broken placeholder (a huge box, plus
+   the halo above). Better that it takes no space. */
 .circuit-map-img:not([src]) {
     display: none;
 }
@@ -227,8 +227,8 @@
     color: #f5b74a;
 }
 
-/* Reloj en pausa: los números y el ícono alineados al centro, con el ícono
-   del mismo color y un poco más bajo que los dígitos (como en la tele). */
+/* Paused clock: the numbers and the icon center-aligned, with the icon
+   the same color and a bit smaller than the digits (as on TV). */
 .hero-session-status .status-clock--paused {
     display: inline-flex;
     align-items: center;
@@ -386,9 +386,9 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
 }
 
 /* ---- DRIVER NUMBER (Customize table → Driver number) ----
-   Calcado de .st-driver-num (championship.css): "#63" en el color del
-   equipo, alineado a la derecha en un ancho fijo para que los nombres de
-   abajo arranquen todos en la misma vertical. */
+   Copied from .st-driver-num (championship.css): "#63" in the team
+   color, right-aligned in a fixed width so the names
+   after it all start on the same vertical. */
 .live-driver-num {
     font-family: 'F1-Regular';
     font-weight: 600;
@@ -401,14 +401,14 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
 }
 
 /* ---- TEAM COLUMN (Customize table → Team: Name column) ----
-   Nombre del equipo de teams.json, a la derecha del piloto (el padding
-   lo da .live-col-roomy). En una sola línea: "Red Bull Racing" partido
-   en dos rompería la altura de la fila. */
+   The team name from teams.json, to the right of the driver (the padding
+   comes from .live-col-roomy). On a single line: "Red Bull Racing" split
+   in two would break the row height. */
 .live-table td.live-col-team {
     white-space: nowrap;
 }
 
-/* "George Russell" no se parte en dos líneas. */
+/* "George Russell" doesn't wrap onto two lines. */
 .live-table td.live-col-driver {
     white-space: nowrap;
 }
@@ -486,17 +486,17 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
 #live-rows-2 tr:nth-child(3) .res-pos.top3 { font-family: 'F1-Bold'; color: #cd9a63; }
 
 /* ---- ZEBRA ROWS ----
-   Filas intercaladas para no perder la línea al leer de punta a punta
-   (Driver → Tyres cruza toda la pantalla). "of .results-row" cuenta solo
-   filas de pilotos: los separadores de corte de la Qualy no desfasan el
-   patrón. La fila de vuelta rápida se excluye porque su violeta va en el
-   <tr> y un fondo en los <td> lo taparía. */
+   Alternating rows so you don't lose the line when reading end to end
+   (Driver → Tyres spans the whole screen). "of .results-row" only counts
+   driver rows: the qualifying cut separators don't shift the
+   pattern. The fastest lap row is excluded because its purple goes on the
+   <tr> and a background on the <td>s would cover it. */
 .live-table--compact tbody tr.results-row:nth-child(even of .results-row):not(.live-row--fastest-map) td {
     background: rgba(255,255,255,0.045);
 }
 
-/* Hover bien marcado (results.css usa 0.035, que acá casi no se
-   distinguiría de la fila gris). */
+/* A clearly marked hover (results.css uses 0.035, which here would barely
+   stand out from the grey row). */
 .live-table.live-table--compact tbody tr.results-row:not(.live-row--fastest-map):hover td {
     background: rgba(255,255,255,0.1);
 }
@@ -598,10 +598,10 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
 }
 
 /* ---- TYRES ----
-   Una insignia por stint: ícono del compuesto + vueltas hechas con ese
-   juego, en el color del compuesto (tyreStintBadgeHTML() en live.js).
-   "Current set" muestra solo la última; "All stints" las pone todas en
-   fila, de la más vieja a la actual, con la misma letra y el mismo color.
+   One badge per stint: compound icon + laps done on that
+   set, in the compound's color (tyreStintBadgeHTML() in live.js).
+   "Current set" shows only the last one; "All stints" lines them all up,
+   from oldest to current, with the same letter and the same color.
    Plain flex, no height or vertical-align tricks — that's the structure
    that actually centers correctly inside a table cell. */
 .tyre-stints {
@@ -657,7 +657,7 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
     letter-spacing: 0.2px;
 }
 
-/* El número va del color del compuesto que tiene al lado. */
+/* The number takes the color of the compound next to it. */
 .tyre-fresh-label--soft   { color: rgb(254, 0, 0); }
 .tyre-fresh-label--medium { color: rgb(255, 211, 1); }
 .tyre-fresh-label--hard   { color: rgb(255, 255, 255); }
@@ -665,10 +665,10 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
 .tyre-fresh-label--wet    { color: rgb(2, 87, 206); }
 
 /* ---- MUTED CELL TEXT (Gap / Interval / tyre placeholder) ----
-   Mismo look que .results-date de results.css, pero propio: esa clase se
-   oculta en pantallas <=500px (columna Date del calendario), y al usarla
-   acá la celda Gap desaparecía en el celular mientras el <th> seguía,
-   corriendo todas las columnas una posición a la izquierda. */
+   Same look as .results-date in results.css, but its own: that class is
+   hidden on screens <=500px (the calendar's Date column), and using it
+   here made the Gap cell disappear on phones while the <th> stayed,
+   shifting every column one position to the left. */
 .live-muted {
     color: rgba(255,255,255,0.6);
     font-size: 16px;
@@ -700,8 +700,8 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
     letter-spacing: 1px;
 }
 
-/* Ya recibió la bandera a cuadros: blanco (no color de equipo) con una
-   mini bandera a cuadros, mismo tamaño que PIT/OUT. */
+/* Already took the chequered flag: white (not the team color) with a
+   mini chequered flag, same size as PIT/OUT. */
 .live-status-badge--chequered {
     gap: 4px;
     color: rgba(255, 255, 255, 0.9);
@@ -816,16 +816,16 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
 
 
 /* ---- APP SHELL ----
-   Lo que antes era la vista "pantalla completa" de tabla + mapa ahora es
-   la página entera. Fija debajo del navbar para que llene la ventana justa
-   (los dos paneles usan TODO el alto restante, sin espacio muerto abajo),
-   pegada y separada solo por líneas de 1px, como un dashboard de timing. */
+   What used to be the table + map "fullscreen" view is now
+   the whole page. Fixed below the navbar so it fills the window exactly
+   (both panels use ALL the remaining height, with no dead space at the bottom),
+   joined and separated only by 1px lines, like a timing dashboard. */
 .live-app {
     --app-bg: rgb(9,9,14);
     --app-panel: rgb(14,14,21);
     --app-line: rgba(255,255,255,0.09);
-    /* Ancho de la columna derecha: la usan el panel del mapa y la celda
-       del clima de la barra superior, así quedan exactamente alineados. */
+    /* Right column width: used by the map panel and the top bar's
+       weather cell, so they line up exactly. */
     --app-side-col: clamp(340px, 31%, 640px);
 
     position: fixed;
@@ -839,9 +839,9 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
     overflow: hidden;
 }
 
-/* Pantalla completa: tapa también el navbar (z-index 100 en style.css).
-   Donde hay Fullscreen API, live.js además esconde las barras del
-   navegador; esto cubre el resto (iPhone) y el instante de transición. */
+/* Fullscreen: also covers the navbar (z-index 100 in style.css).
+   Where there's a Fullscreen API, live.js also hides the browser's
+   bars; this covers the rest (iPhone) and the transition moment. */
 .live-app.is-fullscreen {
     top: 0;
     z-index: 999;
@@ -860,10 +860,10 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
 }
 
 /* ---- TOP BAR ----
-   Una sola franja a lo ancho: bandera + nombre del GP y estado/reloj de
-   sesión a la izquierda; clima a la derecha. Mismas columnas que
-   .mapview-panels-row, así el clima queda justo encima del mapa, con el
-   mismo ancho y la misma línea divisoria. */
+   A single full-width strip: flag + GP name and session status/clock
+   on the left; weather on the right. Same columns as
+   .mapview-panels-row, so the weather sits right above the map, with the
+   same width and the same divider. */
 .live-app-topbar {
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--app-side-col);
@@ -881,8 +881,8 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
     padding: 10px 20px;
 }
 
-/* Celda del clima: siempre existe (aunque todavía no haya datos) para que
-   la columna y su divisoria no aparezcan y desaparezcan. */
+/* Weather cell: it always exists (even with no data yet) so that
+   the column and its divider don't appear and disappear. */
 .live-app-topbar-side {
     display: flex;
     align-items: center;
@@ -915,14 +915,14 @@ img.emoji {
     margin-left: 0;
 }
 
-/* El clima no es una card acá: se integra en la barra (sin fondo, sin
-   borde, sin radius). */
+/* The weather isn't a card here: it's part of the bar (no background, no
+   border, no radius). */
 .mapview-fs-weather {
     flex: 1 1 auto;
     min-width: 0;
 }
 
-/* Reparte los datos a lo ancho de toda la columna, de borde a borde. */
+/* Spreads the data across the whole column, edge to edge. */
 .mapview-fs-weather .session-weather-card {
     width: 100%;
     justify-content: space-between;
@@ -970,11 +970,11 @@ img.emoji {
 }
 
 /* ---- MAP CONTROLS (Customize table + Full screen) ----
-   Esquina inferior derecha del panel del mapa, como en YouTube. Una sola
-   cápsula con los dos botones, separados por una línea finita, con el mismo
-   lenguaje que el cartel de estado de pista (esquina de enfrente, misma
-   altura) y la brújula: fondo oscuro translúcido, borde fino, sombra. Solo
-   íconos; los tooltips los ponen el HTML y live.js. */
+   Bottom-right corner of the map panel, like YouTube. A single
+   capsule with both buttons, separated by a thin line, with the same
+   language as the track status sign (opposite corner, same
+   height) and the compass: a translucent dark background, a thin border, a shadow. Icons
+   only; the tooltips come from the HTML and live.js. */
 .live-map-controls {
     position: absolute;
     right: 16px;
@@ -991,8 +991,8 @@ img.emoji {
     transition: opacity 0.4s ease;
 }
 
-/* Sin movimiento por unos segundos (initControlsAutoHide() en live.js):
-   se desvanecen y dejan de recibir clics hasta que el mouse se mueva. */
+/* No movement for a few seconds (initControlsAutoHide() in live.js):
+   they fade out and stop receiving clicks until the mouse moves. */
 .live-map-controls.is-idle {
     opacity: 0;
     pointer-events: none;
@@ -1014,7 +1014,7 @@ img.emoji {
     transition: background 0.15s ease, color 0.15s ease;
 }
 
-/* Línea finita entre los dos botones. */
+/* Thin line between the two buttons. */
 .live-ctrl-btn + .live-ctrl-btn {
     border-left: 1px solid rgba(255,255,255,0.12);
 }
@@ -1025,7 +1025,7 @@ img.emoji {
     background: rgba(255,255,255,0.08);
 }
 
-/* Customize abierto: ícono rojo con un fondo rojizo suave. */
+/* Customize open: red icon with a soft reddish background. */
 .live-view-btn[aria-expanded="true"] {
     color: var(--primary-red, #e10600);
     background: rgba(225,6,0,0.14);
@@ -1043,16 +1043,16 @@ img.emoji {
     flex-shrink: 0;
 }
 
-/* Full screen: el ícono se da vuelta mientras está activo. */
+/* Full screen: the icon flips while active. */
 .live-fs-btn .icon-collapse { display: none; }
 .live-fs-btn.is-fullscreen .icon-expand { display: none; }
 .live-fs-btn.is-fullscreen .icon-collapse { display: block; }
 
 /* ---- CUSTOMIZE TABLE PANEL ----
-   Tapa la columna derecha entera (mapa + Race Control, y también los
-   botones: se cierra con Done, la X o Esc), así la tabla sigue a la vista
-   y cada cambio se ve en vivo. En pantallas angostas pasa a ser una hoja
-   fija desde abajo. */
+   Covers the whole right column (map + Race Control, and also the
+   buttons: it closes with Done, the X or Esc), so the table stays in view
+   and every change shows live. On narrow screens it becomes a sheet
+   fixed from the bottom. */
 .live-view-panel {
     position: absolute;
     top: 0;
@@ -1075,7 +1075,7 @@ img.emoji {
     outline: none;
 }
 
-/* Entrada suave al abrir (se desliza un poco desde la derecha). */
+/* A soft entrance on open (it slides in a little from the right). */
 .live-view-panel:not([hidden]) {
     animation: lvp-enter 0.18s ease-out;
 }
@@ -1085,8 +1085,8 @@ img.emoji {
     to   { opacity: 1; transform: none; }
 }
 
-/* Salida: el camino inverso, un poco más rápida. live.js oculta el panel
-   recién cuando termina (ver close() en initViewPanel). */
+/* Exit: the reverse path, a bit faster. live.js hides the panel
+   only when it ends (see close() in initViewPanel). */
 .live-view-panel.is-closing {
     animation: lvp-exit 0.15s ease-in forwards;
     pointer-events: none;
@@ -1102,7 +1102,7 @@ img.emoji {
     .live-view-panel.is-closing { animation: none; }
 }
 
-/* Encabezado: título + "Changes apply instantly" y la X. */
+/* Header: title + "Changes apply instantly" and the X. */
 .lvp-head {
     display: flex;
     align-items: center;
@@ -1156,7 +1156,7 @@ img.emoji {
     height: 18px;
 }
 
-/* Cuerpo con scroll propio: tarjetas agrupadas por tema. */
+/* Body with its own scroll: cards grouped by topic. */
 .lvp-body {
     flex: 1 1 auto;
     min-height: 0;
@@ -1187,8 +1187,8 @@ img.emoji {
     border-radius: 12px;
 }
 
-/* Fila: nombre a la izquierda, interruptor (o candado) a la derecha. Toda
-   la fila es clickeable. */
+/* Row: name on the left, toggle (or lock) on the right. The whole
+   row is clickable. */
 .lvp-row {
     position: relative;
     display: flex;
@@ -1251,8 +1251,8 @@ img.emoji {
     height: 15px;
 }
 
-/* Interruptor: el checkbox real queda invisible pero enfocable; .lvp-switch
-   es el dibujo (pista + perilla). */
+/* Toggle: the real checkbox stays invisible but focusable; .lvp-switch
+   is the drawing (track + knob). */
 .lvp-switch-input {
     position: absolute;
     opacity: 0;
@@ -1302,7 +1302,7 @@ img.emoji {
     outline-offset: 2px;
 }
 
-/* Opción de formato debajo de su fila (p. ej. el estilo de Team). */
+/* Format option below its row (e.g. the Team style). */
 .lvp-option {
     padding: 10px 14px 14px;
     background: rgba(0,0,0,0.14);
@@ -1319,7 +1319,7 @@ img.emoji {
     color: rgba(255,255,255,0.5);
 }
 
-/* Botones segmentados: una pista oscura con la opción elegida resaltada. */
+/* Segmented buttons: a dark track with the chosen option highlighted. */
 .lvp-segmented {
     display: flex;
     gap: 2px;
@@ -1374,8 +1374,8 @@ img.emoji {
     outline-offset: -2px;
 }
 
-/* TV sync: la fila lleva la explicación abajo y el control − / + a la
-   derecha. */
+/* TV sync: the row has the explanation below and the − / + control on the
+   right. */
 .lvp-row--stacked {
     align-items: center;
 }
@@ -1452,7 +1452,7 @@ img.emoji {
     background: rgba(255,255,255,0.06);
 }
 
-/* Pie: "Reset to default" como texto, "Done" como botón principal. */
+/* Footer: "Reset to default" as text, "Done" as the primary button. */
 .lvp-foot {
     display: flex;
     align-items: center;
@@ -1521,18 +1521,18 @@ img.emoji {
     }
 }
 
-/* Ni el valor ni la etiqueta se parten nunca ("1.5 km/h", "WIND SPEED"). */
+/* Neither the value nor the label ever wraps ("1.5 km/h", "WIND SPEED"). */
 .mapview-fs-weather .swc-stat-value,
 .mapview-fs-weather .swc-stat-label {
     white-space: nowrap;
 }
 
-/* Con valores de 20px y etiquetas de 14px, los 5 datos en fila necesitan
-   ~560px, y la columna del mapa (31% del ancho) recién llega a eso cerca
-   de los 1900px. Por debajo pasan a 3 columnas en dos filas, con el ícono
-   del cielo a la izquierda ocupando las dos. Columnas "auto" (del ancho
-   de su contenido) y no iguales: con 1fr, "WIND SPEED" se pisaba con la
-   columna de al lado. */
+/* With 20px values and 14px labels, the 5 items in a row need
+   ~560px, and the map column (31% of the width) only reaches that around
+   1900px. Below that they switch to 3 columns in two rows, with the sky
+   icon on the left spanning both. "auto" columns (as wide
+   as their content) and not equal ones: with 1fr, "WIND SPEED" overlapped the
+   column next to it. */
 @media (min-width: 901px) and (max-width: 1880px) {
     .mapview-fs-weather .swc-stats {
         display: grid;
@@ -1542,8 +1542,8 @@ img.emoji {
     }
 }
 
-/* Pantallas más chicas: todo baja en la misma proporción (valor/etiqueta)
-   para que las dos filas sigan entrando en la columna. */
+/* Smaller screens: everything scales down in the same proportion (value/label)
+   so the two rows still fit in the column. */
 @media (max-width: 1400px) {
     .mapview-fs-weather .swc-stat-value { font-size: 18px; }
     .mapview-fs-weather .swc-stat-label { font-size: 12px; }
@@ -1554,16 +1554,16 @@ img.emoji {
     .mapview-fs-name { font-size: 18px; }
     .mapview-fs-weather .swc-stat-value { font-size: 16px; }
     .mapview-fs-weather .swc-stat-label { font-size: 11px; }
-    /* Menos aire alrededor del ícono del cielo para que las dos columnas
-       de etiquetas largas (WIND SPEED / WIND DIR) no se toquen. */
+    /* Less space around the sky icon so the two columns
+       of long labels (WIND SPEED / WIND DIR) don't touch. */
     .mapview-fs-weather .session-weather-card { gap: 12px; }
     .mapview-fs-weather .swc-condition { padding-right: 12px; }
 }
 
 /* ---- PANELS ROW ----
-   Dos columnas que llenan el alto restante entero — sin gap, sin
-   max-height, sin espacio muerto abajo. La única separación es el borde
-   izquierdo del panel del mapa. */
+   Two columns that fill the entire remaining height, with no gap, no
+   max-height, no dead space at the bottom. The only separation is the map
+   panel's left border. */
 .mapview-panels-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--app-side-col);
@@ -1581,7 +1581,7 @@ img.emoji {
 }
 
 .mapview-panel--map {
-    position: relative;   /* ancla de los botones y del panel Customize */
+    position: relative;   /* anchor for the buttons and the Customize panel */
     background: var(--app-panel);
     border-left: 1px solid var(--app-line);
 }
@@ -1598,41 +1598,41 @@ img.emoji {
     padding: 0;
 }
 
-/* height:100% reparte el alto sobrante entre las filas en vez de dejar un
-   hueco muerto abajo del último piloto (si el contenido no entra, la tabla
-   crece igual y el wrap scrollea como siempre). */
+/* height:100% spreads the leftover height across the rows instead of leaving a
+   dead gap below the last driver (if the content doesn't fit, the table
+   grows anyway and the wrap scrolls as always). */
 .mapview-panel--table .live-table {
     border-collapse: collapse;
     border-spacing: 0;
     height: 100%;
 }
 
-/* Con las filas estiradas, las barras de microsectores pinchadas al tope
-   de la fila quedaban lejísimo de su tiempo (parecían de la fila de
-   arriba). Acá se anclan justo encima del número, no al borde. */
+/* With stretched rows, the mini-sector bars pinned to the top
+   of the row ended up far from their time (they looked like they belonged to the row
+   above). Here they're anchored right above the number, not to the edge. */
 .mapview-panel--table .live-microsectors {
     top: 50%;
     transform: translateY(-16px);
 }
 
-/* Solo microsectores (sin tiempos): las barras vuelven al flujo normal y
-   quedan centradas en la fila, más anchas para que se lean solas. */
+/* Mini-sectors only (no times): the bars go back to normal flow and
+   are centered in the row, wider so they read on their own. */
 .mapview-panel--table .live-sector-cell--micro-only .live-microsectors {
     position: static;
     transform: none;
 }
 
-/* Barras verticales: igual de finas que junto al tiempo (~5px, lo que
-   mide cada una repartida sobre el ancho del número) y tan altas como el
-   texto de la fila (16px). */
+/* Vertical bars: as thin as next to the time (~5px, what
+   each one measures spread over the number's width) and as tall as the
+   row's text (16px). */
 .mapview-panel--table .live-sector-cell--micro-only .live-microsector {
     flex: 0 0 auto;
     width: 5px;
     height: 16px;
 }
 
-/* Header pegado al tope del panel (no del viewport) y a la misma altura
-   de fila que el resto de la tabla. */
+/* Header stuck to the top of the panel (not the viewport) and at the same row
+   height as the rest of the table. */
 .mapview-panel--table .live-table thead th {
     position: sticky;
     top: 0;
@@ -1659,14 +1659,14 @@ img.emoji {
 }
 
 /* ---- RACE CONTROL ----
-   Debajo del mapa, en la misma columna: ~40% del alto, con scroll propio.
-   El más nuevo arriba (renderRaceControl() en live.js). */
+   Below the map, in the same column: ~40% of the height, with its own scroll.
+   Newest on top (renderRaceControl() in live.js). */
 .race-control {
     flex: 0 0 40%;
     min-height: 0;
     overflow-y: auto;
     border-top: 1px solid var(--app-line);
-    /* Mismo fondo que la tabla (su fila "negra"); ver ZEBRA más abajo. */
+    /* Same background as the table (its "black" row); see ZEBRA below. */
     background: var(--app-bg);
     scrollbar-width: none;
 }
@@ -1694,14 +1694,14 @@ img.emoji {
     font-family: 'F1-Regular', sans-serif;
 }
 
-/* Filas intercaladas negro / gris, los mismos colores que la tabla de
-   posiciones (ZEBRA ROWS). Va por posición en la lista, así que cuando
-   entra un mensaje nuevo arriba el patrón se reacomoda solo. */
+/* Alternating black / grey rows, the same colors as the standings
+   table (ZEBRA ROWS). It goes by position in the list, so when
+   a new message arrives on top the pattern rearranges itself. */
 .rc-item:nth-child(even) {
     background: rgba(255,255,255,0.045);
 }
 
-/* Recién llegado: arranca resaltado y se apaga solo. */
+/* Just arrived: starts highlighted and fades by itself. */
 .rc-item.is-new {
     animation: rc-flash 4s ease-out;
 }
@@ -1773,9 +1773,9 @@ img.emoji {
     color: var(--text-dim);
 }
 
-/* Tabla sin datos ("No session data yet" y los avisos de conexión): mismo
-   estilo que el vacío de Race Control, arriba a la izquierda en vez de
-   centrado en el medio de la tabla (results.css lo centra). */
+/* Table without data ("No session data yet" and the connection notices): same
+   style as the empty Race Control, top left instead of
+   centered in the middle of the table (results.css centers it). */
 .live-table td.results-empty {
     height: auto;
     padding: 16px;
@@ -1788,8 +1788,8 @@ img.emoji {
 }
 
 /* ---- NARROW SCREENS ----
-   Tabla y mapa lado a lado no entran: se apilan (tabla arriba, mapa
-   abajo) y la página scrollea normal en vez de encajar en la ventana. */
+   Table and map side by side don't fit: they stack (table on top, map
+   below) and the page scrolls normally instead of fitting the window. */
 @media (max-width: 900px) {
     .live-app {
         position: static;
@@ -1862,7 +1862,7 @@ img.emoji {
         height: auto;
     }
 
-    /* Dentro de un wrap con scroll horizontal el sticky no sirve de nada. */
+    /* Inside a horizontally scrolling wrap, sticky is useless. */
     .mapview-panel--table .live-table thead th {
         position: static;
     }
@@ -1890,23 +1890,23 @@ img.emoji {
     .tyre-icon-fallback { width: 17px; height: 17px; font-size: 10px; }
 }
 
-/* ---- MAP + RACE CONTROL: el mapa, con lo justo ----
-   Con Race Control visible, el recuadro del mapa deja de estirarse a todo
-   el alto disponible (quedaban franjas vacías enormes arriba y abajo de la
-   pista) y mide lo que mide la pista: el SVG vuelve al flujo normal con
-   height:auto, así su viewBox fija la proporción. Abajo queda solo la
-   franja para los botones y el aviso de posiciones estimadas. Race Control
-   se lleva el resto de la columna. Tope de 60vh por si un circuito es muy
-   alargado. Va al final para pisar también la altura fija del celular. */
+/* ---- MAP + RACE CONTROL: the map, just as big as needed ----
+   With Race Control visible, the map box stops stretching to the whole
+   available height (there were huge empty bands above and below the
+   track) and takes the track's size: the SVG goes back to normal flow with
+   height:auto, so its viewBox sets the ratio. Below there's only the
+   strip for the buttons and the estimated positions notice. Race Control
+   takes the rest of the column. Capped at 60vh in case a circuit is very
+   elongated. It goes last so it also overrides the fixed height on phones. */
 .mapview-panel--map.has-race-control .circuit-map-wrap.has-track {
     flex: 0 0 auto;
     height: auto;
     padding: 16px 20px 64px;
 }
 
-/* El wrap es flex centrado: sin ancho explícito, el contenedor se
-   encogería al ancho por defecto de un SVG (300px) y la pista saldría
-   chiquita en medio de la columna. */
+/* The wrap is a centered flex: without an explicit width, the container
+   would shrink to an SVG's default width (300px) and the track would come out
+   tiny in the middle of the column. */
 .mapview-panel--map.has-race-control .circuit-map-wrap.has-track .circuit-position-overlay {
     position: static;
     flex: 1 1 auto;
@@ -1923,9 +1923,9 @@ img.emoji {
 }
 
 /* ---- PANELS ON/OFF (Customize → Panels) ----
-   Track map apagado: del mapa queda solo una franja finita al pie de la
-   columna con los botones (Customize / Full screen), para poder volver a
-   prenderlo. Race Control, si está, se lleva todo el alto. */
+   Track map off: all that's left of the map is a thin strip at the bottom of the
+   column with the buttons (Customize / Full screen), so it can be turned back
+   on. Race Control, if present, takes the full height. */
 .mapview-panel--map.map-off .circuit-map-wrap,
 .mapview-panel--map.map-off .circuit-map-wrap.has-track {
     order: 2;
@@ -1945,10 +1945,10 @@ img.emoji {
     border-top: none;
 }
 
-/* Mapa y Race Control apagados: la tabla ocupa todo el ancho. La columna
-   derecha pasa a ser una capa transparente encima del costado derecho de
-   la tabla, solo para los botones (abajo a la derecha) y para el panel
-   Customize cuando se abre. */
+/* Map and Race Control off: the table takes the full width. The right
+   column becomes a transparent layer over the right side of
+   the table, only for the buttons (bottom right) and for the
+   Customize panel when it opens. */
 .live-app.no-side .mapview-panels-row {
     position: relative;
     grid-template-columns: minmax(0, 1fr);
@@ -1976,8 +1976,8 @@ img.emoji {
 }
 
 @media (max-width: 900px) {
-    /* En el celular la columna ya va debajo de la tabla: nada que superponer,
-       solo la franja con los botones. */
+    /* On phones the column already sits below the table: nothing to overlay,
+       just the strip with the buttons. */
     .live-app.no-side .mapview-panel--map {
         position: static;
         width: auto;
@@ -1985,7 +1985,7 @@ img.emoji {
     }
 }
 
-/* Chip "DELAY 30s" al lado del reloj de sesión (solo con demora > 0). */
+/* "DELAY 30s" chip next to the session clock (only with a delay > 0). */
 .delay-indicator {
     display: inline-flex;
     align-items: center;
@@ -2006,11 +2006,11 @@ img.emoji {
     display: none;
 }
 
-/* ---- WIND ON THE MAP (updateWindOverlay() en live.js) ----
-   Líneas finitas que cruzan el mapa hacia donde sopla el viento. El
-   contenedor se gira al ángulo del viento y es más grande que el mapa, así
-   al girarlo no quedan esquinas vacías; las líneas corren de izquierda a
-   derecha dentro de él. Solo aparece con viento fuerte. */
+/* ---- WIND ON THE MAP (updateWindOverlay() in live.js) ----
+   Thin lines crossing the map in the direction the wind blows. The
+   container is rotated to the wind angle and is larger than the map, so
+   rotating it leaves no empty corners; the lines run from left to
+   right inside it. It only appears with strong wind. */
 .track-wind {
     position: absolute;
     inset: 0;
@@ -2051,12 +2051,12 @@ img.emoji {
     .track-wind-streak { animation: none; left: 45%; }
 }
 
-/* Brújula, estilo apps de mapas: disco oscuro con anillo fino (como los
-   botones del mapa); el dial (72 marcas y la punta roja) gira hacia el
-   norte del circuito; la N del centro queda siempre derecha.
-   Vive en la esquina de abajo a la derecha, la misma de los botones: solo
-   se ve cuando ellos se esconden solos (.controls-idle, que pone
-   initControlsAutoHide() en live.js) y se desvanece cuando vuelven. */
+/* Compass, map-app style: a dark disc with a thin ring (like the
+   map buttons); the dial (72 ticks and the red tip) turns towards the
+   circuit's north; the N in the center always stays upright.
+   It lives in the bottom-right corner, the same as the buttons: it only
+   shows when they hide by themselves (.controls-idle, set by
+   initControlsAutoHide() in live.js) and fades out when they come back. */
 .track-compass {
     position: absolute;
     right: 16px;
@@ -2113,7 +2113,7 @@ img.emoji {
     dominant-baseline: central;
 }
 
-/* Mapa apagado: tampoco viento ni brújula. */
+/* Map off: no wind or compass either. */
 .mapview-panel--map.map-off .track-wind,
 .mapview-panel--map.map-off .track-compass {
     display: none;
@@ -2121,8 +2121,8 @@ img.emoji {
 
 /* ---- MAP ANNOTATIONS (MAP ANNOTATIONS en live.js) ---- */
 
-/* Bandera amarilla en un tramo de comisarios: el tramo se pinta encima de
-   la pista y titila; doble amarilla, más rápido. */
+/* Yellow flag in a marshal sector: the stretch is painted over
+   the track and blinks; double yellow, faster. */
 .track-flag-sector {
     fill: none;
     stroke: rgb(255,211,1);
@@ -2140,7 +2140,7 @@ img.emoji {
     50%      { opacity: 0.25; }
 }
 
-/* SC / VSC / roja: la pista entera se tiñe con un latido suave. */
+/* SC / VSC / red: the whole track is tinted with a soft pulse. */
 .track-status-line {
     fill: none;
     stroke-linejoin: round;
@@ -2165,8 +2165,8 @@ img.emoji {
     50%      { opacity: 0.45; }
 }
 
-/* Estado de pista: esquina de abajo a la izquierda, a la altura de los
-   botones de la otra esquina (updateTrackStatus() en live.js). */
+/* Track status: bottom-left corner, level with the
+   buttons in the other corner (updateTrackStatus() in live.js). */
 .track-status-banner {
     position: absolute;
     left: 16px;
@@ -2190,7 +2190,7 @@ img.emoji {
 
 .track-status-banner[hidden] { display: none; }
 
-/* Sectores afectados ("SECTOR 11"), más livianos que el nombre. */
+/* Affected sectors ("SECTOR 11"), lighter than the name. */
 .track-status-banner-detail {
     font-family: 'F1-Regular', sans-serif;
     font-weight: 600;
@@ -2202,7 +2202,7 @@ img.emoji {
 .track-status-banner--yellow { background: rgb(255,211,1); color: #111; }
 .track-status-banner--red    { background: rgb(225,20,20); color: #fff; }
 
-/* Bandera a cuadros: fondo blanco con un cuadradito a cuadros adelante. */
+/* Chequered flag: white background with a small chequered square in front. */
 .track-status-banner--chequered { background: #fff; color: #111; }
 
 .track-status-banner--chequered::before {
@@ -2214,8 +2214,8 @@ img.emoji {
     box-shadow: 0 0 0 1px #111;
 }
 
-/* Peleas en pista: franja blanca sobre el tramo de pista entre los dos
-   autos (el grosor lo pone live.js en px de pantalla). */
+/* Battles on track: a white band over the stretch of track between the two
+   cars (live.js sets its width in screen px). */
 .track-battle {
     fill: none;
     stroke: rgba(255,255,255,0.85);
@@ -2223,7 +2223,7 @@ img.emoji {
     stroke-linejoin: round;
 }
 
-/* Autos: se pueden señalar (tooltip) y cliquear (seguir). */
+/* Cars: they can be pointed at (tooltip) and clicked (follow). */
 .track-car {
     pointer-events: auto;
     cursor: pointer;
@@ -2237,7 +2237,7 @@ img.emoji {
     transition: r 0.2s ease;
 }
 
-/* Seguido: anillo blanco alrededor del punto. Los demás, atenuados. */
+/* Followed: a white ring around the dot. The rest, dimmed. */
 .track-car.is-followed .track-car-dot {
     stroke: #fff;
 }
@@ -2246,8 +2246,8 @@ img.emoji {
     opacity: 0.3;
 }
 
-/* Fila del piloto seguido en la tabla: franja del color de acento a la
-   izquierda y fondo apenas más claro. */
+/* The followed driver's row in the table: an accent-colored band on the
+   left and a slightly lighter background. */
 .live-table tbody tr.is-followed td {
     background: rgba(255,255,255,0.1);
 }
@@ -2256,7 +2256,7 @@ img.emoji {
     box-shadow: inset 3px 0 0 var(--primary-red, #e10600);
 }
 
-/* Tooltip de un auto: arriba del punto, con una flechita abajo. */
+/* A car's tooltip: above the dot, with a small arrow below. */
 .track-tooltip {
     position: absolute;
     z-index: 7;

@@ -28,9 +28,9 @@ function getCircuitLayout(circuit, year) {
 }
 
 // ── Team ──────────────────────────────────────────────────────────────────
-// resolveTeamId() / resolveTeam() viven en shared/teams.js (cargado antes):
-// es el único lugar que sabe pasar de "Red Bull", "red-bull" o
-// "red-bull-racing-honda-rbpt" al ID real de teams.json.
+// resolveTeamId() / resolveTeam() live in shared/teams.js (loaded first):
+// it's the only place that knows how to go from "Red Bull", "red-bull" or
+// "red-bull-racing-honda-rbpt" to the real teams.json ID.
 
 function teamLogoPath(teamId, basePath = '.') {
     return teamId ? `${basePath}/img/teams/${teamId}-logo.png` : null;

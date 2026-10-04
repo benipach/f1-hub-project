@@ -1,5 +1,3 @@
-// no se si sigue funcionando
-
 // Local mirror of backend state: { DriverList, TimingData, TimingAppData }
 let state = {};
 
@@ -85,9 +83,9 @@ const TEAM_COLOR_MAP = {
     'Cadillac':        'rgb(170, 170, 173)',
 };
 
-// Circuit slug for the current GP. El backend ya lo manda en CurrentGP
-// (lo saca del archivo de temporada), así que eso manda; CIRCUIT_MAP queda
-// solo como fallback para snapshots viejos que no lo traigan.
+// Circuit slug for the current GP. The backend already sends it in CurrentGP
+// (taken from the season file), so that wins; CIRCUIT_MAP stays
+// only as a fallback for old snapshots that don't include it.
 function currentCircuitId() {
     const gp = state.CurrentGP;
     if (!gp) return null;
@@ -130,14 +128,14 @@ function formatGap(value) {
 }
 
 // ── GAP / INTERVAL ────────────────────────────────────────────────────────
-// En Race/Sprint el feed manda los dos valores sueltos en la línea
-// (GapToLeader / IntervalToPositionAhead.Value). En Qualifying, Sprint
-// Qualifying y Práctica esos campos vienen vacíos: los diffs reales viajan
-// en line.Stats, un dict indexado por segmento (Stats["0"] = Q1/SQ1,
-// ["1"] = Q2, ["2"] = Q3) con TimeDiffToFastest y TimeDifftoPositionAhead
-// (sí, con esa "t" minúscula — así lo manda F1). Verificado contra una
-// captura en vivo; sin esto las columnas Gap e Interval quedaban en blanco
-// toda la clasificación.
+// In Race/Sprint the feed sends both values directly on the line
+// (GapToLeader / IntervalToPositionAhead.Value). In Qualifying, Sprint
+// Qualifying and Practice those fields come empty: the real diffs travel
+// in line.Stats, a dict indexed by segment (Stats["0"] = Q1/SQ1,
+// ["1"] = Q2, ["2"] = Q3) with TimeDiffToFastest and TimeDifftoPositionAhead
+// (yes, with that lowercase "t", that's how F1 sends it). Verified against a
+// live capture; without this the Gap and Interval columns stayed blank
+// for the whole of qualifying.
 function sessionStatsEntry(line) {
     const stats = line && line.Stats;
     if (!stats || typeof stats !== 'object') return null;
@@ -153,10 +151,10 @@ function sessionStatsEntry(line) {
     const preferred = wanted ? stats[wanted] : null;
     if (hasDiff(preferred)) return preferred;
 
-    // El segmento en curso puede no tener diff para este piloto: o quedó
-    // eliminado antes (sus números vivos son los del último segmento que
-    // corrió), o todavía no marcó tiempo. Se busca hacia atrás el último
-    // segmento con datos en vez de mostrar la celda vacía.
+    // The current segment may have no diff for this driver: either they were
+    // knocked out earlier (their live numbers are from the last segment they
+    // ran in), or they haven't set a time yet. Search backwards for the last
+    // segment with data instead of showing an empty cell.
     for (let i = keys.length - 1; i >= 0; i--) {
         const entry = stats[keys[i]];
         if (hasDiff(entry)) return entry;
@@ -170,11 +168,11 @@ function gapToLeaderValue(line) {
     return (stats && stats.TimeDiffToFastest) || line.TimeDiffToFastest || '';
 }
 
-// Texto de la celda Gap. P1 dice "Leader". En Q/SQ/Práctica, si el feed no
-// trae el diff (pasa al principio de la sesión o con capturas incompletas),
-// se calcula a mano: mejor vuelta del piloto menos la del líder. En
-// Race/Sprint no hay fallback — ahí la diferencia de mejores vueltas no es
-// el gap real en pista.
+// Gap cell text. P1 says "Leader". In Q/SQ/Practice, if the feed doesn't
+// include the diff (happens at the start of the session or with incomplete captures),
+// it's computed by hand: the driver's best lap minus the leader's. In
+// Race/Sprint there's no fallback, since there the difference in best laps isn't
+// the real gap on track.
 function gapCellText(line, posNum, leaderBestMs, allowLapFallback) {
     if (posNum === 1) return 'Leader';
     const fromFeed = formatGap(gapToLeaderValue(line));
@@ -193,17 +191,17 @@ function intervalToAheadValue(line) {
         || line.TimeDifftoPositionAhead || '';
 }
 
-// "+1.234" → 1.234 s. null para lo que no es un tiempo (vacío, "+1 LAP").
+// "+1.234" → 1.234 s. null for anything that isn't a time (empty, "+1 LAP").
 function gapSeconds(value) {
     const match = /^\+?\s*(\d+(?:\.\d+)?)$/.exec(String(value || '').trim());
     return match ? Number(match[1]) : null;
 }
 
-// Texto de la celda Interval: diferencia con el auto de adelante. Si el
-// feed no la trae (en Práctica/Qualy suele venir vacía), se calcula:
-//   - Q/SQ/FP: mejor vuelta del piloto menos la del de adelante.
-//   - Race/Sprint: gap al líder del piloto menos el del de adelante (P1
-//     cuenta como 0). Si alguno está a vueltas no hay resta posible.
+// Interval cell text: the difference to the car ahead. If the
+// feed doesn't include it (in Practice/Qualifying it's usually empty), it's computed:
+//   - Q/SQ/FP: the driver's best lap minus that of the car ahead.
+//   - Race/Sprint: the driver's gap to the leader minus that of the car ahead (P1
+//     counts as 0). If either is laps down there's no way to subtract.
 function intervalCellText(line, posNum, aheadLine, allowLapFallback) {
     if (posNum === 1) return 'Leader';
     const fromFeed = formatGap(intervalToAheadValue(line));
@@ -242,12 +240,12 @@ function normalizeTimeValue(value) {
     return null;
 }
 
-// El feed real de F1 manda los sectores en line.Sectors, indexado desde
-// CERO: Sectors["0"] = S1, ["1"] = S2, ["2"] = S3 (verificado contra una
-// captura en vivo del GP de Italia 2026). Antes esto probaba primero la
-// variante 1-based, así que S1 mostraba el tiempo de S2 y S3 quedaba
-// siempre vacío. Sector{n}Time se mantiene arriba porque es la forma que
-// usan los mocks/adaptadores viejos, y ahí el índice sí es 1-based.
+// F1's real feed sends sectors in line.Sectors, indexed from
+// ZERO: Sectors["0"] = S1, ["1"] = S2, ["2"] = S3 (verified against a
+// live capture of the 2026 Italian GP). Previously this tried the
+// 1-based variant first, so S1 showed the S2 time and S3 was
+// always empty. Sector{n}Time is kept above because it's the shape
+// old mocks/adapters use, and there the index is 1-based.
 function getSectorTimeInfo(line, sectorIndex) {
     const zeroBased = String(sectorIndex - 1);
     const candidates = [
@@ -257,15 +255,15 @@ function getSectorTimeInfo(line, sectorIndex) {
         [`LastLapTime`, `Sector${sectorIndex}`],
         ['Sectors', zeroBased, 'Value'],
         ['LastLapTime', 'Sectors', zeroBased, 'Value'],
-        // Al completar la vuelta, F1 vacía Sectors[i].Value y deja el
-        // tiempo en PreviousValue. Sin este fallback, S3 quedaba en "-"
-        // para casi todos los pilotos apenas cruzaban meta.
+        // When the lap is completed, F1 clears Sectors[i].Value and leaves the
+        // time in PreviousValue. Without this fallback, S3 showed "-"
+        // for almost every driver as soon as they crossed the line.
         ['Sectors', zeroBased, 'PreviousValue'],
     ];
 
     for (const path of candidates) {
-        // Un sector sin tiempo llega como "" (string vacío), no ausente —
-        // eso no es un valor, es "todavía no cruzó".
+        // A sector without a time arrives as "" (empty string), not missing:
+        // that's not a value, it means "hasn't crossed yet".
         const value = normalizeTimeValue(getNestedValue(line, path));
         if (value) return { value };
     }
@@ -276,28 +274,28 @@ function getSectorTimes(line) {
     return [1, 2, 3].map((sectorIndex) => getSectorTimeInfo(line, sectorIndex));
 }
 
-// ── S1-S3 DE LA TABLA: SIEMPRE DE UNA MISMA VUELTA ────────────────────────
-// getSectorTimes() completa con PreviousValue cualquier sector sin tiempo,
-// así que mezclaba vueltas: con el piloto en la vuelta de entrada a boxes,
-// S1 y S2 eran de esa vuelta y S3 de la vuelta rápida anterior (y no
-// sumaban la Last Lap). Para el mapa da igual (solo estima el ritmo), pero
-// en la tabla se muestra una sola vuelta:
-//   - Vuelta en curso (algún Sectors[i].Value con tiempo): solo los
-//     sectores ya hechos en esta vuelta, en orden desde S1; el resto vacío.
-//     Al cruzar la meta F1 NO vacía los sectores (verificado en la Qualy de
-//     Bakú 2026): los tres siguen con tiempo, que es la vuelta terminada,
-//     hasta que el S1 de la vuelta siguiente pisa el primero.
-//   - Todos vacíos: los tres PreviousValue, solo si suman la Last Lap. Si
-//     no suman, no se muestra nada antes que mezclar.
-// `live`: el sector que se está corriendo ahora (sus microsectores van en
-// vivo); los que vienen después todavía no se corrieron en esta vuelta.
-// null si se muestra la vuelta terminada.
+// ── TABLE S1-S3: ALWAYS FROM THE SAME LAP ─────────────────────────────────
+// getSectorTimes() fills any sector without a time with PreviousValue,
+// so it mixed laps: with the driver on their in-lap,
+// S1 and S2 were from that lap and S3 from the previous fast lap (and they didn't
+// add up to the Last Lap). For the map it doesn't matter (it only estimates pace), but
+// the table shows a single lap:
+//   - Lap in progress (some Sectors[i].Value with a time): only the
+//     sectors already done on this lap, in order from S1; the rest empty.
+//     When crossing the line F1 does NOT clear the sectors (verified in the
+//     2026 Baku Qualifying): all three keep their time, which is the finished lap,
+//     until S1 of the next lap overwrites the first one.
+//   - All empty: the three PreviousValue, only if they add up to the Last Lap. If
+//     they don't, nothing is shown rather than mixing laps.
+// `live`: the sector being driven right now (its mini-sectors update
+// live); the ones after it haven't been driven on this lap yet.
+// null if the finished lap is shown.
 const LAP_SUM_TOLERANCE_MS = 250;
 
 function displayedSectors(line) {
     const sectors = line && line.Sectors;
     if (!sectors || typeof sectors !== 'object') {
-        // Mocks/adaptadores viejos sin Sectors: como antes.
+        // Old mocks/adapters without Sectors: as before.
         return { times: getSectorTimes(line).map((s) => (s ? s.value : null)), live: null };
     }
     const node = (i) => {
@@ -325,27 +323,27 @@ function displayedSectors(line) {
     return { times: [null, null, null], live: null };
 }
 
-// ── COLORES DE SECTORES Y ÚLTIMA VUELTA ───────────────────────────────────
-// Violeta = mejor de todos, verde = mejor personal, amarillo = ninguno.
-// Antes se leían los flags OverallFastest/PersonalFastest del feed, pero
-// nunca se miraban los de los sectores (se leía directo el string del
-// tiempo, sin el objeto que trae los flags) y todo salía amarillo. Además
-// en qualy no está confirmado que los flags del feed se reinicien entre
-// segmentos, y la F1 oficial arranca de cero en cada uno.
+// ── SECTOR AND LAST LAP COLORS ────────────────────────────────────────────
+// Purple = best overall, green = personal best, yellow = neither.
+// Previously the feed's OverallFastest/PersonalFastest flags were read, but
+// the sector ones were never checked (the time string was read directly,
+// without the object that carries the flags) and everything came out yellow. Also,
+// in qualifying it isn't confirmed that the feed's flags reset between
+// segments, and official F1 timing starts from scratch in each one.
 //
-// Ahora se calcula acá: por cada período (la sesión, o cada Q1/Q2/Q3) se
-// guarda el mejor tiempo de cada piloto y el mejor general, por sector y
-// por vuelta, con todos los tiempos que se van viendo. Al pasar a Q2/Q3 se
-// reinicia todo, y lo que quedó en pantalla de Q1 ("stale") se muestra en
-// amarillo y no cuenta hasta que el piloto marque un tiempo nuevo en ese
-// casillero. Lo mismo con los microsectores: el feed solo manda el color
-// (no el tiempo), así que ahí lo único posible es apagar a amarillo los
-// que quedaron del segmento anterior.
+// Now it's computed here: for each period (the session, or each Q1/Q2/Q3)
+// each driver's best time and the overall best are stored, per sector and
+// per lap, with every time seen along the way. Moving to Q2/Q3
+// resets everything, and whatever was left on screen from Q1 ("stale") shows in
+// yellow and doesn't count until the driver sets a new time in that
+// cell. Same with mini-sectors: the feed only sends the color
+// (not the time), so the only option there is to dim to yellow the ones
+// left over from the previous segment.
 //
-// Si la página se abre con la sesión (o el segmento) empezada, no vio los
-// tiempos anteriores: para la vuelta se completa con la mejor vuelta del
-// feed (ver periodBestLapValue) y los sectores usan los flags de F1 (ver
-// feedSectorClass) hasta el próximo segmento.
+// If the page opens with the session (or segment) already started, it didn't see the
+// earlier times: for the lap it falls back to the feed's best lap
+// (see periodBestLapValue) and sectors use F1's flags (see
+// feedSectorClass) until the next segment.
 const TIMING_SLOTS = ['s1', 's2', 's3', 'lap'];
 let timingBests = null;
 
@@ -360,8 +358,8 @@ function segmentsSignature(line, sectorIndex) {
     return getSegments(line, sectorIndex).join(',');
 }
 
-// Lo que cada piloto tiene en pantalla al cambiar de segmento: esos tiempos
-// y barras son del segmento anterior.
+// What each driver has on screen when the segment changes: those times
+// and bars are from the previous segment.
 function staleSnapshot(lines) {
     const stale = {};
     for (const [num, line] of Object.entries(lines)) {
@@ -395,8 +393,8 @@ function recordBest(num, slot, ms) {
     if (!(timingBests.overall[slot] <= ms)) timingBests.overall[slot] = ms;
 }
 
-// Se llama con cada mensaje del relay que se aplica (no solo en render),
-// así no se pierde un tiempo que el feed pisa enseguida.
+// Called with every relay message that gets applied (not only on render),
+// so a time the feed overwrites right away isn't lost.
 function updateTimingBests() {
     const lines = state.TimingData && state.TimingData.Lines;
     if (!lines) return;
@@ -418,7 +416,7 @@ function updateTimingBests() {
             const value = values[slot];
             if (stale && slot in stale) {
                 if (value === stale[slot]) continue;
-                delete stale[slot]; // cambió: de acá en adelante es de este segmento
+                delete stale[slot]; // changed: from here on it belongs to this segment
             }
             const ms = lapTimeToMs(value);
             if (ms != null) recordBest(num, slot, ms);
@@ -428,25 +426,25 @@ function updateTimingBests() {
                 if (stale.segments[i] !== segmentsSignature(line, Number(i))) delete stale.segments[i];
             }
         }
-        // La mejor vuelta real del piloto, no solo lo que hay en pantalla
-        // (si no, abriendo la página tarde, una Last Lap cualquiera salía
-        // violeta aunque otro tuviera una Best Lap más rápida).
+        // The driver's real best lap, not just what's on screen
+        // (otherwise, opening the page late, any Last Lap came out
+        // purple even if someone else had a faster Best Lap).
         const bestMs = lapTimeToMs(periodBestLapValue(line, part, timingBests.sawStart));
         if (bestMs != null) recordBest(num, 'lap', bestMs);
     }
 }
 
-// ── PILOTOS QUE YA RECIBIERON LA BANDERA A CUADROS ────────────────────────
-// La regla y el cálculo viven en el relay (server/finishers.js): cada piloto
-// queda congelado con la vuelta que completa en su primer cruce de meta
-// después de la bandera a cuadros (hora del feed, no reloj local), igual
-// para todos. El relay ve todos los cruces aunque la página se abra o
-// recargue tarde, y lo manda como el tema FinishedLines.
+// ── DRIVERS WHO HAVE ALREADY TAKEN THE CHEQUERED FLAG ─────────────────────
+// The rule and the calculation live in the relay (server/finishers.js): each driver
+// is frozen with the lap they complete on their first line crossing
+// after the chequered flag (feed time, not local clock), the same
+// for everyone. The relay sees every crossing even if the page opens or
+// reloads late, and sends it as the FinishedLines topic.
 //
-// Acá solo se usa: para esos pilotos, Last Lap, Best Lap, S1-S3,
-// microsectores y vueltas salen de la fila congelada. Posición, gap y estado
-// siguen en vivo. En qualy se libera todo con la luz verde del segmento
-// siguiente (FinishedLines es por período).
+// Here it's only consumed: for those drivers, Last Lap, Best Lap, S1-S3,
+// mini-sectors and laps come from the frozen row. Position, gap and status
+// stay live. In qualifying everything is released with the next segment's
+// green light (FinishedLines is per period).
 function relayFinishedLines() {
     const finished = state.FinishedLines;
     if (!finished || typeof finished !== 'object') return null;
@@ -460,7 +458,7 @@ function finishedLineFor(num) {
     return (fromRelay && fromRelay[num]) || null;
 }
 
-// La línea que muestra la tabla: la congelada para quien ya terminó.
+// The line the table shows: the frozen one for drivers who have finished.
 function shownTimingLine(num, line) {
     const frozen = finishedLineFor(num);
     return frozen ? { ...line, ...frozen } : line;
@@ -470,13 +468,13 @@ function hasTakenChequered(num) {
     return !!finishedLineFor(num);
 }
 
-// Mejor vuelta del piloto en el período actual, según el feed.
-// - En qualy F1 manda BestLapTimes con una entrada por segmento ([0] = Q1,
-//   [1] = Q2, [2] = Q3): si está, es exacta.
-// - Si no, BestLapTime (la de la columna Best Lap). En Q2/Q3 puede ser de
-//   Q1, así que ahí solo se usa si la página no vio arrancar el segmento
-//   (se abrió o recargó con el segmento empezado): sin eso no hay otra
-//   referencia. Si lo vio arrancar, ya vio todas las vueltas del segmento.
+// The driver's best lap in the current period, according to the feed.
+// - In qualifying F1 sends BestLapTimes with one entry per segment ([0] = Q1,
+//   [1] = Q2, [2] = Q3): if present, it's exact.
+// - Otherwise, BestLapTime (the one in the Best Lap column). In Q2/Q3 it may be from
+//   Q1, so there it's only used if the page didn't see the segment start
+//   (it was opened or reloaded with the segment underway): without that there's no other
+//   reference. If it saw the start, it has already seen every lap of the segment.
 function periodBestLapValue(line, part, sawStart) {
     const perPart = line.BestLapTimes;
     if (part >= 1 && perPart && typeof perPart === 'object') {
@@ -487,18 +485,18 @@ function periodBestLapValue(line, part, sawStart) {
     return (line.BestLapTime && line.BestLapTime.Value) || null;
 }
 
-// ¿Ya hay algún tiempo en pantalla? Si al crear el registro de mejores no
-// había ninguno, la página ve la sesión desde el arranque y todo lo que
-// compara es completo.
+// Is there any time on screen yet? If there was none when the bests record
+// was created, the page is seeing the session from the start and everything it
+// compares is complete.
 function hasAnyTimes(lines) {
     return Object.values(lines).some((line) => line && typeof line === 'object'
         && TIMING_SLOTS.some((slot) => slotValues(line)[slot]));
 }
 
-// Color de un sector según los flags que manda F1 en Sectors[i]. Se usa
-// cuando la página no vio el arranque (se abrió o recargó tarde): para los
-// sectores no hay otro dato de los mejores anteriores, y comparar solo lo
-// que hay en pantalla pintaba de verde el sector de cualquiera.
+// A sector's color according to the flags F1 sends in Sectors[i]. Used
+// when the page didn't see the start (it was opened or reloaded late): for
+// sectors there's no other data about earlier bests, and comparing only
+// what's on screen painted anyone's sector green.
 function feedSectorClass(num, sectorIndex) {
     const lines = (state.TimingData && state.TimingData.Lines) || {};
     const node = getNestedValue(lines[num], ['Sectors', String(sectorIndex - 1)]);
@@ -545,8 +543,8 @@ function segmentStatusClass(status) {
     return SEGMENT_STATUS_CLASS[status] ?? 'unknown';
 }
 
-// Mismo indexado 0-based que getSectorTimeInfo (confirmado contra el feed
-// en vivo): Sectors["0"].Segments son las barras de S1.
+// Same 0-based indexing as getSectorTimeInfo (confirmed against the live
+// feed): Sectors["0"].Segments are the S1 bars.
 function getSegments(line, sectorIndex) {
     const zeroBased = String(sectorIndex - 1);
     const candidates = [
@@ -564,8 +562,8 @@ function getSegments(line, sectorIndex) {
     return [];
 }
 
-// stale: barras que quedaron del segmento de qualy anterior (ver
-// updateTimingBests) — el verde y el violeta de ahí ya no valen, van en amarillo.
+// stale: bars left over from the previous qualifying segment (see
+// updateTimingBests); the green and purple from there no longer count, they go yellow.
 function microsectorsHTML(segments, stale = false) {
     if (!segments.length) return '';
     return `<span class="live-microsectors">${segments
@@ -577,35 +575,35 @@ function microsectorsHTML(segments, stale = false) {
         .join('')}</span>`;
 }
 
-// Aviso en las dos tablas cuando todavía no hay NADA que mostrar. Sin
-// esto, con el relay apagado la página se queda para siempre en "Waiting
-// for session data…" y no hay forma de saber que el problema es que
-// server/client.js no está corriendo.
+// Notice in both tables when there's still NOTHING to show. Without
+// this, with the relay down the page stays forever on "Waiting
+// for session data…" and there's no way to tell that the problem is that
+// server/client.js isn't running.
 function setConnectionNotice(text) {
-    if (state.TimingData && state.TimingData.Lines) return; // ya hay datos: no pisar nada
+    if (state.TimingData && state.TimingData.Lines) return; // there's data already: don't overwrite anything
     const tbody = document.getElementById('live-rows-2');
     if (tbody) tbody.innerHTML = `<tr><td colspan="${tableColspan}" class="results-empty">${text}</td></tr>`;
 }
 
-// ── DÓNDE ESTÁ EL RELAY ───────────────────────────────────────────────────
-// Antes esto era 'ws://localhost:8080' fijo, así que la página solo mostraba
-// datos en la misma máquina que corre server/client.js: desde el celular, o
-// desde la versión publicada en GitHub Pages, no cargaba nada.
+// ── WHERE THE RELAY IS ────────────────────────────────────────────────────
+// This used to be a fixed 'ws://localhost:8080', so the page only showed
+// data on the same machine running server/client.js: from a phone, or
+// from the version published on GitHub Pages, nothing loaded.
 //
-// Ahora la URL se resuelve así, en orden:
-//   1. ?relay=... en la URL (queda guardado, así se configura una sola vez
-//      por dispositivo: abrís live.html?relay=... y listo)
-//   2. lo que haya guardado de una visita anterior (localStorage)
-//   3. window.F1_HUB_RELAY_URL, si se define en un <script> antes de este
-//   4. RELAY_URL de acá abajo — la constante a completar con la URL pública
-//      del relay una vez desplegado
-//   5. ws://localhost:8080 cuando la página se abre en local (dev)
+// Now the URL is resolved like this, in order:
+//   1. ?relay=... in the URL (it gets saved, so it's set up once
+//      per device: open live.html?relay=... and that's it)
+//   2. whatever was saved from a previous visit (localStorage)
+//   3. window.F1_HUB_RELAY_URL, if defined in a <script> before this one
+//   4. RELAY_URL below: the constant to fill in with the relay's public URL
+//      once it's deployed
+//   5. ws://localhost:8080 when the page is opened locally (dev)
 //
-// Importante: una página servida por https (GitHub Pages lo es) NO puede
-// abrir un WebSocket ws:// — el browser lo bloquea por mixed content. Por
-// eso normalizeRelayUrl fuerza wss:// en ese caso; el relay tiene que estar
-// detrás de HTTPS (cualquier host tipo Render/Railway/Fly ya lo da hecho, o
-// un túnel tipo cloudflared).
+// Important: a page served over https (GitHub Pages is) CANNOT
+// open a ws:// WebSocket; the browser blocks it as mixed content. That's
+// why normalizeRelayUrl forces wss:// in that case; the relay has to sit
+// behind HTTPS (any host like Render/Railway/Fly provides that already, or
+// a tunnel like cloudflared).
 const RELAY_URL = 'https://f1-hub-relay.onrender.com';
 
 const RELAY_STORAGE_KEY = 'f1hub:relay';
@@ -624,7 +622,7 @@ function normalizeRelayUrl(raw) {
     else if (url.startsWith('https://')) url = 'wss://' + url.slice('https://'.length);
     else if (!url.startsWith('ws://') && !url.startsWith('wss://')) url = 'wss://' + url;
 
-    // Mixed content: desde https solo se puede wss.
+    // Mixed content: from https only wss is allowed.
     if (location.protocol === 'https:' && url.startsWith('ws://')) {
         url = 'wss://' + url.slice('ws://'.length);
     }
@@ -635,7 +633,7 @@ function readStoredRelay() {
     try {
         return localStorage.getItem(RELAY_STORAGE_KEY);
     } catch (err) {
-        return null; // modo incógnito / storage bloqueado
+        return null; // incognito mode / blocked storage
     }
 }
 
@@ -643,7 +641,7 @@ function storeRelay(url) {
     try {
         localStorage.setItem(RELAY_STORAGE_KEY, url);
     } catch (err) {
-        /* no pasa nada: sigue funcionando por esta sesión */
+        /* no problem: it keeps working for this session */
     }
 }
 
@@ -651,8 +649,8 @@ function resolveRelayUrl() {
     const params = new URLSearchParams(location.search);
     const fromQuery = params.get('relay');
 
-    // ?relay= (vacío) borra el override guardado y vuelve al comportamiento
-    // por defecto — la forma de "desconfigurar" un dispositivo.
+    // ?relay= (empty) clears the saved override and goes back to the default
+    // behavior, which is how a device gets "unconfigured".
     if (fromQuery === '') {
         try { localStorage.removeItem(RELAY_STORAGE_KEY); } catch (err) { /* ignorar */ }
     } else if (fromQuery) {
@@ -674,14 +672,14 @@ function resolveRelayUrl() {
 }
 
 // ── BROADCAST DELAY (Customize → TV sync) ─────────────────────────────────
-// Los datos en vivo llegan antes que la imagen de la tele (la transmisión
-// va atrasada unos segundos, más en streaming). Para que la página no
-// "spoilee" un sobrepaso, cada mensaje del relay entra a una cola con su
-// hora de llegada y recién se aplica cuando pasaron los segundos de demora
-// que eligió el usuario. Con demora 0, todo se aplica al instante.
+// Live data arrives before the TV picture (the broadcast
+// runs a few seconds behind, more on streaming). So the page doesn't
+// "spoil" an overtake, every relay message goes into a queue with its
+// arrival time and is only applied once the delay the user chose
+// has passed. With a delay of 0, everything is applied instantly.
 //
-// El reloj de sesión también se atrasa (feedNow()), así el countdown o el
-// cronómetro de carrera coincide con lo que se ve en la tele.
+// The session clock is delayed too (feedNow()), so the countdown or the
+// race timer matches what's on TV.
 const DELAY_MAX_SECONDS = 300;
 const DELAY_STEP_SECONDS = 5;
 const pendingRelayMessages = [];
@@ -691,7 +689,7 @@ function delaySeconds() {
     return Number.isFinite(value) ? Math.min(Math.max(value, 0), DELAY_MAX_SECONDS) : 0;
 }
 
-// "Ahora" según lo que se está mostrando: la hora real menos la demora.
+// "Now" according to what's being shown: the real time minus the delay.
 function feedNow() {
     return Date.now() - delaySeconds() * 1000;
 }
@@ -701,12 +699,12 @@ function applyRelayMessage(msg) {
         state = msg.state || {};
         if (state.ExtrapolatedClock) lastClockUpdateLocalTime = Date.now();
     } else if (msg.type === 'update') {
-        // Position.z: el relay manda el último lote de posiciones entero.
-        // Mezclarlo índice por índice con el anterior dejaba muestras
-        // viejas al final del array cuando el lote nuevo era más corto,
-        // y el auto "volvía" a donde estaba hace un rato.
-        // FinishedLines también llega entero, y reemplaza: si se mezclara,
-        // al cambiar de segmento quedarían pilotos congelados del anterior.
+        // Position.z: the relay sends the latest batch of positions whole.
+        // Merging it index by index with the previous one left old
+        // samples at the end of the array when the new batch was shorter,
+        // and the car "jumped back" to where it was a moment ago.
+        // FinishedLines also arrives whole, and replaces: if it were merged,
+        // drivers from the previous segment would stay frozen after the segment changes.
         state[msg.topic] = msg.topic === 'Position.z' || msg.topic === 'FinishedLines'
             ? msg.data
             : mergeState(state[msg.topic] || {}, msg.data);
@@ -716,9 +714,9 @@ function applyRelayMessage(msg) {
 }
 
 function receiveRelayMessage(msg) {
-    // Sin demora (y sin nada esperando en la cola): directo. El primer
-    // snapshot también va directo aunque haya demora, para que la tabla no
-    // quede vacía mientras se "llena" la demora.
+    // No delay (and nothing waiting in the queue): apply directly. The first
+    // snapshot also goes straight through even with a delay, so the table doesn't
+    // sit empty while the delay "fills up".
     const firstSnapshot = msg.type === 'snapshot' && !(state.TimingData && state.TimingData.Lines);
     if ((delaySeconds() === 0 && pendingRelayMessages.length === 0) || firstSnapshot) {
         applyRelayMessage(msg);
@@ -728,9 +726,9 @@ function receiveRelayMessage(msg) {
     pendingRelayMessages.push({ at: Date.now(), msg });
 }
 
-// Aplica, en orden, todo lo que ya cumplió su demora. Si la demora se
-// achica, sale de golpe lo acumulado; si se agranda, la página se queda
-// quieta hasta alcanzarla.
+// Applies, in order, everything whose delay has passed. If the delay
+// shrinks, everything queued comes out at once; if it grows, the page stays
+// still until it catches up.
 function flushPendingRelayMessages() {
     const due = Date.now() - delaySeconds() * 1000;
     let applied = false;
@@ -743,8 +741,8 @@ function flushPendingRelayMessages() {
 
 setInterval(flushPendingRelayMessages, 100);
 
-// Chip "DELAY 30s" al lado del reloj de sesión, para que se sepa que lo que
-// se ve va atrasado a propósito.
+// "DELAY 30s" chip next to the session clock, so it's clear that what's
+// shown is behind on purpose.
 function updateDelayIndicator() {
     const chip = document.getElementById('delay-indicator');
     if (!chip) return;
@@ -765,7 +763,7 @@ function setDelaySeconds(seconds) {
 function connect() {
     const relayUrl = resolveRelayUrl();
     if (!relayUrl) {
-        setConnectionNotice('No hay relay configurado para este dispositivo. Abrí esta página con ?relay=wss://tu-relay para conectarla.');
+        setConnectionNotice('No relay configured for this device. Open this page with ?relay=wss://your-relay to connect it.');
         return;
     }
 
@@ -781,8 +779,8 @@ function connect() {
 
     ws.onclose = () => {
         setConnectionNotice(isLocalPage()
-            ? `Sin conexión con el relay (${relayUrl}) — arrancá server/client.js. Reintentando…`
-            : `Sin conexión con el relay (${relayUrl}) — puede estar apagado. Reintentando…`);
+            ? `Can't reach the relay (${relayUrl}). Start server/client.js. Retrying…`
+            : `Can't reach the live timing server (${relayUrl}). It may be starting up or offline. Retrying…`);
         setTimeout(connect, 2000);
     };
 
@@ -894,17 +892,17 @@ function currentQualifyingPart() {
     return entries[entries.length - 1].QualifyingPart;
 }
 
-// Cuándo arrancó el segmento de qualy en curso (Q2/Q3, SQ2/SQ3), para lo
-// que se reinicia entre segmentos: Race Control y los colores de sectores y
-// última vuelta. null en Q1, fuera de qualy o sin datos.
+// When the current qualifying segment started (Q2/Q3, SQ2/SQ3), for whatever
+// resets between segments: Race Control and the sector and
+// last lap colors. null in Q1, outside qualifying or without data.
 //
-// El cambio de QualifyingPart en SessionData.Series no está claro si llega
-// con la luz verde del segmento nuevo o con la bandera a cuadros del
-// anterior; en el segundo caso las vueltas que se terminan después de la
-// bandera contarían como del segmento nuevo. Por eso el arranque es el
-// primer "Started" de StatusSeries desde ese cambio (con 60 s de margen por
-// si llegan casi juntos). Si no hay StatusSeries, vale la hora del cambio.
-// { ms, started }: started es false mientras se espera la luz verde.
+// It isn't clear whether the QualifyingPart change in SessionData.Series arrives
+// with the new segment's green light or with the previous one's chequered
+// flag; in the second case, laps finished after the
+// flag would count as part of the new segment. That's why the start is the
+// first "Started" in StatusSeries since that change (with a 60 s margin in
+// case they arrive almost together). If there's no StatusSeries, the time of the change is used.
+// { ms, started }: started is false while waiting for the green light.
 function qualifyingPartStart() {
     const meta = deriveSessionMeta(state.SessionInfo);
     if (!meta || meta.kind !== 'countdown-segment') return null;
@@ -929,14 +927,14 @@ function qualifyingPartStart() {
         : { ms: changeMs, started: false };
 }
 
-// Hasta la luz verde se siguen viendo los mensajes del segmento anterior.
+// Until the green light, the previous segment's messages are still shown.
 function qualifyingPartStartMs() {
     const start = qualifyingPartStart();
     return start && start.started ? start.ms : null;
 }
 
-// Segmento que cuenta para los mejores tiempos (ver updateTimingBests): el
-// de QualifyingPart, pero recién desde su luz verde. 0 fuera de Q/SQ.
+// Segment that counts for best times (see updateTimingBests): the
+// QualifyingPart one, but only from its green light. 0 outside Q/SQ.
 function currentTimingPart() {
     const meta = deriveSessionMeta(state.SessionInfo);
     if (!meta || meta.kind !== 'countdown-segment') return 0;
@@ -1069,8 +1067,8 @@ function formatClockSeconds(totalSeconds) {
 // Reads the current flag state off TrackStatus. Real F1 feed status codes
 // (per f1-dash/Nitrous and similar reverse-engineered docs): 1=AllClear,
 // 2=Yellow, 4=SafetyCar, 5=Red, 6=VSC, 7=VSCEnding. Collapsed here to the
-// 3 colors you asked for (SC/VSC count as yellow).
-// TODO: confirm these codes against your own TrackStatus console.log.
+// 3 colors used on the page (SC/VSC count as yellow).
+// TODO: confirm these codes against a logged TrackStatus message.
 function currentFlagState() {
     const ts = state.TrackStatus;
     const status = ts && ts.Status;
@@ -1088,13 +1086,13 @@ function isRedFlag() {
     return currentFlagState().color === 'red';
 }
 
-// Cuánto pasó desde que el feed emitió ese Remaining. Se mide contra
-// clock.Utc (la hora del propio feed) y no contra el momento en que nos
-// llegó el mensaje: al abrir la página, el relay manda su último snapshot,
-// que puede tener minutos de antigüedad, y tomarlo como recién llegado
-// hacía que el countdown quedara atrasado justo esa diferencia.
-// Si el reloj de la máquina está muy corrido respecto al del feed, el
-// cálculo da un número absurdo y se cae al método viejo.
+// How long it's been since the feed emitted that Remaining. Measured against
+// clock.Utc (the feed's own time) and not against when the message
+// reached us: when the page opens, the relay sends its latest snapshot,
+// which can be minutes old, and treating it as just arrived
+// left the countdown behind by exactly that difference.
+// If the machine's clock is way off from the feed's, the
+// calculation gives an absurd number and it falls back to the old method.
 function clockElapsedSeconds(clock) {
     const feedUtc = clock && clock.Utc ? new Date(clock.Utc).getTime() : NaN;
     if (Number.isFinite(feedUtc)) {
@@ -1104,9 +1102,9 @@ function clockElapsedSeconds(clock) {
     return (Date.now() - lastClockUpdateLocalTime) / 1000;
 }
 
-// Ícono de pausa del reloj (bandera roja o reloj detenido). SVG y no el
-// carácter "⏸": ese lo dibuja cada sistema a su manera (más chico, más
-// bajo, otro grosor) y quedaba desalineado con los números.
+// Clock pause icon (red flag or stopped clock). An SVG rather than the
+// "⏸" character: each system draws that one its own way (smaller, lower,
+// a different weight) and it ended up misaligned with the numbers.
 const PAUSE_ICON_SVG = '<svg class="status-clock-pause" viewBox="0 0 10 12" aria-label="Paused" role="img"><rect x="1" y="1" width="2.6" height="10" rx="0.8"></rect><rect x="6.4" y="1" width="2.6" height="10" rx="0.8"></rect></svg>';
 
 function updateSessionClock() {
@@ -1153,9 +1151,9 @@ function updateSessionClock() {
     el.innerHTML = html;
 }
 
-// Circuit map for the Map View section. Pide el trazado en vivo (ver
-// TRACK MAP) y deja el PNG del circuito como respaldo por si la API no
-// responde. El PNG solo se cambia cuando cambia el GP.
+// Circuit map for the Map View section. It requests the live layout (see
+// TRACK MAP) and keeps the circuit PNG as a fallback in case the API doesn't
+// respond. The PNG only changes when the GP changes.
 let lastCircuitId = null;
 function updateCircuitMap() {
     loadTrackMap();
@@ -1202,10 +1200,10 @@ function teamLogoHTML(teamName) {
 }
 
 // ── TEAM NAMES (data/teams.json) ──────────────────────────────────────────
-// La columna "Team" muestra el nombre tal cual está en teams.json (p. ej.
-// el feed manda "Mercedes" y la base dice "Mercedes-AMG"). resolveTeam()
-// de shared/teams.js hace el cruce feed → ID de la base, igual que en el
-// resto del sitio. Mientras teams.json no llegó, se muestra el del feed.
+// The "Team" column shows the name exactly as it is in teams.json (e.g.
+// the feed sends "Mercedes" and the database says "Mercedes-AMG"). resolveTeam()
+// from shared/teams.js maps feed → database ID, same as in the
+// rest of the site. Until teams.json has loaded, the feed's name is shown.
 let teamsData = null;
 fetch('./data/teams.json')
     .then((res) => (res.ok ? res.json() : null))
@@ -1219,14 +1217,14 @@ fetch('./data/teams.json')
 function teamDisplayName(feedTeamName) {
     if (!feedTeamName) return '';
     if (!teamsData || typeof resolveTeamId !== 'function') return feedTeamName;
-    // Si no hay equipo que encaje, resolveTeamId devuelve un slug: mejor
-    // el nombre del feed que "haas-f1-team".
+    // If no team matches, resolveTeamId returns a slug: the feed's name
+    // is better than "haas-f1-team".
     const team = teamsData[resolveTeamId(feedTeamName, teamsData)];
     return (team && team.name) || feedTeamName;
 }
 
-// Color del equipo como lo usa championship: el de teams.json primero, el
-// del feed (TEAM_COLOR_MAP) mientras la base no llegó o si no lo tiene.
+// Team color the way championship uses it: teams.json's first, the
+// feed's (TEAM_COLOR_MAP) while the database hasn't loaded or if it doesn't have one.
 function teamAccentColor(feedTeamName) {
     if (teamsData && typeof resolveTeamId === 'function') {
         const team = teamsData[resolveTeamId(feedTeamName, teamsData)];
@@ -1235,9 +1233,9 @@ function teamAccentColor(feedTeamName) {
     return TEAM_COLOR_MAP[feedTeamName] || 'rgba(255,255,255,0.4)';
 }
 
-// "#63" en el color del equipo — calcado de .st-driver-num de championship.
-// La clave de DriverList ya es el número de carrera; RacingNumber manda si
-// el feed lo trae.
+// "#63" in the team color, copied from championship's .st-driver-num.
+// The DriverList key is already the car number; RacingNumber wins if
+// the feed includes it.
 function driverNumberHTML(driver, num) {
     const number = driver.RacingNumber || num;
     if (!number) return '';
@@ -1385,9 +1383,9 @@ function getLiveWeather() {
         air_temperature:  w.AirTemp,
         track_temperature: w.TrackTemp,
         humidity:         w.Humidity,
-        // El feed manda WindSpeed en m/s (según FastF1, que lee este mismo feed),
-        // que es lo que espera el renderer; antes se dividía por 3.6 creyendo
-        // que venía en km/h y el viento se mostraba 3.6 veces más bajo.
+        // The feed sends WindSpeed in m/s (according to FastF1, which reads this same feed),
+        // which is what the renderer expects; previously it was divided by 3.6 assuming
+        // it came in km/h, and the wind showed 3.6 times lower.
         wind_speed:       Number(w.WindSpeed),
         wind_direction:   w.WindDirection,
         rainfall:         w.Rainfall,
@@ -1440,18 +1438,18 @@ function tyreCompoundBadgeHTML(appLine) {
     return tyreStintBadgeHTML(stints[stints.length - 1]);
 }
 
-// ── TABLE VIEW (columnas y formato que elige el usuario) ──────────────────
-// El panel "Customize table" (botón al lado de pantalla completa) deja
-// prender/apagar columnas y elegir cómo se muestran algunas cosas. En
-// localStorage se guarda SOLO lo que el usuario tocó: lo que nunca tocó
-// sigue el default de cada tipo de sesión (Interval en carrera sí, en Qualy
-// no; Laps solo en Práctica; etc.), así la tabla se ve igual que siempre
-// hasta que alguien la cambie.
+// ── TABLE VIEW (columns and format chosen by the user) ────────────────────
+// The "Customize table" panel (button next to fullscreen) lets the user
+// turn columns on/off and choose how some things are shown. localStorage
+// stores ONLY what the user changed: anything never touched
+// follows each session type's default (Interval on in races, off in
+// qualifying; Laps only in Practice; etc.), so the table looks the same as always
+// until someone changes it.
 const VIEW_STORAGE_KEY = 'f1hub:live-view';
 
-// El orden de acá es el orden de las columnas en la tabla y de la lista en
-// el panel. locked = no se puede sacar (sin posición o piloto la tabla no
-// dice nada). raceOnly = solo existe en Carrera/Sprint (necesita la grilla).
+// The order here is the order of the columns in the table and of the list in
+// the panel. locked = can't be removed (without position or driver the table
+// says nothing). raceOnly = only exists in Race/Sprint (needs the grid).
 const VIEW_COLUMNS = [
     { key: 'pos',          label: 'Position', locked: true },
     { key: 'delta',        label: 'Positions gained', raceOnly: true },
@@ -1469,8 +1467,8 @@ const VIEW_COLUMNS = [
     { key: 'laps',         label: 'Laps' },
 ];
 
-// Paneles de la pantalla que se pueden prender/apagar (sección "Panels" del
-// panel Customize). Se guardan junto con las columnas en viewPrefs.columns.
+// Screen panels that can be turned on/off ("Panels" section of the
+// Customize panel). Saved together with the columns in viewPrefs.columns.
 const VIEW_PANELS = [
     { key: 'trackMap',    label: 'Track map' },
     { key: 'raceControl', label: 'Race control' },
@@ -1482,10 +1480,10 @@ const VIEW_SESSION_DEFAULTS = {
     practice: { number: false, team: true, delta: false, status: true, gap: true, interval: false, bestLap: true,  lastLap: true, sectors: true, microsectors: true, tyres: true, laps: true,  trackMap: true, raceControl: true },
 };
 
-// Opciones de formato (botones segmentados en el panel). La primera opción
-// es el default, salvo tyres, que depende de la sesión (ver optionDefault).
-// dependsOn: la casilla de la que dependen; si está apagada, los botones ni
-// aparecen (no tiene sentido elegir cómo se ve algo que no se muestra).
+// Format options (segmented buttons in the panel). The first option
+// is the default, except tyres, which depends on the session (see optionDefault).
+// dependsOn: the checkbox they depend on; if it's off, the buttons don't
+// even show up (no point choosing how something that isn't shown looks).
 const VIEW_OPTIONS = {
     driverName: {
         label: 'Driver names',
@@ -1509,8 +1507,8 @@ function loadViewPrefs() {
         if (parsed && typeof parsed === 'object') {
             const columns = parsed.columns && typeof parsed.columns === 'object' ? parsed.columns : {};
             const prefs = { ...parsed, columns };
-            // Antes "Hidden" (Team) y "Hide" (Race control) eran botones;
-            // ahora son casillas. Se respeta lo que el usuario había elegido.
+            // "Hidden" (Team) and "Hide" (Race control) used to be buttons;
+            // now they're checkboxes. Whatever the user had chosen is respected.
             if (prefs.team === 'hidden') {
                 columns.team = false;
                 delete prefs.team;
@@ -1521,7 +1519,7 @@ function loadViewPrefs() {
             }
             return prefs;
         }
-    } catch (err) { /* sin storage o JSON roto: defaults */ }
+    } catch (err) { /* no storage or broken JSON: defaults */ }
     return { columns: {} };
 }
 
@@ -1542,8 +1540,8 @@ function optionDefault(name, kind) {
     return VIEW_OPTIONS[name].choices[0][0];
 }
 
-// Lo que efectivamente se ve en esta sesión: preferencia guardada si la
-// hay, default de la sesión si no. cols trae columnas y paneles.
+// What's actually shown in this session: the saved preference if there is
+// one, the session default otherwise. cols holds columns and panels.
 function effectiveView(kind) {
     const defaults = VIEW_SESSION_DEFAULTS[kind];
     const cols = {};
@@ -1571,14 +1569,14 @@ function driverDisplayName(driver, num, style) {
     return driverCode(driver, num);
 }
 
-// Columnas visibles para esta vista, en orden. Cada una trae su <th> y una
-// función que arma su <td> a partir del contexto de fila que prepara
-// render(). El "cluster" de tiempos (Best Lap, Last Lap, S1-S3) lleva el
-// padding apretado de .live-col-tight-* según qué celda quede primera,
-// del medio o última (ver live.css, COLUMN PADDING).
+// Visible columns for this view, in order. Each one has its <th> and a
+// function that builds its <td> from the row context that
+// render() prepares. The timing "cluster" (Best Lap, Last Lap, S1-S3) gets the
+// tight padding of .live-col-tight-* depending on which cell ends up first,
+// middle or last (see live.css, COLUMN PADDING).
 function buildTableColumns(view) {
     const { cols } = view;
-    // Team apagado: ni logo ni columna, elija lo que elija en los botones.
+    // Team off: no logo and no column, whatever the buttons say.
     const teamMode = cols.team ? view.team : 'hidden';
     const showSectors = cols.sectors || cols.microsectors;
     const cluster = [
@@ -1652,10 +1650,10 @@ function buildTableColumns(view) {
                 if (r.sectorsBlanked) return `<td class="live-sector-cell ${cls}"></td>`;
                 const value = r.sectorView.times[idx];
                 const time = cols.sectors ? `<span class="live-sector-time">${value ?? '-'}</span>` : '';
-                // Sectores que todavía no se corrieron en esta vuelta: las
-                // barras que tengan son de la vuelta anterior, van en gris.
-                // Con la fila congelada (bandera a cuadros) las barras son las
-                // de la vuelta final, no las de la vuelta de enfriamiento.
+                // Sectors not yet driven on this lap: whatever
+                // bars they have are from the previous lap, so they go grey.
+                // With the frozen row (chequered flag) the bars are the
+                // ones from the final lap, not from the cool-down lap.
                 const notYetRun = r.sectorView.live != null && idx > r.sectorView.live;
                 const segments = getSegments(r.shown, idx + 1);
                 const bars = cols.microsectors
@@ -1682,7 +1680,7 @@ function buildTableColumns(view) {
     return columns;
 }
 
-// Colspan de la fila de "Waiting…"/avisos: sigue a la cantidad de columnas.
+// Colspan of the "Waiting…"/notice row: follows the number of columns.
 let tableColspan = 11;
 
 // Only touches the DOM when the header actually changes (session type or
@@ -1698,9 +1696,9 @@ function updateTableHeaders(columns) {
     if (thead) thead.innerHTML = html;
 }
 
-// Aplica la vista actual sin esperar datos: si ya hay tabla, re-renderiza;
-// si no, solo actualiza encabezados y el colspan del aviso vacío (sin pisar
-// el texto del aviso de conexión).
+// Applies the current view without waiting for data: if there's a table already, re-renders;
+// if not, it only updates the headers and the empty notice's colspan (without overwriting
+// the connection notice text).
 function applyTableView() {
     if (state.TimingData && state.TimingData.Lines) {
         render();
@@ -1729,12 +1727,12 @@ function render() {
     const rows = Object.keys(timingLines)
         .map((num) => ({ num, line: timingLines[num] }))
         .filter((r) => r.line)
-        // Ordenar por Position (que es el número que después se muestra en
-        // la columna Pos) y usar Line solo para desempatar. Antes se
-        // ordenaba solo por Line: cuando el feed manda Position y Line en
-        // updates distintos, la tabla quedaba ordenada de una forma y
-        // numerada de otra, con posiciones que parecían repetidas o
-        // salteadas.
+        // Sort by Position (the number later shown in
+        // the Pos column) and use Line only as a tiebreaker. It used to
+        // sort by Line only: when the feed sends Position and Line in
+        // separate updates, the table ended up sorted one way and
+        // numbered another, with positions that looked repeated or
+        // skipped.
         .sort((a, b) => {
             const posA = Number(a.line.Position) || Number(a.line.Line) || 99;
             const posB = Number(b.line.Position) || Number(b.line.Line) || 99;
@@ -1783,8 +1781,8 @@ function render() {
     const qualifyingPart = isQualiSession ? currentQualifyingPart() : null;
     const blankSectorsAfterPos = qualifyingPart === 2 ? 16 : qualifyingPart === 3 ? 10 : null;
 
-    // Base para el Gap calculado a mano (ver gapCellText): la mejor vuelta
-    // de quien está P1. Solo aplica en Q/SQ/FP, donde se ordena por vuelta.
+    // Base for the hand-computed Gap (see gapCellText): the best lap
+    // of whoever is P1. Only applies in Q/SQ/FP, where the order is by lap time.
     const allowGapFallback = isQualiSession || isPracticeSession;
     const leaderBestMs = rows.length
         ? lapTimeToMs(rows[0].line.BestLapTime && rows[0].line.BestLapTime.Value)
@@ -1800,8 +1798,8 @@ function render() {
     if (tbody2) {
         const rowHtmls = rows.map(({ num, line }, i) => {
             const driver = driverList[num] || {};
-            // Quien ya recibió la bandera a cuadros muestra su vuelta final
-            // (ver relayFinishedLines); el resto, la línea en vivo.
+            // Whoever has already taken the chequered flag shows their final lap
+            // (see relayFinishedLines); everyone else, the live line.
             const shown = shownTimingLine(num, line);
             const lastLap = shown.LastLapTime || {};
             const bestLap = shown.BestLapTime || {};
@@ -1816,8 +1814,8 @@ function render() {
             const fastestRowClass = bestLapClass ? ' live-row--fastest-map' : '';
             const isEliminated = dimAfterPos != null && posNum > dimAfterPos;
 
-            // Todo lo que las columnas pueden necesitar (ver
-            // buildTableColumns): cada una toma de acá lo suyo.
+            // Everything the columns may need (see
+            // buildTableColumns): each one takes its own part from here.
             const r = {
                 num,
                 line: shown,
@@ -1826,8 +1824,8 @@ function render() {
                 appLine: appLines[num],
                 isTop3: posNum <= 3 && !isQualiSession && !isPracticeSession,
                 teamColor: TEAM_COLOR_MAP[driver.TeamName] || 'rgba(255,255,255,0.9)',
-                // Ya recibió la bandera a cuadros: eso dice más que PIT/OUT
-                // de la vuelta de enfriamiento.
+                // Already took the chequered flag: that says more than the PIT/OUT
+                // of the cool-down lap.
                 chequered: !line.Retired && hasTakenChequered(num),
                 statusLabel: line.Retired ? 'RETIRED' : line.InPit ? 'PIT' : line.PitOut ? 'OUT' : '',
                 gapText: gapCellText(line, posNum, leaderBestMs, allowGapFallback),
@@ -1856,13 +1854,13 @@ function render() {
 }
 
 // ── RACE CONTROL ──────────────────────────────────────────────────────────
-// Mensajes de Race Control (tema RaceControlMessages del feed): banderas,
-// SC/VSC, investigaciones, sanciones, track limits, DRS. Van debajo del
-// mapa, el más nuevo arriba. Los que llegan con la página abierta se
-// resaltan un momento (.is-new) para que se note que hay algo nuevo.
+// Race Control messages (the feed's RaceControlMessages topic): flags,
+// SC/VSC, investigations, penalties, track limits, DRS. They go below the
+// map, newest on top. The ones that arrive with the page open are
+// highlighted for a moment (.is-new) so it's clear there's something new.
 //
-// El snapshot trae Messages como array y los deltas como objeto indexado
-// ({"12": {...}}); mergeState ya los junta, acá solo se ordena por índice.
+// The snapshot brings Messages as an array and deltas as an indexed object
+// ({"12": {...}}); mergeState already combines them, here they're just sorted by index.
 const RC_MAX_MESSAGES = 60;
 const rcSeen = new Set();
 let rcPrimed = false;
@@ -1876,10 +1874,10 @@ function escapeHTML(value) {
         .replace(/"/g, '&quot;');
 }
 
-// En Q2/Q3 (y SQ2/SQ3) la lista arranca de cero: solo cuentan los mensajes
-// desde que empezó el segmento en curso. Como todo lo demás (banderas por
-// sector en el mapa, bandera a cuadros, contador de track limits) sale de
-// acá, la bandera a cuadros de Q1 tampoco sigue "terminando" la sesión en Q2.
+// In Q2/Q3 (and SQ2/SQ3) the list starts from scratch: only messages
+// since the current segment started count. Since everything else (sector flags
+// on the map, chequered flag, track limits counter) comes from
+// here, the Q1 chequered flag doesn't keep "ending" the session in Q2 either.
 function raceControlMessages() {
     const raw = state.RaceControlMessages && state.RaceControlMessages.Messages;
     if (!raw || typeof raw !== 'object') return [];
@@ -1895,17 +1893,17 @@ function raceControlMessages() {
         });
 }
 
-// Piloto dentro de un mensaje: "#16" igual que en la tabla (mismo
-// driverNumberHTML(), color del equipo) + apellido. Si el piloto no está
-// en DriverList, el apellido sale de la sigla del propio mensaje ("LEC").
+// A driver inside a message: "#16" as in the table (same
+// driverNumberHTML(), team color) + surname. If the driver isn't
+// in DriverList, the surname comes from the message's own code ("LEC").
 function rcDriverHTML(number, fallbackCode) {
     const driver = (state.DriverList || {})[number] || {};
     const name = driver.LastName ? driver.LastName.toUpperCase() : (fallbackCode || driver.Tla || '');
     return `${driverNumberHTML(driver, number)}${name ? ` ${escapeHTML(name)}` : ''}`;
 }
 
-// F1 manda las horas en UTC sin zona ("2026-09-19T12:03:22"): se les
-// agrega la Z para que no se lean como hora local. null si no se entiende.
+// F1 sends times in UTC without a time zone ("2026-09-19T12:03:22"): a Z is
+// appended so they aren't read as local time. null if it can't be parsed.
 function rcUtcMs(utc) {
     if (!utc) return null;
     const iso = /Z|[+-]\d\d:?\d\d$/.test(utc) ? utc : `${utc}Z`;
@@ -1913,9 +1911,9 @@ function rcUtcMs(utc) {
     return Number.isNaN(ms) ? null : ms;
 }
 
-// Momento de la largada: el primer "Started" de SessionData.StatusSeries
-// (hora oficial de F1; una bandera roja con relargada agrega otro, por eso
-// el primero). Si no está, la hora en que el relay vio arrancar la sesión.
+// Race start time: the first "Started" in SessionData.StatusSeries
+// (F1's official time; a red flag with a restart adds another one, hence
+// the first). If it's missing, the time the relay saw the session start.
 function sessionStartMs() {
     const series = state.SessionData && state.SessionData.StatusSeries;
     if (series && typeof series === 'object') {
@@ -1932,8 +1930,8 @@ function sessionStartMs() {
     return started ? rcUtcMs(started) : null;
 }
 
-// 5025000 ms → "1:23:45". Sin milésimas: la hora de la bandera a cuadros
-// llega al segundo, así que más precisión sería inventada.
+// 5025000 ms → "1:23:45". No milliseconds: the chequered flag time
+// arrives to the second, so more precision would be made up.
 function formatDuration(ms) {
     const total = Math.round(ms / 1000);
     const h = Math.floor(total / 3600);
@@ -1942,8 +1940,8 @@ function formatDuration(ms) {
     return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
-// Hora del mensaje en UTC ("12:50"), en el mismo chip que la vuelta. Tal
-// cual la manda F1, sin pasarla a la hora local. Vacío si no se entiende.
+// Message time in UTC ("12:50"), in the same chip as the lap. Exactly
+// as F1 sends it, not converted to local time. Empty if it can't be parsed.
 function rcUtcTimeChip(utc) {
     const at = rcUtcMs(utc);
     if (at == null) return '';
@@ -1953,15 +1951,15 @@ function rcUtcTimeChip(utc) {
     return `<span class="rc-chip rc-chip--lap">${hh}:${mm}</span>`;
 }
 
-// F1 le pega la hora al final de muchos mensajes: "IMPEDING (16:33:21)" o
-// "... LAP 3 12:03:58". Ya se muestra la vuelta o la hora en su chip, así
-// que se saca.
+// F1 appends the time to the end of many messages: "IMPEDING (16:33:21)" or
+// "... LAP 3 12:03:58". The lap or the time is already shown in its chip, so
+// it's removed.
 function rcStripTime(text) {
     return String(text).replace(/\s*(?:TIMED AT\s*)?\(?\b\d{1,2}:\d{2}:\d{2}\)?\s*$/i, '');
 }
 
-// Motivo de un incidente/sanción, con los autos que nombre en el mismo
-// formato de piloto: "IMPEDING CAR 14 (ALO)" → "IMPEDING #14 ALONSO".
+// Reason for an incident/penalty, with any cars it names in the same
+// driver format: "IMPEDING CAR 14 (ALO)" → "IMPEDING #14 ALONSO".
 function rcReasonHTML(reason) {
     const text = rcStripTime(reason);
     const pattern = /CARS? (\d+) \((\w+)\)/gi;
@@ -1982,15 +1980,15 @@ function rcDriversHTML(carsText) {
     return cars.map(([, number, code]) => rcDriverHTML(number, code)).join(' &amp; ');
 }
 
-// ── MENSAJES REESCRITOS ──
-// Los textos de F1 son largos y técnicos. Cada regla reconoce un tipo de
-// mensaje (match) y devuelve cómo mostrarlo: { chip, html }. chip es la
-// etiqueta de color ({ label, cls }; si no viene, se usa la de rcChip()) y
-// html el texto (vacío = solo la etiqueta). Para sumar una nueva, agregar
-// un objeto a la lista. `ctx` trae datos que dependen de los mensajes
-// anteriores (p. ej. cuántos track limits lleva cada auto). Si ninguna
-// regla coincide, se muestra el mensaje original. Si show() devuelve null,
-// el mensaje no se muestra (los que no interesan).
+// ── REWRITTEN MESSAGES ──
+// F1's texts are long and technical. Each rule recognizes a type of
+// message (match) and returns how to show it: { chip, html }. chip is the
+// color label ({ label, cls }; if missing, rcChip()'s is used) and
+// html the text (empty = label only). To add a new one, add
+// an object to the list. `ctx` carries data that depends on earlier
+// messages (e.g. how many track limits each car has). If no
+// rule matches, the original message is shown. If show() returns null,
+// the message isn't shown (the uninteresting ones).
 const RC_REWRITES = [
     {
         // GREEN LIGHT - PIT EXIT OPEN → [GREEN LIGHT] PIT EXIT OPEN
@@ -1999,9 +1997,9 @@ const RC_REWRITES = [
     },
     {
         // CAR 16 (LEC) TIME 1:45.221 DELETED - TRACK LIMITS AT TURN 15 LAP 3 12:03:58
-        //   Carrera/Sprint → [TRACK LIMITS] 1° WARNING | #16 LECLERC
-        //   Práctica/Qualy → [TRACK LIMITS] LAP DELETED | #16 LECLERC
-        // Las advertencias solo cuentan (y suman para sanción) en carrera.
+        //   Race/Sprint → [TRACK LIMITS] 1° WARNING | #16 LECLERC
+        //   Practice/Qualifying → [TRACK LIMITS] LAP DELETED | #16 LECLERC
+        // Warnings only count (and add up toward a penalty) in races.
         match: /^CAR (\d+) \((\w+)\) (?:TIME|LAP) .*DELETED - TRACK LIMITS/i,
         show: ([, number, code], ctx) => {
             const chip = { label: 'Track limits', cls: 'info' };
@@ -2011,22 +2009,22 @@ const RC_REWRITES = [
         },
     },
     {
-        // Vuelta borrada por cualquier otro motivo (DOUBLE YELLOW, RED FLAG…):
+        // Lap deleted for any other reason (DOUBLE YELLOW, RED FLAG…):
         // CAR 5 (BOR) TIME 2:26.624 DELETED - DOUBLE YELLOW AT TURN 14 …
-        // → no se muestra. Va después de la de track limits, que ya las
-        // agarró primero.
+        // → not shown. It goes after the track limits rule, which already
+        // caught those first.
         match: /^CAR \d+ \(\w+\) (?:TIME|LAP) .*DELETED\b/i,
         show: () => null,
     },
     {
-        // FIRST CAR TO TAKE THE FLAG - CAR 5 (BOR) (o "…THE CHEQUERED FLAG") → no
-        // se muestra (el CHEQUERED FLAG de al lado ya dice que terminó).
+        // FIRST CAR TO TAKE THE FLAG - CAR 5 (BOR) (or "…THE CHEQUERED FLAG") → not
+        // shown (the CHEQUERED FLAG next to it already says it's over).
         match: /FIRST CAR TO TAKE (?:THE )?(?:CHEQUERED )?FLAG/i,
         show: () => null,
     },
     {
         // DOUBLE YELLOW IN TRACK SECTOR 11 → [DOUBLE YELLOW] SECTOR 11
-        // (igual para YELLOW y CLEAR: la etiqueta ya dice qué bandera es)
+        // (same for YELLOW and CLEAR: the label already says which flag it is)
         match: /^(DOUBLE YELLOW|YELLOW|CLEAR) IN TRACK SECTOR (\d+)/i,
         show: ([, flag, sector]) => {
             const kind = flag.toUpperCase();
@@ -2039,21 +2037,21 @@ const RC_REWRITES = [
     {
         // VIRTUAL SAFETY CAR DEPLOYED → [VIRTUAL SAFETY CAR] DEPLOYED
         // SAFETY CAR IN THIS LAP      → [SAFETY CAR] IN THIS LAP
-        // (y ENDING, THROUGH THE PIT LANE, etc.: el nombre completo va en la
-        // etiqueta y el resto del mensaje, tal cual, como texto)
+        // (and ENDING, THROUGH THE PIT LANE, etc.: the full name goes in the
+        // label and the rest of the message, as-is, as text)
         match: /^(VIRTUAL SAFETY CAR|SAFETY CAR) (.+)$/i,
         show: ([, kind, rest]) => ({ chip: { label: kind, cls: 'sc' }, html: escapeHTML(rest) }),
     },
     {
-        // RED FLAG → [RED FLAG] (solo la etiqueta)
+        // RED FLAG → [RED FLAG] (label only)
         match: /^RED FLAG$/i,
         show: () => ({ chip: { label: 'Red flag', cls: 'red' }, html: '' }),
     },
     {
         // CHEQUERED FLAG → [CHEQUERED FLAG] RACE DURATION: 1:23:45
-        // Duración = hora de la bandera menos la de largada (ver
-        // sessionStartMs()). Solo en Carrera/Sprint: en Práctica/Qualy la
-        // sesión dura lo que dura, así que ahí va solo la etiqueta.
+        // Duration = flag time minus start time (see
+        // sessionStartMs()). Only in Race/Sprint: in Practice/Qualifying the
+        // session lasts as long as it lasts, so there it's just the label.
         match: /^CHEQUERED FLAG$/i,
         show: (found, ctx, message) => {
             const chip = { label: 'Chequered flag', cls: 'chequered' };
@@ -2065,8 +2063,8 @@ const RC_REWRITES = [
         },
     },
     {
-        // Incidentes, con todas las variantes que manda F1 (con o sin "FIA
-        // STEWARDS:", con o sin "TURN 1", y en cualquier etapa):
+        // Incidents, with every variant F1 sends (with or without "FIA
+        // STEWARDS:", with or without "TURN 1", and at any stage):
         // INCIDENT INVOLVING CARS 23 (ALB) AND 55 (SAI) NOTED - CAUSING A COLLISION
         //   → [INCIDENT NOTED] #23 ALBON & #55 SAINZ | CAUSING A COLLISION
         // INCIDENT INVOLVING CAR 12 (ANT) NOTED - IMPEDING CAR 14 (ALO)
@@ -2089,8 +2087,8 @@ const RC_REWRITES = [
     {
         // FIA STEWARDS: 5 SECOND TIME PENALTY FOR CAR 55 (SAI) - CAUSING A COLLISION
         //   → [5 SECOND PENALTY] #55 SAINZ | CAUSING A COLLISION
-        // El tipo de sanción va en la etiqueta ("TIME" sobra: 5 SECOND TIME →
-        // 5 SECOND). Sirve igual para DRIVE THROUGH, 10 SECOND STOP/GO, etc.
+        // The penalty type goes in the label ("TIME" is redundant: 5 SECOND TIME →
+        // 5 SECOND). Works the same for DRIVE THROUGH, 10 SECOND STOP/GO, etc.
         match: /^FIA STEWARDS: (.+?) PENALTY FOR CAR (\d+) \((\w+)\)(?: - (.+))?$/i,
         show: ([, kind, number, code, reason]) => ({
             chip: { label: `${kind.replace(/\s+TIME$/i, '')} penalty`, cls: 'penalty' },
@@ -2099,9 +2097,9 @@ const RC_REWRITES = [
     },
 ];
 
-// Cómo se muestra cada mensaje ({ message, chip, html }), en orden
-// cronológico, sin los ocultos. Va en orden porque los
-// contadores (como el de track limits) dependen de lo que pasó antes.
+// How each message is shown ({ message, chip, html }), in chronological
+// order, without the hidden ones. It goes in order because the
+// counters (like the track limits one) depend on what happened before.
 function rcDisplayItems(messages) {
     const ctx = {
         trackLimits: {},
@@ -2110,8 +2108,8 @@ function rcDisplayItems(messages) {
     };
     const items = [];
     for (const m of messages) {
-        // La hora del final se saca ANTES de buscar la regla, así las
-        // reglas ven el mensaje limpio (y los anclados con $ coinciden).
+        // The trailing time is removed BEFORE looking up the rule, so the
+        // rules see the clean message (and the ones anchored with $ match).
         const text = rcStripTime(m.Message);
         const rule = RC_REWRITES.find((r) => r.match.test(text));
         if (!rule) {
@@ -2119,13 +2117,13 @@ function rcDisplayItems(messages) {
             continue;
         }
         const shown = rule.show(rule.match.exec(text), ctx, m);
-        // null = mensaje que no interesa: afuera de la lista.
+        // null = uninteresting message: left out of the list.
         if (shown) items.push({ message: m, chip: shown.chip || rcChip(m), html: shown.html });
     }
     return items;
 }
 
-// Etiqueta de color según el tipo de mensaje. null = sin etiqueta.
+// Color label by message type. null = no label.
 function rcChip(message) {
     const flag = String(message.Flag || '').toUpperCase();
     const category = String(message.Category || '');
@@ -2158,28 +2156,28 @@ function renderRaceControl() {
 
     const view = effectiveView(currentSessionKind());
     section.hidden = !view.cols.raceControl;
-    // Con Race Control visible el mapa se achica a lo que mide la pista y
-    // le deja el resto de la columna (ver live.css, RACE CONTROL).
+    // With Race Control visible the map shrinks to the size of the track and
+    // leaves the rest of the column to it (see live.css, RACE CONTROL).
     const mapPanel = section.closest('.mapview-panel--map');
     if (mapPanel) {
         mapPanel.classList.toggle('has-race-control', !section.hidden);
-        // Track map apagado: el mapa se esconde y queda solo la franja con
-        // los botones. Con los dos paneles apagados, la tabla ocupa todo el
-        // ancho (ver live.css, PANELS ON/OFF).
+        // Track map off: the map is hidden and only the strip with
+        // the buttons remains. With both panels off, the table takes the full
+        // width (see live.css, PANELS ON/OFF).
         mapPanel.classList.toggle('map-off', !view.cols.trackMap);
     }
     const app = document.getElementById('live-map-view-content');
     if (app) app.classList.toggle('no-side', !view.cols.trackMap && !view.cols.raceControl);
     if (section.hidden) return;
 
-    // Los textos se calculan sobre TODOS los mensajes de la sesión (los
-    // contadores, como el de track limits, necesitan los anteriores) y
-    // recién después se recortan a los últimos RC_MAX_MESSAGES.
+    // The texts are computed over ALL of the session's messages (the
+    // counters, like the track limits one, need the earlier ones) and
+    // only afterwards trimmed to the latest RC_MAX_MESSAGES.
     const allMessages = raceControlMessages();
     const startMs = sessionStartMs();
     const sessionKind = currentSessionKind();
-    // La hora de largada y el tipo de sesión entran en la firma: la duración
-    // de CHEQUERED FLAG y el formato de track limits dependen de ellos.
+    // The start time and the session type go into the signature: the CHEQUERED FLAG
+    // duration and the track limits format depend on them.
     const last = allMessages[allMessages.length - 1];
     const signature = `${startMs}|${sessionKind}|` + (last
         ? `${allMessages.length}|${last.Utc}|${last.Message}`
@@ -2187,7 +2185,7 @@ function renderRaceControl() {
     if (signature === rcLastSignature) return;
     rcLastSignature = signature;
 
-    // Los mensajes ocultos (ver RC_REWRITES) ya no están en items.
+    // Hidden messages (see RC_REWRITES) are no longer in items.
     const items = rcDisplayItems(allMessages).slice(-RC_MAX_MESSAGES);
     if (items.length === 0) {
         list.innerHTML = '<li class="rc-empty">No race control messages yet</li>';
@@ -2198,8 +2196,8 @@ function renderRaceControl() {
         const id = `${m.Utc}|${m.Message}`;
         const isNew = rcPrimed && !rcSeen.has(id);
         rcSeen.add(id);
-        // La vuelta ("L 14") como una etiqueta más. Solo si el mensaje no
-        // trae vuelta, la hora del mensaje en UTC ("12:50").
+        // The lap ("L 14") as one more label. Only if the message has no
+        // lap, the message time in UTC ("12:50").
         const meta = m.Lap
             ? `<span class="rc-chip rc-chip--lap">L ${escapeHTML(m.Lap)}</span>`
             : rcUtcTimeChip(m.Utc);
@@ -2212,28 +2210,28 @@ function renderRaceControl() {
                 </div>
             </li>`;
     }).reverse().join('');
-    // Lo que ya estaba al abrir la página no se resalta: solo lo que llega
-    // después.
+    // Whatever was already there when the page opened isn't highlighted: only what arrives
+    // afterwards.
     rcPrimed = true;
 }
 
 // ── TRACK MAP ─────────────────────────────────────────────────────────────
-// Position.z trae la posición de cada auto en el sistema de coordenadas de
-// la pista (no en píxeles de ninguna imagen). Antes los puntos se ponían
-// encima del PNG oficial estirando un bounding box armado con lo que iba
-// llegando: el PNG está girado y con márgenes a gusto del diseñador, así
-// que los autos nunca caían sobre la pista dibujada.
+// Position.z carries each car's position in the track's coordinate
+// system (not in pixels of any image). Previously the dots were placed
+// on top of the official PNG by stretching a bounding box built from whatever
+// arrived: the PNG is rotated and has margins at the designer's whim, so
+// the cars never landed on the drawn track.
 //
-// Ahora la pista se dibuja en SVG con el trazado de la API de MultiViewer
-// (la misma que usa f1-dash), que viene en ESE MISMO sistema de
-// coordenadas: los autos se dibujan con los mismos números y la misma
-// rotación, así que caen exactamente sobre la línea. Si la API no
-// responde, queda el PNG de siempre, sin autos (mal ubicados confunden
-// más de lo que ayudan).
+// Now the track is drawn in SVG with the layout from the MultiViewer API
+// (the same one f1-dash uses), which comes in THAT SAME coordinate
+// system: the cars are drawn with the same numbers and the same
+// rotation, so they land exactly on the line. If the API doesn't
+// respond, the usual PNG stays, without cars (misplaced ones confuse
+// more than they help).
 const TRACK_API_URL = 'https://api.multiviewer.app/api/v1/circuits';
 
-let trackMap = null;          // geometría ya rotada, lista para dibujar
-let trackMapRequestId = null; // "circuito/año" pedido (evita pedirlo dos veces)
+let trackMap = null;          // geometry already rotated, ready to draw
+let trackMapRequestId = null; // "circuit/year" requested (avoids requesting it twice)
 
 function sessionCircuitTarget() {
     const info = state.SessionInfo;
@@ -2256,9 +2254,9 @@ function fetchTrackData(key, year) {
         });
 }
 
-// Pide el trazado del circuito de la sesión (una sola vez por circuito y
-// año). Si el año de la sesión todavía no está cargado en la API, prueba
-// con el anterior: el trazado casi nunca cambia de un año al otro.
+// Requests the layout of the session's circuit (once per circuit and
+// year). If the session's year isn't loaded in the API yet, it tries
+// the previous one: the layout almost never changes from one year to the next.
 function loadTrackMap() {
     const target = sessionCircuitTarget();
     if (!target) return;
@@ -2269,11 +2267,11 @@ function loadTrackMap() {
     fetchTrackData(target.key, target.year)
         .catch(() => fetchTrackData(target.key, target.year - 1))
         .then((data) => {
-            if (trackMapRequestId !== requestId) return; // cambió de sesión mientras tanto
+            if (trackMapRequestId !== requestId) return; // the session changed in the meantime
             trackMap = buildTrackGeometry(data);
             trackSectorShares = null; // circuito nuevo: sectores de nuevo
             drawTrackMap();
-            refreshTrackSectors(); // si ya hay tiempos de sector, pintarlos ya
+            refreshTrackSectors(); // if there are sector times already, paint them right away
             updatePositionOverlay();
         })
         .catch(() => {
@@ -2291,10 +2289,10 @@ function rotatePoint(x, y, angleDeg, cx, cy) {
     return { x: dx * cos - dy * sin + cx, y: dy * cos + dx * sin + cy };
 }
 
-// Todo lo que se dibuja (pista, curvas, autos) pasa por toView(): rotación
-// del circuito + Y invertida (en F1 la Y crece hacia arriba; en SVG, hacia
-// abajo). Los tamaños (grosor de la pista, puntos, textos) salen del
-// tamaño del circuito, así se ven iguales en Mónaco que en Spa.
+// Everything drawn (track, corners, cars) goes through toView(): the circuit's
+// rotation + inverted Y (in F1 Y grows upwards; in SVG,
+// downwards). Sizes (track width, dots, text) come from the
+// circuit's size, so they look the same in Monaco as in Spa.
 function buildTrackGeometry(data) {
     const xs = data.x;
     const ys = data.y;
@@ -2315,13 +2313,13 @@ function buildTrackGeometry(data) {
     const span = Math.max(maxX - minX, maxY - minY);
     const pad = span * 0.06;
 
-    // Número de cada curva, corrido hacia afuera de la pista en la
-    // dirección que indica la API (angle está en el sistema original, así
-    // que el corrimiento se hace antes de rotar).
-    // Curvas: dónde está cada una y hacia qué lado queda "afuera" (angle,
-    // en el sistema original, pasado a un vector ya rotado). El número se
-    // ubica recién al dibujar (placeCornerLabels), que es donde se conoce
-    // el tamaño real en pantalla.
+    // Each corner's number, shifted off the track in the
+    // direction the API indicates (angle is in the original system, so
+    // the shift is done before rotating).
+    // Corners: where each one is and which side is "outside" (angle,
+    // in the original system, turned into an already rotated vector). The number is
+    // only placed when drawing (placeCornerLabels), which is where the
+    // real on-screen size is known.
     const corners = (data.corners || [])
         .filter((c) => c && c.trackPosition)
         .map((c) => {
@@ -2332,10 +2330,10 @@ function buildTrackGeometry(data) {
             return { number: c.number, at, dir: { x: (ahead.x - at.x) / len, y: (ahead.y - at.y) / len } };
         });
 
-    // Tiempo de cada punto dentro de la vuelta de referencia, normalizado a
-    // 0..1 (trackPositionTime viene en segundos de sesión). Si no viene, se
-    // usa la posición en el array, que para una vuelta muestreada parejo es
-    // casi lo mismo.
+    // Time of each point within the reference lap, normalized to
+    // 0..1 (trackPositionTime comes in session seconds). If missing,
+    // the position in the array is used, which for an evenly sampled lap is
+    // almost the same.
     const rawTimes = Array.isArray(data.trackPositionTime) && data.trackPositionTime.length === points.length
         ? data.trackPositionTime.map(Number)
         : null;
@@ -2345,8 +2343,8 @@ function buildTrackGeometry(data) {
         ? rawTimes.map((t) => (t - t0) / tSpan)
         : points.map((_, i) => i / (points.length - 1));
 
-    // Fracción de vuelta (en tiempo) → punto de la pista, interpolando entre
-    // los dos puntos del trazado que la rodean.
+    // Lap fraction (in time) → point on the track, interpolating between
+    // the two layout points around it.
     const pointAtLapFraction = (fraction) => {
         const f = Math.min(Math.max(fraction, 0), 1);
         let lo = 0;
@@ -2366,11 +2364,11 @@ function buildTrackGeometry(data) {
 
     const refLapSeconds = Number(data.candidateLap && data.candidateLap.lapTime);
 
-    // Tramo de pista entre dos fracciones de vuelta (para pintar sectores):
-    // los puntos del trazado que caen adentro, más los dos extremos exactos.
-    // Sectores de comisarios (los de "YELLOW IN TRACK SECTOR 11"): la API
-    // da dónde empieza cada uno; cada sector va desde ese punto hasta el
-    // comienzo del siguiente, siguiendo el trazado.
+    // Stretch of track between two lap fractions (to paint sectors):
+    // the layout points that fall inside, plus the two exact ends.
+    // Marshal sectors (the ones in "YELLOW IN TRACK SECTOR 11"): the API
+    // gives where each one starts; each sector runs from that point to the
+    // start of the next, following the layout.
     const nearestIndex = (p) => {
         let best = 0;
         let bestDist = Infinity;
@@ -2420,7 +2418,7 @@ function trackPathD(points, closed = true) {
     return closed ? `${d} Z` : d;
 }
 
-// Dirección de la pista en el punto `index` del trazado (vector unitario).
+// Track direction at layout point `index` (unit vector).
 function trackDirection(points, index) {
     const a = points[index];
     const b = points[(index + 3) % points.length];
@@ -2428,10 +2426,10 @@ function trackDirection(points, index) {
     return { x: (b.x - a.x) / len, y: (b.y - a.y) / len };
 }
 
-// Bandera a cuadros de verdad en la línea de largada (primer punto del
-// trazado: la vuelta de referencia arranca en la meta): una grilla de
-// cuadraditos blancos y negros alternados, `cols` a lo largo de la pista y
-// `rows` cruzándola, girada según la dirección de la recta.
+// A real chequered flag on the start line (the first point of the
+// layout: the reference lap starts at the finish line): a grid of
+// alternating black and white squares, `cols` along the track and
+// `rows` across it, rotated to follow the straight.
 function startFlagHTML(points, cell, cols = 3, rows = 6) {
     const a = points[0];
     const dir = trackDirection(points, 0);
@@ -2448,10 +2446,10 @@ function startFlagHTML(points, cell, cols = 3, rows = 6) {
     return `<g class="track-flag" transform="translate(${a.x.toFixed(1)} ${a.y.toFixed(1)}) rotate(${angle.toFixed(1)})">${squares}</g>`;
 }
 
-// Flechita que marca el sentido de giro: al costado de la bandera a
-// cuadros, apuntando a lo largo de la recta. Va del lado de la pista con
-// más espacio libre (la recta de largada suele tener otro tramo cerca).
-// `gap` = cuánto se separa del centro de la pista.
+// Small arrow showing the direction of travel: beside the chequered
+// flag, pointing along the straight. It goes on the side of the track with
+// more free space (the start straight often has another stretch nearby).
+// `gap` = how far it sits from the center of the track.
 function directionArrowPoints(points, size, gap) {
     const p = points[0];
     const dir = trackDirection(points, 0);
@@ -2464,20 +2462,20 @@ function directionArrowPoints(points, size, gap) {
     const side = { x: -dir.y * sign, y: dir.x * sign };
     const cx = p.x + side.x * gap;
     const cy = p.y + side.y * gap;
-    // Flecha larga y angosta (punta + cola con muesca), bien legible aun
-    // chiquita; un triángulo tan ancho como largo se leía como un "▼".
+    // A long, narrow arrow (tip + notched tail), easy to read even
+    // when tiny; a triangle as wide as it was long read as a "▼".
     const at = (along, across) => ({ x: cx + dir.x * size * along + side.x * size * across, y: cy + dir.y * size * along + side.y * size * across });
     const shape = [at(1.4, 0), at(-0.2, 0.7), at(0.1, 0), at(-0.2, -0.7)];
     return shape.map((q) => `${q.x.toFixed(1)},${q.y.toFixed(1)}`).join(' ');
 }
 
-// ── SECTORES DEL MAPA ──
-// El mapa pinta S1 / S2 / S3 como el mapa oficial. Dónde termina cada
-// sector sale de los tiempos de sector de la sesión (mediana entre todos
-// los autos con los tres tiempos), pasado a fracción de vuelta, igual que
-// la posición estimada de los autos. Se fija la primera vez que hay datos
-// (recalcularlo cada vuelta haría "bailar" los límites). Sin datos, la
-// pista va en un solo color.
+// ── MAP SECTORS ──
+// The map paints S1 / S2 / S3 like the official map. Where each
+// sector ends comes from the session's sector times (median across all
+// cars with all three times), turned into a lap fraction, just like
+// the cars' estimated position. It's fixed the first time there's data
+// (recomputing it every lap would make the boundaries "dance"). Without data, the
+// track is a single color.
 let trackSectorShares = null;
 
 function sessionSectorShares() {
@@ -2500,8 +2498,8 @@ function sessionSectorShares() {
     return raw.map((v) => v / total);
 }
 
-// Llamado desde render(): la primera vez que hay tiempos de sector,
-// redibuja la pista con los sectores de color.
+// Called from render(): the first time there are sector times,
+// it redraws the track with colored sectors.
 function refreshTrackSectors() {
     if (!trackMap || trackSectorShares) return;
     const shares = sessionSectorShares();
@@ -2511,11 +2509,11 @@ function refreshTrackSectors() {
     updatePositionOverlay();
 }
 
-// Unidades del SVG que entran en un píxel de pantalla. Los tamaños del mapa
-// (grosor de pista, números de curva, autos) se piensan en píxeles, así se
-// ven iguales en un mapa chico que en uno grande. Con "meet" manda el lado
-// más ajustado; si el contenedor todavía no tiene alto (el SVG le da el alto
-// en el modo "con lo justo"), manda el ancho.
+// SVG units per screen pixel. Map sizes
+// (track width, corner numbers, cars) are thought of in pixels, so they
+// look the same on a small map as on a large one. With "meet" the tighter side
+// wins; if the container has no height yet (the SVG gives it its height
+// in "fit" mode), the width wins.
 function trackUnitsPerPx(element, viewBox) {
     const rect = element.getBoundingClientRect();
     if (rect.width <= 0) return null;
@@ -2523,8 +2521,8 @@ function trackUnitsPerPx(element, viewBox) {
     return rect.height > 0 ? Math.max(byWidth, viewBox[3] / rect.height) : byWidth;
 }
 
-// Distancia de un punto al trazado (a los tramos entre puntos, no solo a
-// los puntos: si no, un número podía quedar encima de la línea entre dos).
+// Distance from a point to the layout (to the segments between points, not just to
+// the points: otherwise a number could end up on the line between two).
 function distanceToTrack(p, points) {
     let best = Infinity;
     for (let i = 0; i < points.length; i++) {
@@ -2540,7 +2538,7 @@ function distanceToTrack(p, points) {
     return best;
 }
 
-// Índice del tramo del trazado más cercano a un punto.
+// Index of the layout segment closest to a point.
 function nearestTrackSegment(p, points) {
     let best = 0;
     let bestDist = Infinity;
@@ -2557,21 +2555,21 @@ function nearestTrackSegment(p, points) {
     return best;
 }
 
-// Ubica el número de cada curva como en el mapa oficial: lo más cerca
-// posible de su curva, del lado que tenga lugar, y siempre del lado de SU
-// curva (el tramo de pista más cercano al número tiene que ser el de esa
-// curva; si no, un número podía terminar del otro lado de una recta, junto
-// a otra curva).
+// Places each corner's number like the official map: as close as
+// possible to its corner, on whichever side has room, and always on the side of ITS
+// corner (the stretch of track closest to the number has to be that
+// corner's; otherwise a number could end up on the other side of a straight, next
+// to another corner).
 //
-// Para cada curva se arma una lista de lugares posibles (24 direcciones, a
-// distancias crecientes), ordenada de mejor a peor: más cerca primero y, a
-// igual distancia, el lado que indica la API. Después se ubican en orden y,
-// si una curva no encuentra lugar libre, se vuelve atrás y la anterior
-// prueba su siguiente opción (la 5 le hace lugar a la 6). Con tope de
-// intentos: si no alcanza, se ubican de a una como se pueda.
+// For each corner a list of possible spots is built (24 directions, at
+// increasing distances), sorted from best to worst: closest first and, at
+// equal distance, the side the API indicates. Then they're placed in order and,
+// if a corner can't find a free spot, it backtracks and the previous one
+// tries its next option (5 makes room for 6). With a cap on
+// attempts: if that's not enough, they're placed one by one as best as possible.
 function placeCornerLabels(corners, points, upx) {
-    const labelRadius = 9 * upx;       // círculo del número
-    const trackHalf = 7.2 * upx;       // medio ancho de la pista con su borde
+    const labelRadius = 9 * upx;       // the number's circle
+    const trackHalf = 7.2 * upx;       // half the track width with its border
     const clearTrack = trackHalf + labelRadius + 1.5 * upx;
     const clearLabel = labelRadius * 2 + 2 * upx;
     const rings = [0, 5, 11, 18, 26].map((extra) => clearTrack + (0.5 + extra) * upx);
@@ -2599,14 +2597,14 @@ function placeCornerLabels(corners, points, upx) {
             });
         });
         list.sort((a, b) => a.cost - b.cost);
-        // Última opción: pegado del lado de la API (por si no hay nada libre).
+        // Last resort: right against the API's side (in case nothing is free).
         list.push({ x: c.at.x + c.dir.x * rings[0], y: c.at.y + c.dir.y * rings[0], cost: Infinity, fallback: true });
         return list;
     });
 
     const fits = (p, placed) => p.fallback || placed.every((q) => Math.hypot(q.x - p.x, q.y - p.y) >= clearLabel);
 
-    // Búsqueda con vuelta atrás, con tope para no colgarse nunca.
+    // Backtracking search, capped so it never hangs.
     const placed = [];
     const choice = new Array(corners.length).fill(-1);
     let steps = 0;
@@ -2628,7 +2626,7 @@ function placeCornerLabels(corners, points, upx) {
         }
     }
 
-    // Si la búsqueda no cerró, cada uno se queda con lo mejor que encuentre.
+    // If the search didn't finish, each one keeps the best spot it finds.
     if (i < corners.length) {
         placed.length = 0;
         options.forEach((list) => placed.push(list.find((p) => fits(p, placed)) || list[list.length - 1]));
@@ -2636,15 +2634,15 @@ function placeCornerLabels(corners, points, upx) {
     return corners.map((c, k) => ({ number: c.number, x: placed[k].x, y: placed[k].y }));
 }
 
-// Dibuja la pista (una vez por circuito, más una cuando llegan los
-// sectores y otra si cambia el tamaño) y alterna entre SVG y PNG.
+// Draws the track (once per circuit, plus once when the sectors
+// arrive and again if the size changes) and switches between SVG and PNG.
 function drawTrackMap(isRetry = false) {
     const host = document.getElementById('circuit-position-overlay');
     const wrap = document.getElementById('circuit-map-wrap');
     if (!host || !wrap) return;
 
     wrap.classList.toggle('has-track', !!trackMap);
-    // Brújula y viento dependen de la rotación del circuito.
+    // Compass and wind depend on the circuit's rotation.
     updateWindOverlay();
     if (!trackMap) {
         host.innerHTML = '';
@@ -2656,8 +2654,8 @@ function drawTrackMap(isRetry = false) {
     trackMap.unitsPerPx = upx;
     const w = 6 * upx;
 
-    // Pista: borde + línea. Con sectores, la línea va en tres tramos de
-    // color; sin sectores, un solo tramo neutro.
+    // Track: border + line. With sectors, the line goes in three colored
+    // stretches; without sectors, a single neutral stretch.
     let lineHTML;
     if (trackSectorShares) {
         const [s1, s2] = trackSectorShares;
@@ -2674,10 +2672,10 @@ function drawTrackMap(isRetry = false) {
         <svg class="track-svg" viewBox="${viewBox.map((v) => v.toFixed(1)).join(' ')}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Track map">
             <path class="track-outline" d="${trackPathD(points)}" style="stroke-width:${(w * 2.4).toFixed(1)}"></path>
             ${lineHTML}
-            <!-- SC / VSC / bandera roja: la pista entera se tiñe (ver
+            <!-- SC / VSC / red flag: the whole track gets tinted (see
                  updateTrackStatus). -->
             <path class="track-status-line" d="${trackPathD(points)}" style="stroke-width:${w.toFixed(1)}"></path>
-            <!-- Banderas amarillas por tramo de comisarios (updateTrackFlags). -->
+            <!-- Yellow flags per marshal sector (updateTrackFlags). -->
             <g class="track-flags" style="stroke-width:${(w * 1.6).toFixed(1)}"></g>
             ${startFlagHTML(points, w * 0.7)}
             <polygon class="track-direction" points="${directionArrowPoints(points, w * 1.6, w * 4)}"></polygon>
@@ -2688,22 +2686,22 @@ function drawTrackMap(isRetry = false) {
                         <text style="font-size:${(9 * upx).toFixed(1)}px">${c.number}</text>
                     </g>`).join('')}
             </g>
-            <!-- Peleas en pista: tramo entre autos a menos de 1 s (updateBattles). -->
+            <!-- Battles on track: stretch between cars less than 1 s apart (updateBattles). -->
             <g class="track-battles" style="stroke-width:${(w * 0.45).toFixed(1)}"></g>
             <g class="track-cars"></g>
         </svg>`;
     trackFlagsSignature = null; // capas nuevas: redibujar banderas
     updateTrackAnnotations();
 
-    // Con el SVG ya puesto se sabe su tamaño real (el tope de alto puede
-    // achicarlo): si la escala era otra, se redibuja una vez con la buena.
+    // With the SVG in place its real size is known (the max height may
+    // shrink it): if the scale was different, it redraws once with the right one.
     const svg = host.querySelector('.track-svg');
     const realUpx = svg && trackUnitsPerPx(svg, viewBox);
     if (!isRetry && realUpx && Math.abs(realUpx - upx) / upx > 0.08) drawTrackMap(true);
 }
 
-// Si cambia el tamaño de la ventana, cambia la escala: se redibuja para que
-// números y autos sigan midiendo lo mismo en pantalla.
+// If the window size changes, the scale changes: it redraws so that
+// numbers and cars keep the same on-screen size.
 let trackResizeTimer = null;
 window.addEventListener('resize', () => {
     clearTimeout(trackResizeTimer);
@@ -2715,30 +2713,30 @@ window.addEventListener('resize', () => {
 });
 
 // ── WIND ON THE MAP ───────────────────────────────────────────────────────
-// El sistema de coordenadas de F1 está orientado al norte: X = este,
-// Y = norte (comparado contra el trazado geográfico real de los 24
-// circuitos del calendario: todos coinciden a menos de 3°, ninguno
-// espejado). Así que el norte del mapa es ese eje con la misma rotación de
-// MultiViewer que se le aplica a la pista.
+// F1's coordinate system is oriented to the north: X = east,
+// Y = north (compared against the real geographic layout of the 24
+// circuits on the calendar: all match within 3°, none
+// mirrored). So the map's north is that axis with the same MultiViewer
+// rotation applied to the track.
 //
-// Brújula: siempre visible con el mapa, arriba a la izquierda.
-// Viento: líneas finitas que cruzan el mapa hacia donde sopla, solo si
-// supera WIND_MIN_MS. Más viento = más rápidas y un poco más visibles.
-const WIND_MIN_MS = 3;       // ~11 km/h: por debajo, ni se anima
+// Compass: always visible with the map, top left.
+// Wind: thin lines crossing the map in the direction it blows, only if it
+// exceeds WIND_MIN_MS. More wind = faster and slightly more visible.
+const WIND_MIN_MS = 3;       // ~11 km/h: below this, it doesn't even animate
 const WIND_STREAKS = 14;
 
-// Ángulo en pantalla (grados, 0 = derecha, sentido horario) de un vector
-// geográfico (x = este, y = norte), con la rotación del mapa.
+// On-screen angle (degrees, 0 = right, clockwise) of a
+// geographic vector (x = east, y = north), with the map's rotation.
 function screenAngleOfGeoVector(gx, gy) {
     const rad = ((trackMap && trackMap.rotation) || 0) * Math.PI / 180;
     const vx = gx * Math.cos(rad) - gy * Math.sin(rad);
     const vy = gy * Math.cos(rad) + gx * Math.sin(rad);
-    return Math.atan2(-vy, vx) * 180 / Math.PI; // -vy: en SVG la Y crece para abajo
+    return Math.atan2(-vy, vx) * 180 / Math.PI; // -vy: in SVG Y grows downwards
 }
 
-// Marcas del dial, una cada 5°, con cuatro largos como una brújula real:
-// cardinales (cada 90°) las más largas, cada 45° medianas, cada 15° cortas
-// y el resto muy cortas y tenues. Se arman una sola vez.
+// Dial ticks, one every 5°, with four lengths like a real compass:
+// cardinal points (every 90°) the longest, every 45° medium, every 15° short
+// and the rest very short and faint. Built only once.
 function buildCompassTicks(compass) {
     const group = compass.querySelector('.track-compass-ticks');
     if (!group || group.childElementCount) return;
@@ -2763,15 +2761,15 @@ function updateCompass() {
 
     buildCompassTicks(compass);
 
-    // Solo gira el dial (marcas + punta roja), que en reposo apunta para
-    // arriba (-90°); el disco y la N del centro quedan quietos y derechos.
+    // Only the dial rotates (ticks + red tip), which at rest points
+    // up (-90°); the disc and the N in the center stay still and upright.
     const north = screenAngleOfGeoVector(0, 1);
     const dial = compass.querySelector('.track-compass-dial');
     if (dial) dial.setAttribute('transform', `rotate(${(north + 90).toFixed(1)})`);
 }
 
-// Las líneas se crean una sola vez, con largo, altura y demora al azar, así
-// no salen todas juntas ni en fila.
+// The lines are created only once, with random length, height and delay, so
+// they don't all come out together or in a row.
 function ensureWindStreaks(field) {
     if (field.childElementCount) return;
     for (let i = 0; i < WIND_STREAKS; i++) {
@@ -2792,7 +2790,7 @@ function updateWindOverlay() {
 
     const w = state.WeatherData;
     const speed = w ? Number(w.WindSpeed) : NaN;      // m/s
-    const from = w ? Number(w.WindDirection) : NaN;   // grados, de dónde viene
+    const from = w ? Number(w.WindDirection) : NaN;   // degrees, where it blows from
     const active = !!trackMap && Number.isFinite(speed) && Number.isFinite(from) && speed >= WIND_MIN_MS;
     overlay.hidden = !active;
     if (!active) return;
@@ -2800,10 +2798,10 @@ function updateWindOverlay() {
     const field = overlay.querySelector('.track-wind-field');
     ensureWindStreaks(field);
 
-    // Sopla HACIA el lado opuesto de donde viene (dirección meteorológica).
+    // It blows TOWARD the opposite side from where it comes (meteorological direction).
     const toward = (from + 180) * Math.PI / 180;
     const angle = screenAngleOfGeoVector(Math.sin(toward), Math.cos(toward));
-    // 3 m/s → cruza en ~5 s; 12 m/s o más → en ~1.5 s.
+    // 3 m/s → crosses in ~5 s; 12 m/s or more → in ~1.5 s.
     const duration = Math.max(1.5, Math.min(5, 15 / speed));
     const opacity = Math.max(0.18, Math.min(0.4, speed / 30));
     field.style.setProperty('--wind-angle', `${angle.toFixed(1)}deg`);
@@ -2813,17 +2811,17 @@ function updateWindOverlay() {
 
 // ── MAP ANNOTATIONS: banderas, estado de pista, peleas, seguir, tooltip ───
 
-// Banderas amarillas activas por sector de comisarios, a partir de los
-// mensajes de Race Control en orden: "YELLOW / DOUBLE YELLOW IN TRACK
-// SECTOR n" prende el tramo, "CLEAR IN TRACK SECTOR n" lo apaga, y un
-// TRACK CLEAR / bandera roja / bandera a cuadros apaga todo.
-// Devuelve { número de sector: 'yellow' | 'double' }.
+// Active yellow flags per marshal sector, based on the
+// Race Control messages in order: "YELLOW / DOUBLE YELLOW IN TRACK
+// SECTOR n" turns the stretch on, "CLEAR IN TRACK SECTOR n" turns it off, and a
+// TRACK CLEAR / red flag / chequered flag turns everything off.
+// Returns { sector number: 'yellow' | 'double' }.
 //
-// Solo con la sesión en marcha, y nada después de la bandera a cuadros:
-// Race Control sigue mostrando amarillas mientras sacan autos o grúas de
-// la pista con la sesión ya terminada, y esas nunca reciben su CLEAR (el
-// feed deja de mandar). Antes quedaban prendidas para siempre, con la
-// pista en TRACK CLEAR (pasó en la FP2 de Baku: sectores 2 y 11).
+// Only while the session is running, and nothing after the chequered flag:
+// Race Control keeps showing yellows while cars or cranes are removed from
+// the track after the session has ended, and those never get their CLEAR (the
+// feed stops sending). Previously they stayed on forever, with the
+// track at TRACK CLEAR (happened in Baku FP2: sectors 2 and 11).
 function activeSectorFlags() {
     const flags = {};
     if (!sessionIsRunning()) return flags;
@@ -2867,13 +2865,13 @@ function updateTrackFlags() {
         .join('');
 }
 
-// Estado de pista, en la esquina de abajo a la izquierda del mapa: lo más
-// importante que esté pasando, en este orden: bandera roja, SC, VSC, doble
-// amarilla, amarilla y, con la sesión terminada, bandera a cuadros. Con la
-// pista limpia, la esquina queda vacía.
-// Con SC / VSC / roja, además, la pista entera se tiñe (amarillo o rojo,
-// con un latido suave). TrackStatus: 2 = amarilla, 4 = SC, 5 = roja,
-// 6 = VSC, 7 = VSC terminando.
+// Track status, in the bottom-left corner of the map: the most
+// important thing happening, in this order: red flag, SC, VSC, double
+// yellow, yellow and, once the session has ended, chequered flag. With the
+// track clear, the corner stays empty.
+// With SC / VSC / red, the whole track is also tinted (yellow or red,
+// with a soft pulse). TrackStatus: 2 = yellow, 4 = SC, 5 = red,
+// 6 = VSC, 7 = VSC ending.
 const TRACK_STATUS_TINTS = {
     4: { cls: 'sc', text: 'Safety car' },
     6: { cls: 'vsc', text: 'Virtual safety car' },
@@ -2887,7 +2885,7 @@ function sessionEnded() {
     return raceControlMessages().some((m) => String(m.Flag || '').toUpperCase() === 'CHEQUERED');
 }
 
-// "SECTOR 11" / "SECTORS 10, 11" con los tramos de ese tipo de bandera.
+// "SECTOR 11" / "SECTORS 10, 11" with the stretches for that flag type.
 function sectorsLabel(flags, kind) {
     const sectors = Object.keys(flags).filter((s) => flags[s] === kind).map(Number).sort((a, b) => a - b);
     if (sectors.length === 0) return '';
@@ -2926,17 +2924,17 @@ function updateTrackStatus() {
         + (info.detail ? `<span class="track-status-banner-detail">${escapeHTML(info.detail)}</span>` : '');
 }
 
-// Todo lo que depende de mensajes / estado (no de las posiciones): se llama
-// en cada render y cuando se dibuja la pista.
+// Everything that depends on messages / status (not on positions): called
+// on every render and when the track is drawn.
 function updateTrackAnnotations() {
     updateTrackFlags();
     updateTrackStatus();
 }
 
-// Peleas en pista (solo Carrera/Sprint): dos autos seguidos a menos de
-// BATTLE_GAP_SECONDS se marcan resaltando el tramo de pista entre los dos
-// (siguiendo el trazado, no en línea recta: una recta cortaba por adentro
-// del circuito). El intervalo es el real del feed; los puntos, estimados.
+// Battles on track (Race/Sprint only): two consecutive cars less than
+// BATTLE_GAP_SECONDS apart are marked by highlighting the stretch of track between them
+// (following the layout, not in a straight line: a straight line cut across the inside
+// of the circuit). The interval is the feed's real one; the dots are estimated.
 const BATTLE_GAP_SECONDS = 1;
 
 function battleIntervalSeconds(line, aheadLine) {
@@ -2947,7 +2945,7 @@ function battleIntervalSeconds(line, aheadLine) {
     return gap != null && aheadGap != null ? gap - aheadGap : null;
 }
 
-// Índice del punto del trazado más cercano a una posición del mapa.
+// Index of the layout point closest to a map position.
 function nearestTrackIndex(p) {
     const points = trackMap.points;
     let best = 0;
@@ -2959,10 +2957,10 @@ function nearestTrackIndex(p) {
     return best;
 }
 
-// Tramo del trazado desde el auto de atrás hasta el de adelante, siguiendo
-// la pista (hacia adelante, dando la vuelta si cruza la meta). null si es
-// más largo que BATTLE_MAX_LAP_SHARE: con posiciones estimadas puede pasar
-// que dos autos a 0.6 s queden dibujados lejos, y un tramo gigante confunde.
+// Stretch of the layout from the car behind to the car ahead, following
+// the track (forwards, wrapping around if it crosses the line). null if it's
+// longer than BATTLE_MAX_LAP_SHARE: with estimated positions two cars
+// 0.6 s apart can end up drawn far from each other, and a huge stretch is confusing.
 const BATTLE_MAX_LAP_SHARE = 0.08;
 
 function battleSegment(behind, ahead) {
@@ -3001,9 +2999,9 @@ function updateBattles(positions) {
     layer.innerHTML = html;
 }
 
-// Seguir a un piloto: clic en su fila de la tabla o en su auto del mapa. Su
-// punto se agranda con un anillo, los demás se atenúan y la fila queda
-// marcada. Otro clic lo suelta.
+// Follow a driver: click their row in the table or their car on the map. Their
+// dot grows with a ring, the rest dim and the row stays
+// highlighted. Another click releases it.
 let followedDriver = null;
 
 function setFollowedDriver(num) {
@@ -3014,8 +3012,8 @@ function setFollowedDriver(num) {
     updatePositionOverlay();
 }
 
-// Tooltip al pasar el mouse por un auto: número y apellido, posición, gap
-// y neumático. Sigue al auto mientras se mueve.
+// Tooltip when hovering over a car: number and surname, position, gap
+// and tyre. It follows the car as it moves.
 let tooltipDriver = null;
 
 function tooltipHTML(num) {
@@ -3076,8 +3074,8 @@ function initMapInteractions() {
     }
 }
 
-// La muestra más nueva de Position.z (por Timestamp, no por posición en
-// el array: el lote puede traer varias).
+// The newest Position.z sample (by Timestamp, not by position in
+// the array: a batch can contain several).
 function latestPositionEntries() {
     const samples = state['Position.z'] && state['Position.z'].Position;
     if (!Array.isArray(samples) || samples.length === 0) return null;
@@ -3094,31 +3092,31 @@ function driverMapColor(driver) {
 }
 
 // ── ESTIMATED CAR POSITIONS ───────────────────────────────────────────────
-// F1 solo manda Position.z (la posición real de cada auto) a conexiones con
-// cuenta de F1 TV, así que al relay nunca le llega. Lo que sí llega son los
-// minisectores de TimingData: cada uno pasa de 0 a un color en el momento
-// en que el auto lo completa. Con eso se sabe, para cada auto, cuál fue el
-// último punto de control que pasó (~25 por vuelta), y se lo ubica ahí.
+// F1 only sends Position.z (each car's real position) to connections with
+// an F1 TV account, so it never reaches the relay. What does arrive are the
+// TimingData mini-sectors: each one goes from 0 to a color the moment
+// the car completes it. From that we know, for each car, the last
+// checkpoint it passed (~25 per lap), and it's placed there.
 //
-// Todo va en "fracción de vuelta medida en tiempo": los 3 sectores se
-// reparten según los tiempos de sector de ese auto, y los minisectores en
-// partes iguales dentro de cada sector. El trazado de MultiViewer es una
-// vuelta real con el tiempo de cada punto, así que fracción de tiempo →
-// punto de la pista es directo (TRACK MAP, pointAtLapFraction()).
+// Everything is in "lap fraction measured in time": the 3 sectors are
+// split according to that car's sector times, and the mini-sectors in
+// equal parts within each sector. The MultiViewer layout is a
+// real lap with the time of each point, so time fraction →
+// point on the track is direct (TRACK MAP, pointAtLapFraction()).
 //
-// Entre un punto de control y el siguiente el auto avanza al ritmo de su
-// última vuelta, sin pasarse nunca del minisector siguiente: si el dato
-// llega tarde, lo espera ahí en vez de adelantarse.
+// Between one checkpoint and the next the car advances at the pace of its
+// last lap, never going past the next mini-sector: if the data
+// arrives late, it waits there instead of getting ahead.
 //
-// Si un sector no trae minisectores (según OpenF1, en carrera pueden no
-// venir), ese sector cuenta como un único punto de control: su tiempo.
+// If a sector has no mini-sectors (according to OpenF1, in races they may not
+// come), that sector counts as a single checkpoint: its time.
 const carProgress = {};     // num → { last, frac, next, at }
-const carSectorShares = {}; // num → [s1, s2, s3] como fracción de la vuelta
+const carSectorShares = {}; // num → [s1, s2, s3] as lap fractions
 
-// Reparto de la vuelta entre los 3 sectores, sacado de los tiempos de
-// sector del propio auto. Se guarda el último reparto completo: a mitad de
-// vuelta los tiempos del sector en curso vienen vacíos, y recalcular con
-// datos a medias haría saltar los puntos de control.
+// How the lap splits across the 3 sectors, taken from the car's own sector
+// times. The last complete split is kept: mid-lap
+// the current sector's times come empty, and recomputing with
+// partial data would make the checkpoints jump.
 function sectorShares(num, line) {
     const ms = getSectorTimes(line).map((s) => lapTimeToMs(s && s.value));
     if (ms.every((v) => v != null && v > 0)) {
@@ -3128,8 +3126,8 @@ function sectorShares(num, line) {
     return carSectorShares[num] || [1 / 3, 1 / 3, 1 / 3];
 }
 
-// Puntos de control de la vuelta en curso, en orden: dónde termina cada uno
-// (fracción de vuelta) y si el auto ya lo pasó.
+// Checkpoints of the current lap, in order: where each one ends
+// (lap fraction) and whether the car has already passed it.
 function lapCheckpoints(num, line) {
     const shares = sectorShares(num, line);
     const checkpoints = [];
@@ -3149,8 +3147,8 @@ function lapCheckpoints(num, line) {
     return checkpoints;
 }
 
-// Ritmo con el que avanza el auto entre puntos de control: su última
-// vuelta si es razonable, si no la mejor, si no la vuelta de referencia.
+// Pace at which the car advances between checkpoints: its last
+// lap if it's reasonable, otherwise the best, otherwise the reference lap.
 function carLapMs(line) {
     const sane = (ms) => ms != null && ms > 50000 && ms < 240000;
     const last = lapTimeToMs(line.LastLapTime && line.LastLapTime.Value);
@@ -3160,8 +3158,8 @@ function carLapMs(line) {
     return (trackMap && trackMap.refLapMs) || 100000;
 }
 
-// Se llama en cada render(): registra el momento en que cada auto pasa un
-// punto de control nuevo (o arranca una vuelta nueva).
+// Called on every render(): records the moment each car passes a
+// new checkpoint (or starts a new lap).
 function trackCarProgress() {
     const lines = (state.TimingData && state.TimingData.Lines) || {};
     const now = Date.now();
@@ -3186,15 +3184,15 @@ function sessionIsRunning() {
     return status === 'Started';
 }
 
-// Autos en pista: también con la sesión en "Finished" (bandera a cuadros o
-// reloj en 0:00), porque ahí todavía hay autos terminando la vuelta o
-// volviendo a boxes. Recién con "Finalised"/"Ends" se sacan del mapa.
+// Cars on track: also with the session "Finished" (chequered flag or
+// clock at 0:00), because there are still cars finishing the lap or
+// returning to the pits. Only with "Finalised"/"Ends" are they removed from the map.
 function carsOnTrack() {
     const status = state.SessionStatus && state.SessionStatus.Status;
     return status === 'Started' || status === 'Finished';
 }
 
-// Posición estimada de cada auto, en coordenadas del SVG.
+// Each car's estimated position, in SVG coordinates.
 function estimatedCarPositions() {
     const positions = {};
     if (!trackMap || !carsOnTrack()) return positions;
@@ -3213,8 +3211,8 @@ function estimatedCarPositions() {
     return positions;
 }
 
-// Posiciones reales de Position.z (solo llegan con cuenta de F1 TV), en
-// coordenadas del SVG. null si no hay.
+// Real positions from Position.z (they only arrive with an F1 TV account), in
+// SVG coordinates. null if there are none.
 function exactCarPositions() {
     const entries = latestPositionEntries();
     if (!entries || !trackMap) return null;
@@ -3230,10 +3228,10 @@ function exactCarPositions() {
     return positions;
 }
 
-// Mueve los puntos de los autos: posiciones reales si llegan, estimadas por
-// minisectores si no (ver ESTIMATED CAR POSITIONS). Reutiliza los <g> de
-// cada auto en vez de redibujarlos, así la transición de CSS los desliza
-// de una posición a la siguiente en lugar de saltar.
+// Moves the car dots: real positions if they arrive, estimated from
+// mini-sectors otherwise (see ESTIMATED CAR POSITIONS). Reuses each car's <g>
+// instead of redrawing it, so the CSS transition slides it
+// from one position to the next instead of jumping.
 function updatePositionOverlay() {
     const note = document.getElementById('track-note');
     const layer = document.querySelector('#circuit-position-overlay .track-cars');
@@ -3247,8 +3245,8 @@ function updatePositionOverlay() {
     if (note) note.hidden = !!exact || Object.keys(positions).length === 0;
 
     const driverList = state.DriverList || {};
-    // Tamaños en píxeles de pantalla (ver trackUnitsPerPx): punto de 5px y
-    // sigla de 11px, sea cual sea el tamaño del mapa.
+    // Sizes in screen pixels (see trackUnitsPerPx): a 5px dot and an
+    // 11px code, whatever the map's size.
     const upx = trackMap.unitsPerPx || trackMap.span / 500;
     const dotRadius = 5 * upx;
     const labelSize = 11 * upx;
@@ -3258,15 +3256,15 @@ function updatePositionOverlay() {
         if (!car) {
             car = document.createElementNS('http://www.w3.org/2000/svg', 'g');
             car.dataset.num = num;
-            // track-car-hit: zona invisible más grande que el punto, para
-            // poder acertarle con el mouse o el dedo (hover / seguir).
+            // track-car-hit: an invisible area larger than the dot, so it
+            // can be hit with the mouse or a finger (hover / follow).
             car.innerHTML = '<circle class="track-car-hit"></circle><circle class="track-car-dot"></circle><text></text>';
             layer.appendChild(car);
         }
 
         const followed = followedDriver === num;
         car.setAttribute('class', `track-car${followed ? ' is-followed' : ''}${followedDriver && !followed ? ' is-dimmed' : ''}`);
-        // El seguido va arriba de todos (en SVG manda el orden en el DOM).
+        // The followed car goes on top of all others (in SVG, DOM order wins).
         if (followed && layer.lastChild !== car) layer.appendChild(car);
 
         const driver = driverList[num] || {};
@@ -3281,8 +3279,8 @@ function updatePositionOverlay() {
         circle.setAttribute('stroke-width', (radius * 0.4).toFixed(1));
         label.setAttribute('x', (radius * 1.5).toFixed(1));
         label.setAttribute('y', (labelSize * 0.35).toFixed(1));
-        // Sigla en blanco (no del color del equipo): sobre los sectores de
-        // color se leía mal. El color del equipo ya lo lleva el punto.
+        // White code (not the team color): it was hard to read over the colored
+        // sectors. The dot already carries the team color.
         label.style.fontSize = `${labelSize.toFixed(1)}px`;
         label.textContent = driverCode(driver, num);
 
@@ -3290,7 +3288,7 @@ function updatePositionOverlay() {
         car.style.transform = `translate(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px)`;
     }
 
-    // Autos que ya no se muestran (en boxes, retirados, sesión parada).
+    // Cars no longer shown (in the pits, retired, session stopped).
     for (const car of [...layer.children]) {
         if (!positions[car.dataset.num]) car.remove();
     }
@@ -3299,17 +3297,17 @@ function updatePositionOverlay() {
     updateTooltip();
 }
 
-// Entre mensajes del feed los autos estimados siguen avanzando: se
-// recalculan cada medio segundo (la transición de CSS dura lo mismo, así el
-// movimiento queda continuo).
+// Between feed messages the estimated cars keep moving: they're
+// recomputed every half second (the CSS transition lasts the same, so the
+// movement stays continuous).
 setInterval(updatePositionOverlay, 500);
 
 // ── CUSTOMIZE TABLE PANEL ─────────────────────────────────────────────────
-// Se abre con el botón de controles (al lado del de pantalla completa) y
-// cubre la columna del mapa mientras está abierto: la tabla queda a la
-// vista y cada cambio se ve al instante. Se arma entero desde VIEW_COLUMNS
-// y VIEW_OPTIONS, así sumar una columna u opción nueva es tocar un solo
-// lugar.
+// It opens with the controls button (next to the fullscreen one) and
+// covers the map column while open: the table stays in
+// view and every change shows instantly. It's built entirely from VIEW_COLUMNS
+// and VIEW_OPTIONS, so adding a new column or option means touching a single
+// place.
 const LOCK_ICON_SVG = `<svg class="lvp-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>`;
 
 let viewPanelKind = null;
@@ -3323,10 +3321,10 @@ function currentSessionKind() {
     return sessionKindFromMeta(deriveSessionMeta(state.SessionInfo));
 }
 
-// Cómo se agrupan las columnas en el panel (el orden de la TABLA sigue
-// siendo el de VIEW_COLUMNS). Cada opción de formato va justo debajo de lo
-// que modifica: "Driver names" dentro de Driver, el estilo de Team debajo
-// de Team, el de neumáticos debajo de Tyres.
+// How columns are grouped in the panel (the TABLE order is still
+// VIEW_COLUMNS'). Each format option goes right below what it
+// modifies: "Driver names" inside Driver, the Team style below
+// Team, the tyres style below Tyres.
 const VIEW_PANEL_GROUPS = [
     { title: 'Driver', keys: ['pos', 'driver', 'number', 'team', 'status'] },
     { title: 'Timing', keys: ['gap', 'interval', 'bestLap', 'lastLap', 'sectors', 'microsectors'] },
@@ -3334,9 +3332,9 @@ const VIEW_PANEL_GROUPS = [
 ];
 const VIEW_OPTION_AFTER = { driver: 'driverName', team: 'team', tyres: 'tyres' };
 
-// Una fila: nombre a la izquierda, interruptor a la derecha. Las fijas
-// (Position, Driver) llevan un candado en lugar del interruptor; las que no
-// aplican a esta sesión, el interruptor deshabilitado y una nota.
+// One row: name on the left, toggle on the right. The fixed ones
+// (Position, Driver) get a lock instead of the toggle; the ones that don't
+// apply to this session get a disabled toggle and a note.
 function viewToggleRowHTML(col, view, kind) {
     if (col.locked) {
         return `
@@ -3357,9 +3355,9 @@ function viewToggleRowHTML(col, view, kind) {
         </label>`;
 }
 
-// Botones segmentados de una opción de formato. Los que dependen de un
-// interruptor apagado ni aparecen (syncDependentOptions() los muestra al
-// prenderlo).
+// Segmented buttons for a format option. The ones that depend on a
+// switched-off toggle don't even show up (syncDependentOptions() shows them when
+// it's switched on).
 function viewOptionHTML(name, view) {
     const opt = VIEW_OPTIONS[name];
     return `
@@ -3413,8 +3411,8 @@ function viewPanelBodyHTML(kind) {
     return groups.join('') + panels + tvSync;
 }
 
-// Muestra u oculta los botones que dependen de una casilla, sin redibujar
-// todo el panel (así la casilla que se acaba de tocar no pierde el foco).
+// Shows or hides the buttons that depend on a checkbox, without redrawing
+// the whole panel (so the checkbox just clicked doesn't lose focus).
 function syncDependentOptions() {
     const view = effectiveView(currentSessionKind());
     document.querySelectorAll('#live-view-panel [data-depends]').forEach((field) => {
@@ -3429,9 +3427,9 @@ function renderViewPanel(kind) {
     body.innerHTML = viewPanelBodyHTML(kind);
 }
 
-// Llamado desde render(): si la sesión cambia de tipo con el panel abierto
-// (p. ej. de Qualy a Carrera), cambian los defaults y lo que está
-// disponible, así que se redibuja.
+// Called from render(): if the session type changes with the panel open
+// (e.g. from Qualifying to Race), the defaults and what's
+// available change, so it's redrawn.
 function syncViewPanel(kind) {
     if (isViewPanelOpen() && kind !== viewPanelKind) renderViewPanel(kind);
 }
@@ -3441,10 +3439,10 @@ function initViewPanel() {
     const panel = document.getElementById('live-view-panel');
     if (!btn || !panel) return;
 
-    // Cierre con animación de salida (.is-closing en live.css): el panel se
-    // oculta de verdad recién cuando termina. Tope de 300 ms por si el
-    // navegador no dispara animationend; sin animación si el sistema pide
-    // reducir movimiento.
+    // Close with an exit animation (.is-closing in live.css): the panel is
+    // really hidden only when it ends. Capped at 300 ms in case the
+    // browser doesn't fire animationend; no animation if the system asks for
+    // reduced motion.
     let closeTimer = null;
 
     function finishClose() {
@@ -3454,7 +3452,7 @@ function initViewPanel() {
     }
 
     function open() {
-        // Si se reabre justo mientras se cerraba, se corta la salida.
+        // If it's reopened right while closing, the exit is cut short.
         clearTimeout(closeTimer);
         panel.classList.remove('is-closing');
         renderViewPanel(currentSessionKind());
@@ -3504,7 +3502,7 @@ function initViewPanel() {
         const input = e.target;
         if (input.hasAttribute('data-delay')) {
             setDelaySeconds(input.value);
-            input.value = delaySeconds(); // por si escribió algo fuera de rango
+            input.value = delaySeconds(); // in case they typed something out of range
             return;
         }
         if (input.dataset.col) viewPrefs.columns[input.dataset.col] = input.checked;
@@ -3515,8 +3513,8 @@ function initViewPanel() {
         applyTableView();
     });
 
-    // Registrado antes que el de pantalla completa: con el panel abierto,
-    // Esc solo cierra el panel (no saca además la pantalla completa).
+    // Registered before the fullscreen one: with the panel open,
+    // Esc only closes the panel (it doesn't also exit fullscreen).
     document.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape' || panel.hidden) return;
         e.stopImmediatePropagation();
@@ -3525,10 +3523,10 @@ function initViewPanel() {
 }
 
 // ── AUTO-HIDE MAP CONTROLS ────────────────────────────────────────────────
-// Como en YouTube: si nadie mueve el mouse (ni toca la pantalla, ni aprieta
-// una tecla) por unos segundos, los botones Customize / Full screen se
-// desvanecen, y vuelven con cualquier movimiento. No se esconden mientras
-// el panel está abierto, con el mouse encima o con foco de teclado adentro.
+// Like YouTube: if nobody moves the mouse (or touches the screen, or presses
+// a key) for a few seconds, the Customize / Full screen buttons
+// fade out, and they come back with any movement. They don't hide while
+// the panel is open, with the mouse over them or with keyboard focus inside.
 const CONTROLS_IDLE_MS = 3000;
 
 function initControlsAutoHide() {
@@ -3553,7 +3551,7 @@ function initControlsAutoHide() {
             return;
         }
         controls.classList.add('is-idle');
-        // Con los botones escondidos, en esa misma esquina aparece la brújula.
+        // With the buttons hidden, the compass shows up in that same corner.
         if (mapWrap) mapWrap.classList.add('controls-idle');
     }
 
@@ -3570,12 +3568,12 @@ function initControlsAutoHide() {
 }
 
 // ── FULLSCREEN TOGGLE ─────────────────────────────────────────────────────
-// La página ya ES la vista tabla + mapa (ocupa toda la ventana debajo del
-// navbar). "Full screen" tapa también el navbar (clase .is-fullscreen,
-// position:fixed) y, donde el navegador lo permite, pide pantalla completa
-// real (Fullscreen API) para esconder las barras del navegador — ideal para
-// dejarlo en una tele. En iPhone esa API no existe para elementos comunes,
-// así que ahí queda solo la versión CSS, que igual tapa todo lo de la página.
+// The page already IS the table + map view (it fills the whole window below the
+// navbar). "Full screen" also covers the navbar (.is-fullscreen class,
+// position:fixed) and, where the browser allows it, requests real
+// fullscreen (Fullscreen API) to hide the browser bars, which is ideal for
+// leaving it on a TV. On iPhone that API doesn't exist for regular elements,
+// so there only the CSS version applies, which still covers everything on the page.
 function initFullscreenButton() {
     const app = document.getElementById('live-map-view-content');
     const btn = document.getElementById('live-fullscreen-btn');
@@ -3583,7 +3581,7 @@ function initFullscreenButton() {
     function applyState(on) {
         app.classList.toggle('is-fullscreen', on);
         btn.classList.toggle('is-fullscreen', on);
-        // Botón solo con ícono: el texto vive en el tooltip y en aria-label.
+        // Icon-only button: the text lives in the tooltip and in aria-label.
         const label = on ? 'Exit full screen' : 'Full screen';
         btn.setAttribute('aria-label', label);
         btn.title = label;
@@ -3593,7 +3591,7 @@ function initFullscreenButton() {
     function enter() {
         applyState(true);
         if (app.requestFullscreen && !document.fullscreenElement) {
-            // Si el navegador lo rechaza, queda la versión CSS y listo.
+            // If the browser rejects it, the CSS version stays and that's it.
             app.requestFullscreen().catch(() => {});
         }
     }
@@ -3610,8 +3608,8 @@ function initFullscreenButton() {
         else enter();
     });
 
-    // En pantalla completa real, Esc lo maneja el navegador y no llega como
-    // keydown: acá nos enteramos de que salió y sincronizamos el botón.
+    // In real fullscreen, Esc is handled by the browser and doesn't arrive as a
+    // keydown: this is where we learn it exited and sync the button.
     document.addEventListener('fullscreenchange', () => {
         if (!document.fullscreenElement && app.classList.contains('is-fullscreen')) applyState(false);
     });

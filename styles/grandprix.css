@@ -1005,7 +1005,7 @@ overflow: hidden;
     }
 }
 
-/* GP Records panel — ocupa el espacio libre al lado de la tabla */
+/* GP Records panel: takes the free space next to the table */
 .gp-records-panel {
     float: right;
     width: 26%;
@@ -1145,7 +1145,7 @@ overflow: hidden;
     }
 }
 
-/* Estado de carga/vacío */
+/* Loading/empty state */
 .result-pending-text {
 display: block;
 padding: 32px;
@@ -1259,8 +1259,8 @@ border: 1px solid rgba(255,255,255,0.05);
     .race-hero-flag-bg { display: none; }
     .race-sprint-badge { top: 64px; right: 4%; }
 
-    /* Tables — la tabla de clasificación de cada sesión se achica en
-       styles/result-table.css (columnas Team, delta y Best Lap ocultas). */
+    /* Tables: each session's classification table shrinks in
+       styles/result-table.css (Team, delta and Best Lap columns hidden). */
     #moments-card .data-table th:nth-child(3),
     #moments-card .data-table td:nth-child(3) { display: none; }
     #history-card .data-table td.ht-circuit,
@@ -1283,8 +1283,8 @@ border: 1px solid rgba(255,255,255,0.05);
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
 /* ---- SESSION TABS ---- */
-/* Referencia para results.css y championship.css (.tab-btn): las pestañas
-   de esas páginas copian estos valores. */
+/* Reference for results.css and championship.css (.tab-btn): those pages'
+   tabs copy these values. */
 #session-tabs-container {
     opacity: 0;
     transform: translateY(6px);

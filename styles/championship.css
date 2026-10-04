@@ -2,10 +2,10 @@
 /*               HEADER               */
 /* ================================== */
 
-/* Header, pestañas y contenido usan el contenedor compartido del sitio
-   (--content-width en style.css), así el título, el subrayado de las pestañas y
-   el borde de las tarjetas caen sobre la misma vertical — y sobre la misma que
-   el resto de las páginas. */
+/* Header, tabs and content use the site's shared container
+   (--content-width in style.css), so the title, the tab underline and
+   the card borders fall on the same vertical, and on the same one as
+   the rest of the pages. */
 .champ-header,
 .tab-bar,
 .champ-content {
@@ -29,7 +29,7 @@
     background: rgba(255, 255, 255, 0.07);
 }
 
-/* Título y selector de temporada en la misma fila (igual que en Results). */
+/* Title and season selector on the same row (same as in Results). */
 .champ-title-row {
     display: flex;
     align-items: center;
@@ -56,8 +56,8 @@
     text-transform: uppercase;
 }
 
-/* Tab navigation — calcada de .session-tab-bar / .session-tab-btn de
-   grandprix.css para que las pestañas se lean igual en todo el sitio. */
+/* Tab navigation, copied from .session-tab-bar / .session-tab-btn in
+   grandprix.css so tabs read the same across the whole site. */
 .tab-bar {
     position: relative;
     display: flex;
@@ -117,16 +117,16 @@
         gap: 1rem;
     }
 
-    /* Permite scroll horizontal si hay muchas pestañas en móvil */
+    /* Allows horizontal scrolling if there are many tabs on mobile */
     .tab-bar {
         padding: 1.5rem 0 0;
         overflow-x: auto;
         white-space: nowrap;
         -webkit-overflow-scrolling: touch;
-        scrollbar-width: none; /* Oculta la barra en Firefox */
+        scrollbar-width: none; /* Hides the scrollbar in Firefox */
     }
     
-    /* Oculta la barra de scroll en navegadores WebKit (Chrome, Safari) */
+    /* Hides the scrollbar in WebKit browsers (Chrome, Safari) */
     .tab-bar::-webkit-scrollbar {
         display: none;
     }
@@ -153,8 +153,8 @@
     display: none;
 }
 
-/* Mismo deslizamiento lateral que .session-tab-panel.active en grandprix.css:
-   el panel entra desde el lado de la pestaña que se dejó. */
+/* Same sideways slide as .session-tab-panel.active in grandprix.css:
+   the panel comes in from the side of the tab that was left. */
 .tab-panel.active {
     display: block;
     padding-top: 72px;
@@ -191,11 +191,11 @@
 /*               STANDINGS TABLE SYSTEM               */
 /* ================================================== */
 
-/* Este es el aspecto de referencia para TODAS las tablas del sitio
-   (.race-table-wrap en result-table.css, .results-table-wrap en results.css,
-   .season-table-wrap en driver.css copian estos mismos valores): degradado
-   base-700 → base-800, borde fino, radio 16. Y sin hover en el contenedor:
-   el hover es de las filas, la caja no reacciona al mouse. */
+/* This is the reference look for ALL the site's tables
+   (.race-table-wrap in result-table.css, .results-table-wrap in results.css,
+   .season-table-wrap in driver.css copy these same values): a base-700 →
+   base-800 gradient, a thin border, radius 16. And no hover on the container:
+   hover belongs to the rows, the box doesn't react to the mouse. */
 .standings-table-wrap {
     overflow-y: auto;
     background: linear-gradient(135deg, var(--base-700) 0%, var(--base-800) 100%);
@@ -222,8 +222,8 @@
     z-index: 1;
 }
 
-/* Cabecera y celdas calcadas de .data-table th/td en grandprix.css, para que
-   las dos tablas del sitio se lean igual. */
+/* Header and cells copied from .data-table th/td in grandprix.css, so
+   both of the site's tables read the same. */
 .standings-table th {
     height: 44px;
     padding: 0 20px;
@@ -287,9 +287,9 @@
 }
 
 /* ---- DRIVER NUMBER (= .res-driver-number de grandprix.css) ----
-   Más chico y en negrita que el nombre, con ancho fijo alineado a la
-   derecha: así los "#1", "#63" y "#100" terminan todos en la misma vertical
-   y los nombres arrancan parejos. */
+   Smaller and bolder than the name, with a fixed right-aligned width:
+   that way "#1", "#63" and "#100" all end on the same vertical
+   and the names start evenly. */
 .st-driver-num {
     font-family: 'F1-Regular';
     font-weight: 600;
@@ -352,7 +352,7 @@
 
 .standings-table th.st-num { text-align: center; }
 
-/* ---- FORM (últimas 5 carreras) ---- */
+/* ---- FORM (last 5 races) ---- */
 .st-form {
     display: flex;
     align-items: center;
@@ -380,13 +380,13 @@
     font-size: 16px;
 }
 
-/* El nombre del equipo no se parte ("Red Bull Racing" en dos líneas): si
-   falta ancho, que ceda la celda de pilotos, no ésta. */
+/* The team name doesn't wrap ("Red Bull Racing" on two lines): if
+   width runs short, the drivers cell should give way, not this one. */
 .constructor-fullname { white-space: nowrap; }
 
 /* ---- VISIBILITY HELPERS ----
-   Nombre completo en escritorio, sólo apellido en el celular — mismo par de
-   clases que usa la tabla de resultados de grandprix. */
+   Full name on desktop, surname only on phones: the same pair of
+   classes the grandprix results table uses. */
 .constructor-short { display: none; }
 
 .driver-fullname,
@@ -405,10 +405,10 @@
 /*                  POINTS CURVE                   */
 /* =============================================== */
 
-/* Espejo exacto de .season-form en driver.css (la curva de forma del piloto):
-   mismo fondo, mismo borde, mismo padding, mismo orden de piezas —
-   cabecera con título y leyenda, franja del enfoque, lienzo, nota al pie.
-   Las dos páginas tienen que leerse como el mismo gráfico. */
+/* An exact mirror of .season-form in driver.css (the driver's form curve):
+   same background, same border, same padding, same order of pieces:
+   header with title and legend, focus band, canvas, footnote.
+   Both pages have to read as the same chart. */
 .champ-form {
     --focus-color: var(--primary-red);
     background: linear-gradient(135deg, var(--base-700) 0%, var(--base-800) 100%);
@@ -461,7 +461,7 @@
     border-top: 2px solid currentColor;
 }
 
-/* Los dos autos de un equipo comparten color: el segundo va punteado. */
+/* A team's two cars share a color: the second one is dashed. */
 .champ-form-legend-item.is-lead::before {
     border-top-color: rgba(255,255,255,0.75);
     border-top-width: 3px;
@@ -472,13 +472,13 @@
     border-top-color: rgba(255,255,255,0.45);
 }
 
-/* ---- RANURAS QUE SE ABREN ----
-   La franja del enfocado y la bandeja de comparación viven en una ranura
-   cuya altura anima js/championship.js (revealTo) en píxeles enteros, con la
-   misma curva que el resto del sitio. No es grid 0fr→1fr como en Results
-   porque esta tarjeta tiene border-radius y una altura fraccionaria haría
-   temblar el borde inferior durante la animación. Acá sólo va el fade y el
-   "aterrizaje" del contenido. */
+/* ---- SLOTS THAT OPEN ----
+   The focused series band and the comparison tray live in a slot
+   whose height js/championship.js animates (revealTo) in whole pixels, with the
+   same curve as the rest of the site. It isn't grid 0fr→1fr like in Results
+   because this card has border-radius and a fractional height would make
+   the bottom edge wobble during the animation. Here there's only the fade and the
+   content's "landing". */
 .champ-form-reveal {
     height: 0;
     overflow: hidden;
@@ -537,7 +537,7 @@
 
 .champ-compare-toggle:active { transform: scale(0.96); }
 
-/* Icono: dos barritas que se emparejan al activar. */
+/* Icon: two small bars that even out when activated. */
 .champ-compare-toggle-icon {
     position: relative;
     width: 14px;
@@ -684,8 +684,8 @@
 
 .champ-compare-close { margin-left: auto; }
 
-/* El resumen (quien lidera y por cuanto) solo existe con dos elegidos, y
-   abre con la misma ranura animada. */
+/* The summary (who leads and by how much) only exists with two picked, and
+   opens with the same animated slot. */
 .champ-compare-summary-reveal {
     display: grid;
     grid-template-rows: 0fr;
@@ -724,8 +724,8 @@
     color: var(--text-light);
 }
 
-/* Misma ranura y misma forma que .season-racecraft-badge, pero pintada con el
-   color del equipo enfocado en vez del dorado. */
+/* Same slot and same shape as .season-racecraft-badge, but painted in the
+   focused team's color instead of gold. */
 .champ-form-badge {
     display: flex;
     align-items: center;
@@ -744,7 +744,7 @@
     color: var(--focus-color);
 }
 
-/* Logo del equipo, primero de todo, del mismo tamaño que en la bandeja. */
+/* Team logo, first of all, the same size as in the tray. */
 .champ-form-badge-logo {
     width: 22px;
     height: 22px;
@@ -797,17 +797,17 @@
     color: var(--text-light);
 }
 
-/* ---- FOCO COMPARTIDO CON LA TABLA ---- */
+/* ---- FOCUS SHARED WITH THE TABLE ---- */
 .st-row { cursor: pointer; }
 
 .st-row td {
     transition: background 0.4s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.4s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* La atenuación va sobre el contenido de cada celda y no sobre el <tr>: una
-   fila de tabla no puede ir a una capa propia, así que animar su opacidad
-   obliga a repintar la tabla entera en cada frame y se ve a los tirones. El
-   contenido (spans, logos, puntitos) se repinta sólo en su rectángulo. */
+/* The dimming goes on each cell's content and not on the <tr>: a
+   table row can't go on its own layer, so animating its opacity
+   forces repainting the whole table every frame and it stutters. The
+   content (spans, logos, dots) is only repainted within its rectangle. */
 .st-row td > * {
     transition: opacity 0.45s cubic-bezier(0.32, 0.72, 0, 1);
 }
@@ -824,9 +824,9 @@
 
 .st-row.is-dimmed td > * { opacity: 0.4; }
 
-/* Bajo el mouse (o con el mouse sobre su línea del gráfico): una versión más
-   suave del foco, en el color del equipo, para que tabla y gráfico hablen
-   del mismo piloto. */
+/* Under the mouse (or with the mouse over its chart line): a softer
+   version of the focus, in the team color, so the table and chart talk
+   about the same driver. */
 .standings-table tbody tr.st-row.is-hover td {
     background: color-mix(in srgb, var(--row-color) 9%, transparent);
 }
@@ -844,18 +844,18 @@
     outline-offset: -2px;
 }
 
-/* Si los datos de la temporada no cargan, la página no deja cajas vacías. */
+/* If the season data doesn't load, the page doesn't leave empty boxes. */
 #championship.is-empty .champ-form,
 #championship.is-empty .standings-table-wrap { display: none; }
 
-/* Al cambiar de año se atenúa lo que ya está en vez de vaciarlo. */
+/* When the year changes, what's already there is dimmed instead of cleared. */
 #championship.is-loading {
     opacity: 0.45;
     pointer-events: none;
     transition: opacity 0.2s ease;
 }
 
-/* Mismos saltos que .season-form en driver.css. */
+/* Same breakpoints as .season-form in driver.css. */
 @media (max-width: 900px) {
     .champ-form { padding: 20px 18px 18px; }
 }
@@ -882,8 +882,8 @@
         padding: 0 15px;
     }
 
-    /* Con Country + Team no entran las dos junto al resto: la bandera es un
-       lindo extra, así que es la primera en irse. */
+    /* With Country + Team both columns don't fit next to the rest: the flag is a
+       nice extra, so it's the first to go. */
     .st-col-country {
         display: none;
     }

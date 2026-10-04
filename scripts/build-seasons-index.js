@@ -1,12 +1,12 @@
-// Genera data/seasons-index.json a partir de todos los data/seasons/season*.json.
+// Generates data/seasons-index.json from all the data/seasons/season*.json files.
 //
-// Por qué precalcular: Archive muestra una tarjeta por temporada (campeón,
-// equipo campeón, cuántas carreras) y los selectores de año de Results y
-// Championship necesitan saber qué temporadas existen y qué sesiones tienen.
-// Resolver eso en el navegador sería bajar ~37 archivos de 500 KB; acá se hace
-// una vez y la página pide un JSON de unos pocos KB.
+// Why precompute: Archive shows one card per season (champion,
+// champion team, how many races) and the year selectors in Results and
+// Championship need to know which seasons exist and which sessions they have.
+// Resolving that in the browser would mean downloading ~37 files of 500 KB; here it's done
+// once and the page requests a JSON of a few KB.
 //
-// Regenerar cuando cambien los datos de temporada:  node scripts/build-seasons-index.js
+// Regenerate whenever season data changes:  node scripts/build-seasons-index.js
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -20,7 +20,7 @@ const readJson = p => JSON.parse(fs.readFileSync(p, 'utf8'));
 const teams = readJson(path.join(ROOT, 'data', 'teams.json'));
 const drivers = readJson(path.join(ROOT, 'data', 'drivers.json'));
 
-// Misma resolución de equipo que el front (ver build-careers.js).
+// Same team resolution as the frontend (see build-careers.js).
 const teamHelpers = new Function(
     fs.readFileSync(path.join(ROOT, 'js', 'shared', 'teams.js'), 'utf8')
     + '\nreturn { resolveTeamId };'
@@ -41,7 +41,7 @@ function summarize(year, season) {
     const raced = gps.filter(gp => results(gp, 'race').length);
     const sessions = SESSION_KEYS.filter(key => gps.some(gp => results(gp, key).length));
 
-    // Puntos de carrera + sprint, igual que buildSeries en js/championship.js.
+    // Race + sprint points, same as buildSeries in js/championship.js.
     const driverPts = new Map();
     const teamPts = new Map();
     const driverTeam = new Map();
@@ -97,4 +97,4 @@ const seasons = files
     .sort((a, b) => a.year - b.year);
 
 fs.writeFileSync(OUT, JSON.stringify({ seasons }, null, 2) + '\n');
-console.log(`seasons-index.json: ${seasons.length} temporadas (${seasons[0].year}–${seasons.at(-1).year})`);
+console.log(`seasons-index.json: ${seasons.length} seasons (${seasons[0].year}–${seasons.at(-1).year})`);

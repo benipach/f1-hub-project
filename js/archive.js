@@ -1,15 +1,15 @@
-// archive.js — el índice de temporadas.
+// archive.js: the season index.
 //
-// Archive ya no repite el campeonato y el calendario con un selector de año:
-// eso lo hacen results.html y championship.html con ?season=AAAA. Acá va una
-// tarjeta por temporada (campeón, equipo campeón, cuántas carreras), agrupadas
-// por década, que linkea a esas dos páginas. Los datos salen de
-// data/seasons-index.json, precalculado por scripts/build-seasons-index.js,
-// así la página pide un solo JSON chico en vez de 37 season files.
+// Archive no longer repeats the championship and the calendar with a year selector:
+// results.html and championship.html do that with ?season=YYYY. Here there's one
+// card per season (champion, champion team, how many races), grouped
+// by decade, linking to those two pages. The data comes from
+// data/seasons-index.json, precomputed by scripts/build-seasons-index.js,
+// so the page requests a single small JSON instead of 37 season files.
 //
-// La tarjeta habla el mismo idioma que las de drivers.html: fondo teñido con
-// el color del equipo del campeón, año gigante de marca de agua, logo que
-// entra al hover y la tarjeta que se eleva.
+// The card speaks the same language as the ones in drivers.html: a background tinted with
+// the champion's team color, a giant watermark year, a logo that
+// slides in on hover and the card lifting.
 
 (function(){
     const grid  = document.getElementById('archive-seasons');
@@ -24,8 +24,8 @@
 
     const logoSrc = teamId => teamId ? `./img/teams/${esc(teamId)}-logo.png` : null;
 
-    // "Max Verstappen" → nombre chico arriba, apellido grande abajo, como en
-    // las tarjetas de pilotos.
+    // "Max Verstappen" → small first name on top, big surname below, as in
+    // the driver cards.
     function splitName(full){
         const parts = String(full || '').trim().split(' ');
         const last = parts.length > 1 ? parts.pop() : '';
@@ -83,8 +83,8 @@
             </article>`;
     }
 
-    // Los números de la cabecera: cuántas temporadas, carreras, campeones
-    // distintos, y quién tiene más títulos en el archivo.
+    // The header numbers: how many seasons, races, different
+    // champions, and who has the most titles in the archive.
     function renderMeta(seasons){
         if(!meta) return;
         const finished = seasons.filter(s => s.driverChampion && s.raced >= s.rounds);
@@ -112,7 +112,7 @@
         try {
             [seasons, teams, latest] = await Promise.all([loadSeasonsSummary('.'), loadTeams('.'), loadLatest('.')]);
         } catch (err) {
-            console.error('No se pudo cargar el índice de temporadas', err);
+            console.error('Could not load the season index', err);
             if(empty){ empty.hidden = false; empty.textContent = "Couldn't load the seasons list."; }
             return;
         }
@@ -127,7 +127,7 @@
         if(kicker) kicker.textContent = `Formula 1 · ${sorted[sorted.length - 1].year}–${sorted[0].year}`;
         renderMeta(seasons);
 
-        // Una sección por década, más nueva primero.
+        // One section per decade, newest first.
         const decades = new Map();
         for(const s of sorted){
             const d = Math.floor(s.year / 10) * 10;
@@ -140,15 +140,15 @@
                 <div class="archive-grid">${list.map(s => card(s, teams, latestYear)).join('')}</div>
             </section>`).join('');
 
-        // La tarjeta entera lleva a los resultados del año; los links de
-        // abajo siguen siendo links normales (Championship va a otra página).
+        // The whole card leads to that year's results; the links
+        // below are still normal links (Championship goes to another page).
         grid.querySelectorAll('.archive-card').forEach(c => {
             const go = () => { window.location.href = c.dataset.href; };
             c.addEventListener('click', e => { if(!e.target.closest('a')) go(); });
             c.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target === c) go(); });
         });
 
-        // Las tarjetas entran escalonadas a medida que aparecen en pantalla.
+        // The cards enter staggered as they appear on screen.
         const cards = [...grid.querySelectorAll('.archive-card')];
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
@@ -158,7 +158,7 @@
             });
         }, { threshold: 0.1 });
         cards.forEach((c, i) => { c.style.transitionDelay = `${(i % 4) * 70}ms`; observer.observe(c); });
-        // Una vez que entraron, el delay no tiene que frenar el hover.
+        // Once they've entered, the delay mustn't hold back the hover.
         cards.forEach(c => c.addEventListener('transitionend', () => { c.style.transitionDelay = ''; }, { once: true }));
     })();
 })();

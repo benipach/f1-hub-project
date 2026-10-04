@@ -1,17 +1,17 @@
-// results.js — resultados de cualquier temporada, sesión por sesión.
+// results.js: results for any season, session by session.
 //
-// Tres ejes: temporada × Grand Prix × sesión.
-//   - La temporada va en la URL (?season=2019) y se cambia con el <select>
-//     de la cabecera; sin parámetro se abre la vigente (data/latest.json).
-//   - Las pestañas son las sesiones que esa temporada realmente tiene
-//     (1990 no tiene FP3 ni Sprint; 2026 sí).
-//   - Cada fila es un Grand Prix con el ganador/pole de la sesión. Tocarla
-//     despliega debajo la clasificación completa, la misma tabla que la página
-//     del Grand Prix (buildResultTable, js/shared/result-table.js), así no hace
-//     falta entrar GP por GP para ver el detalle.
+// Three axes: season × Grand Prix × session.
+//   - The season goes in the URL (?season=2019) and is changed with the header's
+//     <select>; without a parameter the current one opens (data/latest.json).
+//   - The tabs are the sessions that season actually has
+//     (1990 has no FP3 or Sprint; 2026 does).
+//   - Each row is a Grand Prix with the session's winner/pole. Tapping it
+//     expands the full classification below, the same table as the Grand Prix
+//     page (buildResultTable, js/shared/result-table.js), so there's no need
+//     to open GP by GP to see the details.
 //
-// Los catálogos (circuits, cities, countries, teams, drivers) se cargan una
-// vez; al cambiar de año sólo se pide el season file.
+// The catalogs (circuits, cities, countries, teams, drivers) are loaded
+// once; when the year changes only the season file is requested.
 
 // ── SESSION DEFINITIONS ───────────────────────────────────────────
 // timeField/timeLabel: which JSON field holds P1's time and what to call the column.
@@ -30,9 +30,9 @@ const SESSION_DEFS = [
 const DEFAULT_KEY = 'race';
 
 // ── FLAGS (fallback) ──────────────────────────────────────────────
-// La bandera sale del circuito → ciudad → país (getGpFlag, shared/resolve.js).
-// Las temporadas viejas no siempre traen circuitId; para esas se cae a este
-// mapa por id de GP.
+// The flag comes from circuit → city → country (getGpFlag, shared/resolve.js).
+// Old seasons don't always have a circuitId; for those it falls back to this
+// map by GP id.
 const FLAG_MAP = {
     'australian-gp':     '🇦🇺',
     'chinese-gp':        '🇨🇳',
@@ -82,11 +82,11 @@ const FLAG_MAP = {
 
 // ── STATE ─────────────────────────────────────────────────────────
 const state = {
-    ctx: null,          // catálogos compartidos + basePath/year para la tabla
-    latestYear: null,   // temporada vigente (la única con página de GP)
+    ctx: null,          // shared catalogs + basePath/year for the table
+    latestYear: null,   // current season (the only one with a GP page)
     year: null,
     activeKey: DEFAULT_KEY,
-    rendering: 0,       // descarta renders viejos si se cambia de año rápido
+    rendering: 0,       // discards stale renders if the year is changed quickly
 };
 
 // ── HELPERS ───────────────────────────────────────────────────────
@@ -100,7 +100,7 @@ function flagFor(gpId, gp) {
     return getGpFlag(gp, state.ctx) || FLAG_MAP[gpId] || '';
 }
 
-// Las prácticas viejas no tienen fecha propia: se usa la de la carrera.
+// Old practice sessions don't have their own date: the race's is used.
 function sessionDate(gp, key) {
     return gp.sessions?.[key]?.date ?? gp.sessions?.race?.date ?? null;
 }
@@ -111,7 +111,7 @@ function setUrlYear(year) {
     history.replaceState(null, '', url);
 }
 
-// ── RENDER: una tabla por sesión ──────────────────────────────────
+// ── RENDER: one table per session ─────────────────────────────────
 function renderSessionTable(container, season, def) {
     const rows = getSeasonEntries(season)
         .map(([gpId, gp]) => ({ gpId, gp, results: getSessionResults(gp, def.key) }))
@@ -122,8 +122,8 @@ function renderSessionTable(container, season, def) {
         return;
     }
 
-    // La columna Sprint sólo si la temporada tuvo fines de semana con sprint
-    // (desde 2021); antes es una columna entera de guiones.
+    // The Sprint column only if the season had sprint weekends
+    // (since 2021); before that it's a whole column of dashes.
     const sprintCol = def.sprintCol && rows.some(({ gp }) => gp.sprint);
     const colCount = 5 + (sprintCol ? 1 : 0) + (def.hasLaps ? 1 : 0);
 
@@ -174,11 +174,11 @@ function renderSessionTable(container, season, def) {
             </table>
         </div>`;
 
-    // Desplegar/plegar la clasificación completa. La fila de detalle siempre
-    // está en el DOM, plegada a altura 0; abrirla es una transición de altura
-    // (results.css, .results-detail-grid), no un display:none que salta. La
-    // tabla se arma la primera vez que se abre (son 20+ filas por GP; no vale
-    // la pena para las que no se miran).
+    // Expand/collapse the full classification. The detail row is always
+    // in the DOM, collapsed to height 0; opening it is a height transition
+    // (results.css, .results-detail-grid), not a display:none that jumps. The
+    // table is built the first time it opens (20+ rows per GP; not worth it
+    // for the ones nobody looks at).
     container.querySelectorAll('.results-row').forEach(row => {
         const detail = row.nextElementSibling;
         const toggle = () => {
@@ -203,8 +203,8 @@ function renderSessionTable(container, season, def) {
     if (typeof twemoji !== 'undefined') twemoji.parse(container, { folder: 'svg', ext: '.svg' });
 }
 
-// Clasificación completa de una sesión + link a la página del GP (sólo para
-// la temporada vigente: grandprix.html trabaja con data/latest.json).
+// Full classification of a session + link to the GP page (only for
+// the current season: grandprix.html works with data/latest.json).
 function buildDetail(gpId, gp, def) {
     const results = getSessionResults(gp, def.key);
     const table = buildResultTable(results, def.key, state.ctx, getGridPositions(gp, def.key));
@@ -220,8 +220,8 @@ function buildDetail(gpId, gp, def) {
 }
 
 // ── SESSION TABS ──────────────────────────────────────────────────
-// Calcadas de renderSessionTabs en js/pages/grandprix.js: mismo indicador,
-// misma animación de entrada lateral según de qué lado venía la pestaña.
+// Copied from renderSessionTabs in js/pages/grandprix.js: same indicator,
+// same sideways entrance animation depending on which side the tab came from.
 function moveIndicator(indicator, btn) {
     if (!indicator || !btn) return;
     indicator.style.left  = `${btn.offsetLeft}px`;
@@ -282,12 +282,12 @@ function renderSeason(season) {
         btn.addEventListener('click', () => activate(btn.dataset.session));
     });
 
-    // Al cambiar de año se conserva la pestaña que estaba abierta si la nueva
-    // temporada la tiene; si no, Race.
+    // When the year changes, the open tab is kept if the new
+    // season has it; otherwise, Race.
     activate(order.includes(state.activeKey) ? state.activeKey : (order.includes(DEFAULT_KEY) ? DEFAULT_KEY : order[order.length - 1]));
 
-    // Las pestañas se miden antes de que cargue la fuente F1: cuando entra,
-    // los botones cambian de ancho y el indicador queda corrido. Se re-mide.
+    // The tabs are measured before the F1 font loads: when it arrives,
+    // the buttons change width and the indicator ends up offset. So it re-measures.
     document.fonts?.ready.then(() => moveIndicator(indicator, tabBar.querySelector('.session-tab-btn.active')));
     wrap.classList.add('in-view');
 }
@@ -312,7 +312,7 @@ async function showSeason(year) {
     try {
         season = await loadSeason('.', year);
     } catch (err) {
-        console.error('No se pudo cargar la temporada', year, err);
+        console.error('Could not load the season', year, err);
         if (ticket !== state.rendering) return;
         wrap.classList.remove('is-loading');
         wrap.hidden = true;

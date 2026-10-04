@@ -16,9 +16,9 @@ import http from "node:http";
 import { updateFinishedLines } from "./finishers.js";
 
 const URL = "https://livetiming.formula1.com/signalrcore";
-// El puerto lo puede fijar el host donde se despliegue (Render, Railway,
-// Fly y compañía inyectan PORT); en local sigue siendo 8080, así que
-// ws://localhost:8080 no cambia para nada.
+// The port can be set by the host it's deployed on (Render, Railway,
+// Fly and the like inject PORT); locally it's still 8080, so
+// ws://localhost:8080 doesn't change at all.
 const LOCAL_PORT = Number(process.env.PORT) || 8080;
 
 // Position.z carries live X/Y car coordinates for the map overlay.
@@ -43,8 +43,8 @@ const TOPICS = [
   "SessionData",
   "TrackStatus",
   "WeatherData",
-  // Mensajes de Race Control (banderas, SC/VSC, investigaciones, sanciones,
-  // track limits, DRS) para el panel de live.html.
+  // Race Control messages (flags, SC/VSC, investigations, penalties,
+  // track limits, DRS) for the panel in live.html.
   "RaceControlMessages",
 ];
 
@@ -61,13 +61,13 @@ const state = {};
 // session stays visible for 24h, or until the new session goes live
 // (e.g. FP1 -> Qualifying same day).
 //
-// Antes se congelaba apenas SessionStatus dejaba de ser "Started", o sea
-// justo en la bandera a cuadros (y con bandera roja, y entre Q1/Q2/Q3): la
-// página dejaba de actualizarse con autos todavía terminando la vuelta.
-// Ahora, mientras siga siendo la misma sesión, se sigue mandando todo.
+// Previously it froze as soon as SessionStatus stopped being "Started", i.e.
+// right at the chequered flag (and on red flags, and between Q1/Q2/Q3): the
+// page stopped updating while cars were still finishing their lap.
+// Now, as long as it's the same session, everything keeps being sent.
 const FREEZE_DURATION_MS = 24 * 60 * 60 * 1000;
 let frozen = null; // { sessionKey, data, frozenAt } | null
-let lastLiveKey = null; // SessionInfo.Key de la última sesión que estuvo en "Started"
+let lastLiveKey = null; // SessionInfo.Key of the last session that was "Started"
 
 function currentSessionKey() {
   return state.SessionInfo?.Key ?? null;
@@ -110,7 +110,7 @@ function updateSessionTiming() {
     sessionTiming.startedUtc = new Date().toISOString();
     state.SessionTiming = { ...sessionTiming };
     broadcast("SessionTiming");
-    console.log(`[clock] sesión tipo carrera arrancó (Name="${state.SessionInfo?.Name}"), startedUtc=${sessionTiming.startedUtc}`);
+    console.log(`[clock] race-type session started (Name="${state.SessionInfo?.Name}"), startedUtc=${sessionTiming.startedUtc}`);
   }
 }
 
@@ -141,18 +141,18 @@ function updateDisplayState() {
 // runtime: this is one fs.readFileSync + a handful of Date comparisons.
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.join(__dirname, "..", "data");
-// El archivo de temporada se movió de data/season2026.json a
-// data/seasons/season2026.json, y el año vigente ahora vive en
-// data/latest.json ({"latestSeason": 2026}) — que es lo mismo que lee el
-// resto del sitio. Se resuelve en runtime en vez de hardcodear el año,
-// así el año que viene no hay que tocar nada acá.
+// The season file moved from data/season2026.json to
+// data/seasons/season2026.json, and the current year now lives in
+// data/latest.json ({"latestSeason": 2026}), which is what the rest of the
+// site reads too. It's resolved at runtime instead of hardcoding the year,
+// so nothing needs to change here next year.
 function latestSeasonYear() {
   try {
     const raw = fs.readFileSync(path.join(DATA_DIR, "latest.json"), "utf-8");
     const year = Number(JSON.parse(raw).latestSeason);
     if (Number.isFinite(year)) return year;
   } catch (err) {
-    console.error("[gp] no se pudo leer latest.json:", err.message);
+    console.error("[gp] couldn't read latest.json:", err.message);
   }
   return new Date().getFullYear();
 }
@@ -199,8 +199,8 @@ function getCurrentGP(seasonData, now = new Date()) {
     name: gp.name,
     sprint: gp.sprint,
     color: gp.color,
-    // El slug del circuito ya viene en el archivo de temporada, así que se
-    // manda tal cual en vez de que el front lo adivine con su propio mapa.
+    // The circuit slug already comes in the season file, so it's
+    // sent as-is instead of having the frontend guess it with its own map.
     circuitId: gp.circuitId,
     weekendStart: new Date(gp.weekend.start).toISOString(),
     weekendEnd: new Date(gp.weekend.end).toISOString(),
@@ -212,31 +212,31 @@ function refreshCurrentGP() {
     const seasonData = loadSeasonData();
     const currentGP = getCurrentGP(seasonData);
     if (!currentGP) {
-      console.error(`[gp] ${seasonPath()} no tiene ningún GP con fechas válidas`);
+      console.error(`[gp] ${seasonPath()} has no GP with valid dates`);
       return;
     }
     const changed = state.CurrentGP?.slug !== currentGP.slug;
     state.CurrentGP = currentGP;
     if (changed) {
-      console.log(`[gp] ahora es: ${currentGP.name} (round ${currentGP.round})`);
+      console.log(`[gp] now: ${currentGP.name} (round ${currentGP.round})`);
       broadcast("CurrentGP");
     }
   } catch (err) {
-    console.error("[gp] no se pudo leer season2026.json:", err.message);
+    console.error("[gp] couldn't read season2026.json:", err.message);
   }
 }
 
 // Called once localServer is up — see below.
 
-// WS server para el frontend. El browser no puede hablar con el feed de F1
-// directamente (de ahí la arquitectura "backend que reenvía a su propio
-// WebSocket", igual que f1-dash y compañía).
+// WS server for the frontend. The browser can't talk to F1's feed
+// directly (hence the "backend that forwards to its own WebSocket"
+// architecture, same as f1-dash and others).
 //
-// Va montado sobre un servidor HTTP en vez de abrir el puerto a secas por
-// dos razones: los hosts gratuitos (Render, Railway, Fly) hacen health
-// checks por HTTP y no arrancan el servicio si el puerto no contesta, y
-// además así se puede abrir la URL en el navegador para ver de un vistazo
-// si el relay está vivo y qué sesión tiene cargada.
+// It's mounted on an HTTP server instead of just opening the port, for
+// two reasons: free hosts (Render, Railway, Fly) run HTTP health
+// checks and won't start the service if the port doesn't answer, and
+// it also lets you open the URL in a browser to see at a glance
+// whether the relay is alive and which session it has loaded.
 const httpServer = http.createServer((req, res) => {
   const url = (req.url || "/").split("?")[0];
   if (url === "/" || url === "/health") {
@@ -259,19 +259,19 @@ const httpServer = http.createServer((req, res) => {
 
 const localServer = new WebSocketServer({ server: httpServer });
 
-// 0.0.0.0 (y no localhost) para que también entren conexiones desde otros
-// dispositivos de la red, no solo desde esta misma máquina.
+// 0.0.0.0 (not localhost) so connections from other devices on the
+// network get in too, not just from this same machine.
 httpServer.listen(LOCAL_PORT, "0.0.0.0", () => {
-  console.log(`[local] escuchando en ws://localhost:${LOCAL_PORT} (health: http://localhost:${LOCAL_PORT}/health)`);
+  console.log(`[local] listening on ws://localhost:${LOCAL_PORT} (health: http://localhost:${LOCAL_PORT}/health)`);
 });
 
 localServer.on("connection", (client) => {
-  console.log("[local] frontend conectado");
+  console.log("[local] frontend connected");
   // Catch the new client up with everything we have so far — frozen
   // results if we're between sessions, live state otherwise.
   client.send(JSON.stringify({ type: "snapshot", state: getDisplayState() }));
 
-  client.on("close", () => console.log("[local] frontend desconectado"));
+  client.on("close", () => console.log("[local] frontend disconnected"));
 });
 
 // Now that localServer (and broadcast, which reads it) both exist: compute
@@ -316,15 +316,15 @@ function mergeState(target, patch) {
     const value = patch[key];
     const current = target[key];
 
-    // OJO con los arrays: F1 manda algunas colecciones como array en el
-    // snapshot inicial (p.ej. TimingAppData.Lines[n].Stints = [{Compound:
-    // "SOFT", ...}]) y sus deltas como objeto indexado ({"0": {TotalLaps:
-    // 4}}). La versión anterior excluía los arrays del merge, así que el
-    // primer delta REEMPLAZABA el stint entero y se perdía el Compound —
-    // por eso los neumáticos aparecían como "desconocido" en la tabla.
-    // Ahora un patch-objeto se mergea también sobre un array (los índices
-    // numéricos funcionan igual como claves); solo un patch que ES array
-    // reemplaza de una, que es como F1 manda las listas completas.
+    // CAREFUL with arrays: F1 sends some collections as arrays in the
+    // initial snapshot (e.g. TimingAppData.Lines[n].Stints = [{Compound:
+    // "SOFT", ...}]) and their deltas as indexed objects ({"0": {TotalLaps:
+    // 4}}). The previous version excluded arrays from the merge, so the
+    // first delta REPLACED the whole stint and the Compound was lost,
+    // which is why tyres showed up as "unknown" in the table.
+    // Now an object patch is also merged onto an array (numeric indexes
+    // work the same as keys); only a patch that IS an array
+    // replaces it outright, which is how F1 sends complete lists.
     if (
       value &&
       typeof value === "object" &&
@@ -340,9 +340,9 @@ function mergeState(target, patch) {
   return target;
 }
 
-// Se llama ANTES de mezclar un SessionInfo nuevo en `state`: si F1 pasó a
-// otra sesión, se congela la anterior tal como terminó, antes de que los
-// datos nuevos la pisen.
+// Called BEFORE merging a new SessionInfo into `state`: if F1 moved on to
+// another session, the previous one is frozen exactly as it ended, before
+// the new data overwrites it.
 function freezeIfNewSession(sessionInfoPatch) {
   const nextKey = sessionInfoPatch?.Key;
   if (frozen || lastLiveKey == null || nextKey == null || nextKey === lastLiveKey) return;
@@ -354,12 +354,12 @@ function onUpdate(topic, feedTimestamp) {
   const wasFrozen = !!frozen;
   updateDisplayState();
   updateSessionTiming();
-  // Pilotos que ya recibieron la bandera a cuadros (ver finishers.js). Va
-  // ANTES del tema que lo provocó: así, con el cruce de meta, la página
-  // ya tiene la fila congelada cuando llega la vuelta de enfriamiento.
+  // Drivers who have already taken the chequered flag (see finishers.js). It goes
+  // BEFORE the topic that triggered it: that way, on the line crossing, the page
+  // already has the frozen row when the cool-down lap arrives.
   const finishedChanged = updateFinishedLines(state, feedTimestamp);
-  // Al soltar el congelado el front tiene TODO de la sesión vieja: se le
-  // manda el estado entero, no solo este tema.
+  // When the freeze is released the frontend has EVERYTHING from the old session:
+  // it gets sent the whole state, not just this topic.
   if (wasFrozen && !frozen) broadcastFullSnapshot();
   else {
     if (finishedChanged) broadcast("FinishedLines");
@@ -439,17 +439,17 @@ connection.on("feed", (topic, rawPatch, timestamp) => {
 });
 
 connection.onreconnecting((err) => {
-  console.log("[ws] reconectando...", err?.message ?? "");
+  console.log("[ws] reconnecting...", err?.message ?? "");
 });
 
 connection.onclose((err) => {
-  console.log("[ws] conexión cerrada.", err?.message ?? "");
+  console.log("[ws] connection closed.", err?.message ?? "");
 });
 
 async function main() {
   try {
     await connection.start();
-    console.log("[ws] conectado, suscribiendo a:", TOPICS.join(", "));
+    console.log("[ws] connected, subscribing to:", TOPICS.join(", "));
 
     // Subscribe() itself returns the full current snapshot for every
     // topic — "feed" only gives deltas AFTER this point. Static or
@@ -464,17 +464,17 @@ async function main() {
         state[topic] = decoded;
         console.log(`[state] ${topic} seeded from Subscribe() snapshot`);
       }
-      // El snapshot pisa lo que hubieran dejado los deltas que llegaron
-      // entre start() y Subscribe(), así que hay que reenviarlo: si no,
-      // un front ya conectado se queda con el estado parcial de antes.
+      // The snapshot overwrites whatever the deltas that arrived
+      // between start() and Subscribe() left behind, so it has to be resent: otherwise
+      // an already connected frontend is stuck with the partial state from before.
       updateDisplayState();
       updateSessionTiming();
       updateFinishedLines(state);
       broadcastFullSnapshot();
     }
   } catch (err) {
-    console.error("[main] error de conexión:", err.message);
-    console.log("Reintentando en 5s...");
+    console.error("[main] connection error:", err.message);
+    console.log("Retrying in 5s...");
     setTimeout(main, 5000);
   }
 }

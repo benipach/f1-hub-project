@@ -1,3 +1,5 @@
 node_modules/
 *.bak
 .env
+# Relay output saved by hand (node client.js > log.txt)
+log.txt

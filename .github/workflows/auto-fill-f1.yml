@@ -2,14 +2,14 @@ name: Auto fill F1 sessions
 
 on:
   schedule:
-    # Cada 30 min de viernes a lunes. El lunes está incluido a propósito: una
-    # carrera que termina domingo a la noche (o que OpenF1 publica tarde) tiene
-    # así un día entero de margen para entrar, en vez de esperar al viernes.
+    # Every 30 min from Friday to Monday. Monday is included on purpose: a
+    # race that ends on Sunday night (or that OpenF1 publishes late) gets
+    # a whole extra day to come in, instead of waiting until Friday.
     - cron: "0,30 * * * 5,6,0,1"
   workflow_dispatch:
     inputs:
       force_weather:
-        description: "Backfill: re-pedir weather aunque ya exista (ej. para agregar wind_direction a sesiones viejas)"
+        description: "Backfill: re-request weather even if it already exists (e.g. to add wind_direction to old sessions)"
         required: false
         default: false
         type: boolean
@@ -18,10 +18,10 @@ permissions:
   contents: write
 
 env:
-  # El archivo de temporada vive en data/seasons/ desde que se agregaron los
-  # años históricos. Antes esta ruta estaba escrita a mano en tres pasos
-  # distintos y quedó apuntando a data/season2026.json, que ya no existe: el
-  # check reventaba, el job fallaba entero y no se cargaba ninguna carrera.
+  # The season file lives in data/seasons/ since the historical years were
+  # added. This path used to be hardcoded in three separate steps and was
+  # left pointing to data/season2026.json, which no longer exists: the
+  # check crashed, the whole job failed and no race got loaded.
   SEASON_FILE: data/seasons/season2026.json
 
 jobs:
@@ -43,16 +43,16 @@ jobs:
               const fs = require('node:fs');
               const path = process.env.SEASON_FILE;
               if (!fs.existsSync(path)) {
-                console.error('No existe ' + path + ' — revisá env.SEASON_FILE en este workflow.');
+                console.error(path + ' does not exist: check env.SEASON_FILE in this workflow.');
                 process.exit(1);
               }
               const data = JSON.parse(fs.readFileSync(path, 'utf8'));
               const now = Date.now();
-              const grace = 45 * 60 * 1000; // 45 min después del endDate, le da tiempo a OpenF1 a publicar
+              const grace = 45 * 60 * 1000; // 45 min after endDate, gives OpenF1 time to publish
               const isEmptyWeather = (w) => w === null || w === undefined || (typeof w === 'object' && Object.keys(w).length === 0);
               const shouldRun = Object.values(data).some(gp =>
-                // Un GP cancelado nunca va a tener resultados: si no se lo
-                // excluye, el job se dispara cada media hora para no hacer nada.
+                // A cancelled GP will never have results: if it isn't
+                // excluded, the job fires every half hour to do nothing.
                 gp && !gp.cancelled && typeof gp.sessions === 'object' && Object.values(gp.sessions).some(s => {
                   if (!s || !s.endDate) return false;
                   const ended = new Date(s.endDate).getTime() + grace <= now;
@@ -75,9 +75,9 @@ jobs:
           fi
           node auto-fill-missing.js $FLAGS
 
-      # careers.json es un precálculo de todos los season files: si se cargan
-      # resultados nuevos y no se regenera, las fichas de piloto y los rankings
-      # all-time siguen mostrando los números de la carrera anterior.
+      # careers.json is precomputed from all the season files: if new results
+      # are loaded and it isn't regenerated, the driver profiles and the all-time
+      # rankings keep showing the numbers from the previous race.
       - name: Rebuild careers.json
         if: steps.check.outputs.should_run == 'true'
         run: node scripts/build-careers.js
@@ -88,8 +88,8 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add "$SEASON_FILE" data/careers.json
-          git diff --cached --quiet && echo "Sin cambios que commitear" && exit 0
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
           git commit -m "Auto update F1 session data"
-          # Puede haber pushes propios entre el checkout y este punto.
+          # There may have been other pushes between the checkout and this point.
           git pull --rebase
           git push

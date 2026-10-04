@@ -1,6 +1,6 @@
 // pages/grandprix.js — orchestrates the DOM for grandprix.html (single GP detail page).
-// La tabla de clasificación de cada sesión (buildResultTable) vive en
-// js/shared/result-table.js, compartida con results.html.
+// Each session's classification table (buildResultTable) lives in
+// js/shared/result-table.js, shared with results.html.
 
 const SESSION_DEFS = [
     ['fp1',         'fp1',          'Practice 1'],
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const gp = season[gpId];
         if (!gp) { console.error(`grandprix.js: GP "${gpId}" not found in season ${latest.latestSeason}`); return; }
 
-        // basePath: la página vive en grandsprix/, los logos se piden desde la raíz.
+        // basePath: the page lives in grandsprix/, logos are requested from the root.
         const ctx = { circuits, cities, countries, teams, drivers, basePath: '..', year: Number(latest.latestSeason) };
 
         document.getElementById('page-title').textContent = `F1 Hub | ${gp.name}`;
@@ -202,7 +202,7 @@ function renderSessionTabs(gp, ctx) {
     });
 
     window.addEventListener('resize', () => moveIndicator(tabBar.querySelector('.session-tab-btn.active')));
-    // Re-medir cuando carga la fuente F1: los botones cambian de ancho.
+    // Re-measure when the F1 font loads: the buttons change width.
     document.fonts?.ready.then(() => moveIndicator(tabBar.querySelector('.session-tab-btn.active')));
 
     for (const [jsonKey, htmlKey] of available) renderSessionPanel(gp, jsonKey, htmlKey, ctx);

@@ -1,11 +1,11 @@
-// pages/drivers.js — ordena el hero y las tarjetas de drivers.html según el
-// campeonato actual y pone el año de la temporada en el título.
-// Los equipos van por el de constructores y, dentro de cada equipo, sus dos
-// pilotos por el de pilotos. El HTML trae un orden fijo que queda como está si
-// los datos no cargan.
+// pages/drivers.js: sorts the hero and the cards in drivers.html by the
+// current championship and puts the season's year in the title.
+// Teams follow the constructors' standings and, within each team, its two
+// drivers follow the drivers' standings. The HTML has a fixed order that stays as-is if
+// the data doesn't load.
 
-// Puntos por clave (piloto o equipo) sumando carreras y sprints de los GP no
-// cancelados, más los puestos en carrera para desempatar.
+// Points per key (driver or team), adding up races and sprints from GPs that weren't
+// cancelled, plus race finishes to break ties.
 function computeStandings(season) {
     const drivers = new Map();
     const teams = new Map();
@@ -29,9 +29,9 @@ function computeStandings(season) {
     return { drivers, teams };
 }
 
-// Reglamento FIA: a igualdad de puntos gana quien tenga más victorias; si
-// siguen iguales, más segundos puestos, y así. Sin datos, conserva el orden
-// del HTML (Array.sort es estable).
+// FIA regulations: on equal points, whoever has more wins goes ahead; if
+// still equal, more second places, and so on. Without data, the HTML order
+// is kept (Array.sort is stable).
 function compareStanding(a, b) {
     if (!a || !b) return (b ? 1 : 0) - (a ? 1 : 0);
     if (a.pts !== b.pts) return b.pts - a.pts;
@@ -53,17 +53,17 @@ function sortHero({ drivers, teams }) {
     for (const pair of pairs) {
         const slices = [...pair.querySelectorAll('.lv-slice')];
         slices.sort((a, b) => compareStanding(drivers.get(driverId(a)), drivers.get(driverId(b))));
-        // El logo va entre los dos pilotos
+        // The logo goes between the two drivers
         pair.append(slices[0], pair.querySelector('.lv-logo-slot'), slices[1]);
         strip.append(pair);
     }
-    // En celulares la franja scrollea de costado: al reordenar (o al recargar,
-    // que el navegador restaura el scroll) puede quedar corrida. Se vuelve al
-    // principio para que el primer equipo se vea entero.
+    // On phones the strip scrolls sideways: when reordering (or reloading,
+    // since the browser restores the scroll) it can end up shifted. It goes back to the
+    // start so the first team is fully visible.
     strip.scrollLeft = 0;
 }
 
-// Los bloques de equipo de las tarjetas, con el mismo orden que el hero
+// The cards' team blocks, in the same order as the hero
 function sortGrid({ drivers, teams }) {
     const grid = document.querySelector('.drivers-grid');
     const driverId = card => new URL(card.href).searchParams.get('driver');
@@ -80,8 +80,8 @@ function sortGrid({ drivers, teams }) {
     }
 }
 
-// Nombre de cada equipo en el encabezado de su bloque, tal como está en
-// teams.json. El HTML trae los mismos por si los datos no cargan.
+// Each team's name in its block header, exactly as in
+// teams.json. The HTML has the same ones in case the data doesn't load.
 function fillTeamNames(teamsData) {
     for (const block of document.querySelectorAll('.dc-team')) {
         const name = teamsData[block.dataset.team]?.name;
@@ -89,8 +89,8 @@ function fillTeamNames(teamsData) {
     }
 }
 
-// Arma el título letra por letra para la entrada escalonada. Sin año (si los
-// datos no cargan) queda "The Grid".
+// Builds the title letter by letter for the staggered entrance. Without a year (if the
+// data doesn't load) it stays "The Grid".
 function renderTitle(year) {
     const title = document.querySelector('.lv-copy h1');
     const words = year ? ['The', String(year), 'Grid'] : ['The', 'Grid'];
@@ -108,8 +108,8 @@ function renderTitle(year) {
     title.classList.add('is-ready');
 }
 
-// Numera las franjas en su orden final para la entrada en cascada y las
-// muestra. Cada logo toma el número de su lugar, entre sus dos pilotos.
+// Numbers the strips in their final order for the cascading entrance and
+// shows them. Each logo takes the number of its spot, between its two drivers.
 function revealHero() {
     const strip = document.querySelector('.lv-strip');
     let i = 0;
@@ -138,8 +138,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('Error loading drivers page data:', err);
         }
     }
-    // Con o sin datos: si no cargan, entran en el orden del HTML. El título
-    // va a la par del hero para que su delay se cuente desde el mismo momento.
+    // With or without data: if it doesn't load, they enter in HTML order. The title
+    // goes along with the hero so its delay counts from the same moment.
     renderTitle(latest?.latestSeason);
     revealHero();
 });

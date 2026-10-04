@@ -1,34 +1,34 @@
-// ── build-season.js — arma un data/seasons/season{year}.json completo en 1 corrida ──
+// ── build-season.js: builds a complete data/seasons/season{year}.json in 1 run ──
 //
-// Unifica lo que antes eran cuatro scripts sueltos en la raíz:
-//   fetch-season.js          → carrera + clasificación desde Jolpica (Ergast)
-//   fetch-circuit-ids.js     → circuitId de cada GP (ahora sin request extra:
-//                              sale del mismo payload de races de Jolpica)
-//   fetch-practice.js        → FP1-3 scrapeadas de formula1.com
-//   find-missing-qualifying.js → detecta las quali que Jolpica no tiene
+// Unifies what used to be four separate scripts in the repo root:
+//   fetch-season.js          → race + qualifying from Jolpica (Ergast)
+//   fetch-circuit-ids.js     → circuitId for each GP (now without an extra request:
+//                              it comes from the same Jolpica races payload)
+//   fetch-practice.js        → FP1-3 scraped from formula1.com
+//   find-missing-qualifying.js → detects the qualifying sessions Jolpica doesn't have
 //
-// Uso:
-//   node scripts/build-season.js <year>              # temporada completa
-//   node scripts/build-season.js <year> --no-practice # sin scrapear FP (años viejos / offline)
-//   node scripts/build-season.js <year> --force       # rebuild limpio (pisa TODO)
-//   node scripts/build-season.js <year> --dry-run     # no escribe nada, solo reporta
-//   node scripts/build-season.js <year> --out <path>  # escribe a otra ruta
-//   node scripts/build-season.js <year> --grid        # sólo completar la parrilla de salida
+// Usage:
+//   node scripts/build-season.js <year>              # full season
+//   node scripts/build-season.js <year> --no-practice # without scraping FP (old years / offline)
+//   node scripts/build-season.js <year> --force       # clean rebuild (overwrites EVERYTHING)
+//   node scripts/build-season.js <year> --dry-run     # writes nothing, only reports
+//   node scripts/build-season.js <year> --out <path>  # writes to another path
+//   node scripts/build-season.js <year> --grid        # only fill in the starting grid
 //
-// --grid: modo rápido para temporadas que ya están completas. Pide a Jolpica
-// únicamente los resultados de carrera (y sprint), y a cada fila de resultado
-// que no tenga `grid` le agrega la posición REAL de largada, que no es la de
-// la clasificación: penalizaciones, cambios de motor y largadas desde boxes
-// las separan. No toca ningún otro dato. Vale ~1 request por GP, así que con
-// el límite de Jolpica (500/hora) entran unas 20 temporadas por hora.
+// --grid: fast mode for seasons that are already complete. It asks Jolpica
+// only for race (and sprint) results, and to every result row
+// without a `grid` it adds the REAL starting position, which isn't the
+// qualifying one: penalties, engine changes and pit lane starts
+// set them apart. It doesn't touch any other data. It costs ~1 request per GP, so with
+// Jolpica's limit (500/hour) about 20 seasons fit per hour.
 //
-// Por defecto NO pisa datos que ya estén cargados a mano: si el season file
-// existe, cada sesión con resultados se conserva y sólo se completan los huecos.
-// Con --force se descarta lo anterior y se reconstruye desde las fuentes.
+// By default it does NOT overwrite data already loaded by hand: if the season file
+// exists, every session with results is kept and only the gaps are filled.
+// With --force the previous data is discarded and rebuilt from the sources.
 //
-// Lo que queda incompleto (circuitos sin mapear, quali sin datos en Jolpica) se
-// vuelca a data/seasons/_incomplete-{year}.txt — un archivo por año que se
-// sobreescribe en cada corrida, así nunca junta entradas viejas.
+// Whatever remains incomplete (unmapped circuits, qualifying missing in Jolpica) is
+// dumped to data/seasons/_incomplete-{year}.txt, one file per year that's
+// overwritten on every run, so it never piles up old entries.
 
 import { readFile, writeFile, mkdir, unlink } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
@@ -41,7 +41,7 @@ const CIRCUITS_PATH = join(ROOT, 'data', 'circuits.json');
 
 const JOLPICA_BASE = 'https://api.jolpi.ca/ergast/f1';
 const F1_BASE = 'https://www.formula1.com/en/results';
-const REQUEST_DELAY_MS = 500;   // Jolpica y F1.com: quedarse tranquilo con el rate limit
+const REQUEST_DELAY_MS = 500;   // Jolpica and F1.com: stay well within the rate limit
 const MAX_RETRIES = 5;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -50,10 +50,10 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 async function fetchJson(url, attempt = 1) {
   const res = await fetch(url);
   if (res.status === 429) {
-    if (attempt > MAX_RETRIES) throw new Error(`429 tras ${MAX_RETRIES} reintentos: ${url}`);
+    if (attempt > MAX_RETRIES) throw new Error(`429 after ${MAX_RETRIES} retries: ${url}`);
     const retryAfter = Number(res.headers.get('retry-after'));
     const waitMs = retryAfter > 0 ? retryAfter * 1000 : attempt * 2000;
-    console.warn(`  [429] rate limit, reintento en ${waitMs}ms (${attempt}/${MAX_RETRIES})`);
+    console.warn(`  [429] rate limit, retrying in ${waitMs}ms (${attempt}/${MAX_RETRIES})`);
     await sleep(waitMs);
     return fetchJson(url, attempt + 1);
   }
@@ -65,12 +65,12 @@ async function fetchHtml(url) {
   const res = await fetch(url, {
     headers: { 'User-Agent': 'Mozilla/5.0 (compatible; F1HubBot/1.0; +personal project)' },
   });
-  if (res.status === 404) return null;   // sesión inexistente (p. ej. sprint weekend sin FP2/FP3)
+  if (res.status === 404) return null;   // session that doesn't exist (e.g. a sprint weekend without FP2/FP3)
   if (!res.ok) throw new Error(`HTTP ${res.status}: ${url}`);
   return res.text();
 }
 
-// ── Slugs (mismo criterio en todas las fuentes para que los ids calcen) ─────
+// ── Slugs (same criteria across all sources so the ids line up) ─────────────
 function toSlug(text) {
   return text
     .toLowerCase()
@@ -81,8 +81,8 @@ function toSlug(text) {
 }
 const gpSlug = (raceName) => toSlug(raceName.toLowerCase().replace(/grand prix/g, 'gp'));
 
-// Jolpica usa el nombre completo → slug. Cuando eso no coincide con el id que
-// queremos en drivers.json, lo mapeamos acá para que el re-fetch no lo revierta.
+// Jolpica uses the full name → slug. When that doesn't match the id we
+// want in drivers.json, we map it here so the re-fetch doesn't revert it.
 const DRIVER_ID_OVERRIDES = {
   'andrea-kimi-antonelli': 'kimi-antonelli',
 };
@@ -93,7 +93,7 @@ const driverId = (d) => {
 
 const teamId = (name) => toSlug(typeof name === 'string' ? name : name.name);
 
-// ── 1 · Carrera + clasificación desde Jolpica ───────────────────────────────
+// ── 1 · Race + qualifying from Jolpica ──────────────────────────────────────
 const LAPPED_STATUS = /^\+\d+\s+Laps?$/;
 
 function mapRaceResult(r) {
@@ -112,8 +112,8 @@ function mapRaceResult(r) {
     pts: Number(r.points),
     time,
   };
-  // Posición real de largada (Ergast: "0" = salió desde el pit lane). Es
-  // distinta de la posición en la clasificación cuando hubo penalizaciones.
+  // Actual starting position (Ergast: "0" = started from the pit lane). It's
+  // different from the qualifying position when there were penalties.
   if (r.grid !== undefined && r.grid !== '') mapped.grid = Number(r.grid);
   if (r.FastestLap?.Time?.time) {
     mapped.bestLap = r.FastestLap.Time.time;
@@ -131,17 +131,17 @@ const mapQualiResult = (r) => ({
   lapTime: bestQualiTime(r) ?? 'No time',
 });
 
-// Jolpica no da endDate; lo estimamos sumando una duración típica al inicio,
-// para que el frontend sepa si la sesión ya terminó sin lógica extra.
+// Jolpica doesn't provide endDate; we estimate it by adding a typical duration to the start,
+// so the frontend knows whether the session has ended without extra logic.
 const QUALI_DURATION_MS = 60 * 60 * 1000;        // 1 h
-const RACE_DURATION_MS = 4 * 60 * 60 * 1000;     // 4 h (margen para SC / banderas rojas)
+const RACE_DURATION_MS = 4 * 60 * 60 * 1000;     // 4 h (margin for SC / red flags)
 const addEndDate = (isoStart, durMs) =>
   isoStart ? new Date(new Date(isoStart).getTime() + durMs).toISOString() : null;
 
 async function fetchFromJolpica(year, { gridOnly = false } = {}) {
   const racesData = await fetchJson(`${JOLPICA_BASE}/${year}/races.json?limit=100`);
   const races = racesData.MRData.RaceTable.Races;
-  if (!races.length) throw new Error(`Jolpica no tiene carreras para ${year}`);
+  if (!races.length) throw new Error(`Jolpica has no races for ${year}`);
 
   const season = {};
   const circuitByRound = {};
@@ -156,8 +156,8 @@ async function fetchFromJolpica(year, { gridOnly = false } = {}) {
     const rd = await fetchJson(`${JOLPICA_BASE}/${year}/${round}/results.json?limit=100`);
     const raceResults = rd.MRData.RaceTable.Races[0]?.Results ?? [];
 
-    // En modo --grid la clasificación no hace falta: sólo importa el `grid`
-    // que viene dentro de los resultados de carrera y sprint.
+    // In --grid mode qualifying isn't needed: only the `grid`
+    // inside the race and sprint results matters.
     let qualiResults = [];
     if (!gridOnly) {
       await sleep(REQUEST_DELAY_MS);
@@ -165,8 +165,8 @@ async function fetchFromJolpica(year, { gridOnly = false } = {}) {
       qualiResults = qd.MRData.RaceTable.Races[0]?.QualifyingResults ?? [];
     }
 
-    // Sprint: mismo formato que la carrera (con su propio `grid`, que sale de
-    // la Sprint Qualifying). Sólo se pide en los fines de semana que lo tienen.
+    // Sprint: same format as the race (with its own `grid`, which comes from
+    // Sprint Qualifying). Only requested on weekends that have one.
     let sprintResults = [];
     if (race.Sprint) {
       await sleep(REQUEST_DELAY_MS);
@@ -212,10 +212,10 @@ async function fetchFromJolpica(year, { gridOnly = false } = {}) {
   return { season, circuitByRound };
 }
 
-// ── 2 · circuitId de cada GP ────────────────────────────────────────────────
-// Jolpica/Ergast circuitId → slug de data/circuits.json.
-// Los que están comentados NO existen todavía en circuits.json: el reporte los
-// lista con el slug propuesto para que sepas cuál crear.
+// ── 2 · circuitId for each GP ───────────────────────────────────────────────
+// Jolpica/Ergast circuitId → data/circuits.json slug.
+// The commented-out ones DON'T exist in circuits.json yet: the report
+// lists them with the proposed slug so you know which one to create.
 const CIRCUIT_ID_MAP = {
   albert_park: 'albert-park-circuit',
   sepang: 'sepang-international-circuit',
@@ -244,8 +244,8 @@ const CIRCUIT_ID_MAP = {
   zandvoort: 'circuit-zandvoort',
   madring: 'madring',
 
-  // ── Circuitos históricos / esporádicos: slug propuesto, todavía NO están en
-  //    circuits.json. El circuitId igual se escribe; el reporte te dice cuál crear. ──
+  // ── Historical / occasional circuits: proposed slug, NOT in
+  //    circuits.json yet. The circuitId is written anyway; the report tells you which one to create. ──
   istanbul: 'istanbul-park',
   hockenheimring: 'hockenheimring',
   nurburgring: 'nurburgring',
@@ -263,22 +263,22 @@ const CIRCUIT_ID_MAP = {
 
 function resolveCircuitIds(season, circuitByRound, circuitSlugs, report) {
   for (const [slug, gp] of Object.entries(season)) {
-    if (gp.circuitId) continue;   // respeta lo que ya está
+    if (gp.circuitId) continue;   // keep what's already there
 
     const jolpicaId = circuitByRound[gp.round];
     if (!jolpicaId) continue;
 
     const projectId = CIRCUIT_ID_MAP[jolpicaId];
     if (!projectId) {
-      report.circuits.push({ slug, round: gp.round, jolpicaId, note: 'sin slug propuesto en CIRCUIT_ID_MAP' });
+      report.circuits.push({ slug, round: gp.round, jolpicaId, note: 'no proposed slug in CIRCUIT_ID_MAP' });
       continue;
     }
     if (circuitSlugs && !circuitSlugs.has(projectId)) {
-      report.circuits.push({ slug, round: gp.round, jolpicaId, projectId, note: `falta "${projectId}" en circuits.json` });
-      // igual lo escribimos: el dato es correcto, sólo falta crear el circuito
+      report.circuits.push({ slug, round: gp.round, jolpicaId, projectId, note: `"${projectId}" missing from circuits.json` });
+      // write it anyway: the data is correct, the circuit just needs to be created
     }
 
-    // circuitId va justo después de name para mantener el orden de propiedades
+    // circuitId goes right after name to keep the property order
     const { round, name, ...rest } = gp;
     season[slug] = { round, name, circuitId: projectId, ...rest };
   }
@@ -288,14 +288,14 @@ async function loadCircuitSlugs() {
   try {
     return new Set(Object.keys(JSON.parse(await readFile(CIRCUITS_PATH, 'utf-8'))));
   } catch (err) {
-    if (err.code === 'ENOENT') return null;   // sin circuits.json: no validamos
+    if (err.code === 'ENOENT') return null;   // no circuits.json: no validation
     throw err;
   }
 }
 
 // ── 3 · FP1-3 scrapeadas de formula1.com ───────────────────────────────────
 function parseDriverCell(rawText) {
-  // La celda viene "Lando NorrisNOR" (nombre pegado al código de 3 letras).
+  // The cell comes as "Lando NorrisNOR" (name glued to the 3-letter code).
   const m = rawText.trim().match(/^(.*\S)\s*([A-Z]{3})$/);
   return { fullName: m ? m[1].trim() : rawText.trim() };
 }
@@ -331,12 +331,12 @@ function parsePracticeTable(html) {
   return results.length ? results : null;
 }
 
-// El índice de carreras de F1.com usa el ID interno de F1.com (no el nº de ronda)
-// y el nombre del país en la URL, así que devolvemos [{ roundId, slug }] en orden
-// cronológico. El nº de ronda es i+1.
+// F1.com's race index uses F1.com's internal ID (not the round number)
+// and the country name in the URL, so we return [{ roundId, slug }] in
+// chronological order. The round number is i+1.
 async function fetchRoundMap(year) {
   const html = await fetchHtml(`${F1_BASE}/${year}/races`);
-  if (!html) throw new Error(`no pude cargar el índice de carreras F1.com de ${year}`);
+  if (!html) throw new Error(`couldn't load the F1.com race index for ${year}`);
 
   const $ = cheerio.load(html);
   const map = [];
@@ -348,7 +348,7 @@ async function fetchRoundMap(year) {
       map.push({ roundId: m[1], slug: m[2] });
     }
   });
-  if (!map.length) throw new Error(`F1.com no devolvió carreras para ${year} (¿cambió el markup?)`);
+  if (!map.length) throw new Error(`F1.com returned no races for ${year} (did the markup change?)`);
   return map;
 }
 
@@ -370,7 +370,7 @@ async function fetchPractice(year) {
         console.warn(`  ! R${round} FP${n}: ${err.message}`);
         continue;
       }
-      if (!html) continue;   // 404 → no hubo esa sesión
+      if (!html) continue;   // 404 → that session didn't happen
 
       const results = parsePracticeTable(html);
       if (results) sessions[`fp${n}`] = { results };
@@ -382,13 +382,13 @@ async function fetchPractice(year) {
   return byRound;
 }
 
-// ── 4 · Merge con lo que ya había (preserva lo cargado a mano) ──────────────
+// ── 4 · Merge with what was already there (keeps what was loaded by hand) ───
 const hasResults = (s) => Array.isArray(s?.results) && s.results.length > 0;
 
-// Copia el `grid` de Jolpica a las filas de una sesión que ya teníamos
-// guardada (y que por eso no se pisa), matcheando por piloto y, si el id no
-// coincide, por número de auto. Sólo agrega donde falta: nunca cambia un grid
-// que ya estaba. Devuelve cuántas filas completó.
+// Copies Jolpica's `grid` to the rows of a session we already had
+// saved (and that therefore isn't overwritten), matching by driver and, if the id doesn't
+// match, by car number. It only adds where it's missing: it never changes a grid
+// that was already there. Returns how many rows it filled.
 function backfillGrid(existingSession, freshSession) {
   if (!hasResults(existingSession) || !hasResults(freshSession)) return 0;
   const byDriver = new Map(freshSession.results.map((r) => [r.driver, r.grid]));
@@ -417,13 +417,13 @@ function mergeSeasons(fresh, existing, { force }, stats = { gridAdded: 0 }) {
       const { round, name, ...rest } = freshGp;
       fresh[slug] = { round, name, circuitId: oldGp.circuitId, ...rest };
     }
-    // Conservamos toda sesión previa que ya tenga resultados (quali/FP a mano,
-    // datos de OpenF1 en 2026, etc.). La fresca sólo rellena lo que falta.
+    // We keep every previous session that already has results (qualifying/FP by hand,
+    // OpenF1 data in 2026, etc.). The fresh one only fills what's missing.
     const merged = { ...freshGp.sessions };
     for (const [key, sess] of Object.entries(oldGp.sessions ?? {})) {
       if (hasResults(sess) || !merged[key]) {
-        // La sesión guardada gana, pero si es carrera/sprint se le completa la
-        // parrilla de salida con lo que trajo Jolpica.
+        // The saved session wins, but if it's a race/sprint its starting grid
+        // is filled in with what Jolpica returned.
         if (GRID_SESSIONS.includes(key)) stats.gridAdded += backfillGrid(sess, freshGp.sessions?.[key]);
         merged[key] = sess;
       }
@@ -433,8 +433,8 @@ function mergeSeasons(fresh, existing, { force }, stats = { gridAdded: 0 }) {
   return fresh;
 }
 
-// Modo --grid: el archivo existente es la base y NO se reemplaza nada; sólo se
-// agrega `grid` a las filas de carrera/sprint que no lo tengan.
+// --grid mode: the existing file is the base and NOTHING is replaced; only
+// `grid` is added to race/sprint rows that don't have it.
 function applyGridOnly(existing, fresh) {
   const stats = { gridAdded: 0, rowsMissing: 0, gpsTouched: 0 };
   for (const [slug, gp] of Object.entries(existing)) {
@@ -456,7 +456,7 @@ function attachPractice(season, practiceByRound) {
     const slug = slugByRound.get(Number(round));
     if (!slug) continue;
     const current = season[slug].sessions ?? {};
-    // No pisar una FP que ya tenga resultados.
+    // Don't overwrite an FP that already has results.
     for (const [key, sess] of Object.entries(fpSessions)) {
       if (!hasResults(current[key])) current[key] = sess;
     }
@@ -466,7 +466,7 @@ function attachPractice(season, practiceByRound) {
   return n;
 }
 
-// ── 5 · Reporte de lo que quedó incompleto ─────────────────────────────────
+// ── 5 · Report of what remained incomplete ──────────────────────────────────
 function findMissingQualifying(season) {
   const missing = [];
   for (const [slug, gp] of Object.entries(season)) {
@@ -484,36 +484,36 @@ async function writeReport(year, report) {
   const { circuits, missingQualifying } = report;
 
   if (!circuits.length && !missingQualifying.length) {
-    await unlink(path).catch(() => {});   // ya está completo: borramos el reporte viejo
-    console.log(`\n✅ ${year}: sin huecos.`);
+    await unlink(path).catch(() => {});   // already complete: delete the old report
+    console.log(`\n✅ ${year}: no gaps.`);
     return;
   }
 
   const lines = [
-    `# season${year} — datos incompletos`,
-    `# generado ${new Date().toISOString()}`,
+    `# season${year} — incomplete data`,
+    `# generated ${new Date().toISOString()}`,
     '',
   ];
 
   if (circuits.length) {
-    lines.push('## Circuitos a agregar (crear en data/circuits.json; el circuitId ya quedó escrito si había slug propuesto)');
+    lines.push('## Circuits to add (create them in data/circuits.json; the circuitId was already written if there was a proposed slug)');
     for (const c of circuits) {
-      const proposed = c.projectId ? ` → slug propuesto: ${c.projectId}` : '';
+      const proposed = c.projectId ? ` → proposed slug: ${c.projectId}` : '';
       lines.push(`${c.slug.padEnd(22)} R${c.round}  Jolpica "${c.jolpicaId}"${proposed}  (${c.note})`);
     }
     lines.push('');
   }
 
   if (missingQualifying.length) {
-    lines.push('## Clasificaciones sin datos en Jolpica (completar sessions.qualifying a mano)');
+    lines.push('## Qualifying sessions missing from Jolpica (fill in sessions.qualifying by hand)');
     for (const m of missingQualifying) {
-      lines.push(`${m.slug.padEnd(22)} R${m.round}  circuito: ${m.circuitId ?? 'desconocido'}`);
+      lines.push(`${m.slug.padEnd(22)} R${m.round}  circuit: ${m.circuitId ?? 'unknown'}`);
     }
     lines.push('');
   }
 
   await writeFile(path, lines.join('\n'), 'utf-8');
-  console.log(`\n⚠  ${circuits.length} circuito(s) + ${missingQualifying.length} quali sin datos → ${path}`);
+  console.log(`\n⚠  ${circuits.length} circuit(s) + ${missingQualifying.length} qualifying session(s) without data → ${path}`);
 }
 
 // ── main ───────────────────────────────────────────────────────────────────
@@ -535,7 +535,7 @@ function parseArgs(argv) {
 async function main() {
   const { year, flags } = parseArgs(process.argv.slice(2));
   if (!year || Number.isNaN(Number(year))) {
-    console.error('Uso: node scripts/build-season.js <year> [--no-practice] [--force] [--dry-run] [--grid] [--out <path>]');
+    console.error('Usage: node scripts/build-season.js <year> [--no-practice] [--force] [--dry-run] [--grid] [--out <path>]');
     process.exit(1);
   }
 
@@ -548,88 +548,88 @@ async function main() {
     return;
   }
 
-  console.log(`\n── 1/4 · Jolpica: carrera + clasificación ──`);
+  console.log(`\n── 1/4 · Jolpica: race + qualifying ──`);
   const { season, circuitByRound } = await fetchFromJolpica(year);
 
-  console.log(`\n── 2/4 · circuitId por GP ──`);
+  console.log(`\n── 2/4 · circuitId per GP ──`);
   const circuitSlugs = await loadCircuitSlugs();
   resolveCircuitIds(season, circuitByRound, circuitSlugs, report);
 
   let existing = null;
   try {
     existing = JSON.parse(await readFile(outPath, 'utf-8'));
-  } catch { /* no existía: es un season nuevo */ }
+  } catch { /* didn't exist: it's a new season */ }
   const mergeStats = { gridAdded: 0 };
   const merged = mergeSeasons(season, existing, flags, mergeStats);
-  if (mergeStats.gridAdded) console.log(`  parrilla de salida completada en ${mergeStats.gridAdded} fila(s) ya existentes`);
+  if (mergeStats.gridAdded) console.log(`  starting grid filled in on ${mergeStats.gridAdded} existing row(s)`);
 
   if (flags.noPractice) {
-    console.log(`\n── 3/4 · práctica (FP1-3): omitida (--no-practice) ──`);
+    console.log(`\n── 3/4 · practice (FP1-3): skipped (--no-practice) ──`);
   } else {
-    console.log(`\n── 3/4 · práctica (FP1-3) desde formula1.com ──`);
+    console.log(`\n── 3/4 · practice (FP1-3) from formula1.com ──`);
     try {
       const practiceByRound = await fetchPractice(year);
       const n = attachPractice(merged, practiceByRound);
-      console.log(`  ${n} carrera(s) con FP agregadas`);
+      console.log(`  ${n} race(s) with FP added`);
     } catch (err) {
-      console.warn(`  ! no se pudo scrapear práctica: ${err.message}`);
+      console.warn(`  ! couldn't scrape practice: ${err.message}`);
     }
   }
 
-  console.log(`\n── 4/4 · huecos ──`);
+  console.log(`\n── 4/4 · gaps ──`);
   report.missingQualifying = findMissingQualifying(merged);
 
   if (flags.dryRun) {
-    console.log('\n(--dry-run: no se escribe nada)');
+    console.log('\n(--dry-run: nothing is written)');
     const gp = Object.keys(merged).length;
     const withQuali = Object.values(merged).filter((g) => g.sessions?.qualifying?.results?.length).length;
     const withFp = Object.values(merged).filter((g) => g.sessions?.fp1?.results?.length).length;
-    console.log(`  ${gp} GP · ${withQuali} con quali · ${withFp} con FP1`);
+    console.log(`  ${gp} GP · ${withQuali} with qualifying · ${withFp} with FP1`);
     if (report.circuits.length)
-      console.log('  circuitos:', report.circuits.map((c) => `${c.slug}(${c.jolpicaId})`).join(', '));
+      console.log('  circuits:', report.circuits.map((c) => `${c.slug}(${c.jolpicaId})`).join(', '));
     if (report.missingQualifying.length)
-      console.log('  quali faltantes:', report.missingQualifying.map((m) => m.slug).join(', '));
+      console.log('  missing qualifying:', report.missingQualifying.map((m) => m.slug).join(', '));
   } else {
     await writeFile(outPath, JSON.stringify(merged, null, 2) + '\n', 'utf-8');
-    console.log(`\nEscrito: ${outPath}`);
+    console.log(`\nWritten: ${outPath}`);
     await writeReport(year, report);
   }
 
-  console.log('\nRecordá regenerar careers.json:  node scripts/build-careers.js');
+  console.log('\nRemember to regenerate careers.json:  node scripts/build-careers.js');
 }
 
-// ── --grid: sólo la parrilla de salida ─────────────────────────────────────
+// ── --grid: starting grid only ─────────────────────────────────────────────
 async function runGridOnly(year, outPath, flags) {
   let existing;
   try {
     existing = JSON.parse(await readFile(outPath, 'utf-8'));
   } catch {
-    console.error(`--grid necesita un season file existente: ${outPath} no existe. Corré primero la temporada completa.`);
+    console.error(`--grid needs an existing season file: ${outPath} doesn't exist. Run the full season first.`);
     process.exit(1);
   }
 
-  console.log(`\n── Jolpica: parrilla de salida de carrera + sprint ──`);
+  console.log(`\n── Jolpica: race + sprint starting grid ──`);
   const { season: fresh } = await fetchFromJolpica(year, { gridOnly: true });
   const stats = applyGridOnly(existing, fresh);
 
-  console.log(`\n  ${stats.gridAdded} fila(s) completadas en ${stats.gpsTouched} GP`);
+  console.log(`\n  ${stats.gridAdded} row(s) filled in across ${stats.gpsTouched} GP(s)`);
   if (stats.rowsMissing) {
-    console.log(`  ${stats.rowsMissing} fila(s) siguen sin grid (Jolpica no las tiene o el piloto no matchea)`);
+    console.log(`  ${stats.rowsMissing} row(s) still without a grid (Jolpica doesn't have them or the driver doesn't match)`);
   } else {
-    console.log('  todas las filas de carrera/sprint tienen grid');
+    console.log('  every race/sprint row has a grid');
   }
 
   if (flags.dryRun) {
-    console.log('\n(--dry-run: no se escribe nada)');
+    console.log('\n(--dry-run: nothing is written)');
     return;
   }
   if (!stats.gridAdded) {
-    console.log('\nNada que escribir.');
+    console.log('\nNothing to write.');
     return;
   }
   await writeFile(outPath, JSON.stringify(existing, null, 2) + '\n', 'utf-8');
-  console.log(`\nEscrito: ${outPath}`);
-  console.log('\nRecordá regenerar careers.json:  node scripts/build-careers.js');
+  console.log(`\nWritten: ${outPath}`);
+  console.log('\nRemember to regenerate careers.json:  node scripts/build-careers.js');
 }
 
 main().catch((err) => {

@@ -1,25 +1,25 @@
-// shared/grid.js — posición de largada de cada piloto en una carrera.
+// shared/grid.js: each driver's starting position in a race.
 //
-// Clasificar P1 no es largar P1: penalizaciones por cambio de motor o de
-// caja, sanciones de la sesión anterior y largadas desde boxes mueven la
-// parrilla. Por eso las filas de carrera y sprint guardan su propio `grid`
-// (la parrilla oficial; 0 = salió desde el pit lane), cargado por
-// scripts/build-season.js --grid y por el adapter de OpenF1.
+// Qualifying P1 isn't starting P1: engine or gearbox change
+// penalties, sanctions from the previous session and pit lane starts move the
+// grid. That's why race and sprint rows store their own `grid`
+// (the official grid; 0 = started from the pit lane), loaded by
+// scripts/build-season.js --grid and by the OpenF1 adapter.
 //
-// Hasta que una temporada tenga ese campo, se cae a la posición de la
-// clasificación correspondiente (Qualifying para la carrera, Sprint
-// Qualifying para el sprint), que es lo que el sitio usaba antes.
+// Until a season has that field, it falls back to the position from the
+// corresponding qualifying (Qualifying for the race, Sprint
+// Qualifying for the sprint), which is what the site used before.
 //
-// Script clásico (define globales), como shared/gp.js y shared/teams.js.
+// Classic script (defines globals), like shared/gp.js and shared/teams.js.
 
 const GRID_SOURCE_SESSION = { race: 'qualifying', sprintRace: 'sprintQualy' };
 
 // Map driver → { pos, pitLane, official }.
-//   pos:      posición de largada usable para cálculos (pit lane cuenta como
-//             último, detrás de todos los que largaron desde la parrilla)
-//   pitLane:  true si largó desde boxes
-//   official: true si el dato es la parrilla real; false si es el fallback
-//             a la clasificación
+//   pos:      starting position usable for calculations (pit lane counts as
+//             last, behind everyone who started from the grid)
+//   pitLane:  true if they started from the pits
+//   official: true if the data is the real grid; false if it's the fallback
+//             to qualifying
 function startingGridFor(gp, sessionKey) {
     const session = gp?.sessions?.[sessionKey];
     const results = Array.isArray(session?.results) ? session.results : [];
@@ -43,12 +43,12 @@ function startingGridFor(gp, sessionKey) {
     return map;
 }
 
-// Atajo para un solo piloto: número de largada o null.
+// Shortcut for a single driver: starting number or null.
 function startingPositionFor(gp, sessionKey, driverId) {
     return startingGridFor(gp, sessionKey)[driverId]?.pos ?? null;
 }
 
-// "P7", o "PL" si largó desde boxes.
+// "P7", or "PL" if they started from the pits.
 function gridLabel(entry) {
     if (!entry) return '—';
     return entry.pitLane ? 'PL' : `P${entry.pos}`;

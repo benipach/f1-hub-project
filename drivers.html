@@ -21,6 +21,7 @@
     <script src="./js/shared/teams.js" defer></script>
     <script src="./js/pages/drivers.js" defer></script>
     <script src="./js/navbar.js" defer></script>
+    <script src="./js/footer.js" defer></script>
 
 </head>
 <body>
@@ -30,7 +31,7 @@
             <img src="img/logo.png" alt="F1 Hub Logo" class="nav-logo">
         </a>
 
-        <button class="hamburger" id="hamburger-btn" aria-label="Abrir menú">
+        <button class="hamburger" id="hamburger-btn" aria-label="Open menu">
             <span class="bar"></span>
             <span class="bar"></span>
             <span class="bar"></span>
@@ -598,65 +599,11 @@
         </div>
     </main>
 
-    <footer class="footer">
-        <div class="footer-grid">
-
-            <div class="footer-brand">
-                <a href="./index.html" class="footer-logo">
-                    <img src="img/logo.png" alt="F1 Hub Logo" class="footer-logo-img">
-                </a>
-                <p class="footer-tagline">
-                    Your go-to source for F1 schedules, standings,<br>
-                    and race data — all in your local time.
-                </p>
-            </div>
-
-            <div class="footer-links">
-                <p class="footer-col-title">Navigate</p>
-                <ul>
-                    <li><a href="./index.html#calendar">Calendar</a></li>
-                    <li><a href="./championship.html">Championship</a></li>
-                    <li><a href="./results.html">Results</a></li>
-                    <li><a href="./drivers.html">Drivers</a></li>
-                    <li><a href="./teams.html">Teams</a></li>
-                    <li><a href="./live.html">Live</a></li>
-                    <li><a href="./archieve.html">Archieve</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-links">
-                <p class="footer-col-title">External</p>
-                <ul>
-                    <li><a href="https://www.formula1.com" target="_blank">Formula 1 Official</a></li>
-                    <li><a href="https://www.fia.com" target="_blank">FIA</a></li>
-                    <li><a href="https://openf1.org" target="_blank">OpenF1 API</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-links">
-                <p class="footer-col-title">Developer</p>
-                <ul>
-                    <li><a href="https://benipach.github.io/portfolio" target="_blank">Portfolio</a></li>
-                    <li><a href="https://github.com/benipach" target="_blank">GitHub</a></li>
-                    <li><a href="https://linkedin.com/in/benicio-pacheco" target="_blank">LinkedIn</a></li>
-                </ul>
-            </div>
-
-        </div>
-
-        <div class="footer-bottom">
-            <span class="footer-copyright">
-                &copy; 2026 F1 Hub &mdash; Unofficial fan project. Not affiliated with Formula 1.
-            </span>
-            <span class="footer-timezone">
-                All times shown in your local timezone
-            </span>
-        </div>
-    </footer>
+    <footer class="footer" data-root="."></footer>
 
     <script>
-        // Hero: sin hover (pantallas táctiles), el primer toque abre la franja
-        // y el segundo, ya abierta, entra al perfil.
+        // Hero: without hover (touch screens), the first tap opens the strip
+        // and the second, once it's open, goes to the profile.
         document.querySelector('.lv-strip').addEventListener('click', (e) => {
             const slice = e.target.closest('.lv-slice');
             if (!slice || !matchMedia('(hover: none)').matches || slice.classList.contains('is-open')) return;
@@ -666,8 +613,8 @@
             slice.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
         });
 
-        // Tarjetas: entran al aparecer en pantalla. El escalonado cuenta solo las
-        // que entran en la misma tanda, así ninguna espera por las de arriba.
+        // Cards: they enter as they appear on screen. The stagger only counts the
+        // ones entering in the same batch, so none waits for the ones above.
         const dcObserver = new IntersectionObserver((entries) => {
             entries.filter(entry => entry.isIntersecting).forEach((entry, i) => {
                 entry.target.style.setProperty('--dc-delay', `${i * 70}ms`);

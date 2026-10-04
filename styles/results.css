@@ -30,8 +30,8 @@
 }
 
 /* ---- TABLE CARD (no max-height, grows with content) ---- */
-/* Mismo aspecto que .standings-table-wrap (championship.css): degradado,
-   borde fino, y sin hover en el contenedor. */
+/* Same look as .standings-table-wrap (championship.css): gradient,
+   thin border, and no hover on the container. */
 .results-table-wrap {
     background: linear-gradient(135deg, var(--base-700) 0%, var(--base-800) 100%);
     border: 1px solid rgba(255,255,255,0.05);
@@ -55,8 +55,8 @@
     font-size: 14px;
 }
 
-/* Cabecera calcada de .data-table th (grandprix.css): misma tipografía,
-   tamaño y fondo en todas las tablas del sitio. */
+/* Header copied from .data-table th (grandprix.css): same typography,
+   size and background in all the site's tables. */
 .results-table th {
     height: 44px;
     padding: 0 20px;
@@ -103,7 +103,7 @@
     outline: none;
 }
 
-/* ---- EXPAND (chevron al final de la fila) ---- */
+/* ---- EXPAND (chevron at the end of the row) ---- */
 .results-expand-col,
 .results-expand {
     width: 24px;
@@ -127,14 +127,14 @@
     border-color: var(--primary-red);
 }
 
-/* ---- DETAIL (clasificación completa desplegada bajo la fila) ---- */
-/* Es la misma .race-table-wrap/.data-table de la página del GP
-   (styles/result-table.css), metida en una celda que ocupa toda la fila.
+/* ---- DETAIL (full classification expanded below the row) ---- */
+/* It's the same .race-table-wrap/.data-table as the GP page
+   (styles/result-table.css), placed in a cell that spans the whole row.
 
-   La fila de detalle siempre existe, plegada: la celda no tiene padding ni
-   borde, y adentro una grilla pasa de 0fr a 1fr. Así la altura se anima de
-   verdad (la tabla se estira, las filas de abajo bajan acompañando) en vez
-   de aparecer de golpe. El contenido hace un fade corto encima. */
+   The detail row always exists, collapsed: the cell has no padding or
+   border, and inside it a grid goes from 0fr to 1fr. That way the height really
+   animates (the table stretches, the rows below move down with it) instead
+   of appearing at once. The content does a short fade on top. */
 .results-table > tbody > tr.results-detail > td {
     height: auto;
     padding: 0;
@@ -143,8 +143,8 @@
     white-space: normal;
 }
 
-/* La fila de GP es la que dibuja la línea divisoria; la última no la lleva
-   salvo que esté abierta (ahí separa la fila de su detalle). */
+/* The GP row is the one that draws the divider; the last one doesn't
+   unless it's open (there it separates the row from its detail). */
 .results-table > tbody > tr.results-row:nth-last-child(2):not(.is-open) > td { border-bottom: none; }
 
 .results-detail-grid {
@@ -206,8 +206,8 @@
 
 .results-detail-link:hover { color: var(--primary-red); }
 
-/* La tabla desplegada va sobre el fondo de la celda, sin su propia tarjeta:
-   dos degradados anidados se ven como una caja dentro de otra. */
+/* The expanded table sits on the cell's background, without its own card:
+   two nested gradients look like a box inside another. */
 .results-detail .race-table-wrap {
     background: var(--base-800);
     border-color: rgba(255,255,255,0.06);
@@ -219,8 +219,8 @@
     .results-expand-icon { transition: none; }
 }
 
-/* ---- CARGA ---- */
-/* Al cambiar de año se atenúa lo que ya está en vez de vaciarlo. */
+/* ---- LOADING ---- */
+/* When the year changes, what's already there is dimmed instead of cleared. */
 #results-tabs-container.is-loading {
     opacity: 0.45;
     pointer-events: none;
@@ -228,7 +228,7 @@
 
 #results-tabs-container[hidden] { display: none; }
 
-/* Columna de ronda = .res-pos / .st-pos: mismo tamaño y mismo gris. */
+/* Round column = .res-pos / .st-pos: same size and same grey. */
 .results-round {
     width: 25px;
     text-align: center;
@@ -331,10 +331,10 @@
 }
 
 /* ---- SESSION TABS ---- */
-/* Calcadas de #session-tabs-container / .session-tab-bar de grandprix.css:
-   misma tipografía, mismo indicador rojo, misma animación y mismo
-   comportamiento en móvil. Cualquier cambio de aspecto se hace allá y se
-   copia acá. */
+/* Copied from #session-tabs-container / .session-tab-bar in grandprix.css:
+   same typography, same red indicator, same animation and same
+   behavior on mobile. Any change in look is made there and
+   copied here. */
 #results-tabs-container {
     opacity: 0;
     transform: translateY(6px);

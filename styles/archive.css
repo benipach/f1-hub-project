@@ -1,13 +1,13 @@
 /* ============================================================ */
-/*  archive.css                                                  */
-/*  El índice de temporadas: hero con los números del archivo y  */
-/*  una tarjeta por año, agrupadas por década, que linkea a      */
-/*  results.html?season=AAAA y championship.html?season=AAAA.    */
-/*                                                                */
-/*  Las tarjetas hablan el mismo idioma que .drivercard           */
-/*  (drivers.css): fondo teñido con el color del equipo, número   */
-/*  gigante de marca de agua, logo que entra al hover, tarjeta    */
-/*  que se eleva. Toda la animación usa la misma curva suave.     */
+/*  archive.css                                                 */
+/*  The season index: a hero with the archive's numbers and     */
+/*  one card per year, grouped by decade, linking to            */
+/*  results.html?season=YYYY and championship.html?season=YYYY. */
+/*                                                              */
+/*  The cards speak the same language as .drivercard            */
+/*  (drivers.css): background tinted with the team color, a     */
+/*  giant watermark number, a logo that slides in on hover,     */
+/*  a card that lifts. All animation uses the same soft curve.  */
 /* ============================================================ */
 
 :root {
@@ -15,8 +15,8 @@
 }
 
 /* ── HERO ───────────────────────────────────────────────────── */
-/* Misma estructura que .drivers-hero pero sin foto: el trofeo del
-   campeonato, enorme y apagado, hace de imagen de fondo. */
+/* Same structure as .drivers-hero but without a photo: the championship
+   trophy, huge and dimmed, acts as the background image. */
 .archive-hero {
     position: relative;
     overflow: hidden;
@@ -46,7 +46,7 @@
 .archive-hero-trophy {
     position: absolute;
     right: 10%;
-    /* la navbar fija tapa los primeros 60px del hero: se centra en lo visible */
+    /* the fixed navbar covers the hero's first 60px: center on the visible part */
     top: calc(50% + 30px);
     height: 78%;
     transform: translateY(-50%) rotate(6deg);
@@ -89,7 +89,7 @@
     color: var(--text-light);
 }
 
-/* Igual que .drivers-hero-meta. */
+/* Same as .drivers-hero-meta. */
 .archive-hero-meta {
     display: flex;
     flex-wrap: wrap;
@@ -128,7 +128,7 @@
     to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── DÉCADAS ────────────────────────────────────────────────── */
+/* ── DECADES ────────────────────────────────────────────────── */
 .archive-decades {
     max-width: var(--content-width);
     margin-inline: auto;
@@ -199,8 +199,8 @@
     transform: translateY(0);
 }
 
-/* Al hover sólo se eleva, como .drivercard: sin cambiar el borde ni agregar
-   sombra; la vida la ponen el año de fondo y el logo que entra. */
+/* On hover it only lifts, like .drivercard: without changing the border or adding
+   a shadow; the background year and the incoming logo bring it to life. */
 .archive-card:hover,
 .archive-card:focus-visible {
     transform: translateY(-6px);
@@ -218,8 +218,8 @@
     z-index: 3;
 }
 
-/* Año gigante de fondo (= .driver-number): apagado, y al hover sube, crece y
-   se enciende con el color del equipo. */
+/* Giant background year (= .driver-number): dimmed, and on hover it rises, grows and
+   lights up with the team color. */
 .archive-card-year-bg {
     position: absolute;
     right: 12px;
@@ -243,7 +243,7 @@
     transform: translateY(-10px);
 }
 
-/* Logo del equipo campeón (= .drivercard::after): entra desde la derecha. */
+/* Champion team logo (= .drivercard::after): slides in from the right. */
 .archive-card-logo-bg {
     position: absolute;
     top: 16px;
@@ -264,7 +264,7 @@
     transform: translateX(0);
 }
 
-/* Cabecera: el año; el estado va pegado a la esquina superior derecha. */
+/* Header: the year; the status sits in the top-right corner. */
 .archive-card-head {
     position: relative;
     z-index: 1;
@@ -281,13 +281,13 @@
     color: var(--text-light);
 }
 
-/* Esquina superior derecha. Al hover baja para dejarle el lugar al logo
-   del equipo, que entra justo ahí. */
+/* Top-right corner. On hover it moves down to make room for the
+   team logo, which comes in right there. */
 .archive-card-status {
-    /* Al ras del padding de la tarjeta: arriba a la altura del año, y a la
-       derecha en el mismo borde que el resto del contenido. Es hijo directo
-       de .archive-card (no de la cabecera) para que top/right se midan desde
-       la tarjeta. */
+    /* Flush with the card's padding: on top, level with the year, and on the
+       right at the same edge as the rest of the content. It's a direct child
+       of .archive-card (not of the header) so top/right are measured from
+       the card. */
     position: absolute;
     top: 20px;
     right: 20px;
@@ -328,7 +328,7 @@
     50%      { opacity: 0.3; }
 }
 
-/* Campeón (= .driver-details h3: nombre chico, apellido grande). */
+/* Champion (= .driver-details h3: small first name, big surname). */
 .archive-card-champ,
 .archive-card-team {
     position: relative;
@@ -404,7 +404,7 @@
     color: var(--text-dim);
 }
 
-/* Acciones (= .dc-cta): apagadas; al hover se encienden. */
+/* Actions (= .dc-cta): dimmed; they light up on hover. */
 .archive-card-actions {
     position: relative;
     z-index: 1;

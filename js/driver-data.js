@@ -1,12 +1,12 @@
-// ── driver-data.js — carga compartida de los JSON de la página de piloto ──
+// ── driver-data.js: shared loading of the driver page's JSON files ──
 //
-// Las cuatro secciones (header, 2026, career, biography) necesitan el mismo puñado
-// de archivos. Este módulo los pide una sola vez y deja la promesa en
-// window.driverData; cada sección hace `await window.driverData`.
+// The four sections (header, 2026, career, biography) need the same handful
+// of files. This module requests them once and leaves the promise in
+// window.driverData; each section does `await window.driverData`.
 //
-// Los datos específicos de una sección (season2026.json, circuits, cities) los
-// sigue pidiendo esa sección: no tiene sentido cargar 500 KB de resultados en
-// páginas que sólo muestran totales.
+// Data specific to one section (season2026.json, circuits, cities) is
+// still requested by that section: there's no point loading 500 KB of results on
+// pages that only show totals.
 
 (function(){
     const BASE = '../data';

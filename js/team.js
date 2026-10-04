@@ -3,11 +3,11 @@
 const CURRENT_SEASON_FILE = '../data/seasons/season2026.json';
 const CURRENT_SEASON_YEAR = 2026;
 
-// teamColor(), teamCssVar(), teamLogo() vienen de teams.js (cargado antes)
+// teamColor(), teamCssVar(), teamLogo() come from teams.js (loaded first)
 
 document.addEventListener('DOMContentLoaded', async () => {
     const teamId = new URLSearchParams(window.location.search).get('team');
-    if (!teamId) { console.error('No ?team= en la URL'); return; }
+    if (!teamId) { console.error('Missing ?team= in the URL'); return; }
 
     try {
         const [teamsData, driversData, season] = await Promise.all([
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         ]);
 
         const teamInfo = teamsData.teams.find(t => t.id === teamId);
-        if (!teamInfo) { console.error('Equipo no encontrado:', teamId); return; }
+        if (!teamInfo) { console.error('Team not found:', teamId); return; }
 
         const history = teamInfo.history || [];
 
@@ -41,10 +41,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const raceLabels    = [];
         const raceFullNames = [];
-        const racePoints    = [];    // puntos combinados del equipo por carrera
-        const raceWins      = [];    // índices con alguna victoria del equipo
-        const racePositions = [];    // puntos totales del fin de semana (para label en barra)
-        const raceSprintPts = [];    // sprint pts combinados, null si no aplica
+        const racePoints    = [];    // the team's combined points per race
+        const raceWins      = [];    // indexes with a team win
+        const racePositions = [];    // total weekend points (for the bar label)
+        const raceSprintPts = [];    // combined sprint points, null if not applicable
 
         let total2026 = 0, wins2026 = 0, podiums2026 = 0;
         let dnfs2026 = 0, starts2026 = 0, poles2026 = 0, fastest2026 = 0;
@@ -102,11 +102,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             raceSprintPts.push(gpSprintPts > 0 ? gpSprintPts : null);
         });
 
-        // ── POSICIÓN EN EL CAMPEONATO DE CONSTRUCTORES 2026 ──────
+        // ── POSITION IN THE 2026 CONSTRUCTORS' CHAMPIONSHIP ──────
         const constructorPoints = {};
         Object.values(season).forEach(gp => {
             (gp.results?.race || []).forEach(r => {
-                // Para asociar el piloto a su equipo en 2026 buscamos en driversData
+                // To associate each driver with their 2026 team we search driversData
                 const driver = driversData.drivers.find(d => `${d.firstName} ${d.lastName}` === r.driver);
                 if (!driver) return;
                 const entry = (driver.history || []).find(h => h.year === CURRENT_SEASON_YEAR);
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             .sort((a, b) => b[1] - a[1])
             .findIndex(([id]) => id === teamId.toLowerCase()) + 1;
 
-        // ── CAREER STATS desde teams.json history ────────────────
+        // ── CAREER STATS from teams.json history ─────────────────
         let totalWins = wins2026, totalPodiums = podiums2026;
         let totalPoles = poles2026, totalPoints = total2026;
         let totalStarts = starts2026, championships = 0;
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             ? Math.min(...history.map(s => s.year))
             : CURRENT_SEASON_YEAR;
 
-        // ── COLOR DEL EQUIPO ──────────────────────────────────────
+        // ── TEAM COLOR ────────────────────────────────────────────
         const _teamCssVar = teamCssVar(teamId);
         const _teamColor  = getComputedStyle(document.documentElement)
                             .getPropertyValue(_teamCssVar).trim() || '#e10600';
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (natEl)  natEl.textContent  = driver.nationality || '';
         });
 
-        // Ocultar segunda card si el equipo tiene un solo piloto
+        // Hide the second card if the team has a single driver
         if (teamDrivers.length < 2) {
             const card2 = document.getElementById('driver-card-2');
             if (card2) card2.style.display = 'none';
@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             };
         }
 
-        // ── GRÁFICOS ──────────────────────────────────────────────
+        // ── CHARTS ────────────────────────────────────────────────
         await document.fonts.ready;
 
         Chart.defaults.font.family = "'F1-Regular', sans-serif";
@@ -251,11 +251,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         initLineage(teamId, teamsData);
 
     } catch (err) {
-        console.error('Error cargando datos del equipo:', err);
+        console.error('Error loading team data:', err);
     }
 });
 
-// ── GRÁFICO 1: Puntos por carrera (temporada activa) ─────────────
+// ── CHART 1: Points per race (current season) ─────────────────────
 function watchChartAspect(chart, breakpoint, normalRatio, mobileRatio) {
     const observer = new ResizeObserver(entries => {
         const width = entries[0].contentRect.width;
@@ -414,11 +414,11 @@ function initRaceChart(labels, points, winIndexes, teamColor, positions, fullNam
 }
 
 
-// ── SECCIÓN: Team Lineage ─────────────────────────────────────────
+// ── SECTION: Team Lineage ─────────────────────────────────────────
 function initLineage(currentTeamId, teamsData) {
     const lineage = teamLineage(currentTeamId);
 
-    // Solo mostrar si hay predecesores (más de 1 equipo en el lineage)
+    // Only show it if there are predecessors (more than 1 team in the lineage)
     const predecessors = lineage.filter(id => id.toLowerCase() !== currentTeamId.toLowerCase());
     if (!predecessors.length) return;
 
@@ -506,7 +506,7 @@ function initLineage(currentTeamId, teamsData) {
 
         timeline.appendChild(item);
 
-        // ── Season pills con click handler ───────────────────────
+        // ── Season pills with click handler ──────────────────────
         const pillsRow  = item.querySelector(`#lineage-pills-${tid}`);
         const detailBox = item.querySelector(`#lineage-detail-${tid}`);
         let activePill  = null;
@@ -588,11 +588,11 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
     const ctx = document.getElementById('pointsChart')?.getContext('2d');
     if (!ctx) return;
 
-    // ── Construir allSeasons solo con el equipo actual (sin predecesores) ─
-    // Los ex-equipos se muestran en el Team Lineage, no aquí
+    // ── Build allSeasons only with the current team (no predecessors) ─
+    // Former teams are shown in the Team Lineage, not here
     const allSeasons = [];
 
-    // Temporadas históricas del equipo actual (sin la temporada en curso)
+    // The current team's historical seasons (without the current season)
     history
         .filter(s => s.year !== CURRENT_SEASON_YEAR)
         .sort((a, b) => a.year - b.year)
@@ -615,7 +615,7 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
         position: currentChampPos,
     });
 
-    // Ordenar por año por si los lineages se solapan
+    // Sort by year in case the lineages overlap
     allSeasons.sort((a, b) => Number(a.year) - Number(b.year));
 
     const seasons = allSeasons.map(s => s.year);
@@ -638,19 +638,19 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
     const WINDOW_SIZE = window.innerWidth <= 500 ? 8 : 15;
     const total = allSeasons.length;
 
-    // winStart = índice en allSeasons del primer elemento visible
-    // Arranca mostrando las últimas WINDOW_SIZE temporadas
+    // winStart = index in allSeasons of the first visible item
+    // Starts by showing the last WINDOW_SIZE seasons
     let winStart = Math.max(0, total - WINDOW_SIZE);
 
-    // Vista activa: slice de allSeasons que el chart conoce en todo momento
+    // Active view: slice of allSeasons the chart knows about at all times
     let view = allSeasons.slice(winStart, winStart + WINDOW_SIZE);
 
-    // ── Estado de selección por temporada ───────────────────────
+    // ── Per-season selection state ──────────────────────────────
     let selectedGlobalIdx = null;
 
-    // ── Plugin: dibuja pts y logos sobre las barras ───────────────
-    // Trabaja sobre `view` (siempre WINDOW_SIZE elementos), no sobre allSeasons,
-    // por lo que meta.data[i].x siempre corresponde al season correcto.
+    // ── Plugin: draws points and logos over the bars ──────────────
+    // Works on `view` (always WINDOW_SIZE items), not on allSeasons,
+    // so meta.data[i].x always matches the right season.
     const careerPlugin = {
         id: 'careerPlugin',
         afterDatasetDraw(chart) {
@@ -715,7 +715,7 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
         }
     };
 
-    // ── Inicializar chart con la vista inicial ────────────────────
+    // ── Initialize the chart with the initial view ────────────────
     const careerChart = new Chart(ctx, {
         type: 'bar',
         plugins: [careerPlugin],
@@ -763,11 +763,11 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
         }
     });
 
-    // ── Selección por temporada ───────────────────────────────────
+    // ── Per-season selection ──────────────────────────────────────
 
-    // Filas del estado DEFAULT (ninguna barra seleccionada)
+    // Rows for the DEFAULT state (no bar selected)
     const DEFAULT_ROWS = ['name', 'seasons', 'races', 'wins', 'podiums', 'poles', 'titles'];
-    // Filas del estado SELECTED (barra seleccionada)
+    // Rows for the SELECTED state (bar selected)
     const SELECTED_ROWS = ['season', 'chassis', 'engine', 'races-sel', 'wins-sel', 'podiums-sel', 'poles-sel', 'position'];
 
     const setRowsVisible = (ids, visible) => {
@@ -785,7 +785,7 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
         setTimeout(() => { el.textContent = text; el.style.opacity = '1'; }, 90);
     };
 
-    // Snapshot de los valores default para restaurar al deseleccionar
+    // Snapshot of the default values to restore on deselect
     let careerDefaultVals = null;
 
     const snapDefault = () => {
@@ -828,7 +828,7 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
         fadeVal('position',    pos);
     };
 
-    // Exponer al scope global para que renderLineage pueda usarlos (compatibilidad)
+    // Exposed to the global scope so renderLineage can use them (compatibility)
     window._f1InfoCard = {
         setInfo: () => {},
         snapInfo: () => careerDefaultVals ?? {},
@@ -872,7 +872,7 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
         showSelected(histEntry, yearNum);
     };
 
-    // Click en barra — solo si mousedown y mouseup ocurrieron sobre la misma barra
+    // Click on a bar, only if mousedown and mouseup happened on the same bar
     let mouseDownOnBar = false;
     careerChart.canvas.addEventListener('mousedown', (e) => {
         if (!careerDefaultVals) snapDefault();
@@ -889,7 +889,7 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
         selectSeason(view[hits[0].index]);
     });
 
-    // Cursor pointer sobre barras
+    // Pointer cursor over bars
     careerChart.canvas.addEventListener('mousemove', (e) => {
         if (isDragging) return; // dragging maneja su propio cursor
         const hits = careerChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false);
@@ -897,13 +897,13 @@ async function initCareerChart(history, points2026, currentTeamId, currentChampP
     });
 
     // ── Drag to scroll ────────────────────────────────────────────
-    // Mutar chart.data directamente — así meta.data[i] siempre tiene coords reales
+    // Mutate chart.data directly, so meta.data[i] always has real coords
     let isDragging = false;
     if (total > WINDOW_SIZE) {
         const canvas = careerChart.canvas;
         let dragStartX   = 0;
         let dragStartWin = 0;
-        // offset fraccionario acumulado para suavizar el drag
+        // accumulated fractional offset to smooth the drag
         let dragOffset   = 0;
 
         const pxPerBar = () => canvas.offsetWidth / WINDOW_SIZE;

@@ -468,7 +468,7 @@
     margin-bottom: 0.5rem;
 }
 
-/* Fila que contiene titulo + switcher de anio en la misma linea */
+/* Row holding the title + year switcher on the same line */
 .season-switcher {
     display: flex;
     align-items: center;
@@ -1011,33 +1011,33 @@
 
 /* Entrada */
 
-/* Todo espera oculto hasta que el observer le pone .in-view (ver index.js).
-   Las tarjetas que entran juntas se escalonan con --rc-delay. Las animaciones
-   van con backwards (no both): al terminar sueltan los elementos, así el
-   hover que levanta la tarjeta sigue funcionando. */
+/* Everything waits hidden until the observer adds .in-view (see index.js).
+   Cards entering together are staggered with --rc-delay. The animations
+   use backwards (not both): when they end they release the elements, so the
+   hover that lifts the card keeps working. */
 .calendar-title:not(.in-view),
 .race-card:not(.in-view) { opacity: 0; }
 
-/* Título: se descubre de izquierda a derecha, arrancando por la barra roja */
+/* Title: revealed from left to right, starting with the red bar */
 .calendar-title.in-view {
     animation: cal-title-in 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
 }
 
-/* Tarjeta: sube desenfocada y se asienta */
+/* Card: rises blurred and settles */
 .race-card.in-view {
     animation: rc-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
     animation-delay: var(--rc-delay, 0s);
 }
 
-/* La franja de color de arriba se dibuja de izquierda a derecha */
+/* The colored strip on top is drawn from left to right */
 .race-card.in-view::before {
     transform-origin: left;
     animation: rc-bar-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
     animation-delay: calc(var(--rc-delay, 0s) + 0.25s);
 }
 
-/* Contenido de las tarjetas chicas: ronda, nombre, fecha, estado, podio y
-   botón suben de a uno, detrás de la tarjeta */
+/* Content of the small cards: round, name, date, status, podium and
+   button rise one by one, behind the card */
 .race-card.in-view .race-card-content > *,
 .race-card.in-view .race-card-top3-row {
     animation: rc-part-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
@@ -1050,17 +1050,17 @@
 .race-card-content > :nth-child(5) { --j: 4; }
 .race-card-content > :nth-child(6) { --j: 5; }
 
-/* Podio: los tres puestos entran desde la izquierda, uno detrás del otro,
-   cuando la tabla ya está en su lugar */
+/* Podium: the three positions come in from the left, one after another,
+   once the table is in place */
 .race-card.in-view .race-card-top3-row { animation-name: rc-row-in; }
 .race-card-top3-row:nth-child(1) { --j: 5; }
 .race-card-top3-row:nth-child(2) { --j: 6; }
 .race-card-top3-row:nth-child(3) { --j: 7; }
 
-/* Próxima carrera: la foto se descubre de izquierda a derecha mientras se
-   aleja; la info entra desde la izquierda de a una línea; el trazado del
-   circuito gira hasta su lugar; y los días del cronograma suben de a uno,
-   cada uno con sus sesiones detrás. */
+/* Next race: the photo is revealed from left to right while it zooms
+   out; the info comes in from the left one line at a time; the circuit
+   layout rotates into place; and the schedule's days rise one by one,
+   each with its sessions behind it. */
 .race-card-next.in-view .race-card-next-photo {
     animation: rc-wipe-in 1s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
     animation-delay: calc(var(--rc-delay, 0s) + 0.2s);
@@ -1099,7 +1099,7 @@
 .schedule-day:nth-child(3) { --j: 2; }
 .schedule-day:nth-child(4) { --j: 3; }
 
-/* Sesiones de cada día (el primer hijo es el título del día) */
+/* Each day's sessions (the first child is the day's title) */
 .schedule-session:nth-child(3) { --k: 1; }
 .schedule-session:nth-child(4) { --k: 2; }
 
