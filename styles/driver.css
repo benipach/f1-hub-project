@@ -322,6 +322,107 @@
         background: var(--primary-red);
     }
 
+    /* Year dropdown inside the season stats title: the button reads as the
+       title's own text, with only a chevron saying it can be changed. `order`
+       puts it after the red line (the title's ::after), at the far right.
+       The chevron flips and the list drops in, all on the same 0.3s. */
+    .season-picker {
+        order: 1;
+        position: relative;
+        z-index: 20;
+        display: inline-flex;
+    }
+
+    .season-picker-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2em;
+        margin: 0;
+        padding: 0;
+        background: none;
+        border: none;
+        color: inherit;
+        font: inherit;
+        line-height: 1;
+        letter-spacing: inherit;
+        cursor: pointer;
+    }
+
+    .season-picker-btn:focus { outline: none; }
+
+    .season-picker-chevron {
+        width: 0.38em;
+        height: 0.38em;
+        fill: none;
+        stroke: rgba(255,255,255,0.45);
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: all 0.3s ease;
+    }
+
+    .season-picker-btn:hover .season-picker-chevron,
+    .season-picker-btn:focus-visible .season-picker-chevron { stroke: rgba(255,255,255,0.9); }
+
+    .season-picker.is-open .season-picker-chevron {
+        stroke: rgba(255,255,255,0.9);
+        transform: rotate(180deg);
+    }
+
+    /* Only one season: plain text, nothing to pick. */
+    .season-picker-btn:disabled { cursor: default; }
+    .season-picker-btn:disabled .season-picker-chevron { display: none; }
+
+    .season-picker-list {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        min-width: 100%;
+        /* Four and a half years: the half-cut one at the bottom hints that
+           the list scrolls (there's no scrollbar). Each option is 1.34em
+           (1.1em line + 0.12em padding top and bottom); +7px for the
+           list's top padding and border. */
+        max-height: calc(4.5 * 1.34em + 7px);
+        overflow-y: auto;
+        padding: 6px;
+        background: var(--base-700);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 10px;
+        box-shadow: 0 18px 40px rgba(0,0,0,0.55);
+        /* Still scrolls (wheel, touch, arrow keys), just without the bar */
+        scrollbar-width: none;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px);
+        transition: all 0.3s ease;
+    }
+
+    .season-picker-list::-webkit-scrollbar { display: none; }
+
+    .season-picker.is-open .season-picker-list {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .season-picker-option {
+        display: block;
+        padding: 0.12em 0.3em;
+        border-radius: 6px;
+        color: rgba(255,255,255,0.55);
+        line-height: 1.1;
+        cursor: pointer;
+        outline: none;
+        transition: all 0.3s ease;
+    }
+
+    .season-picker-option:hover,
+    .season-picker-option:focus { color: var(--text-light); background: rgba(255,255,255,0.06); }
+
+    .season-picker-option[aria-selected="true"] { color: var(--text-light); }
+
     /* ── General phone adjustments: less side padding and less space between
        sections ── */
     @media (max-width: 700px) {
@@ -638,7 +739,7 @@
         font-weight: 600;
         letter-spacing: 0.5px;
         text-transform: uppercase;
-        color: var(--team-color);
+        color: var(--c, var(--team-color));
         white-space: nowrap;
     }
 
@@ -1081,6 +1182,15 @@
     .season-round[data-outcome="points"] .season-round-finish { color: #4fb3c9; }
     .season-round[data-outcome="none"]   .season-round-finish { color: var(--text-dim); }
     .season-round[data-outcome="dnf"]    .season-round-finish { color: #d9564f; }
+
+    /* A race the driver missed: listed, but dimmed */
+    .season-round[data-outcome="missed"] { opacity: 0.4; }
+    .season-round-missed {
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 12px;
+        color: var(--text-dim);
+    }
 
     /* Same indicator as the GP results table: a green/red chevron
        up or down, or a grey dash if the position didn't change. */
@@ -1770,7 +1880,7 @@
 
     .jr-year i {
         display: block;
-        height: 14px;
+        height: 20px;
         background: var(--c);
         border-radius: 2px;
     }
@@ -1778,6 +1888,137 @@
     .jr-year.is-gap i {
         background: repeating-linear-gradient(90deg, rgba(255,255,255,0.14) 0 3px, transparent 3px 6px);
     }
+
+    /* Season split race by race (several teams, or races missed): one slot
+       per round, in the color of the team, grey where they didn't race.
+       The slots only separate on hover, to count the races. */
+    .jr-year i.is-split {
+        display: flex;
+        gap: 0;
+        background: none;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .jr-year:hover i.is-split { gap: 1px; }
+
+    .jr-year i.is-split b { transition: all 0.2s ease; }
+    .jr-year i.is-split b:hover { filter: brightness(1.35); }
+
+    /* ── Strip tooltip: a card above the hovered race (or year) with an
+       arrow pointing at it. Placed by ribbonTip() in driver-bio.js via
+       transform; --arrow-x is where the arrow sits along its bottom edge. ── */
+    .jr-ribbon { position: relative; }
+
+    .jr-tip {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        min-width: 150px;
+        max-width: 240px;
+        padding: 10px 12px;
+        background: var(--base-700);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        box-shadow: 0 12px 28px rgba(0,0,0,0.5);
+        pointer-events: none;
+        opacity: 0;
+        transition: all 0.2s ease;
+    }
+
+    .jr-tip.is-visible { opacity: 1; }
+
+    /* Arrow: a rotated square with the card's border on its two outer sides */
+    .jr-tip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: var(--arrow-x, 50%);
+        width: 10px;
+        height: 10px;
+        background: var(--base-700);
+        border-right: 1px solid rgba(255,255,255,0.1);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        transform: translate(-50%, -50%) rotate(45deg);
+        transition: all 0.2s ease;
+    }
+
+    .jr-tip p { margin: 0; }
+
+    .jr-tip-kicker {
+        font-family: 'F1-Regular';
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        color: var(--text-dim);
+    }
+
+    .jr-tip .jr-tip-title {
+        margin-top: 2px;
+        font-family: 'F1-Regular';
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--text-light);
+        white-space: nowrap;
+    }
+
+    /* A season with several teams: one below the other */
+    .jr-tip .jr-tip-title + .jr-tip-title { margin-top: 6px; }
+
+    /* Team name with its logo in front; a dot in the team color when there's
+       no logo (driver-bio.js removes the image if it fails to load) */
+    .jr-tip-team {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'F1-Regular';
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-light);
+        white-space: nowrap;
+    }
+
+    .jr-tip-logo {
+        width: auto;
+        height: 18px;
+        max-width: 48px;
+        object-fit: contain;
+        flex-shrink: 0;
+    }
+
+    .jr-tip-team:not(:has(.jr-tip-logo))::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--c);
+        flex-shrink: 0;
+    }
+
+    .jr-tip-title .jr-tip-team { font: inherit; }
+
+    /* "Didn't race" in place of the team, on a grey slot */
+    .jr-tip-out { color: var(--text-dim); }
+
+    .jr-tip-facts {
+        font-family: 'F1-Regular';
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-dim);
+    }
+
+    .jr-tip .jr-tip-facts { margin-top: 6px; white-space: nowrap; }
+    .jr-tip .jr-tip-facts + .jr-tip-facts { margin-top: 2px; }
+    .jr-tip-facts.is-champion { color: #E8C77A; }
+
+    .jr-year i.is-split b {
+        flex: 1 1 0;
+        min-width: 0;
+        background: var(--c);
+    }
+
+    .jr-year i.is-split b.is-out { background: rgba(255,255,255,0.14); }
 
     /* Title: a gold mark above the cell and the year in gold */
     .jr-year.is-title i { box-shadow: 0 -5px 0 -1px #E8C77A; }
@@ -1788,7 +2029,7 @@
         margin-top: 8px;
         font-family: 'F1-Regular';
         font-weight: 600;
-        font-size: 11px;
+        font-size: 13px;
         white-space: nowrap;
         color: var(--text-dim);
         visibility: hidden;
@@ -1796,8 +2037,6 @@
 
     .jr-year.is-start span,
     .jr-year:last-child span { visibility: visible; }
-
-    .jr-year:last-child span { text-align: right; }
 
     .jr-year.is-title span { color: #E8C77A; }
 
@@ -2097,11 +2336,14 @@
         .jr-ribbon-head { flex-direction: column; gap: 8px; }
         .jr-ribbon-summary { font-size: 13px; }
         .jr-years { gap: 2px; }
-        .jr-year i { height: 10px; }
+        .jr-year i { height: 14px; }
         /* Not all the labels fit: only the first and the last */
         .jr-year.is-start span { visibility: hidden; }
         .jr-year:first-child span,
-        .jr-year:last-child span { visibility: visible; font-size: 10px; }
+        .jr-year:last-child span { visibility: visible; font-size: 12px; }
+        /* On a long career the last cell is narrower than its label: aligned
+           left it would spill past the page edge, so here it ends at the edge. */
+        .jr-year:last-child span { text-align: right; }
 
         .jr-eras { gap: 40px; }
         .jr-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 18px; }

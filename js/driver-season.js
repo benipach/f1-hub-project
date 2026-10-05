@@ -1,21 +1,27 @@
-// ── 2026 SEASON: form curve + round-by-round results ──
+// ── SEASON STATS: form curve + round-by-round results ──
 //
-// Fed by data/seasons/season2026.json + data/drivers.json + data/teams.json
+// Fed by data/seasons/season<year>.json + data/drivers.json + data/teams.json
 // (+ circuits/cities/countries for each GP's flag).
 // gpCode()/gpShortLabel() come from js/shared/gp.js, shared with the
 // championship chart.
+// The year is picked with the selector next to the section title (only the
+// seasons the driver raced, from careers.json) and goes in the URL as
+// ?season=2019, like Results and Championship. Without it, the latest season
+// the driver took part in opens.
 // Replaces the old js/drivers.js, which pointed to paths and data shapes that
 // no longer exist (data/season2026.json at the root, driversData.drivers as an array, and
 // matching results by full name when the JSON uses slugs).
 
 (function(){
-    const SEASON_YEAR = 2026;
     // drivers/careers/countries/teams come from the shared loader (driver-data.js);
     // only the season's own files are requested here.
-    const SEASON_URL   = '../data/seasons/season2026.json';
+    const seasonUrl    = year => `../data/seasons/season${year}.json`;
+    const SEASONS_URL  = '../data/seasons-index.json';
+    const LATEST_URL   = '../data/latest.json';
     const CIRCUITS_URL = '../data/circuits.json';
     const CITIES_URL   = '../data/cities.json';
     const TWEMOJI_BASE = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/';
+    const FALLBACK_COLOR = '#e10600';
 
     const root = document.getElementById('season2026');
     if(!root) return;
@@ -47,6 +53,9 @@
     }
 
     // ── Calculation ────────────────────────────────────────────────────────
+    // Every race already run that season, raced or not: the ones the driver
+    // missed (Vettel 2007 only arrived midway) stay as { missed: true }, so
+    // the chart breaks its lines there and the table lists them.
     function buildRounds(season, id, refs){
         const rounds = [];
         const gps = Object.values(season).sort((a, b) => a.round - b.round);
@@ -54,21 +63,28 @@
         for(const gp of gps){
             const race = sessionResults(gp, 'race');
             if(!race.length) continue;                        // not run yet
+            const base = {
+                round: gp.round,
+                name: gpShortLabel(gp.name),
+                fullName: gp.name,           // "Hungarian Grand Prix", for running text
+                code: gpCode(gp.name),
+                flag: flagUrlFor(gp, refs),
+            };
             const me = race.find(r => r.driver === id);
-            if(!me) continue;
+            if(!me){
+                rounds.push({ ...base, missed: true, grid: null, finish: null, pts: 0 });
+                continue;
+            }
 
             const sprint = sessionResults(gp, 'sprintRace').find(r => r.driver === id);
             const retired = isRetired(me);
             // Actual grid (with penalties), or the qualifying position if the season
             // doesn't have the field yet (see shared/grid.js).
             const start = startingGridFor(gp, 'race')[id] ?? null;
+            const teamId = resolveTeamId(me.team, refs.teams);
 
             rounds.push({
-                round: gp.round,
-                name: gpShortLabel(gp.name),
-                fullName: gp.name,           // "Hungarian Grand Prix", for running text
-                code: gpCode(gp.name),
-                flag: flagUrlFor(gp, refs),
+                ...base,
                 grid: start?.pos ?? null,
                 gridLabel: gridLabel(start),
                 finish: me.pos,
@@ -76,10 +92,33 @@
                 pts: (me.pts || 0) + (sprint?.pts || 0),
                 sprintPts: sprint?.pts || 0,
                 fastestLap: Boolean(me.fastestLap),
-                team: me.team,
+                teamId,
+                teamName: refs.teams?.[teamId]?.name || me.team,
+                teamColor: refs.teams?.[teamId]?.color || FALLBACK_COLOR,
             });
         }
         return rounds;
+    }
+
+    // The teams the driver raced for that year, in the order they joined them
+    // (Lawson 2025: Red Bull Racing, then Racing Bulls).
+    function teamsOf(rounds){
+        const seen = new Map();
+        for(const r of rounds){
+            if(!seen.has(r.teamId)) seen.set(r.teamId, { name: r.teamName, color: r.teamColor });
+        }
+        return [...seen.values()];
+    }
+
+    // Size of the field: the most cars classified in any race of the year (22 in
+    // 2026, 20 in 2016, 26 in the 90s), so the axis fits every season.
+    function fieldSizeOf(season){
+        let size = 0;
+        for(const gp of Object.values(season)){
+            const race = sessionResults(gp, 'race');
+            size = Math.max(size, race.length, ...race.map(r => typeof r.pos === 'number' ? r.pos : 0));
+        }
+        return size || 20;
     }
 
     function buildStandings(season){
@@ -129,7 +168,11 @@
     }
 
     // ── Render ─────────────────────────────────────────────────────────────
-    function renderBand(el, { champPos, fieldSize, points, gap, raced, totalRounds, teamName }){
+    function renderBand(el, { champPos, fieldSize, points, gap, raced, totalRounds, teams }){
+        const left = totalRounds - raced;
+        const gapText = gap > 0 ? `${gap} behind the leader`
+            : left ? 'Championship leader'
+            : 'Champion';
         el.innerHTML = `
             <div class="season-band-cell season-band-cell--pos">
                 <span class="season-band-key">Championship</span>
@@ -139,7 +182,7 @@
             <div class="season-band-cell season-band-cell--pts">
                 <span class="season-band-key">Points</span>
                 <span class="season-band-pts">${points}</span>
-                <span class="season-band-sub">${gap > 0 ? `${gap} behind the leader` : 'Championship leader'}</span>
+                <span class="season-band-sub">${gapText}</span>
             </div>
             <div class="season-band-cell season-band-cell--progress">
                 <div class="season-band-progress-head">
@@ -149,11 +192,11 @@
                 <div class="season-band-progress-track">
                     <span class="season-band-progress-fill" style="width:${(raced / totalRounds) * 100}%"></span>
                 </div>
-                <span class="season-band-sub">${totalRounds - raced} rounds still to run</span>
+                <span class="season-band-sub">${left ? `${left} round${left > 1 ? 's' : ''} still to run` : 'Season complete'}</span>
             </div>
             <div class="season-band-cell season-band-cell--team">
-                <span class="season-band-key">Team</span>
-                <span class="season-band-team">${teamName}</span>
+                <span class="season-band-key">Team${teams.length > 1 ? 's' : ''}</span>
+                ${teams.map(t => `<span class="season-band-team" style="--c:${t.color}">${t.name}</span>`).join('')}
             </div>
         `;
     }
@@ -170,9 +213,20 @@
         return `<span class="res-delta res-delta--same">—</span>`;
     };
 
-    // Rows go from round 1 downwards, in the order they were run.
+    // Rows go from round 1 downwards, in the order they were run. The races
+    // the driver missed are listed too, dimmed.
     function renderRounds(tbody, rounds){
         tbody.innerHTML = rounds.map(r => {
+            const name = `<th scope="row" class="season-round-name">${r.flag ? `<img class="season-round-flag" src="${r.flag}" alt="" loading="lazy">` : ''}<span class="season-round-name-full">${r.fullName}</span><span class="season-round-name-code">${r.code}</span></th>`;
+            if(r.missed) return `
+                <tr class="season-round" data-outcome="missed">
+                    <td class="season-round-num season-col-round">R${r.round}</td>
+                    ${name}
+                    <td class="season-round-result"><span class="season-round-missed">Did not race</span></td>
+                    <td class="is-center">${deltaHtml(null)}</td>
+                    <td class="season-round-pts is-right">—</td>
+                </tr>
+            `;
             const delta = r.grid != null && !r.retired ? r.grid - r.finish : null;
             // Each podium step with its color: gold, silver, bronze.
             const outcome = r.retired ? 'dnf'
@@ -184,7 +238,7 @@
             return `
                 <tr class="season-round" data-outcome="${outcome}">
                     <td class="season-round-num season-col-round">R${r.round}</td>
-                    <th scope="row" class="season-round-name">${r.flag ? `<img class="season-round-flag" src="${r.flag}" alt="" loading="lazy">` : ''}<span class="season-round-name-full">${r.fullName}</span><span class="season-round-name-code">${r.code}</span></th>
+                    ${name}
                     <td class="season-round-result">
                         <span class="season-round-grid">${r.gridLabel}</span>
                         <span class="season-round-arrow" aria-hidden="true"></span>
@@ -279,9 +333,8 @@
         }
     }
 
-    // The 2026 grid has 22 cars: the axis always goes P1→P22, fixed, so that
-    // every driver uses the same scale and the line is never cut off.
-    const GRID_SIZE = 22;
+    // The axis always goes from P1 to the size of that year's field (fieldSizeOf),
+    // fixed, so that every driver uses the same scale and the line is never cut off.
     const Y_PAD = 0.6;
 
     // ── Form curve tooltip ──
@@ -323,7 +376,7 @@
         `;
     }
 
-    function formTooltip(rounds, teamColor){
+    function formTooltip(rounds){
         return ({ chart, tooltip }) => {
             const wrap = chart.canvas.parentNode;
             let el = wrap.querySelector('.form-tip');
@@ -338,10 +391,15 @@
                 return;
             }
 
-            // Anchored to the race point (dataset 1), not the start one.
+            // Anchored to the race point (dataset 1), not the start one. A
+            // missed race has no points: nothing to show there.
             const point = tooltip.dataPoints.find(p => p.datasetIndex === 1) || tooltip.dataPoints[0];
-            const r = rounds[point.dataIndex];
-            el.style.setProperty('--c', teamColor);
+            const r = point && rounds[point.dataIndex];
+            if(!r || r.missed){
+                el.classList.remove('is-visible');
+                return;
+            }
+            el.style.setProperty('--c', r.teamColor);
             el.innerHTML = formTipHtml(r);
 
             // Below the point; if it doesn't fit, above. Horizontally centered and
@@ -366,14 +424,29 @@
         };
     }
 
-    function renderChart(canvas, rounds, teamColor){
+    // Each stretch of the race line takes the color of the team the driver was
+    // with at the race it starts from. Where they switch teams, the stretch
+    // between the last race with the old one and the first with the new one
+    // keeps the old color, and the new one starts at that first race.
+    const segmentColor = rounds => ctx => rounds[ctx.p0DataIndex].teamColor;
+
+    // The grid line jumps over rounds without a grid slot (spanGaps), but not
+    // over a race the driver missed: there it breaks, like the race line.
+    // With spanGaps, Chart.js gives p0DataIndex as the index right before p1
+    // (a skipped one), not the previous drawn point, so p0 is included.
+    const gridSegmentColor = rounds => ctx =>
+        rounds.slice(ctx.p0DataIndex, ctx.p1DataIndex).some(r => r.missed)
+            ? 'transparent'
+            : undefined;
+
+    function renderChart(canvas, rounds, teamColor, gridSize){
         const labels = rounds.map(r => r.code);
 
         // On phones the card is narrow: the chart is almost square (taller)
         // with smaller dots/type so it doesn't feel cramped.
         const isPhone = window.matchMedia('(max-width: 700px)').matches;
 
-        const pointColors = rounds.map(r => r.retired ? '#d9564f' : teamColor);
+        const pointColors = rounds.map(r => r.retired ? '#d9564f' : r.teamColor);
         const pointRadius = rounds.map(r => (r.retired ? 6 : 5) - (isPhone ? 2 : 0));
 
         const chart = new Chart(canvas.getContext('2d'), {
@@ -394,19 +467,21 @@
                         pointHoverRadius: 5,
                         cubicInterpolationMode: 'monotone',
                         spanGaps: true,
+                        segment: { borderColor: gridSegmentColor(rounds) },
                         order: 2,
                     },
                     {
                         label: 'Race finish',
                         data: rounds.map(r => r.finish),
                         borderColor: teamColor,
+                        segment: { borderColor: segmentColor(rounds) },
                         borderWidth: isPhone ? 2 : 2.5,
                         pointBackgroundColor: pointColors,
                         pointBorderColor: pointColors,
                         pointRadius,
                         pointHoverRadius: 7,
                         // Monotone: the curve never overshoots the data, so it doesn't
-                        // escape above P1 or below P22.
+                        // escape above P1 or below the last place.
                         cubicInterpolationMode: 'monotone',
                         order: 1,
                     },
@@ -425,16 +500,16 @@
                     y: {
                         reverse: true,
                         // Half a place of padding at each end: if the axis ends
-                        // exactly at P1/P22, the line and dots of a winner (or
-                        // of the last car) get cut off against the edge.
+                        // exactly at P1 or the last place, the line and dots of a
+                        // winner (or of the last car) get cut off against the edge.
                         min: 1 - Y_PAD,
-                        max: GRID_SIZE + Y_PAD,
+                        max: gridSize + Y_PAD,
                         // With that margin the ticks would land on decimals:
-                        // they're set by hand at P1, P4 … P22 (P1, P8 … on phones).
+                        // they're set by hand at P1, P4, P7 … (P1, P8 … on phones).
                         afterBuildTicks: axis => {
                             const step = isPhone ? 7 : 3;
                             axis.ticks = Array.from(
-                                { length: Math.floor((GRID_SIZE - 1) / step) + 1 },
+                                { length: Math.floor((gridSize - 1) / step) + 1 },
                                 (_, i) => ({ value: 1 + i * step }),
                             );
                         },
@@ -449,6 +524,8 @@
                             font: { size: isPhone ? 9 : 11 },
                             maxRotation: isPhone ? 90 : 50,
                             autoSkip: false,
+                            // Races the driver missed: the label stays, dimmed.
+                            color: c => rounds[c.index]?.missed ? 'rgba(255,255,255,0.2)' : Chart.defaults.color,
                         },
                         grid: { display: false },
                     },
@@ -458,7 +535,7 @@
                     // A custom HTML card instead of Chart.js's text tooltip.
                     tooltip: {
                         enabled: false,
-                        external: formTooltip(rounds, teamColor),
+                        external: formTooltip(rounds),
                     },
                 },
             },
@@ -467,39 +544,49 @@
         return chart;
     }
 
-    // ── Arranque ───────────────────────────────────────────────────────────
-    (async function init(){
-        let season, teams, circuits, cities, countries;
+    // ── Startup ────────────────────────────────────────────────────────────
+    const picker = document.getElementById('seasonPicker');
+    const seasonCache = {};
+    const loadSeason = year => (seasonCache[year] ??= fetch(seasonUrl(year)).then(r => {
+        if(!r.ok) throw new Error(`${seasonUrl(year)} → ${r.status}`);
+        return r.json();
+    }));
+
+    let refs = null;
+    let rendering = 0;
+
+    async function showSeason(year){
+        const ticket = ++rendering;
+
+        let season;
         try {
-            const [shared, ...own] = await Promise.all([
-                window.driverData,
-                fetch(SEASON_URL).then(r => r.json()),
-                fetch(CIRCUITS_URL).then(r => r.json()),
-                fetch(CITIES_URL).then(r => r.json()),
-            ]);
-            teams = shared.teams;
-            countries = shared.countries;
-            [season, circuits, cities] = own;
+            season = await loadSeason(year);
         } catch (err) {
-            console.error('Could not load the season', SEASON_YEAR, err);
-            root.classList.add('is-empty');
+            console.error('Could not load the season', year, err);
+            if(ticket === rendering) root.classList.add('is-empty');
             return;
         }
+        if(ticket !== rendering) return;
 
-        const rounds = buildRounds(season, driverId, { circuits, cities, countries });
-        if(!rounds.length){ root.classList.add('is-empty'); return; }
+        const rounds = buildRounds(season, driverId, refs);
+        const driven = rounds.filter(r => !r.missed);
+        root.classList.toggle('is-empty', !driven.length);
+        if(!driven.length) return;
 
-        const stats = summarise(rounds);
+        const stats = summarise(driven);
         const standings = buildStandings(season);
         const champIndex = standings.findIndex(([id]) => id === driverId);
         const leaderPts = standings.length ? standings[0][1] : 0;
 
-        const totalRounds = Object.keys(season).length;
-        const raced = Object.values(season).filter(gp => sessionResults(gp, 'race').length).length;
+        // Cancelled GPs don't count (Bahrain and Saudi Arabia 2026), same as in
+        // the championship: otherwise a finished season would never be complete.
+        const scheduled = Object.values(season).filter(gp => !gp.cancelled);
+        const totalRounds = scheduled.length;
+        const raced = scheduled.filter(gp => sessionResults(gp, 'race').length).length;
 
-        const slug = resolveTeamId(rounds[rounds.length - 1].team, teams);
-        const team = teams[slug];
-        const teamColor = team?.color || '#e10600';
+        // Everything outside the line itself (band, legend, points total) takes
+        // the color of the last team the driver raced for that year.
+        const teamColor = driven[driven.length - 1].teamColor;
         root.style.setProperty('--team-color', teamColor);
 
         renderBand(root.querySelector('#seasonBand'), {
@@ -509,15 +596,18 @@
             gap:         leaderPts - stats.points,
             raced,
             totalRounds,
-            teamName:    team?.name || rounds[rounds.length - 1].team,
+            teams:       teamsOf(driven),
         });
 
         // Season's best racecraft badge, if it belongs to this driver.
         const racecraftKing = bestRacecraft(season);
         const badge = root.querySelector('#seasonRacecraftBadge');
-        if(badge && racecraftKing && racecraftKing.id === driverId){
-            badge.innerHTML = `<span class="season-racecraft-badge-star" aria-hidden="true">★</span>Best racecraft of the season <span class="season-racecraft-badge-sub">+${racecraftKing.gained} places gained in races</span>`;
-            badge.hidden = false;
+        if(badge){
+            const mine = racecraftKing && racecraftKing.id === driverId;
+            badge.innerHTML = mine
+                ? `<span class="season-racecraft-badge-star" aria-hidden="true">★</span>Best racecraft of the season <span class="season-racecraft-badge-sub">+${racecraftKing.gained} places gained in races</span>`
+                : '';
+            badge.hidden = !mine;
         }
 
         // An editorial line summarizing the season, computed from the data.
@@ -532,8 +622,10 @@
             const bgText = bg && (bg.grid - bg.finish) > 0
                 ? ` Best drive: <b>${bg.fullName}</b>, ${bg.gridLabel} to P${bg.finish}.`
                 : '';
+            const missed = rounds.length - driven.length;
             note.innerHTML = `The gap between the two lines is racecraft — he ${gainText}.${bgText}`
-                + (stats.dnfs ? ` <b>${stats.dnfs}</b> retirement${stats.dnfs > 1 ? 's' : ''} shown in red.` : '');
+                + (stats.dnfs ? ` <b>${stats.dnfs}</b> retirement${stats.dnfs > 1 ? 's' : ''} shown in red.` : '')
+                + (missed ? ` <b>${missed}</b> race${missed > 1 ? 's' : ''} missed, where the lines break.` : '');
         }
 
         renderRounds(root.querySelector('#seasonRounds'), rounds);
@@ -541,10 +633,136 @@
         const canvas = root.querySelector('#seasonFormChart');
         if(canvas && typeof Chart !== 'undefined'){
             if(document.fonts?.ready) await document.fonts.ready;
+            if(ticket !== rendering) return;
             Chart.defaults.font.family = "'F1-Regular', sans-serif";
             Chart.defaults.color = getComputedStyle(document.documentElement)
                 .getPropertyValue('--text-dim').trim() || '#888';
-            renderChart(canvas, rounds, teamColor);
+            Chart.getChart(canvas)?.destroy();
+            canvas.parentNode.querySelector('.form-tip')?.classList.remove('is-visible');
+            renderChart(canvas, rounds, teamColor, fieldSizeOf(season));
         }
+    }
+
+    // ── Year dropdown ──
+    // A button + listbox instead of a <select>: a native select can't animate
+    // its list or flip the chevron while it's open. Keyboard: Enter/Space/↓
+    // open it, ↑/↓ move, Enter/Space pick, Esc or Tab close.
+    function setupPicker(years, initial, onChange){
+        if(!picker) return;
+        const btn = picker.querySelector('.season-picker-btn');
+        const value = picker.querySelector('.season-picker-value');
+        const list = picker.querySelector('.season-picker-list');
+        let current = initial;
+
+        list.innerHTML = years.map(y =>
+            `<span class="season-picker-option" role="option" tabindex="-1" data-year="${y}" aria-selected="${y === initial}">${y}</span>`
+        ).join('');
+        value.textContent = initial;
+        btn.disabled = years.length < 2;
+        if(btn.disabled) return;
+
+        const options = [...list.querySelectorAll('.season-picker-option')];
+        const isOpen = () => picker.classList.contains('is-open');
+
+        function open(){
+            picker.classList.add('is-open');
+            btn.setAttribute('aria-expanded', 'true');
+            const selected = options.find(o => Number(o.dataset.year) === current) || options[0];
+            selected.scrollIntoView({ block: 'nearest' });
+            selected.focus({ preventScroll: true });
+        }
+
+        function close(refocus = true){
+            if(!isOpen()) return;
+            picker.classList.remove('is-open');
+            btn.setAttribute('aria-expanded', 'false');
+            if(refocus) btn.focus();
+        }
+
+        function pick(option){
+            const year = Number(option.dataset.year);
+            close();
+            if(year === current) return;
+            current = year;
+            value.textContent = year;
+            options.forEach(o => o.setAttribute('aria-selected', String(o === option)));
+            onChange(year);
+        }
+
+        btn.addEventListener('click', () => isOpen() ? close() : open());
+        btn.addEventListener('keydown', e => {
+            if(e.key === 'ArrowDown' && !isOpen()){ e.preventDefault(); open(); }
+        });
+
+        list.addEventListener('click', e => {
+            const option = e.target.closest('.season-picker-option');
+            if(option) pick(option);
+        });
+
+        list.addEventListener('keydown', e => {
+            const i = options.indexOf(document.activeElement);
+            if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){
+                e.preventDefault();
+                const next = options[Math.min(Math.max(i + (e.key === 'ArrowDown' ? 1 : -1), 0), options.length - 1)];
+                next.focus();
+            } else if(e.key === 'Enter' || e.key === ' '){
+                e.preventDefault();
+                if(i >= 0) pick(options[i]);
+            } else if(e.key === 'Escape'){
+                e.preventDefault();
+                close();
+            } else if(e.key === 'Tab'){
+                close(false);
+            }
+        });
+
+        document.addEventListener('click', e => {
+            if(!picker.contains(e.target)) close(false);
+        });
+    }
+
+    function setUrlYear(year){
+        const url = new URL(window.location.href);
+        url.searchParams.set('season', year);
+        history.replaceState(null, '', url);
+    }
+
+    (async function init(){
+        let years, latestYear;
+        try {
+            const [shared, circuits, cities, index, latest] = await Promise.all([
+                window.driverData,
+                fetch(CIRCUITS_URL).then(r => r.json()),
+                fetch(CITIES_URL).then(r => r.json()),
+                fetch(SEASONS_URL).then(r => r.json()),
+                fetch(LATEST_URL).then(r => r.json()),
+            ]);
+            refs = { circuits, cities, countries: shared.countries, teams: shared.teams };
+
+            // Only the seasons the driver raced that the site has results for.
+            const available = new Set((index.seasons ?? []).map(s => s.year));
+            years = (shared.careers?.[driverId]?.seasons ?? [])
+                .filter(y => available.has(y))
+                .sort((a, b) => b - a);
+            latestYear = Number(latest?.latestSeason);
+        } catch (err) {
+            console.error('Could not load the season data', err);
+            root.classList.add('is-empty');
+            return;
+        }
+
+        // Fallback for drivers without a career entry: the current season, as before.
+        if(!years.length && latestYear) years = [latestYear];
+        if(!years.length){ root.classList.add('is-empty'); return; }
+
+        const requested = Number(new URLSearchParams(location.search).get('season'));
+        const initial = years.includes(requested) ? requested : years[0];
+
+        setupPicker(years, initial, year => {
+            setUrlYear(year);
+            showSeason(year);
+        });
+
+        showSeason(initial);
     })();
 })();
