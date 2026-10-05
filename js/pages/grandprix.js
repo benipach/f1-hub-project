@@ -123,7 +123,7 @@ function renderSchedule(gp) {
                 <span class="schedule-row-tag">${tag}</span>
             </div>
             <div class="schedule-row-meta">
-                <span class="schedule-row-time">${fmtTime(s.start)} – ${fmtTime(s.end)}</span>
+                <span class="schedule-row-time">${fmtTime(s.start)}</span>
             </div>
         </div>`;
     };
