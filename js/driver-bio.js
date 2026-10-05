@@ -89,24 +89,40 @@
         .join(' & ');
 
     // ── Career strip: one cell per year, from debut to the last season ──
-    // A year with two teams (Verstappen 2016) is painted with the last one; a year without
-    // races stays as a hatched gap. Titles get a gold mark.
+    // A full season with one team is a solid cell in its color; a year without
+    // races stays as a hatched gap. A season with more than one team, or one
+    // where the driver missed races, is split race by race (career.seasonRaces,
+    // from build-careers.js): each slot in the color of the team they raced
+    // for, grey where they didn't race. Titles get a gold mark.
+    // Hovering shows the season summary in a card with an arrow (ribbonTip
+    // below); on a split year, with the team of the hovered race.
+    const raced = slot => typeof slot === 'number';
+
+    function racesHtml(slots, eras){
+        return slots.map((era, i) => raced(era)
+            ? `<b style="--c:${eras[era]?.color || 'var(--primary-red)'}" data-slot="${i}"></b>`
+            : `<b class="is-out" data-slot="${i}"></b>`
+        ).join('');
+    }
+
     function ribbonHtml(career){
         const seasons = career.seasons;
         const from = seasons[0], to = seasons[seasons.length - 1];
         const titles = career.titleYears || [];
+        const split = career.seasonRaces || {};
         const cells = [];
-        let prevTeam = null;
 
         for(let y = from; y <= to; y++){
+            const slots = split[y];
             const era = [...career.eras].reverse().find(e => e.seasons.includes(y)) || null;
-            const starts = era && era.team !== prevTeam;
-            prevTeam = era?.team ?? null;
+            // The year is labeled if a stint with a team starts in it, at the
+            // beginning of the season or midway (Lawson 2025: Red Bull Racing).
+            const starts = career.eras.some(e => e.from === y);
+
             cells.push(`
                 <li class="jr-year${era ? '' : ' is-gap'}${titles.includes(y) ? ' is-title' : ''}${starts ? ' is-start' : ''}"
-                    style="--c:${era?.color || 'transparent'}"
-                    title="${y}${era ? ` · ${era.team}` : ' · No races'}${titles.includes(y) ? ' · World Champion' : ''}">
-                    <i></i><span>${y}</span>
+                    style="--c:${era?.color || 'transparent'}" data-year="${y}">
+                    ${slots ? `<i class="is-split">${racesHtml(slots, career.eras)}</i>` : '<i></i>'}<span>${y}</span>
                 </li>
             `);
         }
@@ -226,6 +242,114 @@
         `;
     }
 
+    // ── Strip tooltip ──
+    // One card for the whole strip that follows the pointer from slot to slot,
+    // with an arrow pointing at the hovered race (or year).
+
+    // Team name with its logo in front (the same one as its chapter below).
+    // Not every team has one, older ones especially: ribbonTip() removes the
+    // image when it fails, and a dot in the team color takes its place.
+    const tipTeamHtml = era => `
+        <span class="jr-tip-team" style="--c:${era.color || 'var(--primary-red)'}">${era.teamId
+            ? `<img class="jr-tip-logo" src="../img/teams/${era.teamId}-logo.png" alt="">`
+            : ''}${era.team}</span>`;
+
+    // The season in one card: year, team, championship position, and points
+    // and races. On a split year every team they raced for that season goes
+    // one below the other, in order, and the races read as raced / run
+    // ("8/17 races"); hovering a grey slot says "Didn't race" (or "Not run
+    // yet") in place of the teams.
+    function yearTipHtml(year, career, slot = null){
+        const slots = career.seasonRaces?.[year] || null;
+        const hovered = slot != null ? slots?.[slot] : undefined;
+        const era = [...career.eras].reverse().find(e => e.seasons.includes(year));
+        if(!era) return `<p class="jr-tip-kicker">${year}</p><p class="jr-tip-title">No races</p>`;
+        const teams = slots
+            ? [...new Set(slots.filter(raced))].map(i => career.eras[i])
+            : [era];
+        const title = hovered !== undefined && !raced(hovered)
+            ? `<p class="jr-tip-title"><span class="jr-tip-out">${hovered === 'TBD' ? 'Not run yet' : "Didn't race"}</span></p>`
+            : teams.map(t => `<p class="jr-tip-title">${tipTeamHtml(t)}</p>`).join('');
+        const st = career.seasonStats?.[year];
+        const champion = (career.titleYears || []).includes(year);
+        const races = slots
+            ? `${slots.filter(raced).length}/${slots.filter(s => s !== 'TBD').length} races`
+            : st ? plural(st.races, 'race') : null;
+        // Two lines: where they finished the championship, then the numbers.
+        const standing = champion ? 'World Champion' : st?.pos ? `P${st.pos} in the championship` : null;
+        const numbers = st ? `${fmtNum(st.pts)} pts · ${races}` : null;
+        return `
+            <p class="jr-tip-kicker">${year}</p>
+            ${title}
+            ${standing ? `<p class="jr-tip-facts${champion ? ' is-champion' : ''}">${standing}</p>` : ''}
+            ${numbers ? `<p class="jr-tip-facts">${numbers}</p>` : ''}
+        `;
+    }
+
+    function ribbonTip(ribbon, career){
+        const years = ribbon.querySelector('.jr-years');
+        if(!years) return;
+        const tip = document.createElement('div');
+        tip.className = 'jr-tip';
+        tip.setAttribute('role', 'tooltip');
+        ribbon.appendChild(tip);
+        let current = null;
+
+        function show(target){
+            if(target === current) return;
+            current = target;
+            const year = Number(target.closest('.jr-year').dataset.year);
+            tip.innerHTML = yearTipHtml(year, career, target.dataset.slot != null ? Number(target.dataset.slot) : null);
+
+            // The logos arrive after the card is placed and change its size
+            // (or are removed if the team has none): placed again when they do.
+            const replace = () => { if(current === target) place(target); };
+            for(const logo of tip.querySelectorAll('.jr-tip-logo')){
+                if(!logo.complete){
+                    logo.addEventListener('load', replace, { once: true });
+                    logo.addEventListener('error', () => { logo.remove(); replace(); }, { once: true });
+                } else if(!logo.naturalWidth){
+                    logo.remove();
+                }
+            }
+            place(target);
+        }
+
+        function place(target){
+            // Above the slot, centered on it without leaving the strip; the
+            // arrow keeps pointing at the slot when the card hits an edge.
+            const box = ribbon.getBoundingClientRect();
+            const r = (target.matches('.jr-year') ? target.querySelector('i') : target).getBoundingClientRect();
+            const cx = r.left + r.width / 2 - box.left;
+            const w = tip.offsetWidth, h = tip.offsetHeight;
+            const left = Math.min(Math.max(cx - w / 2, 0), box.width - w);
+            const top = r.top - box.top - h - 12;
+            tip.style.setProperty('--arrow-x', `${cx - left}px`);
+
+            // Hidden: it appears in place. Visible: it slides to the new slot.
+            if(!tip.classList.contains('is-visible')){
+                tip.style.transition = 'none';
+                tip.style.transform = `translate(${left}px, ${top}px)`;
+                void tip.offsetWidth;
+                tip.style.transition = '';
+            } else {
+                tip.style.transform = `translate(${left}px, ${top}px)`;
+            }
+            tip.classList.add('is-visible');
+        }
+
+        function hide(){
+            current = null;
+            tip.classList.remove('is-visible');
+        }
+
+        years.addEventListener('pointerover', e => {
+            const target = e.target.closest('.jr-year i.is-split b') || e.target.closest('.jr-year');
+            if(target) show(target);
+        });
+        years.addEventListener('pointerleave', hide);
+    }
+
     function render(career, nameOf){
         // Each milestone goes in the stint where it happened, in chronological order (the
         // titles arrive at the end of the array but may come before the streak).
@@ -284,5 +408,7 @@
             return d ? `${d.firstName} ${d.lastName}` : id.replace(/-/g, ' ');
         };
         render(career, nameOf);
+        const ribbon = root.querySelector('.jr-ribbon');
+        if(ribbon) ribbonTip(ribbon, career);
     })();
 })();

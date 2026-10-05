@@ -61,17 +61,22 @@ const files = fs.readdirSync(SEASONS_DIR)
 const byDriver = new Map();          // driverId → [race, …] in chronological order
 const seasonChampions = new Map();   // year → driverId
 const seasonStandings = new Map();   // driverId → { year: championship position }
+const seasonRounds = new Map();      // year → [round, …] not cancelled, in order
+const raceRun = new Map();           // year → Set of rounds whose race has results
 
 for (const file of files) {
     const year = Number(file.match(/\d{4}/)[0]);
     const season = readJson(path.join(SEASONS_DIR, file));
     const gps = Object.values(season).sort((a, b) => a.round - b.round);
+    seasonRounds.set(year, gps.filter(g => !g.cancelled).map(g => g.round));
+    raceRun.set(year, new Set());
 
     const seasonPoints = {};
 
     for (const gp of gps) {
         const race = sessionResults(gp, 'race');
         if (!race.length) continue;
+        raceRun.get(year).add(gp.round);
 
         const quali = sessionResults(gp, 'qualifying');
         const sprint = sessionResults(gp, 'sprintRace');
@@ -207,7 +212,8 @@ function findClinchRace(year, champId) {
 }
 
 // Consecutive stretches with the same team. Grouped by *resolved* team, so
-// "red-bull" and "red-bull-racing" count as a single era.
+// "red-bull" and "red-bull-racing" count as a single era. Each race keeps the
+// index of its era (r.era), which buildSeasonRaces() uses.
 function buildEras(races) {
     const eras = [];
     for (const r of races) {
@@ -218,6 +224,7 @@ function buildEras(races) {
         } else {
             eras.push({ teamId: t.id, teamName: t.name, teamColor: t.color, races: [r] });
         }
+        r.era = eras.length - 1;
     }
     return eras.map(e => {
         const finished = e.races.filter(r => !r.dnf);
@@ -417,6 +424,46 @@ for (const [driverId, list] of recordMilestones) {
     ));
 }
 
+// Race by race, the seasons the career strip can't paint with a single color:
+// the driver changed teams mid-year, or didn't take part in every race
+// (a stand-in, a late debut, a seat lost halfway). For each one, an array
+// with one slot per round of the calendar, for the strip and its tooltip:
+//   era     raced it: index in `eras` of the team they raced for
+//   null    didn't race it
+//   "TBD"   not run yet
+//   Lawson 2025 → [2, 2, 3, 3, …, 3]   (Red Bull Racing, then Racing Bulls)
+// Full seasons with one team are left out: the strip paints them whole.
+function buildSeasonRaces(races) {
+    const out = {};
+    const years = [...new Set(races.map(r => r.year))];
+    for (const year of years) {
+        const mine = races.filter(r => r.year === year);
+        const rounds = seasonRounds.get(year) || [];
+        const run = raceRun.get(year) || new Set();
+        const oneTeam = new Set(mine.map(r => r.era)).size === 1;
+        if (oneTeam && mine.length >= run.size) continue;
+        out[year] = rounds.map(round => {
+            const r = mine.find(x => x.round === round);
+            if (r) return r.era;
+            return run.has(round) ? null : 'TBD';
+        });
+    }
+    return out;
+}
+
+// Each season in one line, for the strip's tooltip on the years painted whole:
+// championship position, points and races.
+//   { "2024": { pos: 14, pts: 4, races: 6 }, … }
+function buildSeasonStats(races, standings) {
+    const out = {};
+    for (const r of races) {
+        const y = (out[r.year] ??= { pos: standings[r.year] ?? null, pts: 0, races: 0 });
+        y.pts += r.pts;
+        y.races++;
+    }
+    return out;
+}
+
 const careers = {};
 
 for (const [driverId, races] of byDriver) {
@@ -582,6 +629,8 @@ for (const [driverId, races] of byDriver) {
         titles,
         bestFinish,
         eras,
+        seasonRaces: buildSeasonRaces(races),
+        seasonStats: buildSeasonStats(races, standings),
         milestones,
         achievedAt,
     };

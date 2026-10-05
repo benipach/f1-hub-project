@@ -64,7 +64,19 @@
                  drivers.json + careers.json + countries.json. -->
             <div class="driver-info" id="driverInfo"></div>
 
-            <h2 class="section-title">2026 Season stats</h2>
+            <!-- The year is a dropdown that reads as part of the title;
+                 js/driver-season.js fills it with the seasons the driver raced.
+                 Built with spans (not a <ul>) because it lives inside the <h2>. -->
+            <h2 class="section-title">
+                <span>Season stats</span>
+                <span class="season-picker" id="seasonPicker">
+                    <button type="button" class="season-picker-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Season" disabled>
+                        <span class="season-picker-value">2026</span>
+                        <svg class="season-picker-chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4"/></svg>
+                    </button>
+                    <span class="season-picker-list" role="listbox" aria-label="Season"></span>
+                </span>
+            </h2>
 
             <!-- The current season is told as a trajectory, not as a table:
                  where they stand today, how they've been performing race by race, and
