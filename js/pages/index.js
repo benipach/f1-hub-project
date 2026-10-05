@@ -175,7 +175,7 @@ function renderWeekendSchedule(gp, gpId, containerId) {
         return `
         <div class="${cls}">
             <span class="schedule-session-name">${s.name}</span>
-            ${finished ? '' : `<span class="schedule-session-time">${fmtTime(s.start)} – ${fmtTime(s.end)}</span>`}
+            ${finished ? '' : `<span class="schedule-session-time">${fmtTime(s.start)}</span>`}
             <span class="schedule-session-tag">${tag}</span>
             ${cta}
         </div>`;
