@@ -7,8 +7,10 @@
    grey. By default none is open; on touch, .is-open is set by
    the first tap (see script). */
 .livery-hero {
-    /* Height of the title block: the team logos sit right on top of it */
-    --lv-title: clamp(64px, 10vw, 160px);
+    /* Height of the title block: the team logos sit right on top of it.
+       "The 2026 Grid" is ~8.6em wide and gets 80% of the width (10% padding per
+       side), so above 8.5vw it wraps to two lines and runs into the logos. */
+    --lv-title: clamp(64px, 8.5vw, 160px);
     --lv-pad-b: 56px;
     /* Logo baseline: title + kicker (14px + 10px margin) + 28px of space */
     --lv-logo-b: calc(var(--lv-pad-b) + var(--lv-title) * 0.88 + 30px + 28px);
