@@ -41,7 +41,7 @@
     // as a chassis ("red-bull-racing-honda"), and it's resolved there to the real ID.
 
     // GP → circuit → city → country → 2-letter ISO → Twemoji SVG.
-    // Same path as shared/resolve.js, same CDN as archive.js.
+    // Same path as shared/resolve.js, same CDN as championship.js.
     function flagUrlFor(gp, refs){
         const city = refs.circuits?.[gp.circuitId]?.location?.city;
         const iso = refs.countries?.[refs.cities?.[city]?.country]?.isoCode;
@@ -643,84 +643,6 @@
         }
     }
 
-    // ── Year dropdown ──
-    // A button + listbox instead of a <select>: a native select can't animate
-    // its list or flip the chevron while it's open. Keyboard: Enter/Space/↓
-    // open it, ↑/↓ move, Enter/Space pick, Esc or Tab close.
-    function setupPicker(years, initial, onChange){
-        if(!picker) return;
-        const btn = picker.querySelector('.season-picker-btn');
-        const value = picker.querySelector('.season-picker-value');
-        const list = picker.querySelector('.season-picker-list');
-        let current = initial;
-
-        list.innerHTML = years.map(y =>
-            `<span class="season-picker-option" role="option" tabindex="-1" data-year="${y}" aria-selected="${y === initial}">${y}</span>`
-        ).join('');
-        value.textContent = initial;
-        btn.disabled = years.length < 2;
-        if(btn.disabled) return;
-
-        const options = [...list.querySelectorAll('.season-picker-option')];
-        const isOpen = () => picker.classList.contains('is-open');
-
-        function open(){
-            picker.classList.add('is-open');
-            btn.setAttribute('aria-expanded', 'true');
-            const selected = options.find(o => Number(o.dataset.year) === current) || options[0];
-            selected.scrollIntoView({ block: 'nearest' });
-            selected.focus({ preventScroll: true });
-        }
-
-        function close(refocus = true){
-            if(!isOpen()) return;
-            picker.classList.remove('is-open');
-            btn.setAttribute('aria-expanded', 'false');
-            if(refocus) btn.focus();
-        }
-
-        function pick(option){
-            const year = Number(option.dataset.year);
-            close();
-            if(year === current) return;
-            current = year;
-            value.textContent = year;
-            options.forEach(o => o.setAttribute('aria-selected', String(o === option)));
-            onChange(year);
-        }
-
-        btn.addEventListener('click', () => isOpen() ? close() : open());
-        btn.addEventListener('keydown', e => {
-            if(e.key === 'ArrowDown' && !isOpen()){ e.preventDefault(); open(); }
-        });
-
-        list.addEventListener('click', e => {
-            const option = e.target.closest('.season-picker-option');
-            if(option) pick(option);
-        });
-
-        list.addEventListener('keydown', e => {
-            const i = options.indexOf(document.activeElement);
-            if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){
-                e.preventDefault();
-                const next = options[Math.min(Math.max(i + (e.key === 'ArrowDown' ? 1 : -1), 0), options.length - 1)];
-                next.focus();
-            } else if(e.key === 'Enter' || e.key === ' '){
-                e.preventDefault();
-                if(i >= 0) pick(options[i]);
-            } else if(e.key === 'Escape'){
-                e.preventDefault();
-                close();
-            } else if(e.key === 'Tab'){
-                close(false);
-            }
-        });
-
-        document.addEventListener('click', e => {
-            if(!picker.contains(e.target)) close(false);
-        });
-    }
-
     function setUrlYear(year){
         const url = new URL(window.location.href);
         url.searchParams.set('season', year);
@@ -758,7 +680,8 @@
         const requested = Number(new URLSearchParams(location.search).get('season'));
         const initial = years.includes(requested) ? requested : years[0];
 
-        setupPicker(years, initial, year => {
+        // The year dropdown in the section title (js/shared/season-picker.js).
+        setupSeasonPicker(picker, years, initial, year => {
             setUrlYear(year);
             showSeason(year);
         });

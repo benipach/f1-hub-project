@@ -12,11 +12,13 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F1 Hub | 2026 Results</title>
+    <title>F1 Hub | Results</title>
     <link rel="icon" href="img/icon.png">
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/result-table.css">
+    <link rel="stylesheet" href="./styles/championship.css">
     <link rel="stylesheet" href="./styles/results.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script src="./js/twemoji.js" defer></script>
     <script src="./js/navbar.js" defer></script>
     <script src="./js/footer.js" defer></script>
@@ -26,8 +28,10 @@
     <script src="./js/shared/resolve.js" defer></script>
     <script src="./js/shared/gp.js" defer></script>
     <script src="./js/shared/result-table.js" defer></script>
+    <script src="./js/shared/season-picker.js" defer></script>
+    <script src="./js/championship.js" defer></script>
+    <script src="./js/season-hero.js" defer></script>
     <script src="./js/results.js" defer></script>
-
 </head>
 <body>
 
@@ -45,39 +49,137 @@
         <nav>
             <ul id="nav-menu" class="nav-menu">
                 <li><a href="./index.html#calendar">Calendar</a></li>
-                <li><a href="./championship.html">Championship</a></li>
                 <li><a href="#">Results</a></li>
                 <li><a href="./drivers.html">Drivers</a></li>
                 <li><a href="./teams.html">Teams</a></li>
                 <li><a href="./live.html">Live</a></li>
-                <li><a href="./archive.html">Archive</a></li>
             </ul>
         </nav>
     </header>
 
-    <main class="results-page">
-        <!-- Header: title + season selector. The year goes in the URL
-             (?season=2019); without a parameter the current season opens. -->
-        <div class="results-header">
-            <h1 class="results-title" id="results-title">Race Results</h1>
-            <div class="season-select-wrap">
-                <label class="season-select-label" for="results-season-select">Season</label>
-                <select id="results-season-select" class="season-select" aria-label="Season"></select>
+    <!-- One year drives the whole page (js/results.js): the hero, the
+         championship and the race results. It used to be three pages
+         (Results, Championship and Archive); the old two redirect here. -->
+
+    <!-- Hero, the "Season Poster": the title with the wins by team, four
+         big numbers and the season bar (one stretch per round in the winning
+         team's color). Built by js/season-hero.js for the chosen season. -->
+    <section class="sp-hero" id="season-hero" aria-label="The season in numbers">
+        <div class="sp-top">
+            <div class="sp-copy"><h1></h1></div>
+            <div class="sp-teams" hidden></div>
+        </div>
+        <dl class="sp-stats"></dl>
+        <div class="sp-season">
+            <div class="sp-bar"></div>
+            <div class="sp-flags" aria-hidden="true"></div>
+            <p class="sp-caption" aria-live="polite"></p>
+        </div>
+    </section>
+
+    <!-- Sticky bar under the navbar: the page's only year dropdown
+         (js/shared/season-picker.js) and links to its sections, which light
+         up with the one on screen. The year goes in the URL (?season=2019);
+         without a parameter the current season opens. -->
+    <nav class="results-bar" aria-label="Season">
+        <div class="results-bar-inner">
+            <div class="results-bar-year">
+                <span class="results-bar-label">Season</span>
+                <span class="season-picker" id="season-picker">
+                    <button type="button" class="season-picker-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Season" disabled>
+                        <span class="season-picker-value">2026</span>
+                        <svg class="season-picker-chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4"/></svg>
+                    </button>
+                    <span class="season-picker-list" role="listbox" aria-label="Season"></span>
+                </span>
+            </div>
+            <div class="results-bar-links">
+                <a href="#championship-section">Championship</a>
+                <a href="#results-section">Race results</a>
+                <span class="results-bar-indicator" aria-hidden="true"></span>
             </div>
         </div>
+    </nav>
 
-        <!-- Tabs and panels: built by js/results.js from the sessions the
-             chosen season has (1990 has no Sprint or FP3). Each race
-             row expands with that session's full
-             classification, the same table as on the Grand Prix page. -->
-        <div id="results-tabs-container">
-            <nav class="session-tab-bar" id="results-tab-bar" aria-label="Session tabs"></nav>
-            <div id="results-panels"></div>
-        </div>
+    <main class="results-page">
 
-        <p class="results-empty" id="results-empty" hidden></p>
+        <!-- Championship: chart + table per tab (js/championship.js). The
+             chart and the table share the focus: tapping a line highlights
+             its row, and vice versa. -->
+        <section class="results-page-section" id="championship-section">
+            <h2 class="section-title">Championship</h2>
+            <p class="results-page-sub" id="champHeaderSub"></p>
+
+            <div id="championship">
+                <div class="tab-bar champ-tab-bar">
+                    <button class="tab-btn active" data-tab="drivers">Drivers</button>
+                    <button class="tab-btn" data-tab="constructors">Teams</button>
+                </div>
+
+                <div class="champ-content">
+
+                <!-- ── DRIVERS ── -->
+                <div id="tab-drivers" class="tab-panel active">
+                    <div class="champ-form">
+                        <div class="champ-form-head">
+                            <h3 class="champ-form-title">Points curve</h3>
+                            <div class="champ-form-tools">
+                                <div class="champ-form-legend">
+                                    <span class="champ-form-legend-item is-lead">First driver</span>
+                                    <span class="champ-form-legend-item is-teammate">Team mate</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- The focused driver's band, opening and closing with an
+                             animation. -->
+                        <div class="champ-form-reveal" data-reveal="badge">
+                            <div class="champ-form-reveal-inner"><p class="champ-form-badge"></p></div>
+                        </div>
+                        <div class="champ-form-canvas">
+                            <canvas></canvas>
+                        </div>
+                        <p class="champ-form-note"></p>
+                    </div>
+
+                    <div class="standings-table-wrap"></div>
+                </div>
+
+                <!-- ── CONSTRUCTORS ── -->
+                <div id="tab-constructors" class="tab-panel">
+                    <div class="champ-form">
+                        <div class="champ-form-head">
+                            <h3 class="champ-form-title">Points curve</h3>
+                        </div>
+                        <div class="champ-form-reveal" data-reveal="badge">
+                            <div class="champ-form-reveal-inner"><p class="champ-form-badge"></p></div>
+                        </div>
+                        <div class="champ-form-canvas">
+                            <canvas></canvas>
+                        </div>
+                        <p class="champ-form-note"></p>
+                    </div>
+
+                    <div class="standings-table-wrap"></div>
+                </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Race results: tabs and panels built by js/results.js from the
+             sessions the season has (1990 has no Sprint or FP3). Each race
+             row expands with that session's full classification, the same
+             table as on the Grand Prix page. -->
+        <section class="results-page-section" id="results-section">
+            <h2 class="section-title">Race results</h2>
+            <div id="results-tabs-container">
+                <nav class="session-tab-bar" id="results-tab-bar" aria-label="Session tabs"></nav>
+                <div id="results-panels"></div>
+            </div>
+            <p class="results-empty" id="results-empty" hidden></p>
+        </section>
+
     </main>
-
 
     <footer class="footer" data-root="."></footer>
 </body>

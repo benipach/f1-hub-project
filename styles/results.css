@@ -1,25 +1,642 @@
-/* ---- PAGE LAYOUT ---- */
-.results-page {
-    max-width: var(--content-width);
-    margin-inline: auto;
-    padding: var(--content-rhythm) var(--content-gutter);
+/* ============================================================ */
+/*  results.css                                                 */
+/*  The Results page (results.html): the hero, the sticky bar   */
+/*  with the year, the page's sections and the Race results     */
+/*  tables. The Championship section brings its own pieces      */
+/*  (championship.css).                                         */
+/* ============================================================ */
+
+/* ================================ */
+/*     HERO: THE SEASON POSTER      */
+/* ================================ */
+
+/* The season as a typographic poster (built by js/season-hero.js): the
+   title with the wins by team next to it, four big numbers with a small
+   figure each, and the season bar at the bottom. The title and its entrance
+   are the Drivers page hero's (.lv-copy in drivers.css). */
+.sp-hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 56px;
+    min-height: 100vh;
+    padding: calc(60px + 72px) 10% 72px;
+    overflow: hidden;
+    background:
+        repeating-linear-gradient(115deg, rgba(255,255,255,0.016) 0 1px, transparent 1px 14px),
+        var(--base-900);
 }
 
-.results-header {
+/* A faint chequered flag in the top right corner, fading out */
+.sp-hero::before {
+    content: '';
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 55%;
+    height: 70%;
+    background: repeating-conic-gradient(rgba(255,255,255,0.045) 0 25%, transparent 0 50%) 0 0 / 56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse at top right, #000 0%, transparent 70%);
+    mask-image: radial-gradient(ellipse at top right, #000 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* Fade into the page below */
+.sp-hero::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 120px;
+    background: linear-gradient(to top, var(--base-800), transparent);
+    pointer-events: none;
+}
+
+.sp-hero > * { position: relative; z-index: 1; }
+
+.sp-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 24px;
+    gap: 48px;
 }
 
-.results-title {
-    font-family: 'F1-Regular', sans-serif;
-    font-size: clamp(28px, 4vw, 40px);
+/* ── Title ── */
+.sp-copy h1 {
+    margin: 0;
+    font-family: 'F1-Black';
+    font-size: clamp(56px, 8.4vw, 170px);
+    line-height: 0.88;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+/* The script builds the title letter by letter; until then it isn't shown */
+.sp-copy h1:not(.is-ready) { visibility: hidden; }
+
+/* Each word is a separate block: without this, words would break on mobile */
+.sp-copy h1 > span { white-space: nowrap; }
+
+/* Year in outline only; its digits come in from above */
+.sp-year {
+    --sp-char-from: -0.35em;
+    color: transparent;
+    -webkit-text-stroke: 0.018em #fff;
+}
+
+/* ── Wins by team ── */
+.sp-teams {
+    flex: 0 0 auto;
+    width: min(460px, 42%);
+    padding: 22px 24px;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+}
+
+.sp-panel-title {
+    margin: 0 0 14px;
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+/* One grid for all the rows (the li are display: contents), so the bars
+   start at the same point: the name column is as wide as the longest name
+   (cut with an ellipsis only if there's no room), the bars take the rest */
+.sp-teams ul {
+    display: grid;
+    grid-template-columns: minmax(0, max-content) minmax(80px, 1fr) auto;
+    align-items: center;
+    gap: 12px 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sp-teams li { display: contents; }
+
+.sp-team-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    overflow: hidden;
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: 14px;
     color: var(--text-light);
-    letter-spacing: 0.3px;
-    animation: tabFadeIn 0.4s ease;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.sp-team-name img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.sp-team-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.06);
+    overflow: hidden;
+}
+
+.sp-team-bar i {
+    display: block;
+    width: var(--w);
+    height: 100%;
+    border-radius: 4px;
+    background: var(--c);
+}
+
+.sp-teams li b {
+    min-width: 1.5em;
+    font-family: 'F1-Black';
+    font-weight: normal;
+    font-size: 18px;
+    text-align: right;
+    color: var(--text-light);
+}
+
+/* ── The four numbers ── */
+.sp-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin: 0;
+}
+
+.sp-stat {
+    display: flex;
+    flex-direction: column;
+    padding: 4px 32px 4px 0;
+}
+
+.sp-stat + .sp-stat {
+    padding-left: 32px;
+    border-left: 1px solid rgba(255,255,255,0.1);
+}
+
+.sp-stat dd {
+    margin: 0;
+    font-family: 'F1-Black';
+    font-size: clamp(48px, 6vw, 120px);
+    line-height: 1;
+    color: var(--c, #fff);
+}
+
+.sp-of {
+    font-size: 0.4em;
+    color: rgba(255,255,255,0.35);
+}
+
+.sp-stat dt {
+    margin-top: 12px;
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: clamp(12px, 1vw, 15px);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+/* Who has the most wins, on its own line under the label */
+.sp-stat dt b {
+    display: block;
+    margin-top: 4px;
+    font-weight: 600;
+    color: var(--text-light);
+    white-space: nowrap;
+}
+
+/* The small figure under each number, pushed to the bottom so the four
+   line up */
+.sp-figure {
+    margin-top: auto;
+    padding-top: 16px;
+}
+
+/* Rounds: run out of scheduled */
+.sp-progress {
+    display: block;
+    max-width: 220px;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.08);
+    overflow: hidden;
+}
+
+.sp-progress i {
+    display: block;
+    width: var(--w);
+    height: 100%;
+    background: var(--primary-red);
+}
+
+/* Winners: their codes in their team's color */
+.sp-codes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+}
+
+.sp-codes span {
+    font-family: 'F1-Bold';
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    color: var(--c);
+}
+
+/* Teams: one swatch each; most wins: one block per win */
+.sp-swatches,
+.sp-blocks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.sp-swatches i,
+.sp-blocks i {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background: var(--c);
+}
+
+/* ── The season bar ── */
+.sp-bar,
+.sp-flags {
+    display: flex;
+    gap: 3px;
+}
+
+.sp-bar { height: 22px; }
+
+.sp-seg {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 3px;
+    background: var(--c);
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+/* The hovered round grows taller, keeping its color */
+.sp-seg:hover,
+.sp-seg:focus-visible,
+.sp-seg.is-active {
+    transform: scaleY(1.45);
+}
+
+.sp-seg.is-upcoming {
+    background: repeating-linear-gradient(135deg, rgba(255,255,255,0.12) 0 3px, transparent 3px 7px);
+    cursor: default;
+}
+
+/* The next round of a season under way: an outline that breathes */
+.sp-seg.is-next { box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.7); }
+
+.sp-flags { margin-top: 10px; }
+
+.sp-flags span {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+}
+
+/* 28px, or less when the round's slot is narrower (a laptop with a long
+   calendar), so neighbouring flags never overlap */
+.sp-flags img.emoji {
+    width: 28px;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    margin: 0;
+}
+
+.sp-caption {
+    margin-top: 14px;
+    min-height: 1.4em;
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+/* The round (R1, or NEXT) and the winner: the caption's own type, only lit
+   up */
+.sp-caption b,
+.sp-caption span {
+    font-weight: inherit;
+    color: var(--text-light);
+}
+
+/* The winner with their team's logo in front (a dot in the team color when
+   the team has no logo) */
+.sp-caption-winner {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    vertical-align: middle;
+}
+
+.sp-caption-logo {
+    width: auto;
+    height: 18px;
+    max-width: 44px;
+    object-fit: contain;
+}
+
+.sp-caption-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--c);
+}
+
+/* ── Entrance ──
+   The title rises letter by letter, the team panel and the numbers come up
+   one after another (the count is the script's) and their bars grow, and
+   the season bar fills from left to right with its flags. A year change
+   rebuilds them, so they enter again. */
+.sp-char {
+    display: inline-block;
+    animation: sp-char-in 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(0.2s + var(--i) * 0.05s);
+}
+
+.sp-teams { animation: sp-rise-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s backwards; }
+
+.sp-team-bar i {
+    transform-origin: left center;
+    animation: sp-grow 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation-delay: calc(0.7s + var(--i) * 0.1s);
+}
+
+.sp-stat {
+    animation: sp-rise-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation-delay: calc(0.6s + var(--i) * 0.12s);
+}
+
+.sp-progress i {
+    transform-origin: left center;
+    animation: sp-grow 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.9s backwards;
+}
+
+.sp-seg,
+.sp-flags span {
+    animation: sp-seg-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation-delay: calc(1s + var(--i) * 0.04s);
+}
+
+.sp-seg { transform-origin: left center; }
+
+.sp-seg.is-next {
+    animation: sp-seg-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) backwards, sp-next 2s ease-in-out 2s infinite;
+    animation-delay: calc(1s + var(--i) * 0.04s), 2s;
+}
+
+.sp-caption { animation: sp-fade-in 0.6s ease 1.8s backwards; }
+
+@keyframes sp-char-in {
+    from {
+        opacity: 0;
+        transform: translateY(var(--sp-char-from, 0.35em));
+        filter: blur(8px);
+    }
+}
+
+@keyframes sp-rise-in {
+    from { opacity: 0; transform: translateY(24px); }
+}
+
+@keyframes sp-grow {
+    from { transform: scaleX(0); }
+}
+
+@keyframes sp-seg-in {
+    from { opacity: 0; transform: scaleX(0); }
+}
+
+@keyframes sp-fade-in {
+    from { opacity: 0; }
+}
+
+@keyframes sp-next {
+    50% { box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sp-char, .sp-teams, .sp-team-bar i, .sp-stat, .sp-progress i,
+    .sp-seg, .sp-seg.is-next, .sp-flags span, .sp-caption { animation: none; }
+}
+
+/* Laptops: the team panel goes under the title */
+@media (max-width: 1200px) {
+    .sp-top { flex-direction: column; align-items: stretch; gap: 32px; }
+    .sp-teams { width: 100%; max-width: 560px; }
+}
+
+/* Tablets and phones: the numbers in a 2×2 grid, a slimmer bar */
+@media (max-width: 900px) {
+    .sp-hero {
+        min-height: 0;
+        gap: 40px;
+        padding: calc(60px + 40px) 16px 56px;
+    }
+    .sp-copy h1 { font-size: clamp(44px, 13vw, 96px); }
+    .sp-teams { max-width: none; padding: 18px; }
+    .sp-teams ul { grid-template-columns: minmax(0, max-content) minmax(64px, 1fr) auto; }
+    .sp-stats { grid-template-columns: 1fr 1fr; row-gap: 32px; }
+    .sp-stat,
+    .sp-stat + .sp-stat { padding: 0 16px; border-left: 1px solid rgba(255,255,255,0.1); }
+    .sp-stat:nth-child(odd) { padding-left: 0; border-left: none; }
+    .sp-stat dd { font-size: clamp(40px, 12vw, 72px); }
+    .sp-bar { gap: 2px; height: 16px; }
+    .sp-flags { gap: 2px; }
+    /* As big as fits: 23 rounds share the phone's width (~13.5px each) */
+    .sp-flags img.emoji { width: 13px; height: 13px; }
+    .sp-caption { font-size: 12px; }
+}
+
+/* ================================ */
+/*     STICKY BAR: YEAR + SECTIONS  */
+/* ================================ */
+
+/* Right under the navbar, all the way down the page: the page's only year
+   dropdown (.season-picker, style.css) and links to its sections. The links
+   look like the session tabs (.session-tab-btn below), with the same red
+   indicator sliding under the section on screen (js/results.js →
+   watchSections). */
+.results-bar {
+    position: sticky;
+    top: 60px;
+    z-index: 50;
+    background: rgba(10,10,15,0.82);
+    border-top: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+}
+
+.results-bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    max-width: var(--content-width);
+    height: 64px;
+    margin-inline: auto;
+    padding-inline: var(--content-gutter);
+}
+
+.results-bar-year {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: 'F1-Black';
+    font-size: 28px;
+    color: var(--text-light);
+}
+
+.results-bar-label {
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.results-bar-links {
+    position: relative;
+    display: flex;
+    gap: 0;
+    height: 100%;
+}
+
+.results-bar-links a {
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    color: var(--text-dim);
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.results-bar-links a:hover,
+.results-bar-links a.is-active { color: var(--text-light); }
+
+/* Same red indicator as .session-tab-indicator: one line that slides to
+   the active link (placed by the script); hidden until a section is on
+   screen */
+.results-bar-indicator {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-red);
+    opacity: 0;
+    transition: all 0.25s ease;
+}
+
+.results-bar-indicator.is-visible { opacity: 1; }
+
+/* ================================ */
+/*          PAGE SECTIONS           */
+/* ================================ */
+
+.results-page {
+    display: flex;
+    flex-direction: column;
+    gap: 120px;
+    max-width: var(--content-width);
+    margin-inline: auto;
+    padding: 96px var(--content-gutter) var(--content-rhythm);
+}
+
+/* Anchors land clear of the navbar + the sticky bar */
+.results-page-section { scroll-margin-top: 140px; }
+
+/* Section title: the same one as the rest of the site's pages
+   (.section-title in driver.css): F1-Black and the red line. */
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 2rem;
+    padding: 0;
+    border: none;
+    color: var(--text-light);
+    font-family: 'F1-Black';
+    font-size: clamp(24px, 4vw, 48px);
+    text-transform: uppercase;
+}
+
+.section-title::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--primary-red);
+}
+
+/* A line under the title: "After 16 of 23 rounds" (js/championship.js) */
+.results-page-sub {
+    margin: -1rem 0 2rem;
+    font-family: 'F1-Regular';
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.results-page-sub:empty { display: none; }
+
+/* Room between the points curve and the standings table under it */
+.champ-form + .standings-table-wrap { margin-top: 40px; }
+
+@media (max-width: 700px) {
+    .results-bar-inner { height: 56px; gap: 16px; }
+    .results-bar-year { font-size: 22px; gap: 10px; }
+    .results-bar-label { display: none; }
+    /* The links scroll sideways if they don't fit */
+    .results-bar-links {
+        gap: 20px;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .results-bar-links::-webkit-scrollbar { display: none; }
+    .results-bar-links a { padding: 0 12px; font-size: 0.65rem; }
+    /* Inside the sideways scroll, a line below the box would be clipped */
+    .results-bar-indicator { bottom: 0; }
+
+    .results-page { gap: 88px; padding-top: 64px; }
+    .results-page-section { scroll-margin-top: 128px; }
+    .section-title { font-size: clamp(22px, 7vw, 32px); margin-bottom: 1.5rem; }
+    .results-page-sub { margin: -0.75rem 0 1.5rem; font-size: 11px; }
+    .champ-form + .standings-table-wrap { margin-top: 28px; }
 }
 
 .results-empty {
@@ -89,6 +706,9 @@
 }
 
 .results-row {
+    /* When the hero scrolls down to a race, it lands clear of the navbar
+       and the sticky bar */
+    scroll-margin-top: 150px;
     cursor: pointer;
     transition: background 0.15s ease;
 }
@@ -111,20 +731,45 @@
     text-align: right;
 }
 
+/* Same chevron as the driver page's season dropdown (.season-picker-chevron):
+   it lights up on hover and flips when the row opens. */
 .results-expand-icon {
     display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-right: 1.5px solid rgba(255,255,255,0.3);
-    border-bottom: 1.5px solid rgba(255,255,255,0.3);
-    transform: rotate(45deg) translateY(-2px);
-    transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1), border-color 0.2s ease;
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+    fill: none;
+    stroke: rgba(255,255,255,0.35);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: all 0.3s ease;
 }
 
-.results-row:hover .results-expand-icon { border-color: rgba(255,255,255,0.6); }
+.results-row:hover .results-expand-icon,
+.results-row:focus-visible .results-expand-icon { stroke: rgba(255,255,255,0.9); }
+
 .results-row.is-open .results-expand-icon {
-    transform: rotate(225deg) translateY(-2px);
-    border-color: var(--primary-red);
+    stroke: rgba(255,255,255,0.9);
+    transform: rotate(180deg);
+}
+
+/* ---- OPEN ROW + ITS DETAIL ---- */
+/* The open row and the classification below it read as one block: a red
+   bar runs down their left edge, the row is lifted a little and the detail
+   sits darker, like a drawer pulled out from under it. */
+.results-row.is-open td { background: rgba(255,255,255,0.05); }
+
+.results-row td:first-child,
+.results-detail > td {
+    transition: all 0.3s ease;
+}
+
+.results-row.is-open td:first-child { box-shadow: inset 3px 0 0 var(--primary-red); }
+
+.results-table > tbody > tr.results-detail.is-open > td {
+    background: rgba(0,0,0,0.28);
+    box-shadow: inset 3px 0 0 var(--primary-red), inset 0 12px 14px -12px rgba(0,0,0,0.8);
 }
 
 /* ---- DETAIL (full classification expanded below the row) ---- */
@@ -172,25 +817,14 @@
 }
 
 .results-detail-body {
-    padding: 0 20px 20px;
+    padding: 14px 20px 20px;
 }
 
+/* Only the link to the GP page, on the left (current season only) */
 .results-detail-head {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-    padding: 14px 0 12px;
-}
-
-.results-detail-title {
-    font-family: 'F1-Regular';
-    font-weight: 600;
-    font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.45);
+    padding-bottom: 12px;
 }
 
 .results-detail-link {
@@ -206,11 +840,23 @@
 
 .results-detail-link:hover { color: var(--primary-red); }
 
-/* The expanded table sits on the cell's background, without its own card:
-   two nested gradients look like a box inside another. */
+/* The expanded table sits on the drawer as a light card, without the
+   gradient (two nested gradients look like a box inside another). Its
+   header has no background and smaller type, so it can't be mistaken for
+   the season table's header above. */
 .results-detail .race-table-wrap {
-    background: var(--base-800);
-    border-color: rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.025);
+    border-color: rgba(255,255,255,0.07);
+    border-radius: 12px;
+}
+
+.results-detail .data-table th {
+    height: 38px;
+    background: transparent;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.3);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -282,25 +928,6 @@
     opacity: 0.9;
 }
 
-.sprint-badge {
-    display: inline-flex;
-    align-items: center;
-    height: 20px;
-    padding: 0 8px;
-    border-radius: 6px;
-    line-height: 1;
-    background: rgba(225,6,0,0.1);
-    border: 1px solid rgba(225,6,0,0.2);
-    color: var(--primary-red);
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.5px;
-}
-
-.results-dash {
-    color: rgba(255,255,255,0.2);
-}
-
 .res-duration-col {
     color: rgba(255,255,255,0.6);
     font-size: 16px;
@@ -311,13 +938,26 @@
     font-size: 16px;
 }
 
+/* Track condition: ☀️ dry / 🌧️ wet (twemoji turns them into images).
+   Header and icons centered on the same axis (.results-table th is
+   left-aligned, hence the extra class). */
+.results-table .results-condition-col { text-align: center; }
+
+.results-condition img.emoji {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    vertical-align: middle;
+}
+
+.results-condition-none { color: rgba(255,255,255,0.2); }
+
 /* ---- RESPONSIVE ---- */
 @media (max-width: 500px) {
     .results-table th,
     .results-table td { padding: 0 12px; }
     .results-round,
     .results-round-col,
-    .res-sprint-col,
     .results-date,
     .results-date-col,
     .res-duration-col,
@@ -326,8 +966,8 @@
     .results-gp-full { display: none; }
     .results-gp-short { display: inline; }
 
-    .results-detail-body { padding: 0 8px 14px; }
-    .results-detail-head { padding: 12px 4px 10px; }
+    .results-detail-body { padding: 12px 8px 14px; }
+    .results-detail-head { padding: 0 4px 10px; }
 }
 
 /* ---- SESSION TABS ---- */
