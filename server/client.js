@@ -43,6 +43,9 @@ const TOPICS = [
   "SessionData",
   "TrackStatus",
   "WeatherData",
+  // { CurrentLap, TotalLaps }: the "LAP 23/57" that replaces the clock in a
+  // race or sprint (currentLapInfo() in live.js).
+  "LapCount",
   // Race Control messages (flags, SC/VSC, investigations, penalties,
   // track limits, DRS) for the panel in live.html.
   "RaceControlMessages",

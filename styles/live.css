@@ -1,17 +1,9 @@
 /* ---- PAGE LAYOUT ----
-   The page is just the timing app: a top bar (GP, session and
-   weather) and two panels, table and map (with the fullscreen button). On
-   desktop it takes exactly the window height below the navbar, with no
-   page scroll; on narrow screens the panels stack and the
-   page scrolls normally (see APP SHELL below). --nav-h copies the height
-   of the fixed .navbar in style.css. */
-.live-body {
-    --nav-h: 60px;
-}
-
-@media (max-width: 500px) {
-    .live-body { --nav-h: 50px; }
-}
+   The page is just the timing app, with no navbar (the way back is the
+   Home button on the map): a top bar (GP and weather; session and clock
+   above the map) and two panels, table and map. On desktop it takes
+   exactly the window height, with no page scroll; on narrow screens the
+   panels stack and the page scrolls normally (see APP SHELL below). */
 
 /* ---- CIRCUIT MAP (Map View) ----
    Same asset convention as race.js: prefer the inline SVG layout, fall
@@ -70,7 +62,7 @@
 }
 
 .track-outline {
-    stroke: rgb(38,38,48);
+    stroke: rgb(8,8,12);
 }
 
 .track-line {
@@ -174,7 +166,7 @@
     display: none;
 }
 
-/* ---- SESSION CLOCK (label + countdown/stopwatch, next to the GP name) ---- */
+/* ---- SESSION CLOCK (label + countdown/stopwatch, above the map) ---- */
 .hero-session-status {
     display: flex;
     align-items: center;
@@ -183,34 +175,6 @@
 
 .hero-session-status:empty {
     display: none;
-}
-
-.hero-session-status .status-flag {
-    font-family: 'F1-Regular', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    padding: 5px 10px;
-    border-radius: 6px;
-    background: rgba(255,255,255,0.08);
-    color: var(--text-dim);
-    white-space: nowrap;
-}
-
-.hero-session-status .status-flag--green {
-    background: rgba(62, 224, 106, 0.16);
-    color: #3ee06a;
-}
-
-.hero-session-status .status-flag--yellow {
-    background: rgba(245, 183, 74, 0.18);
-    color: #f5b74a;
-}
-
-.hero-session-status .status-flag--red {
-    background: rgba(255, 0, 25, 0.18);
-    color: #ff4d4d;
 }
 
 .hero-session-status .status-session-name {
@@ -253,7 +217,6 @@
 
 @media (max-width: 600px) {
     .hero-session-status { flex-wrap: wrap; }
-    .hero-session-status .status-flag { font-size: 11px; padding: 4px 8px; }
     .hero-session-status .status-session-name { font-size: 13px; }
     .hero-session-status .status-clock { font-size: 17px; }
 }
@@ -496,8 +459,9 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
 
 /* ---- COLUMN WIDTHS ----
    Fixed widths (the <colgroup> that sizeTableColumns() in live.js fills in):
-   a value changing never moves the columns. The empty last column takes the
-   spare width. */
+   a value changing never moves the columns. The table is as wide as its
+   columns; the empty last column only takes spare width when the table
+   fills the page (map and Race Control off, see PANELS ON/OFF). */
 .live-table.has-fixed-columns {
     table-layout: fixed;
 }
@@ -756,21 +720,22 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
     letter-spacing: 1px;
 }
 
-/* Already took the chequered flag: white (not the team color) with a
-   mini chequered flag and FINISH. */
+/* Already took the chequered flag: white (not the team color) with just a
+   mini chequered flag, no text, so the badge is as wide as OUT / PIT and
+   the column doesn't reserve room for a longer word. 12px: the same
+   height as the text of the other badges. */
 .live-status-badge--chequered {
-    gap: 4px;
     color: rgba(255, 255, 255, 0.9);
 }
 
 .live-chequered-icon {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     flex: none;
     border-radius: 1px;
     background-color: #fff;
     background-image: conic-gradient(#111 25%, transparent 0 50%, #111 0 75%, transparent 0);
-    background-size: 5px 5px;
+    background-size: 6px 6px;
 }
 
 .live-status-team {
@@ -873,33 +838,35 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
 
 /* ---- APP SHELL ----
    What used to be the table + map "fullscreen" view is now
-   the whole page. Fixed below the navbar so it fills the window exactly
-   (both panels use ALL the remaining height, with no dead space at the bottom),
-   joined and separated only by 1px lines, like a timing dashboard. */
+   the whole page. Fixed so it fills the window exactly (both panels use
+   ALL the remaining height, with no dead space at the bottom), joined and
+   separated only by 1px lines, like a timing dashboard.
+   Two columns: the table's, exactly as wide as the table (it changes with
+   the columns turned on in Customize), and the map + Race Control's, which
+   takes everything left over. On a narrow window the map keeps 360px and
+   the table scrolls sideways. The top bar and the panels row share these
+   columns (subgrid), so the clock cell sits exactly above the map. */
 .live-app {
     --app-bg: rgb(9,9,14);
     --app-panel: rgb(14,14,21);
     --app-line: rgba(255,255,255,0.09);
-    /* Right column width: used by the map panel and the top bar's
-       weather cell, so they line up exactly. */
+    /* Width of the Customize panel when it floats over the table (Map and
+       Race Control off, see PANELS ON/OFF). */
     --app-side-col: clamp(340px, 31%, 640px);
 
     position: fixed;
-    top: var(--nav-h);
-    right: 0;
-    bottom: 0;
-    left: 0;
+    inset: 0;
     display: grid;
+    grid-template-columns: minmax(0, max-content) minmax(360px, 1fr);
     grid-template-rows: auto minmax(0, 1fr);
     background: var(--app-bg);
     overflow: hidden;
 }
 
-/* Fullscreen: also covers the navbar (z-index 100 in style.css).
-   Where there's a Fullscreen API, live.js also hides the browser's
-   bars; this covers the rest (iPhone) and the transition moment. */
+/* Fullscreen: on top of everything. Where there's a Fullscreen API,
+   live.js also hides the browser's bars; this covers the rest (iPhone)
+   and the transition moment. */
 .live-app.is-fullscreen {
-    top: 0;
     z-index: 999;
 }
 
@@ -916,41 +883,89 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
 }
 
 /* ---- TOP BAR ----
-   A single full-width strip: flag + GP name and session status/clock
-   on the left; weather on the right. Same columns as
-   .mapview-panels-row, so the weather sits right above the map, with the
-   same width and the same divider. */
+   A single full-width strip: the GP name with the weather under it on the
+   left (above the table); session and clock on the right, right above the
+   map. That cell is part of the bar, not of the map, so nothing drawn on
+   the map can ever cover it. */
 .live-app-topbar {
+    grid-column: 1 / -1;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) var(--app-side-col);
+    grid-template-columns: subgrid;
     min-width: 0;
     min-height: 68px;
     background: var(--app-panel);
     border-bottom: 1px solid var(--app-line);
 }
 
+/* contain: the name and the weather don't widen the table column (the
+   table sets it); a name that doesn't fit gets an ellipsis. */
 .mapview-fs-ident {
     display: flex;
-    align-items: center;
-    gap: 20px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
     min-width: 0;
-    padding: 10px 20px;
+    padding: 12px 20px;
+    contain: inline-size;
 }
 
-/* Weather cell: it always exists (even with no data yet) so that
-   the column and its divider don't appear and disappear. */
+/* Map cell: it always exists (even with no data yet) so that the column
+   and its divider don't appear and disappear. Two rows: session and clock
+   (or lap), and under them the track status. Everything about the session
+   lives here, so the map below is only the map. */
 .live-app-topbar-side {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
     min-width: 0;
-    padding: 10px 16px;
+    padding: 10px 20px;
     border-left: 1px solid var(--app-line);
 }
 
+/* Session name on the left, clock / lap on the right. */
 .mapview-fs-session-status {
+    min-width: 0;
+    justify-content: space-between;
     gap: 16px;
-    padding-left: 20px;
-    border-left: 1px solid var(--app-line);
+}
+
+.mapview-fs-session-status .status-clock {
+    font-size: 24px;
+    line-height: 1;
+}
+
+/* "LAP 23/57": the lap as big as the clock, the word and the total smaller
+   and dimmer. */
+.status-laps {
+    display: inline-flex;
+    align-items: baseline;
+}
+
+.status-laps-label {
+    margin-right: 8px;
+    font-size: 0.55em;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.status-laps-total {
+    font-size: 0.7em;
+    color: var(--text-dim);
+}
+
+/* Track status on the left, the TV sync delay (if any) on the right. */
+.live-session-flag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+}
+
+.live-session-flag:not(:has(> :not([hidden]))) {
+    display: none;
 }
 
 .mapview-fs-name {
@@ -971,19 +986,20 @@ img.emoji {
     margin-left: 0;
 }
 
-/* The weather isn't a card here: it's part of the bar (no background, no
-   border, no radius). */
+/* The weather isn't a card here: one line under the GP name, label before
+   the value ("AIR 28°  TRACK 41°…"), with no background, border or radius. */
 .mapview-fs-weather {
-    flex: 1 1 auto;
     min-width: 0;
 }
 
-/* Spreads the data across the whole column, edge to edge. */
+.mapview-fs-weather:empty {
+    display: none;
+}
+
 .mapview-fs-weather .session-weather-card {
-    width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
     padding: 0;
-    gap: 20px;
+    gap: 16px;
     background: transparent;
     border: none;
     border-radius: 0;
@@ -997,37 +1013,40 @@ img.emoji {
 
 .mapview-fs-weather .swc-condition {
     gap: 10px;
-    padding-right: 20px;
+    padding-right: 16px;
     border-right: 1px solid var(--app-line);
 }
 
 .mapview-fs-weather .swc-condition-icon {
-    font-size: 1.4rem;
+    font-size: 1.15rem;
 }
 
+/* If the column is too narrow for the whole line, it wraps. */
 .mapview-fs-weather .swc-stats {
-    gap: 16px;
-    flex-wrap: nowrap;
-    justify-content: space-between;
+    flex: 0 1 auto;
+    gap: 6px 24px;
+    flex-wrap: wrap;
 }
 
 .mapview-fs-weather .swc-stat {
+    flex-direction: row-reverse;
+    align-items: baseline;
     min-width: 0;
-    gap: 4px;
+    gap: 7px;
 }
 
 .mapview-fs-weather .swc-stat-value {
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .mapview-fs-weather .swc-stat-label {
-    font-size: 14px;
+    font-size: 12px;
     letter-spacing: 0.8px;
 }
 
-/* ---- MAP CONTROLS (Customize table + Full screen) ----
+/* ---- MAP CONTROLS (Home + Customize table + Full screen) ----
    Bottom-right corner of the map panel, like YouTube. A single
-   capsule with both buttons, separated by a thin line, with the same
+   capsule with the buttons, separated by thin lines, with the same
    language as the track status sign (opposite corner, same
    height) and the compass: a translucent dark background, a thin border, a shadow. Icons
    only; the tooltips come from the HTML and live.js. */
@@ -1067,10 +1086,11 @@ img.emoji {
     border: none;
     border-radius: 0;
     cursor: pointer;
+    text-decoration: none;
     transition: background 0.15s ease, color 0.15s ease;
 }
 
-/* Thin line between the two buttons. */
+/* Thin line between the buttons. */
 .live-ctrl-btn + .live-ctrl-btn {
     border-left: 1px solid rgba(255,255,255,0.12);
 }
@@ -1583,46 +1603,31 @@ img.emoji {
     white-space: nowrap;
 }
 
-/* With 20px values and 14px labels, the 5 items in a row need
-   ~560px, and the map column (31% of the width) only reaches that around
-   1900px. Below that they switch to 3 columns in two rows, with the sky
-   icon on the left spanning both. "auto" columns (as wide
-   as their content) and not equal ones: with 1fr, "WIND SPEED" overlapped the
-   column next to it. */
-@media (min-width: 901px) and (max-width: 1880px) {
-    .mapview-fs-weather .swc-stats {
-        display: grid;
-        grid-template-columns: repeat(3, auto);
-        justify-content: space-between;
-        gap: 8px 12px;
-    }
-}
-
-/* Smaller screens: everything scales down in the same proportion (value/label)
-   so the two rows still fit in the column. */
+/* Smaller screens: the name, the weather and the clock scale down. */
 @media (max-width: 1400px) {
-    .mapview-fs-weather .swc-stat-value { font-size: 18px; }
-    .mapview-fs-weather .swc-stat-label { font-size: 12px; }
-    .mapview-fs-name { font-size: 22px; }
+    .mapview-fs-weather .swc-stat-value { font-size: 15px; }
+    .mapview-fs-weather .swc-stat-label { font-size: 11px; }
+    .mapview-fs-name { font-size: 26px; }
+    .mapview-fs-session-status .status-clock { font-size: 20px; }
 }
 
 @media (max-width: 1100px) {
-    .mapview-fs-name { font-size: 18px; }
-    .mapview-fs-weather .swc-stat-value { font-size: 16px; }
-    .mapview-fs-weather .swc-stat-label { font-size: 11px; }
-    /* Less space around the sky icon so the two columns
-       of long labels (WIND SPEED / WIND DIR) don't touch. */
+    .mapview-fs-name { font-size: 20px; }
+    .mapview-fs-weather .swc-stat-value { font-size: 14px; }
+    .mapview-fs-weather .swc-stat-label { font-size: 10px; }
     .mapview-fs-weather .session-weather-card { gap: 12px; }
     .mapview-fs-weather .swc-condition { padding-right: 12px; }
+    .mapview-fs-weather .swc-stats { column-gap: 16px; }
 }
 
 /* ---- PANELS ROW ----
-   Two columns that fill the entire remaining height, with no gap, no
-   max-height, no dead space at the bottom. The only separation is the map
-   panel's left border. */
+   The two columns of .live-app (table / map), filling the entire remaining
+   height, with no gap, no max-height, no dead space at the bottom. The
+   only separation is the map panel's left border. */
 .mapview-panels-row {
+    grid-column: 1 / -1;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) var(--app-side-col);
+    grid-template-columns: subgrid;
     min-height: 0;
     overflow: hidden;
 }
@@ -1821,6 +1826,11 @@ img.emoji {
 .rc-chip--chequered { background: #fff;                   color: #000; }
 .rc-chip--bw        { background: rgba(255,255,255,0.1);  color: #fff; }
 
+/* The s in "+5s": the chip and the text are uppercase, and "+5S" reads worse. */
+.rc-unit {
+    text-transform: none;
+}
+
 .rc-empty {
     padding: 16px;
     font-family: 'F1-Regular', sans-serif;
@@ -1850,14 +1860,12 @@ img.emoji {
     .live-app {
         position: static;
         display: block;
-        margin-top: var(--nav-h);
         overflow: visible;
     }
 
     .live-app.is-fullscreen {
         position: fixed;
         inset: 0;
-        margin-top: 0;
         overflow-y: auto;
     }
 
@@ -1870,14 +1878,8 @@ img.emoji {
     }
 
     .mapview-fs-ident {
-        flex-wrap: wrap;
-        row-gap: 8px;
         padding: 0;
-    }
-
-    .mapview-fs-session-status {
-        padding-left: 0;
-        border-left: none;
+        contain: none;
     }
 
     .live-app-topbar-side {
@@ -1885,17 +1887,8 @@ img.emoji {
         border-left: none;
     }
 
-    .live-app-topbar-side:has(.mapview-fs-weather:empty) {
+    .live-app-topbar-side:has(.mapview-fs-session-status:empty) {
         display: none;
-    }
-
-    .mapview-fs-weather .session-weather-card {
-        justify-content: flex-start;
-    }
-
-    .mapview-fs-weather .session-weather-card,
-    .mapview-fs-weather .swc-stats {
-        flex-wrap: wrap;
     }
 
     .mapview-panels-row {
@@ -1950,14 +1943,14 @@ img.emoji {
    With Race Control visible, the map box stops stretching to the whole
    available height (there were huge empty bands above and below the
    track) and takes the track's size: the SVG goes back to normal flow with
-   height:auto, so its viewBox sets the ratio. Below there's only the
-   strip for the buttons and the estimated positions notice. Race Control
-   takes the rest of the column. Capped at 60vh in case a circuit is very
+   height:auto, so its viewBox sets the ratio, with no strip below: the
+   buttons and the compass float over the corner. Race Control takes the
+   rest of the column. Capped at 60vh in case a circuit is very
    elongated. It goes last so it also overrides the fixed height on phones. */
 .mapview-panel--map.has-race-control .circuit-map-wrap.has-track {
     flex: 0 0 auto;
     height: auto;
-    padding: 16px 20px 64px;
+    padding: 16px 20px;
 }
 
 /* The wrap is a centered flex: without an explicit width, the container
@@ -2001,13 +1994,24 @@ img.emoji {
     border-top: none;
 }
 
-/* Map and Race Control off: the table takes the full width. The right
-   column becomes a transparent layer over the right side of
-   the table, only for the buttons (bottom right) and for the
-   Customize panel when it opens. */
+/* Map and Race Control off: the table takes the full width (the right
+   column is only as wide as the clock cell above it). The map panel
+   becomes a transparent layer over the right side of the table, only for
+   the buttons (bottom right) and for the Customize panel when it opens. */
+.live-app.no-side {
+    grid-template-columns: minmax(0, 1fr) auto;
+}
+
 .live-app.no-side .mapview-panels-row {
     position: relative;
-    grid-template-columns: minmax(0, 1fr);
+}
+
+.live-app.no-side .mapview-panel--table {
+    grid-column: 1 / -1;
+}
+
+.live-app.no-side .mapview-panel--table .live-table {
+    min-width: 100%;
 }
 
 .live-app.no-side .mapview-panel--map {
@@ -2116,10 +2120,10 @@ img.emoji {
 .track-compass {
     position: absolute;
     right: 16px;
-    bottom: 12px;
+    bottom: 16px;
     z-index: 5;
-    width: 52px;
-    height: 52px;
+    width: 76px;
+    height: 76px;
     pointer-events: none;
     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.45));
     opacity: 0;
@@ -2179,20 +2183,33 @@ img.emoji {
 
 /* Yellow flag in a marshal sector: the stretch is painted over
    the track and blinks; double yellow, faster. */
-/* Blinks between yellow and orange (not with opacity: the S2 color under
-   it is yellow too, and a faded yellow over it didn't change anything). */
+/* Yellow blinks yellow, double yellow blinks orange (and faster). Each one
+   blinks against a dark tone, not with opacity: the S2 color under it is
+   yellow too, and a yellow fading over it didn't change anything. */
 .track-flag-sector {
     fill: none;
     stroke: rgb(255,211,1);
     stroke-linecap: round;
     stroke-linejoin: round;
-    animation: track-flag-blink 1.2s ease-in-out infinite;
+    animation: track-flag-blink-yellow 1.2s ease-in-out infinite;
 }
 
 .track-flag-sector--double {
-    animation-duration: 0.6s;
+    stroke: rgb(255,120,0);
+    animation: track-flag-blink-double 0.6s ease-in-out infinite;
 }
 
+@keyframes track-flag-blink-yellow {
+    0%, 100% { stroke: rgb(255,211,1); }
+    50%      { stroke: rgb(40,34,4); }
+}
+
+@keyframes track-flag-blink-double {
+    0%, 100% { stroke: rgb(255,120,0); }
+    50%      { stroke: rgb(44,20,4); }
+}
+
+/* Safety car: yellow / orange, the blink the yellow flags used to have. */
 @keyframes track-flag-blink {
     0%, 100% { stroke: rgb(255,211,1); }
     50%      { stroke: rgb(255,120,0); }
@@ -2230,30 +2247,35 @@ img.emoji {
     50%      { opacity: 0.45; }
 }
 
-/* Track status: bottom-left corner, level with the
-   buttons in the other corner (updateTrackStatus() in live.js). */
+/* Track status: in the top bar, under the session and the clock
+   (updateTrackStatus() in live.js). Long texts ("DOUBLE YELLOW SECTORS
+   10, 11") get an ellipsis instead of widening the column. */
 .track-status-banner {
-    position: absolute;
-    left: 16px;
-    bottom: 16px;
-    z-index: 6;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    height: 40px;
-    padding: 0 14px;
-    border-radius: 8px;
+    gap: 8px;
+    min-width: 0;
+    max-width: 100%;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 6px;
     font-family: 'F1-Regular', sans-serif;
     font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 0.1px;
+    font-size: 13px;
+    letter-spacing: 0.3px;
     text-transform: uppercase;
     white-space: nowrap;
-    pointer-events: none;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+    overflow: hidden;
 }
 
 .track-status-banner[hidden] { display: none; }
+
+.track-status-banner-text,
+.track-status-banner-detail {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 /* Affected sectors ("SECTOR 11"), lighter than the name. */
 .track-status-banner-detail {
@@ -2267,15 +2289,34 @@ img.emoji {
 .track-status-banner--yellow { background: rgb(255,211,1); color: #111; }
 .track-status-banner--red    { background: rgb(225,20,20); color: #fff; }
 
+/* Track clear: it's on most of the time, so it doesn't shout: green text
+   with a dot on a faint green background. */
+.track-status-banner--green {
+    background: rgba(62,224,106,0.1);
+    border: 1px solid rgba(62,224,106,0.3);
+    color: #3ee06a;
+}
+
+.track-status-banner--green::before {
+    content: "";
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+}
+
 /* Chequered flag: white background with a small chequered square in front. */
 .track-status-banner--chequered { background: #fff; color: #111; }
 
 .track-status-banner--chequered::before {
     content: "";
-    width: 16px;
-    height: 16px;
+    flex: none;
+    width: 14px;
+    height: 14px;
     border-radius: 2px;
-    background: repeating-conic-gradient(#111 0% 25%, #fff 0% 50%) 0 0 / 8px 8px;
+    background: repeating-conic-gradient(#111 0% 25%, #fff 0% 50%) 0 0 / 7px 7px;
     box-shadow: 0 0 0 1px #111;
 }
 
@@ -2376,8 +2417,8 @@ img.emoji {
 @media (prefers-reduced-motion: reduce) {
     .track-flag-sector,
     .track-status-line { animation: none; }
-    /* Without the blink, orange: it stands out from every sector color. */
-    .track-flag-sector { stroke: rgb(255,120,0); }
+    /* Without the blink, each one in its color, still. A yellow over S2
+       (also yellow) doesn't stand out: the cost of no motion. */
     .track-status--vsc .track-status-line { opacity: 0.8; }
     /* Like the yellow flag sectors: orange without the blink. */
     .track-status--sc .track-status-line { stroke: rgb(255,120,0); }

@@ -862,10 +862,8 @@ function updateGPName() {
 //   - Qualifying (Q1/Q2/Q3) & Sprint Qualifying (SQ1/SQ2/SQ3): countdown per
 //     segment, same pause behavior. Segment durations only used as a
 //     fallback before the feed's first ExtrapolatedClock message lands.
-//   - Race / Sprint: count-up stopwatch, NEVER pauses. Driven by
-//     state.SessionTiming.startedUtc, which the backend stamps the moment
-//     the session actually goes green (see client.js) — more reliable than
-//     the scheduled start time.
+//   - Race / Sprint: no clock, the lap instead ("LAP 23/57", see
+//     currentLapInfo).
 //
 // NOTE ON FIELD NAMES: SessionInfo.Name / SessionData.Series / TrackStatus
 // are reverse-engineered from F1's feed (same approach f1-dash/Nitrous use),
@@ -1078,26 +1076,11 @@ function formatClockSeconds(totalSeconds) {
     return h > 0 ? `${sign}${h}:${mm}:${ss}` : `${sign}${mm}:${ss}`;
 }
 
-// Reads the current flag state off TrackStatus. Real F1 feed status codes
-// (per f1-dash/Nitrous and similar reverse-engineered docs): 1=AllClear,
-// 2=Yellow, 4=SafetyCar, 5=Red, 6=VSC, 7=VSCEnding. Collapsed here to the
-// 3 colors used on the page (SC/VSC count as yellow).
-// TODO: confirm these codes against a logged TrackStatus message.
-function currentFlagState() {
-    const ts = state.TrackStatus;
-    const status = ts && ts.Status;
-
-    if (status === '5') return { color: 'red', text: 'RED FLAG' };
-    if (status === '4') return { color: 'yellow', text: 'SAFETY CAR' };
-    if (status === '6' || status === '7') return { color: 'yellow', text: 'VIRTUAL SAFETY CAR' };
-    if (status === '2') return { color: 'yellow', text: 'YELLOW FLAG' };
-    return { color: 'green', text: 'TRACK CLEAR' };
-}
-
 // Whether the countdown should be frozen — red flag is the one that always
 // pauses; used together with ExtrapolatedClock's own Extrapolating flag.
+// TrackStatus 5 = red (the other codes: see TRACK_STATUS_TINTS).
 function isRedFlag() {
-    return currentFlagState().color === 'red';
+    return String((state.TrackStatus && state.TrackStatus.Status) || '') === '5';
 }
 
 // How long it's been since the feed emitted that Remaining. Measured against
@@ -1121,6 +1104,22 @@ function clockElapsedSeconds(clock) {
 // a different weight) and it ended up misaligned with the numbers.
 const PAUSE_ICON_SVG = '<svg class="status-clock-pause" viewBox="0 0 10 12" aria-label="Paused" role="img"><rect x="1" y="1" width="2.6" height="10" rx="0.8"></rect><rect x="6.4" y="1" width="2.6" height="10" rx="0.8"></rect></svg>';
 
+// Race / sprint lap, from LapCount ({ CurrentLap, TotalLaps }, relayed from
+// F1's feed). Without it (a relay that doesn't send it yet), the current lap
+// comes from the laps the leader has completed, with no total.
+function currentLapInfo() {
+    const lapCount = state.LapCount || {};
+    const total = Number(lapCount.TotalLaps) || null;
+    let current = Number(lapCount.CurrentLap) || null;
+    if (!current) {
+        const lines = Object.values((state.TimingData && state.TimingData.Lines) || {});
+        const done = Math.max(0, ...lines.map((line) => Number(line && line.NumberOfLaps) || 0));
+        if (done) current = sessionEnded() ? done : done + 1;
+    }
+    if (current && total) current = Math.min(current, total);
+    return { current, total };
+}
+
 function updateSessionClock() {
     const el = document.getElementById('mapview-fs-session-status');
     if (!el) return;
@@ -1131,21 +1130,19 @@ function updateSessionClock() {
         return;
     }
 
-    const flag = currentFlagState();
     const fullLabel = fullSessionLabel(meta);
-    let clockText = '--:--';
-    let paused = false;
+    let clockHtml;
 
     if (meta.kind === 'count-up') {
-        const startedUtc = state.SessionTiming && state.SessionTiming.startedUtc;
-        clockText = startedUtc
-            ? formatClockSeconds((feedNow() - new Date(startedUtc).getTime()) / 1000)
-            : '00:00';
+        // Race / sprint: the lap, not the time.
+        const { current, total } = currentLapInfo();
+        clockHtml = `<span class="status-clock status-laps"><span class="status-laps-label">Lap</span>${current ?? '–'}${total ? `<span class="status-laps-total">/${total}</span>` : ''}</span>`;
     } else {
+        let clockText;
         const clock = state.ExtrapolatedClock;
         const remainingFromFeed = clock && parseClockToSeconds(clock.Remaining);
         const extrapolating = clock ? clock.Extrapolating !== false : true;
-        paused = !extrapolating || isRedFlag();
+        const paused = !extrapolating || isRedFlag();
 
         if (remainingFromFeed != null) {
             const elapsedSinceUpdate = paused ? 0 : clockElapsedSeconds(clock);
@@ -1155,14 +1152,13 @@ function updateSessionClock() {
             // nominal full duration instead of a blank/placeholder dash.
             clockText = formatClockSeconds(fallbackDuration(meta));
         }
+        clockHtml = `<span class="status-clock${paused ? ' status-clock--paused' : ''}">${clockText}${paused ? PAUSE_ICON_SVG : ''}</span>`;
     }
 
-    const html = `
-        <span class="status-flag status-flag--${flag.color}">${flag.text}</span>
+    el.innerHTML = `
         <span class="status-session-name">${fullLabel}</span>
-        <span class="status-clock${paused ? ' status-clock--paused' : ''}">${clockText}${paused ? PAUSE_ICON_SVG : ''}</span>
+        ${clockHtml}
     `;
-    el.innerHTML = html;
 }
 
 // Circuit map for the Map View section. It requests the live layout (see
@@ -1337,6 +1333,24 @@ function compassLabel(deg) {
     return points[idx];
 }
 
+// The Wind Dir arrow, turned like the map: when the circuit is drawn rotated
+// (its north isn't up), the arrow turns with it, so it points where the wind
+// comes from ON THE MAP, same as the compass. The letter (E, NW…) stays
+// geographic. Without the drawn track (PNG fallback), plain geographic.
+function windArrowRotation(fromDeg) {
+    if (!trackMap) return fromDeg;
+    const rad = fromDeg * Math.PI / 180;
+    return screenAngleOfGeoVector(Math.sin(rad), Math.cos(rad)) + 90; // the arrow points up at 0°
+}
+
+// The track can arrive after the weather: drawTrackMap → updateWindOverlay
+// turns the arrow already on screen.
+function updateWindArrow() {
+    const arrow = document.querySelector('#mapview-fs-weather .swc-wind-compass-icon');
+    const from = state.WeatherData ? Number(state.WeatherData.WindDirection) : NaN;
+    if (arrow && Number.isFinite(from)) arrow.style.transform = `rotate(${windArrowRotation(from).toFixed(1)}deg)`;
+}
+
 function renderSessionWeatherCard(weather) {
     const rainfall = Number(weather.rainfall || 0) > 0;
     const air      = formatWeatherNumber(weather.air_temperature, '°');
@@ -1347,7 +1361,7 @@ function renderSessionWeatherCard(weather) {
     const windDirDeg  = hasWindDir ? Number(weather.wind_direction) : 0;
 
     const compassSvg = `
-        <svg class="swc-wind-compass-icon" viewBox="0 0 24 24" style="transform:rotate(${windDirDeg}deg)" aria-hidden="true">
+        <svg class="swc-wind-compass-icon" viewBox="0 0 24 24" style="transform:rotate(${windArrowRotation(windDirDeg).toFixed(1)}deg)" aria-hidden="true">
             <line x1="12" y1="22.5" x2="12" y2="3.5" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
             <path d="M3.5 11 L12 2 L20.5 11" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>`;
@@ -1636,11 +1650,11 @@ function buildTableColumns(view) {
     if (cols.status) {
         add('<th class="live-col-status"></th>',
             (r) => `<td class="live-col-status">${r.chequered
-                ? '<span class="live-status-wrap"><span class="live-status-badge live-status-badge--chequered" title="Took the chequered flag"><span class="live-chequered-icon" aria-hidden="true"></span>FINISH</span></span>'
+                ? '<span class="live-status-wrap"><span class="live-status-badge live-status-badge--chequered" title="Took the chequered flag" role="img" aria-label="Finished"><span class="live-chequered-icon" aria-hidden="true"></span></span></span>'
                 : r.statusLabel ? `<span class="live-status-wrap"><span class="live-status-badge" style="color:${r.teamColor}">${r.statusLabel}</span></span>` : ''}</td>`,
             { samples: [
                 '<span class="live-status-wrap"><span class="live-status-badge">OUT</span></span>',
-                '<span class="live-status-wrap"><span class="live-status-badge live-status-badge--chequered"><span class="live-chequered-icon"></span>FINISH</span></span>',
+                '<span class="live-status-wrap"><span class="live-status-badge live-status-badge--chequered"><span class="live-chequered-icon"></span></span></span>',
             ], sampleHTML: true });
     }
 
@@ -1705,7 +1719,8 @@ function buildTableColumns(view) {
             { samples: ['70'] });
     }
 
-    // Takes the spare width, so the columns above stay together on the left.
+    // Takes the spare width when the table fills the page (map and Race
+    // Control off), so the columns above stay together on the left.
     add('<th class="live-col-fill" aria-hidden="true"></th>',
         () => '<td class="live-col-fill"></td>',
         { fill: true });
@@ -1895,7 +1910,9 @@ function render() {
 // column a few pixels. Now each column gets the width of the widest value it
 // can hold (its `samples`: "1:40.000", "+100.000", "+20 Laps"...) or its
 // header, whichever is wider, and the table is laid out with those fixed
-// widths (table-layout: fixed in live.css). The spare width goes to the empty
+// widths (table-layout: fixed in live.css). The table is as wide as the sum,
+// and the map takes the rest of the page. Only with the map and Race Control
+// off does the table fill the page: then the spare width goes to the empty
 // last column, so the rest stay together on the left.
 //
 // The widths are measured on a hidden copy of the table (same classes, so the
@@ -1910,6 +1927,7 @@ function measureColumnWidths(table, columns, rows) {
     probe.removeAttribute('id');
     probe.classList.add('live-table--probe');
     probe.classList.remove('has-fixed-columns');
+    probe.style.width = '';
     const head = table.tHead.cloneNode(true);
     head.removeAttribute('id');
     probe.appendChild(head);
@@ -1961,6 +1979,10 @@ function sizeTableColumns(columns) {
     colgroup.innerHTML = columns
         .map((c, i) => (c.fill ? '<col>' : `<col style="width:${Math.ceil(widths[i])}px">`))
         .join('');
+    // The table is exactly as wide as its columns: that sets the table
+    // column of the page, and the map takes the rest (.live-app in live.css).
+    const total = columns.reduce((sum, c, i) => sum + (c.fill ? 0 : Math.ceil(widths[i])), 0);
+    table.style.width = `${total}px`;
     table.classList.add('has-fixed-columns');
 }
 
@@ -2256,6 +2278,34 @@ function rcReasonHTML(reason) {
     return html + escapeHTML(text.slice(lastIndex));
 }
 
+// Track limits that end in a flag or a penalty: the lap deletion that caused
+// it isn't shown on its own, the black and white flag or the penalty right
+// after it carries the count instead ("3° WARNING", "4° TRACK LIMITS").
+// Hides that car's last deletion (if nothing has used it yet) and returns
+// how many track limits the car has, or null outside a race.
+function rcTakeTrackLimits(ctx, number) {
+    const pending = ctx.trackLimitsPending[number];
+    if (pending) pending.hidden = true;
+    delete ctx.trackLimitsPending[number];
+    return ctx.trackLimits[number] || null;
+}
+
+// "5 SECOND TIME" → "+5s"; the rest as F1 sends it ("DRIVE THROUGH",
+// "10 SECOND STOP/GO"). The s goes in its own span: the chip is uppercase.
+function rcPenaltyLabel(kind) {
+    const time = /^(\d+) SECOND TIME$/i.exec(kind.trim());
+    return time ? `+${time[1]}<span class="rc-unit">s</span>` : escapeHTML(kind);
+}
+
+// A driver by number only, with their code: "#55 SAI" (number in the team
+// color, as in the table). For lists of cars, where surnames take too much room.
+// If the driver isn't in DriverList, the code from the message ("PER").
+function rcDriverCodeHTML(number, fallbackCode) {
+    const driver = (state.DriverList || {})[number] || {};
+    const code = driver.Tla || fallbackCode;
+    return `${driverNumberHTML(driver, number)}${code ? ` ${escapeHTML(code)}` : ''}`;
+}
+
 // "23 (ALB) AND 55 (SAI)" → "#23 ALBON & #55 SAINZ".
 function rcDriversHTML(carsText) {
     const cars = [...String(carsText).matchAll(/(\d+) \((\w+)\)/g)];
@@ -2282,13 +2332,30 @@ const RC_REWRITES = [
         // CAR 16 (LEC) TIME 1:45.221 DELETED - TRACK LIMITS AT TURN 15 LAP 3 12:03:58
         //   Race/Sprint → [TRACK LIMITS] 1° WARNING | #16 LECLERC
         //   Practice/Qualifying → [TRACK LIMITS] LAP DELETED | #16 LECLERC
-        // Warnings only count (and add up toward a penalty) in races.
+        // Warnings only count (and add up toward a penalty) in races. If a
+        // black and white flag or a penalty for track limits follows, this
+        // one is hidden and the count goes there (rcTakeTrackLimits).
         match: /^CAR (\d+) \((\w+)\) (?:TIME|LAP) .*DELETED - TRACK LIMITS/i,
         show: ([, number, code], ctx) => {
             const chip = { label: 'Track limits', cls: 'info' };
             if (!ctx.isRace) return { chip, html: `LAP DELETED | ${rcDriverHTML(number, code)}` };
             ctx.trackLimits[number] = (ctx.trackLimits[number] || 0) + 1;
-            return { chip, html: `${ctx.trackLimits[number]}° WARNING | ${rcDriverHTML(number, code)}` };
+            const shown = { chip, html: `${ctx.trackLimits[number]}° WARNING | ${rcDriverHTML(number, code)}` };
+            ctx.trackLimitsPending[number] = shown;
+            return shown;
+        },
+    },
+    {
+        // BLACK AND WHITE FLAG FOR CAR 87 (BEA) - TRACK LIMITS
+        //   → [BLACK/WHITE] 3° WARNING | #87 BEARMAN (and the 3rd lap
+        //   deletion isn't shown: it's this same warning)
+        // For any other reason: [BLACK/WHITE] #87 BEARMAN | REASON
+        match: /^BLACK AND WHITE FLAG FOR CAR (\d+) \((\w+)\)(?: - (.+))?$/i,
+        show: ([, number, code, reason], ctx) => {
+            const chip = { label: 'Black/white', cls: 'bw' };
+            const count = reason && /^TRACK LIMITS/i.test(reason) ? rcTakeTrackLimits(ctx, number) : null;
+            if (count) return { chip, html: `${count}° WARNING | ${rcDriverHTML(number, code)}` };
+            return { chip, html: `${rcDriverHTML(number, code)}${reason ? ` | ${rcReasonHTML(reason)}` : ''}` };
         },
     },
     {
@@ -2318,12 +2385,109 @@ const RC_REWRITES = [
         },
     },
     {
+        // SAFETY CAR LIGHTS OFF → not shown: it always comes with SAFETY CAR
+        // IN THIS LAP, which already says it. Before the next rule.
+        match: /^SAFETY CAR LIGHTS OFF$/i,
+        show: () => null,
+    },
+    {
         // VIRTUAL SAFETY CAR DEPLOYED → [VIRTUAL SAFETY CAR] DEPLOYED
         // SAFETY CAR IN THIS LAP      → [SAFETY CAR] IN THIS LAP
         // (and ENDING, THROUGH THE PIT LANE, etc.: the full name goes in the
         // label and the rest of the message, as-is, as text)
         match: /^(VIRTUAL SAFETY CAR|SAFETY CAR) (.+)$/i,
         show: ([, kind, rest]) => ({ chip: { label: kind, cls: 'sc' }, html: escapeHTML(rest) }),
+    },
+    {
+        // LAPPED CARS MAY NOW OVERTAKE THE SAFETY CAR: 55, 5, 11
+        //   → [SC] LAPPED CARS MAY NOW OVERTAKE THE SAFETY CAR: #55 SAI, #5 BOR, #11 PER
+        match: /^(LAPPED CARS MAY NOW OVERTAKE THE SAFETY CAR): ([\d,\s]+)$/i,
+        show: ([, text, cars]) => ({
+            chip: { label: 'SC', cls: 'sc' },
+            html: `${escapeHTML(text)}: ${cars.split(',').map((n) => n.trim()).filter(Boolean).map(rcDriverCodeHTML).join(', ')}`,
+        }),
+    },
+    {
+        // MARSHALS ON TRACK AT TURN 2 / RECOVERY VEHICLE ON TRACK AT TURN 2
+        //   → [WARNING] (yellow, like the flag) and the message as-is
+        match: /^(?:MARSHALS|RECOVERY VEHICLES?) ON TRACK\b/i,
+        show: (found) => ({ chip: { label: 'Warning', cls: 'yellow' }, html: escapeHTML(found.input) }),
+    },
+    {
+        // OVERTAKE ENABLED / OVERTAKE DISABLED (the overtake mode that took
+        // DRS's place) → [UPDATE] (yellow) and the message as-is.
+        match: /^OVERTAKE (?:ENABLED|DISABLED)$/i,
+        show: ([text]) => ({ chip: { label: 'Update', cls: 'yellow' }, html: escapeHTML(text) }),
+    },
+    {
+        // VSC DEPLOYED (F1 sometimes uses the short name)
+        //   → [VIRTUAL SAFETY CAR] DEPLOYED, like VIRTUAL SAFETY CAR DEPLOYED
+        match: /^VSC (.+)$/i,
+        show: ([, rest]) => ({ chip: { label: 'Virtual safety car', cls: 'sc' }, html: escapeHTML(rest) }),
+    },
+    {
+        // WAVED BLUE FLAG FOR CAR 11 (PER) → [BLUE FLAG] #11 PER
+        match: /^WAVED BLUE FLAG FOR CAR (\d+) \((\w+)\)$/i,
+        show: ([, number, code]) => ({ chip: { label: 'Blue flag', cls: 'blue' }, html: rcDriverCodeHTML(number, code) }),
+    },
+    {
+        // TRACK SURFACE SLIPPERY IN TRACK SECTOR 18 → [WARNING] (yellow) and
+        // the message as-is, like marshals on track
+        match: /^TRACK SURFACE SLIPPERY\b/i,
+        show: (found) => ({ chip: { label: 'Warning', cls: 'yellow' }, html: escapeHTML(found.input) }),
+    },
+    {
+        // LOW GRIP CONDITIONS / LOW GRIP DELTA ACTIVE → [LOW GRIP] (yellow)
+        // NORMAL GRIP CONDITIONS / NORMAL GRIP DELTA ACTIVE → [NORMAL GRIP] (green)
+        match: /^(LOW|NORMAL) GRIP\b/i,
+        show: (found) => ({
+            chip: found[1].toUpperCase() === 'LOW'
+                ? { label: 'Low grip', cls: 'yellow' }
+                : { label: 'Normal grip', cls: 'green' },
+            html: escapeHTML(found.input),
+        }),
+    },
+    {
+        // WEATHER RADAR SYSTEM NOT AVAILABLE / NOW OPERATIONAL → not shown
+        // (it's about F1's tools, not about the session).
+        match: /^WEATHER RADAR SYSTEM\b/i,
+        show: () => null,
+    },
+    {
+        // RISK OF RAIN FOR THE F1 RACE IS 90% → [WEATHER] RISK OF RAIN 90%
+        match: /^RISK OF RAIN\b.*?(\d+\s*%)$/i,
+        show: ([, percent]) => ({ chip: { label: 'Weather', cls: 'blue' }, html: `RISK OF RAIN ${escapeHTML(percent.replace(/\s+/g, ''))}` }),
+    },
+    {
+        // CHANGE IN CLIMATIC CONDITIONS, AWNINGS MAY BE USED → [WEATHER] (blue)
+        // and the message as-is
+        match: /^(?:CHANGE IN CLIMATIC CONDITIONS|AWNINGS MAY BE USED)\b/i,
+        show: (found) => ({ chip: { label: 'Weather', cls: 'blue' }, html: escapeHTML(found.input) }),
+    },
+    {
+        // PIT EXIT CLOSED → [PIT EXIT] (red) CLOSED, the opposite of
+        // [GREEN LIGHT] PIT EXIT OPEN. Same for the pit entry and the pit lane.
+        match: /^PIT (EXIT|ENTRY|LANE) CLOSED$/i,
+        show: ([, where]) => ({ chip: { label: `Pit ${where.toLowerCase()}`, cls: 'red' }, html: 'CLOSED' }),
+    },
+    {
+        // DELAYED START / STARTING PROCEDURE SUSPENDED → [START] (yellow)
+        // and the message as-is: something holds up the start.
+        match: /^(?:DELAYED START|STARTING PROCEDURE SUSPENDED)$/i,
+        show: (found) => ({ chip: { label: 'Start', cls: 'yellow' }, html: escapeHTML(found.input) }),
+    },
+    {
+        // FORMATION LAP WILL START AT 15:40, RACE WILL START AT 16:33,
+        // RACE START, STANDING START, START ORDER: ORIGINAL GRID
+        //   → [START] and the message as-is
+        match: /^(?:(?:FORMATION LAP|RACE) WILL START AT\b|RACE START$|STANDING START$|START ORDER:)/i,
+        show: (found) => ({ chip: { label: 'Start', cls: 'info' }, html: escapeHTML(found.input) }),
+    },
+    {
+        // ALL PASS HOLDERS MAY ACCESS THE PIT LANE → not shown (it's for
+        // the people in the paddock, not for whoever is watching).
+        match: /^ALL PASS HOLDERS\b/i,
+        show: () => null,
     },
     {
         // RED FLAG → [RED FLAG] (label only)
@@ -2368,15 +2532,34 @@ const RC_REWRITES = [
         },
     },
     {
-        // FIA STEWARDS: 5 SECOND TIME PENALTY FOR CAR 55 (SAI) - CAUSING A COLLISION
-        //   → [5 SECOND PENALTY] #55 SAINZ | CAUSING A COLLISION
-        // The penalty type goes in the label ("TIME" is redundant: 5 SECOND TIME →
-        // 5 SECOND). Works the same for DRIVE THROUGH, 10 SECOND STOP/GO, etc.
-        match: /^FIA STEWARDS: (.+?) PENALTY FOR CAR (\d+) \((\w+)\)(?: - (.+))?$/i,
+        // FIA STEWARDS: PENALTY SERVED - 10 SECOND TIME PENALTY FOR CAR 5 (BOR) - CAUSING A COLLISION
+        //   → [PENALTY SERVED] #5 BORTOLETO | +10s · CAUSING A COLLISION
+        // Before the next rule, which would take "PENALTY SERVED - 10 SECOND
+        // TIME" as the penalty type.
+        match: /^FIA STEWARDS: PENALTY SERVED - (.+?) PENALTY FOR CAR (\d+) \((\w+)\)(?: - (.+))?$/i,
         show: ([, kind, number, code, reason]) => ({
-            chip: { label: `${kind.replace(/\s+TIME$/i, '')} penalty`, cls: 'penalty' },
-            html: `${rcDriverHTML(number, code)}${reason ? ` | ${rcReasonHTML(reason)}` : ''}`,
+            chip: { label: 'Penalty served', cls: 'penalty' },
+            html: `${rcDriverHTML(number, code)} | ${rcPenaltyLabel(kind)}${reason ? ` · ${rcReasonHTML(reason)}` : ''}`,
         }),
+    },
+    {
+        // FIA STEWARDS: 5 SECOND TIME PENALTY FOR CAR 55 (SAI) - CAUSING A COLLISION
+        //   → [+5s PENALTY] #55 SAINZ | CAUSING A COLLISION
+        // The penalty type goes in the label (5 SECOND TIME → +5s; DRIVE
+        // THROUGH, 10 SECOND STOP/GO, etc. as they come). For track limits,
+        // the reason is the count, and the lap deletion that caused it isn't
+        // shown: [+5s PENALTY] #87 BEARMAN | 4° TRACK LIMITS
+        match: /^FIA STEWARDS: (.+?) PENALTY FOR CAR (\d+) \((\w+)\)(?: - (.+))?$/i,
+        show: ([, kind, number, code, reason], ctx) => {
+            const count = reason && /^TRACK LIMITS/i.test(reason) ? rcTakeTrackLimits(ctx, number) : null;
+            const why = count ? `${count}° TRACK LIMITS` : reason ? rcReasonHTML(reason) : '';
+            return {
+                // In a span: in the chip (a flex) the space after the s's
+                // span would be lost.
+                chip: { label: `<span>${rcPenaltyLabel(kind)} penalty</span>`, cls: 'penalty' },
+                html: `${rcDriverHTML(number, code)}${why ? ` | ${why}` : ''}`,
+            };
+        },
     },
 ];
 
@@ -2386,24 +2569,30 @@ const RC_REWRITES = [
 function rcDisplayItems(messages) {
     const ctx = {
         trackLimits: {},
+        // Each car's last lap deletion that a flag or penalty could still
+        // take over (rcTakeTrackLimits).
+        trackLimitsPending: {},
         isRace: currentSessionKind() === 'race',
         startMs: sessionStartMs(),
     };
     const items = [];
     for (const m of messages) {
         // The trailing time is removed BEFORE looking up the rule, so the
-        // rules see the clean message (and the ones anchored with $ match).
-        const text = rcStripTime(m.Message);
+        // rules see the clean message (and the ones anchored with $ match;
+        // so are the spaces F1 sometimes leaves at the end).
+        const text = rcStripTime(m.Message).trim();
         const rule = RC_REWRITES.find((r) => r.match.test(text));
         if (!rule) {
             items.push({ message: m, chip: rcChip(m), html: escapeHTML(text) });
             continue;
         }
         const shown = rule.show(rule.match.exec(text), ctx, m);
-        // null = uninteresting message: left out of the list.
-        if (shown) items.push({ message: m, chip: shown.chip || rcChip(m), html: shown.html });
+        // null = uninteresting message: left out of the list. The same
+        // object goes in the list, so a later message can still hide it
+        // (.hidden, see rcTakeTrackLimits).
+        if (shown) items.push(Object.assign(shown, { message: m, chip: shown.chip || rcChip(m) }));
     }
-    return items;
+    return items.filter((item) => !item.hidden);
 }
 
 // Color label by message type. null = no label.
@@ -2413,7 +2602,7 @@ function rcChip(message) {
     const text = String(message.Message || '').toUpperCase();
 
     if (category === 'SafetyCar' || text.includes('SAFETY CAR')) {
-        return { label: text.includes('VIRTUAL') ? 'VSC' : 'SC', cls: 'sc' };
+        return { label: /\bVIRTUAL\b|\bVSC\b/.test(text) ? 'VSC' : 'SC', cls: 'sc' };
     }
     if (flag === 'RED') return { label: 'Red flag', cls: 'red' };
     if (flag === 'DOUBLE YELLOW') return { label: 'Double yellow', cls: 'yellow' };
@@ -2863,9 +3052,15 @@ function nearestTrackSegment(p, points) {
 // if a corner can't find a free spot, it backtracks and the previous one
 // tries its next option (5 makes room for 6). With a cap on
 // attempts: if that's not enough, they're placed one by one as best as possible.
+// Corner numbers: radius of their circle and font size, in screen px.
+const CORNER_LABEL_PX = 11;
+// Track width, in screen px: the dark border is 2.4 times this, the colored
+// line half of it (drawTrackMap).
+const TRACK_WIDTH_PX = 7.5;
+
 function placeCornerLabels(corners, points, upx) {
-    const labelRadius = 9 * upx;       // the number's circle
-    const trackHalf = 7.2 * upx;       // half the track width with its border
+    const labelRadius = CORNER_LABEL_PX * upx;   // the number's circle
+    const trackHalf = TRACK_WIDTH_PX * 1.2 * upx;   // half the track width with its border
     const clearTrack = trackHalf + labelRadius + 1.5 * upx;
     const clearLabel = labelRadius * 2 + 2 * upx;
     const rings = [0, 5, 11, 18, 26].map((extra) => clearTrack + (0.5 + extra) * upx);
@@ -2948,9 +3143,9 @@ function drawTrackMap(isRetry = false) {
     const { points, corners, viewBox, span } = trackMap;
     const upx = trackUnitsPerPx(host, viewBox) || span / 500;
     trackMap.unitsPerPx = upx;
-    const w = 6 * upx;
+    const w = TRACK_WIDTH_PX * upx;
     // The colored line goes a bit thinner than w, inside the same border.
-    const lineW = 3 * upx;
+    const lineW = w / 2;
 
     // Track: border + line. With sectors, the line goes in three colored
     // stretches; without sectors, a single neutral stretch.
@@ -2982,8 +3177,8 @@ function drawTrackMap(isRetry = false) {
             <g class="track-corners">
                 ${labels.map((c) => `
                     <g transform="translate(${c.x.toFixed(1)} ${c.y.toFixed(1)})">
-                        <circle r="${(9 * upx).toFixed(1)}" style="stroke-width:${upx.toFixed(2)}"></circle>
-                        <text style="font-size:${(9 * upx).toFixed(1)}px">${c.number}</text>
+                        <circle r="${(CORNER_LABEL_PX * upx).toFixed(1)}" style="stroke-width:${upx.toFixed(2)}"></circle>
+                        <text style="font-size:${(CORNER_LABEL_PX * upx).toFixed(1)}px">${c.number}</text>
                     </g>`).join('')}
             </g>
             <g class="track-cars"></g>
@@ -3083,6 +3278,7 @@ function ensureWindStreaks(field) {
 
 function updateWindOverlay() {
     updateCompass();
+    updateWindArrow();
     const overlay = document.getElementById('track-wind');
     if (!overlay) return;
 
@@ -3163,10 +3359,10 @@ function updateTrackFlags() {
         .join('');
 }
 
-// Track status, in the bottom-left corner of the map: the most
-// important thing happening, in this order: red flag, SC, VSC, double
-// yellow, yellow and, once the session has ended, chequered flag. With the
-// track clear, the corner stays empty.
+// Track status, in the top bar right above the map (under the session and
+// the clock): the most important thing happening, in this order: red flag,
+// SC, VSC, double yellow, yellow and, once the session has ended, chequered
+// flag. With the track clear it says so in green.
 // With SC / VSC / red, the whole track is also tinted (yellow or red,
 // with a soft pulse). TrackStatus: 2 = yellow, 4 = SC, 5 = red,
 // 6 = VSC, 7 = VSC ending.
@@ -3202,7 +3398,7 @@ function currentTrackBadge() {
     if (yellows || status === '2') return { cls: 'yellow', text: 'Yellow flag', detail: yellows };
 
     if (sessionEnded()) return { cls: 'chequered', text: 'Chequered flag', detail: '' };
-    return null;
+    return { cls: 'green', text: 'Track clear', detail: '' };
 }
 
 function updateTrackStatus() {
@@ -3214,7 +3410,7 @@ function updateTrackStatus() {
     ['sc', 'vsc', 'red'].forEach((cls) => wrap.classList.toggle(`track-status--${cls}`, !!tint && tint.cls === cls));
     if (!badge) return;
 
-    const info = trackMap ? currentTrackBadge() : null;
+    const info = deriveSessionMeta(state.SessionInfo) ? currentTrackBadge() : null;
     badge.hidden = !info;
     if (!info) return;
     badge.className = `track-status-banner track-status-banner--${info.cls}`;
@@ -3965,9 +4161,9 @@ function initControlsAutoHide() {
 }
 
 // ── FULLSCREEN TOGGLE ─────────────────────────────────────────────────────
-// The page already IS the table + map view (it fills the whole window below the
-// navbar). "Full screen" also covers the navbar (.is-fullscreen class,
-// position:fixed) and, where the browser allows it, requests real
+// The page already IS the table + map view (it fills the whole window, with
+// no navbar). "Full screen" (.is-fullscreen class, position:fixed) also,
+// where the browser allows it, requests real
 // fullscreen (Fullscreen API) to hide the browser bars, which is ideal for
 // leaving it on a TV. On iPhone that API doesn't exist for regular elements,
 // so there only the CSS version applies, which still covers everything on the page.
