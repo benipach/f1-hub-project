@@ -1,31 +1,34 @@
-// results.js: results for any season, session by session.
+// results.js: the Results page (results.html), any season in one place.
 //
-// Three axes: season × Grand Prix × session.
-//   - The season goes in the URL (?season=2019) and is changed with the header's
-//     <select>; without a parameter the current one opens (data/latest.json).
-//   - The tabs are the sessions that season actually has
-//     (1990 has no FP3 or Sprint; 2026 does).
-//   - Each row is a Grand Prix with the session's winner/pole. Tapping it
-//     expands the full classification below, the same table as the Grand Prix
-//     page (buildResultTable, js/shared/result-table.js), so there's no need
-//     to open GP by GP to see the details.
+// It used to be three pages (Results, Championship and Archive), each with
+// its own year selector. Now one year drives the whole page, top to bottom:
+//   - the hero, the season poster (js/season-hero.js);
+//   - Championship: points curve + drivers and teams standings
+//     (renderChampionship, js/championship.js);
+//   - Race results, built here: the tabs are the sessions that season
+//     actually has (1990 has no FP3 or Sprint; 2026 does), and each row is a
+//     Grand Prix with the session's winner/pole that expands its full
+//     classification, the same table as the Grand Prix page
+//     (buildResultTable, js/shared/result-table.js).
 //
-// The catalogs (circuits, cities, countries, teams, drivers) are loaded
-// once; when the year changes only the season file is requested.
+// The year goes in the URL (?season=2019) and is changed with the dropdown
+// in the sticky bar (js/shared/season-picker.js); without a parameter the
+// current season opens (data/latest.json). The catalogs (circuits, cities,
+// countries, teams, drivers) are loaded once, and each year's season file
+// once for the whole page.
 
 // ── SESSION DEFINITIONS ───────────────────────────────────────────
 // timeField/timeLabel: which JSON field holds P1's time and what to call the column.
 // hasLaps: whether that session's entries carry a `laps` field.
 // posLabel: header for the driver column (Winner / Pole / P1).
-// sprintCol: whether to show the "Sprint" weekend-format badge column.
 const SESSION_DEFS = [
-    { key: 'fp1',         label: 'Practice 1',       labelShort: 'FP1', title: 'Free Practice 1',  timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: true,  posLabel: 'P1',     sprintCol: true  },
-    { key: 'fp2',         label: 'Practice 2',       labelShort: 'FP2', title: 'Free Practice 2',  timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: true,  posLabel: 'P1',     sprintCol: true  },
-    { key: 'fp3',         label: 'Practice 3',       labelShort: 'FP3', title: 'Free Practice 3',  timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: true,  posLabel: 'P1',     sprintCol: true  },
-    { key: 'sprintQualy', label: 'Sprint Qualifying', labelShort: 'SQ', title: 'Sprint Qualifying', timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: false, posLabel: 'Pole',   sprintCol: false },
-    { key: 'sprintRace',  label: 'Sprint',           labelShort: 'SR', title: 'Sprint Race',       timeField: 'time',    timeLabel: 'Duration',  hasLaps: true,  posLabel: 'Winner', sprintCol: false },
-    { key: 'qualifying',  label: 'Qualifying',       title: 'Qualifying',       timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: false, posLabel: 'Pole',   sprintCol: true  },
-    { key: 'race',        label: 'Race',             title: 'Race',             timeField: 'time',    timeLabel: 'Duration',  hasLaps: true,  posLabel: 'Winner', sprintCol: true  },
+    { key: 'fp1',         label: 'Practice 1',       labelShort: 'FP1', title: 'Free Practice 1',  timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: true,  posLabel: 'P1' },
+    { key: 'fp2',         label: 'Practice 2',       labelShort: 'FP2', title: 'Free Practice 2',  timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: true,  posLabel: 'P1' },
+    { key: 'fp3',         label: 'Practice 3',       labelShort: 'FP3', title: 'Free Practice 3',  timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: true,  posLabel: 'P1' },
+    { key: 'sprintQualy', label: 'Sprint Qualifying', labelShort: 'SQ', title: 'Sprint Qualifying', timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: false, posLabel: 'Pole' },
+    { key: 'sprintRace',  label: 'Sprint',           labelShort: 'SR', title: 'Sprint Race',       timeField: 'time',    timeLabel: 'Duration',  hasLaps: true,  posLabel: 'Winner' },
+    { key: 'qualifying',  label: 'Qualifying',       title: 'Qualifying',       timeField: 'lapTime', timeLabel: 'Best Lap', hasLaps: false, posLabel: 'Pole' },
+    { key: 'race',        label: 'Race',             title: 'Race',             timeField: 'time',    timeLabel: 'Duration',  hasLaps: true,  posLabel: 'Winner' },
 ];
 const DEFAULT_KEY = 'race';
 
@@ -122,10 +125,19 @@ function renderSessionTable(container, season, def) {
         return;
     }
 
-    // The Sprint column only if the season had sprint weekends
-    // (since 2021); before that it's a whole column of dashes.
-    const sprintCol = def.sprintCol && rows.some(({ gp }) => gp.sprint);
-    const colCount = 5 + (sprintCol ? 1 : 0) + (def.hasLaps ? 1 : 0);
+    // Condition column: dry or wet, from the session's weather `rainfall`
+    // (the same reading as the GP page's weather card). Only seasons loaded
+    // with weather have it (2026), so the column only shows when some row does.
+    const weatherOf = gp => gp?.sessions?.[def.key]?.weather;
+    const conditionCol = rows.some(({ gp }) => weatherOf(gp));
+    const conditionHtml = gp => {
+        const w = weatherOf(gp);
+        if (!w) return '<span class="results-condition-none">—</span>';
+        const wet = Number(w.rainfall) > 0;
+        return `<span class="results-condition" title="${wet ? 'Wet' : 'Dry'}">${wet ? '🌧️' : '☀️'}</span>`;
+    };
+
+    const colCount = 5 + (def.hasLaps ? 1 : 0) + (conditionCol ? 1 : 0);
 
     container.innerHTML = `
         <div class="results-table-wrap">
@@ -136,9 +148,9 @@ function renderSessionTable(container, season, def) {
                         <th>Grand Prix</th>
                         <th class="results-date-col">Date</th>
                         <th>${def.posLabel}</th>
-                        ${sprintCol ? '<th class="res-sprint-col" style="text-align:center">Sprint</th>' : ''}
                         <th class="res-duration-col">${def.timeLabel}</th>
                         ${def.hasLaps ? '<th class="res-laps-col" style="text-align:center">Laps</th>' : ''}
+                        ${conditionCol ? '<th class="results-condition-col" title="Track condition">Track</th>' : ''}
                         <th class="results-expand-col"></th>
                     </tr>
                 </thead>
@@ -159,10 +171,10 @@ function renderSessionTable(container, season, def) {
                                 <td class="results-gp"><span class="results-flag">${flagFor(gpId, gp)}</span><span class="results-gp-full">${gp.name}</span><span class="results-gp-short">${gpShortLabel(gp.name)}</span></td>
                                 <td class="results-date">${formatDate(sessionDate(gp, def.key))}</td>
                                 <td class="results-winner"><div class="results-winner-inner">${logoHtml}<span class="results-winner-name">${name}</span></div></td>
-                                ${sprintCol ? `<td class="res-sprint-col" style="text-align:center">${gp.sprint ? '<span class="sprint-badge">SPRINT</span>' : '<span class="results-dash">—</span>'}</td>` : ''}
                                 <td class="res-duration-col">${timeVal}</td>
                                 ${def.hasLaps ? `<td class="res-laps-col" style="text-align:center">${laps}</td>` : ''}
-                                <td class="results-expand"><span class="results-expand-icon" aria-hidden="true"></span></td>
+                                ${conditionCol ? `<td class="results-condition-col">${conditionHtml(gp)}</td>` : ''}
+                                <td class="results-expand"><svg class="results-expand-icon" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4"/></svg></td>
                             </tr>
                             <tr class="results-detail" data-gp="${gpId}">
                                 <td colspan="${colCount + 1}">
@@ -208,15 +220,12 @@ function renderSessionTable(container, season, def) {
 function buildDetail(gpId, gp, def) {
     const results = getSessionResults(gp, def.key);
     const table = buildResultTable(results, def.key, state.ctx, getGridPositions(gp, def.key));
+    // No title above the table: the open row right above already says
+    // which Grand Prix it is. Just the link, on the left, when there is one.
     const gpLink = state.year === state.latestYear
-        ? `<a class="results-detail-link" href="./grandsprix/grandprix.html?gp=${gpId}">Full Grand Prix page <span aria-hidden="true">→</span></a>`
+        ? `<div class="results-detail-head"><a class="results-detail-link" href="./grandsprix/grandprix.html?gp=${gpId}">Full Grand Prix page <span aria-hidden="true">→</span></a></div>`
         : '';
-    return `
-        <div class="results-detail-head">
-            <span class="results-detail-title">${gp.name} · ${def.title}</span>
-            ${gpLink}
-        </div>
-        ${table}`;
+    return `${gpLink}${table}`;
 }
 
 // ── SESSION TABS ──────────────────────────────────────────────────
@@ -277,6 +286,8 @@ function renderSeason(season) {
         previousKey = key;
         state.activeKey = key;
     };
+    // The hero opens a race from outside the tabs (openRaceRow).
+    state.activate = key => { if (order.includes(key)) activate(key); };
 
     tabBar.querySelectorAll('.session-tab-btn').forEach(btn => {
         btn.addEventListener('click', () => activate(btn.dataset.session));
@@ -297,16 +308,31 @@ window.addEventListener('resize', () => {
     moveIndicator(document.getElementById('results-tab-indicator'), tabBar?.querySelector('.session-tab-btn.active'));
 });
 
+// ── FROM THE HERO TO THE TABLE ────────────────────────────────────
+// A round picked on the hero's season bar: the Race tab comes forward, its
+// row opens (if it wasn't already) and the page scrolls down to it.
+function openRaceRow(gpId) {
+    state.activate?.('race');
+    const row = document.querySelector(`#tab-panel-race .results-row[data-gp="${gpId}"]`);
+    if (!row) return;
+    if (!row.classList.contains('is-open')) row.click();
+    row.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 // ── SEASON SWITCH ─────────────────────────────────────────────────
+// One season file for the whole page: the hero, the race results and the
+// championship all draw from it.
 async function showSeason(year) {
     const ticket = ++state.rendering;
     state.year = year;
     state.ctx.year = year;
     document.title = `F1 Hub | ${year} Results`;
-    document.getElementById('results-title').textContent = `${year} Race Results`;
 
     const wrap = document.getElementById('results-tabs-container');
+    const champ = document.getElementById('championship');
+    const empty = document.getElementById('results-empty');
     wrap.classList.add('is-loading');
+    champ?.classList.add('is-loading');
 
     let season;
     try {
@@ -315,21 +341,60 @@ async function showSeason(year) {
         console.error('Could not load the season', year, err);
         if (ticket !== state.rendering) return;
         wrap.classList.remove('is-loading');
+        champ?.classList.remove('is-loading');
+        champ?.classList.add('is-empty');
         wrap.hidden = true;
-        const empty = document.getElementById('results-empty');
         empty.hidden = false;
         empty.textContent = `Couldn't load the ${year} season.`;
         return;
     }
     if (ticket !== state.rendering) return;
 
+    renderSeasonHero(season, year, { ctx: state.ctx, flagOf: flagFor, onPick: openRaceRow });
     renderSeason(season);
     wrap.classList.remove('is-loading');
+
+    if (champ) {
+        await renderChampionship(champ, year, season);
+        if (ticket === state.rendering) champ.classList.remove('is-loading');
+    }
+}
+
+// ── SECTION BAR ───────────────────────────────────────────────────
+// The sticky bar's links light up with the section on screen, and the red
+// indicator slides under the active one, like the session tabs'. The
+// active section is the last one whose top has gone past a line just under
+// the sticky bar; above the first one (in the hero) none is.
+const SECTION_LINE = 160;   // px from the top: navbar (60) + bar (64) + margin
+
+// Returns the update, for when the page jumps on its own (a #section link).
+function watchSections() {
+    const links = [...document.querySelectorAll('.results-bar-links a')];
+    const indicator = document.querySelector('.results-bar-indicator');
+    const sections = links.map(link => document.getElementById(link.hash.slice(1)));
+    if (!sections.every(Boolean)) return () => {};
+
+    const update = () => {
+        let current = -1;
+        sections.forEach((sec, i) => { if (sec.getBoundingClientRect().top <= SECTION_LINE) current = i; });
+        links.forEach((link, i) => link.classList.toggle('is-active', i === current));
+        indicator?.classList.toggle('is-visible', current >= 0);
+        if (indicator && current >= 0) moveIndicator(indicator, links[current]);
+    };
+
+    // Two measurements per scroll event, which the browser already fires
+    // once per frame: no need to throttle.
+    window.addEventListener('scroll', update, { passive: true });
+    // The links change width when the F1 font arrives, and on resize.
+    window.addEventListener('resize', update);
+    document.fonts?.ready.then(update);
+    update();
+    return update;
 }
 
 // ── INIT ──────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
-    const select = document.getElementById('results-season-select');
+    const updateSections = watchSections();
     try {
         const [seasons, latest, circuits, cities, countries, teams, drivers] = await Promise.all([
             loadSeasonsSummary('.'), loadLatest('.'),
@@ -339,23 +404,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         state.latestYear = Number(latest?.latestSeason) || null;
 
         const years = seasons.map(s => s.year).sort((a, b) => b - a);
-        select.innerHTML = years.map(y => `<option value="${y}">${y}</option>`).join('');
-
         const requested = Number(new URLSearchParams(location.search).get('season'));
         const initial = years.includes(requested) ? requested : (state.latestYear ?? years[0]);
-        select.value = String(initial);
-        select.addEventListener('change', () => {
-            const year = Number(select.value);
+
+        // The year dropdown in the sticky bar (js/shared/season-picker.js).
+        setupSeasonPicker(document.getElementById('season-picker'), years, initial, year => {
             setUrlYear(year);
             showSeason(year);
         });
 
         setUrlYear(initial);
         await showSeason(initial);
+
+        // Coming in with #section (from an old link): the content
+        // has just been drawn and moved things down, so it goes there again.
+        // Instant (the site scrolls smoothly): landing there, not travelling
+        // down from the top on load.
+        const target = location.hash ? document.getElementById(location.hash.slice(1)) : null;
+        target?.scrollIntoView({ block: 'start', behavior: 'instant' });
+        updateSections();
     } catch (err) {
-        console.error('Error loading results page:', err);
+        console.error('Error loading the results page:', err);
         const empty = document.getElementById('results-empty');
         empty.hidden = false;
-        empty.textContent = "Couldn't load results.";
+        empty.textContent = "Couldn't load the season.";
     }
 });

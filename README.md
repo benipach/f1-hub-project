@@ -47,9 +47,7 @@ flowchart LR
 | Grand Prix | `grandsprix/grandprix.html?gp=<id>` | Session results, circuit details, weather and past winners |
 | Drivers | `drivers.html` · `drivers/driver.html?driver=<id>` | Driver grid and profiles with season stats, charts and career history |
 | Teams | `teams.html` · `teams/team.html?team=<id>` | Team grid and profiles with season stats, lineage and constructor history |
-| Championship | `championship.html?season=<year>` | Driver and constructor standings with cumulative points charts, for any season |
-| Results | `results.html?season=<year>` | Every session of a season, each row expanding into the full classification |
-| Archive | `archive.html` | One card per season, linking to its results and standings |
+| Results | `results.html?season=<year>` | Any season in one page: the season in numbers, driver and constructor standings with cumulative points charts, and every session with each row expanding into the full classification |
 
 ## Tech stack
 

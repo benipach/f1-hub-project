@@ -12,8 +12,8 @@
     const NAV = [
         { title: 'Season', links: [
             ['Calendar', 'index.html#calendar'],
-            ['Championship', 'championship.html'],
-            ['Results', 'results.html'],
+            ['Championship', 'results.html#championship-section'],
+            ['Results', 'results.html#results-section'],
             ['Live Timing', 'live.html'],
         ] },
         { title: 'The Grid', links: [
@@ -22,7 +22,6 @@
         ] },
         // No path: the page doesn't exist yet and shows as "Soon"
         { title: 'History', links: [
-            ['Archive', 'archive.html'],
             ['Memorabilia', null],
         ] },
     ];

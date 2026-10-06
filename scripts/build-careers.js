@@ -425,14 +425,17 @@ for (const [driverId, list] of recordMilestones) {
 }
 
 // Race by race, the seasons the career strip can't paint with a single color:
-// the driver changed teams mid-year, or didn't take part in every race
-// (a stand-in, a late debut, a seat lost halfway). For each one, an array
-// with one slot per round of the calendar, for the strip and its tooltip:
+// the driver changed teams mid-year, didn't take part in every race (a
+// stand-in, a late debut, a seat lost halfway), or the season is still under
+// way (its rounds not run yet show in grey, for every driver alike). For each
+// one, an array with one slot per round of the calendar, for the strip and
+// its tooltip:
 //   era     raced it: index in `eras` of the team they raced for
 //   null    didn't race it
 //   "TBD"   not run yet
 //   Lawson 2025 → [2, 2, 3, 3, …, 3]   (Red Bull Racing, then Racing Bulls)
-// Full seasons with one team are left out: the strip paints them whole.
+// Finished seasons with one team, every race raced, are left out: the strip
+// paints them whole.
 function buildSeasonRaces(races) {
     const out = {};
     const years = [...new Set(races.map(r => r.year))];
@@ -441,7 +444,8 @@ function buildSeasonRaces(races) {
         const rounds = seasonRounds.get(year) || [];
         const run = raceRun.get(year) || new Set();
         const oneTeam = new Set(mine.map(r => r.era)).size === 1;
-        if (oneTeam && mine.length >= run.size) continue;
+        const underWay = run.size < rounds.length;
+        if (oneTeam && mine.length >= run.size && !underWay) continue;
         out[year] = rounds.map(round => {
             const r = mine.find(x => x.round === round);
             if (r) return r.era;

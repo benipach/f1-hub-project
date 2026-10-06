@@ -115,14 +115,13 @@
         for(let y = from; y <= to; y++){
             const slots = split[y];
             const era = [...career.eras].reverse().find(e => e.seasons.includes(y)) || null;
-            // The year is labeled if a stint with a team starts in it, at the
-            // beginning of the season or midway (Lawson 2025: Red Bull Racing).
-            const starts = career.eras.some(e => e.from === y);
 
+            // Every year labeled. The century goes in its own <small> so phones,
+            // where the cells are narrow, can show just '17.
             cells.push(`
-                <li class="jr-year${era ? '' : ' is-gap'}${titles.includes(y) ? ' is-title' : ''}${starts ? ' is-start' : ''}"
+                <li class="jr-year${era ? '' : ' is-gap'}${titles.includes(y) ? ' is-title' : ''}"
                     style="--c:${era?.color || 'transparent'}" data-year="${y}">
-                    ${slots ? `<i class="is-split">${racesHtml(slots, career.eras)}</i>` : '<i></i>'}<span>${y}</span>
+                    ${slots ? `<i class="is-split">${racesHtml(slots, career.eras)}</i>` : '<i></i>'}<span><small>${String(y).slice(0, 2)}</small>${String(y).slice(2)}</span>
                 </li>
             `);
         }
@@ -255,26 +254,34 @@
             : ''}${era.team}</span>`;
 
     // The season in one card: year, team, championship position, and points
-    // and races. On a split year every team they raced for that season goes
-    // one below the other, in order, and the races read as raced / run
-    // ("8/17 races"); hovering a grey slot says "Didn't race" (or "Not run
-    // yet") in place of the teams.
+    // and races. On a split year the races read as raced / run ("8/17
+    // races") and the team is the hovered race's; a grey slot says "Didn't
+    // race" (or "Not run yet") in its place. Over the year itself (its
+    // label), every team of that season goes one below the other, in order.
     function yearTipHtml(year, career, slot = null){
         const slots = career.seasonRaces?.[year] || null;
         const hovered = slot != null ? slots?.[slot] : undefined;
         const era = [...career.eras].reverse().find(e => e.seasons.includes(year));
         if(!era) return `<p class="jr-tip-kicker">${year}</p><p class="jr-tip-title">No races</p>`;
-        const teams = slots
-            ? [...new Set(slots.filter(raced))].map(i => career.eras[i])
-            : [era];
+        // Each team once, even if they left it and came back (two stints)
+        const allTeams = () => [...new Map(slots.filter(raced)
+            .map(i => career.eras[i])
+            .map(e => [e.teamId || e.team, e])).values()];
+        const teams = !slots ? [era]
+            : raced(hovered) ? [career.eras[hovered]]
+            : allTeams();
         const title = hovered !== undefined && !raced(hovered)
             ? `<p class="jr-tip-title"><span class="jr-tip-out">${hovered === 'TBD' ? 'Not run yet' : "Didn't race"}</span></p>`
             : teams.map(t => `<p class="jr-tip-title">${tipTeamHtml(t)}</p>`).join('');
         const st = career.seasonStats?.[year];
         const champion = (career.titleYears || []).includes(year);
-        const races = slots
-            ? `${slots.filter(raced).length}/${slots.filter(s => s !== 'TBD').length} races`
-            : st ? plural(st.races, 'race') : null;
+        // Out of the year's races run: over a race, the ones with that team
+        // (both stints if they came back), "12/21"; otherwise all the ones
+        // they raced.
+        const sameTeam = i => raced(i) && (career.eras[i].teamId || career.eras[i].team) === (career.eras[hovered].teamId || career.eras[hovered].team);
+        const run = slots ? slots.filter(s => s !== 'TBD').length : 0;
+        const races = !slots ? (st ? plural(st.races, 'race') : null)
+            : `${slots.filter(raced(hovered) ? sameTeam : raced).length}/${run} races`;
         // Two lines: where they finished the championship, then the numbers.
         const standing = champion ? 'World Champion' : st?.pos ? `P${st.pos} in the championship` : null;
         const numbers = st ? `${fmtNum(st.pts)} pts · ${races}` : null;
