@@ -191,6 +191,31 @@ function intervalToAheadValue(line) {
         || line.TimeDifftoPositionAhead || '';
 }
 
+// "+1.234" with 1 decimal → "+1.2" (Customize → Gap & interval decimals).
+// Cut, not rounded, like timing screens do: a car 0.96 s behind shows
+// +0.9, never +1.0, so the order of the gaps always matches the order on
+// track. Anything that isn't a time ("Leader", "+2 Laps") passes through.
+function withDecimals(text, decimals) {
+    const match = /^([+-]?[\d:]+)\.(\d+)$/.exec(String(text || '').trim());
+    if (!match || !(decimals >= 0) || match[2].length <= decimals) return text;
+    return decimals ? `${match[1]}.${match[2].slice(0, decimals)}` : match[1];
+}
+
+// "+2 Laps" → "+2 L" (Customize → Lapped cars: short). formatGap() has
+// already expanded the feed's "2 L"; this only shortens it back when asked.
+function withLapStyle(text, style) {
+    if (style !== 'short') return text;
+    const match = /^\+(\d+) Laps?$/.exec(String(text || '').trim());
+    return match ? `+${match[1]} L` : text;
+}
+
+// A Gap / Interval cell with the format chosen in Customize. P1's "Leader"
+// can also be left empty (Customize → Leader).
+function gapCellDisplay(text, view) {
+    if (text === 'Leader') return view.leaderLabel === 'blank' ? '' : text;
+    return withLapStyle(withDecimals(text, Number(view.gapDecimals)), view.lappedStyle);
+}
+
 // "+1.234" → 1.234 s. null for anything that isn't a time (empty, "+1 LAP").
 function gapSeconds(value) {
     const match = /^\+?\s*(\d+(?:\.\d+)?)$/.exec(String(value || '').trim());
@@ -803,34 +828,33 @@ function connect() {
 
 // --- Rendering helpers ---
 
-// ── GP → FLAG EMOJI (rendered as an image by twemoji.js, same as the rest
-// of the site — the span just needs the raw unicode flag character) ──────
-const FLAG_EMOJI_MAP = {
-    'australian-gp':    '🇦🇺',
-    'chinese-gp':        '🇨🇳',
-    'japanese-gp':       '🇯🇵',
-    'bahrain-gp':        '🇧🇭',
-    'saudi-arabian-gp':  '🇸🇦',
-    'miami-gp':          '🇺🇸',
-    'canadian-gp':       '🇨🇦',
-    'monaco-gp':         '🇲🇨',
-    'barcelona-gp':      '🇪🇸',
-    'austrian-gp':       '🇦🇹',
-    'british-gp':        '🇬🇧',
-    'belgian-gp':        '🇧🇪',
-    'hungarian-gp':      '🇭🇺',
-    'dutch-gp':          '🇳🇱',
-    'italian-gp':        '🇮🇹',
-    'spanish-gp':        '🇪🇸',
-    'azerbaijan-gp':     '🇦🇿',
-    'singapore-gp':      '🇸🇬',
-    'united-states-gp':  '🇺🇸',
-    'mexican-gp':        '🇲🇽',
-    'brazilian-gp':      '🇧🇷',
-    'las-vegas-gp':      '🇺🇸',
-    'qatar-gp':          '🇶🇦',
-    'abu-dhabi-gp':      '🇦🇪',
-};
+// ── GP → FLAG (from the circuit's location) ──────────────────────────────
+// The flag of the country the circuit is in, from the project's data:
+// circuit (circuits.json) → city (cities.json) → country (countries.json,
+// isoCode). So a GP held somewhere else (the Bahrain GP at Sepang) gets
+// the flag of where it's actually run. Rendered as an image by twemoji.js,
+// same as the rest of the site: the title just needs the unicode flag.
+let locationData = null;
+Promise.all(['circuits', 'cities', 'countries'].map((name) =>
+    fetch(`./data/${name}.json`).then((res) => (res.ok ? res.json() : Promise.reject(res.status)))))
+    .then(([circuits, cities, countries]) => {
+        locationData = { circuits, cities, countries };
+        updateGPName();
+    })
+    .catch(() => {});
+
+function isoToFlagEmoji(isoCode) {
+    if (!isoCode || isoCode.length !== 2) return '';
+    return String.fromCodePoint(...[...isoCode.toUpperCase()].map((c) => 0x1F1E6 + c.charCodeAt(0) - 65));
+}
+
+function currentGPFlag() {
+    if (!locationData) return '';
+    const circuit = locationData.circuits[currentCircuitId()];
+    const city = circuit && circuit.location && locationData.cities[circuit.location.city];
+    const country = city && locationData.countries[city.country];
+    return isoToFlagEmoji(country && country.isoCode);
+}
 
 // Fills in the GP name (with country flag prefixed, same text node) in
 // the app's top bar.
@@ -844,8 +868,10 @@ function updateGPName() {
         return;
     }
 
-    const flag = FLAG_EMOJI_MAP[gp.slug];
-    const label = flag ? `${flag} ${gp.name}` : gp.name;
+    const flag = currentGPFlag();
+    // "Bahrain Grand Prix" → "Bahrain GP" (same as gpShortName() elsewhere on the site).
+    const name = gp.name.replace(/Grand Prix/i, 'GP');
+    const label = flag ? `${flag} ${name}` : name;
 
     if (nameEl.textContent !== label) {
         nameEl.textContent = label;
@@ -1351,12 +1377,25 @@ function updateWindArrow() {
     if (arrow && Number.isFinite(from)) arrow.style.transform = `rotate(${windArrowRotation(from).toFixed(1)}deg)`;
 }
 
+// One weather figure. Two labels: the full one, and a short one for phones
+// (live.css shows one or the other), so the whole line fits in a row.
+// Wind speed and direction share one figure ("7.2 km/h E ↗").
+function weatherStatHTML(value, label, shortLabel) {
+    return `
+        <div class="swc-stat">
+            <span class="swc-stat-value">${value}</span>
+            <span class="swc-stat-label"><span class="swc-label-full">${label}</span><span class="swc-label-short">${shortLabel}</span></span>
+        </div>`;
+}
+
 function renderSessionWeatherCard(weather) {
     const rainfall = Number(weather.rainfall || 0) > 0;
     const air      = formatWeatherNumber(weather.air_temperature, '°');
     const track    = formatWeatherNumber(weather.track_temperature, '°');
     const humidity = formatWeatherNumber(weather.humidity, '%');
-    const wind     = formatWeatherNumber(Number(weather.wind_speed) * 3.6, ' km/h');
+    // The unit in its own span: on phones it goes smaller (live.css).
+    const windSpeed = formatWeatherNumber(Number(weather.wind_speed) * 3.6);
+    const wind     = windSpeed === '—' ? windSpeed : `${windSpeed}<span class="swc-unit"> km/h</span>`;
     const hasWindDir  = Number.isFinite(Number(weather.wind_direction));
     const windDirDeg  = hasWindDir ? Number(weather.wind_direction) : 0;
 
@@ -1372,30 +1411,10 @@ function renderSessionWeatherCard(weather) {
                 <span class="swc-condition-icon">${rainfall ? '🌧️' : '☀️'}</span>
             </div>
             <div class="swc-stats">
-                <div class="swc-stat">
-                    <span class="swc-stat-value">${air}</span>
-                    <span class="swc-stat-label">Air</span>
-                </div>
-                <div class="swc-stat">
-                    <span class="swc-stat-value">${track}</span>
-                    <span class="swc-stat-label">Track</span>
-                </div>
-                <div class="swc-stat">
-                    <span class="swc-stat-value">${humidity}</span>
-                    <span class="swc-stat-label">Humidity</span>
-                </div>
-                <div class="swc-stat">
-                    <span class="swc-stat-value">${wind}</span>
-                    <span class="swc-stat-label">Wind Speed</span>
-                </div>
-                ${hasWindDir ? `
-                <div class="swc-stat">
-                    <span class="swc-stat-value swc-wind-dir-value">
-                        ${compassLabel(windDirDeg)}
-                        ${compassSvg}
-                    </span>
-                    <span class="swc-stat-label">Wind Dir</span>
-                </div>` : ''}
+                ${weatherStatHTML(air, 'Air', 'Air')}
+                ${weatherStatHTML(track, 'Track', 'Trk')}
+                ${weatherStatHTML(humidity, 'Humidity', 'Hum')}
+                ${weatherStatHTML(`${wind}${hasWindDir ? `<span class="swc-wind-dir-value">${compassLabel(windDirDeg)}${compassSvg}</span>` : ''}`, 'Wind', 'Wind')}
             </div>
         </div>`;
 }
@@ -1496,12 +1515,15 @@ const VIEW_COLUMNS = [
 ];
 
 // Screen panels that can be turned on/off ("Panels" section of the
-// Customize panel). Saved together with the columns in viewPrefs.columns.
+// Customize panel). Saved apart from the columns (viewPrefs.panels): they're
+// about the page's layout, not the table, so the profiles don't touch them.
 const VIEW_PANELS = [
     { key: 'trackMap',    label: 'Track map' },
     { key: 'raceControl', label: 'Race control' },
 ];
 
+// The table per session type, as the "Full" profile shows it (and the base
+// the other profiles change).
 const VIEW_SESSION_DEFAULTS = {
     race:     { number: false, team: true, delta: true,  status: true, gap: true, interval: true,  bestLap: false, lastLap: true, sectors: true, microsectors: true, tyres: true, laps: false, trackMap: true, raceControl: true },
     quali:    { number: false, team: true, delta: false, status: true, gap: true, interval: false, bestLap: true,  lastLap: true, sectors: true, microsectors: true, tyres: true, laps: false, trackMap: true, raceControl: true },
@@ -1510,12 +1532,22 @@ const VIEW_SESSION_DEFAULTS = {
 
 // Format options (segmented buttons in the panel). The first option
 // is the default, except tyres, which depends on the session (see optionDefault).
-// dependsOn: the checkbox they depend on; if it's off, the buttons don't
+// dependsOn: the checkbox (or checkboxes: any of them) they depend on; if
+// it's off, the buttons don't
 // even show up (no point choosing how something that isn't shown looks).
 const VIEW_OPTIONS = {
     driverName: {
         label: 'Driver names',
         choices: [['code', 'Short name'], ['surname', 'Last name'], ['full', 'Full name']],
+    },
+    driverColor: {
+        label: 'Name color',
+        choices: [['white', 'White'], ['team', 'Team color']],
+    },
+    statusPlacement: {
+        label: 'Show as',
+        dependsOn: 'status',
+        choices: [['column', 'Own column'], ['name', 'In driver column']],
     },
     team: {
         label: 'Show as',
@@ -1527,28 +1559,171 @@ const VIEW_OPTIONS = {
         dependsOn: 'tyres',
         choices: [['history', 'All stints'], ['current', 'Current set']],
     },
+    // Shown while either of the two is on.
+    gapDecimals: {
+        label: 'Gap & interval decimals',
+        dependsOn: ['gap', 'interval'],
+        choices: [['3', '+1.234'], ['2', '+1.23'], ['1', '+1.2']],
+    },
+    // Page layout, not a column: shown in the Panels card (see
+    // viewPanelBodyHTML) and applied as a body class (applyLayoutOptions).
+    edges: {
+        label: 'Side margins',
+        choices: [['normal', 'Normal'], ['tight', 'Tight']],
+    },
+    lappedStyle: {
+        label: 'Lapped cars',
+        dependsOn: ['gap', 'interval'],
+        choices: [['word', '+2 Laps'], ['short', '+2 L']],
+    },
+    leaderLabel: {
+        label: 'Leader',
+        dependsOn: ['gap', 'interval'],
+        choices: [['word', 'Leader'], ['blank', 'Empty']],
+    },
+    intervalHeader: {
+        label: 'Interval header',
+        dependsOn: 'interval',
+        choices: [['full', 'Interval'], ['short', 'Int']],
+    },
 };
 
+// ── VIEW PROFILES ──
+// Ready-made table setups, picked at the top of the Customize panel. Each one
+// is a set of changes on top of the session defaults (VIEW_SESSION_DEFAULTS,
+// which is "Full"); columns(kind) because what makes sense depends on the
+// session (the best lap in qualifying, the last one in a race).
+//   - Full: everything.
+//   - Essential: Full's columns, trimmed down: the status (pit / out) in the
+//     driver's place, only the current set of tyres,
+//     "Int", 1 decimal, lapped cars as "+2 L" and nothing for the leader.
+//   - Strategy: gaps, tyres (every stint) and laps; no sectors.
+//   - Compact: the essentials: no sectors, no mini-sectors, the
+//     current set of tyres instead of every stint, tight side margins.
+//   - Glance: the bare minimum: position, places gained, the driver in the
+//     team color (no logo) with the status (pit / out) in its place, interval ("Int", 1 decimal,
+//     lapped cars as "+2 L", nothing for the leader) and current tyres, with
+//     tight side margins: ready for phones.
+// Custom: always there; it starts from this device's default profile
+// (custom.base) and keeps only your changes, so the profiles themselves never
+// change. Changing anything by hand while on a profile switches to Custom
+// without the table jumping (see customViewPrefs).
+// With nothing chosen yet, phones (PHONE_MEDIA) start on Glance and
+// computers on Full.
+const VIEW_PROFILES = {
+    full: { label: 'Full', columns: () => ({}), options: {} },
+    essential: {
+        label: 'Essential',
+        columns: () => ({}),
+        options: { statusPlacement: 'name', tyres: 'current', intervalHeader: 'short', gapDecimals: '1', lappedStyle: 'short', leaderLabel: 'blank' },
+    },
+    strategy: {
+        label: 'Strategy',
+        columns: () => ({ sectors: false, microsectors: false, interval: true, lastLap: true, tyres: true, laps: true }),
+        options: { tyres: 'history' },
+    },
+    compact: {
+        label: 'Compact',
+        columns: (kind) => ({ number: false, sectors: false, microsectors: false, laps: false, lastLap: kind === 'race' }),
+        options: { tyres: 'current', edges: 'tight' },
+    },
+    glance: {
+        label: 'Glance',
+        columns: () => ({
+            number: false, team: false, status: true, gap: false, interval: true, bestLap: false,
+            lastLap: false, sectors: false, microsectors: false, tyres: true, laps: false,
+        }),
+        options: { driverColor: 'team', statusPlacement: 'name', tyres: 'current', gapDecimals: '1', lappedStyle: 'short', leaderLabel: 'blank', intervalHeader: 'short', edges: 'tight' },
+    },
+};
+const PHONE_MEDIA = '(max-width: 900px)';
+
+function deviceDefaultProfile() {
+    return window.matchMedia && window.matchMedia(PHONE_MEDIA).matches ? 'glance' : 'full';
+}
+
+function activeProfile() {
+    if (viewPrefs.profile === 'custom') return 'custom';
+    return VIEW_PROFILES[viewPrefs.profile] ? viewPrefs.profile : deviceDefaultProfile();
+}
+
+// Custom always starts from this device's default profile. Until something
+// is changed by hand there's nothing saved and it's just that profile.
+function currentCustom() {
+    return viewPrefs.custom || { base: deviceDefaultProfile(), columns: {}, options: {} };
+}
+
+// Changing something by hand. On Custom, the change goes into it. On a
+// profile, Custom is rebuilt (replacing the previous one) on top of the
+// device's default with whatever makes that profile different from it, so
+// the table doesn't jump: it stays exactly as it was, plus the change.
+function customViewPrefs() {
+    const profile = activeProfile();
+    if (profile === 'custom') {
+        viewPrefs.custom = currentCustom();
+        return viewPrefs.custom;
+    }
+    const kind = currentSessionKind();
+    const base = deviceDefaultProfile();
+    const shown = buildView(kind, profile, null);
+    const start = buildView(kind, base, null);
+    const custom = { base, columns: {}, options: {} };
+    for (const col of VIEW_COLUMNS) {
+        if (shown.cols[col.key] !== start.cols[col.key]) custom.columns[col.key] = shown.cols[col.key];
+    }
+    for (const name of Object.keys(VIEW_OPTIONS)) {
+        if (shown[name] !== start[name]) custom.options[name] = shown[name];
+    }
+    viewPrefs.custom = custom;
+    viewPrefs.profile = 'custom';
+    return custom;
+}
+
+// Saved: { profile, custom: { base, columns, options }, panels, delaySeconds }.
 function loadViewPrefs() {
+    const prefs = { panels: {} };
+    let parsed;
     try {
-        const parsed = JSON.parse(localStorage.getItem(VIEW_STORAGE_KEY) || '{}');
-        if (parsed && typeof parsed === 'object') {
-            const columns = parsed.columns && typeof parsed.columns === 'object' ? parsed.columns : {};
-            const prefs = { ...parsed, columns };
-            // "Hidden" (Team) and "Hide" (Race control) used to be buttons;
-            // now they're checkboxes. Whatever the user had chosen is respected.
-            if (prefs.team === 'hidden') {
-                columns.team = false;
-                delete prefs.team;
-            }
-            if (prefs.raceControl === 'hide' || prefs.raceControl === 'show') {
-                columns.raceControl = prefs.raceControl === 'show';
-                delete prefs.raceControl;
-            }
-            return prefs;
+        parsed = JSON.parse(localStorage.getItem(VIEW_STORAGE_KEY) || '{}');
+    } catch (err) {
+        return prefs; // no storage or broken JSON: defaults
+    }
+    if (!parsed || typeof parsed !== 'object') return prefs;
+    const isObject = (value) => !!value && typeof value === 'object';
+
+    if (Number.isFinite(Number(parsed.delaySeconds))) prefs.delaySeconds = Number(parsed.delaySeconds);
+    if (isObject(parsed.panels)) prefs.panels = { ...parsed.panels };
+    if (typeof parsed.profile === 'string') prefs.profile = parsed.profile;
+    if (isObject(parsed.custom)) {
+        prefs.custom = {
+            base: VIEW_PROFILES[parsed.custom.base] ? parsed.custom.base : 'full',
+            columns: isObject(parsed.custom.columns) ? { ...parsed.custom.columns } : {},
+            options: isObject(parsed.custom.options) ? { ...parsed.custom.options } : {},
+        };
+    }
+
+    // Before the profiles, the choices were saved loose ({ columns, driverName,
+    // team, … }): they become a Custom on top of Full, and the panels go to
+    // panels. "Hidden" (Team) and "Hide"/"Show" (Race control) were buttons
+    // even earlier; whatever was chosen is respected.
+    if (isObject(parsed.columns) && !prefs.custom) {
+        const columns = { ...parsed.columns };
+        for (const panel of VIEW_PANELS) {
+            if (typeof columns[panel.key] === 'boolean') prefs.panels[panel.key] = columns[panel.key];
+            delete columns[panel.key];
         }
-    } catch (err) { /* no storage or broken JSON: defaults */ }
-    return { columns: {} };
+        if (parsed.team === 'hidden') columns.team = false;
+        if (parsed.raceControl === 'hide' || parsed.raceControl === 'show') prefs.panels.raceControl = parsed.raceControl === 'show';
+        const options = {};
+        for (const name of Object.keys(VIEW_OPTIONS)) {
+            if (typeof parsed[name] === 'string' && parsed[name] !== 'hidden') options[name] = parsed[name];
+        }
+        if (Object.keys(columns).length || Object.keys(options).length) {
+            prefs.custom = { base: 'full', columns, options };
+            prefs.profile = 'custom';
+        }
+    }
+    return prefs;
 }
 
 let viewPrefs = loadViewPrefs();
@@ -1568,22 +1743,36 @@ function optionDefault(name, kind) {
     return VIEW_OPTIONS[name].choices[0][0];
 }
 
-// What's actually shown in this session: the saved preference if there is
-// one, the session default otherwise. cols holds columns and panels.
+// What's actually shown in this session. Columns: Custom's changes, then the
+// profile's, then the session default. Panels: the saved choice or the
+// default. cols holds columns and panels.
 function effectiveView(kind) {
+    const profile = activeProfile();
+    return buildView(kind, profile, profile === 'custom' ? currentCustom() : null);
+}
+
+// The view for a profile (or for Custom, with its changes on top of its base).
+function buildView(kind, profile, custom) {
     const defaults = VIEW_SESSION_DEFAULTS[kind];
+    const preset = VIEW_PROFILES[custom ? custom.base : profile];
+    const presetColumns = preset.columns(kind);
+    const firstBoolean = (...values) => values.find((value) => typeof value === 'boolean');
+
     const cols = {};
-    for (const col of [...VIEW_COLUMNS, ...VIEW_PANELS]) {
+    for (const col of VIEW_COLUMNS) {
         if (col.locked) cols[col.key] = true;
         else if (col.raceOnly && kind !== 'race') cols[col.key] = false;
-        else if (typeof viewPrefs.columns[col.key] === 'boolean') cols[col.key] = viewPrefs.columns[col.key];
-        else cols[col.key] = defaults[col.key];
+        else cols[col.key] = firstBoolean(custom && custom.columns[col.key], presetColumns[col.key], defaults[col.key]);
     }
-    const view = { kind, cols };
+    for (const panel of VIEW_PANELS) {
+        cols[panel.key] = firstBoolean(viewPrefs.panels[panel.key], defaults[panel.key]);
+    }
+
+    const view = { kind, cols, profile };
     for (const name of Object.keys(VIEW_OPTIONS)) {
-        const saved = viewPrefs[name];
-        const valid = VIEW_OPTIONS[name].choices.some(([value]) => value === saved);
-        view[name] = valid ? saved : optionDefault(name, kind);
+        const valid = (value) => VIEW_OPTIONS[name].choices.some(([choice]) => choice === value);
+        const saved = custom && custom.options[name];
+        view[name] = valid(saved) ? saved : valid(preset.options[name]) ? preset.options[name] : optionDefault(name, kind);
     }
     return view;
 }
@@ -1633,12 +1822,27 @@ function buildTableColumns(view) {
             (r) => `<td class="res-delta-cell">${gridDeltaHtml(r.line.Position ?? r.posNum, r.appLine && r.appLine.GridPos)}</td>`);
     }
 
+    // Status (PIT / OUT) in its own column, or in place of the driver's name
+    // (Customize → Status → In driver column): there the name and the badge
+    // share the spot and cross-fade (.live-driver-swap, see
+    // syncDriverSwap()). The badge is always in the markup, so the fade has
+    // something to fade. In the driver column a retired car keeps its name:
+    // the dimmed row already says it's out.
+    const statusInName = cols.status && view.statusPlacement === 'name';
+    const nameStatus = (r) => (r.retired ? '' : r.statusLabel);
+    // In the driver column the badge is there even with no status (invisible,
+    // with "PIT" as a stand-in), so the column is measured with room for it.
+    const statusBadgeHTML = (r, label) => `<span class="live-status-badge" style="color:${r.teamColor}">${label || 'PIT'}</span>`;
+    const nameHTML = (r) => `<span class="live-driver-name"${view.driverColor === 'team' ? ` style="color:${teamAccentColor(r.driver.TeamName)}"` : ''}>${driverDisplayName(r.driver, r.num, view.driverName)}</span>`;
+
     add('<th class="live-col-roomy live-col-driver">Driver</th>',
         (r) => `<td class="live-col-roomy live-col-driver">
                     <span class="res-team">
                         ${teamMode === 'inline' ? teamLogoHTML(r.driver.TeamName) : ''}
                         ${cols.number ? driverNumberHTML(r.driver, r.num) : ''}
-                        ${driverDisplayName(r.driver, r.num, view.driverName)}
+                        ${statusInName
+                            ? `<span class="live-driver-swap${nameStatus(r) ? ' has-status' : ''}">${nameHTML(r)}<span class="live-driver-status"${nameStatus(r) ? '' : ' aria-hidden="true"'}>${statusBadgeHTML(r, nameStatus(r))}</span></span>`
+                            : nameHTML(r)}
                     </span>
                 </td>`);
 
@@ -1647,29 +1851,26 @@ function buildTableColumns(view) {
             (r) => `<td class="live-col-roomy live-col-team"><span class="res-team">${teamLogoHTML(r.driver.TeamName)}${teamDisplayName(r.driver.TeamName)}</span></td>`);
     }
 
-    if (cols.status) {
+    if (cols.status && !statusInName) {
         add('<th class="live-col-status"></th>',
-            (r) => `<td class="live-col-status">${r.chequered
-                ? '<span class="live-status-wrap"><span class="live-status-badge live-status-badge--chequered" title="Took the chequered flag" role="img" aria-label="Finished"><span class="live-chequered-icon" aria-hidden="true"></span></span></span>'
-                : r.statusLabel ? `<span class="live-status-wrap"><span class="live-status-badge" style="color:${r.teamColor}">${r.statusLabel}</span></span>` : ''}</td>`,
-            { samples: [
-                '<span class="live-status-wrap"><span class="live-status-badge">OUT</span></span>',
-                '<span class="live-status-wrap"><span class="live-status-badge live-status-badge--chequered"><span class="live-chequered-icon"></span></span></span>',
-            ], sampleHTML: true });
+            (r) => `<td class="live-col-status">${r.statusLabel ? `<span class="live-status-wrap">${statusBadgeHTML(r, r.statusLabel)}</span>` : ''}</td>`,
+            { samples: ['<span class="live-status-wrap"><span class="live-status-badge">OUT</span></span>'], sampleHTML: true });
     }
 
     // Times go right-aligned (.live-num): with the decimal point always in the
     // same place, a value changing only moves its left edge, and only a bit.
+    // With the decimals and the lapped cars format chosen in Customize (the
+    // samples too, so the column is only as wide as it needs to be).
     if (cols.gap) {
         add('<th class="live-col-roomy live-num">Gap</th>',
-            (r) => `<td class="live-muted live-col-roomy live-num">${r.gapText}</td>`,
-            { samples: ['Leader', '+100.000', '+20 Laps'] });
+            (r) => `<td class="live-muted live-col-roomy live-num">${gapCellDisplay(r.gapText, view)}</td>`,
+            { samples: ['Leader', '+100.000', '+20 Laps'].map((s) => gapCellDisplay(s, view)) });
     }
 
     if (cols.interval) {
-        add('<th class="live-col-roomy live-num">Interval</th>',
-            (r) => `<td class="live-muted live-col-roomy live-num">${r.intervalText}</td>`,
-            { samples: ['Leader', '+40.000', '+20 Laps'] });
+        add(`<th class="live-col-roomy live-num">${view.intervalHeader === 'short' ? 'Int' : 'Interval'}</th>`,
+            (r) => `<td class="live-muted live-col-roomy live-num">${gapCellDisplay(r.intervalText, view)}</td>`,
+            { samples: ['Leader', '+40.000', '+20 Laps'].map((s) => gapCellDisplay(s, view)) });
     }
 
     if (cols.bestLap) {
@@ -1708,8 +1909,10 @@ function buildTableColumns(view) {
     }
 
     if (cols.tyres) {
-        const tyreCellHTML = view.tyres === 'history' ? tyreStintsHTML : tyreCompoundBadgeHTML;
-        add('<th class="live-col-roomy">Tyres</th>',
+        const history = view.tyres === 'history';
+        const tyreCellHTML = history ? tyreStintsHTML : tyreCompoundBadgeHTML;
+        // Every stint: "Tyres"; only the current set: "Tyre".
+        add(`<th class="live-col-roomy">${history ? 'Tyres' : 'Tyre'}</th>`,
             (r) => `<td class="live-col-roomy">${tyreCellHTML(r.appLine)}</td>`);
     }
 
@@ -1741,22 +1944,46 @@ function updateTableHeaders(columns) {
     lastHeaderHTML = html;
 
     const thead = document.getElementById('live-thead-2');
-    if (thead) thead.innerHTML = html;
+    if (!thead) return;
+    thead.innerHTML = html;
+    const driverTh = thead.querySelector('th.live-col-driver');
+    if (driverTh) driverTh.classList.toggle('is-spilling', headerCanSpill(driverTh));
+}
+
+// "DRIVER" is wider than a short name ("VER"): if the column took the
+// header's width, there'd be a gap after every name. When the next column
+// leaves room for it (numbers, right-aligned, or the untitled status one),
+// the header doesn't count for the width and spills over that empty space
+// (.is-spilling in live.css). Next to Team (left-aligned) it can't.
+function headerCanSpill(th) {
+    const next = th.nextElementSibling;
+    return !!next && (next.classList.contains('live-num') || !next.textContent.trim());
 }
 
 // Applies the current view without waiting for data: if there's a table already, re-renders;
 // if not, it only updates the headers and the empty notice's colspan (without overwriting
 // the connection notice text).
 function applyTableView() {
+    // Measure the columns again: an option can change a column's content
+    // without changing its header (the logo by the driver, the name format,
+    // the number), and then the old width would stay, with a big gap.
+    columnWidthsKey = null;
     if (state.TimingData && state.TimingData.Lines) {
         render();
         return;
     }
     const kind = sessionKindFromMeta(deriveSessionMeta(state.SessionInfo));
-    updateTableHeaders(buildTableColumns(effectiveView(kind)));
+    const view = effectiveView(kind);
+    applyLayoutOptions(view);
+    updateTableHeaders(buildTableColumns(view));
     const emptyCell = document.querySelector('#live-rows-2 td.results-empty');
     if (emptyCell) emptyCell.colSpan = tableColspan;
     renderRaceControl();
+}
+
+// Options that change the page, not the table's columns (Side margins).
+function applyLayoutOptions(view) {
+    document.body.classList.toggle('edges-tight', view.edges === 'tight');
 }
 
 function render() {
@@ -1808,6 +2035,8 @@ function render() {
     const isQualiSession = sessionKind === 'quali';
     const isPracticeSession = sessionKind === 'practice';
     const view = effectiveView(sessionKind);
+    // Before measuring the columns: the margins change their widths.
+    applyLayoutOptions(view);
     const columns = buildTableColumns(view);
     updateTableHeaders(columns);
     syncViewPanel(sessionKind);
@@ -1874,10 +2103,13 @@ function render() {
                 appLine: appLines[num],
                 isTop3: posNum <= 3 && !isQualiSession && !isPracticeSession,
                 teamColor: TEAM_COLOR_MAP[driver.TeamName] || 'rgba(255,255,255,0.9)',
-                // Already took the chequered flag: that says more than the PIT/OUT
-                // of the cool-down lap.
-                chequered: !retired && hasTakenChequered(num),
-                statusLabel: retired ? 'OUT' : line.InPit ? 'PIT' : line.PitOut ? 'OUT' : '',
+                // OUT for a retired car, PIT, or OUT on the way out of the pit
+                // lane. Nothing once the car has taken the chequered flag (the
+                // PIT of the cool-down lap would only be noise). retired: in
+                // the driver column the retired OUT isn't shown (see
+                // buildTableColumns).
+                retired,
+                statusLabel: retired ? 'OUT' : hasTakenChequered(num) ? '' : line.InPit ? 'PIT' : line.PitOut ? 'OUT' : '',
                 gapText: gapCellText(line, posNum, leaderBestMs, allowGapFallback),
                 intervalText: intervalCellText(line, posNum, i > 0 ? rows[i - 1].line : null, allowGapFallback),
                 lastLap,
@@ -1930,10 +2162,24 @@ function measureColumnWidths(table, columns, rows) {
     probe.style.width = '';
     const head = table.tHead.cloneNode(true);
     head.removeAttribute('id');
+    // A header that spills over the next column doesn't set its width.
+    const spilling = head.querySelector('th.is-spilling');
+    if (spilling) spilling.textContent = '';
     probe.appendChild(head);
 
+    // Numbers still counting (NUMBER TRANSITIONS) are measured with their
+    // final value, not the one on screen: switching to 1 decimal counts
+    // from "+2.307" to "+2.3", and measuring mid-count left the column as
+    // wide as the old 3 decimals.
     const body = document.createElement('tbody');
-    for (const row of rows) body.appendChild(row.cloneNode(true));
+    for (const row of rows) {
+        const copy = row.cloneNode(true);
+        for (const [key, node] of numericTextNodes(copy)) {
+            const tween = numberTweens.get(key);
+            if (tween) node.nodeValue = tween.toText;
+        }
+        body.appendChild(copy);
+    }
     const sampleRows = Math.max(0, ...columns.map((c) => (c.samples ? c.samples.length : 0)));
     for (let k = 0; k < sampleRows; k++) {
         const row = rows[0].cloneNode(true);
@@ -2112,6 +2358,53 @@ function tweenRowNumbers(tr, previous) {
     if (numberTweens.size && !numberTweenFrame) numberTweenFrame = requestAnimationFrame(stepNumberTweens);
 }
 
+// Cell by cell, and only the ones that changed: the rest stay the same
+// elements. That's what lets the driver's name / status swap fade (a CSS
+// transition) even though the table is rebuilt on every message of the feed.
+function patchRowCells(old, fresh) {
+    const freshCells = [...fresh.cells];
+    if (old.cells.length !== freshCells.length) {
+        old.innerHTML = fresh.innerHTML;
+        return;
+    }
+    freshCells.forEach((cell, i) => {
+        const current = old.cells[i];
+        if (syncDriverSwap(current, cell)) return;
+        if (current.outerHTML !== cell.outerHTML) current.replaceWith(cell);
+    });
+}
+
+// Driver cell with the status in it (.live-driver-swap): if the only thing
+// that changed is the name / status, the element on screen is kept and only
+// its class and texts change, so the cross-fade runs. With no status the
+// badge keeps its last text, so "PIT" fades out instead of vanishing.
+// Returns false if the cell has to be replaced whole.
+function syncDriverSwap(current, cell) {
+    const keep = current.querySelector('.live-driver-swap');
+    const next = cell.querySelector('.live-driver-swap');
+    if (!keep || !next) return false;
+    const around = (td, swap) => td.outerHTML.replace(swap.outerHTML, '');
+    if (around(current, keep) !== around(cell, next)) return false;
+
+    const keepName = keep.querySelector('.live-driver-name');
+    const nextName = next.querySelector('.live-driver-name');
+    if (keepName.outerHTML !== nextName.outerHTML) keepName.replaceWith(nextName);
+
+    const hasStatus = next.classList.contains('has-status');
+    const keepStatus = keep.querySelector('.live-driver-status');
+    if (hasStatus) {
+        const keepBadge = keepStatus.querySelector('.live-status-badge');
+        const nextBadge = next.querySelector('.live-status-badge');
+        if (keepBadge.textContent !== nextBadge.textContent) keepBadge.textContent = nextBadge.textContent;
+        keepBadge.style.color = nextBadge.style.color;
+        keepStatus.removeAttribute('aria-hidden');
+    } else {
+        keepStatus.setAttribute('aria-hidden', 'true');
+    }
+    keep.classList.toggle('has-status', hasStatus);
+    return true;
+}
+
 function patchTableRows(tbody, html) {
     const template = document.createElement('template');
     template.innerHTML = html;
@@ -2128,7 +2421,7 @@ function patchTableRows(tbody, html) {
         if (!old) return fresh;
         old.className = fresh.className + (old.classList.contains('is-moving') ? ' is-moving' : '');
         const previous = new Map([...numericTextNodes(old)].map(([key, node]) => [key, node.nodeValue]));
-        old.innerHTML = fresh.innerHTML;
+        patchRowCells(old, fresh);
         tweenRowNumbers(old, previous);
         return old;
     });
@@ -2324,11 +2617,6 @@ function rcDriversHTML(carsText) {
 // the message isn't shown (the uninteresting ones).
 const RC_REWRITES = [
     {
-        // GREEN LIGHT - PIT EXIT OPEN → [GREEN LIGHT] PIT EXIT OPEN
-        match: /^GREEN LIGHT - (.+)$/i,
-        show: ([, rest]) => ({ chip: { label: 'Green light', cls: 'green' }, html: escapeHTML(rest) }),
-    },
-    {
         // CAR 16 (LEC) TIME 1:45.221 DELETED - TRACK LIMITS AT TURN 15 LAP 3 12:03:58
         //   Race/Sprint → [TRACK LIMITS] 1° WARNING | #16 LECLERC
         //   Practice/Qualifying → [TRACK LIMITS] LAP DELETED | #16 LECLERC
@@ -2373,16 +2661,13 @@ const RC_REWRITES = [
         show: () => null,
     },
     {
-        // DOUBLE YELLOW IN TRACK SECTOR 11 → [DOUBLE YELLOW] SECTOR 11
-        // (same for YELLOW and CLEAR: the label already says which flag it is)
-        match: /^(DOUBLE YELLOW|YELLOW|CLEAR) IN TRACK SECTOR (\d+)/i,
-        show: ([, flag, sector]) => {
-            const kind = flag.toUpperCase();
-            const chip = kind === 'CLEAR' ? { label: 'Clear', cls: 'green' }
-                : kind === 'YELLOW' ? { label: 'Yellow', cls: 'yellow' }
-                : { label: 'Double yellow', cls: 'yellow' };
-            return { chip, html: `SECTOR ${sector}` };
-        },
+        // Things with a start and an end live on the map (TRACK CONDITIONS),
+        // not here: sector flags and their CLEAR, marshals and recovery
+        // vehicles, slippery surface, grip, a closed pit exit and its green
+        // light, SC / VSC deployed, in this lap or ending, red flag and TRACK
+        // CLEAR. Not shown.
+        match: /^(?:(?:DOUBLE YELLOW|YELLOW|CLEAR) IN TRACK SECTOR \d+|(?:MARSHALS|RECOVERY VEHICLES?) ON TRACK\b|TRACK SURFACE SLIPPERY\b|(?:LOW|NORMAL) GRIP\b|PIT (?:EXIT|ENTRY|LANE) (?:CLOSED|OPEN)$|GREEN LIGHT - PIT (?:EXIT|ENTRY|LANE) OPEN$|(?:VIRTUAL SAFETY CAR|SAFETY CAR|VSC) (?:DEPLOYED|IN THIS LAP|ENDING)$|RED FLAG$|TRACK CLEAR$)/i,
+        show: () => null,
     },
     {
         // SAFETY CAR LIGHTS OFF → not shown: it always comes with SAFETY CAR
@@ -2408,12 +2693,6 @@ const RC_REWRITES = [
         }),
     },
     {
-        // MARSHALS ON TRACK AT TURN 2 / RECOVERY VEHICLE ON TRACK AT TURN 2
-        //   → [WARNING] (yellow, like the flag) and the message as-is
-        match: /^(?:MARSHALS|RECOVERY VEHICLES?) ON TRACK\b/i,
-        show: (found) => ({ chip: { label: 'Warning', cls: 'yellow' }, html: escapeHTML(found.input) }),
-    },
-    {
         // OVERTAKE ENABLED / OVERTAKE DISABLED (the overtake mode that took
         // DRS's place) → [UPDATE] (yellow) and the message as-is.
         match: /^OVERTAKE (?:ENABLED|DISABLED)$/i,
@@ -2429,23 +2708,6 @@ const RC_REWRITES = [
         // WAVED BLUE FLAG FOR CAR 11 (PER) → [BLUE FLAG] #11 PER
         match: /^WAVED BLUE FLAG FOR CAR (\d+) \((\w+)\)$/i,
         show: ([, number, code]) => ({ chip: { label: 'Blue flag', cls: 'blue' }, html: rcDriverCodeHTML(number, code) }),
-    },
-    {
-        // TRACK SURFACE SLIPPERY IN TRACK SECTOR 18 → [WARNING] (yellow) and
-        // the message as-is, like marshals on track
-        match: /^TRACK SURFACE SLIPPERY\b/i,
-        show: (found) => ({ chip: { label: 'Warning', cls: 'yellow' }, html: escapeHTML(found.input) }),
-    },
-    {
-        // LOW GRIP CONDITIONS / LOW GRIP DELTA ACTIVE → [LOW GRIP] (yellow)
-        // NORMAL GRIP CONDITIONS / NORMAL GRIP DELTA ACTIVE → [NORMAL GRIP] (green)
-        match: /^(LOW|NORMAL) GRIP\b/i,
-        show: (found) => ({
-            chip: found[1].toUpperCase() === 'LOW'
-                ? { label: 'Low grip', cls: 'yellow' }
-                : { label: 'Normal grip', cls: 'green' },
-            html: escapeHTML(found.input),
-        }),
     },
     {
         // WEATHER RADAR SYSTEM NOT AVAILABLE / NOW OPERATIONAL → not shown
@@ -2465,12 +2727,6 @@ const RC_REWRITES = [
         show: (found) => ({ chip: { label: 'Weather', cls: 'blue' }, html: escapeHTML(found.input) }),
     },
     {
-        // PIT EXIT CLOSED → [PIT EXIT] (red) CLOSED, the opposite of
-        // [GREEN LIGHT] PIT EXIT OPEN. Same for the pit entry and the pit lane.
-        match: /^PIT (EXIT|ENTRY|LANE) CLOSED$/i,
-        show: ([, where]) => ({ chip: { label: `Pit ${where.toLowerCase()}`, cls: 'red' }, html: 'CLOSED' }),
-    },
-    {
         // DELAYED START / STARTING PROCEDURE SUSPENDED → [START] (yellow)
         // and the message as-is: something holds up the start.
         match: /^(?:DELAYED START|STARTING PROCEDURE SUSPENDED)$/i,
@@ -2488,11 +2744,6 @@ const RC_REWRITES = [
         // the people in the paddock, not for whoever is watching).
         match: /^ALL PASS HOLDERS\b/i,
         show: () => null,
-    },
-    {
-        // RED FLAG → [RED FLAG] (label only)
-        match: /^RED FLAG$/i,
-        show: () => ({ chip: { label: 'Red flag', cls: 'red' }, html: '' }),
     },
     {
         // CHEQUERED FLAG → [CHEQUERED FLAG] RACE DURATION: 1:23:45
@@ -2878,6 +3129,17 @@ function buildTrackGeometry(data) {
         marshalSegments[s.number] = segment;
     });
 
+    // Which marshal sector each turn is in ("Marshals · Turn 2 · Sector 3"):
+    // the last sector that starts before the turn's point on the lap (or the
+    // last one of the lap, for a turn before the first start).
+    const sectorAtIndex = (index) => {
+        if (!marshalStarts.length) return null;
+        let found = marshalStarts[marshalStarts.length - 1];
+        for (const s of marshalStarts) if (s.index <= index) found = s;
+        return found.number;
+    };
+    corners.forEach((c) => { c.sector = sectorAtIndex(nearestIndex(c.at)); });
+
     const lapSegmentPoints = (from, to) => [
         pointAtLapFraction(from),
         ...points.filter((_, i) => lapFractions[i] > from && lapFractions[i] < to),
@@ -2892,6 +3154,7 @@ function buildTrackGeometry(data) {
         pointAtLapFraction,
         lapSegmentPoints,
         marshalSegments,
+        marshalCount: marshalStarts.length,
         refLapMs: refLapSeconds > 0 ? refLapSeconds * 1000 : null,
         viewBox: [minX - pad, minY - pad, maxX - minX + pad * 2, maxY - minY + pad * 2],
         span,
@@ -3052,18 +3315,51 @@ function nearestTrackSegment(p, points) {
 // if a corner can't find a free spot, it backtracks and the previous one
 // tries its next option (5 makes room for 6). With a cap on
 // attempts: if that's not enough, they're placed one by one as best as possible.
-// Corner numbers: radius of their circle and font size, in screen px.
-const CORNER_LABEL_PX = 11;
-// Track width, in screen px: the dark border is 2.4 times this, the colored
-// line half of it (drawTrackMap).
-const TRACK_WIDTH_PX = 7.5;
+// ── MAP SIZES ──
+// The map's sizes go with the size the circuit is drawn at, not in fixed
+// screen px: bigger on a big screen, smaller on a phone, so it always looks
+// the same. They're given as the px they'd be with the circuit drawn
+// MAP_REFERENCE_PX across (mapUnit() is that px in the map's own units).
+// Corner numbers (and the sector tags and incident icons with them) never go
+// under CORNER_LABEL_MIN_PX on screen: smaller doesn't read on a phone. The
+// compass follows the same scale (--map-scale, see drawTrackMap and live.css).
+const MAP_REFERENCE_PX = 500;
+const CORNER_LABEL_PX = 11;      // the number's circle radius and font size
+const CORNER_LABEL_MIN_PX = 8;
+
+function mapUnit() {
+    return trackMap.span / MAP_REFERENCE_PX;
+}
+
+// Corner number radius in map units, with the minimum on screen.
+function cornerLabelRadius(upx) {
+    return Math.max(CORNER_LABEL_PX * mapUnit(), CORNER_LABEL_MIN_PX * upx);
+}
+
+// "1px" for everything sized with the corner numbers (their gaps, the sector
+// tags, the incident icons).
+function labelUnit(upx) {
+    return cornerLabelRadius(upx) / CORNER_LABEL_PX;
+}
+// Track width as a share of the circuit's size (its longest side), not in
+// screen px: it grows and shrinks with the map, so it always looks the same,
+// neither thin on a big map nor thick on a small one. 0.012 is 6px with the
+// circuit drawn MAP_REFERENCE_PX across. The dark border is 2.4 times this,
+// the colored line half of it and the white edge two thirds (drawTrackMap).
+const TRACK_WIDTH_RATIO = 0.012;
+
+// The track's width in the map's own units.
+function trackWidthUnits() {
+    return trackMap.span * TRACK_WIDTH_RATIO;
+}
 
 function placeCornerLabels(corners, points, upx) {
-    const labelRadius = CORNER_LABEL_PX * upx;   // the number's circle
-    const trackHalf = TRACK_WIDTH_PX * 1.2 * upx;   // half the track width with its border
-    const clearTrack = trackHalf + labelRadius + 1.5 * upx;
-    const clearLabel = labelRadius * 2 + 2 * upx;
-    const rings = [0, 5, 11, 18, 26].map((extra) => clearTrack + (0.5 + extra) * upx);
+    const labelRadius = cornerLabelRadius(upx);  // the number's circle
+    const unit = labelUnit(upx);                 // the gaps grow with the numbers
+    const trackHalf = trackWidthUnits() * 1.2;   // half the track width with its border
+    const clearTrack = trackHalf + labelRadius + 1.5 * unit;
+    const clearLabel = labelRadius * 2 + 2 * unit;
+    const rings = [0, 5, 11, 18, 26].map((extra) => clearTrack + (0.5 + extra) * unit);
     const directions = Array.from({ length: 24 }, (_, i) => (i * Math.PI) / 12);
     const window = Math.max(6, Math.round(points.length * 0.03));
     const circularGap = (a, b) => {
@@ -3143,7 +3439,10 @@ function drawTrackMap(isRetry = false) {
     const { points, corners, viewBox, span } = trackMap;
     const upx = trackUnitsPerPx(host, viewBox) || span / 500;
     trackMap.unitsPerPx = upx;
-    const w = TRACK_WIDTH_PX * upx;
+    // How big the circuit is drawn compared to MAP_REFERENCE_PX: the compass
+    // (live.css) grows and shrinks with it.
+    wrap.style.setProperty('--map-scale', (mapUnit() / upx).toFixed(3));
+    const w = trackWidthUnits();
     // The colored line goes a bit thinner than w, inside the same border.
     const lineW = w / 2;
 
@@ -3163,8 +3462,8 @@ function drawTrackMap(isRetry = false) {
     const labels = placeCornerLabels(corners, points, upx);
     host.innerHTML = `
         <svg class="track-svg" viewBox="${viewBox.map((v) => v.toFixed(1)).join(' ')}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Track map">
-            <!-- Thin white edge around the border (2px per side). -->
-            <path class="track-edge" d="${trackPathD(points)}" style="stroke-width:${(w * 2.4 + 4 * upx).toFixed(1)}"></path>
+            <!-- Thin white edge around the border (a third of the track's width per side). -->
+            <path class="track-edge" d="${trackPathD(points)}" style="stroke-width:${(w * (2.4 + 2 / 3)).toFixed(1)}"></path>
             <path class="track-outline" d="${trackPathD(points)}" style="stroke-width:${(w * 2.4).toFixed(1)}"></path>
             ${lineHTML}
             <!-- SC / VSC / red flag: the whole track gets tinted (see
@@ -3172,15 +3471,22 @@ function drawTrackMap(isRetry = false) {
             <path class="track-status-line" d="${trackPathD(points)}" style="stroke-width:${lineW.toFixed(1)}"></path>
             <!-- Yellow flags per marshal sector (updateTrackFlags), on the line itself. -->
             <g class="track-flags" style="stroke-width:${lineW.toFixed(1)}"></g>
+            <!-- Slippery surface per marshal sector: blue stripes on the line. -->
+            <g class="track-slippery" style="stroke-width:${lineW.toFixed(1)}; stroke-dasharray:${(lineW * 1.6).toFixed(1)} ${(lineW * 1.2).toFixed(1)}"></g>
             ${startFlagHTML(points, w * 0.7)}
             <polygon class="track-direction" points="${directionArrowPoints(points, w * 1.6, w * 4)}"></polygon>
             <g class="track-corners">
                 ${labels.map((c) => `
                     <g transform="translate(${c.x.toFixed(1)} ${c.y.toFixed(1)})">
-                        <circle r="${(CORNER_LABEL_PX * upx).toFixed(1)}" style="stroke-width:${upx.toFixed(2)}"></circle>
-                        <text style="font-size:${(CORNER_LABEL_PX * upx).toFixed(1)}px">${c.number}</text>
+                        <circle r="${cornerLabelRadius(upx).toFixed(1)}" style="stroke-width:${upx.toFixed(2)}"></circle>
+                        <text style="font-size:${cornerLabelRadius(upx).toFixed(1)}px">${c.number}</text>
                     </g>`).join('')}
             </g>
+            <!-- Which sectors a flag or a slippery stretch covers ("S12–14"),
+                 and marshals / recovery vehicles on their turn (TRACK
+                 CONDITIONS). Under the cars, so those always show. -->
+            <g class="track-sector-tags"></g>
+            <g class="track-incidents"></g>
             <g class="track-cars"></g>
         </svg>`;
     trackFlagsSignature = null; // capas nuevas: redibujar banderas
@@ -3193,17 +3499,53 @@ function drawTrackMap(isRetry = false) {
     if (!isRetry && realUpx && Math.abs(realUpx - upx) / upx > 0.08) drawTrackMap(true);
 }
 
-// If the window size changes, the scale changes: it redraws so that
-// numbers and cars keep the same on-screen size.
+// If the map's size changes, the scale changes: it redraws so that
+// numbers and cars keep the same on-screen size. Not only with the window:
+// the map column also changes width when the table does (a profile or a
+// column turned on in Customize, a longer tyre history), and then the map was
+// left with the old scale (corner numbers 29px instead of 22). Only the
+// width is watched: redrawing changes the map's height itself.
 let trackResizeTimer = null;
-window.addEventListener('resize', () => {
+function scheduleTrackRedraw() {
     clearTimeout(trackResizeTimer);
     trackResizeTimer = setTimeout(() => {
         if (!trackMap) return;
         drawTrackMap();
         updatePositionOverlay();
     }, 150);
-});
+}
+
+window.addEventListener('resize', scheduleTrackRedraw);
+
+// The conditions strip at the top of the map (TRACK CONDITIONS) doesn't float
+// over the track: its height becomes room at the top of the map
+// (--conditions-h in live.css), so the circuit is drawn below it. When it
+// appears, grows or goes away, the circuit moves (with a transition) and is
+// redrawn at its new scale.
+const conditionsStrip = document.querySelector('.track-corner-info');
+if (window.ResizeObserver && conditionsStrip) {
+    let reserved = null;
+    new ResizeObserver(() => {
+        const height = conditionsStrip.offsetHeight;
+        const room = height ? conditionsStrip.offsetTop + height : 0;
+        if (room === reserved) return;
+        reserved = room;
+        conditionsStrip.parentElement.style.setProperty('--conditions-h', `${room}px`);
+        scheduleTrackRedraw();
+    }).observe(conditionsStrip);
+}
+
+const trackResizeTarget = document.getElementById('circuit-map-wrap');
+if (window.ResizeObserver && trackResizeTarget) {
+    let observedWidth = null;
+    new ResizeObserver((entries) => {
+        const width = Math.round(entries[0].contentRect.width);
+        if (width === observedWidth) return;
+        const first = observedWidth === null;
+        observedWidth = width;
+        if (!first) scheduleTrackRedraw();
+    }).observe(trackResizeTarget);
+}
 
 // ── WIND ON THE MAP ───────────────────────────────────────────────────────
 // F1's coordinate system is oriented to the north: X = east,
@@ -3305,26 +3647,84 @@ function updateWindOverlay() {
 
 // ── MAP ANNOTATIONS: banderas, estado de pista, peleas, seguir, tooltip ───
 
-// Active yellow flags per marshal sector, based on the
-// Race Control messages in order: "YELLOW / DOUBLE YELLOW IN TRACK
-// SECTOR n" turns the stretch on, "CLEAR IN TRACK SECTOR n" turns it off, and a
-// TRACK CLEAR / red flag / chequered flag turns everything off.
-// Returns { sector number: 'yellow' | 'double' }.
+// ── TRACK CONDITIONS (Race Control → map) ─────────────────────────────────
+// What's going on on the track right now, read from the Race Control
+// messages in order. Everything here has a start and an end, so it lives on
+// the map (stretches, icons and a list in its top-left corner) and not in the
+// message list (RC_REWRITES hides these messages):
+//   - YELLOW / DOUBLE YELLOW IN TRACK SECTOR n: until CLEAR IN TRACK SECTOR n,
+//     TRACK CLEAR or a red flag.
+//   - MARSHALS / RECOVERY VEHICLE ON TRACK AT TURN n: an icon on that turn,
+//     until its marshal sector is cleared, TRACK CLEAR or INCIDENT_MAX_MS
+//     (F1 doesn't always say when they've left).
+//   - TRACK SURFACE SLIPPERY IN TRACK SECTOR n: until that sector's CLEAR,
+//     NORMAL GRIP or SLIPPERY_MAX_MS.
+//   - LOW GRIP CONDITIONS / LOW GRIP DELTA ACTIVE: until NORMAL GRIP.
+//   - PIT EXIT CLOSED: until GREEN LIGHT - PIT EXIT OPEN.
+// SC, VSC and red flag come from TrackStatus (see TRACK_STATUS_TINTS).
 //
 // Only while the session is running, and nothing after the chequered flag:
 // Race Control keeps showing yellows while cars or cranes are removed from
 // the track after the session has ended, and those never get their CLEAR (the
 // feed stops sending). Previously they stayed on forever, with the
 // track at TRACK CLEAR (happened in Baku FP2: sectors 2 and 11).
-function activeSectorFlags() {
-    const flags = {};
-    if (!sessionIsRunning()) return flags;
+const INCIDENT_MAX_MS = 5 * 60 * 1000;
+const SLIPPERY_MAX_MS = 15 * 60 * 1000;
+
+function emptyTrackConditions() {
+    return { flags: {}, slippery: {}, incidents: [], lowGrip: false, pitClosed: null };
+}
+
+// The turn's marshal sector, if the layout has them.
+function turnSector(turn) {
+    const corner = trackMap && trackMap.corners.find((c) => Number(c.number) === turn);
+    return corner && corner.sector != null ? corner.sector : null;
+}
+
+// { flags: { sector: 'yellow' | 'double' }, slippery: { sector: ms },
+//   incidents: [{ kind: 'marshals' | 'recovery', turn, sector, at }],
+//   lowGrip, pitClosed: 'Pit exit' | 'Pit entry' | 'Pit lane' | null }
+function trackConditions() {
+    const cond = emptyTrackConditions();
+    if (!sessionIsRunning()) return cond;
     for (const m of raceControlMessages()) {
-        if (String(m.Flag || '').toUpperCase() === 'CHEQUERED' || /^CHEQUERED FLAG/i.test(String(m.Message || ''))) {
-            return {};
-        }
         const flag = String(m.Flag || '').toUpperCase();
-        const text = String(m.Message || '').toUpperCase();
+        const text = rcStripTime(String(m.Message || '')).trim().toUpperCase();
+        const at = rcUtcMs(m.Utc);
+        if (flag === 'CHEQUERED' || /^CHEQUERED FLAG/.test(text)) return emptyTrackConditions();
+
+        const incident = /^(MARSHALS|RECOVERY VEHICLES?) ON TRACK AT TURN (\d+)/.exec(text);
+        if (incident) {
+            const kind = incident[1] === 'MARSHALS' ? 'marshals' : 'recovery';
+            const turn = Number(incident[2]);
+            cond.incidents = cond.incidents.filter((i) => !(i.kind === kind && i.turn === turn));
+            cond.incidents.push({ kind, turn, sector: turnSector(turn), at });
+            continue;
+        }
+        const slippery = /^TRACK SURFACE SLIPPERY IN TRACK SECTOR (\d+)/.exec(text);
+        if (slippery) {
+            cond.slippery[Number(slippery[1])] = at;
+            continue;
+        }
+        if (/^LOW GRIP\b/.test(text)) {
+            cond.lowGrip = true;
+            continue;
+        }
+        if (/^NORMAL GRIP\b/.test(text)) {
+            cond.lowGrip = false;
+            cond.slippery = {};
+            continue;
+        }
+        const pitClosed = /^PIT (EXIT|ENTRY|LANE) CLOSED$/.exec(text);
+        if (pitClosed) {
+            cond.pitClosed = `Pit ${pitClosed[1].toLowerCase()}`;
+            continue;
+        }
+        if (/^(?:GREEN LIGHT - )?PIT (?:EXIT|ENTRY|LANE) OPEN/.test(text)) {
+            cond.pitClosed = null;
+            continue;
+        }
+
         let sector = m.Scope === 'Sector' && Number.isFinite(Number(m.Sector)) ? Number(m.Sector) : null;
         let kind = flag;
         if (sector == null) {
@@ -3332,40 +3732,169 @@ function activeSectorFlags() {
             if (found) { kind = found[1]; sector = Number(found[2]); }
         }
         if (sector != null) {
-            if (kind === 'DOUBLE YELLOW') flags[sector] = 'double';
-            else if (kind === 'YELLOW') flags[sector] = 'yellow';
-            else if (kind === 'CLEAR' || kind === 'GREEN') delete flags[sector];
+            if (kind === 'DOUBLE YELLOW') cond.flags[sector] = 'double';
+            else if (kind === 'YELLOW') cond.flags[sector] = 'yellow';
+            else if (kind === 'CLEAR' || kind === 'GREEN') {
+                delete cond.flags[sector];
+                delete cond.slippery[sector];
+                cond.incidents = cond.incidents.filter((i) => i.sector !== sector);
+            }
             continue;
         }
-        const clearsAll = (m.Scope === 'Track' && (flag === 'CLEAR' || flag === 'GREEN' || flag === 'RED' || flag === 'CHEQUERED'))
-            || /^TRACK CLEAR/.test(text) || text === 'RED FLAG' || text === 'CHEQUERED FLAG';
-        if (clearsAll) Object.keys(flags).forEach((k) => delete flags[k]);
+
+        const trackClear = (m.Scope === 'Track' && (flag === 'CLEAR' || flag === 'GREEN')) || /^TRACK CLEAR/.test(text);
+        const redFlag = (m.Scope === 'Track' && flag === 'RED') || text === 'RED FLAG';
+        if (trackClear || redFlag) cond.flags = {};
+        if (trackClear) cond.incidents = [];
     }
-    return flags;
+
+    const now = feedNow();
+    cond.incidents = cond.incidents.filter((i) => i.at == null || now - i.at < INCIDENT_MAX_MS);
+    for (const [sector, at] of Object.entries(cond.slippery)) {
+        if (at != null && now - at >= SLIPPERY_MAX_MS) delete cond.slippery[sector];
+    }
+    return cond;
+}
+
+function activeSectorFlags() {
+    return trackConditions().flags;
+}
+
+// [5, 12, 13, 14] → [[5], [12, 13, 14]]: consecutive sectors go together, also
+// across the start line (the lap's last sector and sector 1).
+function groupSectors(sectors) {
+    const sorted = [...new Set(sectors.map(Number))].sort((a, b) => a - b);
+    const groups = [];
+    for (const sector of sorted) {
+        const last = groups[groups.length - 1];
+        if (last && sector === last[last.length - 1] + 1) last.push(sector);
+        else groups.push([sector]);
+    }
+    const count = trackMap && trackMap.marshalCount;
+    if (count && groups.length > 1 && groups[0][0] === 1 && groups[groups.length - 1].slice(-1)[0] === count) {
+        groups[0] = [...groups.pop(), ...groups[0]];
+    }
+    return groups;
+}
+
+// [5] → "Sector 5"; [12, 13, 14] → "Sectors 12, 13 & 14".
+function sectorGroupLabel(group) {
+    if (group.length === 1) return `Sector ${group[0]}`;
+    return `Sectors ${group.slice(0, -1).join(', ')} & ${group[group.length - 1]}`;
+}
+
+// The tag on the map: "S5", "S12–14".
+function sectorGroupTag(group) {
+    return group.length === 1 ? `S${group[0]}` : `S${group[0]}–${group[group.length - 1]}`;
+}
+
+// The sectors of a group as one stretch of track (each sector ends where the
+// next one starts). null if the layout doesn't have them.
+function sectorGroupPoints(group) {
+    const segments = group.map((sector) => trackMap.marshalSegments[sector]);
+    if (segments.some((segment) => !segment)) return null;
+    return segments.flatMap((segment, i) => (i ? segment.slice(1) : segment));
+}
+
+// "S12–14" next to its stretch: at its middle, pushed away from the
+// circuit's center so it sits outside the track.
+function sectorTagHTML(points, text, cls, upx) {
+    const unit = labelUnit(upx);
+    const mid = points[Math.floor(points.length / 2)];
+    const [vx, vy, vw, vh] = trackMap.viewBox;
+    const dx = mid.x - (vx + vw / 2);
+    const dy = mid.y - (vy + vh / 2);
+    const len = Math.hypot(dx, dy) || 1;
+    const away = trackWidthUnits() * 1.2 + 16 * unit;
+    const x = mid.x + (dx / len) * away;
+    const y = mid.y + (dy / len) * away;
+    const width = (text.length * 6.6 + 10) * unit;
+    const height = 16 * unit;
+    return `
+        <g class="track-sector-tag track-sector-tag--${cls}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})">
+            <rect x="${(-width / 2).toFixed(1)}" y="${(-height / 2).toFixed(1)}" width="${width.toFixed(1)}" height="${height.toFixed(1)}" rx="${(4 * unit).toFixed(1)}"></rect>
+            <text style="font-size:${(10.5 * unit).toFixed(1)}px">${text}</text>
+        </g>`;
+}
+
+// Icons for marshals and recovery vehicles, drawn in a 24×24 box.
+const INCIDENT_ICONS = {
+    // A marshal holding a flag.
+    marshals: '<circle cx="9" cy="5" r="2.4"></circle><path d="M6 21l1.4-9h3.2l1.4 9M7.4 12l-2.4 4M10.6 12l3.4-3"></path><path d="M14 9V2l6 2.2-6 2.2"></path>',
+    // A tow truck.
+    recovery: '<path d="M2 16V10h10v6M12 12h4l3 3v1h-7"></path><circle cx="6" cy="17.5" r="1.8"></circle><circle cx="16" cy="17.5" r="1.8"></circle><path d="M4 10l5-6h2"></path>',
+};
+
+// Marshals / recovery vehicle on their turn: a badge on the track, pulsing.
+function incidentHTML(incident, upx) {
+    const corner = trackMap.corners.find((c) => Number(c.number) === incident.turn);
+    if (!corner) return '';
+    const label = incident.kind === 'marshals' ? 'Marshals' : 'Recovery vehicle';
+    return `
+        <g class="track-incident track-incident--${incident.kind}" transform="translate(${corner.at.x.toFixed(1)} ${corner.at.y.toFixed(1)}) scale(${labelUnit(upx).toFixed(3)})">
+            <title>${label} · Turn ${incident.turn}</title>
+            <circle class="track-incident-pulse" r="13"></circle>
+            <circle class="track-incident-badge" r="13"></circle>
+            <g class="track-incident-icon" transform="translate(-9 -9) scale(0.75)">${INCIDENT_ICONS[incident.kind]}</g>
+        </g>`;
 }
 
 let trackFlagsSignature = null;
 
+// Yellow / double yellow and slippery stretches (grouped), their sector tags,
+// and the marshals / recovery vehicle icons.
 function updateTrackFlags() {
-    const layer = document.querySelector('#circuit-position-overlay .track-flags');
-    if (!layer || !trackMap) return;
-    const flags = activeSectorFlags();
-    const signature = JSON.stringify(flags);
+    const svg = document.querySelector('#circuit-position-overlay .track-svg');
+    if (!svg || !trackMap) return;
+    const cond = trackConditions();
+    const signature = JSON.stringify([cond.flags, Object.keys(cond.slippery), cond.incidents.map((i) => [i.kind, i.turn])]);
     if (signature === trackFlagsSignature) return;
     trackFlagsSignature = signature;
-    layer.innerHTML = Object.entries(flags)
-        .filter(([sector]) => trackMap.marshalSegments[sector])
-        .map(([sector, kind]) => `<path class="track-flag-sector track-flag-sector--${kind}" d="${trackPathD(trackMap.marshalSegments[sector], false)}"></path>`)
+
+    const upx = trackMap.unitsPerPx || trackMap.span / 500;
+    const stretches = [];
+    for (const kind of ['yellow', 'double']) {
+        const sectors = Object.keys(cond.flags).filter((s) => cond.flags[s] === kind);
+        for (const group of groupSectors(sectors)) {
+            const points = sectorGroupPoints(group);
+            if (points) stretches.push({ kind, group, points });
+        }
+    }
+    const slippery = groupSectors(Object.keys(cond.slippery))
+        .map((group) => ({ group, points: sectorGroupPoints(group) }))
+        .filter((s) => s.points);
+
+    svg.querySelector('.track-flags').innerHTML = stretches
+        .map((s) => `<path class="track-flag-sector track-flag-sector--${s.kind}" d="${trackPathD(s.points, false)}"></path>`)
         .join('');
+    svg.querySelector('.track-slippery').innerHTML = slippery
+        .map((s) => `<path class="track-slippery-sector" d="${trackPathD(s.points, false)}"></path>`)
+        .join('');
+    svg.querySelector('.track-sector-tags').innerHTML = [
+        ...stretches.map((s) => sectorTagHTML(s.points, sectorGroupTag(s.group), s.kind, upx)),
+        ...slippery.map((s) => sectorTagHTML(s.points, sectorGroupTag(s.group), 'slippery', upx)),
+    ].join('');
+    svg.querySelector('.track-incidents').innerHTML = cond.incidents.map((i) => incidentHTML(i, upx)).join('');
+}
+
+// SAFETY CAR IN THIS LAP after the last SAFETY CAR DEPLOYED: the safety car
+// comes in at the end of this lap (TrackStatus still says SC).
+function safetyCarInThisLap() {
+    let inThisLap = false;
+    for (const m of raceControlMessages()) {
+        const text = rcStripTime(String(m.Message || '')).trim().toUpperCase();
+        if (/^SAFETY CAR DEPLOYED/.test(text)) inThisLap = false;
+        else if (/^SAFETY CAR IN THIS LAP/.test(text)) inThisLap = true;
+    }
+    return inThisLap;
 }
 
 // Track status, in the top bar right above the map (under the session and
 // the clock): the most important thing happening, in this order: red flag,
 // SC, VSC, double yellow, yellow and, once the session has ended, chequered
 // flag. With the track clear it says so in green.
-// With SC / VSC / red, the whole track is also tinted (yellow or red,
-// with a soft pulse). TrackStatus: 2 = yellow, 4 = SC, 5 = red,
-// 6 = VSC, 7 = VSC ending.
+// With SC / VSC / red, the whole track is also tinted (orange or red).
+// TrackStatus: 2 = yellow, 4 = SC, 5 = red, 6 = VSC, 7 = VSC ending.
 const TRACK_STATUS_TINTS = {
     4: { cls: 'sc', text: 'Safety car' },
     6: { cls: 'vsc', text: 'Virtual safety car' },
@@ -3373,22 +3902,28 @@ const TRACK_STATUS_TINTS = {
     5: { cls: 'red', text: 'Red flag' },
 };
 
+function trackStatusTint() {
+    const status = String((state.TrackStatus && state.TrackStatus.Status) || '');
+    const tint = TRACK_STATUS_TINTS[status];
+    if (!tint) return null;
+    return status === '4' && safetyCarInThisLap() ? { ...tint, text: 'Safety car in this lap' } : tint;
+}
+
 function sessionEnded() {
     const status = state.SessionStatus && state.SessionStatus.Status;
     if (status === 'Finished' || status === 'Finalised' || status === 'Ends') return true;
     return raceControlMessages().some((m) => String(m.Flag || '').toUpperCase() === 'CHEQUERED');
 }
 
-// "SECTOR 11" / "SECTORS 10, 11" with the stretches for that flag type.
+// "Sector 11" / "Sectors 10, 11 & 12" with the stretches for that flag type.
 function sectorsLabel(flags, kind) {
     const sectors = Object.keys(flags).filter((s) => flags[s] === kind).map(Number).sort((a, b) => a - b);
-    if (sectors.length === 0) return '';
-    return `${sectors.length === 1 ? 'Sector' : 'Sectors'} ${sectors.join(', ')}`;
+    return sectors.length ? sectorGroupLabel(sectors) : '';
 }
 
 function currentTrackBadge() {
     const status = String((state.TrackStatus && state.TrackStatus.Status) || '');
-    const tint = TRACK_STATUS_TINTS[status];
+    const tint = trackStatusTint();
     if (tint) return { cls: tint.cls, text: tint.text, detail: '' };
 
     const flags = activeSectorFlags();
@@ -3401,12 +3936,56 @@ function currentTrackBadge() {
     return { cls: 'green', text: 'Track clear', detail: '' };
 }
 
+// The list in the map's top-left corner: everything active right now, the
+// most serious first, with the sectors grouped ("Sectors 12, 13 & 14").
+function trackConditionItems() {
+    const cond = trackConditions();
+    const items = [];
+    const tint = trackStatusTint();
+    if (tint) items.push({ cls: tint.cls, label: tint.text });
+    for (const [kind, label] of [['double', 'Double yellow'], ['yellow', 'Yellow']]) {
+        const sectors = Object.keys(cond.flags).filter((s) => cond.flags[s] === kind);
+        for (const group of groupSectors(sectors)) items.push({ cls: kind, label, detail: sectorGroupLabel(group) });
+    }
+    [...cond.incidents].sort((a, b) => a.turn - b.turn).forEach((i) => items.push({
+        cls: 'incident',
+        icon: i.kind,
+        label: i.kind === 'marshals' ? 'Marshals' : 'Recovery vehicle',
+        detail: `Turn ${i.turn}${i.sector != null ? ` · Sector ${i.sector}` : ''}`,
+    }));
+    for (const group of groupSectors(Object.keys(cond.slippery))) {
+        items.push({ cls: 'slippery', label: 'Slippery', detail: sectorGroupLabel(group) });
+    }
+    if (cond.lowGrip) items.push({ cls: 'grip', label: 'Low grip' });
+    if (cond.pitClosed) items.push({ cls: 'pit', label: `${cond.pitClosed} closed` });
+    return items;
+}
+
+let trackConditionsSignature = null;
+
+function updateTrackConditionsList() {
+    const list = document.getElementById('track-conditions');
+    if (!list) return;
+    const items = deriveSessionMeta(state.SessionInfo) ? trackConditionItems() : [];
+    const signature = JSON.stringify(items);
+    if (signature === trackConditionsSignature) return;
+    trackConditionsSignature = signature;
+    list.hidden = items.length === 0;
+    list.innerHTML = items.map((item) => `
+        <li class="track-condition track-condition--${item.cls}">
+            ${item.icon
+                ? `<svg class="track-condition-icon" viewBox="0 0 24 24" aria-hidden="true">${INCIDENT_ICONS[item.icon]}</svg>`
+                : '<span class="track-condition-dot" aria-hidden="true"></span>'}
+            <span class="track-condition-label">${escapeHTML(item.label)}</span>
+            ${item.detail ? `<span class="track-condition-detail">${escapeHTML(item.detail)}</span>` : ''}
+        </li>`).join('');
+}
+
 function updateTrackStatus() {
     const wrap = document.getElementById('circuit-map-wrap');
     const badge = document.getElementById('track-status-banner');
     if (!wrap) return;
-    const status = String((state.TrackStatus && state.TrackStatus.Status) || '');
-    const tint = trackMap ? TRACK_STATUS_TINTS[status] : null;
+    const tint = trackMap ? trackStatusTint() : null;
     ['sc', 'vsc', 'red'].forEach((cls) => wrap.classList.toggle(`track-status--${cls}`, !!tint && tint.cls === cls));
     if (!badge) return;
 
@@ -3423,6 +4002,7 @@ function updateTrackStatus() {
 function updateTrackAnnotations() {
     updateTrackFlags();
     updateTrackStatus();
+    updateTrackConditionsList();
 }
 
 // Follow a driver: click their row in the table or their car on the map. Their
@@ -3923,7 +4503,7 @@ const VIEW_PANEL_GROUPS = [
     { title: 'Timing', keys: ['gap', 'interval', 'bestLap', 'lastLap', 'sectors', 'microsectors'] },
     { title: 'Race', keys: ['delta', 'tyres', 'laps'] },
 ];
-const VIEW_OPTION_AFTER = { driver: 'driverName', team: 'team', tyres: 'tyres' };
+const VIEW_OPTION_AFTER = { driver: ['driverName', 'driverColor'], team: ['team'], status: ['statusPlacement'], interval: ['intervalHeader', 'gapDecimals', 'lappedStyle', 'leaderLabel'], tyres: ['tyres'] };
 
 // One row: name on the left, toggle on the right. The fixed ones
 // (Position, Driver) get a lock instead of the toggle; the ones that don't
@@ -3951,10 +4531,15 @@ function viewToggleRowHTML(col, view, kind) {
 // Segmented buttons for a format option. The ones that depend on a
 // switched-off toggle don't even show up (syncDependentOptions() shows them when
 // it's switched on).
+// Whether an option's checkbox (any of them, if there are several) is on.
+function dependencyOn(dependsOn, view) {
+    return [].concat(dependsOn).some((key) => view.cols[key]);
+}
+
 function viewOptionHTML(name, view) {
     const opt = VIEW_OPTIONS[name];
     return `
-        <div class="lvp-option"${opt.dependsOn ? ` data-depends="${opt.dependsOn}"` : ''}${opt.dependsOn && !view.cols[opt.dependsOn] ? ' hidden' : ''}>
+        <div class="lvp-option"${opt.dependsOn ? ` data-depends="${[].concat(opt.dependsOn).join(' ')}"` : ''}${opt.dependsOn && !dependencyOn(opt.dependsOn, view) ? ' hidden' : ''}>
             <span class="lvp-option-label" id="lvp-label-${name}">${opt.label}</span>
             <div class="lvp-segmented" role="radiogroup" aria-labelledby="lvp-label-${name}">
                 ${opt.choices.map(([value, text]) => `
@@ -3964,6 +4549,36 @@ function viewOptionHTML(name, view) {
                     </label>`).join('')}
             </div>
         </div>`;
+}
+
+// Profile picker, at the top of the panel.
+function viewProfileHTML(view) {
+    const choices = [...Object.entries(VIEW_PROFILES).map(([key, profile]) => [key, profile.label]), ['custom', 'Custom']];
+    return viewCardHTML('Profile', `
+        <div class="lvp-option lvp-option--profile">
+            <div class="lvp-segmented" role="radiogroup" aria-label="Profile">
+                ${choices.map(([value, text]) => `
+                    <label class="lvp-seg">
+                        <input type="radio" name="lvp-profile" data-profile value="${value}"${view.profile === value ? ' checked' : ''}>
+                        <span>${text}</span>
+                    </label>`).join('')}
+            </div>
+            <p class="lvp-profile-note">${viewProfileNote()}</p>
+        </div>`);
+}
+
+function viewProfileNote() {
+    const device = VIEW_PROFILES[deviceDefaultProfile()].label;
+    return `Default on this device: ${device}. Custom starts from it and keeps your changes.`;
+}
+
+// After a change by hand the profile turns into Custom: the picker is
+// updated without redrawing the panel (the switch just clicked keeps focus).
+function syncProfilePicker() {
+    const profile = activeProfile();
+    document.querySelectorAll('#live-view-panel input[data-profile]').forEach((input) => {
+        input.checked = input.value === profile;
+    });
 }
 
 function viewCardHTML(title, inner) {
@@ -3979,11 +4594,11 @@ function viewPanelBodyHTML(kind) {
     const byKey = Object.fromEntries(VIEW_COLUMNS.map((col) => [col.key, col]));
 
     const groups = VIEW_PANEL_GROUPS.map((group) => viewCardHTML(group.title, group.keys.map((key) => {
-        const option = VIEW_OPTION_AFTER[key];
-        return viewToggleRowHTML(byKey[key], view, kind) + (option ? viewOptionHTML(option, view) : '');
+        const options = VIEW_OPTION_AFTER[key] || [];
+        return viewToggleRowHTML(byKey[key], view, kind) + options.map((name) => viewOptionHTML(name, view)).join('');
     }).join('')));
 
-    const panels = viewCardHTML('Panels', VIEW_PANELS.map((col) => viewToggleRowHTML(col, view, kind)).join(''));
+    const panels = viewCardHTML('Panels', VIEW_PANELS.map((col) => viewToggleRowHTML(col, view, kind)).join('') + viewOptionHTML('edges', view));
 
     const tvSync = viewCardHTML('TV sync', `
         <div class="lvp-row lvp-row--stacked">
@@ -4001,7 +4616,7 @@ function viewPanelBodyHTML(kind) {
             </div>
         </div>`);
 
-    return groups.join('') + panels + tvSync;
+    return viewProfileHTML(view) + groups.join('') + panels + tvSync;
 }
 
 // Shows or hides the buttons that depend on a checkbox, without redrawing
@@ -4009,7 +4624,7 @@ function viewPanelBodyHTML(kind) {
 function syncDependentOptions() {
     const view = effectiveView(currentSessionKind());
     document.querySelectorAll('#live-view-panel [data-depends]').forEach((field) => {
-        field.hidden = !view.cols[field.dataset.depends];
+        field.hidden = !dependencyOn(field.dataset.depends.split(' '), view);
     });
 }
 
@@ -4077,7 +4692,8 @@ function initViewPanel() {
         if (!action) return;
         if (action.dataset.action === 'close') close();
         if (action.dataset.action === 'reset') {
-            viewPrefs = { columns: {} };
+            // Back to this device's profile, no Custom, every panel on.
+            viewPrefs = { panels: {} };
             saveViewPrefs();
             renderViewPanel(currentSessionKind());
             applyTableView();
@@ -4098,11 +4714,25 @@ function initViewPanel() {
             input.value = delaySeconds(); // in case they typed something out of range
             return;
         }
-        if (input.dataset.col) viewPrefs.columns[input.dataset.col] = input.checked;
-        else if (input.dataset.option) viewPrefs[input.dataset.option] = input.value;
+        if (input.hasAttribute('data-profile')) {
+            viewPrefs.profile = input.value;
+            saveViewPrefs();
+            // Every switch can change: the panel is redrawn, and the focus
+            // goes back to the profile just chosen.
+            renderViewPanel(currentSessionKind());
+            const picked = panel.querySelector(`input[data-profile][value="${input.value}"]`);
+            if (picked) picked.focus();
+            applyTableView();
+            return;
+        }
+        const col = input.dataset.col;
+        if (col && VIEW_PANELS.some((p) => p.key === col)) viewPrefs.panels[col] = input.checked;
+        else if (col) customViewPrefs().columns[col] = input.checked;
+        else if (input.dataset.option) customViewPrefs().options[input.dataset.option] = input.value;
         else return;
         saveViewPrefs();
-        if (input.dataset.col) syncDependentOptions();
+        if (col) syncDependentOptions();
+        syncProfilePicker();
         applyTableView();
     });
 
