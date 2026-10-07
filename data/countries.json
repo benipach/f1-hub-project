@@ -104,6 +104,11 @@
     "code": "JPN",
     "isoCode": "JP"
   },
+  "luxembourg": {
+    "name": "Luxembourg",
+    "code": "LUX",
+    "isoCode": "LU"
+  },
   "malaysia": {
     "name": "Malaysia",
     "code": "MYS",
@@ -149,6 +154,11 @@
     "code": "RUS",
     "isoCode": "RU"
   },
+  "san-marino": {
+    "name": "San Marino",
+    "code": "SMR",
+    "isoCode": "SM"
+  },
   "saudi-arabia": {
     "name": "Saudi Arabia",
     "code": "KSA",
@@ -163,6 +173,11 @@
     "name": "South Africa",
     "code": "RSA",
     "isoCode": "ZA"
+  },
+  "south-korea": {
+    "name": "South Korea",
+    "code": "KOR",
+    "isoCode": "KR"
   },
   "spain": {
     "name": "Spain",
@@ -183,6 +198,11 @@
     "name": "Thailand",
     "code": "THA",
     "isoCode": "TH"
+  },
+  "turkey": {
+    "name": "Turkey",
+    "code": "TUR",
+    "isoCode": "TR"
   },
   "uae": {
     "name": "United Arab Emirates",

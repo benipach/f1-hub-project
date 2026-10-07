@@ -114,8 +114,41 @@ function setUrlYear(year) {
     history.replaceState(null, '', url);
 }
 
+// ── TABLES THAT FIT ON PHONES ─────────────────────────────────────
+// Two tables give something up when a phone is too narrow for them, with
+// the same rule: if the table is wider than the screen, a class trims it
+// (results.css, RACE RESULTS ON PHONES). Measured again when its width
+// changes (turning the phone, a hidden tab being shown) and once the fonts
+// load. On desktop the classes have no effect.
+//   - The GP list: every GP by its code instead of the place ("UAE",
+//     "LVG"), all at once so the column stays even (.use-codes).
+//   - The classification that opens under a race or sprint: without the
+//     Pts column (.no-pts).
+function fitTable(wrap) {
+    const cls = wrap.classList.contains('race-table-wrap') ? 'no-pts' : 'use-codes';
+    wrap.classList.remove(cls);
+    if (wrap.scrollWidth > wrap.clientWidth + 1) wrap.classList.add(cls);
+}
+
+const fitObserver = window.ResizeObserver
+    ? new ResizeObserver(entries => entries.forEach(entry => fitTable(entry.target)))
+    : null;
+
+function watchFit(wrap) {
+    if (!wrap) return;
+    fitObserver?.observe(wrap);
+    fitTable(wrap);
+}
+
+document.fonts?.ready.then(() => document
+    .querySelectorAll('#results-panels .results-table-wrap, #results-panels .race-table-wrap')
+    .forEach(fitTable));
+
 // ── RENDER: one table per session ─────────────────────────────────
 function renderSessionTable(container, season, def) {
+    // The tables are about to be replaced (another year): stop watching them.
+    container.querySelectorAll('.results-table-wrap, .race-table-wrap').forEach(w => fitObserver?.unobserve(w));
+
     const rows = getSeasonEntries(season)
         .map(([gpId, gp]) => ({ gpId, gp, results: getSessionResults(gp, def.key) }))
         .filter(({ results }) => results.length > 0);
@@ -138,6 +171,17 @@ function renderSessionTable(container, season, def) {
     };
 
     const colCount = 5 + (def.hasLaps ? 1 : 0) + (conditionCol ? 1 : 0);
+
+    // On phones the GP goes by where it's run (results.css shows one name or
+    // the other): "Australia", "Miami", "Imola"… from data/grandsPrix.json
+    // (gpPlace() in shared/gp.js). On a phone too narrow even for that, by its
+    // code ("AUS", "MIA"; fitTable()).
+
+    // And the driver by the surname alone ("Russell").
+    const surname = driverId => {
+        const d = state.ctx.drivers?.[driverId];
+        return d?.lastName ?? String(driverId).split('-').pop().replace(/^./, c => c.toUpperCase());
+    };
 
     container.innerHTML = `
         <div class="results-table-wrap">
@@ -168,9 +212,9 @@ function renderSessionTable(container, season, def) {
                         return `
                             <tr class="results-row" data-gp="${gpId}" tabindex="0" role="button" aria-expanded="false">
                                 <td class="results-round">${gp.round}</td>
-                                <td class="results-gp"><span class="results-flag">${flagFor(gpId, gp)}</span><span class="results-gp-full">${gp.name}</span><span class="results-gp-short">${gpShortLabel(gp.name)}</span></td>
+                                <td class="results-gp"><span class="results-flag">${flagFor(gpId, gp)}</span><span class="results-gp-full">${gp.name}</span><span class="results-gp-short">${gpPlace(gpId, gp, state.ctx)}</span><span class="results-gp-code">${gpCode(gpId, gp, state.ctx)}</span></td>
                                 <td class="results-date">${formatDate(sessionDate(gp, def.key))}</td>
-                                <td class="results-winner"><div class="results-winner-inner">${logoHtml}<span class="results-winner-name">${name}</span></div></td>
+                                <td class="results-winner"><div class="results-winner-inner">${logoHtml}<span class="results-winner-name"><span class="results-name-full">${name}</span><span class="results-name-short">${p1?.driver ? surname(p1.driver) : '—'}</span></span></div></td>
                                 <td class="res-duration-col">${timeVal}</td>
                                 ${def.hasLaps ? `<td class="res-laps-col" style="text-align:center">${laps}</td>` : ''}
                                 ${conditionCol ? `<td class="results-condition-col">${conditionHtml(gp)}</td>` : ''}
@@ -185,6 +229,8 @@ function renderSessionTable(container, season, def) {
                 </tbody>
             </table>
         </div>`;
+
+    watchFit(container.querySelector('.results-table-wrap'));
 
     // Expand/collapse the full classification. The detail row is always
     // in the DOM, collapsed to height 0; opening it is a height transition
@@ -201,6 +247,7 @@ function renderSessionTable(container, season, def) {
                     buildDetail(row.dataset.gp, gp, def);
                 detail.dataset.ready = '1';
                 if (typeof twemoji !== 'undefined') twemoji.parse(detail, { folder: 'svg', ext: '.svg' });
+                watchFit(detail.querySelector('.race-table-wrap'));
             }
             detail.classList.toggle('is-open', open);
             row.classList.toggle('is-open', open);
@@ -374,6 +421,15 @@ function watchSections() {
     const sections = links.map(link => document.getElementById(link.hash.slice(1)));
     if (!sections.every(Boolean)) return () => {};
 
+    // A phone too narrow for both links: "Champ" instead of "Championship"
+    // (.short-labels in results.css), the same rule as the tables (fitTable()).
+    const linksBox = document.querySelector('.results-bar-links');
+    const fitBarLabels = () => {
+        if (!linksBox) return;
+        linksBox.classList.remove('short-labels');
+        if (linksBox.scrollWidth > linksBox.clientWidth + 1) linksBox.classList.add('short-labels');
+    };
+
     const update = () => {
         let current = -1;
         sections.forEach((sec, i) => { if (sec.getBoundingClientRect().top <= SECTION_LINE) current = i; });
@@ -385,10 +441,12 @@ function watchSections() {
     // Two measurements per scroll event, which the browser already fires
     // once per frame: no need to throttle.
     window.addEventListener('scroll', update, { passive: true });
-    // The links change width when the F1 font arrives, and on resize.
-    window.addEventListener('resize', update);
-    document.fonts?.ready.then(update);
-    update();
+    // The links change width when the F1 font arrives, and on resize (and
+    // the labels may switch first, so the indicator is placed after).
+    const refit = () => { fitBarLabels(); update(); };
+    window.addEventListener('resize', refit);
+    document.fonts?.ready.then(refit);
+    refit();
     return update;
 }
 
@@ -396,11 +454,11 @@ function watchSections() {
 document.addEventListener('DOMContentLoaded', async () => {
     const updateSections = watchSections();
     try {
-        const [seasons, latest, circuits, cities, countries, teams, drivers] = await Promise.all([
+        const [seasons, latest, circuits, cities, countries, teams, drivers, grandsPrix] = await Promise.all([
             loadSeasonsSummary('.'), loadLatest('.'),
-            loadCircuits('.'), loadCities('.'), loadCountries('.'), loadTeams('.'), loadDrivers('.'),
+            loadCircuits('.'), loadCities('.'), loadCountries('.'), loadTeams('.'), loadDrivers('.'), loadGrandsPrix('.'),
         ]);
-        state.ctx = { circuits, cities, countries, teams, drivers, basePath: '.' };
+        state.ctx = { circuits, cities, countries, teams, drivers, grandsPrix, basePath: '.' };
         state.latestYear = Number(latest?.latestSeason) || null;
 
         const years = seasons.map(s => s.year).sort((a, b) => b - a);

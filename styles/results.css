@@ -529,6 +529,11 @@
     height: 100%;
 }
 
+/* "Champ" only when the links don't fit (fitBarLabels() in results.js). */
+.bar-label-short { display: none; }
+.short-labels .bar-label-full { display: none; }
+.short-labels .bar-label-short { display: inline; }
+
 .results-bar-links a {
     display: flex;
     align-items: center;
@@ -537,7 +542,6 @@
     font-family: 'F1-Regular';
     font-weight: 600;
     font-size: 14px;
-    letter-spacing: 1px;
     text-transform: uppercase;
     white-space: nowrap;
     text-decoration: none;
@@ -637,6 +641,13 @@
     .section-title { font-size: clamp(22px, 7vw, 32px); margin-bottom: 1.5rem; }
     .results-page-sub { margin: -0.75rem 0 1.5rem; font-size: 11px; }
     .champ-form + .standings-table-wrap { margin-top: 28px; }
+}
+
+/* The navbar is 50px tall here (style.css), not 60: the bar sticks right
+   under it, with no gap. */
+@media (max-width: 500px) {
+    .results-bar { top: 50px; }
+    .results-page-section { scroll-margin-top: 118px; }
 }
 
 .results-empty {
@@ -901,7 +912,12 @@
     margin-bottom: 2px;
 }
 
-.results-gp-short {
+/* The short names are for phones (see RACE RESULTS ON PHONES): the place
+   ("Australia", "Miami"), its code when even that doesn't fit ("AUS", "MIA")
+   and the driver's surname ("Russell"). */
+.results-gp-short,
+.results-gp-code,
+.results-name-short {
     display: none;
 }
 
@@ -953,18 +969,48 @@
 .results-condition-none { color: rgba(255,255,255,0.2); }
 
 /* ---- RESPONSIVE ---- */
-@media (max-width: 500px) {
-    .results-table th,
-    .results-table td { padding: 0 12px; }
+/* ---- RACE RESULTS ON PHONES ----
+   Only the Grand Prix and who won it (or took pole, or was P1): the GP by
+   where it's run and the driver by the surname (results.js). The row still
+   opens its classification when tapped. */
+@media (max-width: 700px) {
     .results-round,
     .results-round-col,
     .results-date,
     .results-date-col,
     .res-duration-col,
-    .res-laps-col { display: none; }
+    .res-laps-col,
+    .results-table .results-condition-col,
+    .results-expand,
+    .results-expand-col { display: none; }
 
-    .results-gp-full { display: none; }
-    .results-gp-short { display: inline; }
+    .results-gp-full,
+    .results-name-full { display: none; }
+    .results-gp-short,
+    .results-name-short { display: inline; }
+
+    /* Too narrow for the places (fitGpNames() in results.js): every GP by
+       its code. */
+    .use-codes .results-gp-short { display: none; }
+    .use-codes .results-gp-code { display: inline; }
+
+    /* The race / sprint classification too narrow for the phone
+       (fitTable()): the Pts column goes. */
+    .no-pts .res-pts-col,
+    .no-pts .res-pts { display: none; }
+
+    /* The classification that opens under a race is wider than a phone: it
+       scrolls sideways inside its own box instead of widening the whole
+       table (which would also make it look like the GP names don't fit). */
+    .results-detail-body {
+        width: 0;
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 500px) {
+    .results-table th,
+    .results-table td { padding: 0 12px; }
 
     .results-detail-body { padding: 12px 8px 14px; }
     .results-detail-head { padding: 0 4px 10px; }
@@ -1049,4 +1095,35 @@
     .session-tab-btn { padding: 0.6rem 12px; font-size: 0.65rem; flex: 1; text-align: center; white-space: normal; }
     .tab-label-short { display: inline; }
     .tab-label-full  { display: none; }
+}
+
+/* ---- PHONES: EDGE TO EDGE ----
+   On a phone the page uses the screen's width: 10px margins instead of 16,
+   and the chart and the tables (standings, race results and the
+   classification that opens under a race) go from edge to edge, with no
+   rounded corners or side borders. Scoped to the Results page: live.html
+   also loads this file. */
+@media (max-width: 700px) {
+    .sp-hero { padding-left: 10px; padding-right: 10px; }
+    .results-bar-inner { padding-inline: 10px; }
+    .results-page { padding-inline: 10px; }
+
+    .results-page .champ-form,
+    .results-page .standings-table-wrap,
+    #results-panels .results-table-wrap {
+        margin-inline: -10px;
+        border-left: none;
+        border-right: none;
+        border-radius: 0;
+    }
+
+    .results-page .champ-form { padding-inline: 10px; }
+
+    .results-page .results-detail-body { padding-inline: 0; }
+
+    .results-page .race-table-wrap {
+        border-left: none;
+        border-right: none;
+        border-radius: 0;
+    }
 }
