@@ -88,10 +88,14 @@
 /*               RESET / BASE              */
 /* ======================================= */
 
+/* -webkit-tap-highlight-color: Chrome on Android (and Safari on iOS) paints a
+   translucent blue box over whatever is tapped. Off: the site already shows
+   its own pressed / active states. */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html {
