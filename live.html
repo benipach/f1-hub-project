@@ -90,7 +90,13 @@
                 </div>
                 <!-- Each car's tooltip (see MAP ANNOTATIONS in live.js). -->
                 <div class="track-tooltip" id="track-tooltip" hidden></div>
-                <p class="track-note" id="track-note" hidden>Positions estimated from timing data</p>
+                <!-- Top left: what's going on on the track right now (yellows,
+                     SC, marshals, low grip…; see TRACK CONDITIONS in live.js),
+                     and under it the estimated positions notice. -->
+                <div class="track-corner-info">
+                    <ul class="track-conditions" id="track-conditions" aria-label="Track conditions" hidden></ul>
+                    <p class="track-note" id="track-note" hidden>Positions estimated from timing data</p>
+                </div>
                 <div class="live-map-controls">
                     <a class="live-ctrl-btn live-home-btn" href="./index.html" aria-label="Home" title="Home">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

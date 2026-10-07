@@ -19,7 +19,7 @@
     border: 1px solid rgba(255,255,255,0.05);
     border-radius: 16px;
     padding: 24px;
-    transition: border-color 0.25s ease;
+    transition: all 0.3s ease;
 }
 
 .circuit-map-wrap:hover {
@@ -31,10 +31,15 @@
    and cars in the same SVG and the same coordinate system, so the
    cars land exactly on the line. The inset matches the wrap's
    padding. */
+/* --conditions-h: the height of the conditions strip at the top (0 with
+   nothing on it, see MAP: TOP STRIP), so the track is drawn below it and
+   never under it. */
 .circuit-position-overlay {
     position: absolute;
     inset: 24px;
+    top: calc(24px + var(--conditions-h, 0px));
     pointer-events: none;
+    transition: all 0.3s ease;
 }
 
 .track-svg {
@@ -104,13 +109,106 @@
     transition: transform 0.5s linear;
 }
 
-/* Notice that positions are estimated (no Position.z, see
-   ESTIMATED CAR POSITIONS in live.js). Top left of the map (the bottom
-   left holds the track status). */
-.track-note {
+/* ---- MAP: TOP STRIP ----
+   What's going on on the track right now (TRACK CONDITIONS in live.js), the
+   most serious first, as chips in a row that wraps, and after them the
+   estimated positions notice. It doesn't float over the track: live.js
+   measures it and the map leaves that much room at the top (--conditions-h),
+   so the circuit is drawn below. With nothing on it, it takes no room. */
+.track-corner-info {
     position: absolute;
-    left: 16px;
-    top: 16px;
+    left: 12px;
+    right: 12px;
+    top: 10px;
+    z-index: 7;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    pointer-events: none;
+}
+
+.track-corner-info:not(:has(> :not([hidden]))) {
+    display: none;
+}
+
+.track-conditions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.track-conditions[hidden] {
+    display: none;
+}
+
+.track-condition {
+    --c: rgb(255,190,0);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    padding: 2px 7px 2px 6px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-left: 3px solid var(--c);
+    border-radius: 5px;
+    background: rgba(16,16,22,0.82);
+    font-family: 'F1-Regular', sans-serif;
+    font-size: 10.5px;
+    line-height: 1.35;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.track-condition--yellow   { --c: rgb(255,190,0); }
+.track-condition--double   { --c: rgb(255,125,0); }
+.track-condition--vsc      { --c: rgb(255,150,0); }
+.track-condition--sc       { --c: rgb(255,85,0); }
+.track-condition--red      { --c: rgb(255,40,40); }
+.track-condition--incident { --c: rgb(255,190,0); }
+.track-condition--slippery { --c: rgb(110,190,255); }
+.track-condition--grip     { --c: rgb(110,190,255); }
+.track-condition--pit      { --c: rgb(255,40,40); }
+
+.track-condition-dot {
+    width: 7px;
+    height: 7px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--c);
+}
+
+.track-condition-icon {
+    width: 12px;
+    height: 12px;
+    flex: none;
+    fill: none;
+    stroke: var(--c);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.track-condition-label {
+    color: var(--c);
+}
+
+.track-condition-detail {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: rgba(255,255,255,0.75);
+}
+
+/* Notice that positions are estimated (no Position.z, see
+   ESTIMATED CAR POSITIONS in live.js), after the conditions. */
+.track-note {
     margin: 0;
     font-family: 'F1-Regular', sans-serif;
     font-size: 11px;
@@ -285,10 +383,17 @@
     gap: 4px;
 }
 
+/* The direction after the speed, in the same figure: "7.2 km/h E ↗". */
 .swc-wind-dir-value {
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    margin-left: 6px;
+}
+
+/* Full labels; the short ones are for phones (NARROW SCREENS). */
+.swc-label-short {
+    display: none;
 }
 
 .swc-wind-compass-icon {
@@ -383,6 +488,16 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
 /* "George Russell" doesn't wrap onto two lines. */
 .live-table td.live-col-driver {
     white-space: nowrap;
+}
+
+/* "DRIVER" spilling over the empty start of the next column (headerCanSpill()
+   in live.js): the column is as wide as the names, not as the header. Above
+   its neighbours so their background doesn't cover the text (on desktop the
+   header is sticky, which already positions it; on phones see NARROW
+   SCREENS). */
+.live-table th.live-col-driver.is-spilling {
+    z-index: 6;
+    overflow: visible;
 }
 
 /* ---- DELTA INDICATOR (copied from race.css) ---- */
@@ -490,6 +605,13 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
 .live-table--probe th,
 .live-table--probe td {
     white-space: nowrap;
+}
+
+/* On phones the table is stretched to the screen's width (min-width: 100%,
+   NARROW SCREENS); the copy being measured must not be, or every column
+   comes out wider than its content. */
+.mapview-panel--table .live-table.live-table--probe {
+    min-width: 0;
 }
 
 /* ---- POSITION CHANGES ----
@@ -720,22 +842,48 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
     letter-spacing: 1px;
 }
 
-/* Already took the chequered flag: white (not the team color) with just a
-   mini chequered flag, no text, so the badge is as wide as OUT / PIT and
-   the column doesn't reserve room for a longer word. 12px: the same
-   height as the text of the other badges. */
-.live-status-badge--chequered {
-    color: rgba(255, 255, 255, 0.9);
+/* Status in the driver column (Customize → Status → In driver column): the
+   name and the badge in the same spot, one on top of the other. When the
+   car goes into the pits the name slides up and fades out while the badge
+   comes up from below; the other way round when it leaves. The spot is as
+   wide as the wider of the two, so nothing moves. */
+/* overflow: hidden keeps the slide inside the name's spot: the waiting badge
+   (8px down, invisible) poked out below the last row and gave the table a
+   few pixels of scroll on phones. */
+.live-driver-swap {
+    display: inline-grid;
+    align-items: center;
+    justify-items: start;
+    overflow: hidden;
 }
 
-.live-chequered-icon {
-    width: 12px;
-    height: 12px;
-    flex: none;
-    border-radius: 1px;
-    background-color: #fff;
-    background-image: conic-gradient(#111 25%, transparent 0 50%, #111 0 75%, transparent 0);
-    background-size: 6px 6px;
+.live-driver-swap > * {
+    grid-area: 1 / 1;
+    transition: all 0.35s ease;
+}
+
+/* No minimum width here (it's for lining the badges up in their own column):
+   "PIT" is about as wide as a three-letter code, so it doesn't widen the
+   column. */
+.live-driver-status .live-status-badge {
+    min-width: 0;
+}
+
+.live-driver-status {
+    display: flex;
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+}
+
+.live-driver-swap.has-status .live-driver-name {
+    opacity: 0;
+    transform: translateY(-8px);
+}
+
+.live-driver-swap.has-status .live-driver-status {
+    opacity: 1;
+    transform: none;
 }
 
 .live-status-team {
@@ -935,24 +1083,27 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
     line-height: 1;
 }
 
-/* "LAP 23/57": the lap as big as the clock, the word and the total smaller
-   and dimmer. */
-.status-laps {
+/* "LAP 23/57": all of it the size of the session's name (not the big
+   clock), the word and the total dimmer. */
+.mapview-fs-session-status .status-clock.status-laps {
     display: inline-flex;
     align-items: baseline;
+    font-size: 18px;
 }
 
 .status-laps-label {
-    margin-right: 8px;
-    font-size: 0.55em;
-    letter-spacing: 1px;
+    margin-right: 6px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
     color: var(--text-dim);
 }
 
 .status-laps-total {
-    font-size: 0.7em;
     color: var(--text-dim);
+}
+
+@media (max-width: 600px) {
+    .mapview-fs-session-status .status-clock.status-laps { font-size: 13px; }
 }
 
 /* Track status on the left, the TV sync delay (if any) on the right. */
@@ -1450,6 +1601,33 @@ img.emoji {
     outline-offset: -2px;
 }
 
+/* Profile picker: the card holds only the buttons and a note under them.
+   Five buttons don't fit at equal widths on a phone ("Strategy" and
+   "Compact" ran into each other): each one as wide as its text, and they
+   wrap to a second row if needed. */
+.lvp-option--profile {
+    padding-top: 14px;
+}
+
+.lvp-option--profile .lvp-segmented {
+    flex-wrap: wrap;
+}
+
+.lvp-option--profile .lvp-seg {
+    flex: 1 1 auto;
+}
+
+.lvp-option--profile .lvp-seg span {
+    padding: 4px 10px;
+}
+
+.lvp-profile-note {
+    margin: 10px 0 0;
+    font-size: 11.5px;
+    line-height: 1.35;
+    color: rgba(255,255,255,0.4);
+}
+
 /* TV sync: the row has the explanation below and the − / + control on the
    right. */
 .lvp-row--stacked {
@@ -1620,6 +1798,41 @@ img.emoji {
     .mapview-fs-weather .swc-stats { column-gap: 16px; }
 }
 
+/* Phones: the weather in a single row, as small as it still reads: short
+   labels (AIR, TRK, HUM, WIND), smaller figures and units, the sky icon
+   without its divider. If even so it doesn't fit (narrow phones, normal
+   margins), a tidy 2 × 2 grid instead of three figures and one alone
+   below (the container query on .mapview-fs-weather). */
+@media (max-width: 900px) {
+    .mapview-fs-weather { container-type: inline-size; }
+    .mapview-fs-weather .swc-label-full { display: none; }
+    .mapview-fs-weather .swc-label-short { display: inline; }
+    .mapview-fs-weather .session-weather-card { gap: 8px; }
+    .mapview-fs-weather .swc-condition { gap: 0; padding-right: 0; border-right: none; }
+    .mapview-fs-weather .swc-condition-icon { font-size: 14px; }
+    .mapview-fs-weather .swc-stats { flex-wrap: nowrap; gap: 4px 10px; }
+    .mapview-fs-weather .swc-stat { gap: 4px; }
+    .mapview-fs-weather .swc-stat-value { font-size: 12px; }
+    .mapview-fs-weather .swc-stat-label { font-size: 9px; letter-spacing: 0.3px; }
+    .mapview-fs-weather .swc-unit { font-size: 0.8em; }
+    .mapview-fs-weather .swc-wind-dir-value { gap: 3px; margin-left: 4px; }
+
+    @container (max-width: 350px) {
+        .mapview-fs-weather .swc-stats {
+            display: grid;
+            grid-template-columns: repeat(2, auto);
+            justify-content: start;
+            gap: 3px 14px;
+        }
+
+        /* Each figure is a row-reverse flex (label before the value): to sit
+           on the left of its cell it aligns to its end. */
+        .mapview-fs-weather .swc-stat {
+            justify-content: flex-end;
+        }
+    }
+}
+
 /* ---- PANELS ROW ----
    The two columns of .live-app (table / map), filling the entire remaining
    height, with no gap, no max-height, no dead space at the bottom. The
@@ -1712,7 +1925,7 @@ img.emoji {
     border-radius: 0;
     background: transparent;
     margin: 0;
-    padding: 20px;
+    padding: calc(20px + var(--conditions-h, 0px)) 20px 20px;
 }
 
 .mapview-panel--map .circuit-position-overlay {
@@ -1907,11 +2120,21 @@ img.emoji {
         overflow-y: visible;
     }
 
+    /* At least as wide as the screen: if the columns need less, the
+       empty filler column takes the rest, so the row stripes reach the
+       right edge. */
     .mapview-panel--table .live-table {
         height: auto;
+        min-width: 100%;
     }
 
     /* Inside a horizontally scrolling wrap, sticky is useless. */
+    /* Not sticky here, so the spilling header needs its own position for
+       its z-index. */
+    .mapview-panel--table .live-table thead th.is-spilling {
+        position: relative;
+    }
+
     .mapview-panel--table .live-table thead th {
         position: static;
     }
@@ -1939,6 +2162,38 @@ img.emoji {
     .tyre-icon-fallback { width: 17px; height: 17px; font-size: 10px; }
 }
 
+/* ---- SIDE MARGINS: TIGHT (Customize → Panels → Side margins) ----
+   Made for phones (the Glance profile has it on): the table's first and
+   last columns and the top bar get much closer to the screen's edges. The
+   last cell of each row is the empty filler column, so the last real one is
+   the second to last. */
+body.edges-tight .live-table tr > :first-child {
+    padding-left: 6px;
+}
+
+body.edges-tight .live-table tr > :nth-last-child(2) {
+    padding-right: 6px;
+}
+
+body.edges-tight .mapview-fs-ident,
+body.edges-tight .live-app-topbar-side {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+@media (max-width: 900px) {
+    body.edges-tight .live-app-topbar {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.edges-tight .mapview-fs-ident,
+    body.edges-tight .live-app-topbar-side {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
 /* ---- MAP + RACE CONTROL: the map, just as big as needed ----
    With Race Control visible, the map box stops stretching to the whole
    available height (there were huge empty bands above and below the
@@ -1950,7 +2205,7 @@ img.emoji {
 .mapview-panel--map.has-race-control .circuit-map-wrap.has-track {
     flex: 0 0 auto;
     height: auto;
-    padding: 16px 20px;
+    padding: calc(16px + var(--conditions-h, 0px)) 20px 16px;
 }
 
 /* The wrap is a centered flex: without an explicit width, the container
@@ -1985,7 +2240,7 @@ img.emoji {
 
 .mapview-panel--map.map-off .circuit-map-img,
 .mapview-panel--map.map-off .circuit-position-overlay,
-.mapview-panel--map.map-off .track-note {
+.mapview-panel--map.map-off .track-corner-info {
     display: none;
 }
 
@@ -2117,13 +2372,16 @@ img.emoji {
    It lives in the bottom-right corner, the same as the buttons: it only
    shows when they hide by themselves (.controls-idle, set by
    initControlsAutoHide() in live.js) and fades out when they come back. */
+/* 76px with the circuit drawn 500px across; it grows and shrinks with the
+   map (--map-scale, set by drawTrackMap() in live.js), between 48 and 130px. */
 .track-compass {
+    --compass-size: clamp(48px, calc(76px * var(--map-scale, 1)), 130px);
     position: absolute;
     right: 16px;
     bottom: 16px;
     z-index: 5;
-    width: 76px;
-    height: 76px;
+    width: var(--compass-size);
+    height: var(--compass-size);
     pointer-events: none;
     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.45));
     opacity: 0;
@@ -2181,43 +2439,102 @@ img.emoji {
 
 /* ---- MAP ANNOTATIONS (MAP ANNOTATIONS en live.js) ---- */
 
-/* Yellow flag in a marshal sector: the stretch is painted over
-   the track and blinks; double yellow, faster. */
-/* Yellow blinks yellow, double yellow blinks orange (and faster). Each one
-   blinks against a dark tone, not with opacity: the S2 color under it is
-   yellow too, and a yellow fading over it didn't change anything. */
+/* How serious, by color (TRACK CONDITIONS in live.js), from the least:
+     yellow sector        amber, blinking
+     double yellow sector orange, blinking faster
+     VSC (whole track)    orange, a slow pulse
+     SC (whole track)     deep orange, blinking
+     red flag             solid red
+   The stretches blink against a dark tone, not with opacity: the S2 color
+   under them is yellow too, and a yellow fading over it didn't change
+   anything. */
 .track-flag-sector {
     fill: none;
-    stroke: rgb(255,211,1);
+    stroke: rgb(255,190,0);
     stroke-linecap: round;
     stroke-linejoin: round;
     animation: track-flag-blink-yellow 1.2s ease-in-out infinite;
 }
 
 .track-flag-sector--double {
-    stroke: rgb(255,120,0);
+    stroke: rgb(255,125,0);
     animation: track-flag-blink-double 0.6s ease-in-out infinite;
 }
 
 @keyframes track-flag-blink-yellow {
-    0%, 100% { stroke: rgb(255,211,1); }
-    50%      { stroke: rgb(40,34,4); }
+    0%, 100% { stroke: rgb(255,190,0); }
+    50%      { stroke: rgb(40,30,4); }
 }
 
 @keyframes track-flag-blink-double {
-    0%, 100% { stroke: rgb(255,120,0); }
+    0%, 100% { stroke: rgb(255,125,0); }
     50%      { stroke: rgb(44,20,4); }
 }
 
-/* Safety car: yellow / orange, the blink the yellow flags used to have. */
-@keyframes track-flag-blink {
-    0%, 100% { stroke: rgb(255,211,1); }
-    50%      { stroke: rgb(255,120,0); }
+@keyframes track-sc-blink {
+    0%, 100% { stroke: rgb(255,85,0); }
+    50%      { stroke: rgb(48,16,4); }
 }
 
-/* Safety car: the whole track blinks yellow / orange, like a yellow flag
-   sector. VSC: tinted yellow with a soft pulse. Red flag: solid red, no
-   pulse. */
+/* Slippery surface: blue stripes (the dashes come from live.js, in track
+   units), so it can't be mistaken for a flag. */
+.track-slippery-sector {
+    fill: none;
+    stroke: rgb(110,190,255);
+    stroke-linecap: butt;
+    stroke-linejoin: round;
+}
+
+/* "S12–14" next to a flagged or slippery stretch, in its color. */
+.track-sector-tag rect {
+    stroke: rgba(0,0,0,0.6);
+    stroke-width: 0.5;
+}
+
+.track-sector-tag text {
+    fill: #111;
+    font-family: 'F1-Regular', sans-serif;
+    font-weight: 600;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+.track-sector-tag--yellow rect   { fill: rgb(255,190,0); }
+.track-sector-tag--double rect   { fill: rgb(255,125,0); }
+.track-sector-tag--slippery rect { fill: rgb(110,190,255); }
+
+/* Marshals / recovery vehicle on their turn: a dark badge with the icon and
+   an amber ring that pulses outwards. */
+.track-incident circle.track-incident-badge {
+    fill: rgb(16,16,22);
+    stroke: rgb(255,190,0);
+    stroke-width: 2;
+}
+
+.track-incident-pulse {
+    fill: none;
+    stroke: rgb(255,190,0);
+    stroke-width: 2;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: track-incident-pulse 1.6s ease-out infinite;
+}
+
+.track-incident-icon {
+    fill: none;
+    stroke: rgb(255,190,0);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@keyframes track-incident-pulse {
+    0%   { opacity: 0.9; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.9); }
+}
+
+/* Whole track: SC blinks deep orange, VSC pulses orange, red flag is solid
+   red. */
 .track-status-line {
     fill: none;
     stroke-linejoin: round;
@@ -2227,13 +2544,13 @@ img.emoji {
 }
 
 .track-status--sc .track-status-line {
-    stroke: rgb(255,211,1);
+    stroke: rgb(255,85,0);
     opacity: 1;
-    animation: track-flag-blink 1.2s ease-in-out infinite;
+    animation: track-sc-blink 1s ease-in-out infinite;
 }
 
 .track-status--vsc .track-status-line {
-    stroke: rgb(255,211,1);
+    stroke: rgb(255,150,0);
     animation: track-status-pulse 2s ease-in-out infinite;
 }
 
@@ -2416,10 +2733,11 @@ img.emoji {
 
 @media (prefers-reduced-motion: reduce) {
     .track-flag-sector,
-    .track-status-line { animation: none; }
+    .track-status-line,
+    .track-incident-pulse { animation: none; }
+    .track-incident-pulse { opacity: 0; }
     /* Without the blink, each one in its color, still. A yellow over S2
        (also yellow) doesn't stand out: the cost of no motion. */
     .track-status--vsc .track-status-line { opacity: 0.8; }
-    /* Like the yellow flag sectors: orange without the blink. */
-    .track-status--sc .track-status-line { stroke: rgb(255,120,0); }
+    .track-status--sc .track-status-line { stroke: rgb(255,85,0); }
 }
