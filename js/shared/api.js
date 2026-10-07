@@ -26,6 +26,10 @@ async function loadTeams(base = '.')     { return (_teamsCache     ??= await api
 async function loadCountries(base = '.') { return (_countriesCache ??= await apiFetch(`${base}/data/countries.json`)); }
 async function loadCities(base = '.')    { return (_citiesCache    ??= await apiFetch(`${base}/data/cities.json`)); }
 
+// Each GP's country and, when it has them, its own code and place (shared/gp.js).
+let _grandsPrixCache = null;
+async function loadGrandsPrix(base = '.') { return (_grandsPrixCache ??= await apiFetch(`${base}/data/grandsPrix.json`)); }
+
 async function loadDrivers(base = '.') {
     return (_driversCache ??= await apiFetch(`${base}/data/drivers.json`));
 }

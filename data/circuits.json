@@ -814,5 +814,20 @@
       "tyreDeg": 50,
       "trackType": "permanent"
     }
+  },
+  "autodromo-enzo-e-dino-ferrari": {
+    "id": "autodromo-enzo-e-dino-ferrari",
+    "name": "Autodromo Internazionale Enzo e Dino Ferrari",
+    "location": {
+      "city": "imola"
+    },
+    "layouts": {
+      "2008-present": {
+        "length": 4.909,
+        "turns": 19,
+        "validFrom": 2008,
+        "validTo": null
+      }
+    }
   }
 }

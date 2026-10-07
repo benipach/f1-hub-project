@@ -82,7 +82,7 @@
                 round: gp.round,
                 gpId: gp.gpId,
                 name: gpShortLabel(gp.name),
-                code: gpCode(gp.name),
+                code: gpCode(gp.gpId, gp, refs),
                 flag: flagUrlFor(gp, refs),
                 sprint: sessionResults(gp, 'sprintRace').length > 0,
                 gp,
@@ -189,9 +189,11 @@
 
             // Same cell as the results table in grandprix.html:
             // number in the team color, "First SURNAME" on desktop and
-            // only the surname on phones.
+            // only the surname on phones. On phones the team's logo takes the
+            // number's place (the Team column is hidden there).
             const nameCell = kind === 'drivers'
                 ? `<div class="st-driver">
+                       ${logo ? `<span class="st-driver-logo">${logo}</span>` : ''}
                        ${s.meta.number ? `<span class="st-driver-num" style="color:${color}">#${s.meta.number}</span>` : ''}
                        <span class="driver-fullname">${esc(s.meta.fullNameUpper)}</span>
                        <span class="driver-lastname">${esc(s.meta.lastName)}</span>
@@ -227,7 +229,7 @@
                     <td class="st-num st-col-wins"><span>${s.wins || 0}</span></td>
                     <td class="st-num st-col-podiums"><span>${s.podiums || 0}</span></td>
                     <td class="st-pts"><span>${s.total}</span></td>
-                    <td class="st-gap"><span>${gap}</span></td>
+                    <td class="st-gap st-col-gap"><span>${gap}</span></td>
                 </tr>`;
         }).join('');
 
@@ -242,7 +244,7 @@
                         <th class="st-num st-col-wins">Wins</th>
                         <th class="st-num st-col-podiums">Podiums</th>
                         <th style="text-align:center">Pts</th>
-                        <th>Gap</th>
+                        <th class="st-col-gap">Gap</th>
                     </tr>
                 </thead>
                 <tbody>${rows}</tbody>
@@ -656,7 +658,9 @@
                 + (second ? `, <b>${gap}</b> clear of ${esc(second.meta.label)}` : '')
                 + ` after <b>${rounds.length}</b> rounds.`
                 + (winners.size ? ` <b>${winners.size}</b> different ${winners.size > 1 ? `${subject}s have` : `${subject} has`} won a race so far.` : '')
-                + ` Tap a line — or a row in the table — to follow one ${subject}.`;
+                // On phones the chart can't be touched (championship.css): only the table.
+                + `<span class="champ-hint-full"> Tap a line — or a row in the table — to follow one ${subject}.</span>`
+                + `<span class="champ-hint-phone"> Tap a row in the table to follow one ${subject}.</span>`;
         })();
 
         function paint(mode){
@@ -845,7 +849,8 @@
             fetch(`${BASE}/circuits.json`).then(r => r.json()),
             fetch(`${BASE}/cities.json`).then(r => r.json()),
             fetch(`${BASE}/countries.json`).then(r => r.json()),
-        ]).then(([drivers, teams, circuits, cities, countries]) => ({ drivers, teams, circuits, cities, countries })));
+            fetch(`${BASE}/grandsPrix.json`).then(r => r.json()),
+        ]).then(([drivers, teams, circuits, cities, countries, grandsPrix]) => ({ drivers, teams, circuits, cities, countries, grandsPrix })));
     }
 
     // ── Render ─────────────────────────────────────────────────────────────
@@ -855,9 +860,9 @@
         initTabs(root);
         root.classList.remove('is-empty');
 
-        let season, drivers, teams, circuits, cities, countries;
+        let season, drivers, teams, circuits, cities, countries, grandsPrix;
         try {
-            [season, { drivers, teams, circuits, cities, countries }] = await Promise.all([
+            [season, { drivers, teams, circuits, cities, countries, grandsPrix }] = await Promise.all([
                 loaded ?? fetch(`${BASE}/seasons/season${year}.json`).then(r => { if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }),
                 loadShared(),
             ]);
@@ -867,7 +872,7 @@
             return false;
         }
 
-        const rounds = buildRounds(season, { circuits, cities, countries });
+        const rounds = buildRounds(season, { circuits, cities, countries, grandsPrix });
         if(!rounds.length){ root.classList.add('is-empty'); return false; }
 
         const teamMeta = slug => {

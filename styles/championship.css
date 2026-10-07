@@ -584,3 +584,44 @@
     .constructor-short    { display: inline; }
 
 }
+
+/* ---- STANDINGS ON PHONES ----
+   Only Pos, the driver (or team) and Pts: the rest doesn't fit without
+   scrolling sideways. In the driver cell the team's logo takes the number's
+   place; on desktop that logo is hidden (the Team column has it). */
+.st-driver-logo {
+    display: none;
+}
+
+@media (max-width: 700px) {
+    .st-col-country,
+    .st-col-team,
+    .st-col-wins,
+    .st-col-podiums,
+    .st-col-gap,
+    .st-driver-num {
+        display: none;
+    }
+
+    .st-driver-logo {
+        display: inline-flex;
+    }
+}
+
+/* ---- STATIC CHART ON PHONES ----
+   On a phone the chart can't be touched: tooltips and picking a line by
+   finger were clumsy, and the touches got in the way of scrolling. A tap or
+   a swipe on it just scrolls the page; a row in the table still follows one
+   driver. The hint under it says so. */
+.champ-hint-phone {
+    display: none;
+}
+
+@media (max-width: 700px) {
+    .champ-form-canvas canvas {
+        pointer-events: none;
+    }
+
+    .champ-hint-full { display: none; }
+    .champ-hint-phone { display: inline; }
+}

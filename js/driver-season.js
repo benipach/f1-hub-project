@@ -20,6 +20,7 @@
     const LATEST_URL   = '../data/latest.json';
     const CIRCUITS_URL = '../data/circuits.json';
     const CITIES_URL   = '../data/cities.json';
+    const GPS_URL      = '../data/grandsPrix.json';
     const TWEMOJI_BASE = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/';
     const FALLBACK_COLOR = '#e10600';
 
@@ -58,16 +59,16 @@
     // the chart breaks its lines there and the table lists them.
     function buildRounds(season, id, refs){
         const rounds = [];
-        const gps = Object.values(season).sort((a, b) => a.round - b.round);
+        const gps = Object.entries(season).sort(([, a], [, b]) => a.round - b.round);
 
-        for(const gp of gps){
+        for(const [gpId, gp] of gps){
             const race = sessionResults(gp, 'race');
             if(!race.length) continue;                        // not run yet
             const base = {
                 round: gp.round,
                 name: gpShortLabel(gp.name),
                 fullName: gp.name,           // "Hungarian Grand Prix", for running text
-                code: gpCode(gp.name),
+                code: gpCode(gpId, gp, refs),
                 flag: flagUrlFor(gp, refs),
             };
             const me = race.find(r => r.driver === id);
@@ -652,14 +653,15 @@
     (async function init(){
         let years, latestYear;
         try {
-            const [shared, circuits, cities, index, latest] = await Promise.all([
+            const [shared, circuits, cities, grandsPrix, index, latest] = await Promise.all([
                 window.driverData,
                 fetch(CIRCUITS_URL).then(r => r.json()),
                 fetch(CITIES_URL).then(r => r.json()),
+                fetch(GPS_URL).then(r => r.json()),
                 fetch(SEASONS_URL).then(r => r.json()),
                 fetch(LATEST_URL).then(r => r.json()),
             ]);
-            refs = { circuits, cities, countries: shared.countries, teams: shared.teams };
+            refs = { circuits, cities, countries: shared.countries, teams: shared.teams, grandsPrix };
 
             // Only the seasons the driver raced that the site has results for.
             const available = new Set((index.seasons ?? []).map(s => s.year));
