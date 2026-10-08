@@ -610,18 +610,6 @@
             slice.classList.add('is-open');
             slice.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
         });
-
-        // Cards: they enter as they appear on screen. The stagger only counts the
-        // ones entering in the same batch, so none waits for the ones above.
-        const dcObserver = new IntersectionObserver((entries) => {
-            entries.filter(entry => entry.isIntersecting).forEach((entry, i) => {
-                entry.target.style.setProperty('--dc-delay', `${i * 70}ms`);
-                entry.target.classList.add('visible');
-                dcObserver.unobserve(entry.target);
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.drivercard').forEach(card => dcObserver.observe(card));
     </script>
 
 </body>
