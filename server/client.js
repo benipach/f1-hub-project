@@ -271,7 +271,15 @@ const httpServer = http.createServer((req, res) => {
   res.end("not found");
 });
 
-const localServer = new WebSocketServer({ server: httpServer });
+const localServer = new WebSocketServer({
+  server: httpServer,
+  // Compress what goes to the pages (permessage-deflate, which browsers
+  // negotiate on their own). Every update resends its whole topic, and
+  // TimingData alone is ~27 KB about once a second: ~105 MB per hour of
+  // session per page uncompressed, ~20 times less compressed (measured with
+  // replay/ws-stats.js on a replayed race). Messages under 1 KB go as they are.
+  perMessageDeflate: { threshold: 1024 },
+});
 
 // 0.0.0.0 (not localhost) so connections from other devices on the
 // network get in too, not just from this same machine.
