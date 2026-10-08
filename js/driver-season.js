@@ -274,66 +274,6 @@
         }
     };
 
-    // ── Left-to-right drawing ──
-    // The lines (and their dots) are drawn inside a clip that opens from
-    // left to right according to chart.$drawProgress (0 → 1); axes, grid and the
-    // zones above stay fixed. It goes after zonesPlugin in the list, so
-    // the clip doesn't cover them. chart.$drawIn() animates it: it's called by
-    // driver-reveal.js when the chart scrolls into view.
-    const DRAW_IN_MS = 1200;
-
-    const drawInPlugin = {
-        id: 'seasonDrawIn',
-        beforeDatasetsDraw(chart){
-            const p = chart.$drawProgress ?? 1;
-            if(p >= 1) return;
-            const { ctx, chartArea } = chart;
-            // From the canvas edge (not the chart area) so the first point
-            // doesn't appear cut in half.
-            const x = chartArea.left + (chartArea.right - chartArea.left) * p;
-            ctx.save();
-            ctx.beginPath();
-            ctx.rect(0, 0, x, chart.height);
-            ctx.clip();
-            chart.$drawClipped = true;
-        },
-        afterDatasetsDraw(chart){
-            if(!chart.$drawClipped) return;
-            chart.$drawClipped = false;
-            chart.ctx.restore();
-        },
-    };
-
-    function addDrawIn(chart){
-        const ease = t => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-        chart.$drawIn = (delay = 0) => {
-            chart.$drawProgress = 0;
-            chart.draw();
-            let start = null;
-            const tick = now => {
-                if(start === null) start = now + delay;
-                const t = Math.min(Math.max((now - start) / DRAW_IN_MS, 0), 1);
-                chart.$drawProgress = ease(t);
-                chart.draw();
-                if(t < 1) requestAnimationFrame(tick);
-            };
-            requestAnimationFrame(tick);
-        };
-
-        // If the section is still waiting for its entrance animation, the chart stays
-        // empty until driver-reveal.js triggers it. If it already entered (the fonts
-        // took longer than the scroll), it's drawn now. Without entrance
-        // animations (no data-reveal), it's shown complete.
-        const block = chart.canvas.closest('[data-reveal]');
-        if(!block) return;
-        if(block.classList.contains('reveal') && !block.classList.contains('is-in')) {
-            chart.$drawProgress = 0;
-            chart.draw();
-        } else {
-            chart.$drawIn();
-        }
-    }
-
     // The axis always goes from P1 to the size of that year's field (fieldSizeOf),
     // fixed, so that every driver uses the same scale and the line is never cut off.
     const Y_PAD = 0.6;
@@ -452,7 +392,7 @@
 
         const chart = new Chart(canvas.getContext('2d'), {
             type: 'line',
-            plugins: [zonesPlugin, drawInPlugin],
+            plugins: [zonesPlugin],
             data: {
                 labels,
                 datasets: [
@@ -493,8 +433,8 @@
                 maintainAspectRatio: true,
                 aspectRatio: isPhone ? 0.95 : 2.9,
                 // Without Chart.js's load animation (the dots rising
-                // from the bottom): the entrance is done by drawInPlugin. Hover
-                // keeps its own, which goes through transitions.active.
+                // from the bottom). Hover keeps its own, which goes through
+                // transitions.active.
                 animation: { duration: 0 },
                 interaction: { mode: 'index', intersect: false },
                 scales: {
@@ -541,7 +481,6 @@
                 },
             },
         });
-        addDrawIn(chart);
         return chart;
     }
 

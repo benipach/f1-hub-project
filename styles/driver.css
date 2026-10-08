@@ -2274,9 +2274,9 @@
         .jr-stats dt { font-size: 10px; letter-spacing: 1px; }
         .jr-moments { grid-template-columns: minmax(0, 1fr); margin-top: 22px; }
     }
-    /* ── ENTRANCE ANIMATIONS ──
-       js/driver-reveal.js marks each block with .reveal and data-reveal (the
-       variant) as soon as it appears, and adds .is-in when it scrolls into view. They all
+    /* ── HERO ENTRANCE ──
+       js/driver-reveal.js marks each hero block with .reveal and data-reveal
+       (the variant) as soon as it appears, and then adds .is-in. They all
        share the same transition; the only thing that changes is the cascade's
        delay (--delay). When it's done, the script removes the classes and each element
        goes back to its own transitions.
@@ -2291,41 +2291,15 @@
 
     .reveal[data-reveal="rise"]:not(.is-in)  { transform: translateY(28px); }
     .reveal[data-reveal="left"]:not(.is-in)  { transform: translateX(-36px); }
-    .reveal[data-reveal="drop"]:not(.is-in)  { transform: translateY(-12px); }
-    .reveal[data-reveal="pop"]:not(.is-in)   { transform: scale(0.9); }
     .reveal[data-reveal="zoom"]:not(.is-in)  { transform: scale(1.08); }
 
-    /* Hero: the team panel unfolds from the left, with the same
+    /* The team panel unfolds from the left, with the same
        shape it has (four points, so the browser can interpolate it) */
     .reveal[data-reveal="wipe"]:not(.is-in) {
         opacity: 1;
         clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
     }
 
-    /* Section titles: the text comes in from the left and the red line
-       stretches behind it */
-    .reveal[data-reveal="title"]:not(.is-in) { transform: translateX(-24px); }
-
-    .section-title.reveal.is-in::after {
-        transform-origin: left center;
-        transition: all 0.7s ease;
-        transition-delay: var(--delay, 0ms);
-    }
-
-    .section-title.reveal:not(.is-in)::after { transform: scaleX(0); transform-origin: left center; }
-
-    /* Bars that grow from 0: the season progress one and the all-time
-       ranking ones. The !important overrides their inline width. */
-    .season-band-cell.reveal.is-in .season-band-progress-fill,
-    .career-board-wrap.reveal.is-in .career-board-bar > span {
-        transition: all 0.7s ease;
-        transition-delay: var(--delay, 0ms);
-    }
-
-    .season-band-cell.reveal:not(.is-in) .season-band-progress-fill,
-    .career-board-wrap.reveal:not(.is-in) .career-board-bar > span {
-        width: 0 !important;
-    }
 
     /* With "reduce motion" on, driver-reveal.js doesn't mark anything, so
-       the page appears as-is, without animations. */
+       the hero appears as-is, without animations. */
