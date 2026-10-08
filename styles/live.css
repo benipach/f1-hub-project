@@ -440,6 +440,17 @@
     padding-right: 15px;
 }
 
+/* Pos and Driver a little closer together. */
+.live-table th.live-col-pos,
+.live-table td.res-pos {
+    padding-right: 10px;
+}
+
+.live-table th.live-col-driver,
+.live-table td.live-col-driver {
+    padding-left: 10px;
+}
+
 .live-table .live-col-tight-first {
     padding-left: 15px;
     padding-right: 8px;
@@ -503,14 +514,15 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
 /* ---- DELTA INDICATOR (copied from race.css) ---- */
 /* Scoped with .live-table th/td (not just the bare class) so this wins
    over results.css's general .results-table th/td padding. */
+/* Right of the driver: a little room on the left so it doesn't touch the name. */
 .live-table th.live-delta-col {
     width: 40px;
-    padding: 0;
+    padding: 0 4px 0 10px;
 }
 
 .live-table td.res-delta-cell {
     width: 40px;
-    padding: 0;
+    padding: 0 4px 0 10px;
     text-align: left;
 }
 
@@ -519,7 +531,8 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
     align-items: center;
     justify-content: flex-start;
     gap: 4px;
-    font-family: 'F1-Bold';
+    font-family: 'F1-Regular', sans-serif;
+    font-weight: 600;
     font-size: 12px;
     letter-spacing: 0.5px;
     white-space: nowrap;
@@ -568,9 +581,10 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
 }
 
 /* ---- PODIUM COLORS (same convention as race.css .res-pos.top3) ---- */
-#live-rows-2 tr:nth-child(1) .res-pos.top3 { font-family: 'F1-Bold'; color: #f7d774; }
-#live-rows-2 tr:nth-child(2) .res-pos.top3 { font-family: 'F1-Bold'; color: #d6d6d6; }
-#live-rows-2 tr:nth-child(3) .res-pos.top3 { font-family: 'F1-Bold'; color: #cd9a63; }
+#live-rows-2 .res-pos.top3 { font-family: 'F1-Regular', sans-serif; font-weight: 600; }
+#live-rows-2 tr:nth-child(1) .res-pos.top3 { color: #f7d774; }
+#live-rows-2 tr:nth-child(2) .res-pos.top3 { color: #d6d6d6; }
+#live-rows-2 tr:nth-child(3) .res-pos.top3 { color: #cd9a63; }
 
 /* ---- COLUMN WIDTHS ----
    Fixed widths (the <colgroup> that sizeTableColumns() in live.js fills in):
@@ -876,7 +890,7 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
     pointer-events: none;
 }
 
-.live-driver-swap.has-status .live-driver-name {
+.live-driver-swap.has-status .live-swap-main {
     opacity: 0;
     transform: translateY(-8px);
 }
@@ -974,6 +988,13 @@ body.is-fp-session .live-table .live-col-best.live-col-tight-first {
     height: 4px;
     border-radius: 2px;
     background: rgba(255,255,255,0.12);
+}
+
+/* Last Lap / Best Lap with their sector bars (Customize → Sector bars): the
+   same wrap as a sector cell, but the time stays right-aligned like every
+   other lap time. */
+.live-lap-wrap {
+    justify-content: flex-end;
 }
 
 .live-microsector--yellow      { background: rgba(255,212,0,0.9); }
@@ -1533,6 +1554,15 @@ img.emoji {
 .lvp-option {
     padding: 10px 14px 14px;
     background: rgba(0,0,0,0.14);
+}
+
+/* In place of an option that doesn't apply right now: why (e.g. the status
+   sharing the Positions gained column). */
+.lvp-option-note p {
+    margin: 0;
+    font-size: 11.5px;
+    line-height: 1.35;
+    color: rgba(255,255,255,0.45);
 }
 
 .lvp-option[hidden] {

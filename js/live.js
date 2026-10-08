@@ -614,6 +614,68 @@ function microsectorsHTML(segments, stale = false) {
         .join('')}</span>`;
 }
 
+// ── LAP SECTOR BARS (Customize → Last Lap / Best Lap → Sector bars) ──
+// Like the mini-sectors over each sector, but over a lap time: three bars,
+// one per sector of that lap, in the same colors as the sector times
+// (purple = session best, green = personal best, yellow = neither, grey =
+// unknown).
+
+// The three sector times of the last finished lap. While a lap is under way,
+// the sectors it has already done show the new lap in Value and the finished
+// lap in PreviousValue; the ones still to do keep the finished lap in Value.
+// With no sector of the new lap yet, all three Values are the finished lap
+// (or, all empty, the PreviousValues, as in displayedSectors()).
+function lastLapSectorTimes(line) {
+    const sectors = line && line.Sectors;
+    if (!sectors || typeof sectors !== 'object') return [null, null, null];
+    const { live, times } = displayedSectors(line);
+    const node = (i) => {
+        const n = sectors[i] ?? sectors[String(i)];
+        return n && typeof n === 'object' ? n : {};
+    };
+    if (live == null) return times;
+    return [0, 1, 2].map((i) => (i < live ? node(i).PreviousValue : node(i).Value) || null);
+}
+
+// The feed sends the best lap's time but not its sectors: they're kept here
+// as laps finish (num → { lap, times }), and only count while that lap is
+// still the driver's best. Opening the page mid-session, a best lap set
+// before has no sectors until the driver improves it: its bars stay grey.
+const bestLapSectorTimes = {};
+
+function rememberBestLapSectors(num, line) {
+    const lap = line.LastLapTime && line.LastLapTime.Value;
+    const best = line.BestLapTime && line.BestLapTime.Value;
+    if (!lap || lap !== best) return;
+    const times = lastLapSectorTimes(line);
+    const lapMs = lapTimeToMs(lap);
+    const sumMs = times.reduce((sum, v) => sum + (lapTimeToMs(v) ?? NaN), 0);
+    if (lapMs != null && Math.abs(sumMs - lapMs) <= LAP_SUM_TOLERANCE_MS) bestLapSectorTimes[num] = { lap, times };
+}
+
+function bestLapSectors(num, bestValue) {
+    const kept = bestLapSectorTimes[num];
+    return kept && kept.lap === bestValue ? kept.times : [null, null, null];
+}
+
+const LAP_BAR_COLOR = { 'live-lap--fastest': 'purple', 'live-lap--pb': 'green', 'live-lap--normal': 'yellow' };
+
+function lapSectorBarsHTML(num, times) {
+    return `<span class="live-microsectors live-lap-sectors">${[0, 1, 2].map((i) => {
+        const time = times[i];
+        const cls = time ? (LAP_BAR_COLOR[timingClass(num, `s${i + 1}`, time)] || 'yellow') : 'unavailable';
+        return `<span class="live-microsector live-microsector--${cls}"></span>`;
+    }).join('')}</span>`;
+}
+
+// A lap time cell's content: just the time, or the time with the three bars
+// over it (same structure as the sector cells, aligned to the right).
+function lapCellContent(value, bars) {
+    return bars
+        ? `<span class="live-sector-wrap live-lap-wrap">${bars}<span class="live-sector-time">${value}</span></span>`
+        : value;
+}
+
 // Notice in both tables when there's still NOTHING to show. Without
 // this, with the relay down the page stays forever on "Waiting
 // for session data…" and there's no way to tell that the problem is that
@@ -1544,9 +1606,14 @@ const VIEW_OPTIONS = {
         label: 'Name color',
         choices: [['white', 'White'], ['team', 'Team color']],
     },
+    // With Positions gained on, the status always shares its column: the
+    // option goes, and a note says so (unlessOn / requires, see
+    // viewOptionHTML()).
     statusPlacement: {
         label: 'Show as',
         dependsOn: 'status',
+        unlessOn: 'delta',
+        note: 'Shares the Positions gained column: the badge takes the gained places\u2019 spot while the car is in the pits or out.',
         choices: [['column', 'Own column'], ['name', 'In driver column']],
     },
     team: {
@@ -1558,6 +1625,17 @@ const VIEW_OPTIONS = {
         label: 'Show as',
         dependsOn: 'tyres',
         choices: [['history', 'All stints'], ['current', 'Current set']],
+    },
+    // Three bars over the lap time, one per sector of that lap (LAP SECTOR BARS).
+    lastLapSectors: {
+        label: 'Sector bars',
+        dependsOn: 'lastLap',
+        choices: [['off', 'Off'], ['on', 'On']],
+    },
+    bestLapSectors: {
+        label: 'Sector bars',
+        dependsOn: 'bestLap',
+        choices: [['off', 'Off'], ['on', 'On']],
     },
     // Shown while either of the two is on.
     gapDecimals: {
@@ -1597,9 +1675,11 @@ const VIEW_OPTIONS = {
 //   - Essential: Full's columns, trimmed down: the status (pit / out) in the
 //     driver's place, only the current set of tyres,
 //     "Int", 1 decimal, lapped cars as "+2 L" and nothing for the leader.
-//   - Strategy: gaps, tyres (every stint) and laps; no sectors.
-//   - Compact: the essentials: no sectors, no mini-sectors, the
-//     current set of tyres instead of every stint, tight side margins.
+//   - Compact: the essentials: no sectors, no mini-sectors (the last lap
+//     carries one bar per sector instead), the status (pit / out) in the
+//     driver's place, gap and interval with 1 decimal ("Int", nothing for
+//     the leader), the current set of tyres instead of every stint, tight
+//     side margins.
 //   - Glance: the bare minimum: position, places gained, the driver in the
 //     team color (no logo) with the status (pit / out) in its place, interval ("Int", 1 decimal,
 //     lapped cars as "+2 L", nothing for the leader) and current tyres, with
@@ -1617,15 +1697,10 @@ const VIEW_PROFILES = {
         columns: () => ({}),
         options: { statusPlacement: 'name', tyres: 'current', intervalHeader: 'short', gapDecimals: '1', lappedStyle: 'short', leaderLabel: 'blank' },
     },
-    strategy: {
-        label: 'Strategy',
-        columns: () => ({ sectors: false, microsectors: false, interval: true, lastLap: true, tyres: true, laps: true }),
-        options: { tyres: 'history' },
-    },
     compact: {
         label: 'Compact',
         columns: (kind) => ({ number: false, sectors: false, microsectors: false, laps: false, lastLap: kind === 'race' }),
-        options: { tyres: 'current', edges: 'tight' },
+        options: { statusPlacement: 'name', tyres: 'current', edges: 'tight', lastLapSectors: 'on', gapDecimals: '1', leaderLabel: 'blank', intervalHeader: 'short' },
     },
     glance: {
         label: 'Glance',
@@ -1817,41 +1892,49 @@ function buildTableColumns(view) {
         (r) => `<td class="res-pos live-col-roomy${r.isTop3 ? ' top3' : ''}">${r.line.Position ?? r.posNum}</td>`,
         { samples: ['20'] });
 
-    if (cols.delta) {
-        add('<th class="live-delta-col"></th>',
-            (r) => `<td class="res-delta-cell">${gridDeltaHtml(r.line.Position ?? r.posNum, r.appLine && r.appLine.GridPos)}</td>`);
-    }
-
-    // Status (PIT / OUT) in its own column, or in place of the driver's name
-    // (Customize → Status → In driver column): there the name and the badge
-    // share the spot and cross-fade (.live-driver-swap, see
-    // syncDriverSwap()). The badge is always in the markup, so the fade has
-    // something to fade. In the driver column a retired car keeps its name:
-    // the dimmed row already says it's out.
-    const statusInName = cols.status && view.statusPlacement === 'name';
+    // Status (PIT / OUT), in one of three places:
+    //   - With Positions gained on: sharing that column. The delta shows,
+    //     and the badge takes its place while the car is in the pits or out
+    //     (retired too); out of the pits, the delta comes back. The Show as
+    //     option doesn't apply then (the panel hides it).
+    //   - Otherwise, Customize → Status → Show as: its own column, or in place
+    //     of the driver's name (a retired car keeps its name there: the
+    //     dimmed row already says it's out).
+    // Sharing a spot (with the delta or the name), the two cross-fade
+    // (.live-driver-swap, see syncDriverSwap()). The badge is always in the
+    // markup, invisible with "PIT" as a stand-in, so the fade has something to
+    // fade and the column is measured with room for it.
+    const statusWithDelta = cols.status && cols.delta;
+    const statusInName = cols.status && !statusWithDelta && view.statusPlacement === 'name';
     const nameStatus = (r) => (r.retired ? '' : r.statusLabel);
-    // In the driver column the badge is there even with no status (invisible,
-    // with "PIT" as a stand-in), so the column is measured with room for it.
     const statusBadgeHTML = (r, label) => `<span class="live-status-badge" style="color:${r.teamColor}">${label || 'PIT'}</span>`;
-    const nameHTML = (r) => `<span class="live-driver-name"${view.driverColor === 'team' ? ` style="color:${teamAccentColor(r.driver.TeamName)}"` : ''}>${driverDisplayName(r.driver, r.num, view.driverName)}</span>`;
+    const swapHTML = (main, label, r) => `<span class="live-driver-swap${label ? ' has-status' : ''}">${main}<span class="live-driver-status"${label ? '' : ' aria-hidden="true"'}>${statusBadgeHTML(r, label)}</span></span>`;
+    const nameHTML = (r) => `<span class="live-driver-name live-swap-main"${view.driverColor === 'team' ? ` style="color:${teamAccentColor(r.driver.TeamName)}"` : ''}>${driverDisplayName(r.driver, r.num, view.driverName)}</span>`;
+    const deltaHTML = (r) => gridDeltaHtml(r.line.Position ?? r.posNum, r.appLine && r.appLine.GridPos);
 
     add('<th class="live-col-roomy live-col-driver">Driver</th>',
         (r) => `<td class="live-col-roomy live-col-driver">
                     <span class="res-team">
                         ${teamMode === 'inline' ? teamLogoHTML(r.driver.TeamName) : ''}
                         ${cols.number ? driverNumberHTML(r.driver, r.num) : ''}
-                        ${statusInName
-                            ? `<span class="live-driver-swap${nameStatus(r) ? ' has-status' : ''}">${nameHTML(r)}<span class="live-driver-status"${nameStatus(r) ? '' : ' aria-hidden="true"'}>${statusBadgeHTML(r, nameStatus(r))}</span></span>`
-                            : nameHTML(r)}
+                        ${statusInName ? swapHTML(nameHTML(r), nameStatus(r), r) : nameHTML(r)}
                     </span>
                 </td>`);
+
+    // Positions gained, right of the driver (with the status in it, see above).
+    if (cols.delta) {
+        add('<th class="live-delta-col"></th>',
+            (r) => `<td class="res-delta-cell">${statusWithDelta
+                ? swapHTML(`<span class="live-swap-main">${deltaHTML(r)}</span>`, r.statusLabel, r)
+                : deltaHTML(r)}</td>`);
+    }
 
     if (teamMode === 'column') {
         add('<th class="live-col-roomy live-col-team">Team</th>',
             (r) => `<td class="live-col-roomy live-col-team"><span class="res-team">${teamLogoHTML(r.driver.TeamName)}${teamDisplayName(r.driver.TeamName)}</span></td>`);
     }
 
-    if (cols.status && !statusInName) {
+    if (cols.status && !statusInName && !statusWithDelta) {
         add('<th class="live-col-status"></th>',
             (r) => `<td class="live-col-status">${r.statusLabel ? `<span class="live-status-wrap">${statusBadgeHTML(r, r.statusLabel)}</span>` : ''}</td>`,
             { samples: ['<span class="live-status-wrap"><span class="live-status-badge">OUT</span></span>'], sampleHTML: true });
@@ -1863,25 +1946,25 @@ function buildTableColumns(view) {
     // samples too, so the column is only as wide as it needs to be).
     if (cols.gap) {
         add('<th class="live-col-roomy live-num">Gap</th>',
-            (r) => `<td class="live-muted live-col-roomy live-num">${gapCellDisplay(r.gapText, view)}</td>`,
+            (r) => `<td class="live-muted live-col-roomy live-num">${r.retired ? '' : gapCellDisplay(r.gapText, view)}</td>`,
             { samples: ['Leader', '+100.000', '+20 Laps'].map((s) => gapCellDisplay(s, view)) });
     }
 
     if (cols.interval) {
         add(`<th class="live-col-roomy live-num">${view.intervalHeader === 'short' ? 'Int' : 'Interval'}</th>`,
-            (r) => `<td class="live-muted live-col-roomy live-num">${gapCellDisplay(r.intervalText, view)}</td>`,
+            (r) => `<td class="live-muted live-col-roomy live-num">${r.retired ? '' : gapCellDisplay(r.intervalText, view)}</td>`,
             { samples: ['Leader', '+40.000', '+20 Laps'].map((s) => gapCellDisplay(s, view)) });
     }
 
     if (cols.bestLap) {
         add(`<th class="live-col-best ${pad('bestLap')} live-num">Best Lap</th>`,
-            (r) => `<td class="live-col-best ${r.bestLapClass} ${pad('bestLap')} live-num">${r.bestLap.Value ?? '-'}</td>`,
+            (r) => `<td class="live-col-best ${r.bestLapClass} ${pad('bestLap')} live-num">${lapCellContent(r.bestLap.Value ?? '-', view.bestLapSectors === 'on' && r.bestLap.Value ? lapSectorBarsHTML(r.num, bestLapSectors(r.num, r.bestLap.Value)) : '')}</td>`,
             { samples: ['1:40.000'] });
     }
 
     if (cols.lastLap) {
         add(`<th class="${pad('lastLap')} live-num">Last Lap</th>`,
-            (r) => `<td class="${r.lapClass} ${pad('lastLap')} live-num">${r.lastLap.Value ?? '-'}</td>`,
+            (r) => `<td class="${r.retired ? '' : r.lapClass} ${pad('lastLap')} live-num">${r.retired ? '' : lapCellContent(r.lastLap.Value ?? '-', view.lastLapSectors === 'on' && r.lastLap.Value ? lapSectorBarsHTML(r.num, lastLapSectorTimes(r.line)) : '')}</td>`,
             { samples: ['1:40.000'] });
     }
 
@@ -2078,6 +2161,7 @@ function render() {
             // Whoever has already taken the chequered flag shows their final lap
             // (see relayFinishedLines); everyone else, the live line.
             const shown = shownTimingLine(num, line);
+            rememberBestLapSectors(num, shown);
             const lastLap = shown.LastLapTime || {};
             const bestLap = shown.BestLapTime || {};
             const bestMs = lapTimeToMs(bestLap.Value);
@@ -2118,7 +2202,9 @@ function render() {
                 bestLapClass,
                 shown,
                 sectorView: displayedSectors(shown),
-                sectorsBlanked: blankSectorsAfterPos != null && posNum > blankSectorsAfterPos,
+                // A retired car (OUT) has no live timing left to show: its
+                // sectors, like its gap, interval and last lap, stay empty.
+                sectorsBlanked: retired || (blankSectorsAfterPos != null && posNum > blankSectorsAfterPos),
             };
 
             return `
@@ -2386,9 +2472,10 @@ function syncDriverSwap(current, cell) {
     const around = (td, swap) => td.outerHTML.replace(swap.outerHTML, '');
     if (around(current, keep) !== around(cell, next)) return false;
 
-    const keepName = keep.querySelector('.live-driver-name');
-    const nextName = next.querySelector('.live-driver-name');
-    if (keepName.outerHTML !== nextName.outerHTML) keepName.replaceWith(nextName);
+    // The part the badge swaps with: the driver's name or the delta.
+    const keepMain = keep.querySelector('.live-swap-main');
+    const nextMain = next.querySelector('.live-swap-main');
+    if (keepMain.outerHTML !== nextMain.outerHTML) keepMain.replaceWith(nextMain);
 
     const hasStatus = next.classList.contains('has-status');
     const keepStatus = keep.querySelector('.live-driver-status');
@@ -4503,7 +4590,7 @@ const VIEW_PANEL_GROUPS = [
     { title: 'Timing', keys: ['gap', 'interval', 'bestLap', 'lastLap', 'sectors', 'microsectors'] },
     { title: 'Race', keys: ['delta', 'tyres', 'laps'] },
 ];
-const VIEW_OPTION_AFTER = { driver: ['driverName', 'driverColor'], team: ['team'], status: ['statusPlacement'], interval: ['intervalHeader', 'gapDecimals', 'lappedStyle', 'leaderLabel'], tyres: ['tyres'] };
+const VIEW_OPTION_AFTER = { driver: ['driverName', 'driverColor'], team: ['team'], status: ['statusPlacement'], interval: ['intervalHeader', 'gapDecimals', 'lappedStyle', 'leaderLabel'], bestLap: ['bestLapSectors'], lastLap: ['lastLapSectors'], tyres: ['tyres'] };
 
 // One row: name on the left, toggle on the right. The fixed ones
 // (Position, Driver) get a lock instead of the toggle; the ones that don't
@@ -4536,10 +4623,31 @@ function dependencyOn(dependsOn, view) {
     return [].concat(dependsOn).some((key) => view.cols[key]);
 }
 
+// Whether a panel field shows: its checkbox on (any of data-depends), not
+// switched off by another (data-unless) and, for a note, the other one on
+// (data-requires).
+function viewFieldVisible(field, view) {
+    const { depends, unless, requires } = field.dataset;
+    if (depends && !dependencyOn(depends.split(' '), view)) return false;
+    if (unless && view.cols[unless]) return false;
+    if (requires && !view.cols[requires]) return false;
+    return true;
+}
+
 function viewOptionHTML(name, view) {
     const opt = VIEW_OPTIONS[name];
-    return `
-        <div class="lvp-option"${opt.dependsOn ? ` data-depends="${[].concat(opt.dependsOn).join(' ')}"` : ''}${opt.dependsOn && !dependencyOn(opt.dependsOn, view) ? ' hidden' : ''}>
+    const depends = opt.dependsOn ? [].concat(opt.dependsOn).join(' ') : '';
+    const attrs = (extra) => {
+        const field = { dataset: { depends, ...extra } };
+        return `${depends ? ` data-depends="${depends}"` : ''}${Object.entries(extra).map(([k, v]) => ` data-${k}="${v}"`).join('')}${viewFieldVisible(field, view) ? '' : ' hidden'}`;
+    };
+    // An option that doesn't apply while another column is on: in its place,
+    // a note saying why.
+    const note = opt.unlessOn && opt.note
+        ? `<div class="lvp-option lvp-option-note"${attrs({ requires: opt.unlessOn })}><p>${opt.note}</p></div>`
+        : '';
+    return note + `
+        <div class="lvp-option"${attrs(opt.unlessOn ? { unless: opt.unlessOn } : {})}>
             <span class="lvp-option-label" id="lvp-label-${name}">${opt.label}</span>
             <div class="lvp-segmented" role="radiogroup" aria-labelledby="lvp-label-${name}">
                 ${opt.choices.map(([value, text]) => `
@@ -4624,7 +4732,7 @@ function viewPanelBodyHTML(kind) {
 function syncDependentOptions() {
     const view = effectiveView(currentSessionKind());
     document.querySelectorAll('#live-view-panel [data-depends]').forEach((field) => {
-        field.hidden = !dependencyOn(field.dataset.depends.split(' '), view);
+        field.hidden = !viewFieldVisible(field, view);
     });
 }
 
