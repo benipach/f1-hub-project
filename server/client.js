@@ -14,6 +14,8 @@ import { fileURLToPath } from "url";
 import zlib from "node:zlib";
 import http from "node:http";
 import { updateFinishedLines } from "./finishers.js";
+import { TOPICS } from "./topics.js";
+import { loadSession, playSession, parsePlaybackTime, formatPlaybackTime } from "./replay/session.js";
 
 const URL = "https://livetiming.formula1.com/signalrcore";
 // The port can be set by the host it's deployed on (Render, Railway,
@@ -21,39 +23,17 @@ const URL = "https://livetiming.formula1.com/signalrcore";
 // ws://localhost:8080 doesn't change at all.
 const LOCAL_PORT = Number(process.env.PORT) || 8080;
 
-// Position.z carries live X/Y car coordinates for the map overlay.
-// SessionStatus/SessionInfo drive the "keep last session's results visible
-// for 24h" logic below — see updateDisplayState().
-// Compressed topics (".z" suffix) need inflating before use — see decodeIfCompressed().
-// ExtrapolatedClock: countdown for Practice/Qualifying (Remaining + a flag
-// telling us whether it's currently ticking or frozen, e.g. red flag).
-// SessionData: tells us which Qualifying part (Q1/Q2/Q3) is currently live.
-// TrackStatus: flag state (green/yellow/red/SC/VSC) — used as a second
-// signal to confirm a countdown should be paused.
-// WeatherData: was missing here even though live.js already reads
-// state.WeatherData — that's why the weather card was showing nothing.
-const TOPICS = [
-  "TimingData",
-  "TimingAppData",
-  "DriverList",
-  "Position.z",
-  "SessionStatus",
-  "SessionInfo",
-  "ExtrapolatedClock",
-  "SessionData",
-  "TrackStatus",
-  "WeatherData",
-  // { CurrentLap, TotalLaps }: the "LAP 23/57" that replaces the clock in a
-  // race or sprint (currentLapInfo() in live.js).
-  "LapCount",
-  // Race Control messages (flags, SC/VSC, investigations, penalties,
-  // track limits, DRS) for the panel in live.html.
-  "RaceControlMessages",
-];
+// The topics to subscribe to (and what each one is for) live in topics.js,
+// shared with the replay tools.
 
 // Local, persistent state built from merged deltas. One key per topic.
 // This always mirrors whatever F1's feed is currently sending, live.
 const state = {};
+
+// True while a replay fast-forwards to its start point (see startReplay):
+// thousands of messages go through in a moment, so there are no per-message
+// logs or broadcasts, and the page gets a single snapshot afterwards.
+let catchingUp = false;
 
 // ── RESULT PERSISTENCE (keep last session visible for 24h) ────────────────
 // `state` above always tracks the raw live feed. What we actually SEND to
@@ -315,6 +295,9 @@ refreshCurrentGP();
 setInterval(refreshCurrentGP, 15 * 60 * 1000);
 
 function broadcast(topic) {
+  // With no page open (or while a replay catches up, see startReplay), skip
+  // the JSON.stringify of a whole topic: that's what costs here.
+  if (catchingUp || !localServer.clients.size) return;
   const payload = JSON.stringify({ type: "update", topic, data: getDisplayState()[topic] });
   for (const client of localServer.clients) {
     if (client.readyState === WebSocket.OPEN) client.send(payload);
@@ -325,6 +308,7 @@ function broadcast(topic) {
 // to trigger it naturally — pushes a full resync instead of a single-topic
 // update, since potentially everything changed (e.g. back to empty state).
 function broadcastFullSnapshot() {
+  if (catchingUp || !localServer.clients.size) return;
   const payload = JSON.stringify({ type: "snapshot", state: getDisplayState() });
   for (const client of localServer.clients) {
     if (client.readyState === WebSocket.OPEN) client.send(payload);
@@ -400,6 +384,8 @@ function onUpdate(topic, feedTimestamp) {
     broadcast(topic);
   }
 
+  if (catchingUp) return;
+
   // TEMP DEBUG — confirm the real shape of these three topics against your
   // live feed, then delete these three blocks once verified.
   if (topic === "ExtrapolatedClock") {
@@ -449,14 +435,13 @@ const connection = new HubConnectionBuilder()
   .configureLogging(LogLevel.Warning)
   .build();
 
-// The server invokes a client-side method called "feed" for every update.
-// Args are positional: (topic, data, timestamp). The first call for each
-// topic after subscribing is the full snapshot; after that, deltas.
-connection.on("feed", (topic, rawPatch, timestamp) => {
+// One message from the feed (live, or from a replay). The first one for each
+// topic is the full snapshot; after that, deltas.
+function applyFeedMessage(topic, rawPatch, timestamp) {
   const patch = decodeIfCompressed(topic, rawPatch);
   if (patch == null) return;
 
-  if (topic === "DriverList") {
+  if (topic === "DriverList" && !catchingUp) {
     console.log("[debug] DriverList raw:", JSON.stringify(patch).slice(0, 1500));
   }
 
@@ -467,12 +452,16 @@ connection.on("feed", (topic, rawPatch, timestamp) => {
     console.log(`[state] ${topic} seeded`);
   } else {
     mergeState(state[topic], patch);
-    console.log(`[${timestamp}] ${topic} updated`);
+    if (!catchingUp) console.log(`[${timestamp}] ${topic} updated`);
   }
   onUpdate(topic, timestamp);
   // A new session can belong to another GP (the first one of the next weekend).
   if (topic === "SessionInfo") refreshCurrentGP();
-});
+}
+
+// The server invokes a client-side method called "feed" for every update.
+// Args are positional: (topic, data, timestamp).
+connection.on("feed", applyFeedMessage);
 
 connection.onreconnecting((err) => {
   console.log("[ws] reconnecting...", err?.message ?? "");
@@ -518,4 +507,60 @@ async function main() {
   }
 }
 
-main();
+// ── REPLAY (node client.js --replay <folder>) ─────────────────────────────
+// Plays back a past session downloaded by replay/download.js instead of
+// connecting to F1, so the live page can be worked on any day of the week.
+//   --speed 4               4x (the clock on screen drifts at speeds other than 1)
+//   --from 01:20:00         skip to that point of the recording
+//   --from start            one minute before the session goes green
+// Playback starts when the first page connects.
+function parseReplayArgs(args) {
+  const value = (name) => {
+    const i = args.indexOf(name);
+    return i >= 0 ? args[i + 1] : undefined;
+  };
+  const dir = value("--replay");
+  if (!dir) return null;
+  return { dir: path.resolve(dir), speed: Number(value("--speed") ?? 1), from: value("--from") ?? "0" };
+}
+
+function startReplay({ dir, speed, from }) {
+  const session = loadSession(dir, TOPICS);
+  const fromMs = from === "start"
+    ? Math.max(0, (session.greenOffsetMs ?? 0) - 60_000)
+    : parsePlaybackTime(from);
+  if (fromMs == null || !(speed > 0)) {
+    console.error("[replay] usage: node client.js --replay <folder> [--speed 2] [--from 01:20:00 | start]");
+    process.exit(1);
+  }
+
+  const name = [session.info.meeting, session.info.name].filter(Boolean).join(" — ") || path.basename(dir);
+  const green = session.greenOffsetMs != null ? `, green flag at ${formatPlaybackTime(session.greenOffsetMs)}` : "";
+  console.log(`[replay] ${name}: ${session.messages.length} messages, ${formatPlaybackTime(session.durationMs)} long${green}`);
+  console.log(`[replay] waiting for a page: live.html?relay=ws://localhost:${LOCAL_PORT}`);
+
+  localServer.once("connection", () => {
+    console.log(`[replay] playing from ${formatPlaybackTime(fromMs)} at ${speed}x`);
+    catchingUp = fromMs > 0;
+    const finishCatchingUp = () => {
+      if (!catchingUp) return;
+      catchingUp = false;
+      broadcastFullSnapshot();
+    };
+    playSession(session, {
+      speed,
+      fromMs,
+      onMessage: (topic, data, timestamp, info) => {
+        if (!info.catchingUp) finishCatchingUp();
+        applyFeedMessage(topic, data, timestamp);
+      },
+      onProgress: (ms) => console.log(`[replay] ${formatPlaybackTime(ms)} / ${formatPlaybackTime(session.durationMs)}`),
+      onDone: () => console.log("[replay] finished; the final state stays up"),
+    });
+    finishCatchingUp();
+  });
+}
+
+const replayOptions = parseReplayArgs(process.argv.slice(2));
+if (replayOptions) startReplay(replayOptions);
+else main();
