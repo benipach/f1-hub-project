@@ -92,7 +92,7 @@ npm install
 npm start        # ws://localhost:8080, health check at http://localhost:8080/health
 ```
 
-Then open `live.html?relay=ws://localhost:8080`. The page remembers that relay on this device; open `live.html?relay=` to go back to the default.
+Then open `http://localhost:3000/live?relay=ws://localhost:8080`. Leave out the `.html`: `serve` redirects `live.html` to `/live` and drops the `?relay=` on the way, so the page would connect to the production relay instead. The page remembers that relay on this device; open `/live?relay=` to go back to the default.
 
 To work on the live page without a live session, replay a past one from F1's archive (from `server/`):
 
