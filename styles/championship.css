@@ -157,7 +157,9 @@
 
 .standings-table tbody tr:last-child td { border-bottom: none; }
 
-.standings-table tbody tr:hover td {
+/* Not on the picked row: it keeps its look under the mouse (FOCUS SHARED
+   WITH THE TABLE). */
+.standings-table tbody tr:not(.is-focused):hover td {
     background: rgba(255, 255, 255, 0.035);
 }
 
@@ -494,14 +496,15 @@
 
 /* Under the mouse (or with the mouse over its chart line): a softer
    version of the focus, in the team color, so the table and chart talk
-   about the same driver. */
-.standings-table tbody tr.st-row.is-hover td {
+   about the same driver. Not on the picked row, which keeps its look
+   (the softer hover used to fade it under the mouse). */
+.standings-table tbody tr.st-row.is-hover:not(.is-focused) td {
     background: color-mix(in srgb, var(--row-color) 9%, transparent);
 }
 
 .st-row.is-hover .st-pos { color: var(--row-color); }
 
-.st-row.is-hover td:first-child {
+.st-row.is-hover:not(.is-focused) td:first-child {
     box-shadow: inset 3px 0 0 color-mix(in srgb, var(--row-color) 55%, transparent);
 }
 

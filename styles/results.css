@@ -1018,19 +1018,9 @@
 
 /* ---- SESSION TABS ---- */
 /* Copied from #session-tabs-container / .session-tab-bar in grandprix.css:
-   same typography, same red indicator, same animation and same
-   behavior on mobile. Any change in look is made there and
-   copied here. */
-#results-tabs-container {
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-#results-tabs-container.in-view {
-    opacity: 1;
-    transform: translateY(0);
-}
+   same typography, same red indicator and same behavior on mobile, but
+   without the entrance animation (the tabs just show up). Any change in
+   look is made there and copied here. */
 
 .session-tab-bar {
     position: relative;
