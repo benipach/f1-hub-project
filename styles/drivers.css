@@ -433,38 +433,11 @@
     text-decoration: none;
     background: var(--dc-bg);
     cursor: pointer;
-}
-
-/* Entrance when scrolled into view: the card rises and settles, and then the
-   team strip is drawn from top to bottom. --dc-delay is set by the
-   script to stagger the ones entering together. */
-.drivercard:not(.visible) { opacity: 0; }
-
-.drivercard.visible {
-    animation: dc-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-    animation-delay: var(--dc-delay, 0s);
-}
-
-.drivercard.visible .dc-stripe-left {
-    transform-origin: top;
-    animation: dc-stripe-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-    animation-delay: calc(var(--dc-delay, 0s) + 0.25s);
-}
-
-@keyframes dc-in {
-    from {
-        opacity: 0;
-        transform: translateY(24px) scale(0.97);
-    }
-}
-
-@keyframes dc-stripe-in {
-    from { transform: scaleY(0); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .drivercard.visible,
-    .drivercard.visible .dc-stripe-left { animation: none; }
+    /* Each card on its own layer: the hover repaints only that card (the
+       glows are big blurred shadows) instead of the whole grid. The entrance
+       animation used to do this as a side effect; without it the hover
+       stuttered. */
+    will-change: transform;
 }
 
 .dc-stripe-left {
