@@ -42,7 +42,12 @@ function report() {
   }
   const perHourMB = (n) => ((n / elapsed) * 3600 / 1024 / 1024).toFixed(0);
   console.log(`\n${count} messages in ${elapsed.toFixed(0)} s: ${kb(bytes / elapsed).trim()} KB/s per page`
-    + ` (~${perHourMB(bytes)} MB/hour), ~${perHourMB(deflated)} MB/hour compressed`);
+    + ` (~${perHourMB(bytes)} MB/hour), ~${perHourMB(deflated)} MB/hour if compressed`);
+  // What actually crossed the network: less than the above when the relay
+  // compresses (this client negotiates permessage-deflate, like a browser).
+  const wire = ws._socket?.bytesRead ?? 0;
+  const negotiated = ws.extensions ? ` (extensions: ${ws.extensions})` : " (no compression negotiated)";
+  console.log(`On the wire: ${kb(wire / elapsed).trim()} KB/s (~${perHourMB(wire)} MB/hour)${negotiated}`);
 }
 
 const ws = new WebSocket(url);
