@@ -3,3 +3,6 @@ node_modules/
 .env
 # Relay output saved by hand (node client.js > log.txt)
 log.txt
+
+# Sessions downloaded from F1's archive for replays (server/replay/download.js)
+server/replay/sessions/

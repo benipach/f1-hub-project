@@ -94,6 +94,16 @@ npm start        # ws://localhost:8080, health check at http://localhost:8080/he
 
 Then open `live.html?relay=ws://localhost:8080`. The page remembers that relay on this device; open `live.html?relay=` to go back to the default.
 
+To work on the live page without a live session, replay a past one from F1's archive (from `server/`):
+
+```bash
+node replay/download.js 2026                    # list the season's sessions
+node replay/download.js 2026 bahrain race       # download one (~20 MB, not committed)
+node client.js --replay replay/sessions/2026/2026-10-04_Bahrain_Grand_Prix/2026-10-04_Race --from start
+```
+
+Playback starts when the page connects, with every timestamp moved to the present so the clocks behave as if the session were live. `--from 01:20:00` skips to a point of the recording, `--from start` to a minute before the green flag, and `--speed 4` plays faster. `node replay/ws-stats.js ws://localhost:8080 120` measures what the relay sends to each page.
+
 To rebuild data (from the repo root, after `npm install`):
 
 ```bash
