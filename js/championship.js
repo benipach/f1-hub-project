@@ -339,64 +339,6 @@
         },
     };
 
-    // ── Left-to-right drawing ──
-    // Same entrance as the driver page's form curve (driver-season.js): the
-    // lines (and their dots) are drawn inside a clip that opens from left to
-    // right according to chart.$drawProgress (0 → 1); axes and grid stay
-    // fixed. addDrawIn() starts it when the chart comes into view, so a chart
-    // in a hidden tab (Teams) draws itself when its tab opens.
-    const DRAW_IN_MS = 1200;
-
-    const drawInPlugin = {
-        id: 'champDrawIn',
-        beforeDatasetsDraw(chart){
-            const p = chart.$drawProgress ?? 1;
-            if(p >= 1) return;
-            const { ctx, chartArea } = chart;
-            // From the canvas edge (not the chart area) so the first point
-            // doesn't appear cut in half.
-            const x = chartArea.left + (chartArea.right - chartArea.left) * p;
-            ctx.save();
-            ctx.beginPath();
-            ctx.rect(0, 0, x, chart.height);
-            ctx.clip();
-            chart.$drawClipped = true;
-        },
-        afterDatasetsDraw(chart){
-            if(!chart.$drawClipped) return;
-            chart.$drawClipped = false;
-            chart.ctx.restore();
-        },
-    };
-
-    function addDrawIn(chart){
-        if(matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
-        const ease = t => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-        chart.$drawProgress = 0;
-        chart.draw();
-
-        const run = () => {
-            let start = null;
-            const tick = now => {
-                if(start === null) start = now;
-                const t = Math.min((now - start) / DRAW_IN_MS, 1);
-                chart.$drawProgress = ease(t);
-                if(chart.canvas) chart.draw();
-                if(t < 1 && chart.canvas) requestAnimationFrame(tick);
-            };
-            requestAnimationFrame(tick);
-        };
-
-        const io = new IntersectionObserver(entries => {
-            if(!entries.some(e => e.isIntersecting)) return;
-            io.disconnect();
-            run();
-        }, { threshold: 0.25 });
-        io.observe(chart.canvas);
-        // Disconnected if the chart is thrown away first (year change)
-        chart.$drawObserver = io;
-    }
-
     // Opens or closes a slot by animating its height in WHOLE pixels. With
     // grid-template-rows 0fr→1fr the card's height is fractional
     // on every frame and, since it has border-radius, the bottom edge is drawn
@@ -476,6 +418,27 @@
         return best;
     }
 
+    // Hover mode for the tooltip and the enlarged point, with the same rule
+    // as the line highlight: only when the mouse is near a line's stroke
+    // (seriesNear), and then that line's point closest to the mouse.
+    // Chart.js's 'nearest' picked a point anywhere on the chart, however far,
+    // so a tooltip showed up over empty space.
+    if(window.Chart && !Chart.Interaction.modes.nearSeries){
+        Chart.Interaction.modes.nearSeries = (chart, event) => {
+            const pos = Chart.helpers.getRelativePosition(event, chart);
+            const id = seriesNear(chart, pos.x, pos.y);
+            if(id == null) return [];
+            const datasetIndex = chart.data.datasets.findIndex(ds => ds.seriesId === id);
+            let best = null;
+            chart.getDatasetMeta(datasetIndex).data.forEach((element, index) => {
+                if(element.skip) return;
+                const d = Math.hypot(element.x - pos.x, element.y - pos.y);
+                if(!best || d < best.d) best = { element, datasetIndex, index, d };
+            });
+            return best ? [{ element: best.element, datasetIndex, index: best.index }] : [];
+        };
+    }
+
     function makeChart(canvas, rounds, series, getFocus, onHover){
         // On phones the card is narrow: the chart is almost square (taller)
         // with smaller dots/type so it doesn't feel cramped.
@@ -502,26 +465,33 @@
 
         const chart = new Chart(canvas.getContext('2d'), {
             type: 'line',
-            // drawIn first: its clip has to be open before the series draw.
-            plugins: [drawInPlugin, roundPointsPlugin],
+            plugins: [roundPointsPlugin],
             data: { labels: rounds.map(r => r.code), datasets },
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
-                // No load animation (the lines rising from the bottom): the
-                // entrance is drawInPlugin's. Turned on right after, for the
-                // focus changes.
+                // No entrance animation: the chart shows up already drawn.
+                // Turned on right after, for the focus changes.
                 animation: false,
                 // Hover highlighting is shorter than a tap's:
                 // it has to follow the hand, not arrive later.
-                transitions: { hover: { animation: { duration: 220, easing: 'easeOutQuart' } } },
+                // A size change isn't animated: the Teams chart is built in its
+                // hidden tab at 0×0, and when the tab opened every point
+                // travelled from the corner to its place (the lines "grew").
+                // Coming from 0×0 Chart.js calls it 'attach', not 'resize'.
+                transitions: {
+                    hover: { animation: { duration: 220, easing: 'easeOutQuart' } },
+                    resize: { animation: { duration: 0 } },
+                    attach: { animation: { duration: 0 } },
+                },
                 // Passing near a line highlights it (and its row); far away, nothing.
                 // It's measured against the whole stroke, not just the points.
                 onHover: (event, _els, chart) => onHover?.(seriesNear(chart, event.x, event.y), event.native),
                 aspectRatio: isPhone ? 0.95 : 2.9,
                 // 'index' would show all 22 series together; with this many
-                // lines the tooltip has to talk about just one.
-                interaction: { mode: 'nearest', intersect: false, axis: 'xy' },
+                // lines the tooltip has to talk about just one, and only when
+                // the mouse is near it (nearSeries, above).
+                interaction: { mode: 'nearSeries', intersect: false },
                 scales: {
                     y: {
                         beginAtZero: true,
@@ -589,7 +559,6 @@
             },
         });
         chart.options.animation = { duration: 650, easing: 'easeOutQuart' };
-        addDrawIn(chart);
         return chart;
     }
 
@@ -600,7 +569,6 @@
     function mountPanel({ panel, kind, rounds, series }){
         // Re-render (the year changes on the same panel): throw away the
         // chart and listeners from the previous run, if any.
-        panel._chart?.$drawObserver?.disconnect();
         panel._chart?.destroy();
         panel._abort?.abort();
         const abort = new AbortController();
@@ -659,7 +627,7 @@
                 + ` after <b>${rounds.length}</b> rounds.`
                 + (winners.size ? ` <b>${winners.size}</b> different ${winners.size > 1 ? `${subject}s have` : `${subject} has`} won a race so far.` : '')
                 // On phones the chart can't be touched (championship.css): only the table.
-                + `<span class="champ-hint-full"> Tap a line — or a row in the table — to follow one ${subject}.</span>`
+                + `<span class="champ-hint-full"> Tap a line or a row in the table to follow one ${subject}.</span>`
                 + `<span class="champ-hint-phone"> Tap a row in the table to follow one ${subject}.</span>`;
         })();
 
@@ -747,17 +715,12 @@
             hoverRaf = requestAnimationFrame(() => { hoverRaf = 0; paint('hover'); });
         };
 
-        // Tapping the line (or near it) picks; tapping empty space releases the focus.
+        // Clicking on a line (or right next to it, the same rule as the
+        // hover) picks it; clicking empty space releases the focus.
         canvas.addEventListener('click', event => {
-            const hit = chart.getElementsAtEventForMode(event, 'nearest', { intersect: false, axis: 'xy' }, true)[0];
-            if(!hit) return clearAll();
-
             const rect = canvas.getBoundingClientRect();
-            const dx = (event.clientX - rect.left) - hit.element.x;
-            const dy = (event.clientY - rect.top) - hit.element.y;
-            const id = chart.data.datasets[hit.datasetIndex]?.seriesId;
-
-            if(id && Math.hypot(dx, dy) <= 45) pick(id);
+            const id = seriesNear(chart, event.clientX - rect.left, event.clientY - rect.top);
+            if(id) pick(id);
             else clearAll();
         }, { signal });
 

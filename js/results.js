@@ -347,7 +347,6 @@ function renderSeason(season) {
     // The tabs are measured before the F1 font loads: when it arrives,
     // the buttons change width and the indicator ends up offset. So it re-measures.
     document.fonts?.ready.then(() => moveIndicator(indicator, tabBar.querySelector('.session-tab-btn.active')));
-    wrap.classList.add('in-view');
 }
 
 window.addEventListener('resize', () => {
