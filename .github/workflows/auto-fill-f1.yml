@@ -82,12 +82,20 @@ jobs:
         if: steps.check.outputs.should_run == 'true'
         run: node scripts/build-careers.js
 
+      # seasons-index.json is precomputed from the season files too: races
+      # run, which sessions have results and who leads each season, for the
+      # year selector and the season cards on the Results page. It used to be
+      # left out of this job and fell weeks behind the 2026 results.
+      - name: Rebuild seasons-index.json
+        if: steps.check.outputs.should_run == 'true'
+        run: node scripts/build-seasons-index.js
+
       - name: Commit changes
         if: steps.check.outputs.should_run == 'true'
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add "$SEASON_FILE" data/careers.json
+          git add "$SEASON_FILE" data/careers.json data/seasons-index.json
           git diff --cached --quiet && echo "No changes to commit" && exit 0
           git commit -m "Auto update F1 session data"
           # There may have been other pushes between the checkout and this point.
