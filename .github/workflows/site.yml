@@ -68,6 +68,12 @@ jobs:
         if: steps.plan.outputs.build == 'true'
         run: npm run check
 
+      # Includes checking every file in data/ against its schema, so a
+      # data commit that breaks the contract doesn't get published.
+      - name: Test
+        if: steps.plan.outputs.build == 'true'
+        run: npm test
+
       - name: Build
         if: steps.plan.outputs.build == 'true'
         run: npm run build
