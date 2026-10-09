@@ -1543,8 +1543,8 @@ function updateQualiPanelHeightClass(sessionMeta) {
     else if (part === 2 || part === 3) mapViewContent.classList.add('quali-q2-q3');
 }
 
-// Tyres → "Current set": just the stint the car is on right now (default
-// in Qualifying and Practice, where there's no pit strategy to trace).
+// Tyres → "Current set": just the stint the car is on right now (what the
+// Essential, Compact and Glance profiles show).
 function tyreCompoundBadgeHTML(appLine) {
     const stints = orderedStints(appLine);
     if (stints.length === 0) return '<span class="live-muted">–</span>';
@@ -1597,7 +1597,7 @@ const VIEW_SESSION_DEFAULTS = {
 };
 
 // Format options (segmented buttons in the panel). The first option
-// is the default, except tyres, which depends on the session (see optionDefault).
+// is the default (see optionDefault).
 // dependsOn: the checkbox (or checkboxes: any of them) they depend on; if
 // it's off, the buttons don't
 // even show up (no point choosing how something that isn't shown looks).
@@ -1681,8 +1681,9 @@ const VIEW_OPTIONS = {
 //   - Essential: Full's columns, trimmed down: the status (pit / out) in the
 //     driver's place, only the current set of tyres,
 //     "Int", 1 decimal, lapped cars as "+2 L" and nothing for the leader.
-//   - Compact: the essentials: no sectors, no mini-sectors (the last lap
-//     carries one bar per sector instead), the status (pit / out) in the
+//   - Compact: the essentials: no sectors, no mini-sectors (the lap times
+//     carry one bar per sector instead: the last lap, and in Q/SQ/FP the
+//     best one too), the status (pit / out) in the
 //     driver's place, gap and interval with 1 decimal ("Int", nothing for
 //     the leader), the current set of tyres instead of every stint, tight
 //     side margins.
@@ -1710,8 +1711,8 @@ const VIEW_PROFILES = {
     },
     compact: {
         label: 'Compact',
-        columns: (kind) => ({ number: false, sectors: false, microsectors: false, laps: false, lastLap: kind === 'race' }),
-        options: { statusPlacement: 'name', tyres: 'current', edges: 'tight', lastLapSectors: 'on', gapDecimals: '1', leaderLabel: 'blank', intervalHeader: 'short' },
+        columns: () => ({ number: false, sectors: false, microsectors: false, laps: false }),
+        options: { statusPlacement: 'name', tyres: 'current', edges: 'tight', lastLapSectors: 'on', bestLapSectors: 'on', gapDecimals: '1', leaderLabel: 'blank', intervalHeader: 'short' },
     },
     glance: {
         label: 'Glance',
@@ -1825,8 +1826,7 @@ function sessionKindFromMeta(meta) {
     return 'race';
 }
 
-function optionDefault(name, kind) {
-    if (name === 'tyres') return kind === 'race' ? 'history' : 'current';
+function optionDefault(name) {
     return VIEW_OPTIONS[name].choices[0][0];
 }
 
@@ -1865,7 +1865,7 @@ function buildView(kind, profile, custom) {
     for (const name of Object.keys(VIEW_OPTIONS)) {
         const valid = (value) => optionChoices(name, kind).some(([choice]) => choice === value);
         const saved = custom && custom.options[name];
-        view[name] = valid(saved) ? saved : valid(presetOptions[name]) ? presetOptions[name] : optionDefault(name, kind);
+        view[name] = valid(saved) ? saved : valid(presetOptions[name]) ? presetOptions[name] : optionDefault(name);
     }
     return view;
 }
