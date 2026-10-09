@@ -1,5 +1,15 @@
 {
+  "private": true,
   "type": "module",
+  "workspaces": [
+    "site"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w site",
+    "build": "npm run build -w site",
+    "preview": "npm run preview -w site",
+    "check": "npm run check -w site"
+  },
   "dependencies": {
     "cheerio": "^1.2.0"
   }

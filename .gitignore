@@ -1,4 +1,7 @@
 node_modules/
+# Astro build output and generated types (site/)
+site/dist/
+site/.astro/
 *.bak
 .env
 # Relay output saved by hand (node client.js > log.txt)

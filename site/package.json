@@ -1,0 +1,20 @@
+{
+  "name": "@f1hub/site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^24.19.1",
+    "typescript": "~6.0.3"
+  },
+  "dependencies": {
+    "astro": "^7.3.8",
+    "sirv": "^3.0.2"
+  }
+}
