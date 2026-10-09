@@ -156,7 +156,8 @@
     "country": "monaco"
   },
   "moroccan-gp": {
-    "name": "Moroccan Grand Prix"
+    "name": "Moroccan Grand Prix",
+    "country": "morocco"
   },
   "pacific-gp": {
     "name": "Pacific Grand Prix",
@@ -251,6 +252,7 @@
     "place": "Long Beach"
   },
   "vietnamese-gp": {
-    "name": "Vietnamese Grand Prix"
+    "name": "Vietnamese Grand Prix",
+    "country": "vietnam"
   }
 }

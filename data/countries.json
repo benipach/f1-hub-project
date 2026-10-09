@@ -124,6 +124,11 @@
     "code": "MON",
     "isoCode": "MC"
   },
+  "morocco": {
+    "name": "Morocco",
+    "code": "MAR",
+    "isoCode": "MA"
+  },
   "netherlands": {
     "name": "Netherlands",
     "code": "NED",
@@ -223,5 +228,10 @@
     "name": "Venezuela",
     "code": "VEN",
     "isoCode": "VE"
+  },
+  "vietnam": {
+    "name": "Vietnam",
+    "code": "VIE",
+    "isoCode": "VN"
   }
 }

@@ -285,6 +285,11 @@
     "name": "Larrousse",
     "base": "signes"
   },
+  "leyton-house": {
+    "id": "leyton-house",
+    "name": "Leyton House",
+    "base": "bicester"
+  },
   "ligier": {
     "id": "ligier",
     "name": "Ligier",
@@ -366,6 +371,11 @@
     "id": "martini",
     "name": "Martini",
     "base": "magny-cours"
+  },
+  "onyx": {
+    "id": "onyx",
+    "name": "Onyx",
+    "base": "westergate"
   },
   "osella": {
     "id": "osella",

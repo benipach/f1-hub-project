@@ -36,6 +36,8 @@ const TEAM_SLUG_ALIASES = {
     'footwork':             'arrows',
     'euro-brun':            'eurobrun',
     'moda':                 'andrea-moda',
+    'lambo':                'modena',       // 1991: the Modena team raced the Lambo chassis
+    'venturi':              'larrousse',    // 1992: Larrousse ran as Venturi Larrousse
 };
 
 function slugifyTeam(rawTeam) {
