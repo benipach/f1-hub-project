@@ -210,9 +210,13 @@ function withLapStyle(text, style) {
 }
 
 // A Gap / Interval cell with the format chosen in Customize. P1's "Leader"
-// can also be left empty (Customize → Leader).
-function gapCellDisplay(text, view) {
-    if (text === 'Leader') return view.leaderLabel === 'blank' ? '' : text;
+// can also be left empty, or (Q/SQ/FP only) show P1's best lap, the time
+// everyone else's gap is measured from (Customize → Leader).
+function gapCellDisplay(text, view, leaderTime) {
+    if (text === 'Leader') {
+        if (view.leaderLabel === 'time') return leaderTime || '';
+        return view.leaderLabel === 'blank' ? '' : text;
+    }
     return withLapStyle(withDecimals(text, Number(view.gapDecimals)), view.lappedStyle);
 }
 
@@ -1654,10 +1658,12 @@ const VIEW_OPTIONS = {
         dependsOn: ['gap', 'interval'],
         choices: [['word', '+2 Laps'], ['short', '+2 L']],
     },
+    // A third item lists the sessions a choice exists in: P1's lap time only
+    // means something where the order is by lap time (see optionChoices).
     leaderLabel: {
         label: 'Leader',
         dependsOn: ['gap', 'interval'],
-        choices: [['word', 'Leader'], ['blank', 'Empty']],
+        choices: [['word', 'Leader'], ['blank', 'Empty'], ['time', 'Lap time', ['quali', 'practice']]],
     },
     intervalHeader: {
         label: 'Interval header',
@@ -1680,10 +1686,15 @@ const VIEW_OPTIONS = {
 //     driver's place, gap and interval with 1 decimal ("Int", nothing for
 //     the leader), the current set of tyres instead of every stint, tight
 //     side margins.
-//   - Glance: the bare minimum: position, places gained, the driver in the
-//     team color (no logo) with the status (pit / out) in its place, interval ("Int", 1 decimal,
+//   - Glance: the bare minimum: position, places gained, the driver (white,
+//     with the team logo by the name) with the status (pit / out) in its place, interval ("Int", 1 decimal,
 //     lapped cars as "+2 L", nothing for the leader) and current tyres, with
-//     tight side margins: ready for phones.
+//     tight side margins: ready for phones. In Q/SQ/FP, the gap instead of
+//     the interval.
+// In Q/SQ/FP every profile shows the gap with 3 decimals and P1's lap time
+// in the leader's cell (TIMED_SESSION_OPTIONS): there the point is each
+// driver's time, and how far it is from the fastest one. The status (pit /
+// out) gets its own column there too.
 // Custom: always there; it starts from this device's default profile
 // (custom.base) and keeps only your changes, so the profiles themselves never
 // change. Changing anything by hand while on a profile switches to Custom
@@ -1704,13 +1715,14 @@ const VIEW_PROFILES = {
     },
     glance: {
         label: 'Glance',
-        columns: () => ({
-            number: false, team: false, status: true, gap: false, interval: true, bestLap: false,
+        columns: (kind) => ({
+            number: false, team: true, status: true, gap: kind !== 'race', interval: kind === 'race', bestLap: false,
             lastLap: false, sectors: false, microsectors: false, tyres: true, laps: false,
         }),
-        options: { driverColor: 'team', statusPlacement: 'name', tyres: 'current', gapDecimals: '1', lappedStyle: 'short', leaderLabel: 'blank', intervalHeader: 'short', edges: 'tight' },
+        options: { team: 'inline', statusPlacement: 'name', tyres: 'current', gapDecimals: '1', lappedStyle: 'short', leaderLabel: 'blank', intervalHeader: 'short', edges: 'tight' },
     },
 };
+const TIMED_SESSION_OPTIONS = { gapDecimals: '3', leaderLabel: 'time', statusPlacement: 'column' };
 const PHONE_MEDIA = '(max-width: 900px)';
 
 function deviceDefaultProfile() {
@@ -1818,6 +1830,11 @@ function optionDefault(name, kind) {
     return VIEW_OPTIONS[name].choices[0][0];
 }
 
+// The choices an option offers in this session (see leaderLabel).
+function optionChoices(name, kind) {
+    return VIEW_OPTIONS[name].choices.filter(([, , kinds]) => !kinds || kinds.includes(kind));
+}
+
 // What's actually shown in this session. Columns: Custom's changes, then the
 // profile's, then the session default. Panels: the saved choice or the
 // default. cols holds columns and panels.
@@ -1844,10 +1861,11 @@ function buildView(kind, profile, custom) {
     }
 
     const view = { kind, cols, profile };
+    const presetOptions = kind === 'race' ? preset.options : { ...preset.options, ...TIMED_SESSION_OPTIONS };
     for (const name of Object.keys(VIEW_OPTIONS)) {
-        const valid = (value) => VIEW_OPTIONS[name].choices.some(([choice]) => choice === value);
+        const valid = (value) => optionChoices(name, kind).some(([choice]) => choice === value);
         const saved = custom && custom.options[name];
-        view[name] = valid(saved) ? saved : valid(preset.options[name]) ? preset.options[name] : optionDefault(name, kind);
+        view[name] = valid(saved) ? saved : valid(presetOptions[name]) ? presetOptions[name] : optionDefault(name, kind);
     }
     return view;
 }
@@ -1946,14 +1964,14 @@ function buildTableColumns(view) {
     // samples too, so the column is only as wide as it needs to be).
     if (cols.gap) {
         add('<th class="live-col-roomy live-num">Gap</th>',
-            (r) => `<td class="live-muted live-col-roomy live-num">${r.retired ? '' : gapCellDisplay(r.gapText, view)}</td>`,
-            { samples: ['Leader', '+100.000', '+20 Laps'].map((s) => gapCellDisplay(s, view)) });
+            (r) => `<td class="live-muted live-col-roomy live-num">${r.retired ? '' : gapCellDisplay(r.gapText, view, r.bestLap.Value)}</td>`,
+            { samples: ['Leader', '+100.000', '+20 Laps'].map((s) => gapCellDisplay(s, view, '1:40.000')) });
     }
 
     if (cols.interval) {
         add(`<th class="live-col-roomy live-num">${view.intervalHeader === 'short' ? 'Int' : 'Interval'}</th>`,
-            (r) => `<td class="live-muted live-col-roomy live-num">${r.retired ? '' : gapCellDisplay(r.intervalText, view)}</td>`,
-            { samples: ['Leader', '+40.000', '+20 Laps'].map((s) => gapCellDisplay(s, view)) });
+            (r) => `<td class="live-muted live-col-roomy live-num">${r.retired ? '' : gapCellDisplay(r.intervalText, view, r.bestLap.Value)}</td>`,
+            { samples: ['Leader', '+40.000', '+20 Laps'].map((s) => gapCellDisplay(s, view, '1:40.000')) });
     }
 
     if (cols.bestLap) {
@@ -4584,13 +4602,15 @@ function currentSessionKind() {
 // How columns are grouped in the panel (the TABLE order is still
 // VIEW_COLUMNS'). Each format option goes right below what it
 // modifies: "Driver names" inside Driver, the Team style below
-// Team, the tyres style below Tyres.
+// Team, the tyres style below Tyres. What Gap and Interval share (decimals,
+// lapped cars, leader) goes below Gap, the column the timed sessions and
+// Glance's phones lean on; it still shows with only Interval on.
 const VIEW_PANEL_GROUPS = [
     { title: 'Driver', keys: ['pos', 'driver', 'number', 'team', 'status'] },
     { title: 'Timing', keys: ['gap', 'interval', 'bestLap', 'lastLap', 'sectors', 'microsectors'] },
     { title: 'Race', keys: ['delta', 'tyres', 'laps'] },
 ];
-const VIEW_OPTION_AFTER = { driver: ['driverName', 'driverColor'], team: ['team'], status: ['statusPlacement'], interval: ['intervalHeader', 'gapDecimals', 'lappedStyle', 'leaderLabel'], bestLap: ['bestLapSectors'], lastLap: ['lastLapSectors'], tyres: ['tyres'] };
+const VIEW_OPTION_AFTER = { driver: ['driverName', 'driverColor'], team: ['team'], status: ['statusPlacement'], gap: ['gapDecimals', 'lappedStyle', 'leaderLabel'], interval: ['intervalHeader'], bestLap: ['bestLapSectors'], lastLap: ['lastLapSectors'], tyres: ['tyres'] };
 
 // One row: name on the left, toggle on the right. The fixed ones
 // (Position, Driver) get a lock instead of the toggle; the ones that don't
@@ -4650,7 +4670,7 @@ function viewOptionHTML(name, view) {
         <div class="lvp-option"${attrs(opt.unlessOn ? { unless: opt.unlessOn } : {})}>
             <span class="lvp-option-label" id="lvp-label-${name}">${opt.label}</span>
             <div class="lvp-segmented" role="radiogroup" aria-labelledby="lvp-label-${name}">
-                ${opt.choices.map(([value, text]) => `
+                ${optionChoices(name, view.kind).map(([value, text]) => `
                     <label class="lvp-seg">
                         <input type="radio" name="lvp-${name}" data-option="${name}" value="${value}"${view[name] === value ? ' checked' : ''}>
                         <span>${text}</span>
