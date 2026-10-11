@@ -641,25 +641,53 @@ function lastLapSectorTimes(line) {
     return [0, 1, 2].map((i) => (i < live ? node(i).PreviousValue : node(i).Value) || null);
 }
 
-// The feed sends the best lap's time but not its sectors: they're kept here
-// as laps finish (num → { lap, times }), and only count while that lap is
-// still the driver's best. Opening the page mid-session, a best lap set
-// before has no sectors until the driver improves it: its bars stay grey.
-const bestLapSectorTimes = {};
+// A sector's color (its OverallFastest / PersonalFastest flags, or how it
+// compares with the bests) only holds for the lap that's on screen, and the
+// feed sends the best lap's time but not its sectors. So each finished lap's
+// bars are drawn once, the moment it ends, while all three sectors still
+// hold it (Value, not PreviousValue): colored as they were when the lap was
+// set, so a sector that was a personal best stays green after the driver
+// beats it on another lap. Kept per driver (num → { key, lap, bars }): the
+// last lap, and the best one while it's still the driver's best.
+// - Opened mid-lap, the last lap isn't frozen until the next one ends: in
+//   the meantime its bars are colored live.
+// - Opening the page mid-session, a best lap set before has no sectors
+//   until the driver improves it: its bars stay grey.
+const lastLapBars = {};
+const bestLapBars = {};
 
-function rememberBestLapSectors(num, line) {
+function rememberLapBars(num, line) {
     const lap = line.LastLapTime && line.LastLapTime.Value;
+    if (!lap) return;
+    // Two laps in a row can have the same time: the lap count tells them apart.
+    const key = `${line.NumberOfLaps ?? ''}|${lap}`;
+    if (!lastLapBars[num] || lastLapBars[num].key !== key) {
+        const sectors = line.Sectors && typeof line.Sectors === 'object' ? line.Sectors : {};
+        const allCurrent = [0, 1, 2].every((i) => {
+            const n = sectors[i] ?? sectors[String(i)];
+            return n && typeof n === 'object' && n.Value;
+        });
+        const { live, times } = displayedSectors(line);
+        const lapMs = lapTimeToMs(lap);
+        const sumMs = times.reduce((sum, v) => sum + (lapTimeToMs(v) ?? NaN), 0);
+        if (allCurrent && live == null && lapMs != null && Math.abs(sumMs - lapMs) <= LAP_SUM_TOLERANCE_MS) {
+            lastLapBars[num] = { key, lap, bars: lapSectorBarsHTML(num, times) };
+        }
+    }
+    const kept = lastLapBars[num];
     const best = line.BestLapTime && line.BestLapTime.Value;
-    if (!lap || lap !== best) return;
-    const times = lastLapSectorTimes(line);
-    const lapMs = lapTimeToMs(lap);
-    const sumMs = times.reduce((sum, v) => sum + (lapTimeToMs(v) ?? NaN), 0);
-    if (lapMs != null && Math.abs(sumMs - lapMs) <= LAP_SUM_TOLERANCE_MS) bestLapSectorTimes[num] = { lap, times };
+    if (kept && kept.key === key && lap === best) bestLapBars[num] = kept;
 }
 
-function bestLapSectors(num, bestValue) {
-    const kept = bestLapSectorTimes[num];
-    return kept && kept.lap === bestValue ? kept.times : [null, null, null];
+function lastLapBarsHTML(num, line) {
+    const kept = lastLapBars[num];
+    const lap = line.LastLapTime && line.LastLapTime.Value;
+    return kept && kept.lap === lap ? kept.bars : lapSectorBarsHTML(num, lastLapSectorTimes(line));
+}
+
+function bestLapBarsHTML(num, bestValue) {
+    const kept = bestLapBars[num];
+    return kept && kept.lap === bestValue ? kept.bars : lapSectorBarsHTML(num, [null, null, null]);
 }
 
 const LAP_BAR_COLOR = { 'live-lap--fastest': 'purple', 'live-lap--pb': 'green', 'live-lap--normal': 'yellow' };
@@ -1976,13 +2004,13 @@ function buildTableColumns(view) {
 
     if (cols.bestLap) {
         add(`<th class="live-col-best ${pad('bestLap')} live-num">Best Lap</th>`,
-            (r) => `<td class="live-col-best ${r.bestLapClass} ${pad('bestLap')} live-num">${lapCellContent(r.bestLap.Value ?? '-', view.bestLapSectors === 'on' && r.bestLap.Value ? lapSectorBarsHTML(r.num, bestLapSectors(r.num, r.bestLap.Value)) : '')}</td>`,
+            (r) => `<td class="live-col-best ${r.bestLapClass} ${pad('bestLap')} live-num">${lapCellContent(r.bestLap.Value ?? '-', view.bestLapSectors === 'on' && r.bestLap.Value ? bestLapBarsHTML(r.num, r.bestLap.Value) : '')}</td>`,
             { samples: ['1:40.000'] });
     }
 
     if (cols.lastLap) {
         add(`<th class="${pad('lastLap')} live-num">Last Lap</th>`,
-            (r) => `<td class="${r.retired ? '' : r.lapClass} ${pad('lastLap')} live-num">${r.retired ? '' : lapCellContent(r.lastLap.Value ?? '-', view.lastLapSectors === 'on' && r.lastLap.Value ? lapSectorBarsHTML(r.num, lastLapSectorTimes(r.line)) : '')}</td>`,
+            (r) => `<td class="${r.retired ? '' : r.lapClass} ${pad('lastLap')} live-num">${r.retired ? '' : lapCellContent(r.lastLap.Value ?? '-', view.lastLapSectors === 'on' && r.lastLap.Value ? lastLapBarsHTML(r.num, r.line) : '')}</td>`,
             { samples: ['1:40.000'] });
     }
 
@@ -2179,7 +2207,7 @@ function render() {
             // Whoever has already taken the chequered flag shows their final lap
             // (see relayFinishedLines); everyone else, the live line.
             const shown = shownTimingLine(num, line);
-            rememberBestLapSectors(num, shown);
+            rememberLapBars(num, shown);
             const lastLap = shown.LastLapTime || {};
             const bestLap = shown.BestLapTime || {};
             const bestMs = lapTimeToMs(bestLap.Value);
