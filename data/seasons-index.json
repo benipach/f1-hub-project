@@ -891,7 +891,7 @@
     {
       "year": 2026,
       "rounds": 23,
-      "raced": 16,
+      "raced": 17,
       "sessions": [
         "fp1",
         "fp2",
@@ -904,7 +904,7 @@
       "driverChampion": {
         "id": "kimi-antonelli",
         "name": "Kimi Antonelli",
-        "points": 320,
+        "points": 340,
         "wins": 8,
         "teamId": "mercedes",
         "teamName": "Mercedes-AMG"
@@ -912,7 +912,7 @@
       "teamChampion": {
         "id": "mercedes",
         "name": "Mercedes-AMG",
-        "points": 556
+        "points": 578
       }
     }
   ]
