@@ -17,13 +17,6 @@ on:
 permissions:
   contents: write
 
-env:
-  # The season file lives in data/seasons/ since the historical years were
-  # added. This path used to be hardcoded in three separate steps and was
-  # left pointing to data/season2026.json, which no longer exists: the
-  # check crashed, the whole job failed and no race got loaded.
-  SEASON_FILE: data/seasons/season2026.json
-
 jobs:
   update-season:
     runs-on: ubuntu-latest
@@ -32,6 +25,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      # The season to fill is whatever data/latest.json points to, so moving
+      # to a new year is just updating that file (and adding the season file).
+      # The year and the path used to be hardcoded here: in January this job
+      # would have kept looking for 2026 results.
+      - name: Find the current season
+        run: |
+          YEAR=$(node -p "require('./data/latest.json').latestSeason")
+          echo "SEASON_YEAR=$YEAR" >> "$GITHUB_ENV"
+          echo "SEASON_FILE=data/seasons/season$YEAR.json" >> "$GITHUB_ENV"
+          echo "Current season: $YEAR"
 
       - name: Check if there is pending work
         id: check
@@ -43,7 +47,7 @@ jobs:
               const fs = require('node:fs');
               const path = process.env.SEASON_FILE;
               if (!fs.existsSync(path)) {
-                console.error(path + ' does not exist: check env.SEASON_FILE in this workflow.');
+                console.error(path + ' does not exist: data/latest.json points to a season with no file.');
                 process.exit(1);
               }
               const data = JSON.parse(fs.readFileSync(path, 'utf8'));
@@ -69,7 +73,8 @@ jobs:
       - name: Run OpenF1 auto fill
         if: steps.check.outputs.should_run == 'true'
         run: |
-          FLAGS="$SEASON_FILE --year=2026 --once --weather --no-backup --skip=bahrain-gp,saudi-arabian-gp"
+          # Cancelled GPs are skipped by their `cancelled` flag in the season file.
+          FLAGS="$SEASON_FILE --year=$SEASON_YEAR --once --weather --no-backup"
           if [ "${{ github.event.inputs.force_weather }}" = "true" ]; then
             FLAGS="$FLAGS --force-weather"
           fi

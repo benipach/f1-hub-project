@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * auto-fill-missing.js
- * Fills in results and raw weather per session in data/seasons/season2026.json.
+ * Fills in results and raw weather per session in a season file
+ * (data/seasons/season{year}.json; the workflow passes the one in data/latest.json).
  */
 import { readFile, writeFile, copyFile } from "node:fs/promises";
 import {
@@ -20,8 +21,6 @@ import {
   getJSON,
 } from "./openf1-fill-adapted.js";
 
-const DEFAULT_SKIP_GP_KEYS = new Set(["bahrain-gp", "saudi-arabian-gp"]);
-
 function parseArgs(argv) {
   const positional = [];
   const flags = {
@@ -37,7 +36,9 @@ function parseArgs(argv) {
     backfillGrid: false,
     normalizeTeams: false,
     fixQualyStatus: false,
-    skip: new Set(DEFAULT_SKIP_GP_KEYS),
+    // Cancelled GPs are skipped by their `cancelled` flag; this is for
+    // skipping others by hand (--skip=key1,key2).
+    skip: new Set(),
   };
 
   for (const arg of argv) {
@@ -45,7 +46,7 @@ function parseArgs(argv) {
     else if (arg.startsWith("--out=")) flags.out = arg.slice("--out=".length);
     else if (arg.startsWith("--skip=")) {
       const keys = arg.slice("--skip=".length).split(",").map((k) => k.trim()).filter(Boolean);
-      flags.skip = new Set([...DEFAULT_SKIP_GP_KEYS, ...keys]);
+      flags.skip = new Set(keys);
     }
     else if (arg === "--weather") flags.weather = true;
     // Manual backfill: re-requests weather even if the session already has saved data
@@ -246,6 +247,12 @@ async function runOnce(args) {
   if (args.forceWeather) console.log("🔁 --force-weather on: re-requesting weather even if it already exists (backfill)");
 
   for (const [gpKey, gp] of Object.entries(season)) {
+    // A cancelled GP will never have results. It used to be a hardcoded skip
+    // list (bahrain-gp, saudi-arabian-gp) that would have been wrong next year.
+    if (gp?.cancelled === true) {
+      console.log(`⏭️ ${gpKey}: cancelled`);
+      continue;
+    }
     if (args.skip.has(gpKey)) {
       console.log(`⏭️ ${gpKey}: skip list`);
       continue;
