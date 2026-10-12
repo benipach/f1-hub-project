@@ -74,6 +74,30 @@ export function parseRaceOutcome(raw: string): RaceOutcome {
     return { kind: 'time', time: parseLapTime(raw) };
 }
 
+/** The timing fields of a practice row, in either of its two shapes. */
+export type RawPracticeTiming = { readonly pos: number; readonly time?: string; readonly lapTime?: string };
+
+/**
+ * Each driver's best lap in a practice session, in milliseconds (null when
+ * they set no time), aligned with `rows`.
+ *
+ * Practice comes in two shapes. Scraped from formula1.com (up to 2025): the
+ * leader's lap in `time` and a gap for everyone else ("+0.599s"), so a
+ * driver's lap is the leader's plus their gap. OpenF1 (2026): each driver's
+ * own lap in `lapTime`.
+ */
+export function practiceBestLaps(rows: readonly RawPracticeTiming[]): (number | null)[] {
+    const leader = rows.find((row) => row.time !== undefined && !row.time.startsWith('+'));
+    const leaderTime = leader ? parseLapTime(leader.time) : null;
+
+    return rows.map((row) => {
+        if (row.lapTime !== undefined) return parseLapTime(row.lapTime);
+        if (row.time === undefined || !row.time.startsWith('+')) return parseLapTime(row.time);
+        if (leaderTime === null) throw new Error(`Gap "${row.time}" (P${row.pos}) with no leader time to add it to`);
+        return leaderTime + parseGap(row.time);
+    });
+}
+
 /** Milliseconds back to "1:20.267", "53.377" or "1:42:00.785". */
 export function formatLapTime(ms: number): string {
     const millis = String(ms % 1000).padStart(3, '0');

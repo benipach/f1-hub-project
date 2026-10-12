@@ -2,7 +2,7 @@
 
 import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { formatLapTime, parseGap, parseLaps, parseLapTime, parseRaceOutcome } from '../src/data/results';
+import { formatLapTime, parseGap, parseLaps, parseLapTime, parseRaceOutcome, practiceBestLaps, type RawPracticeTiming } from '../src/data/results';
 
 const SEASONS = new URL('../../data/seasons/', import.meta.url);
 
@@ -159,5 +159,70 @@ describe('parseRaceOutcome', () => {
         expect(cut.map((r) => `${r.year} ${r.gp}`)).toEqual([
             '1998 australian-gp', '1998 french-gp', '1998 austrian-gp', '1998 german-gp', '2002 united-states-gp',
         ]);
+    });
+});
+
+describe('practiceBestLaps', () => {
+    it('formula1.com shape: the leader plus each gap', () => {
+        expect(practiceBestLaps([
+            { pos: 1, time: '1:20.000' },
+            { pos: 2, time: '+0.599s' },
+            { pos: 3, time: '+1:02.001' },
+            { pos: 4, time: 'No time' },
+        ])).toEqual([80_000, 80_599, 142_001, null]);
+    });
+
+    it("OpenF1 shape: each driver's own lap", () => {
+        expect(practiceBestLaps([
+            { pos: 1, lapTime: '1:19.500' },
+            { pos: 2, lapTime: '1:19.812' },
+            { pos: 3, lapTime: 'No time' },
+        ])).toEqual([79_500, 79_812, null]);
+    });
+
+    it('a gap with no leader time is an error, not a guess', () => {
+        expect(() => practiceBestLaps([{ pos: 1, time: 'No time' }, { pos: 2, time: '+0.100s' }])).toThrow('no leader time');
+    });
+
+    // Every practice session in data/, grouped back into sessions.
+    const sessions = new Map<string, { pos: number; row: RawPracticeTiming }[]>();
+    for (const r of rows) {
+        if (!r.key.startsWith('fp')) continue;
+        const id = `${r.year} ${r.gp} ${r.key}`;
+        const list = sessions.get(id) ?? [];
+        list.push({ pos: r.row['pos'] as number, row: r.row as RawPracticeTiming });
+        sessions.set(id, list);
+    }
+
+    it('finds every practice session', () => {
+        expect(sessions.size).toBe(1755); // on 2026-10-12; grows with each new practice session
+    });
+
+    // Errors in the source data, not in practiceBestLaps (found 2026-10-12,
+    // to check against formula1.com; see "Arreglos de datos" B.9 in the plan):
+    //   - 1992 Spain FP2: Grouillard is P20 at +48.121 and Berger P21 at
+    //     +24.854, so one of the two gaps is wrong.
+    //   - 1998 Canada FP2: Coulthard is P2 with "No time" after 32 laps.
+    // When they're fixed in data/, this test fails: drop them from the list.
+    const KNOWN_SOURCE_ERRORS = ['1992 spanish-gp fp2 P21', '1998 canadian-gp fp2 P3'];
+
+    // If adding the gap to the leader's lap were the wrong reading, the laps
+    // wouldn't come out in classification order.
+    it('in every session, the laps come out in classification order, untimed drivers last', () => {
+        const off: string[] = [];
+        for (const [id, list] of sessions) {
+            const sorted = [...list].sort((a, b) => a.pos - b.pos);
+            const laps = practiceBestLaps(sorted.map((entry) => entry.row));
+            let seenUntimed = false;
+            for (const [i, lap] of laps.entries()) {
+                if (lap === null) { seenUntimed = true; continue; }
+                const previous = laps[i - 1];
+                if (seenUntimed || (previous != null && lap < previous)) {
+                    off.push(`${id} P${sorted[i]!.pos}`);
+                    break;
+                }
+            }
+        }
+        expect(off.sort()).toEqual(KNOWN_SOURCE_ERRORS);
     });
 });
