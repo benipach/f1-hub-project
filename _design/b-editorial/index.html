@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F1 Hub — Editorial direction</title>
+<meta name="description" content="F1 Hub home page redesign, direction B: Editorial / Magazine.">
+<link rel="icon" href="../../img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&display=swap" rel="stylesheet">
+<style>
+/* =========================================================================
+   F1 HUB — Direction B: "Editorial / Magazine"
+   Light "paper" base: the site reads like a printed race-weekend magazine.
+   Live is the only thing allowed to break that calm (black + red, broadcast type).
+   ========================================================================= */
+@font-face { font-family: 'Formula1'; src: url('../../fonts/Formula1-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Formula1'; src: url('../../fonts/Formula1-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Formula1'; src: url('../../fonts/Formula1-Black.ttf') format('truetype'); font-weight: 900; font-display: swap; }
+@font-face { font-family: 'Formula1'; src: url('../../fonts/Formula1-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+
+:root {
+  --paper: #F2EFE8;
+  --paper-2: #E9E4DA;
+  --paper-3: #DDD6C8;
+  --ink: #121212;
+  --ink-2: #38352F;
+  --ink-3: #5C574F;        /* 5.6:1 on paper */
+  --rule: #C9C1B2;
+  --red: #E10600;          /* brand red: fills, display sizes */
+  --red-ink: #B80500;      /* red for small text on paper (6.4:1) */
+  --night: #0C0C0D;
+  --night-2: #17171A;
+  --night-3: #242428;
+  --on-night: #F2EFE8;
+  --on-night-2: #ABA59B;   /* 8:1 on night */
+
+  --display: 'Instrument Serif', 'Times New Roman', serif;
+  --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --f1: 'Formula1', 'Arial Narrow', Arial, sans-serif;
+
+  --gut: clamp(16px, 4vw, 56px);
+  --col-gap: clamp(16px, 2.2vw, 32px);
+  --max: 1440px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 17px/1.55 var(--serif);
+  font-optical-sizing: auto;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+h1, h2, h3, p, ol, ul, dl, dd, figure { margin: 0; padding: 0; }
+ol, ul { list-style: none; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gut); }
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); }
+
+/* Type primitives ------------------------------------------------------- */
+.kicker { font: 700 11px/1.2 var(--f1); letter-spacing: .14em; text-transform: uppercase; }
+.label  { font: 400 11px/1.3 var(--f1); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.display { font-family: var(--display); font-weight: 400; letter-spacing: -.012em; line-height: .88; }
+.display em { font-style: italic; }
+.deck { font: 400 clamp(18px, 1.5vw, 21px)/1.45 var(--serif); color: var(--ink-2); }
+.caption { font: italic 400 14px/1.45 var(--serif); color: var(--ink-3); }
+.caption b { font: 700 10px/1 var(--f1); letter-spacing: .12em; text-transform: uppercase; font-style: normal; color: var(--ink); margin-right: 6px; }
+.arrow-link {
+  display: inline-flex; align-items: center; gap: 10px;
+  font: 700 12px/1 var(--f1); letter-spacing: .12em; text-transform: uppercase;
+  text-decoration: none; padding: 6px 0; border-bottom: 2px solid var(--ink);
+  transition: color .2s, border-color .2s;
+}
+.arrow-link:hover { color: var(--red-ink); border-color: var(--red); }
+.arrow-link span { transition: transform .2s; }
+.arrow-link:hover span { transform: translateX(4px); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* =========================================================================
+   LIVE STRIP (site-wide component, only when a session is running)
+   ========================================================================= */
+.live-strip { display: none; background: var(--red); color: #fff; text-decoration: none; }
+.live-strip .wrap { display: flex; align-items: center; gap: 14px; min-height: 40px; font: 400 12px/1.3 var(--f1); letter-spacing: .06em; }
+.live-strip b { font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+.live-strip .go { margin-left: auto; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; white-space: nowrap; }
+.live-strip:hover .go { text-decoration: underline; }
+body[data-state="live"] .live-strip { display: block; }
+.ldot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; position: relative; }
+.ldot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: currentColor; animation: ping 1.4s ease-out infinite; }
+@keyframes ping { from { transform: scale(1); opacity: .8; } to { transform: scale(3); opacity: 0; } }
+
+/* =========================================================================
+   MASTHEAD
+   ========================================================================= */
+.topline { border-bottom: 1px solid var(--rule); }
+.topline .wrap { display: flex; justify-content: space-between; gap: 24px; padding-top: 9px; padding-bottom: 9px; }
+.topline span { font: 400 10.5px/1.3 var(--f1); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.topline strong { color: var(--ink); font-weight: 700; }
+
+.masthead { position: sticky; top: 0; z-index: 60; background: var(--paper); border-bottom: 2px solid var(--ink); }
+.masthead .wrap { display: flex; align-items: center; gap: 28px; height: 72px; }
+.brand { display: flex; align-items: center; gap: 18px; text-decoration: none; flex: none; }
+.plate { background: var(--night); padding: 10px 13px; display: inline-flex; }
+.plate img { height: 21px; width: auto; }
+.brand-sub { font: italic 400 16px/1.2 var(--serif); color: var(--ink-2); max-width: 15ch; }
+.mainnav { margin-left: auto; }
+.mainnav ul { display: flex; gap: clamp(18px, 2.4vw, 36px); align-items: center; }
+.mainnav a {
+  position: relative; display: inline-flex; align-items: center; gap: 8px;
+  font: 700 12px/1 var(--f1); letter-spacing: .13em; text-transform: uppercase;
+  text-decoration: none; padding: 10px 0;
+}
+.mainnav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 2px; height: 2px; background: var(--red); transform: scaleX(0); transform-origin: left; transition: transform .25s; }
+.mainnav a:hover::after, .mainnav a[aria-current]::after { transform: scaleX(1); }
+.nav-live .ldot { display: none; color: var(--red); }
+body[data-state="live"] .nav-live { color: var(--red-ink); }
+body[data-state="live"] .nav-live .ldot { display: block; }
+.nav-live .live-pill { display: none; font: 900 9px/1 var(--f1); letter-spacing: .1em; background: var(--red); color: #fff; padding: 4px 5px 3px; }
+body[data-state="live"] .nav-live .live-pill { display: inline-block; }
+.menu-btn { display: none; margin-left: auto; align-items: center; gap: 10px; background: none; border: 0; padding: 10px 0; cursor: pointer; font: 700 12px/1 var(--f1); letter-spacing: .13em; text-transform: uppercase; }
+.menu-btn i { display: grid; gap: 5px; }
+.menu-btn i::before, .menu-btn i::after { content: ""; width: 22px; height: 2px; background: currentColor; }
+.menu-btn .ldot { display: none; color: var(--red); }
+body[data-state="live"] .menu-btn .ldot { display: block; }
+
+/* Mobile "contents" sheet */
+.sheet { position: fixed; inset: 0; z-index: 90; background: var(--paper); display: flex; flex-direction: column; padding: 0 var(--gut) 32px; transform: translateY(-100%); visibility: hidden; transition: transform .35s ease, visibility 0s .35s; overflow-y: auto; }
+.sheet.open { transform: none; visibility: visible; transition: transform .35s ease; }
+.sheet-top { display: flex; align-items: center; justify-content: space-between; height: 72px; border-bottom: 2px solid var(--ink); }
+.sheet-close { background: none; border: 0; cursor: pointer; font: 700 12px/1 var(--f1); letter-spacing: .13em; text-transform: uppercase; padding: 10px 0; }
+.sheet .label { margin: 28px 0 8px; }
+.sheet ol li { border-bottom: 1px solid var(--rule); }
+.sheet ol a { display: flex; align-items: baseline; gap: 16px; padding: 14px 0; text-decoration: none; }
+.sheet ol a .n { font: 700 11px/1 var(--f1); color: var(--ink-3); letter-spacing: .1em; width: 22px; }
+.sheet ol a .t { font: 400 44px/1 var(--display); }
+.sheet ol a .ldot { display: none; color: var(--red); align-self: center; margin-left: auto; }
+body[data-state="live"] .sheet ol a .ldot { display: block; }
+.sheet-foot { margin-top: auto; padding-top: 28px; }
+
+/* =========================================================================
+   HERO — shared
+   ========================================================================= */
+[data-for] { display: none; }
+body[data-state="upcoming"] [data-for="upcoming"],
+body[data-state="live"] [data-for="live"],
+body[data-state="result"] [data-for="result"] { display: block; animation: enter .55s ease both; }
+@keyframes enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.kicker-row { display: flex; align-items: center; gap: 14px; margin-bottom: clamp(18px, 2.6vw, 34px); }
+.kicker-row .fill { flex: 1; height: 1px; background: var(--ink); min-width: 20px; }
+.tag { display: inline-block; white-space: nowrap; font: 700 10.5px/1 var(--f1); letter-spacing: .14em; text-transform: uppercase; padding: 6px 8px 5px; background: var(--ink); color: var(--paper); }
+.tag.red { background: var(--red); color: #fff; }
+
+/* =========================================================================
+   HERO — UPCOMING (feature preview)
+   ========================================================================= */
+.hero-up { padding: clamp(24px, 3.4vw, 48px) 0 clamp(48px, 6vw, 96px); }
+.up-head { align-items: end; margin-bottom: clamp(24px, 3vw, 44px); }
+.up-title { grid-column: 1 / span 9; font-size: clamp(54px, 10.2vw, 156px); }
+.up-title span { display: block; }
+.up-title .l2 { padding-left: .9em; }
+.up-title .l2 em { color: var(--ink); }
+.up-meta { grid-column: 10 / -1; padding-bottom: 10px; }
+.up-meta dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; border-top: 1px solid var(--ink); padding-top: 12px; margin-bottom: 18px; }
+.up-meta dt { font: 400 10.5px/1.6 var(--f1); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.up-meta dd { font: 500 15px/1.4 var(--serif); }
+.flag { width: 19px; height: 10px; display: inline-block; vertical-align: 0; margin-left: 4px; box-shadow: 0 0 0 1px rgba(0,0,0,.15); }
+.up-meta .deck { font-size: 17px; }
+
+.up-body { align-items: stretch; }
+.up-photo { grid-column: 1 / span 7; position: relative; }
+.up-photo .frame { position: relative; height: clamp(440px, 44vw, 640px); overflow: hidden; background: var(--paper-3); }
+.up-photo .frame img { width: 100%; height: 100%; object-fit: cover; object-position: 45% 88%; }
+.track-card { position: absolute; left: 0; bottom: 0; background: var(--paper); padding: 18px 22px 16px 0; width: min(300px, 70%); }
+.track-card .label { margin-bottom: 8px; }
+.track-card img.layout { height: 96px; width: auto; margin: 4px 0 14px; }
+.track-card dl { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; border-top: 1px solid var(--ink); padding-top: 12px; }
+.track-card dl div { display: flex; flex-direction: column-reverse; }
+.track-card dd { font: 400 30px/1 var(--display); }
+.track-card dt { font: 400 9.5px/1.3 var(--f1); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-top: 3px; }
+.up-photo figcaption { margin-top: 12px; max-width: 60ch; }
+
+.up-side { grid-column: 8 / -1; display: flex; flex-direction: column; }
+.cd { border-top: 3px solid var(--ink); padding-top: 14px; }
+.cd-label { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin-bottom: 10px; }
+.cd-label .what { font: 500 16px/1.3 var(--serif); }
+.cd-digits { display: flex; align-items: baseline; flex-wrap: nowrap; font: 400 clamp(60px, 6.6vw, 104px)/.9 var(--display); letter-spacing: -.02em; }
+.cd-g { display: flex; align-items: baseline; }
+.cd-n { display: inline-block; min-width: 1.02em; text-align: right; font-variant-numeric: tabular-nums lining-nums; }
+.cd-g:first-child .cd-n { min-width: 0; }
+.cd-u { font: italic 400 clamp(14px, 1.25vw, 18px)/1 var(--serif); color: var(--ink-3); margin: 0 .9em 0 .25em; letter-spacing: 0; }
+.cd-g:last-child .cd-u { margin-right: 0; }
+.cd-g.sec .cd-n { color: var(--red); }
+.cd-race { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rule); font: 400 16px/1.45 var(--serif); color: var(--ink-2); }
+.cd-race b { font: 700 13px/1 var(--f1); letter-spacing: .04em; color: var(--ink); white-space: nowrap; }
+
+.prog { margin-top: 28px; }
+.prog-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.prog-head h3 { font: italic 400 22px/1.2 var(--serif); }
+.prog ol li { display: grid; grid-template-columns: 76px 1fr auto; align-items: baseline; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--rule); }
+.prog ol li:first-child { border-top: 1px solid var(--ink); }
+.prog .pd { font: 400 11px/1.2 var(--f1); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.prog .ps { font: 500 18px/1.2 var(--serif); display: flex; align-items: baseline; gap: 10px; }
+.prog .pt { font: 600 18px/1 var(--serif); font-variant-numeric: tabular-nums; }
+.prog li.is-next .ps::after { content: "Next"; font: 700 9.5px/1 var(--f1); letter-spacing: .12em; text-transform: uppercase; color: #fff; background: var(--red); padding: 4px 6px 3px; transform: translateY(-2px); }
+.prog li.is-next .pt { color: var(--red-ink); }
+.prog li.race .ps { font-weight: 600; }
+.up-actions { display: flex; flex-wrap: wrap; gap: 14px 28px; margin-top: auto; padding-top: 28px; }
+.prev-note { margin-top: 18px; padding: 14px 16px; background: var(--paper-2); font: 400 15px/1.45 var(--serif); color: var(--ink-2); }
+.prev-note a { color: var(--ink); font-weight: 600; text-decoration-color: var(--red); text-underline-offset: 3px; }
+
+/* =========================================================================
+   HERO — RESULT (cover story)
+   ========================================================================= */
+.hero-res { padding-bottom: clamp(48px, 6vw, 96px); }
+.cover { position: relative; height: clamp(540px, 76vh, 800px); background: var(--night); overflow: hidden; color: var(--on-night); }
+.cover > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; }
+.cover::before { content: ""; position: absolute; inset: 0; z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(8,8,9,.92) 0%, rgba(8,8,9,.78) 26%, rgba(8,8,9,.25) 48%, rgba(8,8,9,0) 62%),
+    linear-gradient(0deg, rgba(8,8,9,.85) 0%, rgba(8,8,9,0) 42%); }
+.cover-in { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding-top: clamp(20px, 2.6vw, 36px); padding-bottom: clamp(24px, 3.4vw, 48px); }
+.cover-top { display: flex; align-items: center; gap: 14px; }
+.cover-top .fill { flex: 1; height: 1px; background: rgba(242,239,232,.55); }
+.cover-top .label { color: var(--on-night); }
+.cover-issue { font: 400 clamp(80px, 9vw, 140px)/.8 var(--display); color: var(--on-night); opacity: .95; margin-top: 18px; }
+.cover-issue small { display: block; font: 400 10.5px/1 var(--f1); letter-spacing: .14em; text-transform: uppercase; color: var(--on-night-2); margin-bottom: 10px; }
+.cover-copy { max-width: min(560px, 44%); }
+.cover-copy .eyebrow { font: 700 11px/1.3 var(--f1); letter-spacing: .14em; text-transform: uppercase; color: var(--on-night); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+.cover-copy .eyebrow::before { content: ""; width: 28px; height: 3px; background: var(--red); }
+.cover h1 { font-size: clamp(64px, 8.6vw, 136px); color: #fff; }
+.cover h1 em { color: #fff; }
+.cover .deck { color: #E4DFD5; margin-top: 18px; max-width: 34ch; }
+.cover-credit { position: absolute; right: var(--gut); bottom: 14px; z-index: 2; font: italic 400 12px/1 var(--serif); color: rgba(242,239,232,.8); }
+
+.res-band { margin-top: clamp(28px, 3.4vw, 48px); }
+.res-band-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; border-top: 3px solid var(--ink); padding-top: 12px; margin-bottom: 20px; }
+.res-band-head h2 { font: italic 400 26px/1.1 var(--serif); }
+.podium { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: var(--col-gap); }
+.pod { position: relative; display: grid; grid-template-columns: 1fr auto; background: var(--paper-2); border-top: 4px solid var(--team); min-height: 250px; overflow: hidden; }
+.pod-body { padding: 18px 0 20px 22px; display: flex; flex-direction: column; position: relative; z-index: 1; }
+.pod-pos { font: 400 clamp(96px, 9vw, 150px)/.78 var(--display); color: var(--ink); }
+.pod.p1 .pod-pos { color: var(--red); }
+.pod-name { margin-top: auto; font: 400 clamp(30px, 2.6vw, 40px)/.95 var(--display); }
+.pod-name small { display: block; font: 400 10.5px/1 var(--f1); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px; }
+.pod-team { display: flex; align-items: center; gap: 8px; margin-top: 8px; font: 400 15px/1.2 var(--serif); color: var(--ink-2); }
+.chip { width: 10px; height: 10px; background: var(--team); box-shadow: inset 0 0 0 1px rgba(0,0,0,.35); flex: none; }
+.pod-time { margin-top: 12px; font: 600 17px/1 var(--serif); font-variant-numeric: tabular-nums; }
+.pod-time .fl { display: inline-block; margin-left: 8px; font: 700 9.5px/1 var(--f1); letter-spacing: .1em; text-transform: uppercase; background: #6A1B9A; color: #fff; padding: 4px 6px 3px; vertical-align: 2px; }
+.pod-fig { width: clamp(120px, 11vw, 170px); align-self: end; height: 100%; max-height: 300px; overflow: hidden; }
+.pod-fig img { width: 100%; height: auto; object-fit: cover; object-position: top; margin-top: 14px; }
+
+.res-more { margin-top: clamp(28px, 3.4vw, 44px); row-gap: 32px; }
+.agate-wrap { grid-column: 1 / span 8; }
+.agate { width: 100%; border-collapse: collapse; font: 400 15px/1.3 var(--serif); }
+.agate caption { text-align: left; padding-bottom: 10px; }
+.agate th { font: 400 10px/1 var(--f1); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); text-align: left; padding: 8px 8px 8px 0; border-bottom: 1px solid var(--ink); font-weight: 400; }
+.agate td { padding: 11px 8px 11px 0; border-bottom: 1px solid var(--rule); vertical-align: baseline; }
+.agate td.pos { font: 400 26px/1 var(--display); width: 44px; }
+.agate td.drv { font-weight: 600; font-size: 16px; }
+.agate td.team { color: var(--ink-2); }
+.agate td.team span { display: inline-flex; align-items: center; gap: 8px; }
+.agate td.gap, .agate td.grid-c { font: 500 15px/1 var(--serif); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.agate .delta { font: 700 11px/1 var(--f1); }
+.agate .up { color: #1E6B3A; }
+.agate .down { color: var(--red-ink); }
+.agate .th-r, .agate td.gap, .agate td.grid-c { text-align: right; }
+.agate td.grid-c { padding-right: 0; }
+.agate th:last-child { padding-right: 0; }
+.agate-foot { margin-top: 18px; }
+
+.notebook { grid-column: 9 / -1; background: var(--night); color: var(--on-night); padding: 22px 22px 24px; align-self: start; }
+.notebook h3 { font: italic 400 24px/1.1 var(--serif); margin-bottom: 4px; }
+.notebook .label { color: var(--on-night-2); }
+.notebook ul { margin-top: 14px; }
+.notebook li { display: grid; grid-template-columns: 74px 1fr; gap: 12px; padding: 12px 0; border-top: 1px solid rgba(242,239,232,.18); }
+.notebook .big { font: 400 40px/.9 var(--display); color: #fff; }
+.notebook .big.red { color: #FF4A3D; }
+.notebook p { font: 400 15px/1.4 var(--serif); color: #DCD6CB; }
+.notebook p b { color: #fff; font-weight: 600; }
+
+/* =========================================================================
+   HERO — LIVE (breaks the calm)
+   ========================================================================= */
+.hero-live { position: relative; background: var(--night); color: var(--on-night); overflow: hidden; }
+.hero-live .bg { position: absolute; inset: 0; background: url('../../img/circuits/cota.png') center 60% / cover no-repeat; filter: grayscale(1) contrast(1.15); opacity: .22; }
+.hero-live::before { content: ""; position: absolute; inset: 0; z-index: 1; background: radial-gradient(80% 90% at 15% 100%, rgba(225,6,0,.38), transparent 60%), linear-gradient(180deg, rgba(12,12,13,.2), rgba(12,12,13,.9)); }
+.ticker { position: relative; z-index: 2; background: var(--red); color: #fff; overflow: hidden; white-space: nowrap; border-bottom: 1px solid rgba(0,0,0,.3); }
+.ticker-track { display: inline-flex; animation: marquee 26s linear infinite; }
+.ticker-track span { font: 900 italic 13px/1 var(--f1); letter-spacing: .14em; text-transform: uppercase; padding: 12px 0; }
+.ticker-track span::after { content: "●"; margin: 0 22px; font-style: normal; font-size: 9px; vertical-align: 2px; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+.live-in { position: relative; z-index: 2; min-height: clamp(520px, 68vh, 720px); padding-top: clamp(32px, 5vw, 72px); padding-bottom: clamp(40px, 6vw, 88px); align-items: end; row-gap: 36px; }
+.live-copy { grid-column: 1 / span 7; }
+.live-tag { display: inline-flex; align-items: center; gap: 12px; font: 700 12px/1 var(--f1); letter-spacing: .14em; text-transform: uppercase; color: #fff; border: 1px solid rgba(255,255,255,.4); padding: 9px 12px; margin-bottom: 26px; }
+.live-tag .ldot { color: var(--red); }
+.live-h { font: 900 italic clamp(52px, 8.6vw, 140px)/.86 var(--f1); letter-spacing: -.035em; text-transform: uppercase; color: #fff; }
+.live-h span { color: var(--red); display: block; }
+.live-sub { margin-top: 26px; font: 400 clamp(18px, 1.6vw, 22px)/1.45 var(--serif); color: #E4DFD5; max-width: 40ch; }
+.live-sub b { color: #fff; font-weight: 600; }
+.live-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; margin-top: 32px; }
+.btn-live { display: inline-flex; align-items: center; gap: 14px; background: var(--red); color: #fff; text-decoration: none; padding: 20px 26px; font: 900 15px/1 var(--f1); letter-spacing: .1em; text-transform: uppercase; transition: background .2s, transform .2s; }
+.btn-live:hover { background: #FF1A10; transform: translateY(-2px); }
+.btn-live span { font-size: 20px; transition: transform .2s; }
+.btn-live:hover span { transform: translateX(4px); }
+.hero-live .arrow-link { color: #fff; border-color: rgba(255,255,255,.7); }
+.hero-live .arrow-link:hover { color: #fff; border-color: var(--red); }
+
+.tower { grid-column: 9 / -1; background: rgba(23,23,26,.92); border: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(6px); }
+.tower-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,.12); }
+.tower-head .label { color: var(--on-night-2); }
+.q-clock { font: 900 26px/1 var(--f1); font-variant-numeric: tabular-nums; color: #fff; }
+.q-segs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 12px 16px 4px; }
+.q-seg { font: 700 10px/1 var(--f1); letter-spacing: .1em; color: var(--on-night-2); }
+.q-seg i { display: block; height: 4px; background: var(--night-3); margin-top: 6px; position: relative; overflow: hidden; }
+.q-seg.done i { background: #8C877E; }
+.q-seg.now { color: #fff; }
+.q-seg.now i b { position: absolute; inset: 0 auto 0 0; background: var(--red); width: 30%; transition: width 1s linear; }
+.tower ol { padding: 6px 0; }
+.tower li { display: grid; grid-template-columns: 28px 4px 1fr auto; align-items: center; gap: 10px; padding: 9px 16px; font: 700 14px/1 var(--f1); }
+.tower li:nth-child(odd) { background: rgba(255,255,255,.03); }
+.tower li .p { color: var(--on-night-2); font-weight: 400; }
+.tower li .c { height: 16px; background: var(--team); }
+.tower li .g { font-weight: 400; color: #E4DFD5; font-variant-numeric: tabular-nums; font-size: 13px; }
+.tower li.out { opacity: .55; }
+.tower-foot { padding: 12px 16px 14px; border-top: 1px solid rgba(255,255,255,.12); font: italic 400 13px/1.4 var(--serif); color: var(--on-night-2); }
+
+/* =========================================================================
+   SECTIONS
+   ========================================================================= */
+.section { padding: clamp(56px, 7vw, 112px) 0 0; }
+.sec-head { display: grid; grid-template-columns: auto 1fr auto; align-items: end; gap: 8px 24px; border-top: 3px solid var(--ink); padding-top: 14px; margin-bottom: clamp(28px, 3.6vw, 52px); }
+.sec-no { font: 900 13px/1 var(--f1); letter-spacing: .08em; color: var(--red-ink); align-self: start; padding-top: 10px; }
+.sec-title { font: 400 clamp(46px, 6vw, 92px)/.9 var(--display); letter-spacing: -.012em; }
+.sec-title em { font-style: italic; }
+.sec-aside { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; padding-bottom: 6px; }
+
+/* 01 Championship ------------------------------------------------------- */
+.champ { row-gap: 40px; }
+.lead-story { grid-column: 1 / span 4; }
+.lead-story .frame { aspect-ratio: 4 / 5; overflow: hidden; background: var(--paper-3); }
+.lead-story .frame img { width: 100%; height: 100%; object-fit: cover; object-position: 73% 30%; }
+.lead-story figcaption { margin-top: 10px; }
+.lead-figure { display: flex; align-items: baseline; gap: 14px; margin-top: 22px; border-top: 1px solid var(--ink); padding-top: 12px; }
+.lead-figure .big { font: 400 clamp(84px, 8vw, 120px)/.8 var(--display); color: var(--red); }
+.lead-figure .label { max-width: 14ch; }
+.lead-story .deck { margin-top: 14px; font-size: 18px; }
+
+.standings { grid-column: span 4; }
+.standings h3 { display: flex; justify-content: space-between; align-items: baseline; font: italic 400 24px/1.1 var(--serif); padding-bottom: 10px; border-bottom: 1px solid var(--ink); }
+.standings h3 .label { font-style: normal; }
+.st-list li { display: grid; grid-template-columns: 30px 1fr auto; align-items: baseline; column-gap: 10px; padding: 10px 0 9px; border-bottom: 1px solid var(--rule); }
+.st-list .p { font: 400 22px/1 var(--display); color: var(--ink-3); }
+.st-list li:first-child .p { color: var(--red-ink); }
+.st-list .n { font: 500 16px/1.2 var(--serif); display: flex; align-items: center; gap: 8px; min-width: 0; }
+.st-list .n small { font: 400 12px/1 var(--serif); font-style: italic; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st-list .pts { font: 700 14px/1 var(--f1); font-variant-numeric: tabular-nums; }
+.st-list .bar { grid-column: 2 / -1; height: 3px; background: var(--paper-3); margin-top: 8px; position: relative; }
+.st-list .bar i { position: absolute; inset: 0 auto 0 0; width: var(--w); background: var(--ink-2); transform-origin: left; }
+.st-list li:first-child .bar i { background: var(--red); }
+.standings .arrow-link { margin-top: 20px; }
+
+/* 02 Calendar ----------------------------------------------------------- */
+.rail { display: grid; grid-template-columns: repeat(25, 1fr); gap: 3px; margin-bottom: 10px; }
+.rail i { height: 26px; background: var(--ink); position: relative; }
+.rail i.cancel { background: repeating-linear-gradient(135deg, var(--ink-3) 0 1.5px, transparent 1.5px 6px); box-shadow: inset 0 0 0 1px var(--ink-3); }
+.rail i.next { background: var(--red); }
+.rail i.up { background: transparent; box-shadow: inset 0 0 0 1px var(--ink); }
+.rail-legend { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-bottom: clamp(28px, 3vw, 40px); }
+.rail-legend span { display: inline-flex; align-items: center; gap: 8px; }
+.rail-legend i { width: 12px; height: 12px; display: inline-block; }
+.cal { row-gap: 40px; }
+.cal-list { grid-column: 1 / span 9; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(9, auto); grid-auto-flow: column; column-gap: var(--col-gap); }
+.cal-list li { border-bottom: 1px solid var(--rule); }
+.cal-list li:nth-child(9n+1) { border-top: 1px solid var(--ink); }
+.cal-list a { display: grid; grid-template-columns: 30px 1fr auto; column-gap: 10px; align-items: baseline; padding: 10px 0 9px; text-decoration: none; }
+.cal-list .r { font: 700 11px/1 var(--f1); color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.cal-list .g { font: 500 17px/1.2 var(--serif); }
+.cal-list .g sup { font: 700 8.5px/1 var(--f1); letter-spacing: .08em; color: var(--red-ink); margin-left: 4px; vertical-align: 6px; }
+.cal-list .d { font: 400 11px/1 var(--f1); color: var(--ink-3); white-space: nowrap; }
+.cal-list .w { grid-column: 2 / -1; font: italic 400 14px/1.3 var(--serif); color: var(--ink-3); margin-top: 3px; }
+.cal-list .w b { font-style: normal; font-weight: 600; color: var(--ink); }
+.cal-list li.cancel .g { text-decoration: line-through; text-decoration-thickness: 1px; color: var(--ink-3); }
+.cal-list li.cancel .w { color: var(--red-ink); font-style: normal; font: 700 10px/1.6 var(--f1); letter-spacing: .1em; text-transform: uppercase; }
+.cal-list li.next { background: var(--ink); color: var(--paper); border-bottom-color: var(--ink); }
+.cal-list li.next a { padding-left: 10px; padding-right: 10px; }
+.cal-list li.next .r, .cal-list li.next .d { color: #CFC9BE; }
+.cal-list li.next .w { color: #fff; font-style: normal; font: 700 10px/1.6 var(--f1); letter-spacing: .12em; text-transform: uppercase; }
+.cal-list li.next .w::before { content: ""; display: inline-block; width: 8px; height: 8px; background: var(--red); margin-right: 8px; vertical-align: 0; }
+.cal-list a:hover .g { text-decoration: underline; text-decoration-color: var(--red); text-underline-offset: 3px; }
+
+.winners { grid-column: 10 / -1; }
+.winners h3 { font: 400 36px/.95 var(--display); }
+.winners h3 em { font-style: italic; }
+.winners .deck { font-size: 16px; margin: 12px 0 18px; }
+.winners ol li { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; padding: 10px 0; border-top: 1px solid var(--rule); }
+.winners ol li:first-child { border-top-color: var(--ink); }
+.winners .wn { font: 500 16px/1.2 var(--serif); }
+.winners .wc { font: 400 26px/.9 var(--display); }
+.winners .dots { grid-column: 1 / -1; display: flex; gap: 4px; }
+.winners .dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--ink); }
+.winners li:first-child .dots i { background: var(--red); }
+.sprint-note { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--ink); font: 400 14px/1.45 var(--serif); color: var(--ink-2); }
+.sprint-note sup { font: 700 8.5px/1 var(--f1); color: var(--red-ink); }
+
+/* 03 Contents ------------------------------------------------------------ */
+.contents { row-gap: 32px; }
+.feature-link { grid-column: 1 / span 5; text-decoration: none; display: block; }
+.feature-link .frame { aspect-ratio: 4 / 3.2; overflow: hidden; background: var(--night); }
+.feature-link .frame img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+.feature-link:hover .frame img { transform: scale(1.03); }
+.feature-link .label { margin-top: 14px; }
+.feature-link h3 { font: 400 clamp(36px, 3.6vw, 52px)/.95 var(--display); margin-top: 8px; }
+.feature-link h3 em { font-style: italic; }
+.feature-link p.deck { margin-top: 10px; font-size: 17px; }
+.toc { grid-column: 7 / -1; }
+.toc li { border-bottom: 1px solid var(--rule); }
+.toc li:first-child { border-top: 1px solid var(--ink); }
+.toc a { display: grid; grid-template-columns: 56px 1fr auto; gap: 4px 18px; align-items: baseline; padding: 20px 0; text-decoration: none; }
+.toc .tn { font: italic 400 34px/1 var(--display); color: var(--ink-3); }
+.toc .tt { font: 400 clamp(32px, 3vw, 44px)/1 var(--display); display: flex; align-items: center; gap: 12px; }
+.toc .td { grid-column: 2; font: 400 15.5px/1.45 var(--serif); color: var(--ink-2); max-width: 52ch; }
+.toc .ta { grid-row: 1 / span 2; grid-column: 3; align-self: center; font: 400 26px/1 var(--serif); transition: transform .2s, color .2s; }
+.toc a:hover .ta { transform: translateX(6px); color: var(--red); }
+.toc a:hover .tt { color: var(--red-ink); }
+.toc .ldot { display: none; color: var(--red); }
+body[data-state="live"] .toc .ldot { display: block; }
+
+/* =========================================================================
+   FOOTER — colophon
+   ========================================================================= */
+.footer { margin-top: clamp(72px, 9vw, 140px); background: var(--night); color: var(--on-night); padding: clamp(48px, 6vw, 88px) 0 0; }
+.f-top { row-gap: 40px; padding-bottom: clamp(40px, 5vw, 64px); border-bottom: 1px solid rgba(242,239,232,.18); }
+.f-brand { grid-column: 1 / span 5; }
+.f-brand img { height: 26px; width: auto; margin-bottom: 26px; }
+.f-tag { font: 400 clamp(40px, 4.4vw, 64px)/.95 var(--display); color: #fff; }
+.f-tag em { display: block; font-style: italic; color: var(--on-night-2); }
+.f-tz { display: inline-flex; align-items: center; gap: 10px; margin-top: 24px; font: 400 11px/1.3 var(--f1); letter-spacing: .08em; text-transform: uppercase; color: var(--on-night-2); }
+.f-tz strong { color: #fff; font-weight: 700; }
+.f-tz i { width: 7px; height: 7px; border-radius: 50%; background: var(--red); }
+.f-nav { grid-column: 7 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px var(--col-gap); }
+.f-col p { font: 700 10.5px/1 var(--f1); letter-spacing: .14em; text-transform: uppercase; color: var(--on-night-2); padding-bottom: 12px; border-bottom: 1px solid rgba(242,239,232,.3); margin-bottom: 8px; }
+.f-col a, .f-col span.soon { display: flex; align-items: center; gap: 8px; padding: 7px 0; font: 400 16px/1.3 var(--serif); text-decoration: none; color: var(--on-night); }
+.f-col a:hover { color: #fff; text-decoration: underline; text-decoration-color: var(--red); text-underline-offset: 4px; }
+.f-col span.soon { color: var(--on-night-2); }
+.f-col span.soon em { font: 700 9px/1 var(--f1); letter-spacing: .1em; text-transform: uppercase; font-style: normal; border: 1px solid currentColor; padding: 3px 5px 2px; }
+.f-col a svg { width: 10px; height: 10px; opacity: .7; }
+.f-legal { padding: 28px 0; border-bottom: 1px solid rgba(242,239,232,.18); row-gap: 14px; }
+.f-legal .badge { grid-column: 1 / span 3; font: 700 10.5px/1.4 var(--f1); letter-spacing: .14em; text-transform: uppercase; color: var(--on-night); }
+.f-legal .txt { grid-column: 4 / -1; columns: 2; column-gap: var(--col-gap); font: 400 13px/1.55 var(--serif); color: var(--on-night-2); }
+.f-legal .txt p + p { margin-top: 10px; }
+.f-bottom { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; padding: 22px 0 28px; }
+.f-bottom .copy { font: 400 14px/1.4 var(--serif); color: var(--on-night-2); }
+.f-bottom .copy a { color: #fff; text-underline-offset: 3px; text-decoration-color: var(--red); }
+.social { display: flex; gap: 8px; margin-left: auto; }
+.social a { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid rgba(242,239,232,.3); color: var(--on-night); transition: background .2s, color .2s, border-color .2s; }
+.social a:hover { background: var(--on-night); color: var(--night); border-color: var(--on-night); }
+.social svg { width: 16px; height: 16px; }
+.to-top { background: none; border: 1px solid rgba(242,239,232,.3); color: var(--on-night); padding: 12px 16px; cursor: pointer; font: 700 11px/1 var(--f1); letter-spacing: .14em; text-transform: uppercase; display: inline-flex; gap: 10px; align-items: center; }
+.to-top:hover { border-color: var(--red); }
+/* Bottom room so the mock state switcher never covers the footer */
+.footer::after { content: ""; display: block; height: 72px; }
+
+/* =========================================================================
+   STATE SWITCHER (mockup only)
+   ========================================================================= */
+.switcher { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 80; display: flex; align-items: center; gap: 4px; padding: 5px; background: var(--night); border: 1px solid rgba(242,239,232,.25); border-radius: 999px; box-shadow: 0 10px 30px rgba(0,0,0,.28); }
+.switcher .label { color: var(--on-night-2); padding: 0 10px 0 12px; font-size: 9.5px; }
+.switcher button { border: 0; background: transparent; color: var(--on-night); cursor: pointer; padding: 10px 14px; border-radius: 999px; font: 700 11px/1 var(--f1); letter-spacing: .1em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 7px; }
+.switcher button[aria-pressed="true"] { background: var(--on-night); color: var(--night); }
+.switcher button[data-s="live"][aria-pressed="true"] { background: var(--red); color: #fff; }
+.switcher button .ldot { width: 6px; height: 6px; color: var(--red); }
+.switcher button[data-s="live"][aria-pressed="true"] .ldot { color: #fff; }
+
+/* =========================================================================
+   RESPONSIVE
+   ========================================================================= */
+@media (max-width: 1180px) {
+  .brand-sub { display: none; }
+  .up-title { grid-column: 1 / -1; }
+  .up-meta { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 18px; }
+  .up-meta dl { margin-bottom: 0; }
+  .up-photo { grid-column: 1 / -1; }
+  .up-side { grid-column: 1 / -1; margin-top: 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--col-gap); }
+  .up-side .cd { grid-column: 1 / -1; }
+  .up-actions { grid-column: 1 / -1; }
+  .lead-story { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--col-gap); }
+  .lead-story .frame { grid-row: span 3; }
+  .standings { grid-column: span 6; }
+  .cal-list { grid-column: 1 / -1; }
+  .winners { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--col-gap); }
+  .winners .sprint-note { grid-column: 1 / -1; }
+  .live-copy { grid-column: 1 / -1; }
+  .tower { grid-column: 1 / span 7; }
+  .agate-wrap { grid-column: 1 / -1; }
+  .notebook { grid-column: 1 / -1; }
+  .notebook ul { display: grid; grid-template-columns: repeat(2, 1fr); column-gap: 24px; }
+  .f-brand { grid-column: 1 / -1; }
+  .f-nav { grid-column: 1 / -1; }
+}
+
+@media (max-width: 900px) {
+  .mainnav { display: none; }
+  .menu-btn { display: inline-flex; }
+  .topline .wrap span:nth-child(2) { display: none; }
+  .cover-copy { max-width: 70%; }
+  .podium { grid-template-columns: 1fr; }
+  .pod { min-height: 200px; }
+  .cal-list { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(13, auto); }
+  .cal-list li:nth-child(9n+1) { border-top: 0; }
+  .cal-list li:nth-child(1), .cal-list li:nth-child(14) { border-top: 1px solid var(--ink); }
+  .feature-link, .toc { grid-column: 1 / -1; }
+  .tower { grid-column: 1 / -1; }
+  .f-legal .badge, .f-legal .txt { grid-column: 1 / -1; }
+  .f-legal .txt { columns: 1; }
+}
+
+@media (max-width: 640px) {
+  body { font-size: 16px; }
+  .masthead .wrap { height: 60px; }
+  .plate { padding: 8px 10px; }
+  .plate img { height: 18px; }
+  .topline .wrap { justify-content: flex-start; }
+  .topline .wrap span:first-child { display: none; }
+  .sheet-top { height: 60px; }
+
+  /* Upcoming */
+  .up-title { font-size: clamp(50px, 15vw, 72px); }
+  .up-title .l2 { padding-left: .6em; }
+  .up-meta { grid-template-columns: 1fr; gap: 16px; }
+  .up-photo .frame { height: auto; aspect-ratio: 4 / 3.4; }
+  .track-card { position: static; width: 100%; padding: 16px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 0 18px; align-items: center; }
+  .track-card .label { grid-column: 1 / -1; }
+  .track-card img.layout { height: 72px; margin: 0; }
+  .track-card dl { border-top: 0; padding-top: 0; border-left: 1px solid var(--ink); padding-left: 16px; }
+  .track-card dd { font-size: 24px; }
+  .up-side { display: flex; }
+  .cd-digits { display: grid; grid-template-columns: repeat(4, 1fr); font-size: clamp(52px, 16vw, 72px); }
+  .cd-g { flex-direction: column; align-items: flex-start; }
+  .cd-n, .cd-g:first-child .cd-n { min-width: 0; text-align: left; }
+  .cd-u { margin: 6px 0 0; font-size: 14px; }
+  .prog ol li { grid-template-columns: 62px 1fr auto; }
+
+  /* Result */
+  .cover { height: auto; }
+  .cover > img { position: relative; height: auto; aspect-ratio: 4 / 4.6; object-position: 61% 0; }
+  .cover::before { background: linear-gradient(180deg, rgba(8,8,9,.7) 0%, rgba(8,8,9,0) 18%), linear-gradient(0deg, rgba(8,8,9,1) 0%, rgba(8,8,9,.92) 30%, rgba(8,8,9,0) 62%); }
+  .live-strip .wrap > span:nth-of-type(2) { display: none; }
+  .cover-in { position: absolute; inset: 0; justify-content: space-between; }
+  .cover-issue { display: none; }
+  .cover-top .label:last-child { display: none; }
+  .cover-copy { max-width: 100%; }
+  .cover h1 { font-size: clamp(54px, 17vw, 76px); }
+  .cover .deck { display: none; }
+  .cover-credit { display: none; }
+  .res-deck-m { display: block !important; margin-top: 20px; }
+  .pod { grid-template-columns: 1fr auto; min-height: 0; }
+  .pod-body { padding: 14px 0 16px 16px; }
+  .pod-pos { font-size: 84px; }
+  .pod-fig { width: 116px; max-height: 210px; }
+  .res-band-head { flex-direction: column; gap: 6px; }
+  .agate .team-h, .agate td.team { display: none; }
+  .agate td.pos { width: 34px; font-size: 22px; }
+  .notebook ul { grid-template-columns: 1fr; }
+
+  /* Live */
+  .live-h { font-size: clamp(46px, 14.5vw, 64px); }
+  .btn-live { width: 100%; justify-content: space-between; }
+
+  /* Sections */
+  .sec-head { grid-template-columns: auto 1fr; }
+  .sec-aside { grid-column: 1 / -1; text-align: left; align-items: flex-start; }
+  .sec-title { font-size: clamp(42px, 13vw, 58px); }
+  .lead-story { display: block; }
+  .lead-story .frame { aspect-ratio: 4 / 3; }
+  .kicker-row > .label:last-child { display: none; }
+  .standings { grid-column: 1 / -1; }
+  .rail { gap: 2px; }
+  .rail i { height: 20px; }
+  .cal-list { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; }
+  .cal-list li:nth-child(14) { border-top: 0; }
+  .winners { display: block; }
+  .toc a { grid-template-columns: 40px 1fr auto; gap: 4px 12px; }
+  .toc .tn { font-size: 26px; }
+
+  /* Footer */
+  .f-nav { grid-template-columns: 1fr 1fr; }
+  .social { margin-left: 0; }
+  .f-bottom { flex-direction: column; align-items: flex-start; }
+  .switcher { bottom: 12px; }
+  .switcher .label { display: none; }
+  .switcher button { padding: 10px 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .ticker-track { transform: none; }
+  .ldot::after { display: none; }
+}
+</style>
+</head>
+
+<body data-state="upcoming">
+
+<!-- ===================== LIVE STRIP (site-wide, live only) ===================== -->
+<a class="live-strip" href="../../live.html">
+  <div class="wrap">
+    <span class="ldot" aria-hidden="true"></span>
+    <b>Live now</b>
+    <span>United States GP · Qualifying, Q2 in progress</span>
+    <span class="go">Live timing →</span>
+  </div>
+</a>
+
+<!-- ===================== MASTHEAD ===================== -->
+<div class="topline">
+  <div class="wrap">
+    <span>Season 2026 · Issue <strong>20</strong> of 25</span>
+    <span id="today-line">Monday, 12 October 2026</span>
+    <span>All times in <strong class="tz-name">your time zone</strong></span>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="F1 Hub home">
+      <span class="plate"><img src="../../img/logo.png" alt="F1 Hub" width="105" height="21"></span>
+      <span class="brand-sub">Every Grand Prix in one place</span>
+    </a>
+    <nav class="mainnav" aria-label="Main">
+      <ul>
+        <li><a href="#calendar">Calendar</a></li>
+        <li><a href="../../results.html">Results</a></li>
+        <li><a href="../../drivers.html">Drivers</a></li>
+        <li><a href="../../teams.html">Teams</a></li>
+        <li><a class="nav-live" href="../../live.html"><span class="ldot" aria-hidden="true"></span>Live <span class="live-pill">Now</span></a></li>
+      </ul>
+    </nav>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="sheet">
+      <span class="ldot" aria-hidden="true"></span> Menu <i aria-hidden="true"></i>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile menu: a "contents page" -->
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="sheet-top">
+    <span class="plate"><img src="../../img/logo.png" alt="F1 Hub" width="90" height="18" style="height:18px"></span>
+    <button class="sheet-close" type="button">Close ✕</button>
+  </div>
+  <p class="label">Contents</p>
+  <ol>
+    <li><a href="#calendar"><span class="n">01</span><span class="t">Calendar</span></a></li>
+    <li><a href="../../results.html"><span class="n">02</span><span class="t">Results</span></a></li>
+    <li><a href="../../drivers.html"><span class="n">03</span><span class="t">Drivers</span></a></li>
+    <li><a href="../../teams.html"><span class="n">04</span><span class="t">Teams</span></a></li>
+    <li><a href="../../live.html"><span class="n">05</span><span class="t">Live</span><span class="ldot" aria-hidden="true"></span></a></li>
+  </ol>
+  <p class="sheet-foot label">All times in <strong class="tz-name">your time zone</strong></p>
+</div>
+
+<main id="top">
+
+<!-- =========================================================================
+     HERO 1 — UPCOMING: feature preview of the next Grand Prix
+     ========================================================================= -->
+<section class="hero-up" data-for="upcoming" aria-labelledby="up-title">
+  <div class="wrap">
+    <div class="kicker-row">
+      <span class="tag red">Next race</span>
+      <span class="kicker">Round 20 of 25</span>
+      <span class="fill"></span>
+      <span class="label">Weekend preview</span>
+    </div>
+
+    <div class="grid up-head">
+      <h1 class="display up-title" id="up-title">
+        <span class="l1">United States</span>
+        <span class="l2"><em>Grand Prix</em></span>
+      </h1>
+      <div class="up-meta">
+        <dl>
+          <dt>Circuit</dt><dd>Circuit of The Americas</dd>
+          <dt>City</dt><dd>Austin, Texas <svg class="flag" viewBox="0 0 19 10" aria-label="United States"><rect width="19" height="10" fill="#B22234"/><path d="M0 1.15h19M0 2.7h19M0 4.23h19M0 5.77h19M0 7.3h19M0 8.85h19" stroke="#fff" stroke-width=".77"/><rect width="7.6" height="5.38" fill="#3C3B6E"/></svg></dd>
+          <dt>Dates</dt><dd>23 – 25 October</dd>
+        </dl>
+        <p class="deck">Six rounds remain and Kimi Antonelli arrives 102 points clear. Austin is where the arithmetic starts to matter.</p>
+      </div>
+    </div>
+
+    <div class="grid up-body">
+      <figure class="up-photo">
+        <div class="frame">
+          <img src="../../img/circuits/cota.png" alt="Aerial view of the Circuit of The Americas, Austin, with grandstands around the track">
+          <div class="track-card">
+            <p class="label">The circuit</p>
+            <img class="layout" src="../../img/circuits/cota-layout.svg" alt="Track layout of the Circuit of The Americas">
+            <dl>
+              <div><dt>Lap length</dt><dd>5.513<small style="font-size:.5em"> km</small></dd></div>
+              <div><dt>Laps</dt><dd>56</dd></div>
+              <div><dt>Corners</dt><dd>20</dd></div>
+              <div><dt>First Grand Prix</dt><dd>2012</dd></div>
+            </dl>
+          </div>
+        </div>
+        <figcaption class="caption"><b>Fig. 1</b>Circuit of The Americas, Austin. The run uphill to Turn 1 is one of the steepest braking zones of the year.</figcaption>
+      </figure>
+
+      <div class="up-side">
+        <div class="cd" aria-live="off">
+          <p class="cd-label"><span class="kicker" style="color:var(--red-ink)">Next session</span><span class="what">Practice 1 — Fri 23 Oct, 14:30</span></p>
+          <p class="cd-digits" id="cd-fp1" aria-label="Time until Practice 1">
+            <span class="cd-g"><span class="cd-n" data-u="d">00</span><span class="cd-u">days</span></span>
+            <span class="cd-g"><span class="cd-n" data-u="h">00</span><span class="cd-u">hrs</span></span>
+            <span class="cd-g"><span class="cd-n" data-u="m">00</span><span class="cd-u">min</span></span>
+            <span class="cd-g sec"><span class="cd-n" data-u="s">00</span><span class="cd-u">sec</span></span>
+          </p>
+          <p class="cd-race">And the race itself — Sunday 25 October, 16:00. Lights out in <b id="cd-race">13d 00h 00m</b>.</p>
+        </div>
+
+        <div class="prog">
+          <div class="prog-head"><h3>The weekend programme</h3><span class="label">Local time</span></div>
+          <ol>
+            <li class="is-next"><span class="pd">Fri 23</span><span class="ps">Practice 1</span><span class="pt">14:30</span></li>
+            <li><span class="pd">Fri 23</span><span class="ps">Practice 2</span><span class="pt">18:30</span></li>
+            <li><span class="pd">Sat 24</span><span class="ps">Practice 3</span><span class="pt">15:00</span></li>
+            <li><span class="pd">Sat 24</span><span class="ps">Qualifying</span><span class="pt">19:00</span></li>
+            <li class="race"><span class="pd">Sun 25</span><span class="ps">Race</span><span class="pt">16:00</span></li>
+          </ol>
+        </div>
+
+        <p class="prev-note">Last time out — Singapore: <strong>Verstappen</strong> won from pole ahead of Leclerc and Antonelli. <a href="?state=result">Read the result</a></p>
+
+        <div class="up-actions">
+          <a class="arrow-link" href="../../grandprix.html?gp=united-states">Grand Prix guide <span>→</span></a>
+          <a class="arrow-link" href="#calendar">Full calendar <span>→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================================
+     HERO 2 — LIVE: breaks the calm
+     ========================================================================= -->
+<section class="hero-live" data-for="live" aria-labelledby="live-title">
+  <div class="bg" aria-hidden="true"></div>
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>Live</span><span>Qualifying</span><span>Q2 in progress</span><span>United States Grand Prix</span><span>Circuit of The Americas</span>
+      <span>Live</span><span>Qualifying</span><span>Q2 in progress</span><span>United States Grand Prix</span><span>Circuit of The Americas</span>
+    </div>
+  </div>
+  <div class="wrap grid live-in">
+    <div class="live-copy">
+      <p class="live-tag"><span class="ldot" aria-hidden="true"></span> Live now · Round 20 · Austin</p>
+      <h1 class="live-h" id="live-title">Qualifying <span>is live.</span></h1>
+      <p class="live-sub"><b>Q2 in progress</b> — <span class="num" id="q-clock-inline">08:42</span> on the clock. Sixteen cars still running, six about to be knocked out.</p>
+      <div class="live-actions">
+        <a class="btn-live" href="../../live.html">Watch live timing <span>→</span></a>
+        <a class="arrow-link" href="../../grandprix.html?gp=united-states">Weekend schedule <span>→</span></a>
+      </div>
+    </div>
+
+    <aside class="tower" aria-label="Provisional Q2 order">
+      <div class="tower-head">
+        <span class="label">Q2 · Provisional</span>
+        <span class="q-clock" id="q-clock">08:42</span>
+      </div>
+      <div class="q-segs" aria-hidden="true">
+        <span class="q-seg done">Q1<i></i></span>
+        <span class="q-seg now">Q2<i><b id="q-bar"></b></i></span>
+        <span class="q-seg">Q3<i></i></span>
+      </div>
+      <ol>
+        <li style="--team:#2BFFDB"><span class="p">1</span><span class="c"></span><span>ANTONELLI</span><span class="g">1:33.412</span></li>
+        <li style="--team:#2BFFDB"><span class="p">2</span><span class="c"></span><span>RUSSELL</span><span class="g">+0.087</span></li>
+        <li style="--team:#22477A"><span class="p">3</span><span class="c"></span><span>VERSTAPPEN</span><span class="g">+0.141</span></li>
+        <li style="--team:#FF0019"><span class="p">4</span><span class="c"></span><span>LECLERC</span><span class="g">+0.215</span></li>
+        <li style="--team:#FF7F00"><span class="p">5</span><span class="c"></span><span>NORRIS</span><span class="g">+0.302</span></li>
+      </ol>
+      <p class="tower-foot">Illustrative order for the mockup. The full tower, sectors and tyres live on the Live page.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- =========================================================================
+     HERO 3 — RESULT: the cover story
+     ========================================================================= -->
+<section class="hero-res" data-for="result" aria-labelledby="res-title">
+  <div class="cover">
+    <img src="../../img/drivers/verstappen-2.png" alt="Max Verstappen raising a fist in celebration on the podium">
+    <div class="wrap cover-in">
+      <div class="cover-top">
+        <span class="tag red">Cover story</span>
+        <span class="label">Round 19 · Singapore Grand Prix</span>
+        <span class="fill"></span>
+        <span class="label">Race result · Final</span>
+      </div>
+      <div>
+        <p class="cover-issue"><small>Round</small>19</p>
+      </div>
+      <div class="cover-copy">
+        <p class="eyebrow">Marina Bay · Sunday 11 October</p>
+        <h1 class="display" id="res-title">Max, <em>after dark.</em></h1>
+        <p class="deck">From pole position to victory under the Marina Bay lights: a second win in a row for Verstappen, 7.335 seconds clear of Leclerc.</p>
+      </div>
+    </div>
+    <span class="cover-credit">Photo: Max Verstappen, file image</span>
+  </div>
+
+  <div class="wrap">
+    <p class="deck res-deck-m" style="display:none">From pole position to victory under the Marina Bay lights: a second win in a row for Verstappen, 7.335 seconds clear of Leclerc.</p>
+
+    <div class="res-band">
+      <div class="res-band-head">
+        <h2>The podium</h2>
+        <span class="label">Marina Bay Street Circuit · Sunday 11 October</span>
+      </div>
+      <ol class="podium">
+        <li class="pod p1" style="--team:#22477A">
+          <div class="pod-body">
+            <span class="pod-pos" aria-label="First">1</span>
+            <p class="pod-name"><small>Max</small>Verstappen</p>
+            <p class="pod-team"><span class="chip"></span>Red Bull Racing</p>
+            <p class="pod-time">1:42:00.785</p>
+          </div>
+          <div class="pod-fig"><img src="../../img/drivers/verstappen.png" alt="" loading="lazy"></div>
+        </li>
+        <li class="pod" style="--team:#FF0019">
+          <div class="pod-body">
+            <span class="pod-pos" aria-label="Second">2</span>
+            <p class="pod-name"><small>Charles</small>Leclerc</p>
+            <p class="pod-team"><span class="chip"></span>Ferrari</p>
+            <p class="pod-time">+7.335s <span class="fl">Fastest lap</span></p>
+          </div>
+          <div class="pod-fig"><img src="../../img/drivers/leclerc.png" alt="" loading="lazy"></div>
+        </li>
+        <li class="pod" style="--team:#2BFFDB">
+          <div class="pod-body">
+            <span class="pod-pos" aria-label="Third">3</span>
+            <p class="pod-name"><small>Kimi</small>Antonelli</p>
+            <p class="pod-team"><span class="chip"></span>Mercedes</p>
+            <p class="pod-time">+24.573s</p>
+          </div>
+          <div class="pod-fig"><img src="../../img/drivers/antonelli.png" alt="" loading="lazy"></div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="grid res-more">
+      <div class="agate-wrap">
+        <table class="agate">
+          <caption class="label">Positions 4 – 10</caption>
+          <thead>
+            <tr><th scope="col">Pos</th><th scope="col">Driver</th><th scope="col" class="team-h">Team</th><th scope="col" class="th-r">Gap</th><th scope="col" class="th-r">Grid</th></tr>
+          </thead>
+          <tbody id="agate-body"></tbody>
+        </table>
+        <div class="agate-foot"><a class="arrow-link" href="../../results.html#results-section">Full classification <span>→</span></a></div>
+      </div>
+
+      <aside class="notebook" aria-label="Race notebook">
+        <h3>Notebook</h3>
+        <p class="label">What the timesheet says</p>
+        <ul>
+          <li><span class="big red">+12</span><p><b>Isack Hadjar</b> from 22nd on the grid to the final point in 10th.</p></li>
+          <li><span class="big">+10</span><p><b>George Russell</b> recovers from 19th to 9th.</p></li>
+          <li><span class="big">−3</span><p><b>Lewis Hamilton</b> starts 3rd, finishes 6th.</p></li>
+          <li><span class="big">2</span><p>Wins in a row for <b>Verstappen</b>, after Round 18.</p></li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================================
+     01 — THE CHAMPIONSHIP
+     ========================================================================= -->
+<section class="section" id="championship" aria-labelledby="s1">
+  <div class="wrap">
+    <header class="sec-head">
+      <span class="sec-no">01</span>
+      <h2 class="sec-title" id="s1">The <em>Championship</em></h2>
+      <div class="sec-aside"><span class="label">After Round 19 · Singapore</span></div>
+    </header>
+
+    <div class="grid champ">
+      <figure class="lead-story">
+        <div class="frame"><img src="../../img/drivers/antonelli-2.png" alt="Kimi Antonelli lifting a trophy on the podium" loading="lazy"></div>
+        <div>
+          <div class="lead-figure"><span class="big">102</span><span class="label">points between Antonelli and Russell</span></div>
+          <p class="deck">With six rounds and 150 points still on the table, Kimi Antonelli can start counting down rather than up.</p>
+          <figcaption class="caption" style="margin-top:12px"><b>Fig. 2</b>Antonelli, eight wins so far in 2026.</figcaption>
+        </div>
+      </figure>
+
+      <div class="standings">
+        <h3>Drivers <span class="label">Pts</span></h3>
+        <ol class="st-list" id="st-drivers"></ol>
+        <a class="arrow-link" href="../../results.html#championship-section">All 22 drivers <span>→</span></a>
+      </div>
+
+      <div class="standings">
+        <h3>Constructors <span class="label">Pts</span></h3>
+        <ol class="st-list" id="st-teams"></ol>
+        <a class="arrow-link" href="../../teams.html">The teams <span>→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================================
+     02 — THE SEASON (calendar)
+     ========================================================================= -->
+<section class="section" id="calendar" aria-labelledby="s2">
+  <div class="wrap">
+    <header class="sec-head">
+      <span class="sec-no">02</span>
+      <h2 class="sec-title" id="s2">The season, <em>in 25 rounds</em></h2>
+      <div class="sec-aside"><span class="label">17 raced · 2 cancelled · 6 to go</span></div>
+    </header>
+
+    <div class="rail" id="rail" role="img" aria-label="Season progress: 19 of 25 rounds done, round 20 next"></div>
+    <div class="rail-legend label">
+      <span><i style="background:var(--ink)"></i>Raced</span>
+      <span><i style="background:repeating-linear-gradient(135deg,var(--ink-3) 0 1.5px,transparent 1.5px 5px);box-shadow:inset 0 0 0 1px var(--ink-3)"></i>Cancelled</span>
+      <span><i style="background:var(--red)"></i>Next</span>
+      <span><i style="box-shadow:inset 0 0 0 1px var(--ink)"></i>To come</span>
+      <span><b style="color:var(--red-ink)">S</b>&nbsp;Sprint weekend</span>
+    </div>
+
+    <div class="grid cal">
+      <ol class="cal-list" id="cal-list"></ol>
+
+      <aside class="winners">
+        <div>
+          <h3>Six winners in <em>seventeen</em> races</h3>
+          <p class="deck">Antonelli has won almost half of them on his own.</p>
+        </div>
+        <ol id="winners"></ol>
+        <p class="sprint-note">Sprint weekends<sup> S</sup> this year: China, Miami, Canada, Britain, Netherlands and Singapore. None remain.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================================
+     03 — CONTENTS (rest of the site)
+     ========================================================================= -->
+<section class="section" id="contents" aria-labelledby="s3">
+  <div class="wrap">
+    <header class="sec-head">
+      <span class="sec-no">03</span>
+      <h2 class="sec-title" id="s3">Also in <em>F1 Hub</em></h2>
+      <div class="sec-aside"><span class="label">Contents</span></div>
+    </header>
+
+    <div class="grid contents">
+      <a class="feature-link" href="../../archive.html">
+        <div class="frame"><img src="../../img/circuits/marina-bay-street-circuit.png" alt="Marina Bay Street Circuit at night, Singapore skyline" loading="lazy"></div>
+        <p class="label">The archive</p>
+        <h3>Every season <em>since 1990</em></h3>
+        <p class="deck">Thirty-seven championships of results, winners and grids — browse any year, any race.</p>
+      </a>
+
+      <ol class="toc">
+        <li><a href="../../results.html#results-section"><span class="tn">i</span><span class="tt">Results</span><span class="td">Every 2026 classification, race by race, sprint by sprint.</span><span class="ta">→</span></a></li>
+        <li><a href="../../live.html"><span class="tn">ii</span><span class="tt">Live timing <span class="ldot" aria-hidden="true"></span></span><span class="td">Positions, gaps, sectors and tyres from F1's live feed, during every session.</span><span class="ta">→</span></a></li>
+        <li><a href="../../drivers.html"><span class="tn">iii</span><span class="tt">Drivers</span><span class="td">Profiles, career numbers and season form for the full grid.</span><span class="ta">→</span></a></li>
+        <li><a href="../../teams.html"><span class="tn">iv</span><span class="tt">Teams</span><span class="td">Eleven constructors, their cars and their line-ups.</span><span class="ta">→</span></a></li>
+        <li><a href="../../grandprix.html?gp=united-states"><span class="tn">v</span><span class="tt">Grand Prix pages</span><span class="td">Circuit guides, weekend schedules and past winners for every venue.</span><span class="ta">→</span></a></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===================== FOOTER: colophon ===================== -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="grid f-top">
+      <div class="f-brand">
+        <img src="../../img/logo.png" alt="F1 Hub" width="130" height="26">
+        <p class="f-tag">Every Grand Prix in one place. <em>Made by a fan, for fans.</em></p>
+        <p class="f-tz"><i aria-hidden="true"></i>All times shown in <strong class="tz-name">your time zone</strong></p>
+      </div>
+      <nav class="f-nav" aria-label="Footer">
+        <div class="f-col"><p>Season</p>
+          <a href="#calendar">Calendar</a>
+          <a href="../../results.html#championship-section">Championship</a>
+          <a href="../../results.html#results-section">Results</a>
+          <a href="../../live.html">Live Timing</a>
+        </div>
+        <div class="f-col"><p>The Grid</p>
+          <a href="../../drivers.html">Drivers</a>
+          <a href="../../teams.html">Teams</a>
+        </div>
+        <div class="f-col"><p>History</p>
+          <span class="soon">Memorabilia <em>Soon</em></span>
+        </div>
+        <div class="f-col"><p>Resources</p>
+          <a href="https://www.formula1.com" target="_blank" rel="noopener noreferrer">Formula 1 <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></a>
+          <a href="https://www.fia.com" target="_blank" rel="noopener noreferrer">FIA <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></a>
+          <a href="https://openf1.org" target="_blank" rel="noopener noreferrer">OpenF1 <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></a>
+        </div>
+      </nav>
+    </div>
+
+    <div class="grid f-legal">
+      <p class="badge">Unofficial fan project</p>
+      <div class="txt">
+        <p>F1 Hub is an unofficial website and is not associated in any way with the Formula 1 companies, the FIA or any Formula 1 team. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trade marks of Formula One Licensing B.V.</p>
+        <p>Team names, logos, driver images and other trademarks shown on this site belong to their respective owners. Data comes in part from OpenF1 and is provided for information only, without any guarantee of accuracy.</p>
+      </div>
+    </div>
+
+    <div class="f-bottom">
+      <p class="copy">© <span id="year">2026</span> F1 Hub · Designed &amp; built by <a href="https://benipach.dev" target="_blank" rel="noopener noreferrer">Benicio Pacheco</a></p>
+      <div class="social">
+        <a href="https://github.com/benipach" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.39-5.26 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg></a>
+        <a href="https://linkedin.com/in/benicio-pacheco" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.23 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.73V1.73C24 .77 23.21 0 22.23 0Z"/></svg></a>
+        <a href="https://benipach.dev" target="_blank" rel="noopener noreferrer" aria-label="Portfolio"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.93 6h-2.95a15.65 15.65 0 0 0-1.38-3.56A8.03 8.03 0 0 1 18.93 8ZM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96ZM4.26 14a8.2 8.2 0 0 1 0-4h3.38a16.5 16.5 0 0 0 0 4H4.26Zm.81 2h2.95c.32 1.25.78 2.45 1.38 3.56A7.99 7.99 0 0 1 5.07 16Zm2.95-8H5.07a7.99 7.99 0 0 1 4.33-3.56A15.65 15.65 0 0 0 8.02 8ZM12 19.96A14.1 14.1 0 0 1 10.09 16h3.82A14.1 14.1 0 0 1 12 19.96ZM14.34 14H9.66a14.7 14.7 0 0 1 0-4h4.68a14.7 14.7 0 0 1 0 4Zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56ZM16.36 14a16.5 16.5 0 0 0 0-4h3.38a8.2 8.2 0 0 1 0 4h-3.38Z"/></svg></a>
+      </div>
+      <button class="to-top" type="button">Back to top <span aria-hidden="true">↑</span></button>
+    </div>
+  </div>
+</footer>
+
+<!-- ===================== STATE SWITCHER (mockup only) ===================== -->
+<div class="switcher" role="group" aria-label="Hero state (mockup)">
+  <span class="label">Hero</span>
+  <button type="button" data-s="upcoming" aria-pressed="true">Upcoming</button>
+  <button type="button" data-s="live" aria-pressed="false"><span class="ldot" aria-hidden="true"></span>Live</button>
+  <button type="button" data-s="result" aria-pressed="false">Result</button>
+</div>
+
+<script>
+(() => {
+  /* ---------------- Data ---------------- */
+  const TEAM = {
+    'Mercedes': '#2BFFDB', 'Ferrari': '#FF0019', 'McLaren': '#FF7F00', 'Red Bull': '#22477A',
+    'Racing Bulls': '#667DFF', 'Alpine': '#006FBA', 'Aston Martin': '#229971', 'Haas': '#DEE1E2',
+    'Williams': '#1C7AFF', 'Audi': '#FF2E2E', 'Cadillac': '#AAAAAD'
+  };
+
+  const RESULT_4_10 = [
+    [4, 'Lando Norris', 'McLaren', '+40.506s', 5],
+    [5, 'Oscar Piastri', 'McLaren', '+49.644s', 6],
+    [6, 'Lewis Hamilton', 'Ferrari', '+53.188s', 3],
+    [7, 'Liam Lawson', 'Racing Bulls', '+81.666s', 8],
+    [8, 'Nico Hülkenberg', 'Audi', '+83.386s', 10],
+    [9, 'George Russell', 'Mercedes', '+84.677s', 19],
+    [10, 'Isack Hadjar', 'Red Bull', '+90.862s', 22],
+  ];
+
+  const DRIVERS = [
+    ['Kimi Antonelli', 'Mercedes', 340], ['George Russell', 'Mercedes', 238], ['Lewis Hamilton', 'Ferrari', 229],
+    ['Max Verstappen', 'Red Bull', 221], ['Charles Leclerc', 'Ferrari', 215], ['Lando Norris', 'McLaren', 201],
+    ['Oscar Piastri', 'McLaren', 136], ['Isack Hadjar', 'Red Bull', 94], ['Liam Lawson', 'Racing Bulls', 73],
+    ['Pierre Gasly', 'Alpine', 50],
+  ];
+
+  const TEAMS = [
+    ['Mercedes', 578], ['Ferrari', 444], ['McLaren', 337], ['Red Bull', 329], ['Racing Bulls', 96],
+    ['Alpine', 77], ['Haas', 30], ['Audi', 23], ['Williams', 12], ['Aston Martin', 7], ['Cadillac', 0],
+  ];
+
+  // [round, name, dates, winner, sprint, status, gp id]
+  const CAL = [
+    [1, 'Australia', '05–08 Mar', 'Russell', 0, 'done', 'australia'],
+    [2, 'China', '13–15 Mar', 'Antonelli', 1, 'done', 'china'],
+    [3, 'Japan', '26–29 Mar', 'Antonelli', 0, 'done', 'japan'],
+    [4, 'Bahrain', '—', null, 0, 'cancel', 'bahrain'],
+    [5, 'Saudi Arabia', '—', null, 0, 'cancel', 'saudi-arabia'],
+    [6, 'Miami', '01–03 May', 'Antonelli', 1, 'done', 'miami'],
+    [7, 'Canada', '22–24 May', 'Antonelli', 1, 'done', 'canada'],
+    [8, 'Monaco', '05–07 Jun', 'Antonelli', 0, 'done', 'monaco'],
+    [9, 'Barcelona', '12–14 Jun', 'Hamilton', 0, 'done', 'barcelona'],
+    [10, 'Austria', '26–28 Jun', 'Russell', 0, 'done', 'austria'],
+    [11, 'Britain', '03–05 Jul', 'Leclerc', 1, 'done', 'great-britain'],
+    [12, 'Belgium', '17–19 Jul', 'Antonelli', 0, 'done', 'belgium'],
+    [13, 'Hungary', '24–26 Jul', 'Norris', 0, 'done', 'hungary'],
+    [14, 'Netherlands', '21–23 Aug', 'Norris', 1, 'done', 'netherlands'],
+    [15, 'Italy', '04–06 Sep', 'Antonelli', 0, 'done', 'italy'],
+    [16, 'Spain · Madrid', '11–13 Sep', 'Antonelli', 0, 'done', 'spain'],
+    [17, 'Azerbaijan', '24–26 Sep', 'Russell', 0, 'done', 'azerbaijan'],
+    [18, 'Bahrain GP in Malaysia', '02–04 Oct', 'Verstappen', 0, 'done', 'malaysia'],
+    [19, 'Singapore', '09–11 Oct', 'Verstappen', 1, 'done', 'singapore'],
+    [20, 'United States', '23–25 Oct', null, 0, 'next', 'united-states'],
+    [21, 'Mexico', '30 Oct–01 Nov', null, 0, 'up', 'mexico'],
+    [22, 'Brazil', '06–08 Nov', null, 0, 'up', 'brazil'],
+    [23, 'Las Vegas', '20–22 Nov', null, 0, 'up', 'las-vegas'],
+    [24, 'Qatar', '27–29 Nov', null, 0, 'up', 'qatar'],
+    [25, 'Abu Dhabi', '04–06 Dec', null, 0, 'up', 'abu-dhabi'],
+  ];
+
+  const $ = (s, r = document) => r.querySelector(s);
+  const pad = n => String(n).padStart(2, '0');
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  /* ---------------- Render: result table ---------------- */
+  $('#agate-body').innerHTML = RESULT_4_10.map(([pos, name, team, gap, grid]) => {
+    const d = grid - pos;
+    const delta = d > 0 ? `<span class="delta up">▲${d}</span>` : d < 0 ? `<span class="delta down">▼${-d}</span>` : `<span class="delta">–</span>`;
+    return `<tr><td class="pos">${pos}</td><td class="drv">${esc(name)}</td>
+      <td class="team"><span><span class="chip" style="--team:${TEAM[team]}"></span>${esc(team)}</span></td>
+      <td class="gap">${gap}</td><td class="grid-c">P${grid} ${delta}</td></tr>`;
+  }).join('');
+
+  /* ---------------- Render: standings ---------------- */
+  const maxD = DRIVERS[0][2], maxT = TEAMS[0][1];
+  $('#st-drivers').innerHTML = DRIVERS.map(([n, t, p], i) => `
+    <li><span class="p">${i + 1}</span>
+      <span class="n">${esc(n)} <small>${esc(t)}</small></span>
+      <span class="pts">${p}</span>
+      <span class="bar" aria-hidden="true"><i style="--w:${(p / maxD * 100).toFixed(1)}%"></i></span></li>`).join('');
+  $('#st-teams').innerHTML = TEAMS.map(([t, p], i) => `
+    <li><span class="p">${i + 1}</span>
+      <span class="n"><span class="chip" style="--team:${TEAM[t]}"></span>${esc(t)}</span>
+      <span class="pts">${p}</span>
+      <span class="bar" aria-hidden="true"><i style="--w:${Math.max(p / maxT * 100, 0.5).toFixed(1)}%"></i></span></li>`).join('');
+
+  /* ---------------- Render: calendar ---------------- */
+  $('#rail').innerHTML = CAL.map(c => `<i class="${c[5]}" title="R${c[0]} ${esc(c[1])}"></i>`).join('');
+  $('#cal-list').innerHTML = CAL.map(([r, name, dates, win, sprint, st, id]) => {
+    let w = '';
+    if (st === 'done') w = `Won by <b>${win}</b>`;
+    else if (st === 'cancel') w = 'Cancelled';
+    else if (st === 'next') w = 'Next race';
+    else w = 'To come';
+    return `<li class="${st}"><a href="../../grandprix.html?gp=${id}">
+      <span class="r">${pad(r)}</span>
+      <span class="g">${esc(name)}${sprint ? '<sup>S</sup>' : ''}</span>
+      <span class="d">${dates}</span>
+      <span class="w">${w}</span></a></li>`;
+  }).join('');
+
+  const tally = {};
+  CAL.forEach(c => { if (c[3]) tally[c[3]] = (tally[c[3]] || 0) + 1; });
+  $('#winners').innerHTML = Object.entries(tally).sort((a, b) => b[1] - a[1]).map(([n, c]) => `
+    <li><span class="wn">${n}</span><span class="wc">${c}</span>
+      <span class="dots" aria-hidden="true">${'<i></i>'.repeat(c)}</span></li>`).join('');
+
+  /* ---------------- Time zone + dateline ---------------- */
+  let tz = 'your time zone';
+  try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone.replace(/_/g, ' ') || tz; } catch (e) {}
+  document.querySelectorAll('.tz-name').forEach(el => el.textContent = tz);
+  const now0 = new Date();
+  $('#today-line').textContent = now0.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  $('#year').textContent = now0.getFullYear();
+
+  /* ---------------- Countdown (ticks) ---------------- */
+  // Session times are given in the visitor's local time.
+  let fp1 = new Date(2026, 9, 23, 14, 30, 0);
+  let race = new Date(2026, 9, 25, 16, 0, 0);
+  if (fp1 <= now0) { // keep the mockup meaningful if opened after the date
+    fp1 = new Date(now0.getTime() + ((10 * 24 + 23) * 60 + 41) * 60000 + 7000);
+    race = new Date(fp1.getTime() + ((2 * 24) + 1.5) * 3600000);
+  }
+  const cdEls = { d: $('[data-u="d"]'), h: $('[data-u="h"]'), m: $('[data-u="m"]'), s: $('[data-u="s"]') };
+  const split = ms => {
+    const t = Math.max(0, Math.floor(ms / 1000));
+    return { d: Math.floor(t / 86400), h: Math.floor(t % 86400 / 3600), m: Math.floor(t % 3600 / 60), s: t % 60 };
+  };
+
+  /* Live clock for Q2 (mock) */
+  const Q2_LEN = 15 * 60;
+  let qLeft = 8 * 60 + 42;
+
+  function tick() {
+    const now = Date.now();
+    const a = split(fp1 - now);
+    cdEls.d.textContent = pad(a.d); cdEls.h.textContent = pad(a.h);
+    cdEls.m.textContent = pad(a.m); cdEls.s.textContent = pad(a.s);
+    $('#cd-fp1').setAttribute('aria-label', `Practice 1 starts in ${a.d} days, ${a.h} hours, ${a.m} minutes`);
+    const b = split(race - now);
+    $('#cd-race').textContent = `${b.d}d ${pad(b.h)}h ${pad(b.m)}m`;
+
+    qLeft = qLeft <= 0 ? Q2_LEN : qLeft - 1;
+    const q = `${pad(Math.floor(qLeft / 60))}:${pad(qLeft % 60)}`;
+    $('#q-clock').textContent = q;
+    $('#q-clock-inline').textContent = q;
+    $('#q-bar').style.width = ((Q2_LEN - qLeft) / Q2_LEN * 100).toFixed(1) + '%';
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  /* ---------------- State switcher ---------------- */
+  const STATES = ['upcoming', 'live', 'result'];
+  const btns = document.querySelectorAll('.switcher button');
+  function setState(s, push) {
+    if (!STATES.includes(s)) s = 'upcoming';
+    document.body.dataset.state = s;
+    btns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.s === s)));
+    if (push) {
+      const u = new URL(location.href);
+      u.searchParams.set('state', s);
+      history.replaceState(null, '', u);
+    }
+  }
+  btns.forEach(b => b.addEventListener('click', () => { setState(b.dataset.s, true); window.scrollTo({ top: 0 }); }));
+  setState(new URLSearchParams(location.search).get('state') || 'upcoming', false);
+  // in-page links like "?state=result" switch without reload
+  document.querySelectorAll('a[href^="?state="]').forEach(a => a.addEventListener('click', e => {
+    e.preventDefault(); setState(a.getAttribute('href').split('=')[1], true); window.scrollTo({ top: 0 });
+  }));
+
+  /* ---------------- Mobile menu ---------------- */
+  const sheet = $('#sheet'), menuBtn = $('.menu-btn');
+  const openMenu = open => {
+    sheet.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    document.body.style.overflow = open ? 'hidden' : '';
+    (open ? $('.sheet-close') : menuBtn).focus();
+  };
+  menuBtn.addEventListener('click', () => openMenu(true));
+  $('.sheet-close').addEventListener('click', () => openMenu(false));
+  sheet.querySelectorAll('a').forEach(a => a.addEventListener('click', () => openMenu(false)));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheet.classList.contains('open')) openMenu(false); });
+
+  /* ---------------- Back to top ---------------- */
+  $('.to-top').addEventListener('click', () => window.scrollTo({ top: 0 }));
+})();
+</script>
+</body>
+</html>

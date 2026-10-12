@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F1 Hub — Broadcast direction</title>
+<link rel="icon" href="../../img/icon.png">
+<style>
+@font-face{font-family:"F1";src:url("../../fonts/Formula1-Regular.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"F1";src:url("../../fonts/Formula1-Bold.ttf") format("truetype");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"F1";src:url("../../fonts/Formula1-Black.ttf") format("truetype");font-weight:900;font-style:normal;font-display:swap}
+@font-face{font-family:"F1";src:url("../../fonts/Formula1-Italic.ttf") format("truetype");font-weight:400;font-style:italic;font-display:swap}
+
+:root{
+  --bg:#09090D; --bg2:#0F0F15; --panel:#15151D; --panel2:#1C1C26; --panel3:#262633;
+  --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+  --text:#F5F5F7; --muted:#A9A9B8; --soft:#8C8C9C;
+  --red:#E10600; --red-hi:#FF2B1C; --green:#2FD36B; --down:#FF5A5A; --purple:#B65CFF; --amber:#FFC21A;
+  --cut:14px;
+  --wrap:1320px;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:"F1",system-ui,sans-serif;font-weight:400;font-size:15px;line-height:1.45;overflow-x:clip;min-height:100vh}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.wrap{width:100%;max-width:var(--wrap);margin:0 auto;padding:0 32px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- shared broadcast primitives ---------- */
+.tag{display:inline-flex;align-items:center;gap:8px;height:26px;padding:0 16px;font-weight:700;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;
+  clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+.tag--red{background:var(--red);color:#fff}
+.tag--white{background:#fff;color:#0B0B10}
+.tag--dark{background:var(--panel3);color:var(--text)}
+.tag--chq{background:repeating-conic-gradient(#fff 0 25%,#111 0 50%) 0 0/8px 8px;color:#111;position:relative}
+.tag--chq span{background:#fff;padding:2px 6px}
+.slant{clip-path:polygon(var(--cut) 0,100% 0,calc(100% - var(--cut)) 100%,0 100%)}
+.slant-r{clip-path:polygon(0 0,100% 0,calc(100% - var(--cut)) 100%,0 100%)}
+.btn{display:inline-flex;align-items:center;gap:12px;height:52px;padding:0 30px;font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;
+  clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);transition:background .2s,transform .2s var(--ease)}
+.btn .arr{display:inline-block;transition:transform .25s var(--ease)}
+.btn:hover .arr{transform:translateX(5px)}
+.btn--red{background:var(--red);color:#fff}
+.btn--red:hover{background:var(--red-hi)}
+.btn--ghost{background:rgba(255,255,255,.08);color:#fff;box-shadow:inset 0 0 0 1px var(--line2)}
+.btn--ghost:hover{background:rgba(255,255,255,.15)}
+.btn--white{background:#fff;color:#0B0B10}
+.btn--white:hover{background:#e7e7ea}
+.eyebrow{font-weight:700;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.code3{font-weight:900;letter-spacing:.04em}
+
+/* ---------- NAVBAR ---------- */
+.nav{position:sticky;top:0;z-index:50;background:rgba(9,9,13,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;height:64px;gap:24px}
+.brand{display:flex;align-items:center;height:64px;padding-right:34px;margin-left:-32px;padding-left:32px;background:linear-gradient(90deg,#000 0,#121218 100%);
+  clip-path:polygon(0 0,100% 0,calc(100% - 22px) 100%,0 100%);position:relative}
+.brand::after{content:"";position:absolute;right:6px;top:0;bottom:0;width:6px;background:var(--red);transform:skewX(-19deg)}
+.brand img{height:22px;width:auto}
+.nav-links{display:flex;align-items:stretch;height:64px;margin-left:8px;list-style:none}
+.nav-links a{position:relative;display:flex;align-items:center;gap:8px;height:100%;padding:0 18px;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#D6D6DE;transition:color .2s}
+.nav-links a::after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:3px;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .25s var(--ease)}
+.nav-links a:hover{color:#fff}
+.nav-links a:hover::after,.nav-links a[aria-current="page"]::after{transform:scaleX(1)}
+.live-pill{display:none;align-items:center;gap:6px;height:20px;padding:0 8px;background:var(--red);color:#fff;font-size:10px;letter-spacing:.12em;font-weight:900;clip-path:polygon(4px 0,100% 0,calc(100% - 4px) 100%,0 100%)}
+.is-live .live-pill{display:inline-flex}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+.is-live .live-pill .dot,.live-bug .dot{animation:blink 1.1s steps(2,start) infinite}
+@keyframes blink{to{opacity:.15}}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.season-chip{font-weight:700;font-size:12px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.season-chip b{color:#fff;font-weight:900;background:var(--panel3);padding:5px 10px;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%)}
+.burger{display:none;width:44px;height:44px;align-items:center;justify-content:center;position:relative}
+.burger span,.burger::before,.burger::after{content:"";position:absolute;left:11px;width:22px;height:2px;background:#fff;transition:transform .25s var(--ease),opacity .2s}
+.burger::before{top:15px}.burger span{top:21px}.burger::after{top:27px}
+.nav.open .burger::before{transform:translateY(6px) rotate(45deg)}
+.nav.open .burger span{opacity:0}
+.nav.open .burger::after{transform:translateY(-6px) rotate(-45deg)}
+
+/* ticker */
+.ticker{display:flex;height:34px;background:#000;border-bottom:1px solid var(--line);overflow:hidden;position:relative}
+.ticker-label{flex:none;display:flex;align-items:center;gap:8px;padding:0 22px 0 32px;background:var(--red);color:#fff;font-weight:900;font-size:11px;letter-spacing:.16em;text-transform:uppercase;clip-path:polygon(0 0,100% 0,calc(100% - 12px) 100%,0 100%);z-index:2}
+.ticker-track{flex:1;overflow:hidden;position:relative;mask-image:linear-gradient(90deg,transparent 0,#000 30px,#000 calc(100% - 40px),transparent)}
+.ticker-run{display:flex;width:max-content;animation:marquee 48s linear infinite}
+.ticker-run ul{display:flex;list-style:none;align-items:center;height:34px}
+.ticker-run li{display:flex;align-items:center;gap:10px;padding:0 22px;font-size:12.5px;color:#D9D9E0;white-space:nowrap;border-right:1px solid var(--line2)}
+.ticker-run li b{font-weight:900;color:#fff;letter-spacing:.04em}
+.ticker-run li i{width:4px;height:14px;font-style:normal;flex:none}
+.ticker:hover .ticker-run{animation-play-state:paused}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;overflow:hidden;isolation:isolate;border-bottom:1px solid var(--line)}
+.hero-bg{position:absolute;inset:0;z-index:-2}
+.hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center 40%;opacity:.55;filter:saturate(.8)}
+.hero-bg::after{content:"";position:absolute;inset:0;
+  background:
+   linear-gradient(180deg,rgba(9,9,13,.2) 0%,rgba(9,9,13,0) 30%,var(--bg) 100%),
+   linear-gradient(100deg,rgba(9,9,13,.97) 0%,rgba(9,9,13,.9) 42%,rgba(9,9,13,.55) 100%)}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:repeating-linear-gradient(115deg,transparent 0 46px,rgba(255,255,255,.025) 46px 47px)}
+.hero-swipe{position:absolute;inset:0;z-index:5;pointer-events:none;background:var(--red);transform:translateX(-101%) skewX(-14deg);transform-origin:left}
+.hero.swiping .hero-swipe{animation:swipe .6s var(--ease)}
+@keyframes swipe{0%{transform:translateX(-110%) skewX(-14deg)}45%{transform:translateX(0) skewX(-14deg)}100%{transform:translateX(115%) skewX(-14deg)}}
+
+.state{display:none;padding:56px 0 64px;min-height:calc(100vh - 98px);min-height:calc(100svh - 98px)}
+.state.active{display:block}
+.state-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:56px;align-items:start}
+
+/* entrance motion */
+.state.active .in{animation:panelIn .7s var(--ease) both;animation-delay:calc(var(--d,0) * 70ms + 180ms)}
+.state.active .row-in{animation:rowIn .5s var(--ease) both;animation-delay:calc(var(--i,0) * 45ms + 420ms)}
+@keyframes panelIn{from{opacity:0;transform:translateX(-46px) skewX(-6deg)}to{opacity:1;transform:none}}
+@keyframes rowIn{from{opacity:0;transform:translateX(36px)}to{opacity:1;transform:none}}
+
+.gp-head{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px}
+.gp-title{font-weight:900;text-transform:uppercase;line-height:.92;letter-spacing:-.01em;font-size:clamp(40px,6.4vw,92px)}
+.gp-title .lite{display:block;font-weight:400;font-size:.42em;letter-spacing:.08em;margin-bottom:10px;color:var(--muted)}
+.lower3{display:inline-flex;align-items:stretch;margin-top:22px;max-width:100%}
+.lower3 .l3-code{display:flex;align-items:center;padding:0 16px;background:#fff;color:#0B0B10;font-weight:900;font-size:15px;letter-spacing:.06em;clip-path:polygon(0 0,100% 0,calc(100% - 10px) 100%,0 100%);padding-right:22px}
+.lower3 .l3-main{display:flex;flex-direction:column;justify-content:center;padding:10px 26px 10px 20px;margin-left:-8px;background:rgba(21,21,29,.92);box-shadow:inset 0 -3px 0 var(--red);clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);min-width:0}
+.lower3 b{font-weight:700;font-size:15px;line-height:1.2}
+.lower3 small{font-size:12.5px;color:var(--muted)}
+
+/* countdown */
+.cd-panel{margin-top:34px;background:linear-gradient(90deg,rgba(21,21,29,.95),rgba(21,21,29,.75));border-left:4px solid var(--red);max-width:640px}
+.cd-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 22px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.cd-head .eyebrow{color:#fff}
+.cd-head .when{font-size:13px;color:var(--muted)}
+.cd-head .when b{color:#fff;font-weight:700}
+.cd{display:grid;grid-template-columns:repeat(4,1fr);padding:16px 10px 18px}
+.cd-u{text-align:center;position:relative}
+.cd-u+.cd-u::before{content:"";position:absolute;left:0;top:14%;bottom:30%;width:1px;background:var(--line2);transform:skewX(-14deg)}
+.cd-u b{display:block;font-weight:900;font-size:clamp(40px,5.2vw,74px);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.cd-u small{display:block;margin-top:8px;font-weight:700;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.cd-u.sec b{color:var(--red-hi)}
+.race-strip{display:flex;align-items:center;gap:0;max-width:640px;margin-top:8px;background:rgba(0,0,0,.55);font-size:13px;flex-wrap:wrap}
+.race-strip .lbl{display:flex;align-items:center;gap:8px;align-self:stretch;padding:10px 18px;background:#fff;color:#0B0B10;font-weight:900;letter-spacing:.1em;text-transform:uppercase;font-size:11.5px;clip-path:polygon(0 0,100% 0,calc(100% - 10px) 100%,0 100%)}
+.race-strip .val{padding:10px 18px;color:var(--muted)}
+.race-strip .val b{color:#fff;font-weight:900;font-size:15px;margin-left:6px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+
+/* tower (generic) */
+.tower{background:rgba(15,15,21,.94);border:1px solid var(--line);position:relative}
+.tower-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 0 0 0;background:#000;min-height:46px}
+.tower-head h2,.tower-head h3{display:flex;align-items:center;align-self:stretch;padding:0 26px 0 16px;background:var(--red);font-weight:900;font-size:13px;letter-spacing:.14em;text-transform:uppercase;clip-path:polygon(0 0,100% 0,calc(100% - 14px) 100%,0 100%)}
+.tower-head .meta{padding-right:16px;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:right}
+.trow{display:grid;grid-template-columns:38px 5px minmax(0,1fr) auto;align-items:center;gap:0;min-height:44px;border-top:1px solid var(--line);position:relative}
+.trow .pos{display:flex;align-items:center;justify-content:center;align-self:stretch;font-weight:900;font-size:15px;background:rgba(255,255,255,.04)}
+.trow .bar{align-self:stretch;margin:7px 0}
+.trow .who{padding:0 12px;min-width:0;display:flex;align-items:baseline;gap:10px}
+.trow .who b{font-weight:900;font-size:15px;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap}
+.trow .who span{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trow .val{padding:0 14px;font-weight:700;font-size:14px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* schedule tower */
+.sched .day{padding:9px 16px;font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,.03);border-top:1px solid var(--line)}
+.srow{display:grid;grid-template-columns:5px minmax(0,1fr) auto auto;align-items:center;min-height:50px;border-top:1px solid var(--line)}
+.srow .bar{align-self:stretch;background:var(--panel3)}
+.srow .sn{padding:0 16px;font-weight:700;font-size:15px}
+.srow .sn small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+.srow .st{padding:0 10px}
+.srow .tm{padding:0 18px 0 6px;font-weight:900;font-size:18px;font-variant-numeric:tabular-nums}
+.srow.next{background:linear-gradient(90deg,rgba(225,6,0,.22),rgba(225,6,0,.04))}
+.srow.next .bar{background:var(--red)}
+.srow.race .sn{font-weight:900}
+.mini{font-size:10px;height:20px;padding:0 10px}
+.track-box{display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:center;padding:18px 16px;border-top:1px solid var(--line)}
+.track-box img{width:120px;height:auto;filter:brightness(0) invert(1);opacity:.9}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stats3 div{border-left:2px solid var(--red);padding-left:10px}
+.stats3 b{display:block;font-weight:900;font-size:19px;line-height:1.1}
+.stats3 small{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* LIVE */
+.live-bug{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 22px 0 18px;background:var(--red);color:#fff;font-weight:900;font-size:20px;letter-spacing:.14em;clip-path:polygon(0 0,100% 0,calc(100% - 12px) 100%,0 100%);box-shadow:0 0 0 0 rgba(225,6,0,.6)}
+.live-bug .dot{width:11px;height:11px;background:#fff}
+.live-head{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.live-head .tag{height:44px;font-size:12px}
+.live-glow{position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(60% 50% at 15% 30%,rgba(225,6,0,.22),transparent 70%);animation:glow 2.4s ease-in-out infinite alternate}
+@keyframes glow{from{opacity:.55}to{opacity:1}}
+.status-gfx{margin-top:30px;max-width:640px;background:rgba(21,21,29,.94);border:1px solid var(--line)}
+.seg{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:4px;padding:16px 18px 6px}
+.seg div{position:relative;height:40px;background:var(--panel3);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-weight:900;font-size:14px;letter-spacing:.06em;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);overflow:hidden}
+.seg div small{font-weight:700;font-size:10.5px;letter-spacing:.12em;color:var(--muted)}
+.seg .done{background:#2A2A36;color:var(--muted)}
+.seg .on{background:#3a0b0a}
+.seg .on .fill{position:absolute;inset:0;right:auto;background:var(--red);z-index:0;transition:width 1s linear}
+.seg .on span,.seg .on small{position:relative;z-index:1;color:#fff}
+.status-row{display:grid;grid-template-columns:auto 1fr 1fr;gap:0;border-top:1px solid var(--line);margin-top:12px}
+.status-row>div{padding:14px 18px;border-right:1px solid var(--line)}
+.status-row>div:last-child{border-right:0}
+.status-row small{display:block;font-weight:700;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.status-row b{font-weight:900;font-size:clamp(24px,3vw,34px);line-height:1;font-variant-numeric:tabular-nums}
+.flag{display:inline-flex;align-items:center;gap:8px;font-weight:900;font-size:14px;letter-spacing:.1em;color:#0B0B10;background:var(--green);padding:6px 12px;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+.cta-live{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:22px;max-width:640px;padding:20px 24px 20px 28px;background:var(--red);color:#fff;clip-path:polygon(16px 0,100% 0,calc(100% - 16px) 100%,0 100%);transition:background .2s}
+.cta-live:hover{background:var(--red-hi)}
+.cta-live b{display:block;font-weight:900;font-size:clamp(20px,2.4vw,28px);text-transform:uppercase;letter-spacing:.02em;line-height:1.05}
+.cta-live small{display:block;font-size:13px;opacity:.92;margin-top:4px}
+.cta-live .arrbox{flex:none;width:54px;height:54px;display:grid;place-items:center;background:#fff;color:var(--red);font-weight:900;font-size:24px;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);transition:transform .25s var(--ease)}
+.cta-live:hover .arrbox{transform:translateX(6px)}
+.live-next{margin-top:14px;font-size:13px;color:var(--muted)}
+.live-next b{color:#fff}
+.trow.drop{border-top:2px dashed var(--red)}
+.trow.out{opacity:.62}
+.drop-lbl{position:absolute;right:10px;top:-11px;background:var(--red);color:#fff;font-size:9.5px;font-weight:900;letter-spacing:.14em;padding:3px 8px;text-transform:uppercase}
+.trow .tyre{width:20px;height:20px;border-radius:50%;border:3px solid var(--down);display:inline-grid;place-items:center;font-size:9px;font-weight:900;margin-left:auto;flex:none}
+.tyre.s{border-color:#FF3B3B}.tyre.m{border-color:#FFD12B}
+.tower-foot{padding:10px 16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--soft);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.tower-foot a{color:#fff;font-weight:700}
+.tower-foot a:hover{text-decoration:underline}
+
+/* RESULT */
+.res-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:40px;align-items:end}
+.res-title{font-size:clamp(34px,5vw,72px)}
+.podium{display:grid;grid-template-columns:1fr 1.12fr 1fr;gap:10px;align-items:end;margin-top:30px}
+.pcard{position:relative;overflow:hidden;background:linear-gradient(180deg,color-mix(in srgb,var(--tc) 46%,#15151D) 0%,#15151D 78%);height:360px;clip-path:polygon(0 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%);display:flex;flex-direction:column}
+.pcard.p1{height:420px}
+.pcard::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--tc);z-index:3}
+.pcard .bignum{position:absolute;left:12px;top:6px;font-weight:900;font-size:150px;line-height:1;color:rgba(255,255,255,.12);z-index:0;letter-spacing:-.04em}
+.pcard .por{position:absolute;left:50%;top:30px;transform:translateX(-50%);width:74%;height:auto;max-width:none;z-index:1}
+.pcard.p1 .por{width:78%;top:26px}
+.pcard .plate{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:46px 16px 16px;background:linear-gradient(180deg,transparent 0,rgba(10,10,14,.92) 38%,#0D0D12 100%)}
+.pcard .pos-chip{position:absolute;right:12px;top:16px;z-index:3;display:grid;place-items:center;width:42px;height:42px;background:#fff;color:#0B0B10;font-weight:900;font-size:20px;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+.pcard.p1 .pos-chip{background:var(--amber)}
+.pcard .fn{font-size:13px;color:#D9D9E0;line-height:1.1}
+.pcard .ln{font-weight:900;font-size:clamp(17px,1.9vw,26px);text-transform:uppercase;line-height:1.05;letter-spacing:.01em}
+.pcard .tm{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+.pcard .tm b{font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.pcard .team{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-top:2px}
+.pcard .team i{width:10px;height:10px;background:var(--tc);flex:none;transform:skewX(-14deg)}
+.fl{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 9px;background:var(--purple);color:#fff;font-weight:900;font-size:10px;letter-spacing:.12em;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%)}
+.delta{display:inline-flex;align-items:center;justify-content:flex-end;gap:5px;font-weight:900;font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.delta.up{color:var(--green)}.delta.down{color:var(--down)}.delta.eq{color:var(--soft)}
+.delta svg{width:9px;height:9px;fill:currentColor}
+.res-tower .trow{grid-template-columns:38px 5px minmax(0,1fr) auto 104px;min-height:48px}
+.res-tower .gr{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding-right:14px;font-size:11.5px;color:var(--soft);white-space:nowrap}
+.res-tower .gr .from{font-variant-numeric:tabular-nums}
+.res-cols{display:grid;grid-template-columns:38px 5px minmax(0,1fr) auto 104px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:8px 0;border-top:1px solid var(--line)}
+.res-cols span:nth-child(3){padding-left:12px}.res-cols span:nth-child(4){padding-right:14px;text-align:right}.res-cols span:nth-child(5){padding-right:14px;text-align:right}
+.res-after{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin-top:26px}
+.res-after .nxt{font-size:13px;color:var(--muted)}
+.res-after .nxt b{color:#fff}
+
+/* ---------- SECTIONS ---------- */
+section.block{padding:96px 0 0}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:30px;flex-wrap:wrap}
+.sec-head h2{font-weight:900;font-size:clamp(30px,4vw,52px);text-transform:uppercase;line-height:.95;letter-spacing:-.005em}
+.sec-head h2 em{font-style:normal;color:var(--red-hi)}
+.sec-head .kick{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.sec-head .kick::before{content:"";width:28px;height:6px;background:var(--red);transform:skewX(-20deg)}
+.link-arrow{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding-bottom:4px;border-bottom:2px solid var(--red)}
+.link-arrow:hover{color:var(--red-hi)}
+
+/* standings */
+.champ{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:start}
+.leader{display:block;min-height:190px;position:relative;overflow:hidden;
+  background:linear-gradient(100deg,#15151D 30%,color-mix(in srgb,#2BFFDB 30%,#15151D) 100%);border-bottom:1px solid var(--line)}
+.leader .lt{position:relative;z-index:1;padding:20px 190px 20px 20px}
+.leader .lt .eyebrow{color:#2BFFDB}
+.leader .lt b{display:block;font-weight:900;font-size:clamp(26px,3vw,38px);text-transform:uppercase;line-height:1;margin-top:8px}
+.leader .lt .pts{display:flex;gap:18px;margin-top:14px;flex-wrap:wrap}
+.leader .lt .pts div{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.leader .lt .pts strong{display:block;font-weight:900;font-size:24px;color:#fff;letter-spacing:0;font-variant-numeric:tabular-nums}
+.leader img{position:absolute;right:18px;top:18px;width:160px;height:auto;max-width:none}
+.st-row{display:grid;grid-template-columns:38px 5px minmax(0,1fr) minmax(60px,32%) 58px 54px;align-items:center;min-height:46px;border-top:1px solid var(--line);transition:background .2s}
+.st-row:hover{background:rgba(255,255,255,.035)}
+.st-row .pos{display:flex;align-items:center;justify-content:center;align-self:stretch;font-weight:900;font-size:15px;background:rgba(255,255,255,.04)}
+.st-row .bar{align-self:stretch;margin:7px 0}
+.st-row .who{padding:0 12px;min-width:0}
+.st-row .who b{display:block;font-weight:900;font-size:14.5px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-row .who span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-row .meter{height:8px;background:rgba(255,255,255,.06);position:relative;margin-right:4px}
+.st-row .meter i{position:absolute;left:0;top:0;bottom:0;background:var(--tc);transform-origin:left;transform:scaleX(0);transition:transform 1s var(--ease)}
+.in-view .st-row .meter i{transform:scaleX(var(--w))}
+.st-row .pts{text-align:right;font-weight:900;font-size:16px;font-variant-numeric:tabular-nums}
+.st-row .gap{text-align:right;padding-right:14px;font-size:12px;color:var(--soft);font-variant-numeric:tabular-nums}
+.st-row.cons{grid-template-columns:38px 5px 40px minmax(0,1fr) minmax(60px,30%) 58px 54px}
+.st-row .logo{width:28px;height:28px;object-fit:contain;justify-self:center}
+.st-row .logo-ph{width:28px;height:28px;justify-self:center}
+
+/* season */
+.season-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--panel);border:1px solid var(--line);margin-bottom:22px}
+.season-stats>div{padding:18px 22px;border-right:1px solid var(--line);position:relative}
+.season-stats>div:last-child{border-right:0}
+.season-stats b{display:block;font-weight:900;font-size:clamp(28px,3.2vw,42px);line-height:1;font-variant-numeric:tabular-nums}
+.season-stats small{display:block;margin-top:6px;font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.prog{display:grid;grid-template-columns:repeat(25,1fr);gap:3px;margin-bottom:10px}
+.prog i{height:10px;background:var(--panel3);transform:skewX(-20deg)}
+.prog i.done{background:#F5F5F7}
+.prog i.cxl{background:repeating-linear-gradient(135deg,#5b5b68 0 3px,transparent 3px 6px)}
+.prog i.next{background:var(--red);animation:pulse 1.4s ease-in-out infinite alternate}
+@keyframes pulse{from{opacity:.55}to{opacity:1}}
+.prog-legend{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:12px;color:var(--muted);margin-bottom:22px}
+.prog-legend span{display:inline-flex;align-items:center;gap:8px}
+.prog-legend i{width:16px;height:8px;transform:skewX(-20deg);display:inline-block}
+.wins{display:flex;height:44px;margin-bottom:26px;gap:3px}
+.wins div{display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--panel2);border-top:4px solid var(--tc);font-size:12px;white-space:nowrap;overflow:hidden;min-width:0}
+.wins div b{font-weight:900;font-size:16px}
+.wins div span{overflow:hidden;text-overflow:ellipsis;text-transform:uppercase;font-weight:700;letter-spacing:.05em}
+.cal{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.rc{position:relative;display:flex;flex-direction:column;gap:6px;min-height:118px;padding:12px 14px 12px 16px;background:var(--panel);border:1px solid var(--line);transition:background .2s,transform .25s var(--ease);overflow:hidden}
+.rc:hover{background:var(--panel2);transform:translateY(-2px)}
+.rc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--tc,var(--panel3))}
+.rc .top{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.rc .rn{font-weight:900;font-size:12px;letter-spacing:.1em;color:var(--muted)}
+.rc .cc{font-weight:900;font-size:11px;letter-spacing:.08em;padding:3px 7px;background:var(--panel3);clip-path:polygon(4px 0,100% 0,calc(100% - 4px) 100%,0 100%)}
+.rc .nm{font-weight:700;font-size:15px;line-height:1.15}
+.rc .dt{font-size:12px;color:var(--muted)}
+.rc .win{margin-top:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:#D9D9E0}
+.rc .win b{font-weight:900;text-transform:uppercase;letter-spacing:.03em}
+.rc .win svg{width:12px;height:12px;fill:var(--amber);flex:none}
+.rc .sprint{font-size:9.5px;font-weight:900;letter-spacing:.12em;color:#0B0B10;background:var(--amber);padding:2px 6px}
+.rc.cxl{background:repeating-linear-gradient(135deg,#111117 0 8px,#15151D 8px 16px)}
+.rc.cxl .nm{text-decoration:line-through;text-decoration-thickness:2px;color:var(--soft)}
+.rc.cxl .win{color:var(--down);font-weight:900;letter-spacing:.12em;text-transform:uppercase;font-size:11px}
+.rc.next{background:linear-gradient(160deg,rgba(225,6,0,.35),#15151D 70%);border-color:var(--red);--tc:var(--red)}
+.rc.next .win{color:#fff;font-weight:900;text-transform:uppercase;letter-spacing:.1em;font-size:11px}
+.rc.up .win{color:var(--soft);font-size:11px;text-transform:uppercase;letter-spacing:.12em}
+
+/* channel guide */
+.chan{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.ch{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:200px;padding:16px 18px;background:var(--panel);border:1px solid var(--line);overflow:hidden;transition:background .25s,transform .25s var(--ease);isolation:isolate}
+.ch:nth-child(1),.ch:nth-child(2){grid-column:span 3;min-height:230px}
+.ch:nth-child(n+3){grid-column:span 3}
+@media (min-width:1000px){.ch:nth-child(n+3){grid-column:span 2}}
+.ch:hover{background:var(--panel2);transform:translateY(-3px)}
+.ch::after{content:"";position:absolute;left:0;bottom:0;height:4px;width:100%;background:var(--red);transform:scaleX(.18);transform-origin:left;transition:transform .35s var(--ease)}
+.ch:hover::after{transform:scaleX(1)}
+.ch .chno{font-weight:900;font-size:11px;letter-spacing:.16em;color:var(--muted)}
+.ch h3{font-weight:900;font-size:clamp(22px,2.2vw,30px);text-transform:uppercase;line-height:1}
+.ch p{font-size:13px;color:var(--muted);margin-top:6px;max-width:34ch}
+.ch .art{position:absolute;right:4%;top:22px;width:clamp(120px,34%,190px);height:auto;z-index:-1;opacity:.85;transition:transform .4s var(--ease)}
+.ch:hover .art{transform:translateX(-8px)}
+.ch .art.car{top:auto;width:72%;right:-40px;bottom:24px;opacity:.75}
+.ch .art.lay{top:auto;width:auto;height:62%;filter:brightness(0) invert(1);opacity:.16;right:18px;bottom:18px}
+.ch .shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,var(--panel) 30%,transparent 80%)}
+.ch:hover .shade{background:linear-gradient(90deg,var(--panel2) 30%,transparent 80%)}
+.ch .go{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin-top:14px}
+.ch.live-ch .chno{color:var(--red-hi)}
+
+/* ---------- FOOTER ---------- */
+footer{margin-top:120px;background:#050508;border-top:1px solid var(--line);position:relative}
+footer::before{content:"";position:absolute;left:0;top:-1px;width:min(46%,560px);height:6px;background:var(--red);clip-path:polygon(0 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+.f-top{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,2fr);gap:48px;padding:64px 0 44px}
+.f-brand img{height:26px;width:auto;margin-bottom:18px}
+.f-brand p{font-size:15px;color:#D6D6DE;max-width:36ch}
+.f-tz{display:inline-flex;align-items:center;gap:10px;margin-top:20px;font-size:12.5px;color:var(--muted);padding:8px 12px;background:var(--panel);border-left:3px solid var(--red)}
+.f-tz b{color:#fff;font-weight:700}
+.f-cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+.f-cols h4{font-weight:900;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line);color:#fff}
+.f-cols ul{list-style:none;display:grid;gap:9px}
+.f-cols a{font-size:14px;color:var(--muted);transition:color .2s}
+.f-cols a:hover{color:#fff}
+.soon{font-size:9.5px;font-weight:900;letter-spacing:.12em;padding:2px 6px;background:var(--panel3);color:#D6D6DE;margin-left:6px;vertical-align:2px}
+.f-legal{padding:22px 0;border-top:1px solid var(--line);font-size:12px;color:var(--soft);max-width:110ch}
+.f-bot{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 0 110px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.f-bot b{color:#fff;font-weight:700}
+.social{display:flex;gap:6px}
+.social a{display:grid;place-items:center;width:40px;height:40px;background:var(--panel);transition:background .2s}
+.social a:hover{background:var(--red)}
+.social svg{width:18px;height:18px;fill:#fff}
+.totop{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#fff}
+.totop span{display:grid;place-items:center;width:32px;height:32px;background:var(--panel3);clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%)}
+.totop:hover span{background:var(--red)}
+
+/* ---------- STATE SWITCHER ---------- */
+.switcher{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:4px;padding:5px;background:rgba(12,12,16,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line2);box-shadow:0 12px 40px rgba(0,0,0,.55)}
+.switcher .lab{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:0 10px 0 8px}
+.switcher button{height:36px;padding:0 16px;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#D6D6DE;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);transition:background .2s,color .2s;display:inline-flex;align-items:center;gap:6px}
+.switcher button:hover{background:rgba(255,255,255,.08);color:#fff}
+.switcher button[aria-pressed="true"]{background:#fff;color:#0B0B10}
+.switcher button[data-s="live"][aria-pressed="true"]{background:var(--red);color:#fff}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:1100px){
+  .state-grid,.res-grid{grid-template-columns:1fr;gap:36px}
+  .champ{grid-template-columns:1fr}
+  .cal{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .f-top{grid-template-columns:1fr}
+  .season-chip{display:none}
+}
+@media (max-width:860px){
+  .burger{display:flex}
+  .nav-links{position:fixed;left:0;right:0;top:64px;height:auto;flex-direction:column;margin:0;background:#07070A;border-bottom:4px solid var(--red);
+    transform:translateY(-8px);opacity:0;visibility:hidden;transition:opacity .2s,transform .25s var(--ease),visibility 0s .25s;padding:8px 0 14px}
+  .nav.open .nav-links{opacity:1;visibility:visible;transform:none;transition:opacity .2s,transform .25s var(--ease)}
+  .nav-links a{height:56px;padding:0 24px;font-size:18px;font-weight:900;border-bottom:1px solid var(--line)}
+  .nav-links a::after{left:0;right:auto;width:5px;top:12px;bottom:12px;height:auto;transform:scaleY(0)}
+  .nav-links a:hover::after,.nav-links a[aria-current="page"]::after{transform:scaleY(1)}
+  .cal{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .season-stats{grid-template-columns:repeat(2,1fr)}
+  .season-stats>div:nth-child(2){border-right:0}
+  .season-stats>div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .chan{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ch,.ch:nth-child(1),.ch:nth-child(2),.ch:nth-child(n+3){grid-column:span 1}
+  .ch:nth-child(1),.ch:nth-child(2){grid-column:span 2}
+  .f-cols{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:600px){
+  .wrap{padding:0 16px}
+  .brand{margin-left:-16px;padding-left:16px;padding-right:28px}
+  .brand img{height:19px}
+  .ticker-label{padding:0 16px 0 16px}
+  .state{padding:32px 0 44px;min-height:0}
+  .gp-head{margin-bottom:16px}
+  .gp-title{font-size:clamp(34px,11vw,48px)}
+  .lower3{margin-top:16px}
+  .lower3 .l3-code{font-size:13px;padding:0 16px 0 12px}
+  .lower3 .l3-main{padding:8px 18px 8px 16px}
+  .lower3 b{font-size:13.5px}
+  .cd-panel{margin-top:24px}
+  .cd-head{padding:12px 14px}
+  .cd{padding:12px 0 14px}
+  .cd-u b{font-size:38px}
+  .cd-u small{font-size:9.5px;letter-spacing:.14em}
+  .race-strip .lbl{padding:9px 12px;font-size:10.5px}
+  .race-strip .val{padding:9px 12px;font-size:12px}
+  .cta-row{margin-top:22px}
+  .cta-row .btn{flex:1 1 100%;justify-content:center;height:48px}
+  .track-box{grid-template-columns:84px 1fr;gap:14px}
+  .track-box img{width:84px}
+  .stats3 b{font-size:16px}
+  .live-bug{height:38px;font-size:17px}
+  .live-head .tag{height:38px}
+  .seg{padding:12px 12px 4px;grid-template-columns:1fr 1.4fr 1fr}
+  .seg div{padding:0 10px;font-size:13px}
+  .seg div small{display:none}
+  .seg .on small{display:inline}
+  .status-row{grid-template-columns:1fr 1fr}
+  .status-row>div:first-child{grid-column:1/-1;border-right:0;border-bottom:1px solid var(--line)}
+  .status-row>div{padding:12px 14px}
+  .cta-live{padding:16px 16px 16px 22px}
+  .cta-live .arrbox{width:44px;height:44px;font-size:20px}
+  .trow .who span.team-name{display:none}
+  .podium{gap:6px;margin-top:22px}
+  .pcard{height:250px;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+  .pcard.p1{height:290px}
+  .pcard .bignum{font-size:86px;left:6px}
+  .pcard .por,.pcard.p1 .por{width:96%;top:22px}
+  .pcard .plate{padding:30px 9px 10px}
+  .pcard .fn,.pcard .team span{display:none}
+  .pcard .ln{font-size:14px}
+  .pcard .tm{margin-top:4px;gap:4px}
+  .pcard .tm b{font-size:11.5px}
+  .pcard .pos-chip{width:30px;height:30px;font-size:15px;right:6px;top:12px}
+  .fl{height:18px;font-size:8.5px;padding:0 6px}
+  .res-tower .trow,.res-cols{grid-template-columns:32px 5px minmax(0,1fr) auto 78px}
+  .res-tower .gr .from{display:none}
+  .trow .val{padding:0 10px;font-size:13px}
+  .res-after .btn{flex:1 1 100%;justify-content:center}
+  section.block{padding-top:72px}
+  .leader{min-height:170px}
+  .leader .lt{padding-right:120px}
+  .leader img{width:112px;right:6px;top:14px}
+  .st-row,.st-row.cons{grid-template-columns:32px 5px minmax(0,1fr) 54px 50px}
+  .st-row.cons{grid-template-columns:32px 5px 34px minmax(0,1fr) 54px 50px}
+  .st-row .meter{display:none}
+  .st-row .logo,.st-row .logo-ph{width:24px;height:24px}
+  .season-stats>div{padding:14px 14px}
+  .wins div{padding:0 8px;gap:5px}
+  .wins div span{display:none}
+  .wins div.big span{display:inline}
+  .cal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;margin:0 -16px;padding:0 16px 10px;scrollbar-width:thin;scroll-padding:0 16px}
+  .rc{flex:0 0 66%;scroll-snap-align:start}
+  .chan{grid-template-columns:1fr}
+  .ch,.ch:nth-child(1),.ch:nth-child(2),.ch:nth-child(n+3){grid-column:span 1;min-height:170px}
+  .f-top{padding:48px 0 32px;gap:36px}
+  .f-cols{gap:28px 18px}
+  .switcher{left:12px;right:12px;transform:none;justify-content:space-between;bottom:12px}
+  .switcher .lab{display:none}
+  .switcher button{flex:1;justify-content:center;padding:0 8px;font-size:11px}
+}
+@media (max-width:380px){
+  .cd-u b{font-size:33px}
+  .pcard .ln{font-size:12.5px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .ticker-run{transform:none}
+  .ticker-run ul+ul{display:none}
+  .ticker-track{overflow-x:auto;scrollbar-width:none}
+  .in-view .st-row .meter i,.st-row .meter i{transform:scaleX(var(--w))}
+  .hero-swipe{display:none}
+}
+</style>
+</head>
+<body id="top">
+
+<!-- ================= NAVBAR ================= -->
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="../../index.html" aria-label="F1 Hub home"><img src="../../img/logo.png" alt="F1 Hub" width="110" height="22"></a>
+    <nav aria-label="Main">
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#calendar">Calendar</a></li>
+        <li><a href="../../results.html">Results</a></li>
+        <li><a href="../../drivers.html">Drivers</a></li>
+        <li><a href="../../teams.html">Teams</a></li>
+        <li><a href="../../live.html" id="navLive">Live <span class="live-pill" aria-label="live now"><span class="dot"></span>NOW</span></a></li>
+      </ul>
+    </nav>
+    <div class="nav-right">
+      <div class="season-chip">Season <b>2026</b></div>
+      <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="ticker" aria-label="Latest">
+  <div class="ticker-label" id="tickerLabel">Latest</div>
+  <div class="ticker-track"><div class="ticker-run" id="tickerRun"></div></div>
+</div>
+
+<main>
+<!-- ================= HERO ================= -->
+<section class="hero" id="hero" aria-label="Race weekend">
+  <div class="hero-swipe" aria-hidden="true"></div>
+
+  <!-- ===== UPCOMING ===== -->
+  <div class="state" data-state="upcoming">
+    <div class="hero-bg" aria-hidden="true"><img src="../../img/circuits/cota.png" alt=""></div>
+    <div class="wrap state-grid">
+      <div>
+        <div class="gp-head in" style="--d:0">
+          <span class="tag tag--red">Round 20 / 25</span>
+          <span class="tag tag--dark">Next Grand Prix</span>
+        </div>
+        <h1 class="gp-title in" style="--d:1"><span class="lite">Formula 1 · 2026</span>United States<br>Grand Prix</h1>
+        <div class="lower3 in" style="--d:2">
+          <span class="l3-code">USA</span>
+          <span class="l3-main"><b>Circuit of The Americas</b><small>Austin, Texas · 23–25 Oct</small></span>
+        </div>
+
+        <div class="cd-panel in" style="--d:3" aria-live="off">
+          <div class="cd-head">
+            <span class="eyebrow">Free Practice 1 starts in</span>
+            <span class="when">Fri 23 Oct · <b>14:30</b></span>
+          </div>
+          <div class="cd" id="cdFp1" role="timer" aria-label="Countdown to Free Practice 1">
+            <div class="cd-u"><b data-u="d">00</b><small>Days</small></div>
+            <div class="cd-u"><b data-u="h">00</b><small>Hours</small></div>
+            <div class="cd-u"><b data-u="m">00</b><small>Mins</small></div>
+            <div class="cd-u sec"><b data-u="s">00</b><small>Secs</small></div>
+          </div>
+        </div>
+        <div class="race-strip in" style="--d:4">
+          <span class="lbl">Lights out</span>
+          <span class="val">Sun 25 Oct · 16:00 <b class="num" id="cdRace">—</b></span>
+        </div>
+        <div class="cta-row in" style="--d:5">
+          <a class="btn btn--red" href="../../results.html?round=20">Grand Prix guide <span class="arr">→</span></a>
+          <a class="btn btn--ghost" href="#calendar">Full calendar</a>
+        </div>
+      </div>
+
+      <aside class="tower sched in" style="--d:3" aria-label="Weekend schedule">
+        <div class="tower-head"><h2>Weekend schedule</h2><span class="meta">Your local time</span></div>
+        <div class="day">Friday 23 Oct</div>
+        <div class="srow next row-in" style="--i:0"><i class="bar"></i><span class="sn">Practice 1</span><span class="st"><span class="tag tag--red mini">Next</span></span><span class="tm">14:30</span></div>
+        <div class="srow row-in" style="--i:1"><i class="bar"></i><span class="sn">Practice 2</span><span class="st"></span><span class="tm">18:30</span></div>
+        <div class="day">Saturday 24 Oct</div>
+        <div class="srow row-in" style="--i:2"><i class="bar"></i><span class="sn">Practice 3</span><span class="st"></span><span class="tm">15:00</span></div>
+        <div class="srow row-in" style="--i:3"><i class="bar"></i><span class="sn">Qualifying</span><span class="st"></span><span class="tm">19:00</span></div>
+        <div class="day">Sunday 25 Oct</div>
+        <div class="srow race row-in" style="--i:4"><i class="bar" style="background:#fff"></i><span class="sn">Grand Prix<small>56 laps</small></span><span class="st"><span class="tag tag--chq mini"><span>Race</span></span></span><span class="tm">16:00</span></div>
+        <div class="track-box">
+          <img src="../../img/circuits/cota-layout.svg" alt="Circuit of The Americas layout">
+          <div class="stats3">
+            <div><b>5.513</b><small>km lap</small></div>
+            <div><b>20</b><small>Turns</small></div>
+            <div><b>56</b><small>Laps</small></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ===== LIVE ===== -->
+  <div class="state" data-state="live">
+    <div class="hero-bg" aria-hidden="true"><img src="../../img/circuits/cota.png" alt=""></div>
+    <div class="live-glow" aria-hidden="true"></div>
+    <div class="wrap state-grid">
+      <div>
+        <div class="live-head in" style="--d:0">
+          <span class="live-bug"><span class="dot"></span>LIVE</span>
+          <span class="tag tag--dark">R20 · United States GP</span>
+        </div>
+        <h1 class="gp-title in" style="--d:1"><span class="lite">Saturday · Circuit of The Americas</span>Qualifying</h1>
+        <div class="lower3 in" style="--d:2">
+          <span class="l3-code">Q2</span>
+          <span class="l3-main"><b>Q2 in progress</b><small>15 cars on track · bottom 5 knocked out</small></span>
+        </div>
+
+        <div class="status-gfx in" style="--d:3">
+          <div class="seg" aria-label="Qualifying progress">
+            <div class="done"><span>Q1</span><small>Done</small></div>
+            <div class="on"><i class="fill" id="q2fill" style="width:42%"></i><span>Q2</span><small>Live</small></div>
+            <div><span>Q3</span><small>Next</small></div>
+          </div>
+          <div class="status-row">
+            <div><small>Track</small><span class="flag">● Green flag</span></div>
+            <div><small>Q2 remaining</small><b id="sessClock" class="num">08:42</b></div>
+            <div><small>Fastest so far</small><b class="num">1:33.208</b></div>
+          </div>
+        </div>
+
+        <a class="cta-live in" style="--d:4" href="../../live.html">
+          <span><b>Watch live timing</b><small>Positions, sectors, tyres and race control — in real time</small></span>
+          <span class="arrbox" aria-hidden="true">→</span>
+        </a>
+        <p class="live-next in" style="--d:5">Up next: <b>Grand Prix · Sun 25 Oct 16:00</b> — in <b class="num" id="cdRaceLive">—</b></p>
+      </div>
+
+      <aside class="tower in" style="--d:3" aria-label="Qualifying provisional order">
+        <div class="tower-head"><h2>Q2 · Provisional</h2><span class="meta">Snapshot</span></div>
+        <div id="liveTower"></div>
+        <div class="tower-foot"><span>Sample snapshot — refreshes on Live Timing</span><a href="../../live.html">Open live timing →</a></div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ===== RESULT ===== -->
+  <div class="state" data-state="result">
+    <div class="hero-bg" aria-hidden="true"><img src="../../img/circuits/marina-bay-street-circuit.png" alt=""></div>
+    <div class="wrap">
+      <div class="gp-head in" style="--d:0">
+        <span class="tag tag--chq"><span>Chequered flag</span></span>
+        <span class="tag tag--white">Race classification</span>
+        <span class="tag tag--dark">Round 19 · Marina Bay</span>
+      </div>
+      <h1 class="gp-title res-title in" style="--d:1"><span class="lite">Sunday 11 Oct · Final result</span>Singapore Grand Prix</h1>
+
+      <div class="res-grid">
+        <div>
+          <div class="podium" id="podium" aria-label="Podium"></div>
+        </div>
+        <aside class="tower res-tower in" style="--d:4" aria-label="Positions 4 to 10">
+          <div class="tower-head"><h2>Classification</h2><span class="meta">P4 – P10</span></div>
+          <div class="res-cols" aria-hidden="true"><span></span><span></span><span>Driver</span><span>Gap</span><span>Grid → Fin</span></div>
+          <div id="resTower"></div>
+        </aside>
+      </div>
+      <div class="res-after in" style="--d:6">
+        <a class="btn btn--white" href="../../results.html?round=19">Full classification <span class="arr">→</span></a>
+        <a class="btn btn--ghost" href="#standings">Updated standings</a>
+        <span class="nxt">Next: <b>United States GP</b> · FP1 in <b class="num" id="cdFp1Res">—</b></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STANDINGS ================= -->
+<section class="block" id="standings" aria-labelledby="stTitle">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="kick"><span class="eyebrow">After Round 19 of 25</span></div>
+        <h2 id="stTitle">Championship <em>tower</em></h2>
+      </div>
+      <a class="link-arrow" href="../../championship.html">Full standings →</a>
+    </div>
+    <div class="champ" id="champ">
+      <div class="tower">
+        <div class="tower-head"><h3>Drivers</h3><span class="meta">Pts · Gap</span></div>
+        <div class="leader">
+          <div class="lt">
+            <span class="eyebrow">Championship leader</span>
+            <b>Kimi<br>Antonelli</b>
+            <div class="pts">
+              <div><strong>340</strong>Points</div>
+              <div><strong>+102</strong>Lead</div>
+              <div><strong>8</strong>Wins</div>
+            </div>
+          </div>
+          <img src="../../img/drivers/antonelli.png" alt="Kimi Antonelli">
+        </div>
+        <div id="drvTower"></div>
+      </div>
+      <div class="tower">
+        <div class="tower-head"><h3>Constructors</h3><span class="meta">Pts · Gap</span></div>
+        <div id="conTower"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SEASON ================= -->
+<section class="block" id="calendar" aria-labelledby="calTitle">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="kick"><span class="eyebrow">2026 Calendar · times in your timezone</span></div>
+        <h2 id="calTitle">Season <em>2026</em></h2>
+      </div>
+      <a class="link-arrow" href="../../results.html">All results →</a>
+    </div>
+
+    <div class="season-stats">
+      <div><b>17</b><small>Races run</small></div>
+      <div><b>6</b><small>Rounds to go</small></div>
+      <div><b>6</b><small>Different winners</small></div>
+      <div><b>2</b><small>Cancelled</small></div>
+    </div>
+
+    <div class="prog" id="prog" aria-hidden="true"></div>
+    <div class="prog-legend">
+      <span><i style="background:#F5F5F7"></i>Completed</span>
+      <span><i style="background:var(--red)"></i>Next</span>
+      <span><i style="background:var(--panel3)"></i>Upcoming</span>
+      <span><i style="background:repeating-linear-gradient(135deg,#5b5b68 0 3px,transparent 3px 6px)"></i>Cancelled</span>
+    </div>
+
+    <div class="eyebrow" style="margin-bottom:10px">Wins this season</div>
+    <div class="wins" id="wins"></div>
+
+    <div class="cal" id="cal"></div>
+  </div>
+</section>
+
+<!-- ================= CHANNEL GUIDE ================= -->
+<section class="block" aria-labelledby="exTitle">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="kick"><span class="eyebrow">Everything in one place</span></div>
+        <h2 id="exTitle">Explore the <em>hub</em></h2>
+      </div>
+    </div>
+    <div class="chan">
+      <a class="ch live-ch" href="../../live.html">
+        <span class="shade"></span>
+        <img class="art lay" src="../../img/circuits/cota-layout.svg" alt="">
+        <span class="chno">CH 01 · Live</span>
+        <span><h3>Live timing</h3><p>The official feed: gaps, sectors, tyres and race control, every session.</p><span class="go">Go live →</span></span>
+      </a>
+      <a class="ch" href="../../results.html">
+        <span class="shade"></span>
+        <img class="art" src="../../img/drivers/verstappen.png" alt="">
+        <span class="chno">CH 02 · Results</span>
+        <span><h3>Results</h3><p>Every session classification of 2026, round by round.</p><span class="go">Open results →</span></span>
+      </a>
+      <a class="ch" href="../../drivers.html">
+        <span class="shade"></span>
+        <img class="art" src="../../img/drivers/norris.png" alt="">
+        <span class="chno">CH 03 · The Grid</span>
+        <span><h3>Drivers</h3><p>Profiles, numbers and form for all 22 drivers.</p><span class="go">Meet the grid →</span></span>
+      </a>
+      <a class="ch" href="../../teams.html">
+        <span class="shade"></span>
+        <img class="art car" src="../../img/teams/ferrari-car.png" alt="">
+        <span class="chno">CH 04 · The Grid</span>
+        <span><h3>Teams</h3><p>Eleven constructors, their cars and line-ups.</p><span class="go">See teams →</span></span>
+      </a>
+      <a class="ch" href="../../archive.html">
+        <span class="shade"></span>
+        <span class="chno">CH 05 · History</span>
+        <span><h3>Archive</h3><p>Every season since 1990 — champions, races and records.</p><span class="go">Rewind →</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="f-top">
+      <div class="f-brand">
+        <img src="../../img/logo.png" alt="F1 Hub" width="130" height="26">
+        <p>Every Grand Prix in one place… Made by a fan, for fans.</p>
+        <div class="f-tz">All times shown in <b id="tz">your timezone</b></div>
+      </div>
+      <div class="f-cols">
+        <div><h4>Season</h4><ul>
+          <li><a href="#calendar">Calendar</a></li>
+          <li><a href="../../championship.html">Championship</a></li>
+          <li><a href="../../results.html">Results</a></li>
+          <li><a href="../../live.html">Live Timing</a></li></ul></div>
+        <div><h4>The Grid</h4><ul>
+          <li><a href="../../drivers.html">Drivers</a></li>
+          <li><a href="../../teams.html">Teams</a></li></ul></div>
+        <div><h4>History</h4><ul>
+          <li><a aria-disabled="true">Memorabilia<span class="soon">SOON</span></a></li></ul></div>
+        <div><h4>Resources</h4><ul>
+          <li><a href="https://www.formula1.com" target="_blank" rel="noopener">Formula 1</a></li>
+          <li><a href="https://www.fia.com" target="_blank" rel="noopener">FIA</a></li>
+          <li><a href="https://openf1.org" target="_blank" rel="noopener">OpenF1</a></li></ul></div>
+      </div>
+    </div>
+    <p class="f-legal">Unofficial fan project. F1 Hub is not associated in any way with the Formula 1 companies, the FIA or any team. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trademarks of Formula One Licensing B.V.</p>
+    <div class="f-bot">
+      <span>© <span id="yr">2026</span> F1 Hub · Designed &amp; built by <b>Benicio Pacheco</b></span>
+      <div class="social">
+        <a href="https://github.com/benipach" aria-label="GitHub" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.2-3.1-.1-.4-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.6 18.3 5 18.3 5c.7 1.6.2 2.8.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5Z"/></svg></a>
+        <a href="https://www.linkedin.com/" aria-label="LinkedIn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M20.4 20.5h-3.6v-5.6c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9v5.7H9.3V9h3.4v1.6c.5-.9 1.6-1.8 3.4-1.8 3.6 0 4.3 2.4 4.3 5.5v6.2ZM5.3 7.4a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2ZM7.1 20.5H3.5V9h3.6v11.5ZM22.2 0H1.8C.8 0 0 .8 0 1.7v20.6c0 .9.8 1.7 1.8 1.7h20.4c1 0 1.8-.8 1.8-1.7V1.7C24 .8 23.2 0 22.2 0Z"/></svg></a>
+        <a href="#" aria-label="Portfolio"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.9 6h-2.9a15.7 15.7 0 0 0-1.4-3.6A8 8 0 0 1 18.9 8ZM12 4c.8 1.2 1.5 2.5 1.9 4h-3.8c.4-1.5 1.1-2.8 1.9-4ZM4.3 14a8.2 8.2 0 0 1 0-4h3.4a16.5 16.5 0 0 0 0 4H4.3Zm.8 2h2.9c.3 1.3.8 2.5 1.4 3.6A8 8 0 0 1 5.1 16ZM8 8H5.1a8 8 0 0 1 4.3-3.6C8.8 5.5 8.3 6.7 8 8Zm4 12c-.8-1.2-1.5-2.5-1.9-4h3.8c-.4 1.5-1.1 2.8-1.9 4Zm2.3-6H9.7a14.7 14.7 0 0 1 0-4h4.6a14.7 14.7 0 0 1 0 4Zm.3 5.6c.6-1.1 1.1-2.3 1.4-3.6h2.9a8 8 0 0 1-4.3 3.6Zm1.7-5.6a16.5 16.5 0 0 0 0-4h3.4a8.2 8.2 0 0 1 0 4h-3.4Z"/></svg></a>
+      </div>
+      <a class="totop" href="#top" id="toTop">Back to top <span aria-hidden="true">↑</span></a>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= STATE SWITCHER (mockup only) ================= -->
+<div class="switcher" role="group" aria-label="Hero state (mockup)">
+  <span class="lab">Hero state</span>
+  <button type="button" data-s="upcoming" aria-pressed="false">Upcoming</button>
+  <button type="button" data-s="live" aria-pressed="false"><span class="dot" style="color:var(--red-hi)"></span>Live</button>
+  <button type="button" data-s="result" aria-pressed="false">Result</button>
+</div>
+
+<script>
+(function(){
+  /* ---------- data ---------- */
+  const TEAMS={
+    mercedes:{n:'Mercedes',c:'#2BFFDB'}, ferrari:{n:'Ferrari',c:'#FF0019'}, mclaren:{n:'McLaren',c:'#FF7F00'},
+    'red-bull-racing':{n:'Red Bull Racing',c:'#22477A'}, 'racing-bulls':{n:'Racing Bulls',c:'#667DFF'},
+    alpine:{n:'Alpine',c:'#006FBA'}, 'aston-martin':{n:'Aston Martin',c:'#229971'}, haas:{n:'Haas',c:'#DEE1E2'},
+    williams:{n:'Williams',c:'#1C7AFF'}, audi:{n:'Audi',c:'#FF2E2E'}, cadillac:{n:'Cadillac',c:'#AAAAAD'}
+  };
+  const DRV={
+    antonelli:['Kimi','Antonelli','ANT','mercedes'], russell:['George','Russell','RUS','mercedes'],
+    hamilton:['Lewis','Hamilton','HAM','ferrari'], leclerc:['Charles','Leclerc','LEC','ferrari'],
+    verstappen:['Max','Verstappen','VER','red-bull-racing'], hadjar:['Isack','Hadjar','HAD','red-bull-racing'],
+    norris:['Lando','Norris','NOR','mclaren'], piastri:['Oscar','Piastri','PIA','mclaren'],
+    lawson:['Liam','Lawson','LAW','racing-bulls'], gasly:['Pierre','Gasly','GAS','alpine'],
+    hulkenberg:['Nico','Hülkenberg','HUL','audi'], alonso:['Fernando','Alonso','ALO','aston-martin']
+  };
+  const RESULT=[ // pos, id, gap, grid, fastest
+    [1,'verstappen','1:42:00.785',1],[2,'leclerc','+7.335s',2,true],[3,'antonelli','+24.573s',4],
+    [4,'norris','+40.506s',5],[5,'piastri','+49.644s',6],[6,'hamilton','+53.188s',3],
+    [7,'lawson','+81.666s',8],[8,'hulkenberg','+83.386s',10],[9,'russell','+84.677s',19],[10,'hadjar','+90.862s',22]
+  ];
+  const DSTAND=[['antonelli',340],['russell',238],['hamilton',229],['verstappen',221],['leclerc',215],['norris',201],['piastri',136],['hadjar',94],['lawson',73],['gasly',50]];
+  const CSTAND=[['mercedes',578],['ferrari',444],['mclaren',337],['red-bull-racing',329],['racing-bulls',96],['alpine',77],['haas',30],['audi',23],['williams',12],['aston-martin',7],['cadillac',0]];
+  const LIVE=[ // sample Q2 snapshot
+    ['antonelli','1:33.208','s'],['russell','+0.094','s'],['verstappen','+0.156','s'],['leclerc','+0.203','m'],
+    ['norris','+0.247','s'],['hamilton','+0.301','s'],['piastri','+0.344','m'],['hadjar','+0.412','s'],
+    ['lawson','+0.488','s'],['gasly','+0.517','s'],['hulkenberg','+0.540','s'],['alonso','+0.611','m']
+  ];
+  const WT={Russell:'mercedes',Antonelli:'mercedes',Hamilton:'ferrari',Leclerc:'ferrari',Norris:'mclaren',Verstappen:'red-bull-racing'};
+  const CAL=[ // round, code, name, dates, winner|status, sprint
+    [1,'AUS','Australia','05–08 Mar','Russell'],[2,'CHN','China','13–15 Mar','Antonelli',1],[3,'JPN','Japan','26–29 Mar','Antonelli'],
+    [4,'BHR','Bahrain','—','x'],[5,'KSA','Saudi Arabia','—','x'],[6,'USA','Miami','01–03 May','Antonelli',1],
+    [7,'CAN','Canada','22–24 May','Antonelli',1],[8,'MON','Monaco','05–07 Jun','Antonelli'],[9,'ESP','Barcelona','12–14 Jun','Hamilton'],
+    [10,'AUT','Austria','26–28 Jun','Russell'],[11,'GBR','Britain','03–05 Jul','Leclerc',1],[12,'BEL','Belgium','17–19 Jul','Antonelli'],
+    [13,'HUN','Hungary','24–26 Jul','Norris'],[14,'NED','Netherlands','21–23 Aug','Norris',1],[15,'ITA','Italy','04–06 Sep','Antonelli'],
+    [16,'ESP','Spain · Madrid','11–13 Sep','Antonelli'],[17,'AZE','Azerbaijan','24–26 Sep','Russell'],[18,'MAS','Bahrain GP in Malaysia','02–04 Oct','Verstappen'],
+    [19,'SGP','Singapore','09–11 Oct','Verstappen',1],[20,'USA','United States','23–25 Oct','next'],[21,'MEX','Mexico','30 Oct–01 Nov'],
+    [22,'BRA','Brazil','06–08 Nov'],[23,'USA','Las Vegas','20–22 Nov'],[24,'QAT','Qatar','27–29 Nov'],[25,'UAE','Abu Dhabi','04–06 Dec']
+  ];
+  const $=s=>document.querySelector(s);
+  const tc=id=>TEAMS[id].c;
+  const tri=(up)=>`<svg viewBox="0 0 10 10" aria-hidden="true"><path d="${up?'M5 1l4 7H1z':'M5 9L1 2h8z'}"/></svg>`;
+  const deltaHTML=(grid,pos)=>{const d=grid-pos;
+    if(d>0)return `<span class="delta up" title="Gained ${d}">${tri(1)}${d}</span>`;
+    if(d<0)return `<span class="delta down" title="Lost ${-d}">${tri(0)}${-d}</span>`;
+    return `<span class="delta eq" title="No change">–</span>`};
+
+  /* ---------- hero: live tower ---------- */
+  $('#liveTower').innerHTML=LIVE.map((r,i)=>{const d=DRV[r[0]];const p=i+1;
+    return `<div class="trow row-in${p===11?' drop':''}${p>10?' out':''}" style="--i:${i}">
+      ${p===11?'<span class="drop-lbl">Knockout zone</span>':''}
+      <span class="pos">${p}</span><i class="bar" style="background:${tc(d[3])}"></i>
+      <span class="who"><b>${d[1]}</b><span class="team-name">${TEAMS[d[3]].n}</span></span>
+      <span class="val" style="display:flex;align-items:center;gap:10px">${r[1]}<span class="tyre ${r[2]}" aria-label="${r[2]==='s'?'Soft':'Medium'} tyre">${r[2].toUpperCase()}</span></span>
+    </div>`}).join('');
+
+  /* ---------- hero: podium + result tower ---------- */
+  const order=[RESULT[1],RESULT[0],RESULT[2]];
+  $('#podium').innerHTML=order.map((r,k)=>{const d=DRV[r[1]];const p=r[0];
+    return `<article class="pcard p${p} in" style="--tc:${tc(d[3])};--d:${[3,2,4][k]}">
+      <span class="bignum" aria-hidden="true">${p}</span>
+      <span class="pos-chip">P${p}</span>
+      <img class="por" src="../../img/drivers/${r[1]}.png" alt="${d[0]} ${d[1]}">
+      <div class="plate">
+        <div class="fn">${d[0]}</div><div class="ln">${d[1]}</div>
+        <div class="team"><i></i><span>${TEAMS[d[3]].n}</span></div>
+        <div class="tm"><b>${r[2]}</b>${r[4]?'<span class="fl" title="Fastest lap">FL</span>':''}${deltaHTML(r[3],p)}</div>
+      </div></article>`}).join('');
+  $('#resTower').innerHTML=RESULT.slice(3).map((r,i)=>{const d=DRV[r[1]];
+    return `<div class="trow row-in" style="--i:${i}">
+      <span class="pos">${r[0]}</span><i class="bar" style="background:${tc(d[3])}"></i>
+      <span class="who"><b>${d[1]}</b><span class="team-name">${TEAMS[d[3]].n}</span></span>
+      <span class="val">${r[2]}</span>
+      <span class="gr"><span class="from">P${r[3]} →</span>${deltaHTML(r[3],r[0])}</span>
+    </div>`}).join('');
+
+  /* ---------- standings ---------- */
+  const lead=DSTAND[0][1];
+  $('#drvTower').innerHTML=DSTAND.slice(1).map((r,i)=>{const d=DRV[r[0]];
+    return `<div class="st-row" style="--tc:${tc(d[3])};--w:${(r[1]/lead).toFixed(3)}">
+      <span class="pos">${i+2}</span><i class="bar" style="background:${tc(d[3])}"></i>
+      <span class="who"><b>${d[1]}</b><span>${TEAMS[d[3]].n}</span></span>
+      <span class="meter"><i></i></span><span class="pts">${r[1]}</span><span class="gap">−${lead-r[1]}</span></div>`}).join('');
+  const clead=CSTAND[0][1];
+  $('#conTower').innerHTML=CSTAND.map((r,i)=>{const t=TEAMS[r[0]];
+    return `<div class="st-row cons" style="--tc:${t.c};--w:${Math.max(r[1]/clead,.004).toFixed(3)}">
+      <span class="pos">${i+1}</span><i class="bar" style="background:${t.c}"></i>
+      <img class="logo" src="../../img/teams/${r[0]}-logo.png" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-ph'}))">
+      <span class="who"><b>${t.n}</b></span>
+      <span class="meter"><i></i></span><span class="pts">${r[1]}</span><span class="gap">${i?'−'+(clead-r[1]):'—'}</span></div>`}).join('');
+
+  /* ---------- season ---------- */
+  $('#prog').innerHTML=CAL.map(r=>`<i class="${r[4]==='x'?'cxl':r[4]==='next'?'next':r[4]?'done':''}"></i>`).join('');
+  const wc={};CAL.forEach(r=>{if(WT[r[4]])wc[r[4]]=(wc[r[4]]||0)+1});
+  $('#wins').innerHTML=Object.entries(wc).sort((a,b)=>b[1]-a[1]).map(([n,c],i)=>
+    `<div class="${i===0?'big':''}" style="flex:${c} 1 0;--tc:${tc(WT[n])}" title="${n}: ${c} wins"><b>${c}</b><span>${n}</span></div>`).join('');
+  const star='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.6 7L12 17.5 5.8 21.2l1.6-7L2 9.5l7.1-.6z"/></svg>';
+  $('#cal').innerHTML=CAL.map(r=>{
+    const [rn,cc,nm,dt,st,sp]=r;
+    let cls='rc',foot='',style='',href='../../results.html?round='+rn;
+    if(st==='x'){cls+=' cxl';foot='Cancelled';href='#calendar'}
+    else if(st==='next'){cls+=' next';foot='Next · in <span class="num" id="cdCal">—</span>';}
+    else if(st){cls+=' done';style=`--tc:${tc(WT[st])}`;foot=`${star}<b>${st}</b>`}
+    else{cls+=' up';foot='Upcoming'}
+    return `<a class="${cls}" href="${href}" style="${style}" ${st==='next'?'id="calNext"':''}>
+      <span class="top"><span class="rn">R${String(rn).padStart(2,'0')}</span><span style="display:flex;gap:4px">${sp?'<span class="sprint">SPRINT</span>':''}<span class="cc">${cc}</span></span></span>
+      <span class="nm">${nm}</span><span class="dt">${dt==='—'?'Not held':dt}</span><span class="win">${foot}</span></a>`}).join('');
+
+  /* ---------- ticker ---------- */
+  const TICK={
+    upcoming:{label:'Race week',items:[['R20','United States GP · Circuit of The Americas'],['FP1','Fri 23 Oct · 14:30'],['QUALI','Sat 24 Oct · 19:00'],['RACE','Sun 25 Oct · 16:00'],['LEADER','Antonelli 340 pts (+102)','#2BFFDB'],['LAST WIN','Verstappen · Singapore GP','#22477A'],['CONSTRUCTORS','Mercedes 578 · Ferrari 444 · McLaren 337']]},
+    live:{label:'● Live',items:[['QUALIFYING','Q2 in progress · Circuit of The Americas'],['P1','Antonelli 1:33.208','#2BFFDB'],['P2','Russell +0.094','#2BFFDB'],['P3','Verstappen +0.156','#22477A'],['TRACK','Green flag'],['UP NEXT','Race · Sun 25 Oct 16:00']]},
+    result:{label:'Result',items:[['WINNER','Verstappen · Singapore GP','#22477A'],['P2','Leclerc +7.335s · fastest lap','#FF0019'],['P3','Antonelli +24.573s','#2BFFDB'],['MOVER','Hadjar P22 → P10 (+12)','#22477A'],['LEADER','Antonelli 340 pts (+102)','#2BFFDB'],['NEXT','United States GP · 23–25 Oct']]}
+  };
+  function renderTicker(s){
+    const t=TICK[s];$('#tickerLabel').textContent=t.label;
+    const ul='<ul>'+t.items.map(i=>`<li>${i[2]?`<i style="background:${i[2]}"></i>`:''}<b>${i[0]}</b>${i[1]}</li>`).join('')+'</ul>';
+    $('#tickerRun').innerHTML=ul+ul.replace('<ul>','<ul aria-hidden="true">');
+  }
+
+  /* ---------- countdowns ---------- */
+  const now0=Date.now();
+  let fp1=new Date(2026,9,23,14,30,0).getTime();
+  if(fp1<=now0) fp1=now0+((10*24+4)*60+12)*60000+37000; // keep mockup ticking after the real date
+  const race=fp1+(2*24*60+90)*60000; // Fri 14:30 -> Sun 16:00
+  const pad=n=>String(n).padStart(2,'0');
+  const split=ms=>{ms=Math.max(0,ms);const s=Math.floor(ms/1000);return{d:Math.floor(s/86400),h:Math.floor(s%86400/3600),m:Math.floor(s%3600/60),s:s%60}};
+  const short=ms=>{const t=split(ms);return t.d?`${t.d}d ${pad(t.h)}h ${pad(t.m)}m`:`${pad(t.h)}h ${pad(t.m)}m ${pad(t.s)}s`};
+  const cdEls={};document.querySelectorAll('#cdFp1 [data-u]').forEach(e=>cdEls[e.dataset.u]=e);
+  let sess=8*60+42; const SESS_LEN=15*60;
+  function tick(){
+    const n=Date.now(), t=split(fp1-n);
+    for(const k in cdEls){const v=pad(t[k]);if(cdEls[k].textContent!==v)cdEls[k].textContent=v}
+    $('#cdRace').textContent=short(race-n);
+    $('#cdRaceLive').textContent=short(race-n);
+    $('#cdFp1Res').textContent=short(fp1-n);
+    const cc=$('#cdCal');if(cc)cc.textContent=split(fp1-n).d+'d';
+    sess=sess>0?sess-1:SESS_LEN;
+    $('#sessClock').textContent=pad(Math.floor(sess/60))+':'+pad(sess%60);
+    $('#q2fill').style.width=((SESS_LEN-sess)/SESS_LEN*100).toFixed(1)+'%';
+  }
+  tick();setInterval(tick,1000);
+
+  /* ---------- state switching ---------- */
+  const STATES=['upcoming','live','result'];
+  const hero=$('#hero');
+  function setState(s,anim){
+    if(!STATES.includes(s))s='upcoming';
+    document.querySelectorAll('.state').forEach(el=>el.classList.toggle('active',el.dataset.state===s));
+    document.querySelectorAll('.switcher button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.s===s));
+    document.body.classList.toggle('is-live',s==='live');
+    renderTicker(s);
+    if(anim){hero.classList.remove('swiping');void hero.offsetWidth;hero.classList.add('swiping')}
+    const u=new URL(location.href);u.searchParams.set('state',s);history.replaceState(null,'',u);
+  }
+  document.querySelectorAll('.switcher button').forEach(b=>b.addEventListener('click',()=>setState(b.dataset.s,true)));
+  setState(new URLSearchParams(location.search).get('state')||'upcoming',false);
+
+  /* ---------- nav ---------- */
+  const nav=$('#nav'),burger=$('#burger');
+  burger.addEventListener('click',()=>{const o=nav.classList.toggle('open');burger.setAttribute('aria-expanded',o);burger.setAttribute('aria-label',o?'Close menu':'Open menu')});
+  document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');burger.setAttribute('aria-expanded','false')}));
+
+  /* ---------- misc ---------- */
+  try{$('#tz').textContent=Intl.DateTimeFormat().resolvedOptions().timeZone.replace(/_/g,' ')}catch(e){}
+  $('#yr').textContent=new Date().getFullYear();
+  $('#toTop').addEventListener('click',e=>{e.preventDefault();window.scrollTo({top:0})});
+  const champ=$('#champ');
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){champ.classList.add('in-view');io.disconnect()}}),{threshold:.2});io.observe(champ);
+  }else champ.classList.add('in-view');
+  // mobile: calendar rail starts at the next round
+  const calEl=$('#cal'),nx=$('#calNext');
+  if(calEl&&nx&&getComputedStyle(calEl).display==='flex'){calEl.scrollLeft=nx.offsetLeft-calEl.offsetLeft-16-nx.offsetWidth*1.1}
+})();
+</script>
+</body>
+</html>

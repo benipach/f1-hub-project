@@ -1,0 +1,1040 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F1 Hub — Poster</title>
+<meta name="description" content="F1 Hub home page — design direction D: Race Poster / Swiss typographic.">
+<link rel="icon" href="../../img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   D — RACE POSTER / SWISS
+   One family (Archivo, variable width) used at two extremes:
+   62% black for numbers & headlines, 115% bold caps for labels.
+   One dominant colour field per hero state: paper (upcoming), red (live), ink (result).
+   ========================================================================== */
+:root{
+  --paper:#EFEAE0;
+  --paper-2:#E6E0D3;
+  --ink:#121212;
+  --ink-2:#1E1E1E;
+  --mute:#66625A;          /* on paper: 5.0:1 */
+  --mute-ink:#A39E93;      /* on ink:   7.0:1 */
+  --red:#E10600;           /* brand red — large type / fields only on paper */
+  --red-ink:#B30500;       /* red for small text on paper / white */
+  --red-hi:#FF5A4E;        /* red for small text on ink */
+  --fl:#C08BFF;            /* fastest lap (on ink) */
+  --nav:56px;
+  --gut:32px;
+  --gap:16px;
+  --f:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ease:cubic-bezier(.7,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.45;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{display:block;max-width:100%}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* type primitives */
+.lbl{font-size:11px;font-weight:700;font-stretch:115%;text-transform:uppercase;letter-spacing:.09em;line-height:1.3}
+.cond{font-weight:900;font-stretch:62%;text-transform:uppercase;line-height:.86;letter-spacing:-.005em}
+.num{font-variant-numeric:tabular-nums lining-nums}
+
+.wrap{width:100%;max-width:1440px;margin:0 auto;padding:0 var(--gut)}
+.g12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gap)}
+.sq{display:inline-block;width:10px;height:10px;background:var(--c,#999);box-shadow:0 0 0 1px rgba(0,0,0,.35);flex:none;vertical-align:baseline}
+.arrow{display:inline-block;transition:transform .25s var(--ease)}
+a:hover .arrow{transform:translateX(6px)}
+
+/* ==========================================================================
+   NAV
+   ========================================================================== */
+.nav{position:sticky;top:0;z-index:50;height:var(--nav);background:var(--ink);color:#fff;border-bottom:1px solid #2a2a2a}
+.nav__in{display:flex;align-items:center;height:100%;gap:24px}
+.nav__logo{display:flex;align-items:center;gap:14px;text-decoration:none}
+.nav__logo img{height:22px;width:auto}
+.nav__season{color:var(--mute-ink);border-left:1px solid #3a3a3a;padding-left:14px}
+.nav__menu{margin-left:auto;display:flex;align-items:center;gap:2px}
+.nav__menu a{display:flex;align-items:center;gap:8px;padding:8px 14px;text-decoration:none;color:#fff;border:1px solid transparent;
+  font-size:12px;font-weight:700;font-stretch:115%;text-transform:uppercase;letter-spacing:.09em}
+.nav__menu a:hover{border-color:#fff}
+.nav__menu a[aria-current="page"]{border-bottom-color:var(--red)}
+.ldot{width:8px;height:8px;border-radius:50%;background:#5a5650;flex:none}
+.nav__now{display:none}
+body[data-state="live"] .nav__live{background:var(--red);border-color:var(--red)}
+body[data-state="live"] .nav__live .ldot{background:#fff;animation:beat 1.1s ease-in-out infinite}
+body[data-state="live"] .nav__now{display:inline}
+.nav__chip{display:none}
+.nav__btn{display:none;margin-left:auto;background:none;border:1px solid #fff;padding:8px 14px;cursor:pointer;
+  font-size:12px;font-weight:700;font-stretch:115%;text-transform:uppercase;letter-spacing:.09em}
+@keyframes beat{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.55);opacity:.55}}
+
+/* ==========================================================================
+   HERO — shared
+   ========================================================================== */
+.hero{position:relative;min-height:calc(100svh - var(--nav));display:flex;flex-direction:column;overflow:hidden}
+.hero[hidden]{display:none}
+.hero:not([hidden]){animation:wipe .7s var(--ease) both}
+@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.hero>.wrap{flex:1;display:flex;flex-direction:column}
+.strip{display:flex;flex-wrap:wrap;border-bottom:1px solid currentColor}
+.strip>*{padding:15px 18px;border-left:1px solid currentColor}
+.strip>*:first-child{padding-left:0;border-left:0}
+.strip>.grow{flex:1}
+.strip .tag{display:inline-flex;align-items:center;gap:8px}
+
+.digits{display:flex;align-items:flex-start;font-weight:900;font-stretch:62%;line-height:.78;letter-spacing:-.01em;
+  font-variant-numeric:tabular-nums lining-nums;white-space:nowrap}
+.digits .u{display:flex;flex-direction:column}
+.digits .u small{margin-top:14px;font-size:11px;font-weight:700;font-stretch:115%;letter-spacing:.09em;line-height:1;text-transform:uppercase}
+.digits .c{padding:0 .035em}
+
+.band{background:var(--ink);color:#fff}
+.band__in{display:flex;align-items:center;gap:14px 28px;min-height:76px;flex-wrap:wrap;padding-top:12px;padding-bottom:12px}
+.band__k{color:var(--mute-ink)}
+.band__v{font-weight:900;font-stretch:62%;text-transform:uppercase;font-size:30px;line-height:1}
+.band__rule{flex:1;height:1px;background:#3a3a3a;min-width:24px}
+.btn{display:inline-flex;align-items:center;gap:14px;padding:14px 20px;text-decoration:none;
+  font-size:12px;font-weight:700;font-stretch:115%;text-transform:uppercase;letter-spacing:.09em;border:0;cursor:pointer}
+.btn--red{background:var(--red);color:#fff}
+.btn--red:hover{background:#fff;color:var(--ink)}
+.btn--ink{background:var(--ink);color:#fff}
+.btn--ink:hover{background:#000}
+.btn--line{border:1px solid currentColor;background:transparent}
+.btn--line:hover{background:#fff;color:var(--ink)}
+
+/* ==========================================================================
+   HERO — UPCOMING (paper field, red track)
+   ========================================================================== */
+.hero--up{background:var(--paper);color:var(--ink)}
+.up{flex:1;grid-template-rows:1fr auto;padding:24px 0 28px;row-gap:20px}
+.up__head{grid-column:1/8;grid-row:1;align-self:center;display:flex;gap:28px;align-items:flex-start}
+.roundel{flex:none;width:clamp(60px,8.4vw,124px);aspect-ratio:1;border-radius:50%;background:var(--ink);color:var(--paper);
+  display:grid;place-items:center;font-weight:900;font-stretch:62%;font-size:clamp(30px,4.6vw,68px);line-height:1;
+  font-variant-numeric:tabular-nums;margin-top:.2em}
+.up__kicker{margin:0 0 14px;color:var(--mute)}
+.up__title{margin:0;font-size:clamp(44px,7.4vw,118px)}
+.up__title .flag{font-size:.42em;vertical-align:.45em;margin-left:.12em}
+.up__track{grid-column:8/13;grid-row:1;align-self:center;color:var(--red);position:relative}
+.up__track svg{width:100%;height:auto;max-height:min(36vh,320px)}
+.facts{color:var(--ink);display:flex;gap:0;margin-top:14px;border-top:1px solid var(--ink)}
+.facts>div{flex:1;padding:8px 0 0}
+.facts>div+div{padding-left:12px;border-left:1px solid var(--ink)}
+.facts b{display:block;font-weight:900;font-stretch:62%;font-size:28px;line-height:1;font-variant-numeric:tabular-nums}
+.facts span{color:var(--mute)}
+
+.up__count{grid-column:1/9;grid-row:2;border-top:4px solid var(--ink);padding-top:14px}
+.up__count .head{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.up__count .head b{color:var(--red-ink)}
+.up__count .digits{font-size:clamp(68px,12vw,190px)}
+.up__count .digits .c{color:var(--red)}
+
+.sched{grid-column:9/13;grid-row:2;border-top:4px solid var(--ink);padding-top:14px;align-self:end}
+.sched h2{margin:0 0 4px;display:flex;justify-content:space-between;gap:12px}.sched h2>span{color:var(--mute);text-align:right}
+.sched ol{list-style:none;margin:0;padding:0}
+.sched li{display:grid;grid-template-columns:76px 1fr auto;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid rgba(18,18,18,.22);position:relative}
+.sched .day{color:var(--mute)}
+.sched .nm{font-weight:600;font-size:15px}
+.sched .tm{font-weight:900;font-stretch:62%;font-size:26px;line-height:1;font-variant-numeric:tabular-nums}
+.sched li.is-next .nm{color:var(--red-ink);font-weight:800}
+.sched li.is-next::before{content:"";position:absolute;left:-14px;top:50%;width:6px;height:6px;margin-top:-3px;background:var(--red)}
+.sched li.is-next .nm::after{content:"Next";margin-left:10px;padding:2px 6px;background:var(--red);color:#fff;
+  font-size:10px;font-weight:700;font-stretch:115%;letter-spacing:.09em;text-transform:uppercase;vertical-align:2px}
+.sched li.is-race .nm{font-weight:900;font-stretch:80%;text-transform:uppercase;font-size:17px}
+.sched .tz{margin:10px 0 0;color:var(--mute)}
+
+/* ==========================================================================
+   HERO — LIVE (red field, everything shouts)
+   ========================================================================== */
+.hero--live{background:var(--red);color:#fff}
+.live{flex:1;grid-template-rows:1fr auto;padding:24px 0 40px;row-gap:24px}
+.live__word{grid-column:1/10;grid-row:1;align-self:center;margin:0;display:flex;align-items:center;gap:.05em;
+  font-weight:900;font-stretch:62%;font-size:clamp(120px,25vw,380px);line-height:.76;letter-spacing:-.02em;color:#fff;text-transform:uppercase}
+.live__dot{width:.15em;height:.15em;border-radius:50%;background:var(--ink);flex:none;animation:beat 1s ease-in-out infinite}
+.live__track{grid-column:9/13;grid-row:1;align-self:center;color:var(--ink)}
+.live__track svg{width:100%;height:auto;max-height:min(40vh,360px)}
+.live__info{grid-column:1/6;grid-row:2;border-top:4px solid #fff;padding-top:14px}
+.live__session{margin:6px 0 4px;font-size:clamp(44px,5.6vw,88px);color:var(--ink)}
+.live__sub{margin:0;font-size:18px;font-weight:600}
+.phases{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:18px}
+.ph{border:2px solid #fff;padding:8px 10px;display:flex;justify-content:space-between;gap:6px}
+.ph--done{background:var(--ink);border-color:var(--ink)}
+.ph--now{background:#fff;color:var(--red-ink)}
+.live__clock{grid-column:6/9;grid-row:2;border-top:4px solid #fff;padding-top:14px}
+.live__clock .digits{font-size:clamp(72px,8.8vw,140px);margin-top:14px}
+.live__clock p{margin:14px 0 0;font-size:14px;font-weight:600}
+.live__cta{grid-column:9/13;grid-row:2;display:flex}
+.cta-live{flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:24px;background:var(--ink);color:#fff;
+  text-decoration:none;padding:20px 22px 22px;min-height:190px;transition:background .2s}
+.cta-live:hover{background:#000}
+.cta-live .top{display:flex;justify-content:space-between;align-items:center}
+.cta-live b{display:block;font-weight:900;font-stretch:62%;text-transform:uppercase;font-size:clamp(36px,3.6vw,56px);line-height:.88}
+.cta-live .arrow{font-size:40px;line-height:1;font-weight:400}
+.cta-live small{display:block;margin-top:10px;color:var(--mute-ink);font-size:13px}
+.hero--live .band__rule{background:#3a3a3a}
+
+/* ==========================================================================
+   HERO — RESULT (ink field, a giant red "1")
+   ========================================================================== */
+.hero--res{background:var(--ink);color:var(--paper)}
+.hero--res .strip{border-color:rgba(239,234,224,.5)}
+.hero--res .strip>*{border-color:rgba(239,234,224,.5)}
+.res{flex:1;padding:28px 0 40px;row-gap:0;align-content:start}
+.res__one{grid-column:1/4;grid-row:1/3;margin:0 0 0 -.06em;color:var(--red);font-weight:900;font-stretch:62%;
+  font-size:clamp(240px,44vw,660px);line-height:.73;letter-spacing:-.04em;align-self:start;user-select:none}
+.res__win{grid-column:4/9;grid-row:1;align-self:start}
+.res__win .lbl{color:var(--red-hi);margin:0 0 14px}
+.res__name{margin:0;font-size:clamp(52px,7vw,110px)}
+.res__name .first{display:block;font-stretch:100%;font-weight:500;text-transform:none;font-size:clamp(20px,1.8vw,28px);letter-spacing:0;margin-bottom:.25em;line-height:1}
+.res__meta{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:0;margin:22px 0 0;border-top:1px solid rgba(239,234,224,.35)}
+.res__meta>div{padding:10px 22px 0 0;margin-right:22px;border-right:1px solid rgba(239,234,224,.35)}
+.res__meta>div:last-child{border-right:0;margin-right:0}
+.res__meta dt{color:var(--mute-ink)}
+.res__meta dd{margin:4px 0 0;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:8px}
+.res__photo{grid-column:9/13;grid-row:1/3;position:relative;margin:0;background:var(--red);overflow:hidden;aspect-ratio:4/5;align-self:start}
+.res__photo img{width:100%;height:100%;object-fit:cover;object-position:58% 18%;filter:grayscale(1) contrast(1.35) brightness(1.08);mix-blend-mode:multiply}
+.res__photo svg{position:absolute;left:16px;bottom:44px;width:52%;color:var(--paper);height:auto}
+.res__photo figcaption{position:absolute;left:16px;right:16px;bottom:14px;color:#fff;display:flex;justify-content:space-between}
+.res__pod{grid-column:4/9;grid-row:2;align-self:end;margin-top:36px}
+.pod{display:grid;grid-template-columns:auto 1fr auto;gap:22px;align-items:end;padding:14px 0;border-top:1px solid rgba(239,234,224,.35)}
+.pod .n{font-weight:900;font-stretch:62%;font-size:clamp(64px,6.4vw,104px);line-height:.76}
+.pod .who b{display:block;font-weight:900;font-stretch:62%;text-transform:uppercase;font-size:clamp(30px,3vw,46px);line-height:.9}
+.pod .who span{display:flex;align-items:center;gap:8px;margin-top:6px;color:var(--mute-ink)}
+.pod .gap{text-align:right;font-weight:800;font-size:22px;font-variant-numeric:tabular-nums;line-height:1.1}
+.fl{display:inline-block;margin-top:6px;padding:3px 7px;border:1px solid var(--fl);color:var(--fl)}
+.res__rest{grid-column:1/13;grid-row:3;margin-top:48px}
+.res__rest .hd{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-top:4px solid var(--paper);padding-top:12px}
+.res__rest .hd a{color:var(--paper);text-decoration:none}
+.tbl{width:100%;border-collapse:collapse;margin-top:10px}
+.tbl th{text-align:left;color:var(--mute-ink);padding:10px 8px 8px 0;font-weight:700}
+.tbl td{padding:10px 8px 10px 0;border-top:1px solid rgba(239,234,224,.18);vertical-align:baseline}
+.tbl .p{font-weight:900;font-stretch:62%;font-size:26px;line-height:1;width:56px}
+.tbl .d{font-weight:800;text-transform:uppercase;font-stretch:90%;font-size:16px;letter-spacing:.01em}
+.tbl .d span{font-weight:500;text-transform:none;color:var(--mute-ink);margin-right:6px;font-stretch:100%}
+.tbl .t{display:flex;align-items:center;gap:8px;color:var(--mute-ink);font-size:14px}
+.tbl .g,.tbl .gr,.tbl .dl{font-variant-numeric:tabular-nums;font-weight:600}
+.tbl .r{text-align:right;padding-right:0}
+.up-t{color:var(--paper)} .dn-t{color:var(--red-hi)} .eq-t{color:var(--mute-ink)}
+.hero--res .band{background:var(--red)}
+.hero--res .band__k{color:#fff}
+.hero--res .band__rule{background:rgba(255,255,255,.5)}
+
+/* ==========================================================================
+   SECTIONS
+   ========================================================================== */
+.sec{padding:112px 0 120px}
+.sec-head{align-items:end;margin-bottom:40px;row-gap:20px}
+.sec-no{grid-column:1/13;margin:0;display:flex;gap:14px;align-items:center}
+.sec-no::after{content:"";flex:1;height:1px;background:currentColor}
+.sec-title{grid-column:1/8;margin:0;font-size:clamp(72px,12vw,196px);line-height:.8}
+.sec-meta{grid-column:8/13}
+
+/* Calendar ------------------------------------------------------------ */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ink)}
+.stats>div{padding:10px 0 0}
+.stats>div+div{padding-left:14px;border-left:1px solid var(--ink)}
+.stats b{display:block;font-weight:900;font-stretch:62%;font-size:clamp(48px,5vw,76px);line-height:.85;font-variant-numeric:tabular-nums}
+.stats .is-red{color:var(--red)}
+.stats span{color:var(--mute)}
+.prog{display:grid;grid-template-columns:repeat(25,1fr);gap:3px;margin:0 0 8px}
+.prog i{height:14px;background:var(--ink)}
+.prog i.x{background:repeating-linear-gradient(135deg,var(--ink) 0 2px,transparent 2px 6px)}
+.prog i.n{background:var(--red)}
+.prog i.u{background:transparent;box-shadow:inset 0 0 0 1px var(--ink)}
+.prog-k{display:flex;justify-content:space-between;color:var(--mute);margin-bottom:36px}
+
+.cal{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:4px solid var(--ink);border-left:1px solid var(--ink)}
+.rd{border-right:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+.rd a{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr auto auto auto;height:100%;min-height:248px;
+  padding:14px 16px 16px;text-decoration:none;color:inherit;transition:background .15s,color .15s}
+.rd__no{grid-column:1;grid-row:1;font-weight:900;font-stretch:62%;font-size:60px;line-height:.78;font-variant-numeric:tabular-nums}
+.rd__tag{grid-column:2;grid-row:1;align-self:start;border:1px solid currentColor;padding:3px 6px}
+.rd__trk{grid-column:1/3;grid-row:2;justify-self:end;align-self:center;height:84px;width:auto;margin:10px 0;filter:brightness(0)}
+.rd__name{grid-column:1/3;font-weight:800;font-stretch:78%;text-transform:uppercase;font-size:21px;line-height:1.02}
+.rd__sprint{display:none}
+.rd__sub{grid-column:1/3;margin-top:4px;color:var(--mute)}
+.rd__res{grid-column:1/3;margin-top:12px;padding-top:9px;border-top:1px solid rgba(18,18,18,.22);font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;min-height:30px}
+.rd__res em{font-style:normal;color:var(--mute);font-weight:500}
+.rd a:hover{background:var(--ink);color:var(--paper)}
+.rd a:hover .rd__trk{filter:brightness(0) invert(1)}
+.rd a:hover .rd__sub,.rd a:hover .rd__res em{color:var(--mute-ink)}
+.rd a:hover .rd__res{border-color:rgba(239,234,224,.3)}
+.rd--up .rd__trk{opacity:.32}
+.rd--x a{background-image:repeating-linear-gradient(135deg,transparent 0 11px,rgba(18,18,18,.07) 11px 12px)}
+.rd--x .rd__name{text-decoration:line-through;text-decoration-thickness:3px}
+.rd--x .rd__trk{opacity:.18}
+.rd--x .rd__res{color:var(--red-ink);text-transform:uppercase;font-size:11px;font-weight:700;font-stretch:115%;letter-spacing:.09em}
+.rd--next a{background:var(--red);color:#fff}
+.rd--next .rd__trk{filter:brightness(0) invert(1)}
+.rd--next .rd__sub,.rd--next .rd__res em{color:#fff}
+.rd--next .rd__res{border-color:rgba(255,255,255,.5);font-weight:800}
+.rd--next a:hover{background:var(--ink)}
+.rd--just .rd__no{color:var(--red)}
+.cal-foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:18px;color:var(--mute)}
+
+/* Championship (ink) -------------------------------------------------- */
+.sec--champ{background:var(--ink);color:var(--paper)}
+.sec--champ .sec-no{color:var(--mute-ink)}
+.sec--champ .sec-meta p{margin:0;font-size:18px;line-height:1.4;max-width:34ch}
+.sec--champ .sec-meta p b{color:var(--red-hi)}
+.boards{row-gap:72px}
+.board{grid-column:span 6}
+.board+.board{padding-left:var(--gap);border-left:1px solid rgba(239,234,224,.25)}
+.board h3{margin:0 0 12px;display:flex;justify-content:space-between;color:var(--mute-ink)}
+.lead{display:grid;grid-template-columns:1fr auto;align-items:end;gap:16px;border-top:4px solid var(--paper);padding:14px 0 18px}
+.lead .k{color:var(--red-hi);margin:0 0 10px}
+.lead b{display:block;font-weight:900;font-stretch:62%;text-transform:uppercase;font-size:clamp(40px,4.4vw,68px);line-height:.88}
+.lead .tm{display:flex;align-items:center;gap:8px;margin-top:8px;color:var(--mute-ink)}
+.lead .pts{font-weight:900;font-stretch:62%;font-size:clamp(96px,11vw,170px);line-height:.74;color:var(--red);font-variant-numeric:tabular-nums;text-align:right}
+.lead .pts small{display:block;font-size:11px;font-weight:700;font-stretch:115%;letter-spacing:.09em;color:var(--mute-ink);margin-top:10px;line-height:1;text-transform:uppercase}
+.rows{list-style:none;margin:0;padding:0}
+.rows li{display:grid;grid-template-columns:30px minmax(0,1fr) minmax(60px,32%) 56px;gap:14px;align-items:center;padding:9px 0;border-top:1px solid rgba(239,234,224,.16)}
+.rows .ps{color:var(--mute-ink);font-variant-numeric:tabular-nums}
+.rows .nm{font-weight:800;font-stretch:90%;text-transform:uppercase;font-size:15px;display:flex;align-items:center;gap:10px;min-width:0}
+.rows .nm span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rows .nm small{font-weight:500;text-transform:none;color:var(--mute-ink);font-size:13px;font-stretch:100%}
+.bar{height:6px;background:rgba(239,234,224,.12)}
+.bar i{display:block;height:100%;background:var(--paper)}
+.rows .pt{text-align:right;font-weight:900;font-stretch:62%;font-size:28px;line-height:1;font-variant-numeric:tabular-nums}
+.champ-foot{margin-top:56px;display:flex;gap:12px;flex-wrap:wrap}
+
+/* Index (red) --------------------------------------------------------- */
+.sec--idx{background:var(--red);color:#fff}
+.sec--idx .sec-meta p{margin:0;font-size:18px;max-width:36ch;font-weight:500}
+.idx{list-style:none;margin:0;padding:0;border-bottom:1px solid rgba(255,255,255,.6)}
+.idx a{display:grid;grid-template-columns:72px minmax(0,1fr) minmax(0,30%) 60px;gap:var(--gap);align-items:center;
+  padding:14px 0;border-top:1px solid rgba(255,255,255,.6);text-decoration:none;color:#fff;transition:background .2s,padding .25s var(--ease)}
+.idx .t{font-weight:900;font-stretch:62%;text-transform:uppercase;font-size:clamp(48px,7.2vw,112px);line-height:.84}
+.idx .d{font-size:15px;font-weight:500;line-height:1.4}
+.idx .arrow{font-size:44px;justify-self:end;font-weight:300}
+.idx a:hover{background:var(--ink);padding-left:16px;padding-right:16px}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.foot{background:var(--ink);color:var(--paper);padding:88px 0 96px}
+.foot__top{row-gap:48px}
+.foot__about{grid-column:1/6}
+.foot__about p.tag{margin:0;font-size:clamp(22px,2.2vw,30px);line-height:1.2;font-weight:500;max-width:22ch}
+.foot__about .tz{margin-top:22px;color:var(--mute-ink)}
+.foot__about .tz b{color:var(--paper)}
+.foot__nav{grid-column:7/13;display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap)}
+.foot__nav h4{margin:0 0 14px;color:var(--mute-ink);padding-top:10px;border-top:1px solid rgba(239,234,224,.35)}
+.foot__nav ul{list-style:none;margin:0;padding:0}
+.foot__nav li{margin:0 0 8px}
+.foot__nav a{text-decoration:none;font-weight:600}
+.foot__nav a:hover{color:var(--red-hi)}
+.soon{color:var(--mute-ink)}
+.soon i{font-style:normal;margin-left:6px;border:1px solid currentColor;padding:1px 5px;font-size:10px;font-weight:700;font-stretch:115%;letter-spacing:.09em;text-transform:uppercase}
+.foot__mark{margin:80px 0 0;font-weight:900;font-stretch:62%;font-size:clamp(96px,41vw,600px);line-height:.74;letter-spacing:-.02em;
+  white-space:nowrap;color:var(--paper);border-bottom:4px solid var(--paper);padding-bottom:18px;text-transform:uppercase}
+.foot__mark span{color:var(--red)}
+.foot__legal{margin:28px 0 0;max-width:92ch;color:var(--mute-ink);font-size:13px;line-height:1.55}
+.foot__bot{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center;margin-top:28px;padding-top:18px;border-top:1px solid rgba(239,234,224,.2)}
+.foot__bot .cr{flex:1;min-width:240px;font-size:14px}
+.foot__social{display:flex;gap:20px}
+.foot__social a,.foot__bot .top{text-decoration:none}
+.foot__social a:hover,.foot__bot .top:hover{color:var(--red-hi)}
+
+/* ==========================================================================
+   STATE SWITCHER
+   ========================================================================== */
+.switch{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:2px;
+  background:var(--ink);color:#fff;padding:4px;border:1px solid rgba(255,255,255,.28);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.switch .k{padding:0 10px 0 8px;color:var(--mute-ink)}
+.switch button{background:none;border:0;padding:10px 14px;cursor:pointer;
+  font-size:11px;font-weight:700;font-stretch:115%;text-transform:uppercase;letter-spacing:.09em}
+.switch button:hover{background:#2a2a2a}
+.switch button[aria-pressed="true"]{background:var(--red)}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+@media (max-width:1100px){
+  .up__head{grid-column:1/9}
+  .up__track{grid-column:9/13}
+  .up__count{grid-column:1/13}
+  .sched{grid-column:1/13;grid-row:3}
+  .live__info{grid-column:1/8}
+  .live__clock{grid-column:8/13}
+  .live__cta{grid-column:1/13;grid-row:3}
+  .res__win{grid-column:4/13}
+  .res__photo{display:none}
+  .res__pod{grid-column:4/13}
+  .cal{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .board{grid-column:1/13}
+  .board+.board{padding-left:0;border-left:0}
+  .foot__about,.foot__nav{grid-column:1/13}
+  .sec-title{grid-column:1/13}
+  .sec-meta{grid-column:1/13}
+}
+@media (max-width:860px){
+  .nav__menu{display:none;position:fixed;inset:var(--nav) 0 0 0;background:var(--paper);color:var(--ink);
+    flex-direction:column;align-items:stretch;gap:0;padding:12px var(--gut) 40px;overflow:auto}
+  .nav-open .nav__menu{display:flex}
+  .nav__menu a{color:var(--ink);border:0;border-bottom:1px solid var(--ink);padding:14px 0;
+    font-weight:900;font-stretch:62%;font-size:56px;letter-spacing:-.005em;line-height:.9}
+  .nav__menu a:hover{border-color:var(--ink);color:var(--red)}
+  body[data-state="live"] .nav__live{background:none;color:var(--red-ink)}
+  body[data-state="live"] .nav__live .ldot{background:var(--red)}
+  .nav__menu .ldot{width:14px;height:14px}
+  .nav__btn{display:block}
+  body[data-state="live"] .nav__chip{display:inline-flex;align-items:center;gap:6px;margin-left:auto;background:var(--red);color:#fff;
+    text-decoration:none;padding:7px 10px}
+  body[data-state="live"] .nav__chip .ldot{background:#fff;animation:beat 1.1s infinite}
+  body[data-state="live"] .nav__btn{margin-left:0}
+  .nav__season{display:none}
+}
+@media (max-width:760px){
+  :root{--gut:16px;--gap:12px}
+  .hero{min-height:0}
+  .strip>*{padding:11px 12px}
+  .strip>.grow{flex-basis:100%;order:3;border-left:0;border-top:1px solid currentColor;padding-left:0}
+  .strip>:last-child:not(.grow){display:none}
+  .strip>:nth-child(2){flex:1}
+
+  .up{grid-template-columns:minmax(0,1fr);padding:24px 0 28px;row-gap:24px}
+  .up__head,.up__track,.up__count,.sched{grid-column:1;grid-row:auto}
+  .up__head{gap:14px}
+  .up__title{font-size:clamp(40px,12.4vw,72px)}
+  .up__count{order:2}.sched{order:4}.up__track{order:3}
+  .up__track svg{max-height:150px;margin:0 auto}
+  .up__count .digits{font-size:clamp(56px,19vw,120px)}
+  .digits .u small{margin-top:10px;font-size:10px}
+  .sched li.is-next::before{display:none}
+  .band__in{gap:8px 14px;padding-top:16px;padding-bottom:16px}
+  .band__rule{display:none}
+  .band .btn{width:100%;justify-content:space-between}
+
+  .live{grid-template-columns:minmax(0,1fr);row-gap:22px;padding:20px 0 28px}
+  .live__word,.live__info,.live__clock,.live__cta{grid-column:1;grid-row:auto}
+  .live__word{font-size:clamp(100px,36vw,200px)}
+  .live__track{display:none}
+  .live__clock .digits{font-size:clamp(72px,26vw,140px)}
+  .cta-live{min-height:150px}
+
+  .res{grid-template-columns:auto minmax(0,1fr);column-gap:14px;padding:20px 0 28px}
+  .res__one{grid-column:1;grid-row:2;font-size:clamp(150px,46vw,260px);margin-left:-.04em}
+  .res__win{display:contents}
+  .res__win>.lbl{grid-column:1/3;grid-row:1;margin:4px 0 6px}
+  .res__name{grid-column:2;grid-row:2;align-self:end;padding-bottom:4px}
+
+  .res__name{font-size:clamp(38px,11.6vw,64px)}
+  .res__meta{grid-column:1/3;grid-row:3;grid-template-columns:repeat(3,auto);margin-top:14px}
+  .res__meta>div{padding-right:8px;margin-right:8px}
+  .res__meta dd{font-size:15px}
+  .res__pod{grid-column:1/3;grid-row:4;margin-top:16px}
+  .pod{gap:14px}
+  .pod .gap{font-size:16px}
+  .res__rest{grid-column:1/3;grid-row:5;margin-top:32px}
+  .tbl .hide-m{display:none}
+  .tbl .d>span:first-child{display:none}
+  .tbl td{padding-top:9px;padding-bottom:9px}
+  .tbl .t-m{display:flex;align-items:center;gap:6px;color:var(--mute-ink);font-size:12px;font-weight:500;text-transform:none;font-stretch:100%;margin-top:3px}
+
+  .sec{padding:72px 0 80px}
+  .sec-head{margin-bottom:28px}
+  .sec-title{font-size:clamp(64px,22vw,120px)}
+  .prog{gap:2px}
+  .prog i{height:10px}
+  .prog-k{margin-bottom:24px}
+  .cal{grid-template-columns:minmax(0,1fr);border-left:0}
+  .rd{border-right:0}
+  .rd a{grid-template-columns:44px minmax(0,1fr) auto 52px;grid-template-rows:auto auto;column-gap:12px;min-height:0;padding:12px 8px;align-items:center}
+  .rd__no{grid-column:1;grid-row:1/3;font-size:40px}
+  .rd__tag{display:none}
+  .rd__sprint{display:inline-block;margin-left:8px;vertical-align:3px;border:1px solid currentColor;padding:1px 4px;font-size:9px}
+  .rd__name{grid-column:2;grid-row:1;font-size:18px}
+  .rd__sub{grid-column:2;grid-row:2;margin-top:2px}
+  .rd__res{grid-column:3;grid-row:1/3;margin:0;padding:0;border:0;min-height:0;justify-content:flex-end;text-align:right;font-size:12px;max-width:120px}
+  .rd__res em{display:none}
+  .rd--x .rd__res{font-size:10px}
+  .rd__trk{grid-column:4;grid-row:1/3;height:34px;margin:0;justify-self:center}
+
+  .rows li{grid-template-columns:24px minmax(0,1fr) 56px 44px;gap:10px}
+  .rows .nm small{display:none}
+  .rows .pt{font-size:24px}
+  .lead{grid-template-columns:1fr}
+  .lead .pts{text-align:left}
+
+  .idx a{grid-template-columns:36px minmax(0,1fr) 36px;padding:12px 0}
+  .idx .d{display:none}
+  .idx .t{font-size:clamp(34px,11vw,72px)}
+  .idx .arrow{font-size:32px}
+  .idx a:hover{padding-left:8px;padding-right:8px}
+
+  .foot{padding:64px 0 96px}
+  .foot__nav{grid-template-columns:repeat(2,1fr);row-gap:28px}
+  .foot__mark{margin-top:56px;font-size:clamp(80px,37vw,200px)}
+  .switch{bottom:10px;width:calc(100% - 20px);justify-content:space-between}
+  .switch .k{display:none}
+  .switch button{flex:1;padding:12px 6px}
+}
+@media (min-width:761px){ .tbl .t-m{display:none} }
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body data-state="upcoming">
+
+<a class="sr" href="#main">Skip to content</a>
+
+<!-- =====================================================================
+     NAVBAR (site-wide)
+     ===================================================================== -->
+<header class="nav" id="top">
+  <div class="wrap nav__in">
+    <a class="nav__logo" href="../../index.html" aria-label="F1 Hub — home">
+      <img src="../../img/logo.png" alt="F1 Hub" width="110" height="22">
+      <span class="nav__season lbl">Season 2026</span>
+    </a>
+    <a class="nav__chip lbl" href="../../live.html"><span class="ldot"></span>Live</a>
+    <button class="nav__btn" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+    <nav class="nav__menu" id="menu" aria-label="Main">
+      <a href="#calendar">Calendar</a>
+      <a href="../../results.html">Results</a>
+      <a href="../../drivers.html">Drivers</a>
+      <a href="../../teams.html">Teams</a>
+      <a class="nav__live" href="../../live.html"><span class="ldot" aria-hidden="true"></span>Live<span class="nav__now">&nbsp;now</span></a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- =====================================================================
+     HERO 1 — UPCOMING
+     ===================================================================== -->
+<section class="hero hero--up" data-hero="upcoming" aria-labelledby="up-title">
+  <div class="wrap">
+    <div class="strip lbl">
+      <span class="tag"><span class="sq" style="--c:var(--red)"></span>Next race</span>
+      <span>Round 20 / 25</span>
+      <span class="grow">Circuit of The Americas — Austin, Texas, USA</span>
+      <span class="num" data-weekend-range>23–25 Oct 2026</span>
+    </div>
+
+    <div class="up g12">
+      <div class="up__head">
+        <div class="roundel" aria-hidden="true">20</div>
+        <div>
+          <p class="up__kicker lbl">Formula 1 · Round 20</p>
+          <h1 class="up__title cond" id="up-title">United States<br>Grand Prix</h1>
+        </div>
+      </div>
+
+      <div class="up__track">
+        <svg class="trk" role="img" aria-label="Circuit of The Americas layout" viewBox="0 0 121 85" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M88.9448 33.1174C88.9448 33.1174 88.9619 33.1158 88.9852 33.1127C88.9696 33.1143 88.9401 33.1174 88.9417 33.1174C88.9417 33.1174 88.9417 33.1174 88.9463 33.1174H88.9448Z" fill="currentColor"/> <path d="M113.987 15.8492C113.965 15.8554 113.942 15.8616 113.92 15.8663C113.87 15.8772 108.926 16.9572 102.168 18.3753C96.3771 19.5908 91.1456 20.236 86.9429 20.7533C86.1704 20.8484 85.4369 20.9388 84.7483 21.0276C80.4058 21.5839 70.4478 22.3444 70.3467 22.3522C70.3359 22.3522 70.3265 22.3522 70.3157 22.3538L63.836 22.628C63.836 22.628 63.8236 22.628 63.8174 22.628C63.4584 22.6358 55.0297 22.8135 53.8392 22.8166C52.8149 22.8228 48.819 22.9865 47.1109 23.0597L46.8948 23.0691L49.2091 26.7998C49.2138 26.8091 49.22 26.8169 49.2246 26.8263C49.2946 26.9478 50.9607 29.8433 52.0549 32.0437C52.5585 33.0566 52.6113 33.9262 52.2119 34.6306C51.6508 35.6201 50.4711 35.737 50.3375 35.7464C50.2738 35.751 50.21 35.7495 50.1479 35.7417C50.0499 35.7292 47.745 35.4269 46.5855 35.1807C45.2147 34.8893 44.6971 33.8935 44.6008 33.3231C44.5759 33.2016 44.4438 32.5611 44.2853 31.7725C44.1936 31.3144 43.6931 30.4619 43.3574 29.9866C43.2517 29.8542 42.7341 29.2106 42.1917 28.4781C41.8653 28.0371 41.5933 27.8829 41.5203 27.8455C41.4923 27.8392 41.5063 27.8392 41.4643 27.8221C41.4612 27.8221 40.6654 27.5057 39.5184 27.5166C39.5215 27.526 39.5231 27.5353 39.5262 27.5431C39.8075 28.1462 42.8942 34.7739 43.7071 36.6455C44.7049 38.941 43.7164 41.0682 43.6729 41.157C43.6558 41.1928 43.2315 42.0889 42.6176 43.2826C41.9197 44.6384 40.9778 45.0514 40.7043 45.1449C38.3341 46.0534 37.027 46.538 36.8218 46.5879L36.7799 46.5988C36.3991 46.6939 35.2412 46.9837 33.7398 46.658C32.8352 46.4617 31.0929 45.8446 29.7454 45.1511C28.8035 44.668 27.9285 43.7408 27.1467 42.3959L27.1187 42.346C27.0581 42.2432 26.8576 41.8801 26.4799 41.196C25.9623 40.2563 25.1806 38.8366 24.9583 38.4719C24.5946 37.8751 22.47 34.4856 21.64 33.2265C21.3649 32.8073 20.9701 32.7699 19.949 33.0629C19.8247 33.0987 19.7143 33.1299 19.6211 33.1517C19.1455 33.2623 17.6316 33.7719 17.0892 33.9589L5.65156 37.886C5.67021 37.914 5.69041 37.9405 5.71062 37.9624L17.3565 49.061C17.5306 49.2262 35.0438 65.8119 36.0898 66.7983C37.2896 67.9313 38.8703 69.0657 39.5806 69.3307C39.5837 69.1172 39.5386 68.7977 39.4609 68.5452C39.4547 68.5265 39.45 68.5063 39.4454 68.4876C39.4298 68.4221 37.8569 61.9253 37.5399 60.554C37.1793 58.9987 37.2928 57.8486 38.0046 55.8165C38.7506 53.6894 40.8597 52.3959 40.9483 52.3414C40.9701 52.3274 40.9934 52.3149 41.0167 52.304C41.082 52.2713 47.5911 49.047 49.8215 47.9748C51.7285 47.057 52.0782 46.2825 53.0139 44.2098L53.0652 44.0976C54.1454 41.7071 56.0042 41.2302 56.413 41.1523C56.9492 41.0136 58.4055 40.5773 59.1702 40.0926C59.8758 39.6454 60.2224 37.8689 60.3701 37.1099L60.3887 37.0118C60.6281 35.7931 61.1534 34.9048 61.9803 33.7813C62.9905 32.4099 64.8883 31.7367 66.4145 31.1959C68.3185 30.5212 69.9333 31.2988 70.0017 31.3315C70.0219 31.3409 70.0421 31.3518 70.0623 31.3642C70.2566 31.478 74.8385 34.174 75.6327 34.6758C75.9638 34.8846 76.3741 34.7942 76.4798 34.7661C77.1263 34.4701 77.905 34.0883 78.0682 33.9714C78.8298 33.4057 79.5649 32.8151 80.8145 31.3377C82.333 29.5394 83.8981 29.4085 84.6955 29.4911C85.3094 29.5534 87.3796 29.9337 88.2485 32.1824C88.55 32.9631 88.9261 33.0878 89.0225 33.1065C89.8571 33.0068 97.1356 32.1372 98.7334 31.958C99.8167 31.8364 100.239 31.4406 100.317 31.3564C100.351 31.2988 100.362 31.2957 100.417 31.2411C104.933 26.6736 113.71 17.7582 114.601 16.7078C115.146 16.0627 115.323 15.7479 115.379 15.6076H115.373C115.051 15.6076 114.465 15.7042 113.987 15.846V15.8492ZM34.4842 54.5761C33.9107 56.2124 33.5532 57.671 33.6154 59.3151C28.0948 54.0883 20.0376 46.457 19.9257 46.351L12.6658 39.4319L18.3 37.4964C18.7585 37.339 19.2496 37.1754 19.6568 37.0445C20.5381 38.433 21.539 40.0319 21.7752 40.4215C21.9586 40.7238 22.8072 42.265 23.216 43.0052C23.7056 43.8935 23.8284 44.1148 23.9108 44.255L23.9263 44.2815C25.0733 46.2544 26.4613 47.6678 28.045 48.4798C29.5697 49.2636 31.5887 50.0194 32.9549 50.3139C34.4547 50.6396 35.9841 50.6241 37.5041 50.2719C36.4581 51.1898 35.1697 52.6312 34.4873 54.5776L34.4842 54.5761ZM49.666 42.5549L49.6148 42.6686C49.3179 43.3262 49.0102 44.0057 48.8423 44.2223C48.8066 44.2675 48.6325 44.4 48.2066 44.6041C47.5243 44.9314 46.469 45.4487 45.3204 46.0129C45.5349 45.709 45.74 45.3724 45.9312 44.9999C46.5747 43.7517 47.0254 42.798 47.0378 42.7699C47.2181 42.3928 47.8025 41.0339 47.8771 39.1981C48.7522 39.3306 49.5215 39.4319 49.6645 39.4506C49.98 39.4911 50.2986 39.5005 50.6157 39.4771C51.1255 39.4381 51.6881 39.3244 52.257 39.1202C51.2622 39.9321 50.3406 41.0588 49.6645 42.5564L49.666 42.5549ZM98.1055 28.2678C96.7641 28.4205 93.2143 28.8428 90.8238 29.1264C89.3193 26.9634 86.9911 25.9676 85.0763 25.7713C83.5484 25.6139 80.5907 25.8133 77.9687 28.9192C77.1559 29.8791 76.6523 30.3404 76.2342 30.6723C74.7095 29.7622 72.518 28.4719 71.9492 28.1384C71.8512 28.0808 71.7502 28.0262 71.6476 27.9764C70.1633 27.2439 67.6828 26.7795 65.1711 27.6709C63.2719 28.3441 60.6716 29.2667 58.9806 31.5606C57.8973 33.0301 57.1 34.3968 56.7285 36.2918L56.7083 36.3931C56.6726 36.577 56.6088 36.9058 56.5358 37.2019C56.2451 37.3078 55.9094 37.4154 55.611 37.498C55.2007 37.579 54.7717 37.7052 54.3334 37.8829C54.7577 37.4964 55.1416 37.032 55.454 36.4803C56.0446 35.4378 56.8233 33.2577 55.3934 30.3778C54.7686 29.1202 53.9713 27.6569 53.3636 26.566C53.5547 26.5614 53.7102 26.5598 53.8236 26.5598C53.833 26.5598 53.8407 26.5598 53.8501 26.5598C55.1152 26.5598 62.9983 26.3899 63.8967 26.3697C63.9293 26.3697 63.9604 26.3681 63.993 26.3666L70.4726 26.0923C70.5255 26.0907 70.5768 26.0876 70.6296 26.0829C71.0415 26.0518 80.7835 25.3069 85.2208 24.7381C85.9047 24.6508 86.6305 24.5604 87.3983 24.4669C91.6709 23.9402 96.988 23.2841 102.933 22.0374C103.499 21.919 104.05 21.8021 104.59 21.6884C102.546 23.7703 100.286 26.0642 98.107 28.2678H98.1055Z" fill="currentColor"/> <path d="M119.922 12.2197C119.064 11.0027 116.977 9.17001 112.575 10.4167C111.696 10.6084 107.094 11.6089 101.023 12.882C95.4617 14.0493 90.3591 14.6773 86.2606 15.1837C85.4788 15.2804 84.7374 15.3723 84.0396 15.4611C80.0374 15.9738 70.9358 16.6798 70.0002 16.7515L63.648 17.0211C60.1603 17.0974 54.7282 17.2081 53.8594 17.2081C53.8501 17.2081 53.8407 17.2081 53.8298 17.2081C52.8072 17.2081 49.8821 17.3281 46.8731 17.4574L46.2483 17.4839C44.1609 17.5712 42.4046 18.6589 41.5498 20.3902C41.298 20.9014 41.1379 21.4468 41.068 22.0031C40.5862 21.9408 40.0484 21.905 39.4687 21.9065C37.5103 21.9206 35.8069 22.8041 34.7951 24.3313C33.774 25.8741 33.6092 27.8766 34.3552 29.689C34.3817 29.7544 34.4112 29.8199 34.4407 29.8838C34.4734 29.9539 37.7155 36.9136 38.5563 38.8397C38.5563 38.8584 38.5517 38.8802 38.547 38.902C38.4367 39.1327 38.2035 39.6127 37.8989 40.2157C36.8125 40.6287 35.7323 41.0354 35.3297 41.1804C35.2272 41.2006 35.0919 41.2147 34.921 41.1773C34.5588 41.0993 33.3916 40.7035 32.4404 40.2344C32.3627 40.1519 32.2057 39.9617 31.9804 39.5721L31.9446 39.5098C31.8824 39.4023 31.6151 38.9161 31.3789 38.4875C30.5831 37.0445 30.0003 35.9879 29.7345 35.5516C29.349 34.9173 27.1871 31.4702 26.3105 30.1378C25.1743 28.4127 23.3372 27.3686 21.2685 27.272C20.005 27.2128 18.9683 27.512 18.4103 27.6709C18.3761 27.6803 18.3435 27.6896 18.3139 27.699C17.557 27.8813 16.0898 28.3737 15.2754 28.6542L3.70409 32.6281C3.45697 32.7122 3.21917 32.8182 2.98914 32.9429C1.36963 33.8249 0.300311 35.324 0.0547417 37.0523C-0.313613 39.6563 1.27948 41.4624 1.77528 41.9549C1.79549 41.9751 1.81725 41.9954 1.83901 42.0157L13.5113 53.1408C14.2341 53.8249 31.2048 69.8964 32.2508 70.8844C32.9145 71.5124 34.032 72.463 35.1743 73.2468C35.953 73.7814 37.7295 75 39.8246 75C40.437 75 41.0773 74.8956 41.7285 74.6385C44.5666 73.5164 45.8333 70.4106 44.851 67.0414C44.6303 66.1298 43.275 60.5275 42.9875 59.287C42.9129 58.9629 42.8802 58.8257 43.2688 57.7162C43.345 57.5868 43.575 57.3546 43.7832 57.1941C45.0717 56.5568 50.3064 53.9668 52.2399 53.0364C55.984 51.2349 57.0176 48.9473 58.1102 46.5256L58.1195 46.5037C59.0101 46.2575 60.8022 45.6965 62.1559 44.8379C64.9022 43.0987 65.5488 39.7825 65.8597 38.1883L65.8783 38.0948C65.8907 38.034 65.9172 37.8969 66.3663 37.2736C66.6803 37.0756 67.3921 36.806 67.9237 36.6144C69.7375 37.6834 72.1776 39.1265 72.6424 39.421C74.6535 40.6957 76.9414 40.5726 78.4117 40.035C78.5205 39.9945 78.6293 39.9508 78.735 39.9025C80.6591 39.0283 81.1518 38.6636 81.3927 38.4844C82.1465 37.925 82.9687 37.2782 84.0676 36.1079C85.5177 38.0449 87.6268 38.8319 89.3737 38.7119C89.4515 38.7073 89.5276 38.6995 89.6053 38.6901C89.6861 38.6808 97.6858 37.7239 99.3504 37.5385C102.122 37.2284 103.713 35.9458 104.476 35.1074C107.675 31.8723 117.7 21.718 118.864 20.345C119.587 19.4926 120.376 18.447 120.76 17.1582C121.265 15.4596 120.967 13.708 119.922 12.2244V12.2197ZM116.021 17.9202C114.882 19.2651 102.684 31.6042 101.777 32.5237C101.536 32.8166 100.724 33.6192 98.9385 33.8187C97.2599 34.0057 89.2447 34.9641 89.1655 34.9734C89.1499 34.975 89.1344 34.9765 89.1188 34.9781C88.4661 35.0217 87.1916 34.6259 86.5077 32.8587C86.0352 31.6354 84.9488 31.397 84.5043 31.3518C83.7443 31.2723 82.9625 31.6868 82.2367 32.547C80.8596 34.1755 80.0017 34.8612 79.1748 35.4768C78.8018 35.7526 77.6672 36.2793 77.1978 36.4928C77.1761 36.5022 77.1543 36.5115 77.1325 36.5193C76.9973 36.5692 75.7804 36.9821 74.6364 36.2575C73.906 35.7947 69.6194 33.2732 69.1593 33.0005C69.0101 32.9366 68.1009 32.5813 67.0378 32.9584C65.7524 33.4135 64.1531 33.9807 63.4817 34.8924C62.6921 35.9645 62.3735 36.591 62.2196 37.3717L62.201 37.4684C61.9741 38.6309 61.5529 40.7955 60.1665 41.6744C58.9744 42.4302 56.9259 42.9522 56.8389 42.9741C56.7953 42.985 56.7798 42.9896 56.7378 42.9943C56.6166 43.0177 55.4851 43.2733 54.7639 44.8706L54.7127 44.9828C53.7366 47.1458 53.1475 48.4517 50.6266 49.6641C48.4988 50.6864 42.4513 53.6816 41.884 53.9621C41.6726 54.0977 40.2458 55.0607 39.7624 56.4399C39.1718 58.1229 39.0801 58.952 39.3537 60.1332C39.6583 61.4485 41.1333 67.5432 41.2483 68.0201C41.6027 69.1748 41.5809 70.6771 40.3593 71.1586C40.1867 71.2272 40.0033 71.2615 39.8028 71.2615C39.1672 71.2615 38.3729 70.9093 37.2788 70.1597C36.312 69.4974 35.3437 68.6699 34.8075 68.1635C33.7615 67.1755 16.2468 50.5898 16.0712 50.423L4.40816 39.3041C4.40816 39.3041 4.40039 39.2963 4.39573 39.2916C4.26517 39.1623 3.62172 38.4735 3.74761 37.5759C3.80357 37.1847 4.02427 36.6331 4.76875 36.2279C4.81382 36.203 4.862 36.1827 4.91174 36.1656L16.483 32.1917C16.6913 32.12 18.544 31.4842 19.1967 31.3315C19.2651 31.3159 19.346 31.2926 19.4361 31.2661C20.2288 31.0385 22.083 30.5056 23.1958 32.198C24.0537 33.5008 26.1706 36.8777 26.5483 37.4995C26.7923 37.9 27.5228 39.2277 28.1103 40.2937C28.3854 40.7939 28.6698 41.3097 28.718 41.3908L28.7553 41.4546C29.5029 42.7387 30.1681 43.2701 30.594 43.4883C31.7907 44.1039 33.3621 44.6649 34.1314 44.8316C35.2085 45.0654 36.0494 44.855 36.326 44.7849L36.3664 44.7755C36.6275 44.6945 38.4522 44.0072 40.0546 43.3933C40.0997 43.3761 40.0873 43.3761 40.1199 43.3699C40.2085 43.3294 40.6017 43.1205 40.9592 42.4271C41.5576 41.2645 41.9834 40.3654 41.9881 40.356C41.9928 40.3451 42.6471 38.8911 41.9959 37.3951C41.1706 35.497 37.8523 28.3737 37.8181 28.3021C37.8119 28.2896 37.8056 28.2756 37.801 28.2631C37.7279 28.087 37.3922 27.1691 37.9005 26.4024C38.1258 26.0627 38.5859 25.6544 39.492 25.6482C40.9328 25.6435 41.9446 26.005 42.142 26.0829C42.358 26.1609 43.017 26.4616 43.6869 27.3639C44.2588 28.1353 44.8168 28.8257 44.8215 28.8335C44.8339 28.8475 44.8448 28.8631 44.8557 28.8786C44.9614 29.0282 45.9017 30.3638 46.1099 31.4063C46.284 32.2774 46.427 32.9647 46.427 32.9662C46.4348 33.0068 46.4363 32.9865 46.4363 33.0021C46.4659 33.0831 46.5762 33.2686 46.9679 33.3527C47.9098 33.5522 49.7655 33.8062 50.2613 33.8716C50.3919 33.8436 50.5504 33.7735 50.5877 33.7065C50.625 33.6379 50.6312 33.3776 50.3825 32.879C49.3521 30.8048 47.7388 27.9935 47.6144 27.7769L45.0919 23.708C44.9598 23.5101 44.5324 22.7761 44.8914 22.0483C45.067 21.693 45.4711 21.2598 46.4021 21.2208L47.0301 21.1944C48.8874 21.1149 52.7419 20.9497 53.8267 20.9497H53.8547C55.0592 20.9497 63.4413 20.7689 63.7661 20.7611L70.2193 20.4884C70.6685 20.4541 80.2939 19.7139 84.509 19.1747C85.2006 19.0859 85.9358 18.9955 86.7113 18.9004C90.8798 18.3862 96.0678 17.7473 101.783 16.5473C108.242 15.1915 113.042 14.1459 113.486 14.0493C114.685 13.6955 116.233 13.4727 116.873 14.3812C117.773 15.659 116.982 16.7857 116.018 17.9233L116.021 17.9202Z" fill="currentColor"/> </svg>
+        <div class="facts lbl">
+          <div><b>5.513</b><span>km lap</span></div>
+          <div><b>56</b><span>laps</span></div>
+          <div><b>20</b><span>turns</span></div>
+        </div>
+      </div>
+
+      <div class="up__count" role="timer" aria-labelledby="next-lbl">
+        <div class="head lbl">
+          <span id="next-lbl">Next session — <b data-next-name>Practice 1</b> starts in</span>
+          <span data-next-when>Fri 23 Oct · 14:30</span>
+        </div>
+        <div class="digits" aria-hidden="true">
+          <span class="u"><span data-cd="d">00</span><small>Days</small></span><span class="c">:</span>
+          <span class="u"><span data-cd="h">00</span><small>Hours</small></span><span class="c">:</span>
+          <span class="u"><span data-cd="m">00</span><small>Minutes</small></span><span class="c">:</span>
+          <span class="u"><span data-cd="s">00</span><small>Seconds</small></span>
+        </div>
+        <span class="sr" data-cd-sr></span>
+      </div>
+
+      <div class="sched">
+        <h2 class="lbl"><b style="white-space:nowrap">Timetable</b> <span>Your time · <span data-tz></span></span></h2>
+        <ol data-sched></ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="band">
+    <div class="wrap band__in">
+      <span class="band__k lbl">Race</span>
+      <span class="band__v num" data-race-when>Sun 25 Oct · 16:00</span>
+      <span class="band__rule" aria-hidden="true"></span>
+      <span class="band__k lbl">Lights out in</span>
+      <span class="band__v num" data-race-count>—</span>
+      <a class="btn btn--red" href="../../grandsprix/grandprix.html?gp=united-states-gp">Grand Prix guide <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     HERO 2 — LIVE
+     ===================================================================== -->
+<section class="hero hero--live" data-hero="live" aria-labelledby="live-title" hidden>
+  <div class="wrap">
+    <div class="strip lbl">
+      <span class="tag"><span class="ldot" style="background:#fff;animation:beat 1.1s infinite"></span>Live now</span>
+      <span>Round 20 / 25</span>
+      <span class="grow">United States Grand Prix — Circuit of The Americas</span>
+      <span>Qualifying · Sat 24 Oct</span>
+    </div>
+
+    <div class="live g12">
+      <p class="live__word" aria-hidden="true">Live<span class="live__dot"></span></p>
+      <div class="live__track"><svg class="trk" role="img" aria-label="Circuit of The Americas layout" viewBox="0 0 121 85" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M88.9448 33.1174C88.9448 33.1174 88.9619 33.1158 88.9852 33.1127C88.9696 33.1143 88.9401 33.1174 88.9417 33.1174C88.9417 33.1174 88.9417 33.1174 88.9463 33.1174H88.9448Z" fill="currentColor"/> <path d="M113.987 15.8492C113.965 15.8554 113.942 15.8616 113.92 15.8663C113.87 15.8772 108.926 16.9572 102.168 18.3753C96.3771 19.5908 91.1456 20.236 86.9429 20.7533C86.1704 20.8484 85.4369 20.9388 84.7483 21.0276C80.4058 21.5839 70.4478 22.3444 70.3467 22.3522C70.3359 22.3522 70.3265 22.3522 70.3157 22.3538L63.836 22.628C63.836 22.628 63.8236 22.628 63.8174 22.628C63.4584 22.6358 55.0297 22.8135 53.8392 22.8166C52.8149 22.8228 48.819 22.9865 47.1109 23.0597L46.8948 23.0691L49.2091 26.7998C49.2138 26.8091 49.22 26.8169 49.2246 26.8263C49.2946 26.9478 50.9607 29.8433 52.0549 32.0437C52.5585 33.0566 52.6113 33.9262 52.2119 34.6306C51.6508 35.6201 50.4711 35.737 50.3375 35.7464C50.2738 35.751 50.21 35.7495 50.1479 35.7417C50.0499 35.7292 47.745 35.4269 46.5855 35.1807C45.2147 34.8893 44.6971 33.8935 44.6008 33.3231C44.5759 33.2016 44.4438 32.5611 44.2853 31.7725C44.1936 31.3144 43.6931 30.4619 43.3574 29.9866C43.2517 29.8542 42.7341 29.2106 42.1917 28.4781C41.8653 28.0371 41.5933 27.8829 41.5203 27.8455C41.4923 27.8392 41.5063 27.8392 41.4643 27.8221C41.4612 27.8221 40.6654 27.5057 39.5184 27.5166C39.5215 27.526 39.5231 27.5353 39.5262 27.5431C39.8075 28.1462 42.8942 34.7739 43.7071 36.6455C44.7049 38.941 43.7164 41.0682 43.6729 41.157C43.6558 41.1928 43.2315 42.0889 42.6176 43.2826C41.9197 44.6384 40.9778 45.0514 40.7043 45.1449C38.3341 46.0534 37.027 46.538 36.8218 46.5879L36.7799 46.5988C36.3991 46.6939 35.2412 46.9837 33.7398 46.658C32.8352 46.4617 31.0929 45.8446 29.7454 45.1511C28.8035 44.668 27.9285 43.7408 27.1467 42.3959L27.1187 42.346C27.0581 42.2432 26.8576 41.8801 26.4799 41.196C25.9623 40.2563 25.1806 38.8366 24.9583 38.4719C24.5946 37.8751 22.47 34.4856 21.64 33.2265C21.3649 32.8073 20.9701 32.7699 19.949 33.0629C19.8247 33.0987 19.7143 33.1299 19.6211 33.1517C19.1455 33.2623 17.6316 33.7719 17.0892 33.9589L5.65156 37.886C5.67021 37.914 5.69041 37.9405 5.71062 37.9624L17.3565 49.061C17.5306 49.2262 35.0438 65.8119 36.0898 66.7983C37.2896 67.9313 38.8703 69.0657 39.5806 69.3307C39.5837 69.1172 39.5386 68.7977 39.4609 68.5452C39.4547 68.5265 39.45 68.5063 39.4454 68.4876C39.4298 68.4221 37.8569 61.9253 37.5399 60.554C37.1793 58.9987 37.2928 57.8486 38.0046 55.8165C38.7506 53.6894 40.8597 52.3959 40.9483 52.3414C40.9701 52.3274 40.9934 52.3149 41.0167 52.304C41.082 52.2713 47.5911 49.047 49.8215 47.9748C51.7285 47.057 52.0782 46.2825 53.0139 44.2098L53.0652 44.0976C54.1454 41.7071 56.0042 41.2302 56.413 41.1523C56.9492 41.0136 58.4055 40.5773 59.1702 40.0926C59.8758 39.6454 60.2224 37.8689 60.3701 37.1099L60.3887 37.0118C60.6281 35.7931 61.1534 34.9048 61.9803 33.7813C62.9905 32.4099 64.8883 31.7367 66.4145 31.1959C68.3185 30.5212 69.9333 31.2988 70.0017 31.3315C70.0219 31.3409 70.0421 31.3518 70.0623 31.3642C70.2566 31.478 74.8385 34.174 75.6327 34.6758C75.9638 34.8846 76.3741 34.7942 76.4798 34.7661C77.1263 34.4701 77.905 34.0883 78.0682 33.9714C78.8298 33.4057 79.5649 32.8151 80.8145 31.3377C82.333 29.5394 83.8981 29.4085 84.6955 29.4911C85.3094 29.5534 87.3796 29.9337 88.2485 32.1824C88.55 32.9631 88.9261 33.0878 89.0225 33.1065C89.8571 33.0068 97.1356 32.1372 98.7334 31.958C99.8167 31.8364 100.239 31.4406 100.317 31.3564C100.351 31.2988 100.362 31.2957 100.417 31.2411C104.933 26.6736 113.71 17.7582 114.601 16.7078C115.146 16.0627 115.323 15.7479 115.379 15.6076H115.373C115.051 15.6076 114.465 15.7042 113.987 15.846V15.8492ZM34.4842 54.5761C33.9107 56.2124 33.5532 57.671 33.6154 59.3151C28.0948 54.0883 20.0376 46.457 19.9257 46.351L12.6658 39.4319L18.3 37.4964C18.7585 37.339 19.2496 37.1754 19.6568 37.0445C20.5381 38.433 21.539 40.0319 21.7752 40.4215C21.9586 40.7238 22.8072 42.265 23.216 43.0052C23.7056 43.8935 23.8284 44.1148 23.9108 44.255L23.9263 44.2815C25.0733 46.2544 26.4613 47.6678 28.045 48.4798C29.5697 49.2636 31.5887 50.0194 32.9549 50.3139C34.4547 50.6396 35.9841 50.6241 37.5041 50.2719C36.4581 51.1898 35.1697 52.6312 34.4873 54.5776L34.4842 54.5761ZM49.666 42.5549L49.6148 42.6686C49.3179 43.3262 49.0102 44.0057 48.8423 44.2223C48.8066 44.2675 48.6325 44.4 48.2066 44.6041C47.5243 44.9314 46.469 45.4487 45.3204 46.0129C45.5349 45.709 45.74 45.3724 45.9312 44.9999C46.5747 43.7517 47.0254 42.798 47.0378 42.7699C47.2181 42.3928 47.8025 41.0339 47.8771 39.1981C48.7522 39.3306 49.5215 39.4319 49.6645 39.4506C49.98 39.4911 50.2986 39.5005 50.6157 39.4771C51.1255 39.4381 51.6881 39.3244 52.257 39.1202C51.2622 39.9321 50.3406 41.0588 49.6645 42.5564L49.666 42.5549ZM98.1055 28.2678C96.7641 28.4205 93.2143 28.8428 90.8238 29.1264C89.3193 26.9634 86.9911 25.9676 85.0763 25.7713C83.5484 25.6139 80.5907 25.8133 77.9687 28.9192C77.1559 29.8791 76.6523 30.3404 76.2342 30.6723C74.7095 29.7622 72.518 28.4719 71.9492 28.1384C71.8512 28.0808 71.7502 28.0262 71.6476 27.9764C70.1633 27.2439 67.6828 26.7795 65.1711 27.6709C63.2719 28.3441 60.6716 29.2667 58.9806 31.5606C57.8973 33.0301 57.1 34.3968 56.7285 36.2918L56.7083 36.3931C56.6726 36.577 56.6088 36.9058 56.5358 37.2019C56.2451 37.3078 55.9094 37.4154 55.611 37.498C55.2007 37.579 54.7717 37.7052 54.3334 37.8829C54.7577 37.4964 55.1416 37.032 55.454 36.4803C56.0446 35.4378 56.8233 33.2577 55.3934 30.3778C54.7686 29.1202 53.9713 27.6569 53.3636 26.566C53.5547 26.5614 53.7102 26.5598 53.8236 26.5598C53.833 26.5598 53.8407 26.5598 53.8501 26.5598C55.1152 26.5598 62.9983 26.3899 63.8967 26.3697C63.9293 26.3697 63.9604 26.3681 63.993 26.3666L70.4726 26.0923C70.5255 26.0907 70.5768 26.0876 70.6296 26.0829C71.0415 26.0518 80.7835 25.3069 85.2208 24.7381C85.9047 24.6508 86.6305 24.5604 87.3983 24.4669C91.6709 23.9402 96.988 23.2841 102.933 22.0374C103.499 21.919 104.05 21.8021 104.59 21.6884C102.546 23.7703 100.286 26.0642 98.107 28.2678H98.1055Z" fill="currentColor"/> <path d="M119.922 12.2197C119.064 11.0027 116.977 9.17001 112.575 10.4167C111.696 10.6084 107.094 11.6089 101.023 12.882C95.4617 14.0493 90.3591 14.6773 86.2606 15.1837C85.4788 15.2804 84.7374 15.3723 84.0396 15.4611C80.0374 15.9738 70.9358 16.6798 70.0002 16.7515L63.648 17.0211C60.1603 17.0974 54.7282 17.2081 53.8594 17.2081C53.8501 17.2081 53.8407 17.2081 53.8298 17.2081C52.8072 17.2081 49.8821 17.3281 46.8731 17.4574L46.2483 17.4839C44.1609 17.5712 42.4046 18.6589 41.5498 20.3902C41.298 20.9014 41.1379 21.4468 41.068 22.0031C40.5862 21.9408 40.0484 21.905 39.4687 21.9065C37.5103 21.9206 35.8069 22.8041 34.7951 24.3313C33.774 25.8741 33.6092 27.8766 34.3552 29.689C34.3817 29.7544 34.4112 29.8199 34.4407 29.8838C34.4734 29.9539 37.7155 36.9136 38.5563 38.8397C38.5563 38.8584 38.5517 38.8802 38.547 38.902C38.4367 39.1327 38.2035 39.6127 37.8989 40.2157C36.8125 40.6287 35.7323 41.0354 35.3297 41.1804C35.2272 41.2006 35.0919 41.2147 34.921 41.1773C34.5588 41.0993 33.3916 40.7035 32.4404 40.2344C32.3627 40.1519 32.2057 39.9617 31.9804 39.5721L31.9446 39.5098C31.8824 39.4023 31.6151 38.9161 31.3789 38.4875C30.5831 37.0445 30.0003 35.9879 29.7345 35.5516C29.349 34.9173 27.1871 31.4702 26.3105 30.1378C25.1743 28.4127 23.3372 27.3686 21.2685 27.272C20.005 27.2128 18.9683 27.512 18.4103 27.6709C18.3761 27.6803 18.3435 27.6896 18.3139 27.699C17.557 27.8813 16.0898 28.3737 15.2754 28.6542L3.70409 32.6281C3.45697 32.7122 3.21917 32.8182 2.98914 32.9429C1.36963 33.8249 0.300311 35.324 0.0547417 37.0523C-0.313613 39.6563 1.27948 41.4624 1.77528 41.9549C1.79549 41.9751 1.81725 41.9954 1.83901 42.0157L13.5113 53.1408C14.2341 53.8249 31.2048 69.8964 32.2508 70.8844C32.9145 71.5124 34.032 72.463 35.1743 73.2468C35.953 73.7814 37.7295 75 39.8246 75C40.437 75 41.0773 74.8956 41.7285 74.6385C44.5666 73.5164 45.8333 70.4106 44.851 67.0414C44.6303 66.1298 43.275 60.5275 42.9875 59.287C42.9129 58.9629 42.8802 58.8257 43.2688 57.7162C43.345 57.5868 43.575 57.3546 43.7832 57.1941C45.0717 56.5568 50.3064 53.9668 52.2399 53.0364C55.984 51.2349 57.0176 48.9473 58.1102 46.5256L58.1195 46.5037C59.0101 46.2575 60.8022 45.6965 62.1559 44.8379C64.9022 43.0987 65.5488 39.7825 65.8597 38.1883L65.8783 38.0948C65.8907 38.034 65.9172 37.8969 66.3663 37.2736C66.6803 37.0756 67.3921 36.806 67.9237 36.6144C69.7375 37.6834 72.1776 39.1265 72.6424 39.421C74.6535 40.6957 76.9414 40.5726 78.4117 40.035C78.5205 39.9945 78.6293 39.9508 78.735 39.9025C80.6591 39.0283 81.1518 38.6636 81.3927 38.4844C82.1465 37.925 82.9687 37.2782 84.0676 36.1079C85.5177 38.0449 87.6268 38.8319 89.3737 38.7119C89.4515 38.7073 89.5276 38.6995 89.6053 38.6901C89.6861 38.6808 97.6858 37.7239 99.3504 37.5385C102.122 37.2284 103.713 35.9458 104.476 35.1074C107.675 31.8723 117.7 21.718 118.864 20.345C119.587 19.4926 120.376 18.447 120.76 17.1582C121.265 15.4596 120.967 13.708 119.922 12.2244V12.2197ZM116.021 17.9202C114.882 19.2651 102.684 31.6042 101.777 32.5237C101.536 32.8166 100.724 33.6192 98.9385 33.8187C97.2599 34.0057 89.2447 34.9641 89.1655 34.9734C89.1499 34.975 89.1344 34.9765 89.1188 34.9781C88.4661 35.0217 87.1916 34.6259 86.5077 32.8587C86.0352 31.6354 84.9488 31.397 84.5043 31.3518C83.7443 31.2723 82.9625 31.6868 82.2367 32.547C80.8596 34.1755 80.0017 34.8612 79.1748 35.4768C78.8018 35.7526 77.6672 36.2793 77.1978 36.4928C77.1761 36.5022 77.1543 36.5115 77.1325 36.5193C76.9973 36.5692 75.7804 36.9821 74.6364 36.2575C73.906 35.7947 69.6194 33.2732 69.1593 33.0005C69.0101 32.9366 68.1009 32.5813 67.0378 32.9584C65.7524 33.4135 64.1531 33.9807 63.4817 34.8924C62.6921 35.9645 62.3735 36.591 62.2196 37.3717L62.201 37.4684C61.9741 38.6309 61.5529 40.7955 60.1665 41.6744C58.9744 42.4302 56.9259 42.9522 56.8389 42.9741C56.7953 42.985 56.7798 42.9896 56.7378 42.9943C56.6166 43.0177 55.4851 43.2733 54.7639 44.8706L54.7127 44.9828C53.7366 47.1458 53.1475 48.4517 50.6266 49.6641C48.4988 50.6864 42.4513 53.6816 41.884 53.9621C41.6726 54.0977 40.2458 55.0607 39.7624 56.4399C39.1718 58.1229 39.0801 58.952 39.3537 60.1332C39.6583 61.4485 41.1333 67.5432 41.2483 68.0201C41.6027 69.1748 41.5809 70.6771 40.3593 71.1586C40.1867 71.2272 40.0033 71.2615 39.8028 71.2615C39.1672 71.2615 38.3729 70.9093 37.2788 70.1597C36.312 69.4974 35.3437 68.6699 34.8075 68.1635C33.7615 67.1755 16.2468 50.5898 16.0712 50.423L4.40816 39.3041C4.40816 39.3041 4.40039 39.2963 4.39573 39.2916C4.26517 39.1623 3.62172 38.4735 3.74761 37.5759C3.80357 37.1847 4.02427 36.6331 4.76875 36.2279C4.81382 36.203 4.862 36.1827 4.91174 36.1656L16.483 32.1917C16.6913 32.12 18.544 31.4842 19.1967 31.3315C19.2651 31.3159 19.346 31.2926 19.4361 31.2661C20.2288 31.0385 22.083 30.5056 23.1958 32.198C24.0537 33.5008 26.1706 36.8777 26.5483 37.4995C26.7923 37.9 27.5228 39.2277 28.1103 40.2937C28.3854 40.7939 28.6698 41.3097 28.718 41.3908L28.7553 41.4546C29.5029 42.7387 30.1681 43.2701 30.594 43.4883C31.7907 44.1039 33.3621 44.6649 34.1314 44.8316C35.2085 45.0654 36.0494 44.855 36.326 44.7849L36.3664 44.7755C36.6275 44.6945 38.4522 44.0072 40.0546 43.3933C40.0997 43.3761 40.0873 43.3761 40.1199 43.3699C40.2085 43.3294 40.6017 43.1205 40.9592 42.4271C41.5576 41.2645 41.9834 40.3654 41.9881 40.356C41.9928 40.3451 42.6471 38.8911 41.9959 37.3951C41.1706 35.497 37.8523 28.3737 37.8181 28.3021C37.8119 28.2896 37.8056 28.2756 37.801 28.2631C37.7279 28.087 37.3922 27.1691 37.9005 26.4024C38.1258 26.0627 38.5859 25.6544 39.492 25.6482C40.9328 25.6435 41.9446 26.005 42.142 26.0829C42.358 26.1609 43.017 26.4616 43.6869 27.3639C44.2588 28.1353 44.8168 28.8257 44.8215 28.8335C44.8339 28.8475 44.8448 28.8631 44.8557 28.8786C44.9614 29.0282 45.9017 30.3638 46.1099 31.4063C46.284 32.2774 46.427 32.9647 46.427 32.9662C46.4348 33.0068 46.4363 32.9865 46.4363 33.0021C46.4659 33.0831 46.5762 33.2686 46.9679 33.3527C47.9098 33.5522 49.7655 33.8062 50.2613 33.8716C50.3919 33.8436 50.5504 33.7735 50.5877 33.7065C50.625 33.6379 50.6312 33.3776 50.3825 32.879C49.3521 30.8048 47.7388 27.9935 47.6144 27.7769L45.0919 23.708C44.9598 23.5101 44.5324 22.7761 44.8914 22.0483C45.067 21.693 45.4711 21.2598 46.4021 21.2208L47.0301 21.1944C48.8874 21.1149 52.7419 20.9497 53.8267 20.9497H53.8547C55.0592 20.9497 63.4413 20.7689 63.7661 20.7611L70.2193 20.4884C70.6685 20.4541 80.2939 19.7139 84.509 19.1747C85.2006 19.0859 85.9358 18.9955 86.7113 18.9004C90.8798 18.3862 96.0678 17.7473 101.783 16.5473C108.242 15.1915 113.042 14.1459 113.486 14.0493C114.685 13.6955 116.233 13.4727 116.873 14.3812C117.773 15.659 116.982 16.7857 116.018 17.9233L116.021 17.9202Z" fill="currentColor"/> </svg></div>
+
+      <div class="live__info">
+        <p class="lbl">United States GP · Session in progress</p>
+        <h1 class="live__session cond" id="live-title">Qualifying</h1>
+        <p class="live__sub">Q2 in progress — 15 cars left, 5 drop out</p>
+        <div class="phases lbl" aria-label="Qualifying phases">
+          <span class="ph ph--done">Q1 <span>Done</span></span>
+          <span class="ph ph--now">Q2 <span>Live</span></span>
+          <span class="ph">Q3 <span>Next</span></span>
+        </div>
+      </div>
+
+      <div class="live__clock" role="timer" aria-label="Q2 time remaining">
+        <p class="lbl" style="margin:0">Q2 · Time remaining</p>
+        <div class="digits num"><span data-q-m>11</span><span class="c">:</span><span data-q-s>24</span></div>
+        <p>Session clock · green flag</p>
+      </div>
+
+      <div class="live__cta">
+        <a class="cta-live" href="../../live.html">
+          <span class="top lbl"><span style="display:inline-flex;gap:8px;align-items:center"><span class="ldot" style="background:var(--red);animation:beat 1.1s infinite"></span>live.html</span><span class="arrow" aria-hidden="true">→</span></span>
+          <span><b>Watch live timing</b><small>Positions, gaps, sectors and tyres — straight from F1's official feed.</small></span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="band">
+    <div class="wrap band__in">
+      <span class="band__k lbl">Up next</span>
+      <span class="band__v">Race</span>
+      <span class="band__v num" data-race-when>Sun 25 Oct · 16:00</span>
+      <span class="band__rule" aria-hidden="true"></span>
+      <a class="btn btn--line" href="../../grandsprix/grandprix.html?gp=united-states-gp">Weekend timetable <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     HERO 3 — RESULT
+     ===================================================================== -->
+<section class="hero hero--res" data-hero="result" aria-labelledby="res-title" hidden>
+  <div class="wrap">
+    <div class="strip lbl">
+      <span class="tag"><span class="sq" style="--c:var(--red)"></span>Race result</span>
+      <span>Round 19 / 25</span>
+      <span class="grow">Singapore Grand Prix — Marina Bay Street Circuit</span>
+      <span>Sun 11 Oct 2026</span>
+    </div>
+
+    <div class="res g12">
+      <p class="res__one" aria-hidden="true">1</p>
+
+      <div class="res__win">
+        <p class="lbl">Winner · Singapore Grand Prix</p>
+        <h1 class="res__name cond" id="res-title"><span class="first">Max</span>Verstappen</h1>
+        <dl class="res__meta">
+          <div><dt class="lbl">Team</dt><dd><span class="sq" style="--c:#22477A;box-shadow:0 0 0 1px rgba(239,234,224,.6)"></span>Red Bull</dd></div>
+          <div><dt class="lbl">Race time</dt><dd>1:42:00.785</dd></div>
+          <div><dt class="lbl">Started</dt><dd>P1 · Pole</dd></div>
+        </dl>
+      </div>
+
+      <figure class="res__photo">
+        <img src="../../img/drivers/verstappen-2.png" alt="Max Verstappen celebrating" loading="lazy">
+        <svg class="trk" role="img" aria-label="Marina Bay Street Circuit layout" viewBox="0 0 121 85" fill="none" xmlns="http://www.w3.org/2000/svg"> <g clip-path="url(#clip0_3392_36847)"> <path d="M35.0647 39.5279C35.1437 39.5644 35.2592 39.6293 35.4162 39.7486C36.0734 40.2484 39.2314 42.7949 42.2463 45.234C43.7488 46.4496 45.2101 47.6334 46.2951 48.5133C46.8376 48.9531 47.2869 49.317 47.5998 49.5709C47.7561 49.6977 47.8778 49.7982 47.9612 49.8658C48.0028 49.8997 48.0354 49.9255 48.0569 49.943C48.0674 49.9516 48.0759 49.9581 48.0813 49.9625C48.0837 49.9645 48.0858 49.9663 48.0871 49.9674L48.0881 49.9684H48.0891L48.6711 49.2526L45.76 52.8375L45.759 52.8365C45.7576 52.8354 45.7549 52.8329 45.7522 52.8307C45.7467 52.8263 45.7382 52.8197 45.7278 52.8111C45.7063 52.7937 45.6744 52.7676 45.633 52.734C45.5497 52.6664 45.4278 52.5667 45.2717 52.4401C44.959 52.1863 44.5101 51.823 43.968 51.3834C42.8835 50.504 41.4233 49.3206 39.9221 48.1061C38.8405 47.231 37.7526 46.3543 36.7737 45.5651C35.8262 48.1291 34.7659 50.9974 34.2785 52.3092C33.8785 53.3885 33.4757 54.8392 33.1574 56.1139C33.0031 56.7321 32.8771 57.2744 32.7903 57.6598C32.747 57.8518 32.7136 58.0043 32.6916 58.1061C32.6867 58.1287 32.6817 58.1491 32.678 58.1666C32.6731 58.1958 32.6682 58.2313 32.6614 58.2721C32.6386 58.4084 32.6044 58.609 32.5617 58.8639C32.4765 59.3739 32.3543 60.1042 32.2063 60.985C31.9102 62.747 31.5103 65.1144 31.0969 67.5338C30.6838 69.9513 30.256 72.4298 29.9026 74.4098C29.616 76.0148 29.337 77.5416 29.1535 78.3365L29.0813 78.6305L29.0793 78.6354C28.6814 80.106 27.7359 81.2753 26.4963 81.9723C25.4113 82.5822 24.3591 82.6897 23.7473 82.7037C21.7862 82.7485 19.9753 81.7928 18.8908 80.2301L18.6848 79.9098L18.676 79.8971C18.3344 79.3236 17.7586 78.3665 17.3742 77.7555L17.3733 77.7545C17.1884 77.4605 16.9738 77.1914 16.8166 77.0104C15.8242 76.2105 12.3844 73.4393 11.1916 72.4908L11.1906 72.4899C9.32725 71.0073 8.63271 69.0097 8.35569 67.86C8.20414 67.2308 8.13422 66.6759 8.1008 66.2731C8.0876 66.1138 8.08014 65.9718 8.07541 65.8522C8.07266 65.8272 8.06964 65.8002 8.06662 65.7721C8.05174 65.6335 8.03546 65.4551 8.01682 65.2467C7.51123 65.0125 7.08488 64.759 6.75315 64.5485C6.17074 64.1787 5.42044 63.6352 4.95334 63.3121C3.90182 62.5847 3.12139 61.7794 2.61057 61.1774C2.34982 60.87 2.14348 60.5973 1.99338 60.3863C1.91814 60.2806 1.85599 60.1883 1.80686 60.1139C1.78224 60.0766 1.7596 60.0428 1.74143 60.0143C1.7325 60.0002 1.72439 59.987 1.71702 59.9752C1.71332 59.9693 1.70958 59.963 1.70627 59.9576C1.70485 59.9554 1.70372 59.953 1.70237 59.9508C1.70165 59.9496 1.70017 59.948 1.69944 59.9469L1.69846 59.9449L4.84202 58.0045L4.84299 58.0055L4.84397 58.0084C4.84484 58.0098 4.84672 58.0115 4.84787 58.0133C4.85039 58.0173 4.85382 58.0229 4.85764 58.0289C4.86555 58.0413 4.87651 58.0585 4.88987 58.0787C4.91679 58.1195 4.95535 58.1752 5.00412 58.2438C5.10179 58.381 5.24358 58.5704 5.42795 58.7877C5.79444 59.2196 6.34077 59.779 7.05491 60.2731C7.65254 60.6865 8.22881 61.1095 8.73264 61.4293C9.24596 61.7552 9.78886 62.0455 10.3801 62.1793H10.3811L10.5871 62.2203C10.7943 62.2559 10.9975 62.2765 11.135 62.2945C11.3547 62.3234 11.4714 62.3488 11.5451 62.3776C11.5518 62.3802 11.5574 62.3834 11.5617 62.3854C11.5727 62.4164 11.5944 62.4983 11.593 62.6647C11.5865 63.4106 11.6318 64.1543 11.677 64.7057C11.6996 64.9825 11.7229 65.2143 11.7405 65.3776C11.7492 65.459 11.7567 65.524 11.7619 65.569C11.7624 65.5725 11.7625 65.5764 11.7629 65.5797C11.7631 65.5992 11.7641 65.6232 11.7649 65.65C11.7671 65.7279 11.7716 65.8371 11.7824 65.9684C11.8042 66.2298 11.8501 66.5915 11.9475 66.9957C12.1372 67.783 12.5522 68.8517 13.4905 69.5983L16.4348 71.9596L19.1682 74.1617C19.2375 74.2178 19.3051 74.2763 19.3694 74.3375L19.5559 74.5309C19.793 74.7998 20.162 75.2491 20.5012 75.7887L21.2014 76.9254C21.4443 77.3263 21.6783 77.7185 21.8498 78.0065L21.8518 78.0094C22.2299 78.6392 22.9193 79.0274 23.6633 79.0104C23.9484 79.0038 24.3268 78.9527 24.6848 78.7516C25.0738 78.5328 25.377 78.169 25.5119 77.6705L25.5129 77.6695C25.6359 77.2129 25.9191 75.6973 26.2649 73.7604C26.6159 71.794 27.0427 69.3263 27.4553 66.9117C27.8679 64.4968 28.267 62.1327 28.5627 60.3727C28.7106 59.4926 28.8321 58.7627 28.9172 58.2535C28.9597 57.9991 28.9941 57.7996 29.0168 57.6637C29.0281 57.5959 29.0364 57.5435 29.0422 57.5084L29.049 57.4694C29.0501 57.4642 29.0515 57.4576 29.053 57.4508C29.059 57.4222 29.0683 57.3792 29.0803 57.3238C29.1043 57.2129 29.14 57.0504 29.1858 56.8473C29.2774 56.4406 29.4099 55.8706 29.5725 55.2194C29.8998 53.9086 30.3427 52.2974 30.8156 51.0221L33.3459 44.1842C33.8246 42.8889 34.2716 41.6755 34.5998 40.7867C34.7638 40.3426 34.8983 39.9794 34.9914 39.7272C35.0198 39.6502 35.0442 39.5834 35.0647 39.5279ZM101.184 8.55138C101.559 8.60343 101.876 8.84359 102.228 9.40978L102.431 9.7467L102.641 10.1158C102.965 10.7102 103.606 11.2632 104.197 11.6695C104.806 12.0885 105.531 12.4659 106.158 12.6276C107.325 12.9281 108.856 12.763 109.781 12.6588C109.802 12.6565 109.8 12.6586 109.801 12.6598C109.818 12.6705 109.86 12.705 109.912 12.7838C109.963 12.8603 110.005 12.9479 110.033 13.0221C110.042 13.0452 110.049 13.066 110.054 13.0817L115.457 52.7067C115.455 53.1989 115.41 53.5713 115.367 53.819C115.338 53.9873 115.275 54.149 115.182 54.2916C114.86 54.7841 114.199 55.7947 113.553 56.7858L112.011 59.1627C111.871 59.3823 111.67 59.4828 111.45 59.5289C111.339 59.5522 111.236 59.5588 111.162 59.5582C111.127 59.5579 111.1 59.5555 111.086 59.5543C111.081 59.5539 111.077 59.5534 111.076 59.5533H111.078L111.016 59.5485L105.129 59.1783L105.121 59.1774L92.5998 58.486C92.5629 58.4839 92.5254 58.4845 92.4885 58.4869H92.4455C92.4057 58.4877 92.3419 58.489 92.261 58.486C92.0976 58.4798 91.8682 58.4602 91.6106 58.4098C91.1452 58.3186 90.6572 58.1395 90.2795 57.8131L90.1242 57.6627L89.969 57.4869C89.2486 56.617 89.2835 55.8496 89.3098 54.7457V54.6422C89.3049 54.1094 89.1944 53.523 88.8625 53.0338C88.5049 52.5067 87.944 52.1754 87.2444 52.1266H87.2453C86.2744 52.0587 78.2512 51.5487 70.4426 51.0553L54.924 50.0826H54.9211C54.5334 50.0748 53.9053 50.049 53.1604 49.9791L52.3801 49.8932C51.693 49.8054 50.9114 49.4774 50.259 49.1324C49.9428 48.9652 49.6752 48.8041 49.4875 48.6852C49.394 48.6259 49.321 48.5772 49.2727 48.5445C49.2538 48.5318 49.2388 48.5209 49.2278 48.5133C49.2258 48.5117 49.2232 48.5102 49.2209 48.5084C49.1994 48.491 49.1668 48.465 49.1252 48.4313C49.0417 48.3635 48.9192 48.2632 48.7629 48.1363C48.4499 47.8823 48.0007 47.5186 47.4582 47.0787C46.3728 46.1985 44.9108 45.0137 43.4074 43.7975C40.411 41.3733 37.221 38.8011 36.5344 38.2789C35.7301 37.6674 34.9188 37.4526 34.2102 37.8024C33.8997 37.9559 33.7018 38.1798 33.5871 38.3463C33.5286 38.4314 33.4856 38.5093 33.4563 38.5699C33.4415 38.6004 33.4294 38.6275 33.4201 38.65C33.4156 38.6611 33.4118 38.6714 33.4084 38.6803C33.4068 38.6844 33.4059 38.6893 33.4045 38.693L33.4035 38.694V38.6949C33.4031 38.696 33.4024 38.6986 33.4016 38.7008C33.4 38.7051 33.3977 38.7113 33.3947 38.7194C33.3884 38.7365 33.3788 38.7631 33.3664 38.7965C33.3418 38.8633 33.3055 38.9617 33.259 39.0875C33.1659 39.3398 33.0314 39.7029 32.8674 40.1471C32.5392 41.0357 32.0911 42.2484 31.6125 43.5436L29.0832 50.3795V50.3805C28.574 51.7536 28.1121 53.4439 27.7805 54.7721C27.6137 55.4401 27.4771 56.0246 27.383 56.442C27.3361 56.6505 27.2996 56.8178 27.2746 56.9332C27.2621 56.991 27.2528 57.0364 27.2463 57.067C27.2431 57.0821 27.2402 57.0942 27.2385 57.1022C27.2377 57.1058 27.238 57.1089 27.2375 57.111C27.2373 57.112 27.2367 57.1133 27.2365 57.1139V57.1149H27.2356C23.8113 56.3987 23.6299 56.3603 23.6203 56.358V56.3561C23.6206 56.355 23.621 56.3528 23.6213 56.3512C23.622 56.3482 23.6233 56.3441 23.6242 56.3395C23.6264 56.3295 23.6294 56.3156 23.633 56.2985C23.6405 56.2635 23.6498 56.2134 23.6633 56.151C23.6903 56.0262 23.73 55.8483 23.7795 55.6285C23.8784 55.1898 24.0205 54.5774 24.1955 53.8766C24.536 52.5132 25.0375 50.6632 25.6194 49.0944L25.6203 49.0924L28.1467 42.2633C28.5873 41.0708 29.0024 39.9476 29.3215 39.0836C29.2275 38.9891 29.1361 38.8932 29.05 38.7945L28.9045 38.6207L28.9016 38.6178C28.5836 38.2239 27.6421 37.1275 26.7063 36.0475C26.2541 35.5256 25.8243 35.0325 25.508 34.6695C25.3501 34.4882 25.2201 34.3391 25.1301 34.236C25.1242 34.2292 25.1191 34.2218 25.1135 34.2154C25.0598 34.1635 24.989 34.095 24.9045 34.0143C24.6912 33.8104 24.3942 33.5307 24.0617 33.2272C23.555 32.7645 23.0739 32.3517 22.7072 32.0592C22.6239 32.197 22.5236 32.3702 22.4074 32.5846C21.9269 33.4712 19.4601 37.9601 17.1281 42.2028C15.9591 44.3297 14.8192 46.4032 13.9719 47.944C13.5484 48.714 13.198 49.3517 12.9533 49.7965C12.831 50.0189 12.7345 50.1934 12.6692 50.3121C12.6365 50.3715 12.6118 50.4173 12.5949 50.4479C12.5912 50.4546 12.5871 50.4602 12.5842 50.4654L12.5852 50.4664H12.5842V50.4674C12.5839 50.468 12.5837 50.4694 12.5832 50.4703C12.5822 50.4721 12.58 50.4741 12.5783 50.4772C12.5774 50.4788 12.5762 50.4806 12.5754 50.482C12.5735 50.4856 12.5725 50.4889 12.5715 50.4908L12.5696 50.4938C12.5678 50.497 12.5657 50.5008 12.5637 50.5045C12.5512 50.5274 12.5336 50.5606 12.511 50.6022C12.4654 50.6858 12.3997 50.8051 12.3196 50.9508C12.1595 51.2418 11.9379 51.6425 11.6926 52.0768C11.303 52.7664 10.7436 53.7387 10.2766 54.4459L10.0832 54.7311L10.0813 54.734C9.95773 54.9097 9.82834 55.0851 9.70334 55.2574C9.84584 55.418 10.0215 55.5863 10.2082 55.7154C10.5338 55.9406 10.8783 56.1853 11.1096 56.3473C11.3704 56.5299 11.554 56.6548 11.7033 56.7496C11.7273 56.7649 11.7511 56.7766 11.7707 56.7887C11.7963 56.792 11.8246 56.7963 11.8557 56.8004C12.0929 56.8315 12.8043 56.9195 13.5637 57.2164C14.4378 57.5582 15.5068 58.2226 16.2688 59.4518C16.8969 60.4652 17.0955 61.5103 17.1301 62.361L17.136 62.7125C17.1314 63.2295 17.1627 63.7926 17.2004 64.2535C17.2187 64.4765 17.2378 64.6613 17.2512 64.7858C17.2578 64.8477 17.2636 64.8947 17.2668 64.9225C17.2681 64.9337 17.2682 64.942 17.2688 64.9469L17.299 65.2721C17.3042 65.3655 17.3035 65.4598 17.303 65.5533H17.3049V65.4938C17.3051 65.4974 17.3053 65.5027 17.3059 65.5094C17.3071 65.5245 17.3114 65.5417 17.3137 65.5602C18.3616 66.3975 20.2109 67.8852 21.4865 68.9127C21.6526 67.9526 21.8253 66.9627 21.9934 65.9791C22.4049 63.571 22.8026 61.2118 23.0979 59.4547C23.2454 58.5766 23.3665 57.8484 23.4514 57.3404C23.4938 57.0866 23.5274 56.887 23.55 56.7516C23.5613 56.6842 23.5706 56.632 23.5764 56.5973C23.5792 56.5802 23.5808 56.5669 23.5822 56.5582C23.5829 56.5541 23.5838 56.5506 23.5842 56.5485V56.5455H23.5852C23.5955 56.4833 23.6065 56.4207 23.6194 56.359L27.2356 57.1149C27.233 57.127 27.2308 57.1398 27.2287 57.152L27.2278 57.1549C27.2274 57.1571 27.2265 57.1604 27.2258 57.1647C27.2243 57.1735 27.2228 57.1873 27.2199 57.2047C27.2141 57.2397 27.2059 57.2921 27.1946 57.36C27.1719 57.4958 27.1384 57.6956 27.0959 57.9498C27.0109 58.4585 26.8891 59.187 26.7414 60.066C26.4459 61.8251 26.0463 64.1875 25.634 66.6002C25.2216 69.0135 24.7964 71.4765 24.4465 73.4361C24.1029 75.3608 23.8412 76.7402 23.7375 77.151C23.7089 77.1565 23.6703 77.1616 23.6213 77.1627C23.5685 77.1639 23.5132 77.1439 23.4719 77.1041L23.4358 77.0582C23.264 76.7698 23.0278 76.3749 22.7815 75.9684L22.0656 74.8053C21.7568 74.314 21.4326 73.891 21.1731 73.5787L20.9387 73.3053L20.9358 73.3024L20.7932 73.149C20.696 73.0485 20.5947 72.9514 20.4895 72.859L20.3293 72.7242L20.3274 72.7233L17.593 70.5201L14.6399 68.1529C14.1641 67.7742 13.8894 67.1681 13.7434 66.5621C13.6731 66.2704 13.6391 66.0056 13.6233 65.8151C13.6155 65.7209 13.6129 65.6463 13.6115 65.5983C13.6109 65.5743 13.6106 65.5563 13.6106 65.5465C13.6106 65.5441 13.6106 65.5421 13.6106 65.5406L13.6028 65.4108V65.4078C13.6025 65.4058 13.6014 65.4025 13.6008 65.3981C13.5996 65.3886 13.5992 65.3735 13.5969 65.3541C13.5923 65.3149 13.5845 65.2554 13.5764 65.1803C13.5602 65.03 13.539 64.8141 13.5178 64.5553C13.4751 64.034 13.4348 63.35 13.4406 62.6803L13.4377 62.5074C13.4213 62.1071 13.3317 61.728 13.1272 61.3981C12.8847 61.0072 12.5431 60.785 12.218 60.6578C11.9158 60.5397 11.601 60.4931 11.3752 60.4635C11.1127 60.4291 10.9498 60.4143 10.7864 60.3776H10.7873C10.5068 60.314 10.1775 60.1583 9.72287 59.8697C9.2584 59.5749 8.76855 59.213 8.10569 58.7545C7.55986 58.3769 7.13053 57.9394 6.83616 57.5924C6.69027 57.4204 6.58043 57.2738 6.50901 57.1735C6.48148 57.1348 6.46027 57.1022 6.44455 57.0787C6.43216 57.0497 6.41624 57.0123 6.39768 56.9684C6.34755 56.8497 6.27639 56.6803 6.19455 56.4801C6.03013 56.0779 5.82393 55.5574 5.64963 55.069C5.5973 54.9223 5.57249 54.8124 5.55881 54.735L7.58323 56.3121H7.5842C7.1599 55.9815 6.52079 55.4835 5.55881 54.734C5.55257 54.6985 5.54702 54.6697 5.54514 54.6471L5.54709 54.6461C5.57185 54.6142 5.60836 54.5671 5.65354 54.5084C5.74387 54.391 5.87163 54.2243 6.02073 54.027C6.31835 53.633 6.70601 53.1107 7.05881 52.609L7.37327 52.1315C7.71536 51.5885 8.12688 50.8762 8.47483 50.2604C8.71144 49.8416 8.92679 49.4532 9.08225 49.1705C9.15996 49.0292 9.22315 48.9137 9.26682 48.8336C9.28854 48.7938 9.30505 48.7621 9.31662 48.7408C9.32233 48.7303 9.32729 48.722 9.3303 48.7164C9.33088 48.7153 9.33178 48.7144 9.33225 48.7135H9.33323V48.7106C9.33427 48.7087 9.33613 48.7054 9.33811 48.7018C9.34237 48.694 9.34836 48.6817 9.35666 48.6666C9.37348 48.636 9.39932 48.591 9.43186 48.5319C9.4971 48.4132 9.59283 48.2385 9.71506 48.0162C9.95971 47.5714 10.3111 46.9338 10.7346 46.1637C11.5818 44.623 12.7209 42.5502 13.8899 40.4235C16.2266 36.1721 18.685 31.6974 19.1584 30.8238C19.611 29.9887 19.934 29.5318 20.1242 29.2975C20.2188 29.1811 20.2781 29.1234 20.3 29.1031C20.3103 29.0936 20.3105 29.0927 20.302 29.0992C20.2976 29.1026 20.2908 29.1084 20.2815 29.1149C20.2768 29.1181 20.2708 29.1217 20.2649 29.1256C20.2621 29.1275 20.2592 29.1295 20.2561 29.1315C20.2545 29.1325 20.2529 29.1343 20.2512 29.1354L20.2483 29.1363L20.2473 29.1373C20.2472 29.1374 20.2471 29.1374 20.2463 29.1363C20.2839 29.113 20.3208 29.0886 20.3547 29.0602L20.3567 29.0582C20.3579 29.0571 20.36 29.0555 20.3625 29.0533C20.3676 29.049 20.375 29.0422 20.385 29.0338C20.4054 29.0167 20.4367 28.9914 20.4758 28.9586C20.5542 28.893 20.6677 28.7968 20.8098 28.6783C21.0945 28.4409 21.4924 28.1101 21.9436 27.7379C22.2111 27.5175 22.3987 27.5097 22.4797 27.5143C22.5311 27.5172 22.5697 27.529 22.5891 27.5358H22.592C22.6055 27.5438 22.6242 27.5561 22.6487 27.5709C22.7116 27.609 22.812 27.6705 22.9543 27.7604C23.2398 27.9406 23.695 28.2338 24.3596 28.6822C24.9687 29.0933 25.8215 29.8317 26.552 30.4986C26.9105 30.826 27.2291 31.1262 27.4572 31.3444C27.571 31.4531 27.6623 31.5414 27.7248 31.6022C27.756 31.6325 27.78 31.6567 27.7961 31.6725C27.7998 31.6767 27.8043 31.681 27.8088 31.6861C27.8328 31.7136 27.8682 31.7546 27.9133 31.8063C28.0039 31.91 28.1345 32.0597 28.2932 32.2418C28.6108 32.6063 29.0424 33.1025 29.4973 33.6276C30.4136 34.685 31.4082 35.8402 31.7766 36.2965V36.2975C32.0804 36.6733 32.4618 36.9247 32.9006 37.0104C33.3245 37.093 33.7012 37.0014 33.9768 36.8844L33.9787 36.8834C34.4991 36.6611 34.8939 36.2534 35.1252 35.7809V35.7799L36.4104 33.1403C36.7107 32.5211 37.2906 31.5659 37.8186 30.735C38.0781 30.3265 38.3185 29.9593 38.4934 29.694C38.5807 29.5615 38.6524 29.454 38.7014 29.3805C38.7257 29.3441 38.7443 29.3155 38.7571 29.2965L38.7717 29.274C38.7767 29.267 38.7842 29.2573 38.7932 29.2447C38.813 29.2169 38.8416 29.1754 38.8791 29.1227C38.9544 29.0169 39.0637 28.864 39.1975 28.6764C39.4653 28.3007 39.8347 27.785 40.2356 27.2252C41.0389 26.1034 41.9677 24.8113 42.4885 24.109C42.6881 23.8398 42.8449 23.7287 42.9319 23.6832C43.0115 23.6416 43.0572 23.6418 43.0774 23.6432C43.1063 23.6452 43.1352 23.6548 43.1584 23.6666C43.1661 23.6706 43.1715 23.6734 43.1731 23.6744C43.172 23.6737 43.1694 23.6718 43.1653 23.6686C43.1627 23.6666 43.1592 23.6638 43.1555 23.6608C43.1536 23.6592 43.1509 23.6577 43.1487 23.6559C43.1476 23.655 43.1459 23.6539 43.1447 23.6529L43.1428 23.65V23.649C43.1831 23.6836 43.226 23.7157 43.2717 23.7428H43.2727L43.2746 23.7438C43.2766 23.7449 43.2797 23.7474 43.2834 23.7496C43.2914 23.7543 43.304 23.7609 43.3196 23.7701C43.351 23.7888 43.3973 23.817 43.4582 23.8531C43.5805 23.9256 43.7605 24.0323 43.9905 24.1686C44.4503 24.4412 45.111 24.8331 45.9143 25.3092C47.5213 26.2615 49.7003 27.5515 51.9836 28.9029C56.5479 31.6044 61.54 34.5551 63.2307 35.5367C65.0106 36.5702 66.6087 37.082 67.7737 37.3356C68.3558 37.4623 68.8306 37.5249 69.1662 37.5553C69.3338 37.5705 69.4669 37.5782 69.5617 37.5817C69.6092 37.5834 69.6482 37.5833 69.676 37.5836C69.6812 37.5837 69.6861 37.5836 69.6906 37.5836C69.7017 37.5843 69.7163 37.5855 69.7326 37.5865C69.7816 37.5896 69.854 37.5952 69.9485 37.6012C70.1387 37.6132 70.4192 37.6295 70.7756 37.652C71.4885 37.6969 72.5098 37.7628 73.7424 37.8404C76.2085 37.9959 79.523 38.2044 82.9123 38.4176C89.6895 38.844 96.7748 39.2886 97.9924 39.361L98.4787 39.3785C100.866 39.4189 102.537 38.6844 103.479 38.0397L103.596 37.9547C104.162 37.5225 104.426 36.9733 104.542 36.5338C104.603 36.3032 104.625 36.0996 104.631 35.9498C104.634 35.8745 104.634 35.8102 104.632 35.7613L104.627 35.6832C104.627 35.6822 104.627 35.6805 104.627 35.6793C104.627 35.6734 104.626 35.6649 104.625 35.6539C104.624 35.6305 104.621 35.5952 104.617 35.5504C104.611 35.4608 104.601 35.3301 104.589 35.1656C104.565 34.8364 104.531 34.3712 104.489 33.8278C104.448 33.2845 104.398 32.6616 104.344 32.0172L104.173 30.0768C104.046 28.7137 103.577 27.0813 103.162 25.8336C102.952 25.2002 102.749 24.6463 102.599 24.2516C102.524 24.0542 102.46 23.8955 102.416 23.7858L102.348 23.6149L102.347 23.6119C102.346 23.6085 102.344 23.6044 102.342 23.6002C102.334 23.5789 102.322 23.5471 102.306 23.5065C102.274 23.4245 102.227 23.3041 102.169 23.1539C102.053 22.8534 101.888 22.4291 101.695 21.9361C101.308 20.9507 100.807 19.6848 100.352 18.5719C99.9415 17.5698 99.7665 16.6026 99.6955 15.8824C99.6603 15.5245 99.6512 15.2318 99.6506 15.0328C99.6503 14.9335 99.6527 14.8566 99.6545 14.8082C99.6554 14.7846 99.6559 14.7675 99.6565 14.7574C99.6567 14.7539 99.6573 14.7504 99.6574 14.7486C99.6575 14.7471 99.6573 14.7455 99.6574 14.7438C99.6587 14.7293 99.6607 14.7072 99.6633 14.6783C99.6686 14.6202 99.6769 14.5321 99.6877 14.4186C99.7093 14.1913 99.7425 13.8563 99.7864 13.4293C99.8742 12.5744 100.007 11.3482 100.187 9.86779C100.312 8.84322 100.873 8.58874 101.107 8.55431L101.184 8.55138ZM115.439 11.7594C115.48 11.924 115.511 12.0912 115.534 12.2594L120.959 52.0367C120.997 52.3114 121.007 52.5872 120.995 52.86C120.985 53.6217 120.916 54.2603 120.828 54.7682L120.827 54.777C120.687 55.5743 120.406 56.338 120.001 57.0319L119.82 57.3248C119.161 58.332 117.192 61.3453 116.691 62.1344L116.69 62.1363C115.51 63.9926 113.768 64.7063 112.587 64.9537C112.002 65.0763 111.491 65.103 111.121 65.1002C110.932 65.0988 110.765 65.089 110.629 65.0778C110.624 65.0773 110.618 65.0763 110.613 65.0758L104.781 64.7096V64.7086L92.4397 64.027C92.3285 64.0276 92.1989 64.0294 92.0549 64.024C91.6704 64.0097 91.1448 63.9669 90.5442 63.8492C89.421 63.6291 87.5727 63.0553 86.0686 61.4391V61.4401C84.8072 60.0855 84.2246 58.6808 83.9612 57.4684C80.7444 57.2623 75.3777 56.9195 70.093 56.5856C62.23 56.0886 54.8765 55.6285 54.7971 55.6227V55.6217C54.2258 55.6099 53.279 55.5711 52.1682 55.4488L51.6799 55.3912C50.0004 55.1769 48.5159 54.4796 47.6692 54.0319C47.198 53.7827 46.8029 53.5447 46.5207 53.3658C46.3784 53.2756 46.261 53.1976 46.1731 53.1383C46.1292 53.1087 46.0919 53.0833 46.0627 53.0631C46.0482 53.0531 46.0354 53.0443 46.0246 53.0367C46.0192 53.033 46.0134 53.0301 46.009 53.027C46.0068 53.0254 46.0051 53.0235 46.0031 53.0221L45.9992 53.0182L48.136 50.0045L48.1379 50.0065L48.1399 50.0074C48.1414 50.0085 48.1434 50.0107 48.1457 50.0123C48.1508 50.0159 48.1586 50.02 48.1672 50.026C48.1844 50.0379 48.208 50.0552 48.2385 50.0758C48.3 50.1173 48.3885 50.1752 48.4983 50.2447C48.7175 50.3837 49.0285 50.5715 49.3967 50.7662C50.1139 51.1454 51.129 51.5963 52.1467 51.7262L52.5754 51.776C53.3092 51.8567 53.9629 51.8959 54.4514 51.9147L54.8811 51.9283C54.8737 51.9283 54.9735 51.9347 55.2209 51.9498C55.4526 51.964 55.7871 51.985 56.2102 52.0113C57.0566 52.064 58.2573 52.1386 59.6985 52.2291C62.581 52.4101 66.4267 52.6526 70.3264 52.899C78.1289 53.3921 86.1429 53.9012 87.1164 53.9694L87.218 53.986C87.2425 53.9931 87.259 54.0009 87.2688 54.0065C87.2879 54.0174 87.3088 54.035 87.3332 54.0709C87.3763 54.1345 87.4272 54.2551 87.4504 54.4449L87.4621 54.6588V54.7203C87.4337 55.8866 87.3446 57.3873 88.7717 58.9205V58.9215C89.5352 59.7423 90.5259 60.0804 91.2551 60.2233C91.6272 60.2961 91.9555 60.3228 92.1926 60.3317C92.3116 60.3361 92.4097 60.3359 92.4807 60.3346C92.5043 60.3341 92.5256 60.3323 92.5432 60.3317L105.013 61.0211V61.0221L110.886 61.3912C110.9 61.3927 110.916 61.3937 110.934 61.3951C110.988 61.3997 111.062 61.4052 111.149 61.4059C111.321 61.4072 111.56 61.3939 111.829 61.3375C112.336 61.2313 112.995 60.9567 113.477 60.2926L113.571 60.1539C114.089 59.3384 116.077 56.2951 116.727 55.3024C116.957 54.9508 117.115 54.5543 117.188 54.1383V54.1373C117.247 53.7979 117.299 53.329 117.303 52.7379C117.309 52.6712 117.308 52.6033 117.299 52.5358L111.874 12.7584L111.855 12.6588L115.439 11.7594ZM22.7951 21.9811C23.4485 22.0183 23.998 22.1562 24.4143 22.3014C24.6239 22.3745 24.8072 22.4524 24.9612 22.525C25.0381 22.5613 25.109 22.5976 25.1731 22.6315C25.2052 22.6484 25.2368 22.6651 25.2658 22.6813C25.2802 22.6892 25.2943 22.697 25.3078 22.7047C25.3135 22.7079 25.3199 22.7113 25.3254 22.7145H25.3264L25.3313 22.7174C25.3335 22.7187 25.3357 22.7208 25.3381 22.7223L25.344 22.7252H25.343C25.3467 22.7274 25.3506 22.7296 25.3547 22.732C25.3667 22.739 25.3818 22.7471 25.3977 22.7565C25.4292 22.775 25.4682 22.799 25.5158 22.8278C25.6118 22.8858 25.7431 22.9664 25.9133 23.0738C26.2533 23.2885 26.7553 23.6135 27.4592 24.0885C28.4417 24.7514 29.5629 25.7418 30.2903 26.4059C30.6877 26.7687 31.037 27.0991 31.2873 27.3385C31.413 27.4587 31.5152 27.5577 31.5871 27.6276C31.623 27.6624 31.6518 27.6907 31.6721 27.7106C31.682 27.7203 31.6906 27.7282 31.6965 27.734L31.7072 27.7447H31.7082L31.9455 27.9967L29.1633 30.4283L29.1164 30.3785L29.1086 30.3717C29.104 30.3671 29.0969 30.3598 29.0881 30.3512C29.0706 30.3341 29.0446 30.3097 29.0119 30.2779C28.9463 30.2141 28.8515 30.1211 28.7336 30.0084C28.4981 29.7832 28.1694 29.4734 27.7981 29.1344C27.0686 28.4684 26.1264 27.646 25.3928 27.151C24.7152 26.6938 24.2443 26.3895 23.9406 26.1979C23.7891 26.1022 23.6786 26.0336 23.6047 25.9889C23.5678 25.9666 23.5392 25.9506 23.5197 25.9391C23.5101 25.9334 23.5019 25.9287 23.4963 25.9254L23.4875 25.9195H23.4865V25.9186H23.4846L23.4817 25.9166C23.4787 25.915 23.4752 25.9136 23.4719 25.9117C23.465 25.9079 23.4571 25.9036 23.4485 25.899C23.431 25.8898 23.4095 25.8793 23.385 25.8678C23.3361 25.8448 23.2726 25.8172 23.1965 25.7906C23.0448 25.7378 22.8361 25.6839 22.5842 25.6695C22.1233 25.6434 21.569 25.751 21.009 26.1315L20.7697 26.3121H20.7688C20.3144 26.687 19.9139 27.0202 19.6272 27.2594C19.4839 27.3789 19.3685 27.4753 19.2893 27.5416C19.2497 27.5748 19.2193 27.6013 19.1985 27.6188C19.1957 27.6211 19.1921 27.6226 19.1897 27.6246C19.1848 27.6283 19.1801 27.6324 19.175 27.6363C19.1369 27.6658 19.0932 27.7022 19.0451 27.7467C18.9493 27.8353 18.8317 27.9597 18.6906 28.1334C18.4096 28.4796 18.0252 29.0384 17.5344 29.944C17.0644 30.8112 14.6098 35.2783 12.2707 39.5338C11.1018 41.6604 9.96264 43.7335 9.11545 45.274C8.69195 46.0442 8.3415 46.6818 8.0969 47.1266C7.97471 47.3487 7.87795 47.5226 7.81272 47.6412C7.78016 47.7004 7.7553 47.7464 7.7385 47.777C7.73029 47.7919 7.72418 47.8034 7.71994 47.8111C7.71782 47.815 7.71515 47.818 7.71409 47.8199V47.8229L7.71018 47.8278V47.8287L7.7092 47.8297C7.70851 47.831 7.70768 47.8339 7.70627 47.8365C7.70346 47.8417 7.69907 47.8499 7.69358 47.86C7.68241 47.8805 7.66499 47.9109 7.64377 47.9498C7.60109 48.0281 7.5394 48.1412 7.46311 48.2799C7.30998 48.5583 7.09864 48.9402 6.86643 49.3512C6.39329 50.1886 5.86171 51.0995 5.54807 51.5465C5.21247 52.0238 4.83791 52.5275 4.54612 52.9137C4.40081 53.106 4.2763 53.2686 4.18869 53.3824C4.1475 53.436 4.11442 53.4792 4.09104 53.5094C4.05712 53.5445 4.02224 53.5842 3.9885 53.6295C3.88554 53.7679 3.79795 53.9428 3.74631 54.1549C3.64444 54.5737 3.69172 55.0787 3.9094 55.6891C4.09715 56.2153 4.31625 56.7652 4.48557 57.1793C4.57051 57.3871 4.64314 57.5631 4.69553 57.6871C4.72174 57.7492 4.74352 57.7987 4.75803 57.8326C4.76511 57.8492 4.76979 57.8627 4.77366 57.8717C4.77551 57.876 4.77751 57.8801 4.77854 57.8824C4.779 57.8833 4.78014 57.8838 4.78049 57.8844V57.8854L5.62815 57.5192L4.78049 57.8863C4.79801 57.9268 4.81889 57.966 4.84202 58.0035L5.62815 57.5192L1.69748 59.943C1.63917 59.8484 1.58375 59.7515 1.53244 59.6529L1.38987 59.3522L1.38791 59.3502L1.38108 59.3317C1.37626 59.3205 1.36882 59.305 1.36057 59.2858C1.34409 59.2472 1.32066 59.1929 1.29221 59.1256C1.23529 58.9909 1.15598 58.8011 1.06467 58.5778C0.885669 58.1399 0.644383 57.5324 0.429906 56.9313C0.0645025 55.9071 -0.172389 54.632 0.156468 53.2809C0.324202 52.5919 0.622725 51.9624 1.02463 51.4225C1.09497 51.328 1.16818 51.2392 1.24143 51.1539C1.24747 51.1461 1.25446 51.138 1.26096 51.1295C1.34315 51.0227 1.46031 50.8692 1.59787 50.6871C1.87798 50.3164 2.22439 49.8499 2.52561 49.4215C2.71762 49.1472 3.16007 48.4011 3.65061 47.5328C3.87385 47.1377 4.0774 46.7694 4.2258 46.4996C4.29972 46.3652 4.35985 46.256 4.40061 46.1813C4.42084 46.1441 4.43624 46.1152 4.44651 46.0963C4.4515 46.0871 4.4558 46.0802 4.45823 46.0758C4.45937 46.0737 4.46066 46.0718 4.46116 46.0709V46.0699L4.47678 46.0426V46.0416L4.47873 46.0397C4.47977 46.0378 4.48069 46.0345 4.48264 46.0309C4.4869 46.0231 4.49386 46.0108 4.50217 45.9957C4.51898 45.9652 4.54399 45.9199 4.57639 45.861C4.64163 45.7423 4.73734 45.5676 4.85959 45.3453C5.1042 44.9006 5.45465 44.2629 5.87815 43.4928C6.72525 41.9524 7.86476 39.8807 9.03342 37.7545C11.377 33.4908 13.823 29.0381 14.2864 28.1832C14.8532 27.1373 15.3599 26.374 15.8225 25.8043C16.0567 25.5159 16.2934 25.2593 16.5373 25.0338C16.6367 24.9419 16.7396 24.8544 16.8449 24.7701C16.8643 24.7539 16.8894 24.7337 16.9182 24.7096C16.9991 24.6419 17.1157 24.5436 17.261 24.4225C17.5515 24.1801 17.9573 23.8428 18.4182 23.4625L18.4211 23.4596L18.6828 23.2545C20.0016 22.269 21.4653 21.9054 22.7951 21.9811ZM7.31174 57.9899L7.31272 57.9908C7.31423 57.9898 7.31846 57.986 7.32151 57.984C7.32752 57.98 7.33403 57.9763 7.34006 57.9723C7.35218 57.9642 7.36407 57.9551 7.37619 57.9469C7.40066 57.9303 7.42592 57.9135 7.45041 57.8961C7.49931 57.8614 7.54903 57.8254 7.59787 57.7877H7.59592C7.50388 57.8585 7.4091 57.926 7.31174 57.9899ZM111.599 55.8961C111.595 55.8955 111.59 55.8947 111.586 55.8942C111.576 55.8928 111.566 55.8915 111.556 55.8903C111.536 55.8877 111.517 55.8855 111.498 55.8834C111.484 55.8818 111.47 55.8799 111.456 55.8785C111.504 55.8837 111.552 55.8895 111.599 55.8961ZM103.373 15.5201C103.419 15.9892 103.532 16.5866 103.772 17.1715C104.238 18.3096 104.745 19.5958 105.134 20.5875C105.329 21.0852 105.497 21.5133 105.614 21.817C105.673 21.9687 105.72 22.0901 105.752 22.1735C105.763 22.2024 105.773 22.2271 105.78 22.2467L105.849 22.4176C105.899 22.5432 105.968 22.7195 106.051 22.9361C106.216 23.3681 106.438 23.9717 106.669 24.6666C107.099 25.9603 107.683 27.9272 107.852 29.733L108.027 31.7115C108.081 32.366 108.131 32.9966 108.173 33.5436C108.215 34.0926 108.25 34.5631 108.275 34.8961C108.287 35.0622 108.296 35.1946 108.303 35.2858C108.306 35.3313 108.309 35.3671 108.311 35.3912C108.312 35.4042 108.313 35.4176 108.314 35.4313C108.318 35.4881 108.322 35.5514 108.324 35.6197C108.33 35.7566 108.331 35.9202 108.323 36.1031C108.308 36.4628 108.257 36.9384 108.114 37.4772C107.839 38.5186 107.197 39.8526 105.845 40.8863L105.566 41.0885C103.981 42.1731 101.457 43.1926 98.1008 43.0651L97.7727 43.0485C96.5459 42.9755 89.4508 42.5311 82.6799 42.1051C79.2904 41.8919 75.9761 41.6834 73.51 41.5279C72.277 41.4502 71.2551 41.3844 70.5422 41.3395C70.1861 41.317 69.9062 41.2997 69.716 41.2877C69.6367 41.2827 69.573 41.278 69.5256 41.275C69.4957 41.2743 69.4635 41.2743 69.4299 41.2731C69.2713 41.2673 69.0705 41.2565 68.8332 41.235C68.3588 41.192 67.7317 41.1079 66.9875 40.9459C65.4974 40.6216 63.5301 39.9823 61.3752 38.7311C59.6673 37.7394 54.6583 34.7795 50.1018 32.0826C47.8178 30.7308 45.6389 29.4404 44.0315 28.4879C43.9951 28.4664 43.9588 28.4447 43.9231 28.4235C43.6946 28.7414 43.4629 29.0645 43.2395 29.3766C42.8405 29.9337 42.4731 30.4467 42.2063 30.8209C42.0729 31.0079 41.9648 31.161 41.8899 31.2662C41.856 31.3138 41.8282 31.3513 41.8088 31.3785C41.7993 31.3927 41.7881 31.4111 41.7746 31.4313C41.729 31.4996 41.6613 31.6003 41.5783 31.7262C41.4115 31.9794 41.1835 32.3295 40.9377 32.7164C40.4029 33.5581 39.9309 34.3462 39.7346 34.7506L39.7356 34.7516C39.5804 35.0718 39.4178 35.4038 39.2619 35.7242C40.4801 36.6859 43.2143 38.8881 45.7326 40.9254C47.2372 42.1426 48.6994 43.328 49.7854 44.2086C50.3283 44.6488 50.7777 45.0139 51.091 45.2682C51.2258 45.3775 51.336 45.4669 51.4172 45.5328C51.4318 45.5423 51.4484 45.5529 51.466 45.5641C51.5909 45.6432 51.7742 45.753 51.9875 45.8658C52.205 45.9808 52.4172 46.0791 52.6037 46.149C52.8019 46.2233 52.8811 46.2323 52.8489 46.2281L53.509 46.3014C53.9304 46.3409 54.3085 46.3631 54.6086 46.3756L54.9963 46.3873L55.01 46.3883L59.9651 46.693C68.7077 47.2403 86.0809 48.3416 87.5022 48.441H87.5012C89.3053 48.5668 90.9118 49.4719 91.9211 50.9596C92.8013 52.2572 92.9962 53.6444 93.0051 54.608V54.7233L93.0041 54.8082L105.325 55.4879L105.361 55.4908L109.808 55.7692C110.444 54.7901 111.228 53.5866 111.741 52.8014L106.784 16.4528C106.27 16.4119 105.743 16.336 105.238 16.2057C104.58 16.0364 103.945 15.7688 103.369 15.4713C103.371 15.4871 103.372 15.5038 103.373 15.5201ZM5.38987 54.8209C5.37449 54.835 5.35739 54.8485 5.34006 54.8619C5.33147 54.8686 5.32276 54.876 5.31369 54.8824C5.3091 54.8857 5.30377 54.889 5.29905 54.8922C5.29668 54.8938 5.29363 54.8955 5.29123 54.8971C5.29024 54.8977 5.28931 54.8984 5.2883 54.899L5.28635 54.901L5.28537 54.9C5.32372 54.8749 5.35968 54.8464 5.39377 54.816C5.39239 54.8173 5.39127 54.8196 5.38987 54.8209ZM92.3274 54.7955C92.3181 54.7959 92.3075 54.7959 92.2961 54.7965C92.3119 54.7956 92.3281 54.7972 92.344 54.7965C92.3424 54.7959 92.3406 54.7951 92.3391 54.7945C92.3354 54.7947 92.3314 54.7953 92.3274 54.7955ZM48.0891 49.9694C48.1041 49.9815 48.1202 49.9933 48.136 50.0045L45.9973 53.0172C45.9166 52.9599 45.8369 52.9009 45.76 52.8385L48.0891 49.9694ZM36.3547 39.7828L38.6028 40.6129L38.6145 40.5826C38.6116 40.5906 38.6086 40.599 38.6057 40.607C38.605 40.609 38.6035 40.6119 38.6028 40.6139L36.3537 39.7828H36.3547ZM98.7356 14.6832C97.8977 14.6234 97.8215 14.619 97.8147 14.6188V14.6197L97.8137 14.6227C97.8136 14.6248 97.8138 14.6275 97.8137 14.6305C97.8133 14.6368 97.8123 14.6458 97.8117 14.6559C97.8106 14.6765 97.8091 14.7054 97.8078 14.7408C97.8052 14.8118 97.8026 14.9118 97.803 15.0367C97.8036 15.2865 97.8158 15.6387 97.8576 16.0631C97.941 16.9088 98.1461 18.0612 98.6418 19.2721C99.0923 20.3723 99.5898 21.6277 99.9748 22.61C100.167 23.1006 100.331 23.5229 100.447 23.8219C100.505 23.9711 100.551 24.0902 100.582 24.1715C100.598 24.2119 100.61 24.2432 100.618 24.2643C100.622 24.2746 100.625 24.2833 100.627 24.2887C100.628 24.2912 100.63 24.2933 100.63 24.2945V24.2965H100.631L100.64 24.318V24.319C100.64 24.3203 100.642 24.3228 100.643 24.3258C100.645 24.332 100.649 24.3424 100.655 24.3551C100.665 24.3809 100.68 24.4198 100.7 24.4703C100.741 24.5722 100.801 24.722 100.872 24.9098C101.016 25.2857 101.209 25.8131 101.409 26.4156C101.817 27.6404 102.228 29.1067 102.334 30.2486V30.2496L102.503 32.1705C102.556 32.8097 102.606 33.4291 102.648 33.9703C102.689 34.5107 102.723 34.9732 102.747 35.3004C102.759 35.4639 102.769 35.5944 102.776 35.6832C102.779 35.7273 102.781 35.7618 102.782 35.7848C102.783 35.7959 102.784 35.8044 102.784 35.8102V35.8199L102.785 35.8317V35.8717C102.784 35.9167 102.776 35.9851 102.756 36.0621C102.722 36.1914 102.655 36.337 102.505 36.4625L102.436 36.5153C101.789 36.9576 100.491 37.567 98.5071 37.5328L98.1018 37.5162C96.8878 37.444 89.8075 37.0004 83.0276 36.5738C79.6384 36.3606 76.3246 36.1521 73.8586 35.9967C72.6259 35.919 71.6047 35.8532 70.8918 35.8082C70.5356 35.7858 70.2559 35.7694 70.0656 35.7574C69.9705 35.7514 69.8969 35.7459 69.8479 35.7428C69.8239 35.7413 69.8056 35.7406 69.7932 35.7399C69.787 35.7395 69.7817 35.7391 69.7785 35.7389C69.777 35.7388 69.7754 35.738 69.7746 35.7379H69.7737L69.7033 35.7369H69.6955C69.683 35.7368 69.6604 35.7361 69.6291 35.735C69.5662 35.7327 69.466 35.7274 69.3332 35.7154C69.0669 35.6913 68.6675 35.64 68.1662 35.5309C67.1638 35.3127 65.7501 34.8638 64.1574 33.9391C62.4749 32.9621 57.4919 30.0167 52.924 27.3131C50.6412 25.962 48.4635 24.6715 46.8567 23.7194C46.0534 23.2434 45.3916 22.8523 44.9319 22.5797C44.7022 22.4435 44.5228 22.3367 44.4006 22.2643C44.3396 22.2281 44.2924 22.2009 44.261 22.1822C44.259 22.1811 44.2569 22.1794 44.2551 22.1783C44.2462 22.1719 44.2368 22.1648 44.2268 22.1578C44.17 22.1184 44.0934 22.0692 43.9992 22.0211C43.8128 21.9259 43.5395 21.8222 43.2014 21.7994C42.4542 21.7493 41.6753 22.1056 41.0051 23.0094C40.4735 23.7263 39.5342 25.0306 38.7326 26.15C38.331 26.7109 37.9628 27.2279 37.6946 27.6041C37.5604 27.7922 37.4508 27.9453 37.3752 28.0514C37.3375 28.1043 37.3082 28.1464 37.2883 28.1744L37.259 28.2135L37.258 28.2154V28.2164C37.2537 28.2226 37.2486 28.2287 37.2444 28.235L37.9074 28.6822C37.294 28.269 37.2478 28.2382 37.2444 28.236H37.2434L37.2424 28.2379C37.2415 28.2393 37.2403 28.2421 37.2385 28.2447C37.2349 28.2501 37.2295 28.2583 37.2229 28.2682C37.2093 28.2884 37.1893 28.3175 37.1643 28.3551C37.1135 28.4311 37.0408 28.5416 36.9514 28.6774C36.7725 28.9488 36.5264 29.3254 36.26 29.7447C35.8012 30.4667 35.2576 31.3517 34.8928 32.0485L34.7483 32.3336C34.261 33.3391 33.7111 34.4648 33.4651 34.9694C33.4118 35.0775 33.3333 35.1476 33.259 35.1813C33.2478 35.1705 33.2313 35.1567 33.2141 35.1354H33.2131C32.8189 34.6472 31.7997 33.4631 30.8938 32.4176C30.4376 31.8911 30.005 31.3942 29.6867 31.0289C29.5277 30.8464 29.3968 30.6956 29.3059 30.5914C29.2607 30.5396 29.2245 30.4989 29.2004 30.4713C29.1886 30.4577 29.1793 30.4471 29.1731 30.4401C29.17 30.4365 29.1668 30.4331 29.1653 30.4313L29.1643 30.4303V30.4293L29.1633 30.4283L31.9455 27.9977H31.9465C31.9469 27.9981 31.9477 27.9997 31.9485 28.0006C31.9501 28.0025 31.9533 28.005 31.9563 28.0084C31.9626 28.0157 31.9715 28.0268 31.9836 28.0406C32.008 28.0685 32.0436 28.1096 32.0891 28.1617C32.1806 28.2666 32.3129 28.4176 32.4729 28.6012C32.5007 28.6332 32.5293 28.6669 32.5588 28.7008C32.7663 28.3605 32.9665 28.0382 33.1418 27.7623C33.4219 27.3215 33.6796 26.9277 33.8664 26.6442C33.9601 26.502 34.0369 26.3865 34.091 26.3053C34.1181 26.2647 34.1394 26.2322 34.1545 26.2096C34.162 26.1985 34.1678 26.1896 34.1721 26.1832L34.1789 26.1725H34.1799V26.1715L34.2473 26.0748L34.2483 26.0738L34.2492 26.0719C34.2506 26.0699 34.2527 26.0665 34.2551 26.0631C34.2602 26.0559 34.2679 26.0455 34.2776 26.0319C34.2977 26.0035 34.3284 25.9612 34.3664 25.9078C34.4424 25.8012 34.5522 25.6473 34.6867 25.4586C34.956 25.081 35.3254 24.562 35.7287 23.9986C36.5269 22.884 37.4843 21.5541 38.0373 20.8082L38.2785 20.4986C39.5225 18.9862 41.3247 17.9702 43.4494 18.1129C44.4057 18.1772 45.1672 18.4691 45.6799 18.7311C45.8784 18.8325 46.0508 18.9385 46.1985 19.0348C46.2229 19.0493 46.2523 19.066 46.2854 19.0856C46.4075 19.158 46.5868 19.2657 46.8166 19.402C47.2763 19.6745 47.9374 20.0657 48.7405 20.5416C50.3468 21.4936 52.524 22.7829 54.8059 24.1334C59.3816 26.8416 64.3486 29.7768 66.0139 30.7438C67.2315 31.4507 68.275 31.7731 68.9524 31.9205C69.2917 31.9944 69.5387 32.0242 69.6662 32.0358C69.7249 32.0411 69.758 32.0424 69.7619 32.0426C69.76 32.0425 69.7505 32.0418 69.7346 32.0416H69.6672C69.6651 32.0416 69.6625 32.0426 69.6604 32.0426H69.6565C69.7731 32.0411 69.8906 32.0431 70.0071 32.0504H70.008C70.0087 32.0505 70.0097 32.0512 70.011 32.0514C70.0141 32.0516 70.0195 32.052 70.0256 32.0524C70.038 32.0531 70.0571 32.0547 70.0813 32.0563C70.1303 32.0594 70.2033 32.064 70.2981 32.0699C70.4883 32.0819 70.768 32.0983 71.1242 32.1207C71.8371 32.1657 72.8583 32.2315 74.091 32.3092C76.5569 32.4646 79.8701 32.6731 83.259 32.8863C90.0451 33.3133 97.1164 33.7571 98.3215 33.8287L98.5637 33.8375C98.6928 33.8399 98.8147 33.8365 98.9289 33.8307C98.8955 33.405 98.8605 32.9458 98.8215 32.4772L98.6565 30.5944L98.6555 30.5914C98.5904 29.8924 98.2954 28.7602 97.9035 27.5817C97.7236 27.0405 97.5492 26.5639 97.4201 26.2252C97.3561 26.0573 97.3041 25.9255 97.2697 25.8395C97.2527 25.7967 97.2393 25.7654 97.2317 25.7467C97.2279 25.7374 97.226 25.7299 97.2248 25.7272H97.2239L97.1828 25.6246V25.6227C97.1823 25.6215 97.1808 25.62 97.1799 25.6178C97.178 25.6128 97.175 25.6045 97.1711 25.5944C97.1632 25.5739 97.1513 25.5423 97.136 25.5026C97.1051 25.4227 97.0602 25.3059 97.0031 25.1588C96.8884 24.863 96.7259 24.4446 96.5354 23.9586C96.1528 22.9827 95.663 21.7465 95.2229 20.6715C94.5566 19.0439 94.288 17.523 94.1799 16.4264C94.1251 15.8699 94.1096 15.3979 94.1086 15.0465C94.1081 14.8705 94.1122 14.7222 94.1164 14.6061C94.1185 14.5483 94.12 14.4975 94.1223 14.4557C94.1234 14.4349 94.1251 14.4157 94.1262 14.399C94.1267 14.3906 94.1277 14.382 94.1281 14.3746C94.1284 14.3713 94.1279 14.368 94.1281 14.3649C94.1283 14.3632 94.129 14.3606 94.1291 14.359V14.357L98.7356 14.6832ZM99.1008 36.0983C99.1024 36.1197 99.1047 36.1417 99.1067 36.1637C99.1076 36.1746 99.1076 36.1868 99.1086 36.1979C99.1091 36.2031 99.11 36.2083 99.1106 36.2135C99.1108 36.2162 99.1113 36.2195 99.1115 36.2223L99.1125 36.2262C99.1075 36.1774 99.1033 36.1286 99.0998 36.0797L99.1008 36.0983ZM22.1926 32.277C22.1935 32.2779 22.1934 32.2781 22.1936 32.2779C22.1949 32.2771 22.1975 32.2753 22.1994 32.274L22.2405 32.2496C22.2579 32.2385 22.2745 32.2264 22.2912 32.2154C22.3249 32.1934 22.3579 32.1715 22.3889 32.15C22.4056 32.1384 22.4208 32.1253 22.4367 32.1139C22.357 32.1706 22.2759 32.2254 22.1926 32.277ZM22.509 32.0621C22.5257 32.0497 22.5431 32.0381 22.5588 32.026C22.5778 32.0113 22.5949 31.9952 22.6125 31.9811H22.6115C22.5773 32.008 22.544 32.0362 22.509 32.0621ZM94.7326 8.87951C95.2792 5.60709 98.07 2.52454 101.945 3.06115L102.201 3.10119C104.638 3.53222 106.055 5.14525 106.794 6.2633L106.938 6.48791L106.939 6.48986L107.21 6.93908C107.233 6.97871 107.255 7.02031 107.279 7.06115C107.296 7.0742 107.316 7.08801 107.336 7.10216C107.388 7.13798 107.443 7.17376 107.497 7.20568C107.527 7.22348 107.556 7.23887 107.581 7.25255C107.661 7.25642 107.771 7.25927 107.91 7.25548C108.278 7.24548 108.69 7.20415 109.162 7.15099L109.436 7.12658C112.229 6.93762 113.899 8.7712 114.525 9.71056C114.868 10.2253 115.08 10.7067 115.204 11.0289C115.27 11.1989 115.319 11.3495 115.357 11.4703C115.375 11.5313 115.392 11.5863 115.405 11.6344C115.412 11.6584 115.419 11.681 115.424 11.7018C115.427 11.7121 115.429 11.7225 115.432 11.732C115.433 11.7368 115.435 11.7422 115.436 11.7467C115.436 11.7486 115.436 11.7507 115.437 11.7526C115.437 11.7537 115.438 11.7559 115.438 11.7565C115.432 11.7595 115.277 11.7996 111.309 12.7955L110.958 12.8834C111.795 12.6735 111.851 12.6591 111.855 12.6578V12.6559L111.851 12.6451C111.849 12.6391 111.847 12.6302 111.845 12.6217C111.84 12.6049 111.834 12.5835 111.826 12.5582C111.811 12.507 111.788 12.4381 111.757 12.358C111.697 12.2011 111.598 11.982 111.449 11.7594C111.161 11.3261 110.553 10.7138 109.574 10.8238C108.567 10.9372 107.395 11.0382 106.619 10.8385C106.275 10.7498 105.75 10.496 105.242 10.1471C104.783 9.83102 104.462 9.5219 104.315 9.3131L104.263 9.23009L104.261 9.22814L104.024 8.81017L103.798 8.43713L103.797 8.43615C103.354 7.72299 102.699 6.98309 101.653 6.75939L101.438 6.7213C100.055 6.52964 98.6763 7.6599 98.3791 9.46642L98.3528 9.64416C98.1709 11.1381 98.0364 12.376 97.9475 13.2408C97.903 13.6732 97.8709 14.0131 97.8489 14.2447C97.8379 14.3602 97.829 14.4493 97.8235 14.5094C97.8207 14.5392 97.819 14.5623 97.8176 14.5778C97.8169 14.5852 97.816 14.5913 97.8156 14.5953C97.8155 14.5973 97.8148 14.5992 97.8147 14.6002V14.6168L94.1291 14.3551C94.131 14.3292 94.1327 14.3019 94.135 14.276V14.274C94.1351 14.2725 94.1357 14.2697 94.136 14.2672C94.1364 14.2622 94.1371 14.2553 94.1379 14.2467C94.1395 14.2292 94.1418 14.2036 94.1447 14.1715C94.1506 14.1073 94.1588 14.0146 94.1701 13.8951C94.193 13.6547 94.2272 13.3052 94.2727 12.8629C94.3636 11.9786 94.5007 10.7178 94.6858 9.19787L94.6867 9.19591L94.7326 8.87951ZM110.959 12.8834C111.079 12.8534 111.195 12.824 111.309 12.7955L111.855 12.6588L110.959 12.8834ZM100.83 11.0992H100.831L100.955 10.1988H100.954L100.83 11.0992Z" fill="currentColor"/> </g> <defs> <clipPath id="clip0_3392_36847"> <rect width="121" height="85" fill="white"/> </clipPath> </defs> </svg>
+        <figcaption class="lbl"><span>Marina Bay</span><span>R19</span></figcaption>
+      </figure>
+
+      <div class="res__pod">
+        <div class="pod">
+          <span class="n">2</span>
+          <span class="who"><b>Leclerc</b><span class="lbl"><span class="sq" style="--c:#FF0019"></span>Ferrari · from P2</span></span>
+          <span class="gap">+7.335s<br><span class="fl lbl">Fastest lap</span></span>
+        </div>
+        <div class="pod">
+          <span class="n">3</span>
+          <span class="who"><b>Antonelli</b><span class="lbl"><span class="sq" style="--c:#2BFFDB"></span>Mercedes · from P4</span></span>
+          <span class="gap">+24.573s</span>
+        </div>
+      </div>
+
+      <div class="res__rest">
+        <div class="hd"><h2 class="lbl" style="margin:0">Positions 4–10</h2><a class="lbl" href="../../results.html">Full classification <span class="arrow">→</span></a></div>
+        <table class="tbl">
+          <thead class="lbl"><tr><th>Pos</th><th>Driver</th><th class="hide-m">Team</th><th class="r">Gap</th><th class="r hide-m">Grid</th><th class="r">+/−</th></tr></thead>
+          <tbody data-rest></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="band">
+    <div class="wrap band__in">
+      <span class="band__k lbl">Next race</span>
+      <span class="band__v">United States GP</span>
+      <span class="band__v num" data-days-to-race>—</span>
+      <span class="band__rule" aria-hidden="true"></span>
+      <a class="btn btn--ink" href="../../results.html">All results <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     01 — CALENDAR (season poster)
+     ===================================================================== -->
+<section class="sec sec--cal" id="calendar" aria-labelledby="cal-title">
+  <div class="wrap">
+    <header class="sec-head g12">
+      <p class="sec-no lbl">01 — Calendar</p>
+      <h2 class="sec-title cond" id="cal-title">Season<br>2026</h2>
+      <div class="sec-meta">
+        <div class="stats lbl">
+          <div><b>17</b><span>Raced</span></div>
+          <div><b>02</b><span>Cancelled</span></div>
+          <div><b class="is-red">06</b><span>To go</span></div>
+        </div>
+      </div>
+    </header>
+    <div class="prog" data-prog aria-hidden="true"></div>
+    <div class="prog-k lbl"><span>R1 · Melbourne · March</span><span>R25 · Abu Dhabi · December</span></div>
+    <ol class="cal" data-cal></ol>
+    <div class="cal-foot lbl"><span>Sprint = sprint weekend · Dates in your local time</span><a href="../../archive.html" style="text-decoration:none">Seasons archive 1990–2025 →</a></div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     02 — CHAMPIONSHIP
+     ===================================================================== -->
+<section class="sec sec--champ" id="standings" aria-labelledby="ch-title">
+  <div class="wrap">
+    <header class="sec-head g12">
+      <p class="sec-no lbl">02 — Championship</p>
+      <h2 class="sec-title cond" id="ch-title">Stand&shy;ings</h2>
+      <div class="sec-meta"><p>After Round 19 of 25. <b>Antonelli leads by 102 points</b> with six rounds to go; Mercedes are 134 clear in the constructors’.</p></div>
+    </header>
+    <div class="boards g12">
+      <div class="board" data-board="drivers"></div>
+      <div class="board" data-board="teams"></div>
+    </div>
+    <div class="champ-foot">
+      <a class="btn btn--red" href="../../championship.html">Full standings <span class="arrow">→</span></a>
+      <a class="btn btn--line" href="../../drivers.html">Drivers</a>
+      <a class="btn btn--line" href="../../teams.html">Teams</a>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     03 — INDEX
+     ===================================================================== -->
+<section class="sec sec--idx" aria-labelledby="idx-title">
+  <div class="wrap">
+    <header class="sec-head g12">
+      <p class="sec-no lbl">03 — Explore</p>
+      <h2 class="sec-title cond" id="idx-title">Index</h2>
+      <div class="sec-meta"><p>Everything on F1 Hub — live timing, results and profiles back to 1990.</p></div>
+    </header>
+    <ul class="idx">
+      <li><a href="../../results.html"><span class="lbl">01</span><span class="t">Results</span><span class="d">Race, sprint and qualifying classifications, round by round.</span><span class="arrow">→</span></a></li>
+      <li><a href="../../live.html"><span class="lbl">02</span><span class="t">Live timing</span><span class="d">Positions, gaps, sectors and tyres from F1’s official feed.</span><span class="arrow">→</span></a></li>
+      <li><a href="../../drivers.html"><span class="lbl">03</span><span class="t">Drivers</span><span class="d">Profiles, numbers and career records of the 2026 grid.</span><span class="arrow">→</span></a></li>
+      <li><a href="../../teams.html"><span class="lbl">04</span><span class="t">Teams</span><span class="d">Eleven constructors — cars, line-ups and history.</span><span class="arrow">→</span></a></li>
+      <li><a href="../../championship.html"><span class="lbl">05</span><span class="t">Championship</span><span class="d">Drivers’ and constructors’ standings after every round.</span><span class="arrow">→</span></a></li>
+      <li><a href="../../archive.html"><span class="lbl">06</span><span class="t">Archive</span><span class="d">Every season since 1990, every Grand Prix page.</span><span class="arrow">→</span></a></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<!-- =====================================================================
+     FOOTER (site-wide)
+     ===================================================================== -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__top g12">
+      <div class="foot__about">
+        <p class="tag">Every Grand Prix in one place… Made by a fan, for fans.</p>
+        <p class="tz lbl">All times shown in <b data-tz></b></p>
+      </div>
+      <nav class="foot__nav lbl" aria-label="Footer">
+        <div><h4 class="lbl">Season</h4><ul>
+          <li><a href="#calendar">Calendar</a></li>
+          <li><a href="../../championship.html">Championship</a></li>
+          <li><a href="../../results.html">Results</a></li>
+          <li><a href="../../live.html">Live Timing</a></li></ul></div>
+        <div><h4 class="lbl">The Grid</h4><ul>
+          <li><a href="../../drivers.html">Drivers</a></li>
+          <li><a href="../../teams.html">Teams</a></li></ul></div>
+        <div><h4 class="lbl">History</h4><ul>
+          <li><span class="soon">Memorabilia<i>Soon</i></span></li></ul></div>
+        <div><h4 class="lbl">Resources</h4><ul>
+          <li><a href="https://www.formula1.com" target="_blank" rel="noopener noreferrer">Formula 1 ↗</a></li>
+          <li><a href="https://www.fia.com" target="_blank" rel="noopener noreferrer">FIA ↗</a></li>
+          <li><a href="https://openf1.org" target="_blank" rel="noopener noreferrer">OpenF1 ↗</a></li></ul></div>
+      </nav>
+    </div>
+
+    <p class="foot__mark" aria-hidden="true">F1 <span>Hub</span></p>
+
+    <p class="foot__legal">Unofficial fan project. F1 Hub is not associated in any way with the Formula 1 companies, the FIA or any team. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trademarks of Formula One Licensing B.V.</p>
+
+    <div class="foot__bot">
+      <span class="cr">© 2026 F1 Hub · Designed &amp; built by Benicio Pacheco</span>
+      <span class="foot__social lbl">
+        <a href="https://github.com/benipach" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+        <a href="https://linkedin.com/in/benicio-pacheco" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+        <a href="https://benipach.dev" target="_blank" rel="noopener noreferrer">Portfolio ↗</a>
+      </span>
+      <a class="top lbl" href="#top">Back to top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Mockup-only: hero state switcher (also ?state=upcoming|live|result) -->
+<div class="switch" role="group" aria-label="Hero state (mockup)">
+  <span class="k lbl">Hero</span>
+  <button type="button" data-set="upcoming" aria-pressed="true">Upcoming</button>
+  <button type="button" data-set="live" aria-pressed="false">Live</button>
+  <button type="button" data-set="result" aria-pressed="false">Result</button>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const pad = n => String(n).padStart(2, '0');
+  const setText = (el, t) => { if (el && el.textContent !== t) el.textContent = t; };
+  const TZ = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'your local time'; } catch { return 'your local time'; } })();
+  $$('[data-tz]').forEach(el => el.textContent = TZ.replace(/_/g, ' '));
+
+  /* ---------------- data ---------------- */
+  const TEAM = {
+    'Mercedes': '#2BFFDB', 'Ferrari': '#FF0019', 'McLaren': '#FF7F00', 'Red Bull': '#22477A',
+    'Racing Bulls': '#667DFF', 'Alpine': '#006FBA', 'Aston Martin': '#229971', 'Haas': '#DEE1E2',
+    'Williams': '#1C7AFF', 'Audi': '#FF2E2E', 'Cadillac': '#AAAAAD'
+  };
+  const DRIVER_TEAM = { Russell: 'Mercedes', Antonelli: 'Mercedes', Hamilton: 'Ferrari', Leclerc: 'Ferrari',
+    Norris: 'McLaren', Piastri: 'McLaren', Verstappen: 'Red Bull', Hadjar: 'Red Bull', Lawson: 'Racing Bulls', Gasly: 'Alpine' };
+
+  // Weekend in the user's local time (Fri 23 – Sun 25 Oct).
+  const WEEKEND = [
+    { k: 'fp1', name: 'Practice 1', d: new Date(2026, 9, 23, 14, 30) },
+    { k: 'fp2', name: 'Practice 2', d: new Date(2026, 9, 23, 18, 30) },
+    { k: 'fp3', name: 'Practice 3', d: new Date(2026, 9, 24, 15, 0) },
+    { k: 'q',   name: 'Qualifying', d: new Date(2026, 9, 24, 19, 0) },
+    { k: 'r',   name: 'Race',       d: new Date(2026, 9, 25, 16, 0) },
+  ];
+  // Mockup safety net: if the real weekend has already started, shift it forward so the countdown keeps ticking.
+  if (Date.now() > WEEKEND[0].d.getTime()) {
+    const off = Date.now() + (10 * 864e5 + 22 * 36e5 + 14 * 6e4) - WEEKEND[0].d.getTime();
+    WEEKEND.forEach(s => s.d = new Date(s.d.getTime() + off));
+  }
+  const RACE = WEEKEND[WEEKEND.length - 1];
+
+  const fmtDay = d => d.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' }).replace(',', '');
+  const fmtTime = d => d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+  const ROUNDS = [
+    [1, 'Australia', 'Melbourne', '05–08 Mar', 'albert-park-circuit-layout.svg', 'australian-gp', 'Russell'],
+    [2, 'China', 'Shanghai', '13–15 Mar', 'shanghai-international-circuit-layout.svg', 'chinese-gp', 'Antonelli', 1],
+    [3, 'Japan', 'Suzuka', '26–29 Mar', 'suzuka-international-racing-course-layout.svg', 'japanese-gp', 'Antonelli'],
+    [4, 'Bahrain', 'Sakhir', 'April', 'bahrain-internatinal-circuit-layout.svg', 'bahrain-gp', 'X'],
+    [5, 'Saudi Arabia', 'Jeddah', 'April', 'jeddah-corniche-circuit-layout.svg', 'saudi-arabian-gp', 'X'],
+    [6, 'Miami', 'Miami Gardens', '01–03 May', 'miami-international-autodrome-layout.svg', 'miami-gp', 'Antonelli', 1],
+    [7, 'Canada', 'Montréal', '22–24 May', 'circuit-gilles-villeneuve-layout.svg', 'canadian-gp', 'Antonelli', 1],
+    [8, 'Monaco', 'Monte Carlo', '05–07 Jun', 'circuit-de-monaco-layout.svg', 'monaco-gp', 'Antonelli'],
+    [9, 'Barcelona', 'Catalunya', '12–14 Jun', 'circuit-de-barcelona-catalunya-layout.svg', 'barcelona-gp', 'Hamilton'],
+    [10, 'Austria', 'Spielberg', '26–28 Jun', 'red-bull-ring-layout.svg', 'austrian-gp', 'Russell'],
+    [11, 'Britain', 'Silverstone', '03–05 Jul', 'silverstone-circuit-layout.svg', 'british-gp', 'Leclerc', 1],
+    [12, 'Belgium', 'Spa', '17–19 Jul', 'circuit-de-spa-francorchamps-layout.svg', 'belgian-gp', 'Antonelli'],
+    [13, 'Hungary', 'Budapest', '24–26 Jul', 'hungaroring-layout.svg', 'hungarian-gp', 'Norris'],
+    [14, 'Netherlands', 'Zandvoort', '21–23 Aug', 'circuit-zandvoort-layout.svg', 'dutch-gp', 'Norris', 1],
+    [15, 'Italy', 'Monza', '04–06 Sep', 'autodromo-nazionale-di-monza-layout.svg', 'italian-gp', 'Antonelli'],
+    [16, 'Spain', 'Madrid', '11–13 Sep', 'madring.svg', 'spanish-gp', 'Antonelli'],
+    [17, 'Azerbaijan', 'Baku', '24–26 Sep', 'baku-city-circuit-layout.svg', 'azerbaijan-gp', 'Russell'],
+    [18, 'Bahrain GP', 'In Malaysia · Sepang', '02–04 Oct', 'sepang-international-circuit-layout.svg', 'bahrain-gp-in-malaysia', 'Verstappen'],
+    [19, 'Singapore', 'Marina Bay', '09–11 Oct', 'marina-bay-street-circuit-layout.svg', 'singapore-gp', 'Verstappen', 1],
+    [20, 'United States', 'Austin', '23–25 Oct', 'cota-layout.svg', 'united-states-gp', 'NEXT'],
+    [21, 'Mexico', 'Mexico City', '30 Oct–01 Nov', 'hermanos-rodriguez-layout.svg', 'mexican-gp'],
+    [22, 'Brazil', 'São Paulo', '06–08 Nov', 'autodromo-jose-carlos-pace-layout.svg', 'brazilian-gp'],
+    [23, 'Las Vegas', 'Las Vegas', '20–22 Nov', 'las-vegas-strip-circuit-layout.svg', 'las-vegas-gp'],
+    [24, 'Qatar', 'Lusail', '27–29 Nov', 'lusail-international-circuit-layout.svg', 'qatar-gp'],
+    [25, 'Abu Dhabi', 'Yas Marina', '04–06 Dec', 'yas-marina-circuit-layout.svg', 'abu-dhabi-gp'],
+  ];
+
+  const DRIVERS = [['Kimi', 'Antonelli', 340], ['George', 'Russell', 238], ['Lewis', 'Hamilton', 229], ['Max', 'Verstappen', 221],
+    ['Charles', 'Leclerc', 215], ['Lando', 'Norris', 201], ['Oscar', 'Piastri', 136], ['Isack', 'Hadjar', 94], ['Liam', 'Lawson', 73], ['Pierre', 'Gasly', 50]];
+  const TEAMS = [['Mercedes', 578], ['Ferrari', 444], ['McLaren', 337], ['Red Bull', 329], ['Racing Bulls', 96], ['Alpine', 77],
+    ['Haas', 30], ['Audi', 23], ['Williams', 12], ['Aston Martin', 7], ['Cadillac', 0]];
+
+  const REST = [[4, 'Lando', 'Norris', 'McLaren', '+40.506s', 5], [5, 'Oscar', 'Piastri', 'McLaren', '+49.644s', 6],
+    [6, 'Lewis', 'Hamilton', 'Ferrari', '+53.188s', 3], [7, 'Liam', 'Lawson', 'Racing Bulls', '+81.666s', 8],
+    [8, 'Nico', 'Hülkenberg', 'Audi', '+83.386s', 10], [9, 'George', 'Russell', 'Mercedes', '+84.677s', 19],
+    [10, 'Isack', 'Hadjar', 'Red Bull', '+90.862s', 22]];
+
+  const sq = (team, extra = '') => `<span class="sq" style="--c:${TEAM[team]};${extra}"></span>`;
+  const sqInk = team => sq(team, 'box-shadow:0 0 0 1px rgba(239,234,224,.55)');
+
+  /* ---------------- static renders ---------------- */
+  // Weekend timetable
+  $('[data-sched]').innerHTML = WEEKEND.map(s => `
+    <li data-k="${s.k}" class="${s.k === 'r' ? 'is-race' : ''}">
+      <span class="day lbl">${fmtDay(s.d).replace(/ \w+$/, '')}</span>
+      <span class="nm">${s.name}</span>
+      <span class="tm">${fmtTime(s.d)}</span>
+    </li>`).join('');
+  $$('[data-race-when]').forEach(el => el.textContent = `${fmtDay(RACE.d)} · ${fmtTime(RACE.d)}`);
+  const f = WEEKEND[0].d, l = RACE.d;
+  setText($('[data-weekend-range]'), `${pad(f.getDate())}–${pad(l.getDate())} ${l.toLocaleDateString('en-GB', { month: 'short' })} ${l.getFullYear()}`);
+
+  // Result P4–P10
+  $('[data-rest]').innerHTML = REST.map(([p, fn, ln, team, gap, grid]) => {
+    const dlt = grid - p;
+    const dl = dlt > 0 ? `<span class="up-t">▲ ${dlt}</span>` : dlt < 0 ? `<span class="dn-t">▼ ${-dlt}</span>` : `<span class="eq-t">—</span>`;
+    return `<tr>
+      <td class="p">${p}</td>
+      <td class="d"><span>${fn}</span>${ln}<span class="t-m">${sqInk(team)}${team}</span></td>
+      <td class="hide-m"><span class="t">${sqInk(team)}${team}</span></td>
+      <td class="g r">${gap}</td>
+      <td class="gr r hide-m">P${grid}</td>
+      <td class="dl r">${dl}</td></tr>`;
+  }).join('');
+
+  // Progress bar
+  $('[data-prog]').innerHTML = ROUNDS.map(r => {
+    const c = r[6] === 'X' ? 'x' : r[6] === 'NEXT' ? 'n' : r[6] ? '' : 'u';
+    return `<i class="${c}" title="R${r[0]}"></i>`;
+  }).join('');
+
+  // Standings
+  const maxD = DRIVERS[0][2], maxT = TEAMS[0][1];
+  const [lf, ll, lp] = DRIVERS[0];
+  $('[data-board="drivers"]').innerHTML = `
+    <h3 class="lbl"><span>Drivers</span><span>Pts</span></h3>
+    <div class="lead">
+      <div><p class="k lbl">Leader</p><b>${lf} ${ll}</b><span class="tm lbl">${sqInk(DRIVER_TEAM[ll])}Mercedes · +${lp - DRIVERS[1][2]} over Russell</span></div>
+      <div class="pts">${lp}<small>Points</small></div>
+    </div>
+    <ol class="rows">${DRIVERS.slice(1).map(([fn, ln, p], i) => `
+      <li><span class="ps lbl">${pad(i + 2)}</span>
+        <span class="nm">${sqInk(DRIVER_TEAM[ln])}<span>${ln} <small>${fn}</small></span></span>
+        <span class="bar" aria-hidden="true"><i style="width:${(p / maxD * 100).toFixed(1)}%"></i></span>
+        <span class="pt">${p}</span></li>`).join('')}
+    </ol>`;
+  $('[data-board="teams"]').innerHTML = `
+    <h3 class="lbl"><span>Constructors</span><span>Pts</span></h3>
+    <div class="lead">
+      <div><p class="k lbl">Leader</p><b>${TEAMS[0][0]}</b><span class="tm lbl">${sqInk('Mercedes')}+${TEAMS[0][1] - TEAMS[1][1]} over Ferrari</span></div>
+      <div class="pts">${TEAMS[0][1]}<small>Points</small></div>
+    </div>
+    <ol class="rows">${TEAMS.slice(1).map(([t, p], i) => `
+      <li><span class="ps lbl">${pad(i + 2)}</span>
+        <span class="nm">${sqInk(t)}<span>${t}</span></span>
+        <span class="bar" aria-hidden="true"><i style="width:${(p / maxT * 100).toFixed(1)}%"></i></span>
+        <span class="pt">${p}</span></li>`).join('')}
+    </ol>`;
+
+  // Calendar (re-rendered on state change so R20 reflects the hero)
+  function renderCalendar(state) {
+    const days = Math.max(0, Math.ceil((WEEKEND[0].d - Date.now()) / 864e5));
+    $('[data-cal]').innerHTML = ROUNDS.map(([no, name, city, dates, trk, gp, win, sprint]) => {
+      let cls = 'rd--up', res = '<em>Upcoming</em>';
+      if (win === 'X') { cls = 'rd--x'; res = 'Cancelled'; }
+      else if (win === 'NEXT') {
+        cls = 'rd--next';
+        res = state === 'live' ? '● Live now · Qualifying' : `Next — in ${days} day${days === 1 ? '' : 's'}`;
+      } else if (win) {
+        cls = 'rd--done' + (no === 19 && state === 'result' ? ' rd--just' : '');
+        res = `${sq(DRIVER_TEAM[win])}<span><em>Winner</em> ${win}</span>`;
+      }
+      const tag = sprint ? '<span class="rd__tag lbl">Sprint</span>' : '';
+      const sp = sprint ? '<span class="rd__sprint lbl">S</span>' : '';
+      return `<li class="rd ${cls}"><a href="../../grandsprix/grandprix.html?gp=${gp}" aria-label="Round ${no}, ${name}${win === 'X' ? ', cancelled' : ''}">
+        <span class="rd__no">${pad(no)}</span>${tag}
+        <img class="rd__trk" src="../../img/circuits/${trk}" alt="" loading="lazy">
+        <span class="rd__name">${name}${sp}</span>
+        <span class="rd__sub lbl">${city} · ${win === 'X' ? 'Not held' : dates}</span>
+        <span class="rd__res">${res}</span></a></li>`;
+    }).join('');
+  }
+
+  /* ---------------- ticking ---------------- */
+  const split = ms => { const s = Math.max(0, Math.floor(ms / 1000)); return { d: Math.floor(s / 86400), h: Math.floor(s % 86400 / 3600), m: Math.floor(s % 3600 / 60), s: s % 60 }; };
+  const el = {
+    name: $('[data-next-name]'), when: $('[data-next-when]'), sr: $('[data-cd-sr]'),
+    cd: { d: $('[data-cd="d"]'), h: $('[data-cd="h"]'), m: $('[data-cd="m"]'), s: $('[data-cd="s"]') },
+    race: $('[data-race-count]'), days: $('[data-days-to-race]'),
+    qm: $('[data-q-m]'), qs: $('[data-q-s]'),
+  };
+  const Q2_LEN = 15 * 60, Q2_START = Date.now() - (Q2_LEN - (11 * 60 + 24)) * 1000;
+  let lastNext = null;
+
+  function tick() {
+    const now = Date.now();
+    const next = WEEKEND.find(s => s.d > now) || RACE;
+    if (next !== lastNext) {
+      lastNext = next;
+      setText(el.name, next.name);
+      setText(el.when, `${fmtDay(next.d)} · ${fmtTime(next.d)}`);
+      $$('[data-sched] li').forEach(li => li.classList.toggle('is-next', li.dataset.k === next.k));
+    }
+    const t = split(next.d - now);
+    ['d', 'h', 'm', 's'].forEach(u => setText(el.cd[u], pad(t[u])));
+    if (t.s % 15 === 0) setText(el.sr, `${next.name} starts in ${t.d} days, ${t.h} hours, ${t.m} minutes`);
+    const r = split(RACE.d - now);
+    setText(el.race, `${r.d}d ${pad(r.h)}h ${pad(r.m)}m ${pad(r.s)}s`);
+    const dd = Math.ceil((WEEKEND[0].d - now) / 864e5);
+    setText(el.days, `in ${dd} day${dd === 1 ? '' : 's'}`);
+    // Live: Q2 session clock counting down (loops for the demo)
+    const left = Q2_LEN - Math.floor((now - Q2_START) / 1000) % Q2_LEN;
+    setText(el.qm, pad(Math.floor(left / 60))); setText(el.qs, pad(left % 60));
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  /* ---------------- state switcher ---------------- */
+  const STATES = ['upcoming', 'live', 'result'];
+  function setState(s, write) {
+    if (!STATES.includes(s)) s = 'upcoming';
+    document.body.dataset.state = s;
+    $$('[data-hero]').forEach(h => { h.hidden = h.dataset.hero !== s; });
+    $$('.switch [data-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.set === s)));
+    renderCalendar(s);
+    if (write) {
+      try { const u = new URL(location.href); u.searchParams.set('state', s); history.replaceState(null, '', u); } catch { /* file:// in some browsers */ }
+    }
+  }
+  $$('.switch [data-set]').forEach(b => b.addEventListener('click', () => setState(b.dataset.set, true)));
+  setState(new URLSearchParams(location.search).get('state') || 'upcoming', false);
+
+  /* ---------------- mobile menu ---------------- */
+  const btn = $('.nav__btn');
+  const closeMenu = () => { document.body.classList.remove('nav-open'); btn.setAttribute('aria-expanded', 'false'); btn.textContent = 'Menu'; };
+  btn.addEventListener('click', () => {
+    const open = !document.body.classList.contains('nav-open');
+    document.body.classList.toggle('nav-open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    btn.textContent = open ? 'Close' : 'Menu';
+  });
+  $$('.nav__menu a').forEach(a => a.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+})();
+</script>
+</body>
+</html>
