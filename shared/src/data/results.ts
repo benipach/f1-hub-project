@@ -75,7 +75,7 @@ export function parseRaceOutcome(raw: string): RaceOutcome {
 }
 
 /** The timing fields of a practice row, in either of its two shapes. */
-export type RawPracticeTiming = { readonly pos: number; readonly time?: string; readonly lapTime?: string };
+export type RawPracticeTiming = { readonly pos: number; readonly time?: string | undefined; readonly lapTime?: string | undefined };
 
 /**
  * Each driver's best lap in a practice session, in milliseconds (null when
