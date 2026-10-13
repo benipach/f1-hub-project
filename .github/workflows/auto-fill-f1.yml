@@ -54,11 +54,17 @@ jobs:
               const now = Date.now();
               const grace = 45 * 60 * 1000; // 45 min after endDate, gives OpenF1 time to publish
               const isEmptyWeather = (w) => w === null || w === undefined || (typeof w === 'object' && Object.keys(w).length === 0);
+              // A session in the next 7 days also counts: the job syncs the
+              // session times from OpenF1, and a schedule change has to show
+              // up before the weekend, not after its first session.
+              const soon = 7 * 24 * 60 * 60 * 1000;
               const shouldRun = Object.values(data).some(gp =>
                 // A cancelled GP will never have results: if it isn't
                 // excluded, the job fires every half hour to do nothing.
                 gp && !gp.cancelled && typeof gp.sessions === 'object' && Object.values(gp.sessions).some(s => {
                   if (!s || !s.endDate) return false;
+                  const start = new Date(s.date).getTime();
+                  if (start > now && start - now <= soon) return true;
                   const ended = new Date(s.endDate).getTime() + grace <= now;
                   if (!ended) return false;
                   const missingResults = !Array.isArray(s.results) || s.results.length === 0;
@@ -74,6 +80,7 @@ jobs:
         if: steps.check.outputs.should_run == 'true'
         run: |
           # Cancelled GPs are skipped by their `cancelled` flag in the season file.
+          # It also copies the official session times (UTC) from OpenF1.
           FLAGS="$SEASON_FILE --year=$SEASON_YEAR --once --weather --no-backup"
           if [ "${{ github.event.inputs.force_weather }}" = "true" ]; then
             FLAGS="$FLAGS --force-weather"

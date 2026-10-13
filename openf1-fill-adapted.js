@@ -574,6 +574,7 @@ export {
   GRID_SOURCE_KEY,
   RACE_LIKE,
   QUALY_LIKE,
+  SESSION_NAME_TO_RESULT_KEY,
   applyGridToSession,
   fetchStartingGrid,
   raceSessionMissingGrid,

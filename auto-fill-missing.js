@@ -9,6 +9,7 @@ import {
   GRID_SOURCE_KEY,
   RACE_LIKE,
   QUALY_LIKE,
+  SESSION_NAME_TO_RESULT_KEY,
   TEAM_NAME_NORMALIZE,
   applyGridToSession,
   fetchStartingGrid,
@@ -36,6 +37,7 @@ function parseArgs(argv) {
     backfillGrid: false,
     normalizeTeams: false,
     fixQualyStatus: false,
+    syncTimes: true,
     // Cancelled GPs are skipped by their `cancelled` flag; this is for
     // skipping others by hand (--skip=key1,key2).
     skip: new Set(),
@@ -72,6 +74,8 @@ function parseArgs(argv) {
     // Manual backfill: re-requests saved qualifying results that have
     // DNF/DNS as lapTime, so they become "No time" (see qualyStatusLabel).
     else if (arg === "--fix-qualy-status") flags.fixQualyStatus = true;
+    // Skips the session times sync (see syncSessionTimes).
+    else if (arg === "--no-sync-times") flags.syncTimes = false;
     else if (arg.startsWith("--interval=")) console.warn("⚠️ --interval ignored: GitHub Actions schedules the runs.");
     else positional.push(arg);
   }
@@ -218,6 +222,71 @@ function normalizeTeamNamesInSeason(season) {
   return renamed;
 }
 
+// Session times are stored in UTC ("2026-10-25T19:00:00Z"), like the
+// historical seasons; pages turn them into the visitor's time zone.
+function toUtcIso(value) {
+  const date = parseDate(value);
+  return date ? date.toISOString().replace(".000Z", "Z") : null;
+}
+
+// A schedule change moves a session by hours, not days. Anything bigger is
+// more likely a meeting matched to the wrong GP, so it's left for a human.
+const MAX_TIME_SHIFT_MS = 36 * 60 * 60 * 1000;
+
+// Copies the official start and end of every session from OpenF1 into the
+// season file. The season skeleton is written ahead of time and F1 moves
+// sessions (2026: Las Vegas brought forward two hours, among others), so
+// without this the site kept showing the provisional times. Two requests
+// for the whole season: the meetings and the sessions of the year.
+async function syncSessionTimes(season, year) {
+  const sessions = await getJSON("/sessions", { year });
+  const byMeeting = new Map();
+  for (const s of sessions) {
+    const resultKey = SESSION_NAME_TO_RESULT_KEY[s.session_name];
+    if (!resultKey) continue;
+    if (!byMeeting.has(s.meeting_key)) byMeeting.set(s.meeting_key, {});
+    byMeeting.get(s.meeting_key)[resultKey] = s;
+  }
+
+  let changed = 0;
+  for (const [gpKey, gp] of Object.entries(season)) {
+    if (gp?.cancelled === true || !gp?.sessions || typeof gp.sessions !== "object") continue;
+    let meeting;
+    try {
+      meeting = await findMeeting(year, gpKey, gp);
+    } catch (err) {
+      console.warn(`⚠️ ${gpKey}: times not synced, meeting not found (${err.message})`);
+      continue;
+    }
+    if (meeting?.is_cancelled === true) continue;
+    const official = byMeeting.get(meeting.meeting_key) ?? {};
+
+    for (const [resultKey, session] of Object.entries(gp.sessions)) {
+      if (!session || typeof session !== "object") continue;
+      const o = official[resultKey];
+      if (!o) {
+        console.warn(`⚠️ ${gpKey}/${resultKey}: not in OpenF1's schedule, time left as is`);
+        continue;
+      }
+      const date = toUtcIso(o.date_start);
+      const endDate = toUtcIso(o.date_end);
+      if (!date || !endDate) continue;
+      if (date === session.date && endDate === session.endDate) continue;
+
+      const current = parseDate(session.date);
+      if (current && Math.abs(current - parseDate(date)) > MAX_TIME_SHIFT_MS) {
+        console.warn(`⚠️ ${gpKey}/${resultKey}: OpenF1 says ${date}, saved ${session.date}; too far apart, left as is`);
+        continue;
+      }
+      console.log(`🕒 ${gpKey}/${resultKey}: ${session.date} → ${date} (end ${session.endDate} → ${endDate})`);
+      session.date = date;
+      session.endDate = endDate;
+      changed += 1;
+    }
+  }
+  return changed;
+}
+
 async function runOnce(args) {
   const season = JSON.parse(await readFile(args.seasonPath, "utf8"));
   const knownDriverNames = buildKnownDriverNamesFromSeason(season);
@@ -244,6 +313,17 @@ async function runOnce(args) {
   }
 
   console.log(`🏁 Auto-fill OpenF1 ${args.year}`);
+
+  // First, so the started/ended checks below use the official times.
+  if (args.syncTimes) {
+    try {
+      const synced = await syncSessionTimes(season, args.year);
+      console.log(synced > 0 ? `🕒 Session times: ${synced} updated from OpenF1` : "🕒 Session times: up to date");
+      updatesCount += synced;
+    } catch (err) {
+      console.warn(`⚠️ Session times not synced (${err.message})`);
+    }
+  }
   if (args.forceWeather) console.log("🔁 --force-weather on: re-requesting weather even if it already exists (backfill)");
 
   for (const [gpKey, gp] of Object.entries(season)) {
