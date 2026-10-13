@@ -499,10 +499,10 @@ so nothing depends on them:
 
 ## 9. Open points from the mockup
 
-- **Mobile hero height**: at 375 px the upcoming hero is taller than one
-  screen. Tighten it so the countdown and the timetable's next session fit.
-- **Result photo**: the duotone didn't render in the mockup; moot if section 7
-  is followed.
+- ~~**Mobile hero height**~~: closed on 13/10, the owner checked the whole
+  homepage on their phone and it's fine.
+- ~~**Result photo**~~: closed on 13/10, the winner's photo in red and black
+  duotone (section 5, Result), built with `getImage`.
 - **Race laps** for `.facts` aren't in `data/` (see the upcoming hero).
 - **Summary sentences** ("leads by 102 points…") must be generated, not typed.
 - **Site name**: the wordmark and logo will change if the site is renamed (see
