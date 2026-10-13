@@ -218,7 +218,7 @@ const rest = last?.rows.slice(3) ?? [];
                         <p class="lbl">Winner · {last.gp.name}</p>
                         <h1 class="res__name cond" id="res-title"><span class="first">{podium1.firstName}</span>{podium1.lastName}</h1>
                         <dl class="res__meta">
-                            <div><dt class="lbl">Team</dt><dd><TeamMark logo={podium1.teamLogo} color={podium1.teamColor} size={22} /><span class="mark-text">{podium1.team}</span></dd></div>
+                            <div><dt class="lbl">Team</dt><dd><TeamMark logo={podium1.teamLogo} color={podium1.teamColor} size={22} duotone={false} /><span class="mark-text">{podium1.team}</span></dd></div>
                             <div><dt class="lbl">Race time</dt><dd class="num">{podium1.result}</dd></div>
                             {podium1.grid && <div><dt class="lbl">Started</dt><dd class="num">P{podium1.grid}</dd></div>}
                         </dl>
@@ -235,7 +235,7 @@ const rest = last?.rows.slice(3) ?? [];
                                 <span class="n">{row.pos}</span>
                                 <span class="who">
                                     <b>{row.lastName}</b>
-                                    <span class="lbl"><TeamMark logo={row.teamLogo} color={row.teamColor} /><span class="mark-text">{row.team}{row.grid && ` · from P${row.grid}`}</span></span>
+                                    <span class="lbl"><TeamMark logo={row.teamLogo} color={row.teamColor} duotone={false} /><span class="mark-text">{row.team}{row.grid && ` · from P${row.grid}`}</span></span>
                                 </span>
                                 <span class="gap num">{row.result}{row.fastestLap && <><br /><span class="fl lbl">Fastest lap</span></>}</span>
                             </div>
@@ -257,7 +257,7 @@ const rest = last?.rows.slice(3) ?? [];
                                             <td class="d"><span>{row.firstName}</span>{row.lastName}{row.fastestLap && <span class="fl lbl">FL</span>}</td>
                                             <td class="hide-m">
                                                 <span class="t">
-                                                    <TeamMark logo={row.teamLogo} color={row.teamColor} />
+                                                    <TeamMark logo={row.teamLogo} color={row.teamColor} duotone={false} />
                                                     <span class="mark-text">{row.team}</span>
                                                 </span>
                                             </td>
@@ -718,8 +718,9 @@ const rest = last?.rows.slice(3) ?? [];
     .tbl .d > span:first-child { margin-right: 6px; color: var(--mute-ink); font-weight: 500; font-stretch: 100%; text-transform: none; }
     .tbl .t { display: flex; align-items: center; gap: 8px; color: var(--mute-ink); font-size: 14px; }
     .tbl .r { padding-right: 0; text-align: right; }
-    .gain { color: var(--paper); }
-    .loss { color: var(--red-hi); }
+    /* Places gained and lost both in paper: the arrow says which (owner's call,
+       13/10; red is kept for what's live) */
+    .gain, .loss { color: var(--paper); }
     .eq { color: var(--mute-ink); }
 
     /* ---- Responsive ---------------------------------------------------------- */

@@ -60,8 +60,11 @@ shows its logo instead**: the `TeamMark` component
 (`site/src/components/TeamMark.astro`), `img/teams/<id>-logo.png` in a square
 box (20 px by default, `object-fit: contain`), falling back to the color
 square when there's no logo file (owner's calls, 12/10; logos are
-trademarks, see the plan's intellectual-property list). **Logos are in
-duotone, ink and paper, like the poster's photos** (owner's idea, 12/10): dark
+trademarks, see the plan's intellectual-property list). **Where they go in
+their own colors and where in duotone** (owner's calls, 12–13/10): in their
+own colors (`duotone={false}`) in the live tower, the standings and the whole
+result (winner, podium, positions 4–10); **in duotone only in the calendar**.
+**The duotone is ink and paper, like the poster's photos** (owner's idea, 12/10): dark
 tones go to ink and light ones to paper, **the same on every field** (Ferrari:
 black horse on a near-paper shield), with the SVG `feComponentTransfer`
 filter `#duo-ink-paper` in `Base.astro`. An inverted version for paper fields
@@ -291,9 +294,10 @@ about half the width, not the whole page.
 - Podium rows for P2 and P3: big position, name, team, gap, "from P4"
   (grid), fastest lap tag when it applies.
 - Positions 4–10 as the **classification table** (`.tbl`): position in
-  display type, driver (first name muted + LAST NAME), team (square + name),
-  gap (from `RaceOutcome`), grid and places gained (▲ in paper, ▼ in
-  `--red-hi`, — when equal). Link to the full classification. On mobile the
+  display type, driver (first name muted + LAST NAME), team (logo in its
+  colors + name), gap (from `RaceOutcome`), grid and places gained (▲ and ▼
+  both in paper, the arrow says which; — in muted when equal; owner's call,
+  13/10). Link to the full classification. On mobile the
   team, grid and first name go.
 - Band (red): next race and how far away it is; "All results".
 - **No photo needed.** The mockup's duotone portrait (cols 9–12) is optional:
