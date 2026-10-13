@@ -43,6 +43,18 @@ const season = loadLatestYear(DATA_DIR);
 </head>
 <body>
     <a class="sr" href="#main">Skip to content</a>
+    <!-- Duotone filter for team logos (base.css, .team-mark): each pixel's
+         gray maps to a point between ink #121212 (dark) and paper #EFEAE0 (light). -->
+    <svg class="sr" width="0" height="0" aria-hidden="true" focusable="false">
+        <filter id="duo-ink-paper" color-interpolation-filters="sRGB">
+            <feColorMatrix type="saturate" values="0" />
+            <feComponentTransfer>
+                <feFuncR type="table" tableValues=".071 .937" />
+                <feFuncG type="table" tableValues=".071 .918" />
+                <feFuncB type="table" tableValues=".071 .878" />
+            </feComponentTransfer>
+        </filter>
+    </svg>
     <Navbar current={current} season={season} />
     <main id="main">
         <slot />

@@ -87,13 +87,13 @@ function localizeTimes(root: ParentNode) {
     });
 }
 
-/** "2 d 04 h", "04:12:09" for under a day. */
+/** "2d 04h", "04:12:09" for under a day. */
 function compactCountdown(ms: number): string {
     const s = Math.max(0, Math.floor(ms / 1000));
     const d = Math.floor(s / 86400);
     const h = Math.floor((s % 86400) / 3600);
     const m = Math.floor((s % 3600) / 60);
-    return d > 0 ? `${d} d ${pad(h)} h` : `${pad(h)}:${pad(m)}:${pad(s % 60)}`;
+    return d > 0 ? `${d}d ${pad(h)}h` : `${pad(h)}:${pad(m)}:${pad(s % 60)}`;
 }
 
 /** "18 min ago", "1 h 05 min ago". */
@@ -194,9 +194,30 @@ export function startHero() {
         document.documentElement.dataset['weekend'] = next;
     }
 
+    // The calendar's next round says how far away it is, or that it's live
+    // (with the beating dot).
+    const calNext = document.querySelector<HTMLElement>('[data-cal-next]');
+    const calDot = document.querySelector<HTMLElement>('[data-cal-dot]');
+    function calendarNext(t: number) {
+        if (!calNext) return;
+        const current = sessions.find((s) => s.startMs <= t && t < s.endMs);
+        const first = sessions[0];
+        calDot?.toggleAttribute('hidden', !current);
+        let text = 'Next';
+        if (current) text = `Live now · ${current.name}`;
+        else if (sessions.length && sessions.every((s) => s.endMs <= t)) text = 'Results on the way';
+        else if (first && first.startMs <= t) text = 'This weekend';
+        else if (first) {
+            const days = Math.max(1, Math.ceil((first.startMs - t) / DAY));
+            text = `Next — in ${days} day${days === 1 ? '' : 's'}`;
+        }
+        setText(calNext, text);
+    }
+
     function tick() {
         const t = now();
         show(pick(t));
+        calendarNext(t);
 
         if (shown === 'upcoming') {
             const upcoming = sessions.find((s) => s.startMs > t);

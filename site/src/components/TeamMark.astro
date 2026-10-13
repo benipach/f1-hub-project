@@ -1,0 +1,32 @@
+---
+// A team's mark next to its name: the logo (img/teams/<id>-logo.png), or the
+// color square when there's no logo file (_design/DESIGN.md, section 2).
+//
+// By default the logo is drawn twice from the same file: a duotone layer (ink
+// and paper, filter in Base.astro) and the original on top, transparent until
+// its row is hovered (rules in base.css). An SVG filter can't be transitioned,
+// so the two layers cross-fade instead; the browser downloads the file once.
+// With duotone={false} it's just the original logo.
+import { href } from '../lib/paths';
+
+interface Props {
+    /** Path inside the site, "img/teams/ferrari-logo.png". */
+    logo: string | null;
+    color: string | null;
+    /** Logo box in px; the square stays 10 px. */
+    size?: number;
+    /** false: the logo in its own colors, no duotone. */
+    duotone?: boolean;
+}
+
+const { logo, color, size = 20, duotone = true } = Astro.props;
+---
+
+{logo
+    ? (
+        <span class:list={['team-mark', { 'team-mark--plain': !duotone }]} style={`--size: ${size}px`}>
+            {duotone && <img class="team-mark__duo" src={href(logo)} alt="" width={size} height={size} loading="lazy" decoding="async" />}
+            <img class="team-mark__color" src={href(logo)} alt="" width={size} height={size} loading="lazy" decoding="async" />
+        </span>
+    )
+    : color && <span class="sq" style={`--c: ${color}`}></span>}

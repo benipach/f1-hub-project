@@ -54,11 +54,26 @@ nothing else. Values are the mockup's.
 
 Team colors come from `data/teams.json` (`color`), never from a table in code.
 They appear as small flat squares (`.sq`, 10×10 px with a 1 px dark outline,
-light outline on ink), next to a driver or team name. **In the classification
-tables the team shows its logo instead** (`img/teams/<id>-logo.png` in a
-20×20 px box, `object-fit: contain`), falling back to the square when there's
-no logo file (owner's call, 12/10; logos are trademarks, see the plan's
-intellectual-property list). Never as text color and
+light outline on ink), next to a driver or team name. **Wherever a team is
+named (tables, the result's winner and podium, the calendar's winners) it
+shows its logo instead**: the `TeamMark` component
+(`site/src/components/TeamMark.astro`), `img/teams/<id>-logo.png` in a square
+box (20 px by default, `object-fit: contain`), falling back to the color
+square when there's no logo file (owner's calls, 12/10; logos are
+trademarks, see the plan's intellectual-property list). **Logos are in
+duotone, ink and paper, like the poster's photos** (owner's idea, 12/10): dark
+tones go to ink and light ones to paper, **the same on every field** (Ferrari:
+black horse on a near-paper shield), with the SVG `feComponentTransfer`
+filter `#duo-ink-paper` in `Base.astro`. An inverted version for paper fields
+was tried and dropped (owner's call). Logos that are mostly light (white or
+silver) end up faint on paper; that's accepted. **Their real colors fade in when their row,
+cell, podium line or link is hovered**: an SVG filter can't be transitioned,
+so `TeamMark` stacks the duotone and the original (same file, one download)
+and fades the original in. The text next to a mark goes in `.mark-text`
+(`text-box: trim-both cap alphabetic`), so it centers on the logo optically:
+otherwise the room the text box keeps for descenders makes it sit low. Rules in `base.css`. (A flat one-color silhouette
+was tried first and dropped: everything looked black.) The color square stays for non-team marks (the red "Next race"
+tag) and the design-system palette. Never as text color and
 never as a field: some team colors (Red Bull `#22477A`, Alpine `#006FBA`) are
 unreadable on ink, and the square with its outline works for all of them.
 
@@ -77,6 +92,12 @@ It's used at two extremes, plus plain text:
 | **Label** (kickers, column heads, buttons, tags) | `.lbl` | 11–12 px, weight 700, `font-stretch: 115%`, uppercase, `letter-spacing: .09em` |
 | **Body** | — | 16 px, weight 400–600, `line-height: 1.45`, normal width |
 | **Numbers** | `.num` | `font-variant-numeric: tabular-nums lining-nums` on anything that ticks or lines up in a column |
+
+**`.num` (tabular, fixed-width digits) only where digits change every second
+or must line up in a column** (the big countdown, timetable times, table
+gaps). Display numbers that don't tick (round numbers, stats, facts, the
+compact race countdown) go without it: in this condensed face fixed-width
+digits open wide gaps (owner's call, 12/10).
 
 Display numbers and words placed inside a `.lbl` block (like the facts under
 the track layout) must reset `letter-spacing: 0`: they'd otherwise inherit the
@@ -121,6 +142,18 @@ calendar becomes a list, smaller gutters).
   component moves in sync on enter and on leave (the project's rule, as in
   `styles/drivers.css`). No custom curves, delays or per-property lists. This
   replaces the mockup's `cubic-bezier(.7, 0, .2, 1)`.
+- **Hover rules learned on 12/10** (the owner saw buttons "blink" mid-hover):
+  - the hover color must contrast with the field the element sits on: a red
+    button that turns ink fades into an ink band halfway, so on ink
+    (`.on-ink`) it turns paper;
+  - children of a hovered element (like `.arrow`) use the same duration as
+    the element;
+  - no `currentColor` in a shadow or border that animates together with
+    `color`: use an explicit color (`--line` on `.btn--line`);
+  - an image whose `filter` animates gets `will-change: filter`, so it keeps
+    its layer and doesn't flash when the transition starts and ends;
+  - change `background-color`, not the `background` shorthand, when the
+    element also has a `background-image` (it would vanish at once).
 - **Wipe** when the hero changes state: `clip-path` from `inset(0 100% 0 0)` to
   `inset(0)`, 0.7 s, `ease`.
 - **Beat** for anything live (dots): opacity 1 → .35 and back, ~1.1 s loop.
@@ -226,7 +259,9 @@ about half the width, not the whole page.
 - Right (cols 8–12, both rows): the **top 10 tower**, an ink column with a
   4 px paper rule under its header, holding **the same classification table
   as the result state minus grid and places gained**: position, driver, team,
-  gap (owner's call, 12/10). P1's gap cell names what P1 is in that session:
+  gap (owner's call, 12/10). Here the team logos keep **their own colors**
+  (`TeamMark duotone={false}`) and each row lifts slightly off the ink on hover
+  (paper at 7 %), owner's calls on 13/10. P1's gap cell names what P1 is in that session:
   **"Leader"** in a race or sprint, **"Fastest"** in qualifying, sprint
   qualifying and practice. No track layout in this state.
 - ≤ 1100 px it stacks: LIVE, session, tower, button.
@@ -274,6 +309,11 @@ about half the width, not the whole page.
 - ≤ 760 px: a list. Each row has the number, name, place, result on the right
   and a small layout.
 - Dates in the visitor's local time.
+- Built (12/10) as `site/src/components/home/Calendar.astro` from
+  `buildSeasonPoster()`. The layouts here are **`<img>` SVG files with lazy
+  loading**, blackened with `filter: brightness(0)` (white on red with
+  `invert(1)`), not inline SVG: 25 inline drawings would add hundreds of KB.
+  The GP name is the data's name with "Grand Prix" → "GP".
 
 ### Standings
 

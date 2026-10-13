@@ -5,12 +5,14 @@
 //
 // ?now=<ISO date> simulates another moment, so the three hero states can be
 // checked any day; the panel at the bottom has moments taken from the data.
+import Calendar from '../components/home/Calendar.astro';
 import Hero from '../components/home/Hero.astro';
 import Base from '../layouts/Base.astro';
 import { DATA_DIR } from '../lib/data';
-import { buildHomeHero } from '../lib/home';
+import { buildHomeHero, buildSeasonPoster } from '../lib/home';
 
 const hero = buildHomeHero(DATA_DIR);
+const poster = buildSeasonPoster(DATA_DIR);
 const at = (iso: string | undefined, minutes: number) =>
     iso ? new Date(Date.parse(iso) + minutes * 60_000).toISOString().replace(/\.\d{3}Z$/, 'Z') : null;
 
@@ -48,6 +50,7 @@ const tower = hero.last && {
 
 <Base title="Home preview | F1 Hub" description="Preview of the new F1 Hub homepage." current="calendar" noindex>
     <Hero hero={hero} preview tower={tower ?? undefined} previewLaps={hero.last?.laps} />
+    <Calendar poster={poster} />
 
     <nav class="moments lbl" aria-label="Simulate a moment (preview only)">
         <span class="moments__k">Preview</span>

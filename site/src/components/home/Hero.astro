@@ -5,6 +5,7 @@
 // keeps the countdowns and local times up to date.
 import type { HomeHero } from '../../lib/home';
 import { href } from '../../lib/paths';
+import TeamMark from '../TeamMark.astro';
 
 /** A row of the live top 10: position, driver, team, gap. */
 export type TowerRow = {
@@ -80,8 +81,8 @@ const rest = last?.rows.slice(3) ?? [];
                         {next.layout && <div class="trk" set:html={next.layout} />}
                         {(next.length || next.turns) && (
                             <div class="facts lbl">
-                                {next.length && <div><b class="num">{next.length.toFixed(3)}</b><span>km lap</span></div>}
-                                {next.turns && <div><b class="num">{next.turns}</b><span>turns</span></div>}
+                                {next.length && <div><b>{next.length.toFixed(3)}</b><span>km lap</span></div>}
+                                {next.turns && <div><b>{next.turns}</b><span>turns</span></div>}
                             </div>
                         )}
                     </div>
@@ -127,7 +128,7 @@ const rest = last?.rows.slice(3) ?? [];
                     {race && <span class="band__v num" data-local="daytime" data-at={race.start}></span>}
                     <span class="band__rule" aria-hidden="true"></span>
                     <span class="band__k lbl">Lights out in</span>
-                    <span class="band__v num" data-race-count>—</span>
+                    <span class="band__v" data-race-count>—</span>
                     <a class="btn btn--red" href={href(`grandsprix/grandprix.html?gp=${next.id}`)}>Grand Prix guide <span class="arrow">→</span></a>
                 </div>
             </div>
@@ -175,10 +176,8 @@ const rest = last?.rows.slice(3) ?? [];
                                         <td class="d"><span data-first>{row?.firstName ?? ''}</span><span data-driver>{row?.lastName ?? '—'}</span></td>
                                         <td class="hide-m">
                                             <span class="t">
-                                                {row?.teamLogo
-                                                    ? <img class="logo" src={href(row.teamLogo)} alt="" width="20" height="20" loading="lazy" decoding="async" />
-                                                    : row?.teamColor && <span class="sq" style={`--c: ${row.teamColor}`}></span>}
-                                                <span data-team>{row?.team ?? ''}</span>
+                                                {row && <TeamMark logo={row.teamLogo} color={row.teamColor} duotone={false} />}
+                                                <span class="mark-text" data-team>{row?.team ?? ''}</span>
                                             </span>
                                         </td>
                                         <td class="r num" data-gap>{row?.gap ?? ''}</td>
@@ -219,7 +218,7 @@ const rest = last?.rows.slice(3) ?? [];
                         <p class="lbl">Winner · {last.gp.name}</p>
                         <h1 class="res__name cond" id="res-title"><span class="first">{podium1.firstName}</span>{podium1.lastName}</h1>
                         <dl class="res__meta">
-                            <div><dt class="lbl">Team</dt><dd>{podium1.teamColor && <span class="sq" style={`--c: ${podium1.teamColor}`}></span>}{podium1.team}</dd></div>
+                            <div><dt class="lbl">Team</dt><dd><TeamMark logo={podium1.teamLogo} color={podium1.teamColor} size={22} /><span class="mark-text">{podium1.team}</span></dd></div>
                             <div><dt class="lbl">Race time</dt><dd class="num">{podium1.result}</dd></div>
                             {podium1.grid && <div><dt class="lbl">Started</dt><dd class="num">P{podium1.grid}</dd></div>}
                         </dl>
@@ -236,7 +235,7 @@ const rest = last?.rows.slice(3) ?? [];
                                 <span class="n">{row.pos}</span>
                                 <span class="who">
                                     <b>{row.lastName}</b>
-                                    <span class="lbl">{row.teamColor && <span class="sq" style={`--c: ${row.teamColor}`}></span>}{row.team}{row.grid && ` · from P${row.grid}`}</span>
+                                    <span class="lbl"><TeamMark logo={row.teamLogo} color={row.teamColor} /><span class="mark-text">{row.team}{row.grid && ` · from P${row.grid}`}</span></span>
                                 </span>
                                 <span class="gap num">{row.result}{row.fastestLap && <><br /><span class="fl lbl">Fastest lap</span></>}</span>
                             </div>
@@ -258,10 +257,8 @@ const rest = last?.rows.slice(3) ?? [];
                                             <td class="d"><span>{row.firstName}</span>{row.lastName}{row.fastestLap && <span class="fl lbl">FL</span>}</td>
                                             <td class="hide-m">
                                                 <span class="t">
-                                                    {row.teamLogo
-                                                        ? <img class="logo" src={href(row.teamLogo)} alt="" width="20" height="20" loading="lazy" decoding="async" />
-                                                        : row.teamColor && <span class="sq" style={`--c: ${row.teamColor}`}></span>}
-                                                    {row.team}
+                                                    <TeamMark logo={row.teamLogo} color={row.teamColor} />
+                                                    <span class="mark-text">{row.team}</span>
                                                 </span>
                                             </td>
                                             <td class="r num">{row.result}</td>
@@ -550,8 +547,15 @@ const rest = last?.rows.slice(3) ?? [];
     }
     .tower__hd > span:first-child { display: inline-flex; align-items: center; gap: 8px; color: var(--paper); }
     .tower__tbl { margin-top: 2px; }
-    .tower__tbl td { padding-top: 8px; padding-bottom: 8px; }
+    .tower__tbl td { padding-top: 8px; padding-bottom: 8px; transition: all .2s ease; }
     .tower__tbl tbody tr:first-child td { border-top: 0; }
+    /* Row hover: the row lifts slightly off the ink. The padding lives on the
+       first and last cells so the highlight has some room at the sides. */
+    .tower__tbl td:first-child { padding-left: 8px; }
+    .tower__tbl td:last-child { padding-right: 8px; }
+    .tower__tbl th:first-child { padding-left: 8px; }
+    .tower__tbl th:last-child { padding-right: 8px; }
+    .tower__tbl tbody tr:hover td { background: rgba(239, 234, 224, .07); }
     .live__info p { margin: 0; }
     .live__session { margin: 6px 0 8px; color: var(--ink); font-size: clamp(44px, 5.6vw, 88px); }
     .live__sub { font-size: 18px; font-weight: 600; }
@@ -567,7 +571,7 @@ const rest = last?.rows.slice(3) ?? [];
         background: var(--ink);
         color: #fff;
         text-decoration: none;
-        transition: all .3s ease;
+        transition: all .2s ease;
     }
     .cta-live:hover { background: #000; }
     .cta-live .top { display: flex; justify-content: space-between; align-items: center; }
@@ -711,8 +715,6 @@ const rest = last?.rows.slice(3) ?? [];
     .tbl .d { font-size: 16px; font-weight: 800; font-stretch: 90%; letter-spacing: .01em; text-transform: uppercase; }
     .tbl .d > span:first-child { margin-right: 6px; color: var(--mute-ink); font-weight: 500; font-stretch: 100%; text-transform: none; }
     .tbl .t { display: flex; align-items: center; gap: 8px; color: var(--mute-ink); font-size: 14px; }
-    /* Team logo in a fixed 20 px box, whatever the file's proportions */
-    .tbl .logo { flex: none; width: 20px; height: 20px; object-fit: contain; }
     .tbl .r { padding-right: 0; text-align: right; }
     .gain { color: var(--paper); }
     .loss { color: var(--red-hi); }

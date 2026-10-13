@@ -91,6 +91,40 @@ button { font: inherit; color: inherit; }
 }
 .on-ink .sq { box-shadow: 0 0 0 1px rgba(239, 234, 224, .55); }
 
+/* Team logos (TeamMark) in duotone, so they keep to the palette: dark tones go
+   to ink and light ones to paper, the same on every field (Ferrari: black
+   horse on a near-paper shield). Hovering their row, cell, podium line or
+   link fades the real colors in on top. */
+.team-mark {
+    position: relative;
+    display: inline-block;
+    flex: none;
+    width: var(--size);
+    height: var(--size);
+}
+.team-mark img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.team-mark__duo { filter: url(#duo-ink-paper); }
+.team-mark__color {
+    opacity: 0;
+    transition: all .2s ease;
+}
+:is(a, tr, li, .pod, dd):hover .team-mark__color,
+.team-mark--plain .team-mark__color { opacity: 1; }
+
+/* Text next to a team mark: its box trimmed to the cap height and the
+   baseline, so centering it with the logo is optically right (the box's
+   room for descenders made the text sit low). */
+.mark-text {
+    line-height: 1;
+    text-box: trim-both cap alphabetic;
+}
+
 /* Live dot: gray when idle, white and beating when live */
 .ldot {
     flex: none;
@@ -106,10 +140,11 @@ button { font: inherit; color: inherit; }
     50% { opacity: .35; }
 }
 
-/* "→" that slides when its link is hovered */
+/* "→" that slides when its link is hovered. Same duration as the buttons it
+   sits in, so both finish together. */
 .arrow {
     display: inline-block;
-    transition: all .25s ease;
+    transition: all .2s ease;
 }
 a:hover .arrow { transform: translateX(6px); }
 
@@ -129,13 +164,25 @@ a:hover .arrow { transform: translateX(6px); }
     cursor: pointer;
     transition: all .2s ease;
 }
+/* Hover always moves to a color that contrasts with the field the button sits
+   on: a red button turning ink on an ink band would fade into it mid-way. */
 .btn--red { background: var(--red); color: #fff; }
 .btn--red:hover { background: var(--ink); }
+.on-ink .btn--red:hover { background: var(--paper); color: var(--ink); }
 .btn--ink { background: var(--ink); color: #fff; }
 .btn--ink:hover { background: #000; }
-.btn--line { background: transparent; box-shadow: inset 0 0 0 1px currentColor; }
-.btn--line:hover { background: var(--ink); color: var(--paper); box-shadow: inset 0 0 0 1px var(--ink); }
-.on-ink .btn--line:hover { background: var(--paper); color: var(--ink); box-shadow: inset 0 0 0 1px var(--paper); }
+
+/* The line is an explicit color, not currentColor: a currentColor shadow
+   doesn't always follow `color` while it animates (it can jump to the end
+   color), and an explicit color transitions like everything else. */
+.btn--line {
+    --line: var(--ink);
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--line);
+}
+.on-ink .btn--line { --line: var(--paper); }
+.btn--line:hover { background: var(--ink); color: var(--paper); }
+.on-ink .btn--line:hover { background: var(--paper); color: var(--ink); }
 
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }

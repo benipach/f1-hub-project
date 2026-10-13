@@ -81,6 +81,34 @@ export type HomeHero = {
     readonly last: HeroResult | null;
 };
 
+/** A round of the season poster (the calendar section). */
+export type PosterRound = {
+    readonly id: string;
+    readonly round: number;
+    /** "Australian GP", "Bahrain GP in Malaysia" */
+    readonly name: string;
+    /** "Melbourne" */
+    readonly city: string | null;
+    /** Layout SVG inside the site ("img/circuits/cota-layout.svg"), when there is one. */
+    readonly layout: string | null;
+    readonly sprint: boolean;
+    readonly status: 'done' | 'cancelled' | 'next' | 'upcoming';
+    /** The most recent round with a result. */
+    readonly latest: boolean;
+    /** UTC start of the first session and of the race, for the dates. */
+    readonly weekendStart: string | null;
+    readonly raceStart: string | null;
+    readonly winner: { readonly name: string; readonly teamColor: string | null; readonly teamLogo: string | null } | null;
+};
+
+export type SeasonPoster = {
+    readonly season: number;
+    readonly rounds: readonly PosterRound[];
+    readonly raced: number;
+    readonly cancelled: number;
+    readonly toGo: number;
+};
+
 /** "+7.335s", "+1:08.358", "+2 Laps", "DNF". */
 export function outcomeText(outcome: RaceOutcome): string {
     switch (outcome.kind) {
@@ -105,6 +133,15 @@ function layoutSvg(repoRoot: URL, circuitId: string | null): string | null {
         } catch {
             // try the next name
         }
+    }
+    return null;
+}
+
+/** A circuit's layout SVG file, as a path inside the site, if there is one. */
+function layoutFile(repoRoot: URL, circuitId: string | null): string | null {
+    if (!circuitId) return null;
+    for (const name of [`${circuitId}-layout.svg`, `${circuitId}.svg`]) {
+        if (existsSync(new URL(`img/circuits/${name}`, repoRoot))) return `img/circuits/${name}`;
     }
     return null;
 }
@@ -191,5 +228,55 @@ export function buildHomeHero(dataDir: URL): HomeHero {
         rounds: gps.length,
         next: next ? heroGp(next) : null,
         last: lastResult,
+    };
+}
+
+/** Every round of the latest season, for the calendar poster. */
+export function buildSeasonPoster(dataDir: URL): SeasonPoster {
+    const repoRoot = new URL('../', dataDir);
+    const season = loadLatestYear(dataDir);
+    const teams = loadTeams(dataDir);
+    const gps = loadSeason(dataDir, season, teams);
+    const drivers = loadDrivers(dataDir);
+    const circuits = loadCircuits(dataDir);
+    const cities = loadCities(dataDir);
+
+    const raced = (gp: GrandPrix) => (race(gp)?.results.length ?? 0) > 0;
+    const nextId = gps.find((gp) => !gp.cancelled && !raced(gp))?.id;
+    const latestId = [...gps].reverse().find((gp) => !gp.cancelled && raced(gp))?.id;
+
+    const rounds = gps.map((gp): PosterRound => {
+        const circuit = gp.circuitId ? circuits[gp.circuitId] : undefined;
+        const starts = gp.sessions.flatMap((s) => (s.time?.kind === 'datetime' ? [s.time.start] : []));
+        const raceTime = race(gp)?.time;
+        const winnerRow = race(gp)?.results.find((r) => r.pos === 1);
+        const winner = winnerRow ? drivers[winnerRow.driver] : undefined;
+        return {
+            id: gp.id,
+            round: gp.round,
+            name: gp.name.replace(/Grand Prix/, 'GP'),
+            city: circuit ? cities[circuit.location.city]?.name ?? null : null,
+            layout: layoutFile(repoRoot, gp.circuitId),
+            sprint: gp.sprint,
+            status: gp.cancelled ? 'cancelled' : raced(gp) ? 'done' : gp.id === nextId ? 'next' : 'upcoming',
+            latest: gp.id === latestId,
+            weekendStart: starts.sort()[0] ?? null,
+            raceStart: raceTime?.kind === 'datetime' ? raceTime.start : null,
+            winner: winnerRow
+                ? {
+                    name: winner?.lastName ?? winnerRow.driver,
+                    teamColor: teams[winnerRow.teamId]?.color ?? null,
+                    teamLogo: teamLogo(repoRoot, winnerRow.teamId),
+                }
+                : null,
+        };
+    });
+
+    return {
+        season,
+        rounds,
+        raced: rounds.filter((r) => r.status === 'done').length,
+        cancelled: rounds.filter((r) => r.status === 'cancelled').length,
+        toGo: rounds.filter((r) => r.status === 'next' || r.status === 'upcoming').length,
     };
 }
