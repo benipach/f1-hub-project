@@ -1,0 +1,146 @@
+/* Reset and primitives of the "Poster" system (_design/DESIGN.md, sections 2
+   and 4). Components add their own styles on top of these. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+
+:focus-visible {
+    outline: 3px solid var(--red);
+    outline-offset: 2px;
+}
+
+/* Visually hidden, still read by screen readers */
+.sr {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ---- Type roles ---------------------------------------------------------- */
+
+/* Labels: kickers, column heads, buttons, tags */
+.lbl {
+    font-size: 11px;
+    font-weight: 700;
+    font-stretch: 115%;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    line-height: 1.3;
+}
+
+/* Display: numbers, names, titles */
+.cond {
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    line-height: .86;
+    letter-spacing: -.005em;
+}
+
+/* Anything that ticks or lines up in a column */
+.num { font-variant-numeric: tabular-nums lining-nums; }
+
+/* ---- Layout -------------------------------------------------------------- */
+
+.wrap {
+    width: 100%;
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 var(--gut);
+}
+
+.g12 {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+}
+
+/* ---- Primitives ---------------------------------------------------------- */
+
+/* Team color square: <span class="sq" style="--c: #FF0019"> */
+.sq {
+    display: inline-block;
+    flex: none;
+    width: 10px;
+    height: 10px;
+    background: var(--c, #999);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .35);
+    vertical-align: baseline;
+}
+.on-ink .sq { box-shadow: 0 0 0 1px rgba(239, 234, 224, .55); }
+
+/* Live dot: gray when idle, white and beating when live */
+.ldot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #5a5650;
+}
+
+/* Live pulse: fades, never changes size */
+@keyframes beat {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .35; }
+}
+
+/* "→" that slides when its link is hovered */
+.arrow {
+    display: inline-block;
+    transition: all .25s ease;
+}
+a:hover .arrow { transform: translateX(6px); }
+
+/* Square buttons in label type */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    border: 0;
+    font-size: 12px;
+    font-weight: 700;
+    font-stretch: 115%;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+.btn--red { background: var(--red); color: #fff; }
+.btn--red:hover { background: var(--ink); }
+.btn--ink { background: var(--ink); color: #fff; }
+.btn--ink:hover { background: #000; }
+.btn--line { background: transparent; box-shadow: inset 0 0 0 1px currentColor; }
+.btn--line:hover { background: var(--ink); color: var(--paper); box-shadow: inset 0 0 0 1px var(--ink); }
+.on-ink .btn--line:hover { background: var(--paper); color: var(--ink); box-shadow: inset 0 0 0 1px var(--paper); }
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

@@ -1,0 +1,219 @@
+---
+// Site footer (_design/DESIGN.md, section 5). Same content as the old pages'
+// footer (js/footer.js), in the poster style: ink field, link columns, the
+// wordmark across the full width, legal notice.
+import { href } from '../lib/paths';
+
+const columns: { title: string; links: [label: string, path: string | null][] }[] = [
+    { title: 'Season', links: [
+        ['Calendar', '#calendar'],
+        ['Championship', 'results.html#championship-section'],
+        ['Results', 'results.html#results-section'],
+        ['Live Timing', 'live.html'],
+    ] },
+    { title: 'The Grid', links: [
+        ['Drivers', 'drivers.html'],
+        ['Teams', 'teams.html'],
+    ] },
+    // No path: the page doesn't exist yet and shows as "Soon"
+    { title: 'History', links: [
+        ['Memorabilia', null],
+    ] },
+];
+
+const resources: [label: string, url: string][] = [
+    ['Formula 1', 'https://www.formula1.com'],
+    ['FIA', 'https://www.fia.com'],
+    ['OpenF1', 'https://openf1.org'],
+];
+
+const social: [label: string, url: string][] = [
+    ['GitHub', 'https://github.com/benipach'],
+    ['LinkedIn', 'https://linkedin.com/in/benicio-pacheco'],
+    ['Portfolio', 'https://benipach.dev'],
+];
+
+const internal = (path: string) => (path.startsWith('#') ? href('') + path : href(path));
+const year = new Date().getFullYear();
+---
+
+<footer class="foot on-ink">
+    <div class="wrap">
+        <div class="foot__top g12">
+            <div class="foot__about">
+                <p class="foot__tag">
+                    Every Grand Prix in one place: the calendar in your local time, live timing,
+                    full results and standings, driver and team profiles. Made by a fan, for fans.
+                </p>
+                <p class="foot__tz lbl">All times shown in <b data-tz>your local time</b></p>
+            </div>
+
+            <nav class="foot__nav" aria-label="Footer">
+                {columns.map(({ title, links }) => (
+                    <div>
+                        <h2 class="lbl">{title}</h2>
+                        <ul>
+                            {links.map(([label, path]) => (
+                                <li>
+                                    {path
+                                        ? <a href={internal(path)}>{label}</a>
+                                        : <span class="soon">{label}<i class="lbl">Soon</i></span>}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ))}
+                <div>
+                    <h2 class="lbl">Resources</h2>
+                    <ul>
+                        {resources.map(([label, url]) => (
+                            <li><a href={url} target="_blank" rel="noopener noreferrer">{label} ↗</a></li>
+                        ))}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <p class="foot__mark" aria-hidden="true">F1 <span>Hub</span></p>
+
+        <div class="foot__legal">
+            <p>
+                Unofficial fan project. F1 Hub is not associated in any way with the Formula 1
+                companies, the FIA or any Formula 1 team. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE
+                WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trade marks of Formula One
+                Licensing B.V.
+            </p>
+            <p>
+                Team names, logos, driver images and other trademarks shown on this site belong to
+                their respective owners. Data comes in part from OpenF1 and is provided for
+                information only, without any guarantee of accuracy.
+            </p>
+        </div>
+
+        <div class="foot__bot">
+            <span class="foot__cr">© {year} F1 Hub · Designed &amp; built by <a href="https://benipach.dev" target="_blank" rel="noopener noreferrer">Benicio Pacheco</a></span>
+            <span class="foot__social lbl">
+                {social.map(([label, url]) => <a href={url} target="_blank" rel="noopener noreferrer">{label} ↗</a>)}
+            </span>
+            <a class="foot__top-link lbl" href="#top">Back to top ↑</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // The visitor's time zone, to make clear which time all the site's times
+    // are in: "Buenos Aires · GMT-3" (same as js/footer.js).
+    function timezoneLabel(): string {
+        try {
+            const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const city = (zone.split('/').pop() ?? zone).replace(/_/g, ' ');
+            const offset = new Intl.DateTimeFormat('en', { timeZoneName: 'shortOffset' })
+                .formatToParts(new Date())
+                .find((part) => part.type === 'timeZoneName')?.value;
+            return offset ? `${city} · ${offset}` : city;
+        } catch {
+            return 'your local time';
+        }
+    }
+    const label = timezoneLabel();
+    document.querySelectorAll('[data-tz]').forEach((el) => { el.textContent = label; });
+</script>
+
+<style>
+    .foot {
+        padding: 88px 0 96px;
+        background: var(--ink);
+        color: var(--paper);
+    }
+    .foot__top { row-gap: 48px; }
+
+    .foot__about { grid-column: 1 / 6; }
+    .foot__tag {
+        max-width: 26ch;
+        margin: 0;
+        font-size: clamp(22px, 2.2vw, 30px);
+        font-weight: 500;
+        line-height: 1.2;
+    }
+    .foot__tz { margin: 22px 0 0; color: var(--mute-ink); }
+    .foot__tz b { color: var(--paper); }
+
+    .foot__nav {
+        grid-column: 7 / 13;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--gap);
+    }
+    .foot__nav h2 {
+        margin: 0 0 14px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(239, 234, 224, .35);
+        color: var(--mute-ink);
+    }
+    .foot__nav ul { margin: 0; padding: 0; list-style: none; }
+    .foot__nav li { margin: 0 0 8px; }
+    .foot__nav a {
+        font-weight: 600;
+        text-decoration: none;
+        transition: all .2s ease;
+    }
+    .foot__nav a:hover { color: var(--red-hi); }
+    .soon { color: var(--mute-ink); }
+    .soon i {
+        margin-left: 6px;
+        padding: 1px 5px;
+        border: 1px solid currentColor;
+        font-size: 10px;
+        font-style: normal;
+    }
+
+    .foot__mark {
+        margin: 80px 0 0;
+        padding-bottom: 18px;
+        border-bottom: 4px solid var(--paper);
+        color: var(--paper);
+        font-size: clamp(96px, 41vw, 600px);
+        font-weight: 900;
+        font-stretch: 62%;
+        line-height: .74;
+        letter-spacing: -.02em;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+    .foot__mark span { color: var(--red); }
+
+    .foot__legal {
+        max-width: 92ch;
+        margin: 28px 0 0;
+        color: var(--mute-ink);
+        font-size: 13px;
+        line-height: 1.55;
+    }
+    .foot__legal p { margin: 0 0 8px; }
+
+    .foot__bot {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 16px 32px;
+        margin-top: 28px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(239, 234, 224, .2);
+    }
+    .foot__cr { flex: 1; min-width: 240px; font-size: 14px; }
+    .foot__social { display: flex; gap: 20px; }
+    .foot__social a, .foot__top-link {
+        text-decoration: none;
+        transition: all .2s ease;
+    }
+    .foot__social a:hover, .foot__top-link:hover { color: var(--red-hi); }
+
+    @media (max-width: 1100px) {
+        .foot__about, .foot__nav { grid-column: 1 / 13; }
+    }
+    @media (max-width: 760px) {
+        .foot { padding: 64px 0 96px; }
+        .foot__nav { grid-template-columns: repeat(2, 1fr); row-gap: 28px; }
+        .foot__mark { margin-top: 56px; font-size: clamp(80px, 37vw, 200px); }
+    }
+</style>

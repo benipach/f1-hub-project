@@ -1,0 +1,40 @@
+/* Design tokens of the "Poster" system (_design/DESIGN.md, section 2).
+   Every color, size and space on the new pages comes from here. */
+
+:root {
+    /* Color fields and text */
+    --paper: #EFEAE0;
+    --paper-2: #E6E0D3;
+    --ink: #121212;
+    --ink-2: #1E1E1E;
+    --mute: #66625A;        /* secondary text on paper, 5.0:1 */
+    --mute-ink: #A39E93;    /* secondary text on ink, 7.0:1 */
+
+    /* Brand red: --red only for large type and flat fields (fails AA for
+       small text on paper); the other two are for small text. */
+    --red: #E10600;
+    --red-ink: #B30500;     /* small red text on paper or white */
+    --red-hi: #FF5A4E;      /* small red text on ink */
+
+    --fl: #C08BFF;          /* fastest lap, on ink */
+
+    /* Hairlines on dark fields */
+    --rule-ink: rgba(239, 234, 224, .25);
+    --rule-ink-soft: rgba(239, 234, 224, .16);
+
+    /* Type */
+    --font: 'Archivo Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+    /* Space and layout */
+    --nav: 56px;
+    --gut: 32px;
+    --gap: 16px;
+    --max: 1440px;
+}
+
+@media (max-width: 760px) {
+    :root {
+        --gut: 16px;
+        --gap: 12px;
+    }
+}

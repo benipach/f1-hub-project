@@ -108,10 +108,16 @@ calendar becomes a list, smaller gutters).
 
 ### Motion
 
-- One easing: `--ease: cubic-bezier(.7, 0, .2, 1)`.
+- **Transitions are written as `transition: all <duration> ease`**, with one
+  duration shared by every animated element of a component, so the whole
+  component moves in sync on enter and on leave (the project's rule, as in
+  `styles/drivers.css`). No custom curves, delays or per-property lists. This
+  replaces the mockup's `cubic-bezier(.7, 0, .2, 1)`.
 - **Wipe** when the hero changes state: `clip-path` from `inset(0 100% 0 0)` to
-  `inset(0)`, 0.7 s.
-- **Beat** for anything live (dots): scale 1 → .55 and back, ~1.1 s loop.
+  `inset(0)`, 0.7 s, `ease`.
+- **Beat** for anything live (dots): opacity 1 → .35 and back, ~1.1 s loop.
+  The dot keeps its size (owner's call, 12/10: the mockup's scaling pulse
+  changed it too much).
 - Arrows move 6 px right on hover.
 - Animate only `transform`, `opacity` and `clip-path`.
 - `prefers-reduced-motion: reduce` turns every animation and transition off.

@@ -1,0 +1,202 @@
+---
+// A living reference of the "Poster" system (_design/DESIGN.md): tokens, type,
+// primitives, and the navbar and footer in place. Not linked from the site
+// and kept out of search engines; it's for checking the system while the new
+// pages are built.
+import { loadLatestYear, loadSeason, loadTeams } from '@f1hub/shared/data/load';
+import Base from '../layouts/Base.astro';
+import { DATA_DIR } from '../lib/data';
+
+const colors = [
+    ['--paper', 'Base field, text on ink'],
+    ['--paper-2', 'Second level on paper'],
+    ['--ink', 'Text on paper, dark fields'],
+    ['--ink-2', 'Second level on ink'],
+    ['--mute', 'Secondary text on paper'],
+    ['--mute-ink', 'Secondary text on ink'],
+    ['--red', 'Large type and fields only'],
+    ['--red-ink', 'Small red text on paper'],
+    ['--red-hi', 'Small red text on ink'],
+    ['--fl', 'Fastest lap'],
+] as const;
+
+// This season's teams: the ones in the latest season's race results.
+const catalog = loadTeams(DATA_DIR);
+const raced = new Set(
+    loadSeason(DATA_DIR, loadLatestYear(DATA_DIR), catalog)
+        .flatMap((gp) => gp.sessions)
+        .filter((session) => session.kind === 'race')
+        .flatMap((session) => session.results.map((row) => row.teamId)),
+);
+const teams = [...raced].flatMap((id) => {
+    const team = catalog[id];
+    return team?.color ? [{ id, name: team.name, color: team.color }] : [];
+});
+
+const scale = [
+    ['Section title', 'clamp(72px, 12vw, 196px)', 'Season 2026'],
+    ['Countdown', 'clamp(68px, 12vw, 190px)', '10:20:42'],
+    ['GP title', 'clamp(44px, 7.4vw, 118px)', 'United States Grand Prix'],
+    ['Winner name', 'clamp(52px, 7vw, 110px)', 'Verstappen'],
+    ['Round number', '60px', '20'],
+    ['List value', '28px', '340'],
+] as const;
+---
+
+<Base title="Design system | F1 Hub" description="The Poster design system of F1 Hub." noindex>
+    <section class="ds">
+        <div class="wrap">
+            <header class="ds-head">
+                <p class="lbl ds-kicker">F1 Hub · Design system</p>
+                <h1 class="cond ds-title">Poster</h1>
+                <p class="ds-lead">
+                    Tokens and primitives from <code>_design/DESIGN.md</code>, with the navbar and the
+                    footer in place. Toggle the live state to see the navbar react.
+                </p>
+                <button class="btn btn--red" type="button" data-toggle-live aria-pressed="false">Simulate a live session</button>
+            </header>
+
+            <h2 class="lbl ds-h">Color</h2>
+            <ul class="swatches">
+                {colors.map(([token, use]) => (
+                    <li>
+                        <span class="swatch" style={`background: var(${token})`}></span>
+                        <b class="lbl">{token}</b>
+                        <span class="ds-note">{use}</span>
+                    </li>
+                ))}
+            </ul>
+
+            <h2 class="lbl ds-h">Team colors, from data/teams.json</h2>
+            <ul class="teams">
+                {teams.map((team) => (
+                    <li><span class="sq" style={`--c: ${team.color}`}></span>{team.name}</li>
+                ))}
+            </ul>
+
+            <h2 class="lbl ds-h">Type</h2>
+            <div class="roles">
+                <div><p class="lbl">Label · 11 px, 700, 115 % wide</p><p class="lbl">Next session — Practice 1 starts in</p></div>
+                <div><p class="lbl">Display · 900, 62 % wide</p><p class="cond" style="font-size: 64px">Grand Prix</p></div>
+                <div><p class="lbl">Body · 16 px</p><p>Every Grand Prix in one place: the calendar in your local time, live timing and full results.</p></div>
+            </div>
+            <ol class="scale">
+                {scale.map(([role, size, sample]) => (
+                    <li>
+                        <span class="lbl ds-note">{role}<br />{size}</span>
+                        <span class="cond num" style={`font-size: ${size}`}>{sample}</span>
+                    </li>
+                ))}
+            </ol>
+
+            <h2 class="lbl ds-h">Buttons</h2>
+            <div class="row">
+                <a class="btn btn--red" href="#">Grand Prix guide <span class="arrow">→</span></a>
+                <a class="btn btn--ink" href="#">All results <span class="arrow">→</span></a>
+                <a class="btn btn--line" href="#">Weekend timetable <span class="arrow">→</span></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="ds ds--ink on-ink">
+        <div class="wrap">
+            <h2 class="lbl ds-h">On ink</h2>
+            <p class="cond ds-one" aria-hidden="true">1</p>
+            <div class="row">
+                <a class="btn btn--red" href="#">Full standings <span class="arrow">→</span></a>
+                <a class="btn btn--line" href="#">Drivers</a>
+            </div>
+            <ul class="teams">
+                {teams.slice(0, 6).map((team) => (
+                    <li><span class="sq" style={`--c: ${team.color}`}></span>{team.name}</li>
+                ))}
+            </ul>
+        </div>
+    </section>
+</Base>
+
+<script>
+    const toggle = document.querySelector<HTMLButtonElement>('[data-toggle-live]');
+    toggle?.addEventListener('click', () => {
+        const root = document.documentElement;
+        const live = root.dataset['weekend'] !== 'live';
+        if (live) root.dataset['weekend'] = 'live';
+        else delete root.dataset['weekend'];
+        toggle.setAttribute('aria-pressed', String(live));
+        toggle.textContent = live ? 'Stop the live session' : 'Simulate a live session';
+    });
+</script>
+
+<style>
+    .ds { padding: 72px 0 96px; }
+    .ds--ink { background: var(--ink); color: var(--paper); }
+
+    .ds-head { max-width: 760px; margin-bottom: 64px; }
+    .ds-kicker { margin: 0 0 14px; color: var(--mute); }
+    .ds-title { margin: 0; font-size: clamp(96px, 16vw, 240px); }
+    .ds-lead { margin: 20px 0 28px; font-size: 18px; }
+    .ds-h {
+        margin: 56px 0 18px;
+        padding-top: 12px;
+        border-top: 4px solid currentColor;
+    }
+    .ds-note { color: var(--mute); }
+    .ds--ink .ds-note { color: var(--mute-ink); }
+
+    .swatches {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: var(--gap);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    .swatches li { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+    .swatch { height: 72px; box-shadow: inset 0 0 0 1px rgba(18, 18, 18, .2); }
+
+    .teams {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 24px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-weight: 700;
+    }
+    .teams li { display: flex; align-items: center; gap: 8px; }
+
+    .roles {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--gap);
+    }
+    .roles p { margin: 0 0 8px; }
+    .roles > div > p:first-child { color: var(--mute); }
+
+    .scale { margin: 32px 0 0; padding: 0; list-style: none; }
+    .scale li {
+        display: grid;
+        grid-template-columns: 180px minmax(0, 1fr);
+        gap: var(--gap);
+        align-items: end;
+        padding: 14px 0;
+        border-top: 1px solid rgba(18, 18, 18, .22);
+        overflow: hidden;
+    }
+    .scale .cond { white-space: nowrap; }
+
+    .row { display: flex; flex-wrap: wrap; gap: 12px; }
+
+    .ds-one {
+        margin: 0 0 32px;
+        color: var(--red);
+        font-size: clamp(240px, 44vw, 660px);
+        line-height: .73;
+        letter-spacing: -.04em;
+    }
+
+    @media (max-width: 760px) {
+        .roles { grid-template-columns: 1fr; }
+        .scale li { grid-template-columns: 1fr; }
+    }
+</style>

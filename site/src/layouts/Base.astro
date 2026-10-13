@@ -1,0 +1,52 @@
+---
+// The shell of every new page: fonts, design tokens, navbar and footer
+// (_design/DESIGN.md). Pages put their content in the default slot.
+import '@fontsource-variable/archivo/wdth.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import { loadLatestYear } from '@f1hub/shared/data/load';
+import Footer from '../components/Footer.astro';
+import Navbar, { type NavPage } from '../components/Navbar.astro';
+import { DATA_DIR } from '../lib/data';
+import { href } from '../lib/paths';
+
+interface Props {
+    title: string;
+    description: string;
+    /** Section of the site, marked in the navbar. */
+    current?: NavPage | undefined;
+    /** Keep the page out of search engines (work-in-progress pages). */
+    noindex?: boolean;
+}
+
+const { title, description, current, noindex = false } = Astro.props;
+const season = loadLatestYear(DATA_DIR);
+---
+
+<!doctype html>
+<html lang="en" translate="no">
+<head>
+    <!-- Google tag (gtag.js), same property as the old pages -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-V7JKWRTE0S"></script>
+    <script is:inline>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-V7JKWRTE0S');
+    </script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="icon" href={href('img/icon.png')} />
+</head>
+<body>
+    <a class="sr" href="#main">Skip to content</a>
+    <Navbar current={current} season={season} />
+    <main id="main">
+        <slot />
+    </main>
+    <Footer />
+</body>
+</html>
