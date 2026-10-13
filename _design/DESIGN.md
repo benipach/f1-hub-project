@@ -154,18 +154,28 @@ site: one red field per screen at most.
 
 No rounded corners anywhere, except the roundel and the dots. No shadows,
 except the floating mockup switcher (which doesn't ship).
-
 ## 5. Components
 
 ### Navbar (site-wide)
 
 - Ink bar, 56 px, sticky. Logo, then "Season 2026" as a label next to it.
-- Links in label type: Calendar, Results, Drivers, Teams, Live. Hover: 1 px
-  white border. Current page: red bottom border (`aria-current="page"`).
+- Links in label type: Calendar, Results, Drivers, Teams, Live.
+- **Hover and keyboard focus: "rolling label".** The label rolls up out of
+  view while a copy in `--red-hi` rolls in from below (both stacked in a
+  one-cell grid with `overflow: hidden`; the copy is `aria-hidden`), and a
+  2 px red rule draws itself left to right under the link (`clip-path` from
+  `inset(0 100% 0 0)` to `inset(0)`). One `transition: all .35s ease` for the
+  whole component. With reduced motion it switches instantly.
+- **Current page** (`aria-current="page"`): the red rule stays drawn, so hover
+  and "you are here" speak the same language.
+- Tried and dropped on 12/10: the mockup's 1 px white border (looked like a
+  form button), a paper block inverting the link, and a full-height version
+  of that block (a dark strip stayed at the bottom; cause not found).
 - **Live link**: has an `.ldot`. When a session is live, the link turns into a
   red block, the dot beats and the text reads "Live now".
 - **≤ 860 px**: a "Menu" button opens the menu full screen on paper, with the
-  links in display type (56 px). When a session is live, a red "● Live" chip
+  links in display type (56 px). Same rolling label, with the copy in large
+  `--red` and no drawn rule (each link already has its own separator). When a session is live, a red "● Live" chip
   stays visible next to the Menu button.
 - The live state comes from the timetable (section 6), not from the relay.
 

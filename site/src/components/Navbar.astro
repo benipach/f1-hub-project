@@ -36,10 +36,16 @@ const links: { page: NavPage; label: string; to: string }[] = [
         <button class="nav__btn lbl" type="button" aria-expanded="false" aria-controls="nav-menu">Menu</button>
         <nav class="nav__menu" id="nav-menu" aria-label="Main">
             {links.map(({ page, label, to }) => (
-                <a href={to.startsWith('#') ? href('') + to : href(to)} aria-current={current === page ? 'page' : undefined}>{label}</a>
+                <a href={to.startsWith('#') ? href('') + to : href(to)} aria-current={current === page ? 'page' : undefined}>
+                    <span class="roll"><span>{label}</span><span aria-hidden="true">{label}</span></span>
+                </a>
             ))}
             <a class="nav__live" href={href('live.html')} aria-current={current === 'live' ? 'page' : undefined}>
-                <span class="ldot" aria-hidden="true"></span>Live<span class="nav__now">&nbsp;now</span>
+                <span class="ldot" aria-hidden="true"></span>
+                <span class="roll">
+                    <span>Live<span class="nav__now">&nbsp;now</span></span>
+                    <span aria-hidden="true">Live<span class="nav__now">&nbsp;now</span></span>
+                </span>
             </a>
         </nav>
     </div>
@@ -92,11 +98,11 @@ const links: { page: NavPage; label: string; to: string }[] = [
         margin-left: auto;
     }
     .nav__menu a {
+        position: relative;
         display: flex;
         align-items: center;
         gap: 8px;
         padding: 8px 14px;
-        border: 1px solid transparent;
         color: #fff;
         font-size: 12px;
         font-weight: 700;
@@ -104,14 +110,46 @@ const links: { page: NavPage; label: string; to: string }[] = [
         text-transform: uppercase;
         letter-spacing: .09em;
         text-decoration: none;
-        transition: all .2s ease;
     }
-    .nav__menu a:hover { border-color: #fff; }
-    .nav__menu a[aria-current='page'] { border-bottom-color: var(--red); }
+
+    /* Hover (and keyboard focus): the label rolls up and a red copy rolls in
+       from below, while a red rule draws itself left to right under the link.
+       Everything in the component shares one transition. */
+    .roll {
+        display: inline-grid;
+        overflow: hidden;
+    }
+    .roll > span {
+        grid-area: 1 / 1;
+        transition: all .35s ease;
+    }
+    .roll > span + span {
+        color: var(--red-hi);
+        transform: translateY(100%);
+    }
+    .nav__menu a:is(:hover, :focus-visible) .roll > span:first-child { transform: translateY(-100%); }
+    .nav__menu a:is(:hover, :focus-visible) .roll > span + span { transform: translateY(0); }
+
+    .nav__menu a::after {
+        content: '';
+        position: absolute;
+        right: 14px;
+        bottom: 2px;
+        left: 14px;
+        height: 2px;
+        background: var(--red);
+        clip-path: inset(0 100% 0 0);
+        transition: all .35s ease;
+    }
+    .nav__menu a:is(:hover, :focus-visible)::after,
+    .nav__menu a[aria-current='page']::after { clip-path: inset(0); }
 
     .nav__now { display: none; }
-    :global(html[data-weekend='live']) .nav__live { background: var(--red); border-color: var(--red); }
+    :global(html[data-weekend='live']) .nav__live { background: var(--red); }
     :global(html[data-weekend='live']) .nav__live .ldot { background: #fff; animation: beat 1.1s ease-in-out infinite; }
+    /* On the red block the copy and the rule are white */
+    :global(html[data-weekend='live']) .nav__live .roll > span + span { color: #fff; }
+    :global(html[data-weekend='live']) .nav__live::after { background: #fff; }
     :global(html[data-weekend='live']) .nav__now { display: inline; }
 
     .nav__chip, .nav__btn { display: none; }
@@ -151,8 +189,12 @@ const links: { page: NavPage; label: string; to: string }[] = [
             letter-spacing: -.005em;
             line-height: .9;
         }
-        .nav__menu a:hover { border-color: var(--ink); color: var(--red); }
-        .nav__menu a[aria-current='page'] { color: var(--red-ink); border-bottom-color: var(--ink); }
+        /* Same roll, with the copy in large red; each link already has its
+           own rule, so no drawn line here. */
+        .nav__menu a::after { display: none; }
+        .roll > span + span,
+        :global(html[data-weekend='live']) .nav__live .roll > span + span { color: var(--red); }
+        .nav__menu a[aria-current='page'] { color: var(--red-ink); }
         .nav__menu .ldot { width: 14px; height: 14px; }
         :global(html[data-weekend='live']) .nav__live { background: none; color: var(--red-ink); }
         :global(html[data-weekend='live']) .nav__live .ldot { background: var(--red); }
