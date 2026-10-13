@@ -280,7 +280,7 @@ const rest = last?.rows.slice(3) ?? [];
             </div>
 
             {next && (
-                <div class="band band--red">
+                <div class="band band--paper">
                     <div class="wrap band__in">
                         <span class="band__k lbl">Next race</span>
                         <span class="band__v">{next.name}</span>
@@ -352,7 +352,8 @@ const rest = last?.rows.slice(3) ?? [];
     .digits .c { padding: 0 .035em; }
 
     .band { background: var(--ink); color: #fff; }
-    .band--red { background: var(--red); }
+    /* Paper band, on the result's ink field (it was red; red is for live) */
+    .band--paper { background: var(--paper); color: var(--ink); }
     .band__in {
         display: flex;
         flex-wrap: wrap;
@@ -363,7 +364,7 @@ const rest = last?.rows.slice(3) ?? [];
         padding-bottom: 12px;
     }
     .band__k { color: var(--mute-ink); }
-    .band--red .band__k { color: #fff; }
+    .band--paper .band__k { color: var(--mute); }
     .band__v {
         font-size: 30px;
         font-weight: 900;
@@ -372,7 +373,7 @@ const rest = last?.rows.slice(3) ?? [];
         text-transform: uppercase;
     }
     .band__rule { flex: 1; min-width: 24px; height: 1px; background: #3a3a3a; }
-    .band--red .band__rule { background: rgba(255, 255, 255, .5); }
+    .band--paper .band__rule { background: rgba(18, 18, 18, .3); }
 
     .ldot--on { background: #fff; animation: beat 1.1s ease-in-out infinite; }
     .ldot--red { background: var(--red); animation: beat 1.1s ease-in-out infinite; }
@@ -641,7 +642,8 @@ const rest = last?.rows.slice(3) ?? [];
         font-weight: 700;
     }
 
-    /* Without a photo: the red field with the circuit layout (DESIGN.md §7) */
+    /* Without a photo: a paper field with the circuit layout in ink (DESIGN.md
+       §7). It was red; red is kept for what's live. */
     .res__mark {
         position: relative;
         grid-column: 9 / 13;
@@ -649,8 +651,8 @@ const rest = last?.rows.slice(3) ?? [];
         align-self: start;
         aspect-ratio: 4 / 5;
         margin: 0;
-        background: var(--red);
-        color: var(--paper);
+        background: var(--paper);
+        color: var(--ink);
     }
     .res__mark .trk { position: absolute; inset: 14% 12% 22%; display: grid; place-items: center; }
     .res__mark .trk :global(svg) { max-height: 100%; }
@@ -662,7 +664,7 @@ const rest = last?.rows.slice(3) ?? [];
         display: flex;
         justify-content: space-between;
         gap: 12px;
-        color: #fff;
+        color: var(--ink);
     }
 
     .res__pod { grid-column: 4 / 9; grid-row: 2; align-self: end; margin-top: 36px; }

@@ -172,11 +172,19 @@ Fields alternate down the page, so each section starts with a clear change:
 | Field | Where |
 |---|---|
 | Ink | Navbar (always), result hero, standings, footer |
-| Paper | Upcoming hero, calendar, most content sections |
-| Red | Live hero, the "Explore" index; the next round's calendar cell |
+| Paper | Upcoming hero, calendar, the "Explore" index, most content sections |
+| Red | Live hero; the next round's calendar cell |
 
 Avoid two sections of the same field in a row. Red is the loudest thing on the
-site: one red field per screen at most.
+site: one red field per screen at most. **Red fields are kept for what's live
+or about to be** (owner's call, 13/10: the Explore index, the result's band
+and its layout block moved from red to paper). Red as a small brand accent
+stays: the giant "1", leader points, main buttons, countdown separators, the
+upcoming hero's track, "To go", the latest round's number, "Hub" in the
+footer wordmark.
+
+**Copy never states where the archive starts** ("since 1990"): it's being
+extended back to 1950 and is in progress (owner's call, 13/10).
 
 ## 4. Primitives
 
@@ -289,8 +297,10 @@ about half the width, not the whole page.
   team, grid and first name go.
 - Band (red): next race and how far away it is; "All results".
 - **No photo needed.** The mockup's duotone portrait (cols 9–12) is optional:
-  without a photo, that block is the red field with the circuit layout in
-  paper and the circuit name (see section 7). On ≤ 1100 px it's hidden anyway.
+  without a photo, that block is a **paper** field with the circuit layout in
+  ink and the circuit name (see section 7). It was red; moved to paper on
+  13/10 because red is kept for what's live. On ≤ 1100 px it's hidden anyway.
+- The band under the result is **paper** too (was red, same reason).
 
 ### Calendar: the season poster
 
@@ -336,9 +346,14 @@ about half the width, not the whole page.
 
 ### Explore index
 
-- Section on red. A numbered list of the site's sections, each title in
-  display type with a one-line description and an arrow. Hover: the row turns
-  ink and indents.
+- Section on paper (it was red in the mockup; moved on 13/10, since red is
+  kept for what's live). A numbered list of the site's sections, each title
+  in display type with a one-line description (muted) and an arrow. Hover:
+  the row turns ink with paper text and indents.
+- Built (13/10) as `site/src/components/home/Explore.astro`: Results, Live
+  timing, Drivers, Teams, Championship, Archive, and "Hall of Fame" with a
+  "Soon" tag and no link yet. The archive's first year comes from the files in
+  `data/seasons/`, so it moves back on its own when 1950–1989 are added.
 
 ### Footer (site-wide)
 

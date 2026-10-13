@@ -1,0 +1,115 @@
+---
+// The homepage's index of the site (_design/DESIGN.md, section 5): a paper
+// field (red is kept for what's live) with a numbered list of sections, each
+// title in display type with a line of description. Hover turns the row ink
+// and indents it.
+import { href } from '../../lib/paths';
+
+// No year in the copy: the archive is being extended back to 1950 (the
+// owner's goal), so it promises neither where it starts today nor 1950.
+const sections: { title: string; text: string; path: string | null }[] = [
+    { title: 'Results', text: 'Race, sprint and qualifying classifications, round by round.', path: 'results.html' },
+    { title: 'Live timing', text: 'Positions, gaps, sectors and tyres from F1’s official feed.', path: 'live.html' },
+    { title: 'Drivers', text: 'Profiles, numbers and career records of the grid.', path: 'drivers.html' },
+    { title: 'Teams', text: 'The constructors: line-ups, cars and history.', path: 'teams.html' },
+    { title: 'Championship', text: 'Drivers’ and constructors’ standings after every round.', path: 'championship.html' },
+    { title: 'Archive', text: 'The history of the championship, season by season.', path: 'archive.html' },
+    // No page yet: shown as "Soon", like in the footer
+    { title: 'Hall of Fame', text: 'The greats of the sport, in one place.', path: null },
+];
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<section class="sec" aria-labelledby="idx-title">
+    <div class="wrap">
+        <header class="sec-head g12">
+            <p class="sec-no lbl">03 — Explore</p>
+            <h2 class="sec-title cond" id="idx-title">Index</h2>
+            <div class="sec-meta">
+                <p>Everything on F1 Hub: live timing, results, standings, profiles and the history of the sport.</p>
+            </div>
+        </header>
+
+        <ul class="idx">
+            {sections.map(({ title, text, path }, i) => (
+                <li>
+                    {path
+                        ? (
+                            <a class="idx__row" href={href(path)}>
+                                <span class="lbl">{pad(i + 1)}</span>
+                                <span class="idx__t">{title}</span>
+                                <span class="idx__d">{text}</span>
+                                <span class="arrow" aria-hidden="true">→</span>
+                            </a>
+                        )
+                        : (
+                            <span class="idx__row idx__row--soon">
+                                <span class="lbl">{pad(i + 1)}</span>
+                                <span class="idx__t">{title}</span>
+                                <span class="idx__d">{text}</span>
+                                <span class="idx__soon lbl">Soon</span>
+                            </span>
+                        )}
+                </li>
+            ))}
+        </ul>
+    </div>
+</section>
+
+<style>
+    .sec { padding: 112px 0 120px; background: var(--paper); color: var(--ink); }
+    .sec-head { align-items: end; row-gap: 20px; margin-bottom: 40px; }
+    .sec-no { grid-column: 1 / 13; display: flex; align-items: center; gap: 14px; margin: 0; }
+    .sec-no::after { content: ''; flex: 1; height: 1px; background: currentColor; }
+    .sec-title { grid-column: 1 / 8; margin: 0; font-size: clamp(72px, 12vw, 196px); line-height: .8; }
+    .sec-meta { grid-column: 8 / 13; }
+    .sec-meta p { max-width: 36ch; margin: 0; font-size: 18px; font-weight: 500; }
+
+    .idx { margin: 0; padding: 0; list-style: none; border-bottom: 1px solid var(--ink); }
+    .idx__row {
+        display: grid;
+        grid-template-columns: 72px minmax(0, 1fr) minmax(0, 30%) 60px;
+        align-items: center;
+        gap: var(--gap);
+        padding: 14px 0;
+        border-top: 1px solid var(--ink);
+        color: var(--ink);
+        text-decoration: none;
+        transition: all .2s ease;
+    }
+    .idx__t {
+        font-size: clamp(48px, 7.2vw, 112px);
+        font-weight: 900;
+        font-stretch: 62%;
+        line-height: .84;
+        text-transform: uppercase;
+    }
+    .idx__d { color: var(--mute); font-size: 15px; font-weight: 500; line-height: 1.4; transition: all .2s ease; }
+    .idx .arrow { justify-self: end; font-size: 44px; font-weight: 300; line-height: 1; }
+
+    /* Hover: the row turns ink and indents */
+    a.idx__row:hover { padding-right: 16px; padding-left: 16px; background: var(--ink); color: var(--paper); }
+    a.idx__row:hover .idx__d { color: var(--mute-ink); }
+
+    /* No page yet */
+    .idx__row--soon, .idx__row--soon .idx__d { color: var(--mute); }
+    .idx__soon {
+        justify-self: end;
+        padding: 3px 7px;
+        border: 1px solid var(--mute);
+    }
+
+    @media (max-width: 1100px) {
+        .sec-title, .sec-meta { grid-column: 1 / 13; }
+    }
+
+    @media (max-width: 760px) {
+        .sec { padding: 72px 0 80px; }
+        .sec-title { font-size: clamp(64px, 22vw, 120px); }
+        .idx__row { grid-template-columns: 36px minmax(0, 1fr) auto; padding: 12px 0; }
+        .idx__d { display: none; }
+        .idx__t { font-size: clamp(34px, 11vw, 72px); }
+        .idx .arrow { font-size: 32px; }
+        a.idx__row:hover { padding-right: 8px; padding-left: 8px; }
+    }
+</style>

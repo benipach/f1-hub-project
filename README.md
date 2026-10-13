@@ -1,6 +1,6 @@
 # F1 Hub
 
-Every Grand Prix in one place: live timing during sessions, the calendar in your local time, full results and standings, driver and team profiles, and an archive of every season since 1990.
+Every Grand Prix in one place: live timing during sessions, the calendar in your local time, full results and standings, driver and team profiles, and an archive of the championship's history.
 
 **[Live site ↗](https://benipach.github.io/f1-hub-project)**
 
@@ -19,7 +19,7 @@ Every Grand Prix in one place: live timing during sessions, the calendar in your
 
 **Automated results pipeline (GitHub Actions).** A scheduled workflow runs every 30 minutes from Friday to Monday. It first checks whether any session ended at least 45 minutes ago and is still missing results or weather, so it does nothing on most runs. When there's work to do, it pulls the data from the OpenF1 API, rebuilds the precomputed career stats and commits the result. The site updates itself after every session.
 
-**Historical archive (1990–2026).** `scripts/build-season.js` builds a full season file from the Jolpica (Ergast) API, plus practice sessions scraped from formula1.com. Together the season files weigh several MB, so the pages that need data across seasons read precomputed indexes (`careers.json`, `seasons-index.json`) instead, with a single small request.
+**Historical archive.** Being extended back to the first championship, in 1950. `scripts/build-season.js` builds a full season file from the Jolpica (Ergast) API, plus practice sessions scraped from formula1.com. Together the season files weigh several MB, so the pages that need data across seasons read precomputed indexes (`careers.json`, `seasons-index.json`) instead, with a single small request.
 
 **No framework, no build step.** Vanilla HTML, CSS and JavaScript served from GitHub Pages, with Chart.js for the charts.
 
@@ -70,7 +70,7 @@ flowchart LR
 ├── scripts/                        # Season builders and precomputed indexes
 ├── auto-fill-missing.js            # Fills finished sessions from OpenF1 (run by GitHub Actions)
 ├── data/
-│   ├── seasons/season{year}.json   # One file per season, 1990–2026
+│   ├── seasons/season{year}.json   # One file per season
 │   ├── careers.json                # Precomputed career stats
 │   └── seasons-index.json          # Precomputed season summaries
 └── .github/workflows/              # Scheduled results update

@@ -6,6 +6,7 @@
 // ?now=<ISO date> simulates another moment, so the three hero states can be
 // checked any day; the panel at the bottom has moments taken from the data.
 import Calendar from '../components/home/Calendar.astro';
+import Explore from '../components/home/Explore.astro';
 import Hero from '../components/home/Hero.astro';
 import Standings from '../components/home/Standings.astro';
 import Base from '../layouts/Base.astro';
@@ -54,6 +55,7 @@ const tower = hero.last && {
     <Hero hero={hero} preview tower={tower ?? undefined} previewLaps={hero.last?.laps} />
     <Calendar poster={poster} />
     <Standings standings={standings} />
+    <Explore />
 
     <nav class="moments lbl" aria-label="Simulate a moment (preview only)">
         <span class="moments__k">Preview</span>
