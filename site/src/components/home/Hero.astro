@@ -1,0 +1,783 @@
+---
+// Homepage hero in its three states (_design/DESIGN.md, sections 5 and 6):
+// upcoming (paper), live (red) and result (ink). All three are rendered at
+// build time; hero-state.ts shows the one that fits the current time and
+// keeps the countdowns and local times up to date.
+import type { HomeHero } from '../../lib/home';
+import { href } from '../../lib/paths';
+
+/** A row of the live top 10: position, driver, team, gap. */
+export type TowerRow = {
+    pos: number;
+    firstName: string;
+    lastName: string;
+    team: string;
+    teamColor: string | null;
+    teamLogo: string | null;
+    gap: string;
+};
+
+interface Props {
+    hero: HomeHero;
+    /** Preview pages only: accept ?now= to simulate another moment. */
+    preview?: boolean;
+    /**
+     * Rows to show in the live top 10 tower, with a label saying where they
+     * come from. Preview only: on the real page the tower stays hidden until
+     * a live feed fills it (the relay's top-10 endpoint, phase 4).
+     */
+    tower?: { label: string; rows: TowerRow[] } | undefined;
+    /**
+     * Preview only: a race's total laps, to show an estimated "Lap 32 / 62"
+     * from the elapsed time. On the real page the lap and the qualifying
+     * part and clock come from the live feed (phase 4) through data
+     * attributes on the root (see hero-state.ts).
+     */
+    previewLaps?: number | undefined;
+}
+
+const { hero, preview = false, tower, previewLaps } = Astro.props;
+const { next, last, rounds } = hero;
+const race = next?.sessions.find((s) => s.key === 'race');
+const towerRows: (TowerRow | null)[] = Array.from({ length: 10 }, (_, i) => tower?.rows[i] ?? null);
+
+// What the browser script needs: the timetable of the next Grand Prix and
+// when the last race ended.
+const state = {
+    sessions: next?.sessions ?? [],
+    lastRaceEnd: last?.raceEnd ?? null,
+    preview,
+    previewLaps: preview ? previewLaps ?? null : null,
+};
+
+const [podium1, podium2, podium3] = last?.rows ?? [];
+const rest = last?.rows.slice(3) ?? [];
+---
+
+<div class="hero-root" data-hero-root>
+    {next && (
+        <section class="hero hero--up" data-hero="upcoming" aria-labelledby="up-title">
+            <div class="wrap">
+                <div class="strip lbl">
+                    <span class="tag"><span class="sq" style="--c: var(--red)"></span>Next race</span>
+                    <span>Round {next.round} / {rounds}</span>
+                    <span class="grow">{[next.circuit, next.place].filter(Boolean).join(' — ')}</span>
+                    {next.sessions[0] && race && (
+                        <span class="num" data-range data-start={next.sessions[0].start} data-end={race.start}></span>
+                    )}
+                </div>
+
+                <div class="up g12">
+                    <div class="up__head">
+                        <div class="roundel" aria-hidden="true">{next.round}</div>
+                        <div>
+                            <p class="up__kicker lbl">Formula 1 · Round {next.round}{next.sprint && ' · Sprint weekend'}</p>
+                            <h1 class="up__title cond" id="up-title">{next.name}</h1>
+                        </div>
+                    </div>
+
+                    <div class="up__track">
+                        {next.layout && <div class="trk" set:html={next.layout} />}
+                        {(next.length || next.turns) && (
+                            <div class="facts lbl">
+                                {next.length && <div><b class="num">{next.length.toFixed(3)}</b><span>km lap</span></div>}
+                                {next.turns && <div><b class="num">{next.turns}</b><span>turns</span></div>}
+                            </div>
+                        )}
+                    </div>
+
+                    <div class="up__count" role="timer" aria-labelledby="next-lbl" data-countdown-block>
+                        <div class="head lbl">
+                            <span id="next-lbl">Next session — <b data-next-name>—</b> starts in</span>
+                            <span class="num" data-next-when></span>
+                        </div>
+                        <div class="digits num" aria-hidden="true">
+                            <span class="u"><span data-cd="d">00</span><small>Days</small></span><span class="c">:</span>
+                            <span class="u"><span data-cd="h">00</span><small>Hours</small></span><span class="c">:</span>
+                            <span class="u"><span data-cd="m">00</span><small>Minutes</small></span><span class="c">:</span>
+                            <span class="u"><span data-cd="s">00</span><small>Seconds</small></span>
+                        </div>
+                        <span class="sr" data-cd-sr></span>
+                    </div>
+
+                    <div class="up__count up__wait" data-waiting hidden>
+                        <p class="lbl">Weekend complete</p>
+                        <p class="cond up__wait-title">Results on the way</p>
+                        <p class="up__wait-text">The race is over. The classification is loaded automatically shortly after the session ends.</p>
+                    </div>
+
+                    <div class="sched">
+                        <h2 class="lbl"><b>Timetable</b> <span>Your time · <span data-tz>local</span></span></h2>
+                        <ol>
+                            {next.sessions.map((s) => (
+                                <li data-session={s.key} class={s.key === 'race' ? 'is-race' : undefined}>
+                                    <span class="day lbl" data-local="weekday" data-at={s.start}></span>
+                                    <span class="nm">{s.name}</span>
+                                    <span class="tm num" data-local="time" data-at={s.start}></span>
+                                </li>
+                            ))}
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="band on-ink">
+                <div class="wrap band__in">
+                    <span class="band__k lbl">Race</span>
+                    {race && <span class="band__v num" data-local="daytime" data-at={race.start}></span>}
+                    <span class="band__rule" aria-hidden="true"></span>
+                    <span class="band__k lbl">Lights out in</span>
+                    <span class="band__v num" data-race-count>—</span>
+                    <a class="btn btn--red" href={href(`grandsprix/grandprix.html?gp=${next.id}`)}>Grand Prix guide <span class="arrow">→</span></a>
+                </div>
+            </div>
+        </section>
+    )}
+
+    {next && (
+        <section class="hero hero--live" data-hero="live" aria-labelledby="live-title" hidden>
+            <div class="wrap">
+                <div class="strip lbl">
+                    <span class="tag"><span class="ldot ldot--on"></span>Live now</span>
+                    <span>Round {next.round} / {rounds}</span>
+                    <span class="grow">{next.name} — {next.circuit}</span>
+                </div>
+
+                <div class:list={['live g12', { 'live--tower': tower }]} data-live-grid>
+                    <p class="live__word" aria-hidden="true">Live</p>
+
+                    <div class="live__info">
+                        <p class="lbl">{next.name} · Session in progress</p>
+                        <h1 class="live__session cond" id="live-title" data-live-name>—</h1>
+                        <p class="live__sub"><span data-live-since></span> · <span class="num" data-live-detail></span></p>
+                    </div>
+
+                    <div class="live__cta">
+                        <a class="cta-live" href={href('live.html')}>
+                            <span class="top lbl"><span class="cta-live__src"><span class="ldot ldot--red"></span>Live now</span><span class="arrow" aria-hidden="true">→</span></span>
+                            <span><b>Watch live timing</b><small>Positions, gaps, sectors and tyres from F1's official feed.</small></span>
+                        </a>
+                    </div>
+
+                    <!-- Live top 10: hidden until something fills it (see the tower prop) -->
+                    <div class="tower on-ink" data-tower hidden={!tower}>
+                        <div class="tower__hd lbl">
+                            <span><span class="ldot ldot--red"></span>Top 10</span>
+                            <span data-tower-label>{tower?.label ?? 'Live'}</span>
+                        </div>
+                        <!-- The result's classification table, without grid and places gained -->
+                        <table class="tbl tower__tbl">
+                            <thead class="lbl"><tr><th>Pos</th><th>Driver</th><th class="hide-m">Team</th><th class="r">Gap</th></tr></thead>
+                            <tbody>
+                                {towerRows.map((row, i) => (
+                                    <tr data-tower-row>
+                                        <td class="p" data-pos>{row?.pos ?? i + 1}</td>
+                                        <td class="d"><span data-first>{row?.firstName ?? ''}</span><span data-driver>{row?.lastName ?? '—'}</span></td>
+                                        <td class="hide-m">
+                                            <span class="t">
+                                                {row?.teamLogo
+                                                    ? <img class="logo" src={href(row.teamLogo)} alt="" width="20" height="20" loading="lazy" decoding="async" />
+                                                    : row?.teamColor && <span class="sq" style={`--c: ${row.teamColor}`}></span>}
+                                                <span data-team>{row?.team ?? ''}</span>
+                                            </span>
+                                        </td>
+                                        <td class="r num" data-gap>{row?.gap ?? ''}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="band on-ink">
+                <div class="wrap band__in">
+                    <span class="band__k lbl">Up next</span>
+                    <span class="band__v" data-upnext-name>—</span>
+                    <span class="band__v num" data-upnext-when></span>
+                    <span class="band__rule" aria-hidden="true"></span>
+                    <a class="btn btn--line" href={href(`grandsprix/grandprix.html?gp=${next.id}`)}>Weekend timetable <span class="arrow">→</span></a>
+                </div>
+            </div>
+        </section>
+    )}
+
+    {last && podium1 && (
+        <section class="hero hero--res on-ink" data-hero="result" aria-labelledby="res-title" hidden>
+            <div class="wrap">
+                <div class="strip lbl">
+                    <span class="tag"><span class="sq" style="--c: var(--red)"></span>Race result</span>
+                    <span>Round {last.gp.round} / {rounds}</span>
+                    <span class="grow">{last.gp.name} — {last.gp.circuit}</span>
+                    <span class="num" data-local="date" data-at={last.raceEnd}></span>
+                </div>
+
+                <div class="res g12">
+                    <p class="res__one" aria-hidden="true">1</p>
+
+                    <div class="res__win">
+                        <p class="lbl">Winner · {last.gp.name}</p>
+                        <h1 class="res__name cond" id="res-title"><span class="first">{podium1.firstName}</span>{podium1.lastName}</h1>
+                        <dl class="res__meta">
+                            <div><dt class="lbl">Team</dt><dd>{podium1.teamColor && <span class="sq" style={`--c: ${podium1.teamColor}`}></span>}{podium1.team}</dd></div>
+                            <div><dt class="lbl">Race time</dt><dd class="num">{podium1.result}</dd></div>
+                            {podium1.grid && <div><dt class="lbl">Started</dt><dd class="num">P{podium1.grid}</dd></div>}
+                        </dl>
+                    </div>
+
+                    <figure class="res__mark">
+                        {last.gp.layout && <div class="trk" set:html={last.gp.layout} />}
+                        <figcaption class="lbl"><span>{last.gp.circuit}</span><span>R{last.gp.round}</span></figcaption>
+                    </figure>
+
+                    <div class="res__pod">
+                        {[podium2, podium3].map((row) => row && (
+                            <div class="pod">
+                                <span class="n">{row.pos}</span>
+                                <span class="who">
+                                    <b>{row.lastName}</b>
+                                    <span class="lbl">{row.teamColor && <span class="sq" style={`--c: ${row.teamColor}`}></span>}{row.team}{row.grid && ` · from P${row.grid}`}</span>
+                                </span>
+                                <span class="gap num">{row.result}{row.fastestLap && <><br /><span class="fl lbl">Fastest lap</span></>}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    {rest.length > 0 && (
+                        <div class="res__rest">
+                            <div class="hd">
+                                <h2 class="lbl">Positions 4–{3 + rest.length}</h2>
+                                <a class="lbl" href={href('results.html')}>Full classification <span class="arrow">→</span></a>
+                            </div>
+                            <table class="tbl">
+                                <thead class="lbl"><tr><th>Pos</th><th>Driver</th><th class="hide-m">Team</th><th class="r">Gap</th><th class="r hide-m">Grid</th><th class="r">+/−</th></tr></thead>
+                                <tbody>
+                                    {rest.map((row) => (
+                                        <tr>
+                                            <td class="p">{row.pos}</td>
+                                            <td class="d"><span>{row.firstName}</span>{row.lastName}{row.fastestLap && <span class="fl lbl">FL</span>}</td>
+                                            <td class="hide-m">
+                                                <span class="t">
+                                                    {row.teamLogo
+                                                        ? <img class="logo" src={href(row.teamLogo)} alt="" width="20" height="20" loading="lazy" decoding="async" />
+                                                        : row.teamColor && <span class="sq" style={`--c: ${row.teamColor}`}></span>}
+                                                    {row.team}
+                                                </span>
+                                            </td>
+                                            <td class="r num">{row.result}</td>
+                                            <td class="r hide-m num">{row.grid ? `P${row.grid}` : '—'}</td>
+                                            <td class="r num">
+                                                {row.gained === null || row.gained === 0
+                                                    ? <span class="eq">—</span>
+                                                    : row.gained > 0
+                                                        ? <span class="gain">▲ {row.gained}</span>
+                                                        : <span class="loss">▼ {-row.gained}</span>}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {next && (
+                <div class="band band--red">
+                    <div class="wrap band__in">
+                        <span class="band__k lbl">Next race</span>
+                        <span class="band__v">{next.name}</span>
+                        <span class="band__v num" data-next-race-in></span>
+                        <span class="band__rule" aria-hidden="true"></span>
+                        <a class="btn btn--ink" href={href('results.html')}>All results <span class="arrow">→</span></a>
+                    </div>
+                </div>
+            )}
+        </section>
+    )}
+
+    <script type="application/json" data-hero-state set:html={JSON.stringify(state)} />
+</div>
+
+<script>
+    import { startHero } from '../../lib/hero-state';
+    startHero();
+</script>
+
+<style>
+    /* ---- Shared ------------------------------------------------------------ */
+    .hero {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-height: calc(100svh - var(--nav));
+        overflow: hidden;
+    }
+    .hero[hidden] { display: none; }
+    .hero:not([hidden]) { animation: wipe .7s ease both; }
+    @keyframes wipe {
+        from { clip-path: inset(0 100% 0 0); }
+        to { clip-path: inset(0); }
+    }
+    .hero > .wrap { flex: 1; display: flex; flex-direction: column; }
+
+    .strip {
+        display: flex;
+        flex-wrap: wrap;
+        border-bottom: 1px solid currentColor;
+    }
+    .strip > * { padding: 15px 18px; border-left: 1px solid currentColor; }
+    .strip > *:first-child { padding-left: 0; border-left: 0; }
+    .strip > .grow { flex: 1; }
+    .tag { display: inline-flex; align-items: center; gap: 8px; }
+
+    .trk :global(svg) { width: 100%; height: auto; }
+
+    .digits {
+        display: flex;
+        align-items: flex-start;
+        font-weight: 900;
+        font-stretch: 62%;
+        line-height: .78;
+        letter-spacing: -.01em;
+        white-space: nowrap;
+    }
+    .digits .u { display: flex; flex-direction: column; }
+    .digits .u small {
+        margin-top: 14px;
+        font-size: 11px;
+        font-weight: 700;
+        font-stretch: 115%;
+        letter-spacing: .09em;
+        line-height: 1;
+        text-transform: uppercase;
+    }
+    .digits .c { padding: 0 .035em; }
+
+    .band { background: var(--ink); color: #fff; }
+    .band--red { background: var(--red); }
+    .band__in {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 14px 28px;
+        min-height: 76px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+    .band__k { color: var(--mute-ink); }
+    .band--red .band__k { color: #fff; }
+    .band__v {
+        font-size: 30px;
+        font-weight: 900;
+        font-stretch: 62%;
+        line-height: 1;
+        text-transform: uppercase;
+    }
+    .band__rule { flex: 1; min-width: 24px; height: 1px; background: #3a3a3a; }
+    .band--red .band__rule { background: rgba(255, 255, 255, .5); }
+
+    .ldot--on { background: #fff; animation: beat 1.1s ease-in-out infinite; }
+    .ldot--red { background: var(--red); animation: beat 1.1s ease-in-out infinite; }
+
+    /* ---- Upcoming (paper) ---------------------------------------------------- */
+    .hero--up { background: var(--paper); color: var(--ink); }
+    .up {
+        flex: 1;
+        grid-template-rows: 1fr auto;
+        row-gap: 20px;
+        padding: 24px 0 28px;
+    }
+    .up__head {
+        grid-column: 1 / 8;
+        grid-row: 1;
+        align-self: center;
+        display: flex;
+        align-items: flex-start;
+        gap: 28px;
+    }
+    .roundel {
+        flex: none;
+        display: grid;
+        place-items: center;
+        width: clamp(60px, 8.4vw, 124px);
+        aspect-ratio: 1;
+        margin-top: .2em;
+        border-radius: 50%;
+        background: var(--ink);
+        color: var(--paper);
+        font-size: clamp(30px, 4.6vw, 68px);
+        font-weight: 900;
+        font-stretch: 62%;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+    }
+    .up__kicker { margin: 0 0 14px; color: var(--mute); }
+    .up__title { margin: 0; font-size: clamp(44px, 7.4vw, 118px); }
+    .up__track {
+        grid-column: 8 / 13;
+        grid-row: 1;
+        align-self: center;
+        color: var(--red);
+    }
+    .up__track .trk :global(svg) { max-height: min(36vh, 320px); }
+    .facts {
+        display: flex;
+        margin-top: 14px;
+        border-top: 1px solid var(--ink);
+        color: var(--ink);
+    }
+    .facts > div { flex: 1; padding: 8px 0 0; }
+    .facts > div + div { padding-left: 12px; border-left: 1px solid var(--ink); }
+    /* The numbers sit inside a .lbl block: reset its wide letter-spacing */
+    .facts b { display: block; font-size: 28px; font-weight: 900; font-stretch: 62%; line-height: 1; letter-spacing: 0; }
+    .facts span { color: var(--mute); }
+
+    .up__count {
+        grid-column: 1 / 9;
+        grid-row: 2;
+        padding-top: 14px;
+        border-top: 4px solid var(--ink);
+    }
+    .up__count[hidden] { display: none; }
+    .up__count .head {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+    }
+    .up__count .head b { color: var(--red-ink); }
+    .up__count .digits { font-size: clamp(68px, 12vw, 190px); }
+    .up__count .digits .c { color: var(--red); }
+    .up__wait p { margin: 0; }
+    .up__wait-title { margin: 10px 0 12px !important; font-size: clamp(48px, 7vw, 110px); }
+    .up__wait-text { max-width: 46ch; color: var(--mute); }
+
+    .sched {
+        grid-column: 9 / 13;
+        grid-row: 2;
+        align-self: end;
+        padding-top: 14px;
+        border-top: 4px solid var(--ink);
+    }
+    .sched h2 { display: flex; justify-content: space-between; gap: 12px; margin: 0 0 4px; }
+    .sched h2 > span { color: var(--mute); text-align: right; }
+    .sched ol { margin: 0; padding: 0; list-style: none; }
+    .sched li {
+        position: relative;
+        display: grid;
+        grid-template-columns: 52px 1fr auto;
+        gap: 10px;
+        /* Centered, not on the baseline: the big time would push the rest down */
+        align-items: center;
+        padding: 7px 0;
+        border-bottom: 1px solid rgba(18, 18, 18, .22);
+    }
+    .sched .day { color: var(--mute); }
+    .sched .nm { font-size: 15px; font-weight: 600; }
+    .sched .tm { font-size: 26px; font-weight: 900; font-stretch: 62%; line-height: 1; }
+    .sched li.is-race .nm { font-size: 17px; font-weight: 900; font-stretch: 80%; text-transform: uppercase; }
+    .sched li.is-done { opacity: .45; }
+    .sched li.is-next .nm { color: var(--red-ink); font-weight: 800; }
+    .sched li.is-next .nm::after {
+        content: 'Next';
+        margin-left: 10px;
+        padding: 2px 6px;
+        background: var(--red);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        font-stretch: 115%;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+        vertical-align: 2px;
+    }
+
+    /* ---- Live (red) ---------------------------------------------------------- */
+    .hero--live { background: var(--red); color: #fff; }
+    .live {
+        flex: 1;
+        grid-template-rows: 1fr auto;
+        row-gap: 24px;
+        padding: 24px 0 40px;
+    }
+    .live__word {
+        grid-column: 1 / 10;
+        grid-row: 1;
+        align-self: center;
+        display: flex;
+        align-items: center;
+        gap: .05em;
+        margin: 0;
+        font-size: clamp(120px, 25vw, 380px);
+        font-weight: 900;
+        font-stretch: 62%;
+        line-height: .76;
+        letter-spacing: -.02em;
+        text-transform: uppercase;
+    }
+    .live__info {
+        grid-column: 1 / 8;
+        grid-row: 2;
+        padding-top: 14px;
+        border-top: 4px solid #fff;
+    }
+
+    /* With the top 10 tower: LIVE and the session keep the left side, the
+       tower takes the right one, about half, as a column of ink. */
+    .live--tower .live__word { grid-column: 1 / 8; font-size: clamp(110px, 17vw, 300px); }
+    .live--tower .live__info { grid-column: 1 / 5; }
+    .live--tower .live__cta { grid-column: 5 / 8; }
+    .tower {
+        grid-column: 8 / 13;
+        grid-row: 1 / 3;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        padding: 18px 20px 14px;
+        background: var(--ink);
+        color: var(--paper);
+    }
+    .tower[hidden] { display: none; }
+    .tower__hd {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding-bottom: 12px;
+        border-bottom: 4px solid var(--paper);
+        color: var(--mute-ink);
+    }
+    .tower__hd > span:first-child { display: inline-flex; align-items: center; gap: 8px; color: var(--paper); }
+    .tower__tbl { margin-top: 2px; }
+    .tower__tbl td { padding-top: 8px; padding-bottom: 8px; }
+    .tower__tbl tbody tr:first-child td { border-top: 0; }
+    .live__info p { margin: 0; }
+    .live__session { margin: 6px 0 8px; color: var(--ink); font-size: clamp(44px, 5.6vw, 88px); }
+    .live__sub { font-size: 18px; font-weight: 600; }
+    .live__cta { grid-column: 8 / 13; grid-row: 2; display: flex; }
+    .cta-live {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 24px;
+        min-height: 190px;
+        padding: 20px 22px 22px;
+        background: var(--ink);
+        color: #fff;
+        text-decoration: none;
+        transition: all .3s ease;
+    }
+    .cta-live:hover { background: #000; }
+    .cta-live .top { display: flex; justify-content: space-between; align-items: center; }
+    .cta-live__src { display: inline-flex; align-items: center; gap: 8px; }
+    .cta-live b {
+        display: block;
+        font-size: clamp(36px, 3.6vw, 56px);
+        font-weight: 900;
+        font-stretch: 62%;
+        line-height: .88;
+        text-transform: uppercase;
+    }
+    .cta-live .arrow { font-size: 40px; font-weight: 400; line-height: 1; }
+    .cta-live small { display: block; margin-top: 10px; color: var(--mute-ink); font-size: 13px; }
+
+    /* ---- Result (ink) -------------------------------------------------------- */
+    .hero--res { background: var(--ink); color: var(--paper); }
+    .hero--res .strip,
+    .hero--res .strip > * { border-color: rgba(239, 234, 224, .5); }
+    .res { flex: 1; align-content: start; padding: 28px 0 40px; }
+    .res__one {
+        grid-column: 1 / 4;
+        grid-row: 1 / 3;
+        align-self: start;
+        margin: 0 0 0 -.06em;
+        color: var(--red);
+        font-size: clamp(240px, 44vw, 660px);
+        font-weight: 900;
+        font-stretch: 62%;
+        line-height: .73;
+        letter-spacing: -.04em;
+        user-select: none;
+    }
+    .res__win { grid-column: 4 / 9; grid-row: 1; align-self: start; }
+    .res__win > .lbl { margin: 0 0 14px; color: var(--red-hi); }
+    .res__name { margin: 0; font-size: clamp(52px, 7vw, 110px); }
+    .res__name .first {
+        display: block;
+        margin-bottom: .25em;
+        font-size: clamp(20px, 1.8vw, 28px);
+        font-weight: 500;
+        font-stretch: 100%;
+        line-height: 1;
+        letter-spacing: 0;
+        text-transform: none;
+    }
+    .res__meta {
+        display: grid;
+        grid-template-columns: repeat(3, auto);
+        justify-content: start;
+        margin: 22px 0 0;
+        border-top: 1px solid rgba(239, 234, 224, .35);
+    }
+    .res__meta > div {
+        margin-right: 22px;
+        padding: 10px 22px 0 0;
+        border-right: 1px solid rgba(239, 234, 224, .35);
+    }
+    .res__meta > div:last-child { margin-right: 0; border-right: 0; }
+    .res__meta dt { color: var(--mute-ink); }
+    .res__meta dd {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 4px 0 0;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    /* Without a photo: the red field with the circuit layout (DESIGN.md §7) */
+    .res__mark {
+        position: relative;
+        grid-column: 9 / 13;
+        grid-row: 1 / 3;
+        align-self: start;
+        aspect-ratio: 4 / 5;
+        margin: 0;
+        background: var(--red);
+        color: var(--paper);
+    }
+    .res__mark .trk { position: absolute; inset: 14% 12% 22%; display: grid; place-items: center; }
+    .res__mark .trk :global(svg) { max-height: 100%; }
+    .res__mark figcaption {
+        position: absolute;
+        right: 16px;
+        bottom: 14px;
+        left: 16px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: #fff;
+    }
+
+    .res__pod { grid-column: 4 / 9; grid-row: 2; align-self: end; margin-top: 36px; }
+    .pod {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: end;
+        gap: 22px;
+        padding: 14px 0;
+        border-top: 1px solid rgba(239, 234, 224, .35);
+    }
+    .pod .n { font-size: clamp(64px, 6.4vw, 104px); font-weight: 900; font-stretch: 62%; line-height: .76; }
+    .pod .who b {
+        display: block;
+        font-size: clamp(30px, 3vw, 46px);
+        font-weight: 900;
+        font-stretch: 62%;
+        line-height: .9;
+        text-transform: uppercase;
+    }
+    .pod .who > span { display: flex; align-items: center; gap: 8px; margin-top: 6px; color: var(--mute-ink); }
+    .pod .gap { font-size: 22px; font-weight: 800; line-height: 1.1; text-align: right; }
+    .fl {
+        display: inline-block;
+        margin-top: 6px;
+        padding: 3px 7px;
+        border: 1px solid var(--fl);
+        color: var(--fl);
+    }
+    .tbl .fl { margin: 0 0 0 8px; padding: 1px 5px; font-size: 9px; vertical-align: 2px; }
+
+    .res__rest { grid-column: 1 / 13; grid-row: 3; margin-top: 48px; }
+    .res__rest .hd {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 16px;
+        padding-top: 12px;
+        border-top: 4px solid var(--paper);
+    }
+    .res__rest .hd h2 { margin: 0; }
+    .res__rest .hd a { color: var(--paper); text-decoration: none; }
+    /* Classification table: the result's positions 4–10 and the live top 10 */
+    .tbl { width: 100%; margin-top: 10px; border-collapse: collapse; }
+    .tbl th { padding: 10px 8px 8px 0; color: var(--mute-ink); font-weight: 700; text-align: left; vertical-align: middle; }
+    /* Centered, not on the baseline: the big position number would push the
+       rest of the row down. */
+    .tbl td { padding: 10px 8px 10px 0; border-top: 1px solid rgba(239, 234, 224, .18); vertical-align: middle; }
+    .tbl .p { width: 56px; font-size: 26px; font-weight: 900; font-stretch: 62%; line-height: 1; }
+    .tbl .d { font-size: 16px; font-weight: 800; font-stretch: 90%; letter-spacing: .01em; text-transform: uppercase; }
+    .tbl .d > span:first-child { margin-right: 6px; color: var(--mute-ink); font-weight: 500; font-stretch: 100%; text-transform: none; }
+    .tbl .t { display: flex; align-items: center; gap: 8px; color: var(--mute-ink); font-size: 14px; }
+    /* Team logo in a fixed 20 px box, whatever the file's proportions */
+    .tbl .logo { flex: none; width: 20px; height: 20px; object-fit: contain; }
+    .tbl .r { padding-right: 0; text-align: right; }
+    .gain { color: var(--paper); }
+    .loss { color: var(--red-hi); }
+    .eq { color: var(--mute-ink); }
+
+    /* ---- Responsive ---------------------------------------------------------- */
+    @media (max-width: 1100px) {
+        .up__head { grid-column: 1 / 9; }
+        .up__track { grid-column: 9 / 13; }
+        .up__count { grid-column: 1 / 13; }
+        .sched { grid-column: 1 / 13; grid-row: 3; }
+        .live__info { grid-column: 1 / 13; }
+        .live__cta { grid-column: 1 / 13; grid-row: 3; }
+        /* Stacked: LIVE, the session, the tower, then the button */
+        .live--tower .live__word { grid-column: 1 / 13; font-size: clamp(110px, 25vw, 280px); }
+        .live--tower .live__info { grid-column: 1 / 13; grid-row: 2; }
+        .live--tower .tower { grid-column: 1 / 13; grid-row: 3; }
+        .live--tower .live__cta { grid-column: 1 / 13; grid-row: 4; }
+        .res__win, .res__pod { grid-column: 4 / 13; }
+        .res__mark { display: none; }
+    }
+
+    @media (max-width: 760px) {
+        .hero { min-height: 0; }
+        .strip > * { padding: 11px 12px; }
+        .strip > .grow { flex-basis: 100%; order: 3; padding-left: 0; border-top: 1px solid currentColor; border-left: 0; }
+        .strip > :last-child:not(.grow) { display: none; }
+        .strip > :nth-child(2) { flex: 1; }
+
+        /* One screen: title, countdown, then the timetable; the layout gets small */
+        .up { grid-template-columns: minmax(0, 1fr); row-gap: 20px; padding: 18px 0 22px; }
+        .up__head, .up__track, .up__count, .sched { grid-column: 1; grid-row: auto; }
+        .up__head { gap: 14px; }
+        .up__title { font-size: clamp(40px, 12.4vw, 72px); }
+        .up__count { order: 2; }
+        .sched { order: 3; }
+        .up__track { order: 4; }
+        .up__track .trk :global(svg) { max-height: 110px; margin: 0 auto; }
+        .up__count .digits { font-size: clamp(56px, 19vw, 120px); }
+        .digits .u small { margin-top: 10px; font-size: 10px; }
+        .band__in { gap: 8px 14px; padding-top: 16px; padding-bottom: 16px; }
+        .band__rule { display: none; }
+        .band .btn { justify-content: space-between; width: 100%; }
+
+        .live { grid-template-columns: minmax(0, 1fr); row-gap: 22px; padding: 20px 0 28px; }
+        .live__word, .live__info, .live__cta,
+        .live--tower .live__word, .live--tower .live__info, .live--tower .tower, .live--tower .live__cta { grid-column: 1; grid-row: auto; }
+        .live__word, .live--tower .live__word { font-size: clamp(100px, 36vw, 200px); }
+        .tower { padding: 14px 14px 10px; }
+        .cta-live { min-height: 150px; }
+
+        .res { grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; padding: 20px 0 28px; }
+        .res__one { grid-column: 1; grid-row: 2; margin-left: -.04em; font-size: clamp(150px, 46vw, 260px); }
+        .res__win { display: contents; }
+        .res__win > .lbl { grid-column: 1 / 3; grid-row: 1; margin: 4px 0 6px; }
+        .res__name { grid-column: 2; grid-row: 2; align-self: end; padding-bottom: 4px; font-size: clamp(38px, 11.6vw, 64px); }
+        .res__meta { grid-column: 1 / 3; grid-row: 3; margin-top: 14px; }
+        .res__meta > div { margin-right: 8px; padding-right: 8px; }
+        .res__meta dd { font-size: 15px; }
+        .res__pod { grid-column: 1 / 3; grid-row: 4; margin-top: 16px; }
+        .pod { gap: 14px; }
+        .pod .gap { font-size: 16px; }
+        .res__rest { grid-column: 1 / 3; grid-row: 5; margin-top: 32px; }
+        .tbl .hide-m { display: none; }
+        .tbl .d > span:first-child { display: none; }
+        .tbl td { padding-top: 9px; padding-bottom: 9px; }
+    }
+</style>

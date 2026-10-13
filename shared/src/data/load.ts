@@ -5,7 +5,7 @@
 // its schema stops the build instead of reaching a page.
 
 import { readFileSync } from 'node:fs';
-import { RawLatest, RawSeason, RawTeams } from './raw';
+import { RawCircuits, RawCities, RawCountries, RawDrivers, RawGrandsPrix, RawLatest, RawSeason, RawTeams } from './raw';
 import { normalizeSeason, type GrandPrix } from './season';
 
 function readJson(dataDir: URL, path: string): unknown {
@@ -20,6 +20,31 @@ export function loadLatestYear(dataDir: URL): number {
 /** data/teams.json, validated. */
 export function loadTeams(dataDir: URL): RawTeams {
     return RawTeams.parse(readJson(dataDir, 'teams.json'));
+}
+
+/** data/drivers.json, validated. */
+export function loadDrivers(dataDir: URL): RawDrivers {
+    return RawDrivers.parse(readJson(dataDir, 'drivers.json'));
+}
+
+/** data/circuits.json, validated. */
+export function loadCircuits(dataDir: URL): RawCircuits {
+    return RawCircuits.parse(readJson(dataDir, 'circuits.json'));
+}
+
+/** data/cities.json, validated. */
+export function loadCities(dataDir: URL): RawCities {
+    return RawCities.parse(readJson(dataDir, 'cities.json'));
+}
+
+/** data/countries.json, validated. */
+export function loadCountries(dataDir: URL): RawCountries {
+    return RawCountries.parse(readJson(dataDir, 'countries.json'));
+}
+
+/** data/grandsPrix.json, validated. */
+export function loadGrandsPrix(dataDir: URL): RawGrandsPrix {
+    return RawGrandsPrix.parse(readJson(dataDir, 'grandsPrix.json'));
 }
 
 /** Every Grand Prix of a season, validated and normalized, by round. */

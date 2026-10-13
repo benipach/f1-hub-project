@@ -54,7 +54,11 @@ nothing else. Values are the mockup's.
 
 Team colors come from `data/teams.json` (`color`), never from a table in code.
 They appear as small flat squares (`.sq`, 10×10 px with a 1 px dark outline,
-light outline on ink), next to a driver or team name. Never as text color and
+light outline on ink), next to a driver or team name. **In the classification
+tables the team shows its logo instead** (`img/teams/<id>-logo.png` in a
+20×20 px box, `object-fit: contain`), falling back to the square when there's
+no logo file (owner's call, 12/10; logos are trademarks, see the plan's
+intellectual-property list). Never as text color and
 never as a field: some team colors (Red Bull `#22477A`, Alpine `#006FBA`) are
 unreadable on ink, and the square with its outline works for all of them.
 
@@ -73,6 +77,10 @@ It's used at two extremes, plus plain text:
 | **Label** (kickers, column heads, buttons, tags) | `.lbl` | 11–12 px, weight 700, `font-stretch: 115%`, uppercase, `letter-spacing: .09em` |
 | **Body** | — | 16 px, weight 400–600, `line-height: 1.45`, normal width |
 | **Numbers** | `.num` | `font-variant-numeric: tabular-nums lining-nums` on anything that ticks or lines up in a column |
+
+Display numbers and words placed inside a `.lbl` block (like the facts under
+the track layout) must reset `letter-spacing: 0`: they'd otherwise inherit the
+label's wide `.09em` tracking (owner's call, 12/10).
 
 Display sizes are fluid with `clamp()`. Reference scale from the mockup:
 
@@ -201,16 +209,36 @@ content grid, a `.band` at the bottom.
 - Band: "Race", its day and time, "Lights out in" with a compact countdown,
   and the Grand Prix page as the red action.
 
-**Live (red).**
-- Strip: beating "Live now" tag, round, GP, session and day.
-- A giant "LIVE" word with a beating ink dot; the track in ink at the right.
-- The session name in display type, and when it ends (from the timetable).
-- The main action is an ink block: "Watch live timing →" to the Live page.
+**Live (red).** Reworked on 12/10 at the owner's request: the giant "LIVE"
+stays in the foreground, and the live classification sits next to it taking
+about half the width, not the whole page.
+- Strip: beating "Live now" tag, round, GP and circuit.
+- Left: a giant "LIVE" word, on its own (no dot next to it: owner's call,
+  12/10; the strip's "Live now" tag carries the beating dot); under it the session in
+  display type with "Started 18 min ago · Ends 20:00" (from the timetable).
+  **In a race or sprint the end time gives way to the lap, "Lap 32 / 62"; in
+  qualifying (and sprint qualifying) to the part and its clock, "Q2 · 07:24
+  left", or "Q2 next" between parts** (owner's calls, 12/10), when the live
+  feed provides them; without it the end time stays. The feed contract (data
+  attributes on the hero root) is documented in `site/src/lib/hero-state.ts`.
+  Then
+  and an ink block "● Live now / Watch live timing →" to the Live page.
+- Right (cols 8–12, both rows): the **top 10 tower**, an ink column with a
+  4 px paper rule under its header, holding **the same classification table
+  as the result state minus grid and places gained**: position, driver, team,
+  gap (owner's call, 12/10). P1's gap cell names what P1 is in that session:
+  **"Leader"** in a race or sprint, **"Fastest"** in qualifying, sprint
+  qualifying and practice. No track layout in this state.
+- ≤ 1100 px it stacks: LIVE, session, tower, button.
+- **The tower needs live data, and the homepage must not depend on the relay
+  to work.** It stays hidden (and LIVE takes the full width) until something
+  fills it. The plan: when the relay moves to Oracle (phase 4) it gets a tiny
+  top-10 endpoint (position, driver, gap; a few hundred bytes) that the page
+  polls every ~5 s, instead of the full feed the Live page uses (~3 MB/h per
+  viewer, which is what exhausted Render's free bandwidth). On preview pages
+  the tower is filled with the last race's real classification, labelled
+  "Preview".
 - Band: what comes next and when; the timetable as a secondary action.
-- **Only show what the timetable knows.** The mockup's Q1/Q2/Q3 phases, the
-  session clock and "15 cars left" need the live feed; the homepage is
-  static and must not depend on the relay (which is also down until it moves
-  to Oracle). Show "Qualifying · started 18 min ago · ends 20:00" instead.
 
 **Result (ink), until 24 h after the race ends.**
 - Strip: "Race result" tag, round, GP and circuit, date.
@@ -219,9 +247,11 @@ content grid, a `.band` at the bottom.
   time, starting position.
 - Podium rows for P2 and P3: big position, name, team, gap, "from P4"
   (grid), fastest lap tag when it applies.
-- Positions 4–10 as a table: position, driver, team, gap (from `RaceOutcome`),
-  grid and places gained (▲ in paper, ▼ in `--red-hi`, — when equal). Link to
-  the full classification.
+- Positions 4–10 as the **classification table** (`.tbl`): position in
+  display type, driver (first name muted + LAST NAME), team (square + name),
+  gap (from `RaceOutcome`), grid and places gained (▲ in paper, ▼ in
+  `--red-hi`, — when equal). Link to the full classification. On mobile the
+  team, grid and first name go.
 - Band (red): next race and how far away it is; "All results".
 - **No photo needed.** The mockup's duotone portrait (cols 9–12) is optional:
   without a photo, that block is the red field with the circuit layout in
@@ -266,7 +296,9 @@ content grid, a `.band` at the bottom.
 
 - Ink. Tagline in large body type; "All times shown in <time zone>".
 - Four link columns (Season, The Grid, History, Resources); "Soon" items in a
-  small outlined label; external links with "↗".
+  small outlined label; external links with "↗". History holds **"Hall of
+  Fame"** (Soon), the future page's name (renamed from "Memorabilia" on 12/10,
+  owner's call).
 - The wordmark across the full width in display type, with the second word in
   red, closed by a 4 px paper rule. It's decorative (`aria-hidden`). It will
   change with the site's name.

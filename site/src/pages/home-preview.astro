@@ -1,0 +1,82 @@
+---
+// Preview of the new homepage while it's built (kept out of search engines,
+// not linked from the site). When it replaces the old index.html it becomes
+// src/pages/index.astro and index.html leaves LEGACY_PATHS.
+//
+// ?now=<ISO date> simulates another moment, so the three hero states can be
+// checked any day; the panel at the bottom has moments taken from the data.
+import Hero from '../components/home/Hero.astro';
+import Base from '../layouts/Base.astro';
+import { DATA_DIR } from '../lib/data';
+import { buildHomeHero } from '../lib/home';
+
+const hero = buildHomeHero(DATA_DIR);
+const at = (iso: string | undefined, minutes: number) =>
+    iso ? new Date(Date.parse(iso) + minutes * 60_000).toISOString().replace(/\.\d{3}Z$/, 'Z') : null;
+
+const sessions = hero.next?.sessions ?? [];
+const first = sessions[0];
+const qualifying = sessions.find((s) => s.key === 'qualifying');
+const race = sessions.find((s) => s.key === 'race');
+
+const moments = [
+    { label: 'Now', now: null },
+    { label: '2 days before', now: at(first?.start, -2 * 24 * 60) },
+    { label: 'Qualifying live', now: at(qualifying?.start, 15) },
+    { label: 'Q1–Q2 break', now: at(qualifying?.start, 21) },
+    { label: 'Q2 live', now: at(qualifying?.start, 32) },
+    { label: 'Race live', now: at(race?.start, 40) },
+    { label: 'Results on the way', now: at(race?.end, 10) },
+    { label: 'Last race result', now: at(hero.last?.raceEnd, 120) },
+].filter((m) => m.label === 'Now' || m.now);
+
+// The live top 10 needs the relay (phase 4). Here it's filled with the last
+// race's real classification so the layout can be judged; the label says so.
+const tower = hero.last && {
+    label: `Preview · ${hero.last.gp.name}`,
+    rows: hero.last.rows.map((row) => ({
+        pos: row.pos,
+        firstName: row.firstName,
+        lastName: row.lastName,
+        team: row.team,
+        teamColor: row.teamColor,
+        teamLogo: row.teamLogo,
+        gap: row.pos === 1 ? 'Leader' : row.result,
+    })),
+};
+---
+
+<Base title="Home preview | F1 Hub" description="Preview of the new F1 Hub homepage." current="calendar" noindex>
+    <Hero hero={hero} preview tower={tower ?? undefined} previewLaps={hero.last?.laps} />
+
+    <nav class="moments lbl" aria-label="Simulate a moment (preview only)">
+        <span class="moments__k">Preview</span>
+        {moments.map((m) => <a href={m.now ? `?now=${m.now}` : '?'}>{m.label}</a>)}
+    </nav>
+</Base>
+
+<style>
+    .moments {
+        position: fixed;
+        bottom: 18px;
+        left: 50%;
+        z-index: 60;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 2px;
+        max-width: calc(100% - 20px);
+        padding: 4px;
+        border: 1px solid rgba(255, 255, 255, .28);
+        background: var(--ink);
+        color: #fff;
+        transform: translateX(-50%);
+    }
+    .moments__k { padding: 0 10px 0 8px; color: var(--mute-ink); }
+    .moments a {
+        padding: 10px 12px;
+        text-decoration: none;
+        transition: all .2s ease;
+    }
+    .moments a:hover { background: var(--red); }
+</style>
