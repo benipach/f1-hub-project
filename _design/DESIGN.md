@@ -325,6 +325,14 @@ about half the width, not the whole page.
   small), a bar proportional to the leader's points, points.
 - A short sentence in the section header summarizes the fight ("Antonelli
   leads by 102 points with six rounds to go"). Generate it from the data.
+- Built (13/10) as `site/src/components/home/Standings.astro` from
+  `buildStandings()`, which adds up the race and sprint points in the season
+  file (nothing typed by hand). Team logos in their own colors (`duotone={false}`,
+  owner's call, 13/10); rows get the same hover as the live tower (paper at 7 %).
+  The title breaks as "STAND-INGS" through a soft hyphen (`&shy;`) when it
+  doesn't fit its 8 columns: kept on purpose (owner's call). Ties go to more wins, then alphabetical:
+  **not the FIA's full rule** (then most 2nd places, 3rds…), to fix for the
+  championship page.
 
 ### Explore index
 

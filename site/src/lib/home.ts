@@ -280,3 +280,82 @@ export function buildSeasonPoster(dataDir: URL): SeasonPoster {
         toGo: rounds.filter((r) => r.status === 'next' || r.status === 'upcoming').length,
     };
 }
+
+export type StandingRow = {
+    readonly pos: number;
+    readonly name: string;
+    /** Drivers only: shown small next to the last name. */
+    readonly firstName: string | null;
+    readonly team: string;
+    readonly teamColor: string | null;
+    readonly teamLogo: string | null;
+    readonly points: number;
+    readonly wins: number;
+};
+
+export type Standings = {
+    /** Rounds with a race result so far, and the season's total. */
+    readonly afterRound: number;
+    readonly rounds: number;
+    /** Races still to run (not cancelled). */
+    readonly toGo: number;
+    readonly drivers: readonly StandingRow[];
+    readonly teams: readonly StandingRow[];
+};
+
+/**
+ * Drivers' and constructors' standings, added up from the season's race and
+ * sprint results (the `pts` of each row), like careers.json does: nothing
+ * typed by hand. Ties go to the one with more wins, then alphabetically.
+ */
+export function buildStandings(dataDir: URL): Standings {
+    const repoRoot = new URL('../', dataDir);
+    const season = loadLatestYear(dataDir);
+    const teams = loadTeams(dataDir);
+    const gps = loadSeason(dataDir, season, teams);
+    const drivers = loadDrivers(dataDir);
+
+    type Tally = { points: number; wins: number; teamId: string };
+    const byDriver = new Map<string, Tally>();
+    const byTeam = new Map<string, Tally>();
+
+    const raced = gps.filter((gp) => !gp.cancelled && (race(gp)?.results.length ?? 0) > 0);
+    for (const gp of raced) {
+        for (const session of gp.sessions) {
+            if (session.kind !== 'race') continue;
+            for (const row of session.results) {
+                const win = session.key === 'race' && row.pos === 1 ? 1 : 0;
+                // A driver's team is the one of their latest race (rounds go in order).
+                const d = byDriver.get(row.driver) ?? { points: 0, wins: 0, teamId: row.teamId };
+                byDriver.set(row.driver, { points: d.points + row.points, wins: d.wins + win, teamId: row.teamId });
+                const t = byTeam.get(row.teamId) ?? { points: 0, wins: 0, teamId: row.teamId };
+                byTeam.set(row.teamId, { points: t.points + row.points, wins: t.wins + win, teamId: row.teamId });
+            }
+        }
+    }
+
+    const order = <T extends { points: number; wins: number; name: string }>(a: T, b: T) =>
+        b.points - a.points || b.wins - a.wins || a.name.localeCompare(b.name);
+    const mark = (teamId: string) => ({
+        team: teams[teamId]?.name ?? teamId,
+        teamColor: teams[teamId]?.color ?? null,
+        teamLogo: teamLogo(repoRoot, teamId),
+    });
+
+    const driverRows = [...byDriver.entries()]
+        .map(([id, t]) => ({ name: drivers[id]?.lastName ?? id, firstName: drivers[id]?.firstName ?? null, ...mark(t.teamId), points: t.points, wins: t.wins }))
+        .sort(order)
+        .map((row, i) => ({ pos: i + 1, ...row }));
+    const teamRows = [...byTeam.entries()]
+        .map(([id, t]) => ({ ...mark(id), name: teams[id]?.name ?? id, firstName: null, points: t.points, wins: t.wins }))
+        .sort(order)
+        .map((row, i) => ({ pos: i + 1, ...row }));
+
+    return {
+        afterRound: raced[raced.length - 1]?.round ?? 0,
+        rounds: gps.length,
+        toGo: gps.filter((gp) => !gp.cancelled && !raced.includes(gp)).length,
+        drivers: driverRows,
+        teams: teamRows,
+    };
+}

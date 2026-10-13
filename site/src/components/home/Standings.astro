@@ -1,0 +1,200 @@
+---
+// Homepage standings (_design/DESIGN.md, section 5): drivers and constructors
+// on ink, each with its leader big and the rest as rows with a bar against
+// the leader's points. Numbers come from buildStandings() (race and sprint
+// points in the data); the sentence in the header is generated from them.
+import type { StandingRow, Standings } from '../../lib/home';
+import { href } from '../../lib/paths';
+import TeamMark from '../TeamMark.astro';
+
+interface Props {
+    standings: Standings;
+}
+
+const { standings } = Astro.props;
+const { drivers, teams, afterRound, rounds, toGo } = standings;
+
+const boards = [
+    { title: 'Drivers', rows: drivers.slice(0, 10), driver: true },
+    { title: 'Constructors', rows: teams, driver: false },
+].filter((b) => b.rows.length > 0);
+
+const lead = (rows: readonly StandingRow[]) => {
+    const [first, second] = rows;
+    return first && second ? first.points - second.points : 0;
+};
+const [d1] = drivers;
+const [t1] = teams;
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
+const summary = d1 && t1
+    ? `${d1.name} leads by ${plural(lead(drivers), 'point')} with ${plural(toGo, 'round')} to go; ${t1.name} are ${lead(teams)} clear in the constructors’.`
+    : '';
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<section class="sec on-ink" id="standings" aria-labelledby="ch-title">
+    <div class="wrap">
+        <header class="sec-head g12">
+            <p class="sec-no lbl">02 — Championship</p>
+            <h2 class="sec-title cond" id="ch-title">Stand&shy;ings</h2>
+            {summary && (
+                <div class="sec-meta">
+                    <p>After Round {afterRound} of {rounds}. <b>{summary}</b></p>
+                </div>
+            )}
+        </header>
+
+        <div class="boards g12">
+            {boards.map(({ title, rows, driver }) => {
+                const [leader, ...rest] = rows;
+                const max = leader?.points || 1;
+                return leader && (
+                    <div class="board">
+                        <h3 class="lbl"><span>{title}</span><span>Pts</span></h3>
+                        <div class="lead">
+                            <div>
+                                <p class="k lbl">Leader</p>
+                                <b class="lead__name">{driver && leader.firstName && <span>{leader.firstName}</span>}{leader.name}</b>
+                                <span class="lead__team lbl">
+                                    {driver && <><TeamMark logo={leader.teamLogo} color={leader.teamColor} duotone={false} /><span class="mark-text">{leader.team} ·&nbsp;</span></>}
+                                    <span class="mark-text">+{lead(rows)} over {rest[0]?.name}</span>
+                                </span>
+                            </div>
+                            <div class="lead__pts">{leader.points}<small>Points</small></div>
+                        </div>
+                        <ol class="rows">
+                            {rest.map((row) => (
+                                <li>
+                                    <span class="ps lbl">{pad(row.pos)}</span>
+                                    <span class="nm">
+                                        <TeamMark logo={row.teamLogo} color={row.teamColor} duotone={false} />
+                                        <span class="mark-text">{row.name}{driver && row.firstName && <small> {row.firstName}</small>}</span>
+                                    </span>
+                                    <span class="bar" aria-hidden="true"><i style={`width: ${((row.points / max) * 100).toFixed(1)}%`}></i></span>
+                                    <span class="pt">{row.points}</span>
+                                </li>
+                            ))}
+                        </ol>
+                    </div>
+                );
+            })}
+        </div>
+
+        <div class="champ-foot">
+            <a class="btn btn--red" href={href('championship.html')}>Full standings <span class="arrow">→</span></a>
+            <a class="btn btn--line" href={href('drivers.html')}>Drivers</a>
+            <a class="btn btn--line" href={href('teams.html')}>Teams</a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .sec { padding: 112px 0 120px; background: var(--ink); color: var(--paper); }
+    .sec-head { align-items: end; row-gap: 20px; margin-bottom: 40px; }
+    .sec-no { grid-column: 1 / 13; display: flex; align-items: center; gap: 14px; margin: 0; color: var(--mute-ink); }
+    .sec-no::after { content: ''; flex: 1; height: 1px; background: currentColor; }
+    .sec-title { grid-column: 1 / 8; margin: 0; font-size: clamp(72px, 12vw, 196px); line-height: .8; }
+    .sec-meta { grid-column: 8 / 13; }
+    .sec-meta p { max-width: 36ch; margin: 0; font-size: 18px; line-height: 1.4; }
+    .sec-meta b { color: var(--red-hi); font-weight: 600; }
+
+    .boards { row-gap: 72px; }
+    .board { grid-column: span 6; }
+    .board + .board { padding-left: var(--gap); border-left: 1px solid var(--rule-ink); }
+    .board h3 { display: flex; justify-content: space-between; margin: 0 0 12px; color: var(--mute-ink); }
+
+    .lead {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: end;
+        gap: 16px;
+        padding: 14px 0 18px;
+        border-top: 4px solid var(--paper);
+    }
+    .lead .k { margin: 0 0 10px; color: var(--red-hi); }
+    .lead__name {
+        display: block;
+        font-size: clamp(40px, 4.4vw, 68px);
+        font-weight: 900;
+        font-stretch: 62%;
+        line-height: .88;
+        text-transform: uppercase;
+    }
+    .lead__name span {
+        display: block;
+        margin-bottom: .2em;
+        font-size: .4em;
+        font-weight: 500;
+        font-stretch: 100%;
+        line-height: 1;
+        text-transform: none;
+    }
+    .lead__team { display: flex; align-items: center; gap: 8px; margin-top: 10px; color: var(--mute-ink); }
+    .lead__team .mark-text { display: inline-flex; }
+    .lead__pts {
+        color: var(--red);
+        font-size: clamp(96px, 11vw, 170px);
+        font-weight: 900;
+        font-stretch: 62%;
+        line-height: .74;
+        text-align: right;
+    }
+    .lead__pts small {
+        display: block;
+        margin-top: 10px;
+        color: var(--mute-ink);
+        font-size: 11px;
+        font-weight: 700;
+        font-stretch: 115%;
+        line-height: 1;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+    }
+
+    .rows { margin: 0; padding: 0; list-style: none; }
+    .rows li {
+        display: grid;
+        grid-template-columns: 30px minmax(0, 1fr) minmax(60px, 32%) 56px;
+        align-items: center;
+        gap: 14px;
+        padding: 9px 8px;
+        border-top: 1px solid var(--rule-ink-soft);
+        transition: all .2s ease;
+    }
+    /* Same row hover as the live tower */
+    .rows li:hover { background: rgba(239, 234, 224, .07); }
+    .ps { color: var(--mute-ink); }
+    .nm {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+        font-size: 15px;
+        font-weight: 800;
+        font-stretch: 90%;
+        text-transform: uppercase;
+    }
+    .nm .mark-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .nm small { color: var(--mute-ink); font-size: 13px; font-weight: 500; font-stretch: 100%; text-transform: none; }
+    .bar { height: 6px; background: rgba(239, 234, 224, .12); }
+    .bar i { display: block; height: 100%; background: var(--paper); }
+    .pt { font-size: 28px; font-weight: 900; font-stretch: 62%; line-height: 1; text-align: right; }
+
+    .champ-foot { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 56px; }
+
+    @media (max-width: 1100px) {
+        .sec-title, .sec-meta { grid-column: 1 / 13; }
+        .board { grid-column: 1 / 13; }
+        .board + .board { padding-left: 0; border-left: 0; }
+    }
+
+    @media (max-width: 760px) {
+        .sec { padding: 72px 0 80px; }
+        .sec-title { font-size: clamp(64px, 22vw, 120px); }
+        .rows li { grid-template-columns: 24px minmax(0, 1fr) 56px 44px; gap: 10px; padding: 9px 4px; }
+        .nm small { display: none; }
+        .pt { font-size: 24px; }
+        .lead { grid-template-columns: 1fr; }
+        .lead__pts { text-align: left; }
+    }
+</style>
