@@ -61,7 +61,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
                             {r.status === 'done' && r.winner && (
                                 <><TeamMark logo={r.winner.teamLogo} color={r.winner.teamColor} size={18} /><span class="mark-text"><em>Winner</em> {r.winner.name}</span></>
                             )}
-                            {r.status === 'cancelled' && 'Cancelled'}
+                            {r.status === 'cancelled' && <span class="rd__txt">Cancelled</span>}
                             {r.status === 'next' && (
                                 <span class="rd__next">
                                     <span class="ldot rd__dot" data-cal-dot hidden></span>
@@ -69,6 +69,9 @@ const pad = (n: number) => String(n).padStart(2, '0');
                                 </span>
                             )}
                             {r.status === 'upcoming' && <em>Upcoming</em>}
+                            {(r.status === 'next' || r.status === 'upcoming') && r.raceStart && (
+                                <span class="rd__cd" data-cal-cd={r.raceStart} title="Until lights out" hidden></span>
+                            )}
                         </span>
                     </a>
                 </li>
@@ -167,14 +170,23 @@ const pad = (n: number) => String(n).padStart(2, '0');
         display: flex;
         align-items: center;
         gap: 8px;
-        min-height: 30px;
+        /* The same 16px above the line's content as the cell's padding below
+           it, and room for the winner's 18px logo: everything sits centered
+           between the rule and the bottom edge. */
+        min-height: 34px;
         margin-top: 12px;
-        padding-top: 9px;
+        padding-top: 16px;
         border-top: 1px solid rgba(18, 18, 18, .22);
         font-size: 13px;
         font-weight: 600;
     }
     .rd__res em { color: var(--mute); font-style: normal; font-weight: 500; }
+    /* Text boxes trimmed to the capitals, like .mark-text: otherwise the room
+       kept for descenders makes the text sit low in the line. */
+    .rd__res em, .rd__txt, .rd__cd, [data-cal-next] { text-box: trim-both cap alphabetic; }
+    /* Countdown to lights out, in the corner (hero-state.ts writes it) */
+    .rd__cd { margin-left: auto; white-space: nowrap; }
+    .rd__cd[hidden] { display: none; }
 
     /* Hover: the cell inverts to ink. background-color, not the background
        shorthand: the shorthand would also drop the cancelled cells' hatching

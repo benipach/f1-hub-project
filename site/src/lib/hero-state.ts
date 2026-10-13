@@ -96,6 +96,28 @@ function compactCountdown(ms: number): string {
     return d > 0 ? `${d}d ${pad(h)}h` : `${pad(h)}:${pad(m)}:${pad(s % 60)}`;
 }
 
+/** Whole calendar months from `from` to `to`, and the date they land on. */
+function wholeMonths(from: Date, to: Date): { months: number; after: Date } {
+    let months = (to.getFullYear() - from.getFullYear()) * 12 + to.getMonth() - from.getMonth();
+    const add = (n: number) => {
+        const d = new Date(from);
+        d.setMonth(d.getMonth() + n);
+        return d;
+    };
+    if (months > 0 && add(months) > to) months -= 1;
+    return { months: Math.max(0, months), after: add(Math.max(0, months)) };
+}
+
+/** "2mo 05d", "17d 04h", "04h 12m" for under a day: minutes are enough for the calendar. */
+function roundCountdown(t: number, target: number): string {
+    const { months, after } = wholeMonths(new Date(t), new Date(target));
+    if (months > 0) return `${months}mo ${pad(Math.floor((target - after.getTime()) / DAY))}d`;
+    const m = Math.max(0, Math.floor((target - t) / 60000));
+    const d = Math.floor(m / 1440);
+    const h = Math.floor((m % 1440) / 60);
+    return d > 0 ? `${d}d ${pad(h)}h` : `${pad(h)}h ${pad(m % 60)}m`;
+}
+
 /** "18 min ago", "1 h 05 min ago". */
 function ago(ms: number): string {
     const m = Math.max(0, Math.floor(ms / 60000));
@@ -207,17 +229,29 @@ export function startHero() {
         if (current) text = `Live now · ${current.name}`;
         else if (sessions.length && sessions.every((s) => s.endMs <= t)) text = 'Results on the way';
         else if (first && first.startMs <= t) text = 'This weekend';
-        else if (first) {
-            const days = Math.max(1, Math.ceil((first.startMs - t) / DAY));
-            text = `Next — in ${days} day${days === 1 ? '' : 's'}`;
-        }
         setText(calNext, text);
+    }
+
+    // Every round still to run counts down to its race start, in the corner
+    // of its result line. Hidden once the race has started (or while the
+    // next round is live, when its line says so).
+    const calCountdowns = [...document.querySelectorAll<HTMLElement>('[data-cal-cd]')]
+        .map((el) => ({ el, startMs: Date.parse(el.dataset['calCd'] ?? ''), isNext: el.closest('.rd--next') !== null }))
+        .filter((c) => !Number.isNaN(c.startMs));
+    function calendarCountdowns(t: number) {
+        const live = sessions.some((s) => s.startMs <= t && t < s.endMs);
+        for (const { el, startMs, isNext } of calCountdowns) {
+            const show = startMs > t && !(isNext && live);
+            el.toggleAttribute('hidden', !show);
+            if (show) setText(el, roundCountdown(t, startMs));
+        }
     }
 
     function tick() {
         const t = now();
         show(pick(t));
         calendarNext(t);
+        calendarCountdowns(t);
 
         if (shown === 'upcoming') {
             const upcoming = sessions.find((s) => s.startMs > t);

@@ -271,8 +271,10 @@ about half the width, not the whole page.
   4 px paper rule under its header, holding **the same classification table
   as the result state minus grid and places gained**: position, driver, team,
   gap (owner's call, 12/10). Here the team logos keep **their own colors**
-  (`TeamMark duotone={false}`) and each row lifts slightly off the ink on hover
-  (paper at 7 %), owner's calls on 13/10. P1's gap cell names what P1 is in that session:
+  (`TeamMark duotone={false}`), owner's call on 13/10. **No row hover**
+  (owner's call, 13/10: it had one, paper at 7 %, and the rows looked like
+  buttons; they aren't links), and no side padding, so the table lines up
+  with its header like the result's. P1's gap cell names what P1 is in that session:
   **"Leader"** in a race or sprint, **"Fastest"** in qualifying, sprint
   qualifying and practice. No track layout in this state.
 - ≤ 1100 px it stacks: LIVE, session, tower, button.
@@ -295,7 +297,8 @@ about half the width, not the whole page.
   (grid), fastest lap tag when it applies.
 - Positions 4–10 as the **classification table** (`.tbl`): position in
   display type, driver (first name muted + LAST NAME), team (logo in its
-  colors + name), gap (from `RaceOutcome`), grid and places gained (▲ and ▼
+  colors + name, in the same type as the driver's first name: 16 px, weight
+  500, muted; owner's call, 13/10), gap (from `RaceOutcome`), grid and places gained (▲ and ▼
   both in paper, the arrow says which; — in muted when equal; owner's call,
   13/10). Link to the full classification. On mobile the
   team, grid and first name go.
@@ -314,7 +317,16 @@ about half the width, not the whole page.
 - A grid of rounds: 5 columns (3 at ≤ 1100 px), each cell with the round
   number, a "Sprint" tag when it applies, the circuit layout as a black shape,
   GP name, place and dates, and a footer line with the winner (team square +
-  name), "Upcoming" or "Cancelled".
+  name), "Upcoming" or "Cancelled". **Every round still to run counts down
+  to its race start in the right corner of that line** ("2mo 05d" from a
+  calendar month on, "17d 04h", "04h 12m" under a day; owner's requests,
+  13/10), updated by `hero-state.ts` with the
+  minute as its smallest unit; no `.num` (it doesn't tick every second). The
+  next round shows "Next" or "This weekend" on the left and the countdown on
+  the right; the countdown hides while a session is live and once the race
+  has started. The line's content sits centered between its rule and the
+  cell's bottom edge: 16 px above, like the cell's padding below, and its
+  text trimmed to the capitals (owner's call, 13/10).
 - Cell states: **done** (normal), **just finished** (round number in red),
   **next** (red field, white layout; "Live now · Qualifying" while live),
   **upcoming** (layout at 32 % opacity), **cancelled** (name struck through
@@ -342,7 +354,10 @@ about half the width, not the whole page.
 - Built (13/10) as `site/src/components/home/Standings.astro` from
   `buildStandings()`, which adds up the race and sprint points in the season
   file (nothing typed by hand). Team logos in their own colors (`duotone={false}`,
-  owner's call, 13/10); rows get the same hover as the live tower (paper at 7 %).
+  owner's call, 13/10). The rows have **no hover** (owner's call, 13/10: they
+  aren't links, so a hover made them look like buttons; it was the live
+  tower's, paper at 7 %). Names keep room for descenders and accents inside
+  their ellipsis clip (`padding-block` with an equal negative margin).
   The title breaks as "STAND-INGS" through a soft hyphen (`&shy;`) when it
   doesn't fit its 8 columns: kept on purpose (owner's call). Ties go to more wins, then alphabetical:
   **not the FIA's full rule** (then most 2nd places, 3rds…), to fix for the
@@ -361,7 +376,10 @@ about half the width, not the whole page.
 
 ### Footer (site-wide)
 
-- Ink. Tagline in large body type; "All times shown in <time zone>".
+- Ink. Tagline in large body type; "All times shown in **your local time**
+  (Buenos Aires · GMT-3)", the detected zone in muted as a check (owner's
+  call, 13/10: "All times shown in Buenos Aires · GMT-3" read as if the site
+  ran on Argentine time).
 - Four link columns (Season, The Grid, History, Resources); "Soon" items in a
   small outlined label; external links with "↗". History holds **"Hall of
   Fame"** (Soon), the future page's name (renamed from "Memorabilia" on 12/10,
