@@ -159,10 +159,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
         gap: 14px;
         padding: 9px 8px;
         border-top: 1px solid var(--rule-ink-soft);
-        transition: all .2s ease;
     }
-    /* Same row hover as the live tower */
-    .rows li:hover { background: rgba(239, 234, 224, .07); }
     .ps { color: var(--mute-ink); }
     .nm {
         display: flex;
@@ -174,7 +171,17 @@ const pad = (n: number) => String(n).padStart(2, '0');
         font-stretch: 90%;
         text-transform: uppercase;
     }
-    .nm .mark-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    /* The ellipsis needs overflow: hidden, and .mark-text trims the box to the
+       capitals and the baseline, so descenders (g, j) and accents above
+       capitals (Ü) were clipped. Padding gives them room inside the clip; the
+       negative margin keeps the layout as it was. */
+    .nm .mark-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding-block: .3em;
+        margin-block: -.3em;
+    }
     .nm small { color: var(--mute-ink); font-size: 13px; font-weight: 500; font-stretch: 100%; text-transform: none; }
     .bar { height: 6px; background: rgba(239, 234, 224, .12); }
     .bar i { display: block; height: 100%; background: var(--paper); }

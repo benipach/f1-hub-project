@@ -548,15 +548,8 @@ const rest = last?.rows.slice(3) ?? [];
     }
     .tower__hd > span:first-child { display: inline-flex; align-items: center; gap: 8px; color: var(--paper); }
     .tower__tbl { margin-top: 2px; }
-    .tower__tbl td { padding-top: 8px; padding-bottom: 8px; transition: all .2s ease; }
+    .tower__tbl td { padding-top: 8px; padding-bottom: 8px; }
     .tower__tbl tbody tr:first-child td { border-top: 0; }
-    /* Row hover: the row lifts slightly off the ink. The padding lives on the
-       first and last cells so the highlight has some room at the sides. */
-    .tower__tbl td:first-child { padding-left: 8px; }
-    .tower__tbl td:last-child { padding-right: 8px; }
-    .tower__tbl th:first-child { padding-left: 8px; }
-    .tower__tbl th:last-child { padding-right: 8px; }
-    .tower__tbl tbody tr:hover td { background: rgba(239, 234, 224, .07); }
     .live__info p { margin: 0; }
     .live__session { margin: 6px 0 8px; color: var(--ink); font-size: clamp(44px, 5.6vw, 88px); }
     .live__sub { font-size: 18px; font-weight: 600; }
@@ -716,7 +709,8 @@ const rest = last?.rows.slice(3) ?? [];
     .tbl .p { width: 56px; font-size: 26px; font-weight: 900; font-stretch: 62%; line-height: 1; }
     .tbl .d { font-size: 16px; font-weight: 800; font-stretch: 90%; letter-spacing: .01em; text-transform: uppercase; }
     .tbl .d > span:first-child { margin-right: 6px; color: var(--mute-ink); font-weight: 500; font-stretch: 100%; text-transform: none; }
-    .tbl .t { display: flex; align-items: center; gap: 8px; color: var(--mute-ink); font-size: 14px; }
+    /* The team in the same type as the driver's first name (owner's call, 13/10) */
+    .tbl .t { display: flex; align-items: center; gap: 8px; color: var(--mute-ink); font-size: 16px; font-weight: 500; font-stretch: 100%; letter-spacing: .01em; }
     .tbl .r { padding-right: 0; text-align: right; }
     /* Places gained and lost both in paper: the arrow says which (owner's call,
        13/10; red is kept for what's live) */
