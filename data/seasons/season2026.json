@@ -7,8 +7,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-03-05T23:30:00",
-        "endDate": "2026-03-06T00:30:00",
+        "date": "2026-03-06T01:30:00Z",
+        "endDate": "2026-03-06T02:30:00Z",
         "weather": {
           "air_temperature": 20.8,
           "track_temperature": 35.3,
@@ -189,8 +189,8 @@
         ]
       },
       "fp2": {
-        "date": "2026-03-06T03:00:00",
-        "endDate": "2026-03-06T04:00:00",
+        "date": "2026-03-06T05:00:00Z",
+        "endDate": "2026-03-06T06:00:00Z",
         "weather": {
           "air_temperature": 22.5,
           "track_temperature": 33.3,
@@ -379,8 +379,8 @@
         ]
       },
       "fp3": {
-        "date": "2026-03-06T23:30:00",
-        "endDate": "2026-03-07T00:30:00",
+        "date": "2026-03-07T01:30:00Z",
+        "endDate": "2026-03-07T02:30:00Z",
         "weather": {
           "air_temperature": 20.6,
           "track_temperature": 36.9,
@@ -561,8 +561,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-03-07T03:00:00",
-        "endDate": "2026-03-07T04:00:00",
+        "date": "2026-03-07T05:00:00Z",
+        "endDate": "2026-03-07T06:00:00Z",
         "weather": {
           "air_temperature": 20.5,
           "track_temperature": 34.3,
@@ -708,8 +708,8 @@
         ]
       },
       "race": {
-        "date": "2026-03-08T01:00:00",
-        "endDate": "2026-03-08T03:00:00",
+        "date": "2026-03-08T04:00:00Z",
+        "endDate": "2026-03-08T06:00:00Z",
         "weather": {
           "air_temperature": 24.2,
           "track_temperature": 36.1,
@@ -972,8 +972,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-03-13T00:30:00",
-        "endDate": "2026-03-13T01:30:00",
+        "date": "2026-03-13T03:30:00Z",
+        "endDate": "2026-03-13T04:30:00Z",
         "weather": {
           "air_temperature": 13,
           "track_temperature": 21.3,
@@ -1162,8 +1162,8 @@
         ]
       },
       "sprintQualy": {
-        "date": "2026-03-13T04:30:00",
-        "endDate": "2026-03-13T05:15:00",
+        "date": "2026-03-13T07:30:00Z",
+        "endDate": "2026-03-13T08:14:00Z",
         "weather": {
           "air_temperature": 16.4,
           "track_temperature": 28.2,
@@ -1323,8 +1323,8 @@
         ]
       },
       "sprintRace": {
-        "date": "2026-03-14T00:00:00",
-        "endDate": "2026-03-14T01:00:00",
+        "date": "2026-03-14T03:00:00Z",
+        "endDate": "2026-03-14T04:00:00Z",
         "weather": {
           "air_temperature": 14.9,
           "track_temperature": 15.4,
@@ -1580,8 +1580,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-03-14T04:00:00",
-        "endDate": "2026-03-14T05:00:00",
+        "date": "2026-03-14T07:00:00Z",
+        "endDate": "2026-03-14T08:00:00Z",
         "weather": {
           "air_temperature": 17.8,
           "track_temperature": 31,
@@ -1748,8 +1748,8 @@
         ]
       },
       "race": {
-        "date": "2026-03-15T04:00:00",
-        "endDate": "2026-03-15T06:00:00",
+        "date": "2026-03-15T07:00:00Z",
+        "endDate": "2026-03-15T09:00:00Z",
         "weather": {
           "air_temperature": 15.6,
           "track_temperature": 22.6,
@@ -2010,8 +2010,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-03-26T23:30:00",
-        "endDate": "2026-03-27T00:30:00",
+        "date": "2026-03-27T02:30:00Z",
+        "endDate": "2026-03-27T03:30:00Z",
         "weather": {
           "air_temperature": 16.4,
           "track_temperature": 36.9,
@@ -2200,8 +2200,8 @@
         ]
       },
       "fp2": {
-        "date": "2026-03-27T03:00:00",
-        "endDate": "2026-03-27T04:00:00",
+        "date": "2026-03-27T06:00:00Z",
+        "endDate": "2026-03-27T07:00:00Z",
         "weather": {
           "air_temperature": 17.2,
           "track_temperature": 28.6,
@@ -2390,8 +2390,8 @@
         ]
       },
       "fp3": {
-        "date": "2026-03-27T23:30:00",
-        "endDate": "2026-03-28T00:30:00",
+        "date": "2026-03-28T02:30:00Z",
+        "endDate": "2026-03-28T03:30:00Z",
         "weather": {
           "air_temperature": 16.1,
           "track_temperature": 36.7,
@@ -2580,8 +2580,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-03-28T03:00:00",
-        "endDate": "2026-03-28T04:00:00",
+        "date": "2026-03-28T06:00:00Z",
+        "endDate": "2026-03-28T07:00:00Z",
         "weather": {
           "air_temperature": 16.5,
           "track_temperature": 29.7,
@@ -2748,8 +2748,8 @@
         ]
       },
       "race": {
-        "date": "2026-03-29T02:00:00",
-        "endDate": "2026-03-29T04:00:00",
+        "date": "2026-03-29T05:00:00Z",
+        "endDate": "2026-03-29T07:00:00Z",
         "weather": {
           "air_temperature": 18.6,
           "track_temperature": 34.1,
@@ -3014,32 +3014,32 @@
     "cancelled": true,
     "sessions": {
       "fp1": {
-        "date": "2026-04-10T08:30:00",
-        "endDate": "2026-04-10T09:30:00",
+        "date": "2026-04-10T11:30:00Z",
+        "endDate": "2026-04-10T12:30:00Z",
         "weather": {},
         "results": []
       },
       "fp2": {
-        "date": "2026-04-10T12:00:00",
-        "endDate": "2026-04-10T13:00:00",
+        "date": "2026-04-10T15:00:00Z",
+        "endDate": "2026-04-10T16:00:00Z",
         "weather": {},
         "results": []
       },
       "fp3": {
-        "date": "2026-04-11T09:30:00",
-        "endDate": "2026-04-11T10:30:00",
+        "date": "2026-04-11T12:30:00Z",
+        "endDate": "2026-04-11T13:30:00Z",
         "weather": {},
         "results": []
       },
       "qualifying": {
-        "date": "2026-04-11T13:00:00",
-        "endDate": "2026-04-11T14:00:00",
+        "date": "2026-04-11T16:00:00Z",
+        "endDate": "2026-04-11T17:00:00Z",
         "weather": {},
         "results": []
       },
       "race": {
-        "date": "2026-04-12T12:00:00",
-        "endDate": "2026-04-12T14:00:00",
+        "date": "2026-04-12T15:00:00Z",
+        "endDate": "2026-04-12T17:00:00Z",
         "weather": {},
         "results": []
       }
@@ -3058,8 +3058,8 @@
     "cancelled": true,
     "sessions": {
       "fp1": {
-        "date": "2026-04-10T10:30:00",
-        "endDate": "2026-04-10T11:30:00",
+        "date": "2026-04-10T13:30:00Z",
+        "endDate": "2026-04-10T14:30:00Z",
         "weather": {
           "air_temperature": 28.8,
           "track_temperature": 35.5,
@@ -3070,8 +3070,8 @@
         "results": []
       },
       "fp2": {
-        "date": "2026-04-10T14:00:00",
-        "endDate": "2026-04-10T15:00:00",
+        "date": "2026-04-10T17:00:00Z",
+        "endDate": "2026-04-10T18:00:00Z",
         "weather": {
           "air_temperature": 31,
           "track_temperature": 40.1,
@@ -3082,8 +3082,8 @@
         "results": []
       },
       "fp3": {
-        "date": "2026-04-11T10:30:00",
-        "endDate": "2026-04-11T11:30:00",
+        "date": "2026-04-11T13:30:00Z",
+        "endDate": "2026-04-11T14:30:00Z",
         "weather": {
           "air_temperature": 28.5,
           "track_temperature": 35.6,
@@ -3094,8 +3094,8 @@
         "results": []
       },
       "qualifying": {
-        "date": "2026-04-11T14:00:00",
-        "endDate": "2026-04-11T15:00:00",
+        "date": "2026-04-11T17:00:00Z",
+        "endDate": "2026-04-11T18:00:00Z",
         "weather": {
           "air_temperature": 30.9,
           "track_temperature": 39.8,
@@ -3106,8 +3106,8 @@
         "results": []
       },
       "race": {
-        "date": "2026-04-12T14:00:00",
-        "endDate": "2026-04-12T16:00:00",
+        "date": "2026-04-12T17:00:00Z",
+        "endDate": "2026-04-12T19:00:00Z",
         "weather": {
           "air_temperature": 30.4,
           "track_temperature": 38.1,
@@ -3132,8 +3132,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-05-01T14:30:00",
-        "endDate": "2026-05-01T15:30:00",
+        "date": "2026-05-01T16:00:00Z",
+        "endDate": "2026-05-01T17:30:00Z",
         "weather": {
           "air_temperature": 31,
           "track_temperature": 53,
@@ -3322,8 +3322,8 @@
         ]
       },
       "sprintQualy": {
-        "date": "2026-05-01T18:30:00",
-        "endDate": "2026-05-01T19:15:00",
+        "date": "2026-05-01T20:30:00Z",
+        "endDate": "2026-05-01T21:14:00Z",
         "weather": {
           "air_temperature": 30.6,
           "track_temperature": 52.3,
@@ -3483,8 +3483,8 @@
         ]
       },
       "sprintRace": {
-        "date": "2026-05-02T14:00:00",
-        "endDate": "2026-05-02T15:00:00",
+        "date": "2026-05-02T16:00:00Z",
+        "endDate": "2026-05-02T17:00:00Z",
         "weather": {
           "air_temperature": 31.7,
           "track_temperature": 49,
@@ -3738,8 +3738,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-05-02T18:00:00",
-        "endDate": "2026-05-02T19:00:00",
+        "date": "2026-05-02T20:00:00Z",
+        "endDate": "2026-05-02T21:00:00Z",
         "weather": {
           "air_temperature": 33.9,
           "track_temperature": 51.9,
@@ -3906,8 +3906,8 @@
         ]
       },
       "race": {
-        "date": "2026-05-03T16:00:00",
-        "endDate": "2026-05-03T18:00:00",
+        "date": "2026-05-03T17:00:00Z",
+        "endDate": "2026-05-03T19:00:00Z",
         "weather": {
           "air_temperature": 27.1,
           "track_temperature": 37,
@@ -4172,8 +4172,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-05-22T13:30:00",
-        "endDate": "2026-05-22T14:30:00",
+        "date": "2026-05-22T16:30:00Z",
+        "endDate": "2026-05-22T17:30:00Z",
         "weather": {
           "air_temperature": 16.6,
           "track_temperature": 39.7,
@@ -4362,8 +4362,8 @@
         ]
       },
       "sprintQualy": {
-        "date": "2026-05-22T17:30:00",
-        "endDate": "2026-05-22T18:15:00",
+        "date": "2026-05-22T20:30:00Z",
+        "endDate": "2026-05-22T21:14:00Z",
         "weather": {
           "air_temperature": 20,
           "track_temperature": 41.3,
@@ -4516,8 +4516,8 @@
         ]
       },
       "sprintRace": {
-        "date": "2026-05-23T13:00:00",
-        "endDate": "2026-05-23T14:00:00",
+        "date": "2026-05-23T16:00:00Z",
+        "endDate": "2026-05-23T17:00:00Z",
         "weather": {
           "air_temperature": 20.1,
           "track_temperature": 31.7,
@@ -4773,8 +4773,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-05-23T17:00:00",
-        "endDate": "2026-05-23T18:00:00",
+        "date": "2026-05-23T20:00:00Z",
+        "endDate": "2026-05-23T21:00:00Z",
         "weather": {
           "air_temperature": 21.3,
           "track_temperature": 30.8,
@@ -4941,8 +4941,8 @@
         ]
       },
       "race": {
-        "date": "2026-05-24T17:00:00",
-        "endDate": "2026-05-24T19:00:00",
+        "date": "2026-05-24T20:00:00Z",
+        "endDate": "2026-05-24T22:00:00Z",
         "weather": {
           "air_temperature": 12.8,
           "track_temperature": 17.8,
@@ -5206,8 +5206,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-06-05T08:30:00",
-        "endDate": "2026-06-05T09:30:00",
+        "date": "2026-06-05T11:30:00Z",
+        "endDate": "2026-06-05T12:30:00Z",
         "weather": {
           "air_temperature": 23.8,
           "track_temperature": 32.5,
@@ -5396,8 +5396,8 @@
         ]
       },
       "fp2": {
-        "date": "2026-06-05T12:00:00",
-        "endDate": "2026-06-05T13:00:00",
+        "date": "2026-06-05T15:00:00Z",
+        "endDate": "2026-06-05T16:00:00Z",
         "weather": {
           "air_temperature": 23.2,
           "track_temperature": 30.3,
@@ -5586,8 +5586,8 @@
         ]
       },
       "fp3": {
-        "date": "2026-06-06T07:30:00",
-        "endDate": "2026-06-06T08:30:00",
+        "date": "2026-06-06T10:30:00Z",
+        "endDate": "2026-06-06T11:30:00Z",
         "weather": {
           "air_temperature": 23,
           "track_temperature": 29.9,
@@ -5776,8 +5776,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-06-06T11:00:00",
-        "endDate": "2026-06-06T12:00:00",
+        "date": "2026-06-06T14:00:00Z",
+        "endDate": "2026-06-06T15:00:00Z",
         "weather": {
           "air_temperature": 23.7,
           "track_temperature": 38.5,
@@ -5944,8 +5944,8 @@
         ]
       },
       "race": {
-        "date": "2026-06-07T10:00:00",
-        "endDate": "2026-06-07T12:00:00",
+        "date": "2026-06-07T13:00:00Z",
+        "endDate": "2026-06-07T15:00:00Z",
         "weather": {
           "air_temperature": 23.7,
           "track_temperature": 38,
@@ -6209,8 +6209,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-06-12T08:30:00",
-        "endDate": "2026-06-12T09:30:00",
+        "date": "2026-06-12T11:30:00Z",
+        "endDate": "2026-06-12T12:30:00Z",
         "weather": {
           "air_temperature": 29.3,
           "track_temperature": 48.7,
@@ -6391,8 +6391,8 @@
         ]
       },
       "fp2": {
-        "date": "2026-06-12T12:00:00",
-        "endDate": "2026-06-12T13:00:00",
+        "date": "2026-06-12T15:00:00Z",
+        "endDate": "2026-06-12T16:00:00Z",
         "weather": {
           "air_temperature": 29.5,
           "track_temperature": 47.3,
@@ -6581,8 +6581,8 @@
         ]
       },
       "fp3": {
-        "date": "2026-06-13T07:30:00",
-        "endDate": "2026-06-13T08:30:00",
+        "date": "2026-06-13T10:30:00Z",
+        "endDate": "2026-06-13T11:30:00Z",
         "weather": {
           "air_temperature": 31.5,
           "track_temperature": 48.2,
@@ -6771,8 +6771,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-06-13T11:00:00",
-        "endDate": "2026-06-13T12:00:00",
+        "date": "2026-06-13T14:00:00Z",
+        "endDate": "2026-06-13T15:00:00Z",
         "weather": {
           "air_temperature": 30.7,
           "track_temperature": 50.2,
@@ -6939,8 +6939,8 @@
         ]
       },
       "race": {
-        "date": "2026-06-14T10:00:00",
-        "endDate": "2026-06-14T12:00:00",
+        "date": "2026-06-14T13:00:00Z",
+        "endDate": "2026-06-14T15:00:00Z",
         "weather": {
           "air_temperature": 30.5,
           "track_temperature": 50.3,
@@ -7210,8 +7210,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-06-26T08:30:00",
-        "endDate": "2026-06-26T09:30:00",
+        "date": "2026-06-26T11:30:00Z",
+        "endDate": "2026-06-26T12:30:00Z",
         "weather": {
           "air_temperature": 30.6,
           "track_temperature": 50.3,
@@ -7400,8 +7400,8 @@
         ]
       },
       "fp2": {
-        "date": "2026-06-26T12:30:00",
-        "endDate": "2026-06-26T13:15:00",
+        "date": "2026-06-26T15:00:00Z",
+        "endDate": "2026-06-26T16:00:00Z",
         "weather": {
           "air_temperature": 31.9,
           "track_temperature": 47.2,
@@ -7590,8 +7590,8 @@
         ]
       },
       "fp3": {
-        "date": "2026-06-27T08:00:00",
-        "endDate": "2026-06-27T09:00:00",
+        "date": "2026-06-27T10:30:00Z",
+        "endDate": "2026-06-27T11:30:00Z",
         "weather": {
           "air_temperature": 31.3,
           "track_temperature": 50.7,
@@ -7780,8 +7780,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-06-27T12:00:00",
-        "endDate": "2026-06-27T13:00:00",
+        "date": "2026-06-27T14:00:00Z",
+        "endDate": "2026-06-27T15:00:00Z",
         "weather": {
           "air_temperature": 33.3,
           "track_temperature": 51.9,
@@ -7948,8 +7948,8 @@
         ]
       },
       "race": {
-        "date": "2026-06-28T10:00:00",
-        "endDate": "2026-06-28T12:00:00",
+        "date": "2026-06-28T13:00:00Z",
+        "endDate": "2026-06-28T15:00:00Z",
         "weather": {
           "air_temperature": 34.5,
           "track_temperature": 50.2,
@@ -8214,8 +8214,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-07-03T08:30:00",
-        "endDate": "2026-07-03T09:30:00",
+        "date": "2026-07-03T11:30:00Z",
+        "endDate": "2026-07-03T12:30:00Z",
         "weather": {
           "air_temperature": 22,
           "track_temperature": 40.7,
@@ -8404,8 +8404,8 @@
         ]
       },
       "sprintQualy": {
-        "date": "2026-07-03T12:30:00",
-        "endDate": "2026-07-03T13:15:00",
+        "date": "2026-07-03T15:30:00Z",
+        "endDate": "2026-07-03T16:14:00Z",
         "weather": {
           "air_temperature": 25.1,
           "track_temperature": 40.9,
@@ -8572,8 +8572,8 @@
         ]
       },
       "sprintRace": {
-        "date": "2026-07-04T08:00:00",
-        "endDate": "2026-07-04T09:00:00",
+        "date": "2026-07-04T11:00:00Z",
+        "endDate": "2026-07-04T12:00:00Z",
         "weather": {
           "air_temperature": 22.6,
           "track_temperature": 37.4,
@@ -8829,8 +8829,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-07-04T12:00:00",
-        "endDate": "2026-07-04T13:00:00",
+        "date": "2026-07-04T15:00:00Z",
+        "endDate": "2026-07-04T16:00:00Z",
         "weather": {
           "air_temperature": 25.2,
           "track_temperature": 41.1,
@@ -8997,8 +8997,8 @@
         ]
       },
       "race": {
-        "date": "2026-07-05T11:00:00",
-        "endDate": "2026-07-05T13:00:00",
+        "date": "2026-07-05T14:00:00Z",
+        "endDate": "2026-07-05T16:00:00Z",
         "weather": {
           "air_temperature": 24.8,
           "track_temperature": 40,
@@ -9263,8 +9263,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-07-17T08:30:00",
-        "endDate": "2026-07-17T09:30:00",
+        "date": "2026-07-17T11:30:00Z",
+        "endDate": "2026-07-17T12:30:00Z",
         "weather": {
           "air_temperature": 24,
           "track_temperature": 39.5,
@@ -9453,8 +9453,8 @@
         ]
       },
       "fp2": {
-        "date": "2026-07-17T12:00:00",
-        "endDate": "2026-07-17T13:00:00",
+        "date": "2026-07-17T15:00:00Z",
+        "endDate": "2026-07-17T16:00:00Z",
         "weather": {
           "air_temperature": 24,
           "track_temperature": 33.1,
@@ -9643,8 +9643,8 @@
         ]
       },
       "fp3": {
-        "date": "2026-07-18T07:30:00",
-        "endDate": "2026-07-18T08:30:00",
+        "date": "2026-07-18T10:30:00Z",
+        "endDate": "2026-07-18T11:30:00Z",
         "weather": {
           "air_temperature": 20.3,
           "track_temperature": 34.2,
@@ -9833,8 +9833,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-07-18T11:00:00",
-        "endDate": "2026-07-18T12:00:00",
+        "date": "2026-07-18T14:00:00Z",
+        "endDate": "2026-07-18T15:00:00Z",
         "weather": {
           "air_temperature": 21.1,
           "track_temperature": 36.1,
@@ -10001,8 +10001,8 @@
         ]
       },
       "race": {
-        "date": "2026-07-19T10:00:00",
-        "endDate": "2026-07-19T12:00:00",
+        "date": "2026-07-19T13:00:00Z",
+        "endDate": "2026-07-19T15:00:00Z",
         "weather": {
           "air_temperature": 18,
           "track_temperature": 31,
@@ -10271,8 +10271,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-07-24T08:30:00",
-        "endDate": "2026-07-24T09:30:00",
+        "date": "2026-07-24T11:30:00Z",
+        "endDate": "2026-07-24T12:30:00Z",
         "weather": {
           "air_temperature": 23.3,
           "track_temperature": 42.7,
@@ -10461,8 +10461,8 @@
         ]
       },
       "fp2": {
-        "date": "2026-07-24T12:00:00",
-        "endDate": "2026-07-24T13:00:00",
+        "date": "2026-07-24T15:00:00Z",
+        "endDate": "2026-07-24T16:00:00Z",
         "weather": {
           "air_temperature": 23.6,
           "track_temperature": 30.3,
@@ -10643,8 +10643,8 @@
         ]
       },
       "fp3": {
-        "date": "2026-07-25T07:30:00",
-        "endDate": "2026-07-25T08:30:00",
+        "date": "2026-07-25T10:30:00Z",
+        "endDate": "2026-07-25T11:30:00Z",
         "weather": {
           "air_temperature": 24.9,
           "track_temperature": 52.1,
@@ -10833,8 +10833,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-07-25T11:00:00",
-        "endDate": "2026-07-25T12:00:00",
+        "date": "2026-07-25T14:00:00Z",
+        "endDate": "2026-07-25T15:00:00Z",
         "weather": {
           "air_temperature": 26.8,
           "track_temperature": 46.4,
@@ -11001,8 +11001,8 @@
         ]
       },
       "race": {
-        "date": "2026-07-26T10:00:00",
-        "endDate": "2026-07-26T12:00:00",
+        "date": "2026-07-26T13:00:00Z",
+        "endDate": "2026-07-26T15:00:00Z",
         "weather": {
           "air_temperature": 30.8,
           "track_temperature": 50.5,
@@ -11267,8 +11267,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-08-21T07:30:00",
-        "endDate": "2026-08-21T08:30:00",
+        "date": "2026-08-21T10:30:00Z",
+        "endDate": "2026-08-21T11:30:00Z",
         "weather": {
           "air_temperature": 18.8,
           "track_temperature": 27,
@@ -11457,8 +11457,8 @@
         ]
       },
       "sprintQualy": {
-        "date": "2026-08-21T11:00:00",
-        "endDate": "2026-08-21T12:00:00",
+        "date": "2026-08-21T14:30:00Z",
+        "endDate": "2026-08-21T15:14:00Z",
         "weather": {
           "air_temperature": 19.4,
           "track_temperature": 33,
@@ -11625,8 +11625,8 @@
         ]
       },
       "sprintRace": {
-        "date": "2026-08-22T06:30:00",
-        "endDate": "2026-08-22T07:30:00",
+        "date": "2026-08-22T10:00:00Z",
+        "endDate": "2026-08-22T11:00:00Z",
         "weather": {
           "air_temperature": 17.8,
           "track_temperature": 25.4,
@@ -11882,8 +11882,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-08-22T10:00:00",
-        "endDate": "2026-08-22T11:00:00",
+        "date": "2026-08-22T14:00:00Z",
+        "endDate": "2026-08-22T15:00:00Z",
         "weather": {
           "air_temperature": 18.1,
           "track_temperature": 32.5,
@@ -12050,8 +12050,8 @@
         ]
       },
       "race": {
-        "date": "2026-08-23T10:00:00",
-        "endDate": "2026-08-23T12:00:00",
+        "date": "2026-08-23T13:00:00Z",
+        "endDate": "2026-08-23T15:00:00Z",
         "weather": {
           "air_temperature": 18.5,
           "track_temperature": 32.1,
@@ -12315,8 +12315,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-09-04T08:30:00",
-        "endDate": "2026-09-04T09:30:00",
+        "date": "2026-09-04T10:30:00Z",
+        "endDate": "2026-09-04T11:30:00Z",
         "weather": {
           "air_temperature": 31,
           "track_temperature": 51.3,
@@ -12505,8 +12505,8 @@
         ]
       },
       "fp2": {
-        "date": "2026-09-04T12:00:00",
-        "endDate": "2026-09-04T13:00:00",
+        "date": "2026-09-04T14:00:00Z",
+        "endDate": "2026-09-04T15:00:00Z",
         "weather": {
           "air_temperature": 33.7,
           "track_temperature": 54.9,
@@ -12695,8 +12695,8 @@
         ]
       },
       "fp3": {
-        "date": "2026-09-05T07:30:00",
-        "endDate": "2026-09-05T08:30:00",
+        "date": "2026-09-05T10:30:00Z",
+        "endDate": "2026-09-05T11:30:00Z",
         "weather": {
           "air_temperature": 31.3,
           "track_temperature": 51.5,
@@ -12885,8 +12885,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-09-05T11:00:00",
-        "endDate": "2026-09-05T12:00:00",
+        "date": "2026-09-05T14:00:00Z",
+        "endDate": "2026-09-05T15:00:00Z",
         "weather": {
           "air_temperature": 34,
           "track_temperature": 53.8,
@@ -13053,8 +13053,8 @@
         ]
       },
       "race": {
-        "date": "2026-09-06T10:00:00",
-        "endDate": "2026-09-06T12:00:00",
+        "date": "2026-09-06T13:00:00Z",
+        "endDate": "2026-09-06T15:00:00Z",
         "weather": {
           "air_temperature": 32.2,
           "track_temperature": 55,
@@ -13319,8 +13319,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-09-11T08:30:00",
-        "endDate": "2026-09-11T09:30:00",
+        "date": "2026-09-11T11:30:00Z",
+        "endDate": "2026-09-11T12:30:00Z",
         "weather": {
           "air_temperature": 27.2,
           "track_temperature": 49.8,
@@ -13509,8 +13509,8 @@
         ]
       },
       "fp2": {
-        "date": "2026-09-11T12:00:00",
-        "endDate": "2026-09-11T13:00:00",
+        "date": "2026-09-11T15:00:00Z",
+        "endDate": "2026-09-11T16:00:00Z",
         "weather": {
           "air_temperature": 30.2,
           "track_temperature": 50.9,
@@ -13699,8 +13699,8 @@
         ]
       },
       "fp3": {
-        "date": "2026-09-12T07:30:00",
-        "endDate": "2026-09-12T08:30:00",
+        "date": "2026-09-12T10:30:00Z",
+        "endDate": "2026-09-12T11:30:00Z",
         "weather": {
           "air_temperature": 25.4,
           "track_temperature": 46.8,
@@ -13889,8 +13889,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-09-12T11:00:00",
-        "endDate": "2026-09-12T12:00:00",
+        "date": "2026-09-12T14:00:00Z",
+        "endDate": "2026-09-12T15:00:00Z",
         "weather": {
           "air_temperature": 30.8,
           "track_temperature": 53.8,
@@ -14043,8 +14043,8 @@
         ]
       },
       "race": {
-        "date": "2026-09-13T10:00:00",
-        "endDate": "2026-09-13T12:00:00",
+        "date": "2026-09-13T13:00:00Z",
+        "endDate": "2026-09-13T15:00:00Z",
         "weather": {
           "air_temperature": 30.6,
           "track_temperature": 53.3,
@@ -14314,8 +14314,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-09-24T06:30:00",
-        "endDate": "2026-09-24T07:30:00",
+        "date": "2026-09-24T08:30:00Z",
+        "endDate": "2026-09-24T09:30:00Z",
         "weather": {
           "air_temperature": 29.1,
           "track_temperature": 50.4,
@@ -14504,8 +14504,8 @@
         ]
       },
       "fp2": {
-        "date": "2026-09-24T10:00:00",
-        "endDate": "2026-09-24T11:00:00",
+        "date": "2026-09-24T12:00:00Z",
+        "endDate": "2026-09-24T13:00:00Z",
         "weather": {
           "air_temperature": 29.3,
           "track_temperature": 44.9,
@@ -14694,8 +14694,8 @@
         ]
       },
       "fp3": {
-        "date": "2026-09-25T05:30:00",
-        "endDate": "2026-09-25T06:30:00",
+        "date": "2026-09-25T08:30:00Z",
+        "endDate": "2026-09-25T09:30:00Z",
         "weather": {
           "air_temperature": 25.4,
           "track_temperature": 43.5,
@@ -14884,8 +14884,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-09-25T09:00:00",
-        "endDate": "2026-09-25T10:00:00",
+        "date": "2026-09-25T12:00:00Z",
+        "endDate": "2026-09-25T13:00:00Z",
         "weather": {
           "air_temperature": 24.4,
           "track_temperature": 38.1,
@@ -15052,8 +15052,8 @@
         ]
       },
       "race": {
-        "date": "2026-09-26T08:00:00",
-        "endDate": "2026-09-26T10:00:00",
+        "date": "2026-09-26T11:00:00Z",
+        "endDate": "2026-09-26T13:00:00Z",
         "weather": {
           "air_temperature": 26.3,
           "track_temperature": 43.4,
@@ -15318,8 +15318,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-10-02T00:00:00",
-        "endDate": "2026-10-02T01:00:00",
+        "date": "2026-10-02T04:30:00Z",
+        "endDate": "2026-10-02T05:30:00Z",
         "weather": {
           "air_temperature": 32.6,
           "track_temperature": 54.1,
@@ -15508,8 +15508,8 @@
         ]
       },
       "fp2": {
-        "date": "2026-10-02T04:00:00",
-        "endDate": "2026-10-02T05:00:00",
+        "date": "2026-10-02T08:00:00Z",
+        "endDate": "2026-10-02T09:00:00Z",
         "weather": {
           "air_temperature": 33.3,
           "track_temperature": 54.8,
@@ -15698,8 +15698,8 @@
         ]
       },
       "fp3": {
-        "date": "2026-10-03T03:00:00",
-        "endDate": "2026-10-03T04:00:00",
+        "date": "2026-10-03T04:30:00Z",
+        "endDate": "2026-10-03T05:30:00Z",
         "weather": {
           "air_temperature": 32.6,
           "track_temperature": 54.8,
@@ -15888,8 +15888,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-10-03T06:00:00",
-        "endDate": "2026-10-03T07:00:00",
+        "date": "2026-10-03T08:00:00Z",
+        "endDate": "2026-10-03T09:00:00Z",
         "weather": {
           "air_temperature": 32.8,
           "track_temperature": 55.1,
@@ -16056,8 +16056,8 @@
         ]
       },
       "race": {
-        "date": "2026-10-04T04:00:00",
-        "endDate": "2026-10-04T06:00:00",
+        "date": "2026-10-04T07:00:00Z",
+        "endDate": "2026-10-04T09:00:00Z",
         "weather": {
           "air_temperature": 26.8,
           "track_temperature": 34.4,
@@ -16327,8 +16327,8 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-10-09T06:30:00",
-        "endDate": "2026-10-09T07:30:00",
+        "date": "2026-10-09T08:30:00Z",
+        "endDate": "2026-10-09T09:30:00Z",
         "weather": {
           "air_temperature": 32.2,
           "track_temperature": 49.3,
@@ -16517,8 +16517,8 @@
         ]
       },
       "sprintQualy": {
-        "date": "2026-10-09T10:00:00",
-        "endDate": "2026-10-09T11:00:00",
+        "date": "2026-10-09T12:30:00Z",
+        "endDate": "2026-10-09T13:14:00Z",
         "weather": {
           "air_temperature": 30.4,
           "track_temperature": 42.6,
@@ -16685,8 +16685,8 @@
         ]
       },
       "sprintRace": {
-        "date": "2026-10-10T06:30:00",
-        "endDate": "2026-10-10T07:30:00",
+        "date": "2026-10-10T09:00:00Z",
+        "endDate": "2026-10-10T09:30:00Z",
         "weather": {
           "air_temperature": 29.9,
           "track_temperature": 43.4,
@@ -16940,8 +16940,8 @@
         ]
       },
       "qualifying": {
-        "date": "2026-10-10T10:00:00",
-        "endDate": "2026-10-10T11:00:00",
+        "date": "2026-10-10T13:00:00Z",
+        "endDate": "2026-10-10T14:00:00Z",
         "weather": {
           "air_temperature": 29.8,
           "track_temperature": 39.4,
@@ -17108,8 +17108,8 @@
         ]
       },
       "race": {
-        "date": "2026-10-11T09:00:00",
-        "endDate": "2026-10-11T11:00:00",
+        "date": "2026-10-11T12:00:00Z",
+        "endDate": "2026-10-11T14:00:00Z",
         "weather": {
           "air_temperature": 30.3,
           "track_temperature": 42.5,
@@ -17374,32 +17374,32 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-10-23T14:30:00",
-        "endDate": "2026-10-23T15:30:00",
+        "date": "2026-10-23T17:30:00Z",
+        "endDate": "2026-10-23T18:30:00Z",
         "weather": {},
         "results": []
       },
       "fp2": {
-        "date": "2026-10-23T18:30:00",
-        "endDate": "2026-10-23T19:15:00",
+        "date": "2026-10-23T21:00:00Z",
+        "endDate": "2026-10-23T22:00:00Z",
         "weather": {},
         "results": []
       },
       "fp3": {
-        "date": "2026-10-24T15:00:00",
-        "endDate": "2026-10-24T16:00:00",
+        "date": "2026-10-24T17:30:00Z",
+        "endDate": "2026-10-24T18:30:00Z",
         "weather": {},
         "results": []
       },
       "qualifying": {
-        "date": "2026-10-24T19:00:00",
-        "endDate": "2026-10-24T20:00:00",
+        "date": "2026-10-24T21:00:00Z",
+        "endDate": "2026-10-24T22:00:00Z",
         "weather": {},
         "results": []
       },
       "race": {
-        "date": "2026-10-25T16:00:00",
-        "endDate": "2026-10-25T18:00:00",
+        "date": "2026-10-25T20:00:00Z",
+        "endDate": "2026-10-25T22:00:00Z",
         "weather": {},
         "results": []
       }
@@ -17413,32 +17413,32 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-10-30T15:30:00",
-        "endDate": "2026-10-30T16:30:00",
+        "date": "2026-10-30T18:30:00Z",
+        "endDate": "2026-10-30T19:30:00Z",
         "weather": {},
         "results": []
       },
       "fp2": {
-        "date": "2026-10-30T19:00:00",
-        "endDate": "2026-10-30T20:00:00",
+        "date": "2026-10-30T22:00:00Z",
+        "endDate": "2026-10-30T23:00:00Z",
         "weather": {},
         "results": []
       },
       "fp3": {
-        "date": "2026-10-31T14:30:00",
-        "endDate": "2026-10-31T15:30:00",
+        "date": "2026-10-31T17:30:00Z",
+        "endDate": "2026-10-31T18:30:00Z",
         "weather": {},
         "results": []
       },
       "qualifying": {
-        "date": "2026-10-31T18:00:00",
-        "endDate": "2026-10-31T19:00:00",
+        "date": "2026-10-31T21:00:00Z",
+        "endDate": "2026-10-31T22:00:00Z",
         "weather": {},
         "results": []
       },
       "race": {
-        "date": "2026-11-01T17:00:00",
-        "endDate": "2026-11-01T19:00:00",
+        "date": "2026-11-01T20:00:00Z",
+        "endDate": "2026-11-01T22:00:00Z",
         "weather": {},
         "results": []
       }
@@ -17452,32 +17452,32 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-11-06T11:30:00",
-        "endDate": "2026-11-06T12:30:00",
+        "date": "2026-11-06T15:30:00Z",
+        "endDate": "2026-11-06T16:30:00Z",
         "weather": {},
         "results": []
       },
       "fp2": {
-        "date": "2026-11-06T15:30:00",
-        "endDate": "2026-11-06T16:15:00",
+        "date": "2026-11-06T19:00:00Z",
+        "endDate": "2026-11-06T20:00:00Z",
         "weather": {},
         "results": []
       },
       "fp3": {
-        "date": "2026-11-07T11:00:00",
-        "endDate": "2026-11-07T12:00:00",
+        "date": "2026-11-07T14:30:00Z",
+        "endDate": "2026-11-07T15:30:00Z",
         "weather": {},
         "results": []
       },
       "qualifying": {
-        "date": "2026-11-07T15:00:00",
-        "endDate": "2026-11-07T16:00:00",
+        "date": "2026-11-07T18:00:00Z",
+        "endDate": "2026-11-07T19:00:00Z",
         "weather": {},
         "results": []
       },
       "race": {
-        "date": "2026-11-08T14:00:00",
-        "endDate": "2026-11-08T16:00:00",
+        "date": "2026-11-08T17:00:00Z",
+        "endDate": "2026-11-08T19:00:00Z",
         "weather": {},
         "results": []
       }
@@ -17491,32 +17491,32 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-11-20T00:30:00",
-        "endDate": "2026-11-20T01:30:00",
+        "date": "2026-11-20T00:30:00Z",
+        "endDate": "2026-11-20T01:30:00Z",
         "weather": {},
         "results": []
       },
       "fp2": {
-        "date": "2026-11-20T04:00:00",
-        "endDate": "2026-11-20T05:00:00",
+        "date": "2026-11-20T04:00:00Z",
+        "endDate": "2026-11-20T05:00:00Z",
         "weather": {},
         "results": []
       },
       "fp3": {
-        "date": "2026-11-21T00:30:00",
-        "endDate": "2026-11-21T01:30:00",
+        "date": "2026-11-21T00:30:00Z",
+        "endDate": "2026-11-21T01:30:00Z",
         "weather": {},
         "results": []
       },
       "qualifying": {
-        "date": "2026-11-21T04:00:00",
-        "endDate": "2026-11-21T05:00:00",
+        "date": "2026-11-21T04:00:00Z",
+        "endDate": "2026-11-21T05:00:00Z",
         "weather": {},
         "results": []
       },
       "race": {
-        "date": "2026-11-22T03:00:00",
-        "endDate": "2026-11-22T05:00:00",
+        "date": "2026-11-22T04:00:00Z",
+        "endDate": "2026-11-22T06:00:00Z",
         "weather": {},
         "results": []
       }
@@ -17530,32 +17530,32 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-11-27T10:30:00",
-        "endDate": "2026-11-27T11:30:00",
+        "date": "2026-11-27T13:30:00Z",
+        "endDate": "2026-11-27T14:30:00Z",
         "weather": {},
         "results": []
       },
       "fp2": {
-        "date": "2026-11-27T14:30:00",
-        "endDate": "2026-11-27T15:15:00",
+        "date": "2026-11-27T17:00:00Z",
+        "endDate": "2026-11-27T18:00:00Z",
         "weather": {},
         "results": []
       },
       "fp3": {
-        "date": "2026-11-28T11:00:00",
-        "endDate": "2026-11-28T12:00:00",
+        "date": "2026-11-28T14:30:00Z",
+        "endDate": "2026-11-28T15:30:00Z",
         "weather": {},
         "results": []
       },
       "qualifying": {
-        "date": "2026-11-28T14:00:00",
-        "endDate": "2026-11-28T15:00:00",
+        "date": "2026-11-28T18:00:00Z",
+        "endDate": "2026-11-28T19:00:00Z",
         "weather": {},
         "results": []
       },
       "race": {
-        "date": "2026-11-29T13:00:00",
-        "endDate": "2026-11-29T15:00:00",
+        "date": "2026-11-29T16:00:00Z",
+        "endDate": "2026-11-29T18:00:00Z",
         "weather": {},
         "results": []
       }
@@ -17569,32 +17569,32 @@
     "cancelled": false,
     "sessions": {
       "fp1": {
-        "date": "2026-12-04T06:30:00",
-        "endDate": "2026-12-04T07:30:00",
+        "date": "2026-12-04T09:30:00Z",
+        "endDate": "2026-12-04T10:30:00Z",
         "weather": {},
         "results": []
       },
       "fp2": {
-        "date": "2026-12-04T10:00:00",
-        "endDate": "2026-12-04T11:00:00",
+        "date": "2026-12-04T13:00:00Z",
+        "endDate": "2026-12-04T14:00:00Z",
         "weather": {},
         "results": []
       },
       "fp3": {
-        "date": "2026-12-05T07:30:00",
-        "endDate": "2026-12-05T08:30:00",
+        "date": "2026-12-05T10:30:00Z",
+        "endDate": "2026-12-05T11:30:00Z",
         "weather": {},
         "results": []
       },
       "qualifying": {
-        "date": "2026-12-05T11:00:00",
-        "endDate": "2026-12-05T12:00:00",
+        "date": "2026-12-05T14:00:00Z",
+        "endDate": "2026-12-05T15:00:00Z",
         "weather": {},
         "results": []
       },
       "race": {
-        "date": "2026-12-06T10:00:00",
-        "endDate": "2026-12-06T12:00:00",
+        "date": "2026-12-06T13:00:00Z",
+        "endDate": "2026-12-06T15:00:00Z",
         "weather": {},
         "results": []
       }
