@@ -7,12 +7,15 @@ import { href } from '../../lib/paths';
 
 // No year in the copy: the archive is being extended back to 1950 (the
 // owner's goal), so it promises neither where it starts today nor 1950.
+// In the site's one order (the same in the navbar and the footer): the season
+// in time order, the grid, then history. The calendar is left out: it's on
+// this page, right above.
 const sections: { title: string; text: string; path: string | null }[] = [
-    { title: 'Results', text: 'Race, sprint and qualifying classifications, round by round.', path: 'results.html' },
     { title: 'Live timing', text: 'Positions, gaps, sectors and tyres from F1’s official feed.', path: 'live.html' },
+    { title: 'Results', text: 'Race, sprint and qualifying classifications, round by round.', path: 'results.html' },
+    { title: 'Championship', text: 'Drivers’ and constructors’ standings after every round.', path: 'championship.html' },
     { title: 'Drivers', text: 'Profiles, numbers and career records of the grid.', path: 'drivers.html' },
     { title: 'Teams', text: 'The constructors: line-ups, cars and history.', path: 'teams.html' },
-    { title: 'Championship', text: 'Drivers’ and constructors’ standings after every round.', path: 'championship.html' },
     { title: 'Archive', text: 'The history of the championship, season by season.', path: 'archive.html' },
     // No page yet: shown as "Soon", like in the footer
     { title: 'Hall of Fame', text: 'The greats of the sport, in one place.', path: null },

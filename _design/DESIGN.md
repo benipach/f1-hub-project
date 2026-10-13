@@ -60,22 +60,15 @@ shows its logo instead**: the `TeamMark` component
 (`site/src/components/TeamMark.astro`), `img/teams/<id>-logo.png` in a square
 box (20 px by default, `object-fit: contain`), falling back to the color
 square when there's no logo file (owner's calls, 12/10; logos are
-trademarks, see the plan's intellectual-property list). **Where they go in
-their own colors and where in duotone** (owner's calls, 12–13/10): in their
-own colors (`duotone={false}`) in the live tower, the standings and the whole
-result (winner, podium, positions 4–10); **in duotone only in the calendar**.
-**The duotone is ink and paper, like the poster's photos** (owner's idea, 12/10): dark
-tones go to ink and light ones to paper, **the same on every field** (Ferrari:
-black horse on a near-paper shield), with the SVG `feComponentTransfer`
-filter `#duo-ink-paper` in `Base.astro`. An inverted version for paper fields
-was tried and dropped (owner's call). Logos that are mostly light (white or
-silver) end up faint on paper; that's accepted. **Their real colors fade in when their row,
-cell, podium line or link is hovered**: an SVG filter can't be transitioned,
-so `TeamMark` stacks the duotone and the original (same file, one download)
-and fades the original in. The text next to a mark goes in `.mark-text`
+trademarks, see the plan's intellectual-property list). **Logos always go in
+their own colors, everywhere** (owner's call, 13/10). Dropped before that: an
+ink/paper duotone (SVG `feComponentTransfer` filter, with the real colors
+fading in on hover), used in the calendar and at first everywhere, and before
+it a flat one-color silhouette (everything looked black). Don't bring either
+back. The text next to a mark goes in `.mark-text`
 (`text-box: trim-both cap alphabetic`), so it centers on the logo optically:
-otherwise the room the text box keeps for descenders makes it sit low. Rules in `base.css`. (A flat one-color silhouette
-was tried first and dropped: everything looked black.) The color square stays for non-team marks (the red "Next race"
+otherwise the room the text box keeps for descenders makes it sit low. Rules
+in `base.css`. The color square stays for non-team marks (the red "Next race"
 tag) and the design-system palette. Never as text color and
 never as a field: some team colors (Red Bull `#22477A`, Alpine `#006FBA`) are
 unreadable on ink, and the square with its outline works for all of them.
@@ -135,7 +128,8 @@ Display sizes are fluid with `clamp()`. Reference scale from the mockup:
   timetable, standings leader, calendar grid, footer wordmark).
 
 Breakpoints: **1100 px** (two-column layouts collapse, calendar 5 → 3 columns),
-**860 px** (navbar becomes the Menu button), **760 px** (single column,
+the navbar's hamburger also starts at 1100 px (it was 860 px with four links;
+moved on 13/10 when the navbar got eight), **760 px** (single column,
 calendar becomes a list, smaller gutters).
 
 ### Motion
@@ -183,8 +177,8 @@ site: one red field per screen at most. **Red fields are kept for what's live
 or about to be** (owner's call, 13/10: the Explore index, the result's band
 and its layout block moved from red to paper). Red as a small brand accent
 stays: the giant "1", leader points, main buttons, countdown separators, the
-upcoming hero's track, "To go", the latest round's number, "Hub" in the
-footer wordmark.
+upcoming hero's track, "To go", "Hub" in the footer wordmark. (The latest
+round's number in the calendar was red too, until 13/10: owner's call.)
 
 **Copy never states where the archive starts** ("since 1990"): it's being
 extended back to 1950 and is in progress (owner's call, 13/10).
@@ -208,10 +202,37 @@ No rounded corners anywhere, except the roundel and the dots. No shadows,
 except the floating mockup switcher (which doesn't ship).
 ## 5. Components
 
+### Site sections: one order everywhere
+
+The navbar, the homepage's Explore index and the footer list the sections in
+**the same order** (owner's request, 13/10, after the navbar and Explore had
+ended up different), grouped like the footer's columns:
+
+1. **Season**, in time order: Calendar (what's coming) → Live (what's on) →
+   Results (what happened) → Championship (where it leaves the standings).
+2. **The grid**: Drivers → Teams.
+3. **History**: Archive → Hall of Fame ("Soon", no link yet).
+
+Explore leaves Calendar out (it's on the same page, right above). Live goes
+second, not last: it's the site's headline feature, and in the middle of the
+bar its red block during a session stands out more. Championship and Archive
+link to `championship.html` and `archive.html`, which today forward to
+Results (its standings section, and the page itself); they're the addresses
+those pages will have, so the links won't change when they're built. A new
+section goes into this list first, then into all three places.
+
 ### Navbar (site-wide)
 
 - Ink bar, 56 px, sticky. Logo, then "Season 2026" as a label next to it.
-- Links in label type: Calendar, Results, Drivers, Teams, Live.
+- `<meta name="theme-color" content="#121212">` in `Base.astro`: mobile
+  browsers that support it paint their own bars in the navbar's ink, so the
+  page reads as starting at the top of the screen (owner's request, 13/10).
+  It stays ink while a session is live: the navbar doesn't turn red.
+- Links in label type, every section in the site's order (see "Site
+  sections" below): Calendar, Live, Results, Championship, Drivers, Teams,
+  Archive, Hall of Fame. Hall of Fame has no page yet: muted,
+  not a link, with a "Soon" tag. Eight items need room: "Season 2026" hides
+  at ≤ 1280 px and the links' side padding drops from 14 to 11 px.
 - **Hover and keyboard focus: "rolling label".** The label rolls up out of
   view while a copy in `--red-hi` rolls in from below (both stacked in a
   one-cell grid with `overflow: hidden`; the copy is `aria-hidden`), and a
@@ -225,10 +246,17 @@ except the floating mockup switcher (which doesn't ship).
   of that block (a dark strip stayed at the bottom; cause not found).
 - **Live link**: has an `.ldot`. When a session is live, the link turns into a
   red block, the dot beats and the text reads "Live now".
-- **≤ 860 px**: a "Menu" button opens the menu full screen on paper, with the
-  links in display type (56 px). Same rolling label, with the copy in large
-  `--red` and no drawn rule (each link already has its own separator). When a session is live, a red "● Live" chip
-  stays visible next to the Menu button.
+- **≤ 1100 px**: a **hamburger** button (three 2 px bars that turn into an X
+  when open; 44 × 44 px touch target; its label, "Open menu" / "Close menu",
+  is for screen readers) opens the menu full screen on paper, with the links
+  in display type (48 px). **The menu drops down from the bar like a blind**
+  (`clip-path` from `inset(0 0 100% 0)` to `inset(0)`), the links coming down
+  16 px with it, and goes back up the same way; one `.35s` transition, like
+  the rest of the navbar (owner's request, 13/10: it used to appear at once,
+  behind a button that read "Menu"). Following a link or pressing Escape
+  closes it. Same rolling label, with the copy in large `--red` and no drawn
+  rule (each link already has its own separator). When a session is live, a
+  red "● Live" chip stays visible next to the button.
 - The live state comes from the timetable (section 6), not from the relay.
 
 ### Homepage hero (3 states)
@@ -238,7 +266,12 @@ on desktop) with its own field, and the same skeleton: `.strip` on top, the
 content grid, a `.band` at the bottom.
 
 **Upcoming (paper).**
-- Strip: "Next race" tag, "Round 20 / 25", circuit and place, weekend dates.
+- Strip: a tag that follows the weekend, "Round 20 / 25", circuit and place,
+  weekend dates. The tag reads **"Next race"** before the first session,
+  **"Race weekend"** between sessions, and **"Race finished"** once every
+  session is over but the result isn't in the build yet (the "Results on the
+  way" case), where "Next race" read as if it hadn't been run (owner's call,
+  13/10). Written by `hero-state.ts` (`[data-up-tag]`).
 - Left (cols 1–7): roundel with the round number, kicker, GP name in display
   type.
 - Right (cols 8–12): the circuit layout in red, with `.facts` under it: lap
@@ -270,8 +303,10 @@ about half the width, not the whole page.
 - Right (cols 8–12, both rows): the **top 10 tower**, an ink column with a
   4 px paper rule under its header, holding **the same classification table
   as the result state minus grid and places gained**: position, driver, team,
-  gap (owner's call, 12/10). Here the team logos keep **their own colors**
-  (`TeamMark duotone={false}`), owner's call on 13/10. **No row hover**
+  gap (owner's call, 12/10). Team logos in **their own colors**, like
+  everywhere. **On mobile**, where the team column and the first name are
+  hidden, the team logo goes left of the last name (`.d__mark`, 18 px;
+  owner's call, 13/10). **No row hover**
   (owner's call, 13/10: it had one, paper at 7 %, and the rows looked like
   buttons; they aren't links), and no side padding, so the table lines up
   with its header like the result's. P1's gap cell names what P1 is in that session:
@@ -303,10 +338,19 @@ about half the width, not the whole page.
   13/10). Link to the full classification. On mobile the
   team, grid and first name go.
 - Band (red): next race and how far away it is; "All results".
-- **No photo needed.** The mockup's duotone portrait (cols 9–12) is optional:
-  without a photo, that block is a **paper** field with the circuit layout in
-  ink and the circuit name (see section 7). It was red; moved to paper on
-  13/10 because red is kept for what's live. On ≤ 1100 px it's hidden anyway.
+- **The winner's photo** (cols 9–12, a 4:5 block; owner's calls, 13/10,
+  accepting the licensing risk while the site is a non-commercial GitHub
+  repo; see the plan's intellectual-property list), **as in the mockup**: the
+  driver's wide photo, `img/drivers/<last part of the id>-2.png`, in a **red
+  and black duotone**: a red field with the photo multiplied on it
+  (`grayscale(1) contrast(1.35) brightness(1.08)`, `mix-blend-mode:
+  multiply`), so dark goes to black and light to red; white caption
+  (circuit, round). The red here is the owner's explicit exception to "red
+  for what's live". The source files are 1920×1080 PNGs of 2–5 MB: the page
+  gets a 1000 px WebP made at build time with `getImage` (`astro:assets`;
+  Verstappen's: 5.4 MB → 129 KB). **Without a photo** (e.g. a past season's
+  winner) the block is a paper field with the circuit layout in ink and the
+  caption (section 7). On ≤ 1100 px it's hidden.
 - The band under the result is **paper** too (was red, same reason).
 
 ### Calendar: the season poster
@@ -327,13 +371,17 @@ about half the width, not the whole page.
   has started. The line's content sits centered between its rule and the
   cell's bottom edge: 16 px above, like the cell's padding below, and its
   text trimmed to the capitals (owner's call, 13/10).
-- Cell states: **done** (normal), **just finished** (round number in red),
-  **next** (red field, white layout; "Live now · Qualifying" while live),
+- Cell states: **done** (normal; the most recent one isn't marked, owner's
+  call, 13/10: its round number was red), **next** (red field, white layout; "Live now · Qualifying" while live),
   **upcoming** (layout at 32 % opacity), **cancelled** (name struck through
   with a 3 px line, hatched background, layout at 18 %).
 - Hover: the cell inverts to ink with a paper layout.
-- ≤ 760 px: a list. Each row has the number, name, place, result on the right
-  and a small layout.
+- ≤ 760 px: a list. Each row has the number on the left, a text block in the
+  middle (name; place, and the dates on a line of their own so they never
+  break; the result or "Upcoming" + countdown) and the layout on the right as
+  tall as the row (72 px, in a 96 px column). Reworked on 13/10 at the
+  owner's request: the result used to have a column of its own, which
+  squeezed the names and dates and left the layout at 34 px.
 - Dates in the visitor's local time.
 - Built (12/10) as `site/src/components/home/Calendar.astro` from
   `buildSeasonPoster()`. The layouts here are **`<img>` SVG files with lazy
@@ -353,8 +401,7 @@ about half the width, not the whole page.
   leads by 102 points with six rounds to go"). Generate it from the data.
 - Built (13/10) as `site/src/components/home/Standings.astro` from
   `buildStandings()`, which adds up the race and sprint points in the season
-  file (nothing typed by hand). Team logos in their own colors (`duotone={false}`,
-  owner's call, 13/10). The rows have **no hover** (owner's call, 13/10: they
+  file (nothing typed by hand). Team logos in their own colors. The rows have **no hover** (owner's call, 13/10: they
   aren't links, so a hover made them look like buttons; it was the live
   tower's, paper at 7 %). Names keep room for descenders and accents inside
   their ellipsis clip (`padding-block` with an equal negative margin).
@@ -411,8 +458,9 @@ the calendar's next cell follow the same state.
 Driver photos are a licensing risk and can't be guaranteed for every race,
 so nothing depends on them:
 
-- Result hero: the giant "1" and the name carry the page. The optional
-  portrait block falls back to red + circuit layout.
+- Result hero: the giant "1" and the name carry the page. The portrait block
+  shows the winner's photo in red and black duotone when there is one, and
+  falls back to paper + circuit layout when there isn't.
 - Driver and team pages: a big condensed name, number and team square. A
   photo, if there is one, goes in a flat field, duotoned (grayscale, high
   contrast, `mix-blend-mode: multiply` on red), never as a background.
@@ -422,6 +470,25 @@ so nothing depends on them:
 - Text contrast AA at least; use the `--red-ink` / `--red-hi` variants for
   small red text.
 - Visible focus: 3 px red outline, 2 px offset.
+- No tap highlight on mobile (`-webkit-tap-highlight-color: transparent` on
+  `html`; owner's call, 13/10: browsers drew a blue box over whatever was
+  tapped). The keyboard focus outline is unaffected.
+- No page scrollbar (`scrollbar-width: none` and `::-webkit-scrollbar` on
+  `html`; owner's call, 13/10): on desktop the layout gets the full window
+  width instead of losing ~15 px to the bar. **In its place, the site draws
+  its own thumb, floating over the page** (`ScrollThumb.astro`, in
+  `Base.astro`; owner's call, 13/10: keep a thumb to drag, lose the track).
+  Browsers no longer offer an overlay scrollbar, hence a custom one. A square
+  4 px bar flush with the right edge, mid gray at 60 % (visible on paper, ink
+  and red), 6 px wide and 90 % on hover or while dragged (owner's calls,
+  13/10: thinner, and no gap at the edge), grabbed over a 14 px wide area; **its track starts below the navbar**
+  (`top: var(--nav)`), so it never runs over the bar (owner's call, 13/10); height in
+  proportion to the page, 40 px at least. Desktop only (`pointer: fine`).
+  Scrolling moves it with a transform on an outer element with no
+  transition; the inner bar carries the `transition: all .2s ease`, so the
+  move never lags. Sizes are measured on resize and when the page's height
+  changes (`ResizeObserver`), never on scroll. Dragging scrolls with
+  `behavior: 'instant'`, past the CSS smooth scrolling.
 - Giant decorative type (the "1", "LIVE", the wordmark) is `aria-hidden`; the
   real heading is a normal element next to it. Countdowns have `role="timer"`
   and a screen-reader text that doesn't change every second.

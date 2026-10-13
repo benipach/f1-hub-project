@@ -1,0 +1,109 @@
+---
+// The page's scroll thumb, drawn by the site (_design/DESIGN.md, section 8).
+// The native scrollbar is hidden (base.css) so its ~15px track doesn't take
+// width from the layout, and browsers no longer offer a scrollbar that floats
+// over the page. This thumb floats over it instead, and can be dragged.
+// Desktop only: on touch screens the browser's own indicator is enough.
+//
+// Performance (the owner's Celeron is the floor): scrolling only moves the
+// thumb with a transform; the page and window sizes are measured on resize
+// and when the page's height changes, never on scroll.
+---
+
+<div class="thumb" aria-hidden="true" hidden><b><i></i></b></div>
+
+<script>
+    const thumb = document.querySelector<HTMLElement>('.thumb');
+    const fine = matchMedia('(pointer: fine)');
+    if (thumb && fine.matches) {
+        // <b> moves (transform, no transition); the <i> inside is what's seen
+        // and what widens on hover, so the move never lags behind the scroll.
+        const bar = thumb.firstElementChild as HTMLElement;
+        const MIN = 40;
+        let view = 0;     // window height
+        let range = 0;    // how far the page scrolls
+        let travel = 0;   // how far the thumb moves
+        let frame = 0;
+
+        function place() {
+            frame = 0;
+            const y = range > 0 ? (window.scrollY / range) * travel : 0;
+            bar.style.transform = `translateY(${y}px)`;
+        }
+        function measure() {
+            view = window.innerHeight;
+            const page = document.documentElement.scrollHeight;
+            range = page - view;
+            // The thumb runs below the navbar, not over it (owner's call,
+            // 13/10), so its track is the window minus the bar.
+            thumb!.hidden = false;
+            const track = thumb!.clientHeight;
+            thumb!.hidden = range <= 0;
+            const height = Math.max(MIN, (view / page) * track);
+            bar.style.height = `${height}px`;
+            travel = track - height;
+            place();
+        }
+
+        window.addEventListener('scroll', () => { if (!frame) frame = requestAnimationFrame(place); }, { passive: true });
+        window.addEventListener('resize', measure);
+        new ResizeObserver(measure).observe(document.body);
+        measure();
+
+        // Dragging: the thumb moves with the pointer and the page follows,
+        // without the smooth scrolling the site uses for anchor links.
+        let startY = 0;
+        let startScroll = 0;
+        bar.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+            startY = e.clientY;
+            startScroll = window.scrollY;
+            bar.setPointerCapture(e.pointerId);
+            thumb.classList.add('thumb--drag');
+        });
+        bar.addEventListener('pointermove', (e) => {
+            if (!bar.hasPointerCapture(e.pointerId) || travel <= 0) return;
+            const top = startScroll + ((e.clientY - startY) / travel) * range;
+            window.scrollTo({ top, behavior: 'instant' });
+        });
+        const stop = () => thumb.classList.remove('thumb--drag');
+        bar.addEventListener('pointerup', stop);
+        bar.addEventListener('pointercancel', stop);
+    }
+</script>
+
+<style>
+    .thumb {
+        position: fixed;
+        top: var(--nav);
+        right: 0;
+        bottom: 0;
+        z-index: 60;
+        width: 14px;
+        pointer-events: none;
+    }
+    .thumb[hidden] { display: none; }
+    .thumb b {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        justify-content: flex-end;
+        /* Wider than the bar, so a thin bar is still easy to grab */
+        width: 14px;
+        pointer-events: auto;
+        will-change: transform;
+    }
+    .thumb i {
+        display: block;
+        width: 4px;
+        /* A mid gray, visible on paper, ink and the live red alike */
+        background-color: rgba(128, 124, 116, .6);
+        transition: all .2s ease;
+    }
+    .thumb b:hover i,
+    .thumb--drag i {
+        width: 6px;
+        background-color: rgba(128, 124, 116, .9);
+    }
+</style>

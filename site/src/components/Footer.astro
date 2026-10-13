@@ -5,11 +5,14 @@
 import { href } from '../lib/paths';
 
 const columns: { title: string; links: [label: string, path: string | null][] }[] = [
+    // In the site's one order (the same in the navbar and the Explore index).
+    // Championship and Archive point at their own addresses, which forward to
+    // Results today, so the links stay right when those pages exist.
     { title: 'Season', links: [
         ['Calendar', '#calendar'],
-        ['Championship', 'results.html#championship-section'],
-        ['Results', 'results.html#results-section'],
         ['Live Timing', 'live.html'],
+        ['Results', 'results.html'],
+        ['Championship', 'championship.html'],
     ] },
     { title: 'The Grid', links: [
         ['Drivers', 'drivers.html'],
@@ -17,6 +20,7 @@ const columns: { title: string; links: [label: string, path: string | null][] }[
     ] },
     // No path: the page doesn't exist yet and shows as "Soon"
     { title: 'History', links: [
+        ['Archive', 'archive.html'],
         ['Hall of Fame', null],
     ] },
 ];

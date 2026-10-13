@@ -1,13 +1,14 @@
 ---
-// Site navbar (_design/DESIGN.md, section 5). Ink bar, sticky. Below 860 px the
-// links move into a full-screen menu behind a "Menu" button.
+// Site navbar (_design/DESIGN.md, section 5). Ink bar, sticky, with the same
+// sections as the homepage's Explore index. Below 1100 px the links move into
+// a full-screen menu that drops down from the bar behind a hamburger button.
 //
 // Live state: when <html data-weekend="live"> is set (by the script that reads
 // the timetable, see DESIGN.md section 6), the Live link turns red and reads
-// "Live now", and on mobile a red "Live" chip shows next to the Menu button.
+// "Live now", and on mobile a red "Live" chip shows next to the button.
 import { href } from '../lib/paths';
 
-export type NavPage = 'calendar' | 'results' | 'drivers' | 'teams' | 'live';
+export type NavPage = 'calendar' | 'results' | 'drivers' | 'teams' | 'championship' | 'archive' | 'live';
 
 interface Props {
     /** The section this page belongs to, marked in the menu. */
@@ -18,11 +19,19 @@ interface Props {
 
 const { current, season } = Astro.props;
 
-const links: { page: NavPage; label: string; to: string }[] = [
-    { page: 'calendar', label: 'Calendar', to: '#calendar' },
-    { page: 'results', label: 'Results', to: 'results.html' },
-    { page: 'drivers', label: 'Drivers', to: 'drivers.html' },
-    { page: 'teams', label: 'Teams', to: 'teams.html' },
+// Every section, in the site's one order (the same in the Explore index and
+// the footer; _design/DESIGN.md, "Site sections"): the season in time order
+// (Calendar, Live, Results, Championship), the grid, then history. Live is
+// drawn on its own (its dot and "now") in second place.
+type Link = { page: NavPage; label: string; to: string };
+const link = (page: NavPage, label: string, to: string): Link => ({ page, label, to });
+const before: Link[] = [link('calendar', 'Calendar', '#calendar')];
+const after: Link[] = [
+    link('results', 'Results', 'results.html'),
+    link('championship', 'Championship', 'championship.html'),
+    link('drivers', 'Drivers', 'drivers.html'),
+    link('teams', 'Teams', 'teams.html'),
+    link('archive', 'Archive', 'archive.html'),
 ];
 ---
 
@@ -33,9 +42,12 @@ const links: { page: NavPage; label: string; to: string }[] = [
             <span class="nav__season lbl">Season {season}</span>
         </a>
         <a class="nav__chip lbl" href={href('live.html')}><span class="ldot" aria-hidden="true"></span>Live</a>
-        <button class="nav__btn lbl" type="button" aria-expanded="false" aria-controls="nav-menu">Menu</button>
+        <button class="nav__btn" type="button" aria-expanded="false" aria-controls="nav-menu">
+            <span class="sr" data-btn-label>Open menu</span>
+            <span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>
+        </button>
         <nav class="nav__menu" id="nav-menu" aria-label="Main">
-            {links.map(({ page, label, to }) => (
+            {before.map(({ page, label, to }) => (
                 <a href={to.startsWith('#') ? href('') + to : href(to)} aria-current={current === page ? 'page' : undefined}>
                     <span class="roll"><span>{label}</span><span aria-hidden="true">{label}</span></span>
                 </a>
@@ -47,6 +59,13 @@ const links: { page: NavPage; label: string; to: string }[] = [
                     <span aria-hidden="true">Live<span class="nav__now">&nbsp;now</span></span>
                 </span>
             </a>
+            {after.map(({ page, label, to }) => (
+                <a href={href(to)} aria-current={current === page ? 'page' : undefined}>
+                    <span class="roll"><span>{label}</span><span aria-hidden="true">{label}</span></span>
+                </a>
+            ))}
+            {/* No page yet: "Soon", like in the Explore index and the footer */}
+            <span class="nav__soon">Hall of Fame<span class="nav__tag lbl">Soon</span></span>
         </nav>
     </div>
 </header>
@@ -54,12 +73,25 @@ const links: { page: NavPage; label: string; to: string }[] = [
 <script>
     const nav = document.querySelector<HTMLElement>('.nav');
     const button = nav?.querySelector<HTMLButtonElement>('.nav__btn');
-    button?.addEventListener('click', () => {
-        const open = nav!.classList.toggle('nav--open');
+    const label = button?.querySelector<HTMLElement>('[data-btn-label]');
+    function setOpen(open: boolean) {
+        if (!nav || !button) return;
+        nav.classList.toggle('nav--open', open);
         button.setAttribute('aria-expanded', String(open));
-        button.textContent = open ? 'Close' : 'Menu';
+        if (label) label.textContent = open ? 'Close menu' : 'Open menu';
         document.body.style.overflow = open ? 'hidden' : '';
+    }
+    button?.addEventListener('click', () => setOpen(!nav!.classList.contains('nav--open')));
+    // Following a link (Calendar is on the same page) or Escape closes it.
+    nav?.querySelectorAll('.nav__menu a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && nav?.classList.contains('nav--open')) {
+            setOpen(false);
+            button?.focus();
+        }
     });
+    // Widening past the breakpoint while open would leave the page unscrollable.
+    matchMedia('(min-width: 1101px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
 </script>
 
 <style>
@@ -152,23 +184,62 @@ const links: { page: NavPage; label: string; to: string }[] = [
     :global(html[data-weekend='live']) .nav__live::after { background: #fff; }
     :global(html[data-weekend='live']) .nav__now { display: inline; }
 
+    /* Hall of Fame has no page yet: muted, not a link, with a "Soon" tag */
+    .nav__soon {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        color: var(--mute-ink);
+        font-size: 12px;
+        font-weight: 700;
+        font-stretch: 115%;
+        text-transform: uppercase;
+        letter-spacing: .09em;
+    }
+    .nav__tag { padding: 2px 5px; border: 1px solid currentColor; font-size: 9px; }
+
     .nav__chip, .nav__btn { display: none; }
     .nav__btn {
-        margin-left: auto;
-        padding: 8px 14px;
-        border: 1px solid #fff;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        margin: 0 -10px 0 auto;
+        padding: 0;
+        border: 0;
         background: none;
+        color: #fff;
         cursor: pointer;
     }
+    /* Three bars that turn into an X when the menu is open */
+    .burger { display: grid; gap: 6px; width: 24px; }
+    .burger i {
+        display: block;
+        height: 2px;
+        background: currentColor;
+        transition: all .35s ease;
+    }
+    .nav--open .burger i:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .nav--open .burger i:nth-child(2) { opacity: 0; }
+    .nav--open .burger i:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-    @media (max-width: 860px) {
+    /* Eight sections: the season label goes first, then the links get tighter */
+    @media (max-width: 1280px) {
         .nav__season { display: none; }
-        .nav__btn { display: block; }
+        .nav__menu a, .nav__soon { padding-right: 11px; padding-left: 11px; }
+        .nav__menu a::after { right: 11px; left: 11px; }
+    }
 
+    @media (max-width: 1100px) {
+        .nav__btn { display: grid; }
+
+        /* The menu drops down from the bar like a blind (clip-path), with the
+           links coming down a little with it; one transition for all, as in
+           the rest of the component. visibility keeps it out of the tab
+           order while closed and, transitioned, waits for the blind to close. */
         .nav__menu {
             position: fixed;
             inset: var(--nav) 0 0 0;
-            display: none;
             flex-direction: column;
             align-items: stretch;
             gap: 0;
@@ -176,19 +247,26 @@ const links: { page: NavPage; label: string; to: string }[] = [
             overflow: auto;
             background: var(--paper);
             color: var(--ink);
+            visibility: hidden;
+            clip-path: inset(0 0 100% 0);
+            transition: all .35s ease;
         }
-        .nav--open .nav__menu { display: flex; }
-        .nav__menu a {
+        .nav--open .nav__menu { visibility: visible; clip-path: inset(0); }
+        .nav__menu > * { transform: translateY(-16px); transition: all .35s ease; }
+        .nav--open .nav__menu > * { transform: none; }
+        .nav__menu a, .nav__soon {
             padding: 14px 0;
             border: 0;
             border-bottom: 1px solid var(--ink);
             color: var(--ink);
-            font-size: 56px;
+            font-size: 48px;
             font-weight: 900;
             font-stretch: 62%;
             letter-spacing: -.005em;
             line-height: .9;
         }
+        .nav__soon { gap: 14px; color: var(--mute); }
+        .nav__tag { font-size: 11px; font-weight: 700; font-stretch: 115%; letter-spacing: .09em; }
         /* Same roll, with the copy in large red; each link already has its
            own rule, so no drawn line here. */
         .nav__menu a::after { display: none; }

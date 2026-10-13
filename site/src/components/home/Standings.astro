@@ -56,7 +56,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
                                 <p class="k lbl">Leader</p>
                                 <b class="lead__name">{driver && leader.firstName && <span>{leader.firstName}</span>}{leader.name}</b>
                                 <span class="lead__team lbl">
-                                    {driver && <><TeamMark logo={leader.teamLogo} color={leader.teamColor} duotone={false} /><span class="mark-text">{leader.team} ·&nbsp;</span></>}
+                                    {driver && <><TeamMark logo={leader.teamLogo} color={leader.teamColor} /><span class="mark-text">{leader.team} ·&nbsp;</span></>}
                                     <span class="mark-text">+{lead(rows)} over {rest[0]?.name}</span>
                                 </span>
                             </div>
@@ -67,7 +67,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
                                 <li>
                                     <span class="ps lbl">{pad(row.pos)}</span>
                                     <span class="nm">
-                                        <TeamMark logo={row.teamLogo} color={row.teamColor} duotone={false} />
+                                        <TeamMark logo={row.teamLogo} color={row.teamColor} />
                                         <span class="mark-text">{row.name}{driver && row.firstName && <small> {row.firstName}</small>}</span>
                                     </span>
                                     <span class="bar" aria-hidden="true"><i style={`width: ${((row.points / max) * 100).toFixed(1)}%`}></i></span>

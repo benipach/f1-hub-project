@@ -6,7 +6,15 @@
 html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    /* No blue box over links and buttons while they're tapped on mobile
+       (owner's call, 13/10); the keyboard focus outline below stays. */
+    -webkit-tap-highlight-color: transparent;
+    /* No page scrollbar, so it doesn't take its ~15px from the layout on
+       desktop (owner's call, 13/10). Wheel, keys, touchpad and touch still
+       scroll; the bar just isn't drawn. */
+    scrollbar-width: none;
 }
+html::-webkit-scrollbar { display: none; }
 
 body {
     margin: 0;
@@ -91,31 +99,15 @@ button { font: inherit; color: inherit; }
 }
 .on-ink .sq { box-shadow: 0 0 0 1px rgba(239, 234, 224, .55); }
 
-/* Team logos (TeamMark) in duotone, so they keep to the palette: dark tones go
-   to ink and light ones to paper, the same on every field (Ferrari: black
-   horse on a near-paper shield). Hovering their row, cell, podium line or
-   link fades the real colors in on top. */
+/* Team logos (TeamMark), in their own colors in a square box. (They were in
+   an ink/paper duotone until 13/10; the owner dropped it.) */
 .team-mark {
-    position: relative;
     display: inline-block;
     flex: none;
     width: var(--size);
     height: var(--size);
-}
-.team-mark img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
     object-fit: contain;
 }
-.team-mark__duo { filter: url(#duo-ink-paper); }
-.team-mark__color {
-    opacity: 0;
-    transition: all .2s ease;
-}
-:is(a, tr, li, .pod, dd):hover .team-mark__color,
-.team-mark--plain .team-mark__color { opacity: 1; }
 
 /* Text next to a team mark: its box trimmed to the cap height and the
    baseline, so centering it with the logo is optically right (the box's

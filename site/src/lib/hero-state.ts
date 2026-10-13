@@ -255,6 +255,14 @@ export function startHero() {
 
         if (shown === 'upcoming') {
             const upcoming = sessions.find((s) => s.startMs > t);
+            // The strip's tag follows the weekend: before it, during it
+            // (between sessions), and after the race while its result isn't
+            // in yet, when "Next race" would read as if it hadn't been run.
+            const first = sessions[0];
+            setText(
+                q('[data-up-tag]'),
+                !upcoming ? 'Race finished' : first && first.startMs <= t ? 'Race weekend' : 'Next race',
+            );
             q('[data-countdown-block]')?.toggleAttribute('hidden', !upcoming);
             q('[data-waiting]')?.toggleAttribute('hidden', Boolean(upcoming));
             rows.forEach((row, key) => {

@@ -72,6 +72,8 @@ export type HeroResult = {
     /** Laps the winner completed. */
     readonly laps: number;
     readonly rows: readonly HeroRow[];
+    /** The winner's portrait inside the site, when there is one. */
+    readonly winnerPhoto: string | null;
 };
 
 export type HomeHero = {
@@ -93,8 +95,6 @@ export type PosterRound = {
     readonly layout: string | null;
     readonly sprint: boolean;
     readonly status: 'done' | 'cancelled' | 'next' | 'upcoming';
-    /** The most recent round with a result. */
-    readonly latest: boolean;
     /** UTC start of the first session and of the race, for the dates. */
     readonly weekendStart: string | null;
     readonly raceStart: string | null;
@@ -121,13 +121,23 @@ export function outcomeText(outcome: RaceOutcome): string {
     }
 }
 
-/** A circuit's layout SVG, recolored to currentColor and sized by CSS. */
+/**
+ * A circuit's layout SVG, recolored to currentColor and sized by CSS.
+ *
+ * Only the root <svg> loses its width and height: some files wrap the drawing
+ * in a clipPath whose <rect> needs its own, and stripping them everywhere left
+ * a zero-size clip that hid the whole layout (7 of the 24 files, Singapore and
+ * Sepang among them; found 13/10). That clip only repeats the viewBox, so it's
+ * dropped too: its fixed id would also clash when one layout is inlined twice.
+ */
 function layoutSvg(repoRoot: URL, circuitId: string | null): string | null {
     if (!circuitId) return null;
     for (const name of [`${circuitId}-layout.svg`, `${circuitId}.svg`]) {
         try {
             return readFileSync(new URL(`img/circuits/${name}`, repoRoot), 'utf8')
-                .replace(/\s(width|height)="[^"]*"/g, '')
+                .replace(/<svg\b[^>]*>/, (tag) => tag.replace(/\s(width|height)="[^"]*"/g, ''))
+                .replace(/\sclip-path="url\(#[^)]*\)"/g, '')
+                .replace(/<defs>\s*<clipPath\b[\s\S]*?<\/clipPath>\s*<\/defs>/g, '')
                 .replace(/fill="#[0-9A-Fa-f]{3,6}"/g, 'fill="currentColor"')
                 .replace('<svg', '<svg aria-hidden="true" focusable="false"');
         } catch {
@@ -144,6 +154,16 @@ function layoutFile(repoRoot: URL, circuitId: string | null): string | null {
         if (existsSync(new URL(`img/circuits/${name}`, repoRoot))) return `img/circuits/${name}`;
     }
     return null;
+}
+
+/**
+ * The driver's wide photo (img/drivers/<last part of the id>-2.png, the one
+ * the old driver pages use as a cover and the mockup used for the winner),
+ * if there is one. 1920×1080 PNGs of ~2–5 MB: the page resizes them.
+ */
+function driverPhoto(repoRoot: URL, driverId: string): string | null {
+    const path = `img/drivers/${driverId.split('-').pop()}-2.png`;
+    return existsSync(new URL(path, repoRoot)) ? path : null;
 }
 
 /** The team's logo, if img/teams has one (same file the old pages use). */
@@ -220,6 +240,7 @@ export function buildHomeHero(dataDir: URL): HomeHero {
                     fastestLap: row.fastestLap,
                 };
             }),
+            winnerPhoto: lastRace.results[0] ? driverPhoto(repoRoot, lastRace.results[0].driver) : null,
         };
     }
 
@@ -243,7 +264,6 @@ export function buildSeasonPoster(dataDir: URL): SeasonPoster {
 
     const raced = (gp: GrandPrix) => (race(gp)?.results.length ?? 0) > 0;
     const nextId = gps.find((gp) => !gp.cancelled && !raced(gp))?.id;
-    const latestId = [...gps].reverse().find((gp) => !gp.cancelled && raced(gp))?.id;
 
     const rounds = gps.map((gp): PosterRound => {
         const circuit = gp.circuitId ? circuits[gp.circuitId] : undefined;
@@ -259,7 +279,6 @@ export function buildSeasonPoster(dataDir: URL): SeasonPoster {
             layout: layoutFile(repoRoot, gp.circuitId),
             sprint: gp.sprint,
             status: gp.cancelled ? 'cancelled' : raced(gp) ? 'done' : gp.id === nextId ? 'next' : 'upcoming',
-            latest: gp.id === latestId,
             weekendStart: starts.sort()[0] ?? null,
             raceStart: raceTime?.kind === 'datetime' ? raceTime.start : null,
             winner: winnerRow

@@ -6,6 +6,7 @@ import '../styles/tokens.css';
 import '../styles/base.css';
 import { loadLatestYear } from '@f1hub/shared/data/load';
 import Footer from '../components/Footer.astro';
+import ScrollThumb from '../components/ScrollThumb.astro';
 import Navbar, { type NavPage } from '../components/Navbar.astro';
 import { DATA_DIR } from '../lib/data';
 import { href } from '../lib/paths';
@@ -36,6 +37,9 @@ const season = loadLatestYear(DATA_DIR);
     </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Mobile browsers paint their bars in the navbar's ink (--ink), so the
+         page starts at the very top of the screen. -->
+    <meta name="theme-color" content="#121212" />
     <title>{title}</title>
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}
@@ -43,22 +47,11 @@ const season = loadLatestYear(DATA_DIR);
 </head>
 <body>
     <a class="sr" href="#main">Skip to content</a>
-    <!-- Duotone filter for team logos (base.css, .team-mark): each pixel's
-         gray maps to a point between ink #121212 (dark) and paper #EFEAE0 (light). -->
-    <svg class="sr" width="0" height="0" aria-hidden="true" focusable="false">
-        <filter id="duo-ink-paper" color-interpolation-filters="sRGB">
-            <feColorMatrix type="saturate" values="0" />
-            <feComponentTransfer>
-                <feFuncR type="table" tableValues=".071 .937" />
-                <feFuncG type="table" tableValues=".071 .918" />
-                <feFuncB type="table" tableValues=".071 .878" />
-            </feComponentTransfer>
-        </filter>
-    </svg>
     <Navbar current={current} season={season} />
     <main id="main">
         <slot />
     </main>
     <Footer />
+    <ScrollThumb />
 </body>
 </html>
