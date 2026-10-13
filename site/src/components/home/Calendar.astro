@@ -4,6 +4,7 @@
 // three stats and a progress bar. Dates are turned into the visitor's time
 // zone by hero-state.ts ([data-range]), which also writes the next round's
 // "in N days" / "Live now" line ([data-cal-next]).
+import { useI18n } from '../../i18n';
 import type { SeasonPoster } from '../../lib/home';
 import { href } from '../../lib/paths';
 import TeamMark from '../TeamMark.astro';
@@ -14,23 +15,25 @@ interface Props {
 
 const { poster } = Astro.props;
 const { season, rounds } = poster;
+const { t, intl } = useI18n(Astro.currentLocale);
+const c = t.calendar;
 const first = rounds[0];
 const last = rounds[rounds.length - 1];
 const month = (iso: string | null) =>
-    iso ? new Date(iso).toLocaleDateString('en-GB', { month: 'long', timeZone: 'UTC' }) : '';
+    iso ? new Date(iso).toLocaleDateString(intl, { month: 'long', timeZone: 'UTC' }) : '';
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
 <section class="sec" id="calendar" aria-labelledby="cal-title">
     <div class="wrap">
         <header class="sec-head g12">
-            <p class="sec-no lbl">01 — Calendar</p>
-            <h2 class="sec-title cond" id="cal-title">Season<br />{season}</h2>
+            <p class="sec-no lbl">{c.sectionNo}</p>
+            <h2 class="sec-title cond" id="cal-title">{c.season}<br />{season}</h2>
             <div class="sec-meta">
                 <div class="stats lbl">
-                    <div><b>{pad(poster.raced)}</b><span>Raced</span></div>
-                    <div><b>{pad(poster.cancelled)}</b><span>Cancelled</span></div>
-                    <div><b class="is-red">{pad(poster.toGo)}</b><span>To go</span></div>
+                    <div><b>{pad(poster.raced)}</b><span>{c.raced}</span></div>
+                    <div><b>{pad(poster.cancelled)}</b><span>{c.cancelled}</span></div>
+                    <div><b class="is-red">{pad(poster.toGo)}</b><span>{c.toGo}</span></div>
                 </div>
             </div>
         </header>
@@ -50,27 +53,27 @@ const pad = (n: number) => String(n).padStart(2, '0');
                 <li class={`rd rd--${r.status}`}>
                     <a href={href(`grandsprix/grandprix.html?gp=${r.id}`)}>
                         <span class="rd__no">{pad(r.round)}</span>
-                        {r.sprint && <span class="rd__tag lbl">Sprint</span>}
+                        {r.sprint && <span class="rd__tag lbl">{c.sprint}</span>}
                         {r.layout && <img class="rd__trk" src={href(r.layout)} alt="" loading="lazy" decoding="async" />}
-                        <span class="rd__name">{r.name}{r.sprint && <span class="rd__sprint lbl">Sprint</span>}</span>
+                        <span class="rd__name">{r.name}{r.sprint && <span class="rd__sprint lbl">{c.sprint}</span>}</span>
                         <span class="rd__sub lbl">
                             {r.city}{r.city && r.weekendStart && <span class="rd__sep"> · </span>}
                             {r.weekendStart && r.raceStart && <span class="num" data-range data-start={r.weekendStart} data-end={r.raceStart}></span>}
                         </span>
                         <span class="rd__res">
                             {r.status === 'done' && r.winner && (
-                                <><TeamMark logo={r.winner.teamLogo} color={r.winner.teamColor} size={18} /><span class="mark-text"><em>Winner</em> {r.winner.name}</span></>
+                                <><TeamMark logo={r.winner.teamLogo} color={r.winner.teamColor} size={18} /><span class="mark-text"><em>{c.winner}</em> {r.winner.name}</span></>
                             )}
-                            {r.status === 'cancelled' && <span class="rd__txt">Cancelled</span>}
+                            {r.status === 'cancelled' && <span class="rd__txt">{c.cancelled}</span>}
                             {r.status === 'next' && (
                                 <span class="rd__next">
                                     <span class="ldot rd__dot" data-cal-dot hidden></span>
-                                    <span data-cal-next>Next</span>
+                                    <span data-cal-next>{t.live.next}</span>
                                 </span>
                             )}
-                            {r.status === 'upcoming' && <em>Upcoming</em>}
+                            {r.status === 'upcoming' && <em>{c.upcoming}</em>}
                             {(r.status === 'next' || r.status === 'upcoming') && r.raceStart && (
-                                <span class="rd__cd" data-cal-cd={r.raceStart} title="Until lights out" hidden></span>
+                                <span class="rd__cd" data-cal-cd={r.raceStart} title={c.untilLightsOut} hidden></span>
                             )}
                         </span>
                     </a>
@@ -79,8 +82,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
         </ol>
 
         <div class="cal-foot lbl">
-            <span>Sprint = sprint weekend · Dates in your local time</span>
-            <a href={href('archive.html')}>Seasons archive <span class="arrow">→</span></a>
+            <span>{c.legend}</span>
+            <a href={href('archive.html')}>{c.archive} <span class="arrow">→</span></a>
         </div>
     </div>
 </section>

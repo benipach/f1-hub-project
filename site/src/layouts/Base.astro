@@ -10,6 +10,7 @@ import ScrollThumb from '../components/ScrollThumb.astro';
 import Navbar, { type NavPage } from '../components/Navbar.astro';
 import { DATA_DIR } from '../lib/data';
 import { href } from '../lib/paths';
+import { useI18n } from '../i18n';
 
 interface Props {
     title: string;
@@ -22,10 +23,11 @@ interface Props {
 
 const { title, description, current, noindex = false } = Astro.props;
 const season = loadLatestYear(DATA_DIR);
+const { locale, t } = useI18n(Astro.currentLocale);
 ---
 
 <!doctype html>
-<html lang="en" translate="no">
+<html lang={locale} translate="no">
 <head>
     <!-- Google tag (gtag.js), same property as the old pages -->
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-V7JKWRTE0S"></script>
@@ -46,7 +48,7 @@ const season = loadLatestYear(DATA_DIR);
     <link rel="icon" href={href('img/icon.png')} />
 </head>
 <body>
-    <a class="sr" href="#main">Skip to content</a>
+    <a class="sr" href="#main">{t.meta.skip}</a>
     <Navbar current={current} season={season} />
     <main id="main">
         <slot />

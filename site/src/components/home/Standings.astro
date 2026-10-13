@@ -3,6 +3,7 @@
 // on ink, each with its leader big and the rest as rows with a bar against
 // the leader's points. Numbers come from buildStandings() (race and sprint
 // points in the data); the sentence in the header is generated from them.
+import { useI18n } from '../../i18n';
 import type { StandingRow, Standings } from '../../lib/home';
 import { href } from '../../lib/paths';
 import TeamMark from '../TeamMark.astro';
@@ -13,10 +14,12 @@ interface Props {
 
 const { standings } = Astro.props;
 const { drivers, teams, afterRound, rounds, toGo } = standings;
+const { t, fill, plural } = useI18n(Astro.currentLocale);
+const st = t.standings;
 
 const boards = [
-    { title: 'Drivers', rows: drivers.slice(0, 10), driver: true },
-    { title: 'Constructors', rows: teams, driver: false },
+    { title: st.drivers, rows: drivers.slice(0, 10), driver: true },
+    { title: st.constructors, rows: teams, driver: false },
 ].filter((b) => b.rows.length > 0);
 
 const lead = (rows: readonly StandingRow[]) => {
@@ -25,9 +28,14 @@ const lead = (rows: readonly StandingRow[]) => {
 };
 const [d1] = drivers;
 const [t1] = teams;
-const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
 const summary = d1 && t1
-    ? `${d1.name} leads by ${plural(lead(drivers), 'point')} with ${plural(toGo, 'round')} to go; ${t1.name} are ${lead(teams)} clear in the constructors’.`
+    ? fill(st.summary, {
+        driver: d1.name,
+        points: plural(st.points, lead(drivers)),
+        rounds: plural(st.rounds, toGo),
+        team: t1.name,
+        lead: lead(teams),
+    })
     : '';
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
@@ -35,11 +43,11 @@ const pad = (n: number) => String(n).padStart(2, '0');
 <section class="sec on-ink" id="standings" aria-labelledby="ch-title">
     <div class="wrap">
         <header class="sec-head g12">
-            <p class="sec-no lbl">02 — Championship</p>
-            <h2 class="sec-title cond" id="ch-title">Stand&shy;ings</h2>
+            <p class="sec-no lbl">{st.sectionNo}</p>
+            <h2 class="sec-title cond" id="ch-title">{st.title}</h2>
             {summary && (
                 <div class="sec-meta">
-                    <p>After Round {afterRound} of {rounds}. <b>{summary}</b></p>
+                    <p>{fill(st.after, { round: afterRound, rounds })} <b>{summary}</b></p>
                 </div>
             )}
         </header>
@@ -50,17 +58,17 @@ const pad = (n: number) => String(n).padStart(2, '0');
                 const max = leader?.points || 1;
                 return leader && (
                     <div class="board">
-                        <h3 class="lbl"><span>{title}</span><span>Pts</span></h3>
+                        <h3 class="lbl"><span>{title}</span><span>{st.pts}</span></h3>
                         <div class="lead">
                             <div>
-                                <p class="k lbl">Leader</p>
+                                <p class="k lbl">{st.leader}</p>
                                 <b class="lead__name">{driver && leader.firstName && <span>{leader.firstName}</span>}{leader.name}</b>
                                 <span class="lead__team lbl">
                                     {driver && <><TeamMark logo={leader.teamLogo} color={leader.teamColor} /><span class="mark-text">{leader.team} ·&nbsp;</span></>}
-                                    <span class="mark-text">+{lead(rows)} over {rest[0]?.name}</span>
+                                    <span class="mark-text">{fill(st.over, { lead: lead(rows), name: rest[0]?.name ?? "" })}</span>
                                 </span>
                             </div>
-                            <div class="lead__pts">{leader.points}<small>Points</small></div>
+                            <div class="lead__pts">{leader.points}<small>{st.pointsWord}</small></div>
                         </div>
                         <ol class="rows">
                             {rest.map((row) => (
@@ -81,9 +89,9 @@ const pad = (n: number) => String(n).padStart(2, '0');
         </div>
 
         <div class="champ-foot">
-            <a class="btn btn--red" href={href('championship.html')}>Full standings <span class="arrow">→</span></a>
-            <a class="btn btn--line" href={href('drivers.html')}>Drivers</a>
-            <a class="btn btn--line" href={href('teams.html')}>Teams</a>
+            <a class="btn btn--red" href={href('championship.html')}>{st.full} <span class="arrow">→</span></a>
+            <a class="btn btn--line" href={href("drivers.html")}>{t.sections.drivers}</a>
+            <a class="btn btn--line" href={href("teams.html")}>{t.sections.teams}</a>
         </div>
     </div>
 </section>

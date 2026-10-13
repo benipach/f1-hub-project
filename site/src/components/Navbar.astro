@@ -6,6 +6,7 @@
 // Live state: when <html data-weekend="live"> is set (by the script that reads
 // the timetable, see DESIGN.md section 6), the Live link turns red and reads
 // "Live now", and on mobile a red "Live" chip shows next to the button.
+import { useI18n } from '../i18n';
 import { href } from '../lib/paths';
 
 export type NavPage = 'calendar' | 'results' | 'drivers' | 'teams' | 'championship' | 'archive' | 'live';
@@ -18,6 +19,8 @@ interface Props {
 }
 
 const { current, season } = Astro.props;
+const { t, fill } = useI18n(Astro.currentLocale);
+const s = t.sections;
 
 // Every section, in the site's one order (the same in the Explore index and
 // the footer; _design/DESIGN.md, "Site sections"): the season in time order
@@ -25,28 +28,28 @@ const { current, season } = Astro.props;
 // drawn on its own (its dot and "now") in second place.
 type Link = { page: NavPage; label: string; to: string };
 const link = (page: NavPage, label: string, to: string): Link => ({ page, label, to });
-const before: Link[] = [link('calendar', 'Calendar', '#calendar')];
+const before: Link[] = [link('calendar', s.calendar, '#calendar')];
 const after: Link[] = [
-    link('results', 'Results', 'results.html'),
-    link('championship', 'Championship', 'championship.html'),
-    link('drivers', 'Drivers', 'drivers.html'),
-    link('teams', 'Teams', 'teams.html'),
-    link('archive', 'Archive', 'archive.html'),
+    link('results', s.results, 'results.html'),
+    link('championship', s.championship, 'championship.html'),
+    link('drivers', s.drivers, 'drivers.html'),
+    link('teams', s.teams, 'teams.html'),
+    link('archive', s.archive, 'archive.html'),
 ];
 ---
 
 <header class="nav" id="top">
     <div class="wrap nav__in">
-        <a class="nav__logo" href={href('')} aria-label="F1 Hub, home">
+        <a class="nav__logo" href={href('')} aria-label={t.nav.home}>
             <img src={href('img/logo.png')} alt="F1 Hub" width="110" height="22" />
-            <span class="nav__season lbl">Season {season}</span>
+            <span class="nav__season lbl">{fill(t.nav.season, { year: season })}</span>
         </a>
-        <a class="nav__chip lbl" href={href('live.html')}><span class="ldot" aria-hidden="true"></span>Live</a>
-        <button class="nav__btn" type="button" aria-expanded="false" aria-controls="nav-menu">
-            <span class="sr" data-btn-label>Open menu</span>
+        <a class="nav__chip lbl" href={href('live.html')}><span class="ldot" aria-hidden="true"></span>{s.live}</a>
+        <button class="nav__btn" type="button" aria-expanded="false" aria-controls="nav-menu" data-open={t.nav.openMenu} data-close={t.nav.closeMenu}>
+            <span class="sr" data-btn-label>{t.nav.openMenu}</span>
             <span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>
         </button>
-        <nav class="nav__menu" id="nav-menu" aria-label="Main">
+        <nav class="nav__menu" id="nav-menu" aria-label={t.nav.main}>
             {before.map(({ page, label, to }) => (
                 <a href={to.startsWith('#') ? href('') + to : href(to)} aria-current={current === page ? 'page' : undefined}>
                     <span class="roll"><span>{label}</span><span aria-hidden="true">{label}</span></span>
@@ -55,8 +58,8 @@ const after: Link[] = [
             <a class="nav__live" href={href('live.html')} aria-current={current === 'live' ? 'page' : undefined}>
                 <span class="ldot" aria-hidden="true"></span>
                 <span class="roll">
-                    <span>Live<span class="nav__now">&nbsp;now</span></span>
-                    <span aria-hidden="true">Live<span class="nav__now">&nbsp;now</span></span>
+                    <span>{s.live}<span class="nav__now">&nbsp;{s.liveNow}</span></span>
+                    <span aria-hidden="true">{s.live}<span class="nav__now">&nbsp;{s.liveNow}</span></span>
                 </span>
             </a>
             {after.map(({ page, label, to }) => (
@@ -65,7 +68,7 @@ const after: Link[] = [
                 </a>
             ))}
             {/* No page yet: "Soon", like in the Explore index and the footer */}
-            <span class="nav__soon">Hall of Fame<span class="nav__tag lbl">Soon</span></span>
+            <span class="nav__soon">{s.hallOfFame}<span class="nav__tag lbl">{s.soon}</span></span>
         </nav>
     </div>
 </header>
@@ -78,7 +81,8 @@ const after: Link[] = [
         if (!nav || !button) return;
         nav.classList.toggle('nav--open', open);
         button.setAttribute('aria-expanded', String(open));
-        if (label) label.textContent = open ? 'Close menu' : 'Open menu';
+        // The labels come from the page's dictionary, on the button
+        if (label) label.textContent = (open ? button.dataset['close'] : button.dataset['open']) ?? '';
         document.body.style.overflow = open ? 'hidden' : '';
     }
     button?.addEventListener('click', () => setOpen(!nav!.classList.contains('nav--open')));

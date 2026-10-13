@@ -12,16 +12,10 @@ import { existsSync, readFileSync } from 'node:fs';
 import { loadCircuits, loadCities, loadCountries, loadDrivers, loadLatestYear, loadSeason, loadTeams } from '@f1hub/shared/data/load';
 import { formatLapTime, type RaceOutcome } from '@f1hub/shared/data/results';
 import type { GrandPrix, SessionKey, SessionOf } from '@f1hub/shared/data/season';
+import type { useI18n } from '../i18n';
 
-const SESSION_NAMES: Record<SessionKey, string> = {
-    fp1: 'Practice 1',
-    fp2: 'Practice 2',
-    fp3: 'Practice 3',
-    sprintQualy: 'Sprint Qualifying',
-    sprintRace: 'Sprint',
-    qualifying: 'Qualifying',
-    race: 'Race',
-};
+/** A page's language tools (useI18n), for the words built here. */
+type I18n = ReturnType<typeof useI18n>;
 
 export type HeroSession = {
     readonly key: SessionKey;
@@ -109,15 +103,15 @@ export type SeasonPoster = {
     readonly toGo: number;
 };
 
-/** "+7.335s", "+1:08.358", "+2 Laps", "DNF". */
-export function outcomeText(outcome: RaceOutcome): string {
+/** "+7.335s", "+1:08.358", "+2 Laps", "DNF", in the page's language. */
+export function outcomeText(outcome: RaceOutcome, { t, plural }: I18n): string {
     switch (outcome.kind) {
         case 'time': return outcome.time === null ? '—' : formatLapTime(outcome.time);
         case 'gap': return outcome.gap < 60_000 ? `+${formatLapTime(outcome.gap)}s` : `+${formatLapTime(outcome.gap)}`;
-        case 'lapped': return `+${outcome.laps} Lap${outcome.laps === 1 ? '' : 's'}`;
-        case 'dnf': return 'DNF';
-        case 'dns': return 'DNS';
-        case 'dsq': return 'DSQ';
+        case 'lapped': return plural(t.outcome.lapped, outcome.laps);
+        case 'dnf': return t.outcome.dnf;
+        case 'dns': return t.outcome.dns;
+        case 'dsq': return t.outcome.dsq;
     }
 }
 
@@ -176,7 +170,8 @@ function race(gp: GrandPrix): SessionOf<'race'> | undefined {
     return gp.sessions.find((s): s is SessionOf<'race'> => s.key === 'race');
 }
 
-export function buildHomeHero(dataDir: URL): HomeHero {
+/** The homepage hero's data; session names and outcomes in the page's language. */
+export function buildHomeHero(dataDir: URL, i18n: I18n): HomeHero {
     const repoRoot = new URL('../', dataDir);
     const season = loadLatestYear(dataDir);
     const teams = loadTeams(dataDir);
@@ -205,7 +200,7 @@ export function buildHomeHero(dataDir: URL): HomeHero {
             sprint: gp.sprint,
             sessions: gp.sessions.flatMap((s) =>
                 s.time?.kind === 'datetime' && s.time.end
-                    ? [{ key: s.key, name: SESSION_NAMES[s.key], start: s.time.start, end: s.time.end }]
+                    ? [{ key: s.key, name: i18n.t.sessions[s.key], start: s.time.start, end: s.time.end }]
                     : []),
         };
     };
@@ -234,7 +229,7 @@ export function buildHomeHero(dataDir: URL): HomeHero {
                     team: team?.name ?? row.teamId,
                     teamColor: team?.color ?? null,
                     teamLogo: teamLogo(repoRoot, row.teamId),
-                    result: outcomeText(row.outcome),
+                    result: outcomeText(row.outcome, i18n),
                     grid,
                     gained: grid === null ? null : grid - row.pos,
                     fastestLap: row.fastestLap,

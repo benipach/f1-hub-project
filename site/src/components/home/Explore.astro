@@ -3,7 +3,12 @@
 // field (red is kept for what's live) with a numbered list of sections, each
 // title in display type with a line of description. Hover turns the row ink
 // and indents it.
+import { useI18n } from '../../i18n';
 import { href } from '../../lib/paths';
+
+const { t } = useI18n(Astro.currentLocale);
+const s = t.sections;
+const e = t.explore;
 
 // No year in the copy: the archive is being extended back to 1950 (the
 // owner's goal), so it promises neither where it starts today nor 1950.
@@ -11,14 +16,14 @@ import { href } from '../../lib/paths';
 // in time order, the grid, then history. The calendar is left out: it's on
 // this page, right above.
 const sections: { title: string; text: string; path: string | null }[] = [
-    { title: 'Live timing', text: 'Positions, gaps, sectors and tyres from F1’s official feed.', path: 'live.html' },
-    { title: 'Results', text: 'Race, sprint and qualifying classifications, round by round.', path: 'results.html' },
-    { title: 'Championship', text: 'Drivers’ and constructors’ standings after every round.', path: 'championship.html' },
-    { title: 'Drivers', text: 'Profiles, numbers and career records of the grid.', path: 'drivers.html' },
-    { title: 'Teams', text: 'The constructors: line-ups, cars and history.', path: 'teams.html' },
-    { title: 'Archive', text: 'The history of the championship, season by season.', path: 'archive.html' },
+    { title: s.liveTiming, text: e.live, path: 'live.html' },
+    { title: s.results, text: e.results, path: 'results.html' },
+    { title: s.championship, text: e.championship, path: 'championship.html' },
+    { title: s.drivers, text: e.drivers, path: 'drivers.html' },
+    { title: s.teams, text: e.teams, path: 'teams.html' },
+    { title: s.archive, text: e.archive, path: 'archive.html' },
     // No page yet: shown as "Soon", like in the footer
-    { title: 'Hall of Fame', text: 'The greats of the sport, in one place.', path: null },
+    { title: s.hallOfFame, text: e.hallOfFame, path: null },
 ];
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
@@ -26,10 +31,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
 <section class="sec" aria-labelledby="idx-title">
     <div class="wrap">
         <header class="sec-head g12">
-            <p class="sec-no lbl">03 — Explore</p>
-            <h2 class="sec-title cond" id="idx-title">Index</h2>
+            <p class="sec-no lbl">{e.sectionNo}</p>
+            <h2 class="sec-title cond" id="idx-title">{e.title}</h2>
             <div class="sec-meta">
-                <p>Everything on F1 Hub: live timing, results, standings, profiles and the history of the sport.</p>
+                <p>{e.intro}</p>
             </div>
         </header>
 
@@ -50,7 +55,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
                                 <span class="lbl">{pad(i + 1)}</span>
                                 <span class="idx__t">{title}</span>
                                 <span class="idx__d">{text}</span>
-                                <span class="idx__soon lbl">Soon</span>
+                                <span class="idx__soon lbl">{s.soon}</span>
                             </span>
                         )}
                 </li>

@@ -12,8 +12,10 @@ import Standings from '../components/home/Standings.astro';
 import Base from '../layouts/Base.astro';
 import { DATA_DIR } from '../lib/data';
 import { buildHomeHero, buildSeasonPoster, buildStandings } from '../lib/home';
+import { useI18n } from '../i18n';
 
-const hero = buildHomeHero(DATA_DIR);
+const i18n = useI18n(Astro.currentLocale);
+const hero = buildHomeHero(DATA_DIR, i18n);
 const poster = buildSeasonPoster(DATA_DIR);
 const standings = buildStandings(DATA_DIR);
 const at = (iso: string | undefined, minutes: number) =>
@@ -38,7 +40,7 @@ const moments = [
 // The live top 10 needs the relay (phase 4). Here it's filled with the last
 // race's real classification so the layout can be judged; the label says so.
 const tower = hero.last && {
-    label: `Preview · ${hero.last.gp.name}`,
+    label: `${i18n.t.hero.preview} · ${hero.last.gp.name}`,
     rows: hero.last.rows.map((row) => ({
         pos: row.pos,
         firstName: row.firstName,
@@ -46,7 +48,7 @@ const tower = hero.last && {
         team: row.team,
         teamColor: row.teamColor,
         teamLogo: row.teamLogo,
-        gap: row.pos === 1 ? 'Leader' : row.result,
+        gap: row.pos === 1 ? i18n.t.table.leader : row.result,
     })),
 };
 ---

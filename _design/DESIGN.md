@@ -497,6 +497,51 @@ so nothing depends on them:
   inline SVG layouts, no layout reads in the countdown loop (update text only),
   animations off with reduced motion.
 
+## 8b. Languages
+
+Set up on 13/10 with English only (the owner's plan: Spanish (neutral),
+Brazilian Portuguese and German first; Italian, French, Dutch, Japanese and
+Chinese later). **No component has UI text of its own**: every word comes
+from a dictionary in `site/src/i18n/`.
+
+- `en.ts`: the base dictionary, grouped by component. `"{name}"`
+  placeholders are filled with `fill()`; `{ one, other }` entries are
+  plurals, picked with `Intl.PluralRules` (`plural()`), because languages
+  pluralize differently. Plain strings only.
+- `index.ts`: `useI18n(Astro.currentLocale)` gives a component `t` (the
+  dictionary), `fill`, `plural`, `intl` (the BCP 47 tag for `Intl` dates and
+  numbers: `en` → `en-GB`) and `heroWords()`. The `Dict` type is derived from
+  `en.ts`, so a dictionary with a missing key fails `astro check`.
+- **Browser scripts** don't bundle the dictionaries: the hero gets its words
+  and Intl tag in its state JSON (`heroWords()`), the navbar's menu button
+  its two labels as data attributes. `fill()` lives in its own module for
+  that reason.
+- Words built from data (session names, "+1 Lap", "DNF") come from the
+  dictionary too: `buildHomeHero(dataDir, i18n)` takes the page's tools.
+- **Routing** (`astro.config.ts`, `i18n`): English at the root with no
+  prefix, so URLs don't change; every other locale at `/<code>/`.
+- `<html lang>` follows the page's locale.
+
+**Adding a language**, when the time comes:
+1. Its dictionary, `es.ts`: `export default { … } satisfies Dict`.
+2. Add it to `LOCALES`, `DICTIONARIES` and `INTL_TAGS` (`es` → `es`, `pt` →
+   `pt-BR`, `de` → `de-DE`) and to `i18n.locales` in `astro.config.ts`.
+3. A `src/pages/[lang]/` twin of each new page (`getStaticPaths` over the
+   non-default locales), rendering the same components.
+4. Internal links that keep the locale (a `localHref()` next to `href()`),
+   only towards new pages: the old ones stay English.
+5. A language switcher in the navbar and the footer.
+6. Data names: Grand Prix and country names per language as reference data
+   (`grandsPrix.json`, `countries.json`), not tables in code; today they're
+   the data's English, and `buildSeasonPoster()` shortens "Grand Prix" to
+   "GP", which only works in English.
+7. Check every page at 375 px in that language (German's long words in
+   the giant condensed titles; Spanish and Portuguese run ~20–30 % longer),
+   with `hyphens: auto` where needed.
+
+Japanese and Chinese need a font of their own (Archivo has no CJK glyphs)
+and a design pass of their own: see the plan.
+
 ## 9. Open points from the mockup
 
 - ~~**Mobile hero height**~~: closed on 13/10, the owner checked the whole

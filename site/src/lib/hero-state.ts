@@ -22,8 +22,19 @@
 // and fills the top 10 tower. Without them the detail reads "Ends 20:00".
 // Preview pages estimate laps and qualifying parts from the elapsed time.
 
+import { fill } from '../i18n/fill';
+import type { HeroWords } from '../i18n';
+
 type Session = { key: string; name: string; start: string; end: string };
-type State = { sessions: Session[]; lastRaceEnd: string | null; preview: boolean; previewLaps: number | null };
+type State = {
+    sessions: Session[];
+    lastRaceEnd: string | null;
+    preview: boolean;
+    previewLaps: number | null;
+    /** The page's words (i18n heroWords) and its Intl tag, for dates. */
+    words: HeroWords;
+    intl: string;
+};
 type HeroState = 'upcoming' | 'live' | 'result';
 
 const DAY = 864e5;
@@ -47,18 +58,25 @@ function clock(ms: number): string {
     return `${pad(Math.floor(s / 60))}:${pad(s % 60)}`;
 }
 
-/** What P1's gap cell says in the live top 10: "Leader" in races, "Fastest" in timed sessions. */
-function firstPlaceLabel(sessionKey: string): string {
-    return isRace(sessionKey) ? 'Leader' : 'Fastest';
+// Set by startHero from the page's state: its words and its date formats.
+let w: HeroWords;
+let fmt: ReturnType<typeof formats>;
+let plurals: Intl.PluralRules;
+
+function formats(intl: string) {
+    return {
+        weekday: new Intl.DateTimeFormat(intl, { weekday: 'short' }),
+        time: new Intl.DateTimeFormat(intl, { hour: '2-digit', minute: '2-digit', hour12: false }),
+        date: new Intl.DateTimeFormat(intl, { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }),
+        dayMonth: new Intl.DateTimeFormat(intl, { day: '2-digit', month: 'short' }),
+        dayOnly: new Intl.DateTimeFormat(intl, { day: '2-digit' }),
+    };
 }
 
-const fmt = {
-    weekday: new Intl.DateTimeFormat('en-GB', { weekday: 'short' }),
-    time: new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }),
-    date: new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }),
-    dayMonth: new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short' }),
-    dayOnly: new Intl.DateTimeFormat('en-GB', { day: '2-digit' }),
-};
+/** What P1's gap cell says in the live top 10: "Leader" in races, "Fastest" in timed sessions. */
+function firstPlaceLabel(sessionKey: string): string {
+    return isRace(sessionKey) ? w.leader : w.fastest;
+}
 
 const pad = (n: number) => String(n).padStart(2, '0');
 const dayTime = (d: Date) => `${fmt.weekday.format(d)} ${fmt.dayMonth.format(d)} · ${fmt.time.format(d)}`;
@@ -93,7 +111,7 @@ function compactCountdown(ms: number): string {
     const d = Math.floor(s / 86400);
     const h = Math.floor((s % 86400) / 3600);
     const m = Math.floor((s % 3600) / 60);
-    return d > 0 ? `${d}d ${pad(h)}h` : `${pad(h)}:${pad(m)}:${pad(s % 60)}`;
+    return d > 0 ? `${d}${w.unitDay} ${pad(h)}${w.unitHour}` : `${pad(h)}:${pad(m)}:${pad(s % 60)}`;
 }
 
 /** Whole calendar months from `from` to `to`, and the date they land on. */
@@ -111,17 +129,17 @@ function wholeMonths(from: Date, to: Date): { months: number; after: Date } {
 /** "2mo 05d", "17d 04h", "04h 12m" for under a day: minutes are enough for the calendar. */
 function roundCountdown(t: number, target: number): string {
     const { months, after } = wholeMonths(new Date(t), new Date(target));
-    if (months > 0) return `${months}mo ${pad(Math.floor((target - after.getTime()) / DAY))}d`;
+    if (months > 0) return `${months}${w.unitMonth} ${pad(Math.floor((target - after.getTime()) / DAY))}${w.unitDay}`;
     const m = Math.max(0, Math.floor((target - t) / 60000));
     const d = Math.floor(m / 1440);
     const h = Math.floor((m % 1440) / 60);
-    return d > 0 ? `${d}d ${pad(h)}h` : `${pad(h)}h ${pad(m % 60)}m`;
+    return d > 0 ? `${d}${w.unitDay} ${pad(h)}${w.unitHour}` : `${pad(h)}${w.unitHour} ${pad(m % 60)}${w.unitMinute}`;
 }
 
 /** "18 min ago", "1 h 05 min ago". */
 function ago(ms: number): string {
     const m = Math.max(0, Math.floor(ms / 60000));
-    return m < 60 ? `Started ${m} min ago` : `Started ${Math.floor(m / 60)} h ${pad(m % 60)} min ago`;
+    return m < 60 ? fill(w.startedMin, { m }) : fill(w.startedHours, { h: Math.floor(m / 60), m: pad(m % 60) });
 }
 
 export function startHero() {
@@ -129,6 +147,9 @@ export function startHero() {
     const json = root?.querySelector('[data-hero-state]')?.textContent;
     if (!root || !json) return;
     const state = JSON.parse(json) as State;
+    w = state.words;
+    fmt = formats(state.intl);
+    plurals = new Intl.PluralRules(state.intl);
 
     // Preview pages accept ?now=2026-10-10T13:20:00Z to simulate another moment;
     // the clock keeps running from there.
@@ -173,7 +194,7 @@ export function startHero() {
         const part = root!.dataset['qualiPart'];
         if (part) {
             const clockEnd = Date.parse(root!.dataset['clockEnd'] ?? '');
-            return Number.isNaN(clockEnd) ? `${part} next` : `${part} · ${clock(clockEnd - t)} left`;
+            return Number.isNaN(clockEnd) ? fill(w.partNext, { part }) : fill(w.partLeft, { part, clock: clock(clockEnd - t) });
         }
         const format = QUALI_FORMAT[session.key];
         if (!state.preview || !format) return null;
@@ -183,20 +204,20 @@ export function startHero() {
             if (t < end) {
                 const n = Math.floor(i / 2) + 1;
                 return i % 2 === 0
-                    ? `${format.prefix}${n} · ${clock(end - t)} left`
-                    : `${format.prefix}${n + 1} starts in ${clock(end - t)}`;
+                    ? fill(w.partLeft, { part: `${format.prefix}${n}`, clock: clock(end - t) })
+                    : fill(w.partStartsIn, { part: `${format.prefix}${n + 1}`, clock: clock(end - t) });
             }
             edge = end;
         }
-        return `${format.prefix}3 · 00:00 left`;
+        return fill(w.partLeft, { part: `${format.prefix}3`, clock: '00:00' });
     }
 
     /** What follows "Started 18 min ago": the lap, the qualifying part, or the end time. */
     function liveDetail(session: Running, t: number): string {
-        const ends = `Ends ${fmt.time.format(new Date(session.endMs))}`;
+        const ends = fill(w.ends, { time: fmt.time.format(new Date(session.endMs)) });
         if (isRace(session.key)) {
             const lap = liveLap(session, t);
-            return lap ? `Lap ${lap.current} / ${lap.total}` : ends;
+            return lap ? fill(w.lap, lap) : ends;
         }
         if (isQuali(session.key)) return qualiPart(session, t) ?? ends;
         return ends;
@@ -225,10 +246,10 @@ export function startHero() {
         const current = sessions.find((s) => s.startMs <= t && t < s.endMs);
         const first = sessions[0];
         calDot?.toggleAttribute('hidden', !current);
-        let text = 'Next';
-        if (current) text = `Live now · ${current.name}`;
-        else if (sessions.length && sessions.every((s) => s.endMs <= t)) text = 'Results on the way';
-        else if (first && first.startMs <= t) text = 'This weekend';
+        let text = w.next;
+        if (current) text = `${w.liveNow} · ${current.name}`;
+        else if (sessions.length && sessions.every((s) => s.endMs <= t)) text = w.resultsOnTheWay;
+        else if (first && first.startMs <= t) text = w.thisWeekend;
         setText(calNext, text);
     }
 
@@ -261,7 +282,7 @@ export function startHero() {
             const first = sessions[0];
             setText(
                 q('[data-up-tag]'),
-                !upcoming ? 'Race finished' : first && first.startMs <= t ? 'Race weekend' : 'Next race',
+                !upcoming ? w.raceFinished : first && first.startMs <= t ? w.raceWeekend : w.nextRace,
             );
             q('[data-countdown-block]')?.toggleAttribute('hidden', !upcoming);
             q('[data-waiting]')?.toggleAttribute('hidden', Boolean(upcoming));
@@ -280,10 +301,10 @@ export function startHero() {
                 setText(q('[data-next-name]'), upcoming.name);
                 setText(q('[data-next-when]'), dayTime(new Date(upcoming.startMs)));
                 // Screen readers get the countdown once a minute, not every second.
-                const sr = `${upcoming.name} starts in ${Math.floor(sec / 86400)} days, ${Math.floor((sec % 86400) / 3600)} hours and ${Math.floor((sec % 3600) / 60)} minutes`;
+                const sr = fill(w.srCountdown, { session: upcoming.name, d: Math.floor(sec / 86400), h: Math.floor((sec % 86400) / 3600), m: Math.floor((sec % 3600) / 60) });
                 if (sr !== lastSr) { lastSr = sr; setText(q('[data-cd-sr]'), sr); }
             }
-            setText(q('[data-race-count]'), race && race.startMs > t ? compactCountdown(race.startMs - t) : 'Done');
+            setText(q('[data-race-count]'), race && race.startMs > t ? compactCountdown(race.startMs - t) : w.done);
         } else if (shown === 'live') {
             const current = sessions.find((s) => s.startMs <= t && t < s.endMs);
             const after = sessions.find((s) => s.startMs >= (current?.endMs ?? t));
@@ -293,11 +314,11 @@ export function startHero() {
                 setText(q('[data-live-since]'), ago(t - current.startMs));
                 setText(q('[data-live-detail]'), liveDetail(current, t));
             }
-            setText(q('[data-upnext-name]'), after ? after.name : 'Weekend complete');
+            setText(q('[data-upnext-name]'), after ? after.name : w.weekendComplete);
             setText(q('[data-upnext-when]'), after ? dayTime(new Date(after.startMs)) : '');
         } else if (shown === 'result') {
             const days = race ? Math.max(1, Math.ceil((race.startMs - t) / DAY)) : 0;
-            setText(q('[data-next-race-in]'), race && race.startMs > t ? `In ${days} day${days === 1 ? '' : 's'}` : '');
+            setText(q('[data-next-race-in]'), race && race.startMs > t ? fill(plurals.select(days) === 'one' ? w.inDays.one : w.inDays.other, { n: days }) : '');
         }
     }
 

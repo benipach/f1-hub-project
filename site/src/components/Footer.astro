@@ -2,26 +2,30 @@
 // Site footer (_design/DESIGN.md, section 5). Same content as the old pages'
 // footer (js/footer.js), in the poster style: ink field, link columns, the
 // wordmark across the full width, legal notice.
+import { useI18n } from '../i18n';
 import { href } from '../lib/paths';
+
+const { t } = useI18n(Astro.currentLocale);
+const s = t.sections;
 
 const columns: { title: string; links: [label: string, path: string | null][] }[] = [
     // In the site's one order (the same in the navbar and the Explore index).
     // Championship and Archive point at their own addresses, which forward to
     // Results today, so the links stay right when those pages exist.
-    { title: 'Season', links: [
-        ['Calendar', '#calendar'],
-        ['Live Timing', 'live.html'],
-        ['Results', 'results.html'],
-        ['Championship', 'championship.html'],
+    { title: t.footer.season, links: [
+        [s.calendar, '#calendar'],
+        [s.liveTiming, 'live.html'],
+        [s.results, 'results.html'],
+        [s.championship, 'championship.html'],
     ] },
-    { title: 'The Grid', links: [
-        ['Drivers', 'drivers.html'],
-        ['Teams', 'teams.html'],
+    { title: t.footer.grid, links: [
+        [s.drivers, 'drivers.html'],
+        [s.teams, 'teams.html'],
     ] },
     // No path: the page doesn't exist yet and shows as "Soon"
-    { title: 'History', links: [
-        ['Archive', 'archive.html'],
-        ['Hall of Fame', null],
+    { title: t.footer.history, links: [
+        [s.archive, 'archive.html'],
+        [s.hallOfFame, null],
     ] },
 ];
 
@@ -34,7 +38,7 @@ const resources: [label: string, url: string][] = [
 const social: [label: string, url: string][] = [
     ['GitHub', 'https://github.com/benipach'],
     ['LinkedIn', 'https://linkedin.com/in/benicio-pacheco'],
-    ['Portfolio', 'https://benipach.dev'],
+    [t.footer.portfolio, 'https://benipach.dev'],
 ];
 
 const internal = (path: string) => (path.startsWith('#') ? href('') + path : href(path));
@@ -45,14 +49,11 @@ const year = new Date().getFullYear();
     <div class="wrap">
         <div class="foot__top g12">
             <div class="foot__about">
-                <p class="foot__tag">
-                    Every Grand Prix in one place: the calendar in your local time, live timing,
-                    full results and standings, driver and team profiles. Made by a fan, for fans.
-                </p>
-                <p class="foot__tz lbl">All times shown in <b>your local time</b><span data-tz-note></span></p>
+                <p class="foot__tag">{t.footer.tagline}</p>
+                <p class="foot__tz lbl">{t.footer.timesIn} <b>{t.footer.localTime}</b><span data-tz-note></span></p>
             </div>
 
-            <nav class="foot__nav" aria-label="Footer">
+            <nav class="foot__nav" aria-label={t.footer.label}>
                 {columns.map(({ title, links }) => (
                     <div>
                         <h2 class="lbl">{title}</h2>
@@ -61,14 +62,14 @@ const year = new Date().getFullYear();
                                 <li>
                                     {path
                                         ? <a href={internal(path)}>{label}</a>
-                                        : <span class="soon">{label}<i class="lbl">Soon</i></span>}
+                                        : <span class="soon">{label}<i class="lbl">{s.soon}</i></span>}
                                 </li>
                             ))}
                         </ul>
                     </div>
                 ))}
                 <div>
-                    <h2 class="lbl">Resources</h2>
+                    <h2 class="lbl">{t.footer.resources}</h2>
                     <ul>
                         {resources.map(([label, url]) => (
                             <li><a href={url} target="_blank" rel="noopener noreferrer">{label} ↗</a></li>
@@ -81,25 +82,16 @@ const year = new Date().getFullYear();
         <p class="foot__mark" aria-hidden="true">F1 <span>Hub</span></p>
 
         <div class="foot__legal">
-            <p>
-                Unofficial fan project. F1 Hub is not associated in any way with the Formula 1
-                companies, the FIA or any Formula 1 team. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE
-                WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trade marks of Formula One
-                Licensing B.V.
-            </p>
-            <p>
-                Team names, logos, driver images and other trademarks shown on this site belong to
-                their respective owners. Data comes in part from OpenF1 and is provided for
-                information only, without any guarantee of accuracy.
-            </p>
+            <p>{t.footer.legal1}</p>
+            <p>{t.footer.legal2}</p>
         </div>
 
         <div class="foot__bot">
-            <span class="foot__cr">© {year} F1 Hub · Designed &amp; built by <a href="https://benipach.dev" target="_blank" rel="noopener noreferrer">Benicio Pacheco</a></span>
+            <span class="foot__cr">© {year} F1 Hub · {t.footer.builtBy} <a href="https://benipach.dev" target="_blank" rel="noopener noreferrer">Benicio Pacheco</a></span>
             <span class="foot__social lbl">
                 {social.map(([label, url]) => <a href={url} target="_blank" rel="noopener noreferrer">{label} ↗</a>)}
             </span>
-            <a class="foot__top-link lbl" href="#top">Back to top ↑</a>
+            <a class="foot__top-link lbl" href="#top">{t.footer.backToTop} ↑</a>
         </div>
     </div>
 </footer>

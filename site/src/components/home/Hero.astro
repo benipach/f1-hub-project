@@ -4,6 +4,7 @@
 // build time; hero-state.ts shows the one that fits the current time and
 // keeps the countdowns and local times up to date.
 import { getImage } from 'astro:assets';
+import { useI18n } from '../../i18n';
 import type { HomeHero } from '../../lib/home';
 import { href } from '../../lib/paths';
 import TeamMark from '../TeamMark.astro';
@@ -40,6 +41,9 @@ interface Props {
 
 const { hero, preview = false, tower, previewLaps } = Astro.props;
 const { next, last, rounds } = hero;
+const { t, fill, intl, heroWords } = useI18n(Astro.currentLocale);
+const h = t.hero;
+const tb = t.table;
 const race = next?.sessions.find((s) => s.key === 'race');
 const towerRows: (TowerRow | null)[] = Array.from({ length: 10 }, (_, i) => tower?.rows[i] ?? null);
 
@@ -50,6 +54,8 @@ const state = {
     lastRaceEnd: last?.raceEnd ?? null,
     preview,
     previewLaps: preview ? previewLaps ?? null : null,
+    words: heroWords(),
+    intl,
 };
 
 // The winner's photo, resized at build time: the source files are 1920×1080
@@ -69,8 +75,8 @@ const rest = last?.rows.slice(3) ?? [];
         <section class="hero hero--up" data-hero="upcoming" aria-labelledby="up-title">
             <div class="wrap">
                 <div class="strip lbl">
-                    <span class="tag"><span class="sq" style="--c: var(--red)"></span><span data-up-tag>Next race</span></span>
-                    <span>Round {next.round} / {rounds}</span>
+                    <span class="tag"><span class="sq" style="--c: var(--red)"></span><span data-up-tag>{h.nextRace}</span></span>
+                    <span>{fill(h.roundOf, { round: next.round, rounds })}</span>
                     <span class="grow">{[next.circuit, next.place].filter(Boolean).join(' — ')}</span>
                     {next.sessions[0] && race && (
                         <span class="num" data-range data-start={next.sessions[0].start} data-end={race.start}></span>
@@ -81,7 +87,7 @@ const rest = last?.rows.slice(3) ?? [];
                     <div class="up__head">
                         <div class="roundel" aria-hidden="true">{next.round}</div>
                         <div>
-                            <p class="up__kicker lbl">Formula 1 · Round {next.round}{next.sprint && ' · Sprint weekend'}</p>
+                            <p class="up__kicker lbl">{fill(h.kicker, { round: next.round })}{next.sprint && ` · ${h.sprintWeekend}`}</p>
                             <h1 class="up__title cond" id="up-title">{next.name}</h1>
                         </div>
                     </div>
@@ -90,34 +96,34 @@ const rest = last?.rows.slice(3) ?? [];
                         {next.layout && <div class="trk" set:html={next.layout} />}
                         {(next.length || next.turns) && (
                             <div class="facts lbl">
-                                {next.length && <div><b>{next.length.toFixed(3)}</b><span>km lap</span></div>}
-                                {next.turns && <div><b>{next.turns}</b><span>turns</span></div>}
+                                {next.length && <div><b>{next.length.toFixed(3)}</b><span>{h.kmLap}</span></div>}
+                                {next.turns && <div><b>{next.turns}</b><span>{h.turns}</span></div>}
                             </div>
                         )}
                     </div>
 
                     <div class="up__count" role="timer" aria-labelledby="next-lbl" data-countdown-block>
                         <div class="head lbl">
-                            <span id="next-lbl">Next session — <b data-next-name>—</b> starts in</span>
+                            <span id="next-lbl">{h.nextSession} — <b data-next-name>—</b> {h.startsIn}</span>
                             <span class="num" data-next-when></span>
                         </div>
                         <div class="digits num" aria-hidden="true">
-                            <span class="u"><span data-cd="d">00</span><small>Days</small></span><span class="c">:</span>
-                            <span class="u"><span data-cd="h">00</span><small>Hours</small></span><span class="c">:</span>
-                            <span class="u"><span data-cd="m">00</span><small>Minutes</small></span><span class="c">:</span>
-                            <span class="u"><span data-cd="s">00</span><small>Seconds</small></span>
+                            <span class="u"><span data-cd="d">00</span><small>{h.days}</small></span><span class="c">:</span>
+                            <span class="u"><span data-cd="h">00</span><small>{h.hours}</small></span><span class="c">:</span>
+                            <span class="u"><span data-cd="m">00</span><small>{h.minutes}</small></span><span class="c">:</span>
+                            <span class="u"><span data-cd="s">00</span><small>{h.seconds}</small></span>
                         </div>
                         <span class="sr" data-cd-sr></span>
                     </div>
 
                     <div class="up__count up__wait" data-waiting hidden>
-                        <p class="lbl">Weekend complete</p>
-                        <p class="cond up__wait-title">Results on the way</p>
-                        <p class="up__wait-text">The race is over. The classification is loaded automatically shortly after the session ends.</p>
+                        <p class="lbl">{h.weekendComplete}</p>
+                        <p class="cond up__wait-title">{h.resultsOnTheWay}</p>
+                        <p class="up__wait-text">{h.resultsText}</p>
                     </div>
 
                     <div class="sched">
-                        <h2 class="lbl"><b>Timetable</b> <span>Your time · <span data-tz>local</span></span></h2>
+                        <h2 class="lbl"><b>{h.timetable}</b> <span>{h.yourTime} · <span data-tz>{h.local}</span></span></h2>
                         <ol>
                             {next.sessions.map((s) => (
                                 <li data-session={s.key} class={s.key === 'race' ? 'is-race' : undefined}>
@@ -133,12 +139,12 @@ const rest = last?.rows.slice(3) ?? [];
 
             <div class="band on-ink">
                 <div class="wrap band__in">
-                    <span class="band__k lbl">Race</span>
+                    <span class="band__k lbl">{h.race}</span>
                     {race && <span class="band__v num" data-local="daytime" data-at={race.start}></span>}
                     <span class="band__rule" aria-hidden="true"></span>
-                    <span class="band__k lbl">Lights out in</span>
+                    <span class="band__k lbl">{h.lightsOutIn}</span>
                     <span class="band__v" data-race-count>—</span>
-                    <a class="btn btn--red" href={href(`grandsprix/grandprix.html?gp=${next.id}`)}>Grand Prix guide <span class="arrow">→</span></a>
+                    <a class="btn btn--red" href={href(`grandsprix/grandprix.html?gp=${next.id}`)}>{h.gpGuide} <span class="arrow">→</span></a>
                 </div>
             </div>
         </section>
@@ -148,36 +154,36 @@ const rest = last?.rows.slice(3) ?? [];
         <section class="hero hero--live" data-hero="live" aria-labelledby="live-title" hidden>
             <div class="wrap">
                 <div class="strip lbl">
-                    <span class="tag"><span class="ldot ldot--on"></span>Live now</span>
-                    <span>Round {next.round} / {rounds}</span>
+                    <span class="tag"><span class="ldot ldot--on"></span>{h.liveNow}</span>
+                    <span>{fill(h.roundOf, { round: next.round, rounds })}</span>
                     <span class="grow">{next.name} — {next.circuit}</span>
                 </div>
 
                 <div class:list={['live g12', { 'live--tower': tower }]} data-live-grid>
-                    <p class="live__word" aria-hidden="true">Live</p>
+                    <p class="live__word" aria-hidden="true">{h.liveWord}</p>
 
                     <div class="live__info">
-                        <p class="lbl">{next.name} · Session in progress</p>
+                        <p class="lbl">{next.name} · {h.inProgress}</p>
                         <h1 class="live__session cond" id="live-title" data-live-name>—</h1>
                         <p class="live__sub"><span data-live-since></span> · <span class="num" data-live-detail></span></p>
                     </div>
 
                     <div class="live__cta">
                         <a class="cta-live" href={href('live.html')}>
-                            <span class="top lbl"><span class="cta-live__src"><span class="ldot ldot--red"></span>Live now</span><span class="arrow" aria-hidden="true">→</span></span>
-                            <span><b>Watch live timing</b><small>Positions, gaps, sectors and tyres from F1's official feed.</small></span>
+                            <span class="top lbl"><span class="cta-live__src"><span class="ldot ldot--red"></span>{h.liveNow}</span><span class="arrow" aria-hidden="true">→</span></span>
+                            <span><b>{h.watchLive}</b><small>{h.watchLiveText}</small></span>
                         </a>
                     </div>
 
                     <!-- Live top 10: hidden until something fills it (see the tower prop) -->
                     <div class="tower on-ink" data-tower hidden={!tower}>
                         <div class="tower__hd lbl">
-                            <span><span class="ldot ldot--red"></span>Top 10</span>
-                            <span data-tower-label>{tower?.label ?? 'Live'}</span>
+                            <span><span class="ldot ldot--red"></span>{h.top10}</span>
+                            <span data-tower-label>{tower?.label ?? h.liveWord}</span>
                         </div>
                         <!-- The result's classification table, without grid and places gained -->
                         <table class="tbl tower__tbl">
-                            <thead class="lbl"><tr><th>Pos</th><th>Driver</th><th class="hide-m">Team</th><th class="r">Gap</th></tr></thead>
+                            <thead class="lbl"><tr><th>{tb.pos}</th><th>{tb.driver}</th><th class="hide-m">{tb.team}</th><th class="r">{tb.gap}</th></tr></thead>
                             <tbody>
                                 {towerRows.map((row, i) => (
                                     <tr data-tower-row>
@@ -200,11 +206,11 @@ const rest = last?.rows.slice(3) ?? [];
 
             <div class="band on-ink">
                 <div class="wrap band__in">
-                    <span class="band__k lbl">Up next</span>
+                    <span class="band__k lbl">{h.upNext}</span>
                     <span class="band__v" data-upnext-name>—</span>
                     <span class="band__v num" data-upnext-when></span>
                     <span class="band__rule" aria-hidden="true"></span>
-                    <a class="btn btn--line" href={href(`grandsprix/grandprix.html?gp=${next.id}`)}>Weekend timetable <span class="arrow">→</span></a>
+                    <a class="btn btn--line" href={href(`grandsprix/grandprix.html?gp=${next.id}`)}>{h.timetableLink} <span class="arrow">→</span></a>
                 </div>
             </div>
         </section>
@@ -214,8 +220,8 @@ const rest = last?.rows.slice(3) ?? [];
         <section class="hero hero--res on-ink" data-hero="result" aria-labelledby="res-title" hidden>
             <div class="wrap">
                 <div class="strip lbl">
-                    <span class="tag"><span class="sq" style="--c: var(--red)"></span>Race result</span>
-                    <span>Round {last.gp.round} / {rounds}</span>
+                    <span class="tag"><span class="sq" style="--c: var(--red)"></span>{h.raceResult}</span>
+                    <span>{fill(h.roundOf, { round: last.gp.round, rounds })}</span>
                     <span class="grow">{last.gp.name} — {last.gp.circuit}</span>
                     <span class="num" data-local="date" data-at={last.raceEnd}></span>
                 </div>
@@ -224,12 +230,12 @@ const rest = last?.rows.slice(3) ?? [];
                     <p class="res__one" aria-hidden="true">1</p>
 
                     <div class="res__win">
-                        <p class="lbl">Winner · {last.gp.name}</p>
+                        <p class="lbl">{h.winner} · {last.gp.name}</p>
                         <h1 class="res__name cond" id="res-title"><span class="first">{podium1.firstName}</span>{podium1.lastName}</h1>
                         <dl class="res__meta">
-                            <div><dt class="lbl">Team</dt><dd><TeamMark logo={podium1.teamLogo} color={podium1.teamColor} size={22} /><span class="mark-text">{podium1.team}</span></dd></div>
-                            <div><dt class="lbl">Race time</dt><dd class="num">{podium1.result}</dd></div>
-                            {podium1.grid && <div><dt class="lbl">Started</dt><dd class="num">P{podium1.grid}</dd></div>}
+                            <div><dt class="lbl">{tb.team}</dt><dd><TeamMark logo={podium1.teamLogo} color={podium1.teamColor} size={22} /><span class="mark-text">{podium1.team}</span></dd></div>
+                            <div><dt class="lbl">{h.raceTime}</dt><dd class="num">{podium1.result}</dd></div>
+                            {podium1.grid && <div><dt class="lbl">{h.started}</dt><dd class="num">P{podium1.grid}</dd></div>}
                         </dl>
                     </div>
 
@@ -246,9 +252,9 @@ const rest = last?.rows.slice(3) ?? [];
                                 <span class="n">{row.pos}</span>
                                 <span class="who">
                                     <b>{row.lastName}</b>
-                                    <span class="lbl"><TeamMark logo={row.teamLogo} color={row.teamColor} /><span class="mark-text">{row.team}{row.grid && ` · from P${row.grid}`}</span></span>
+                                    <span class="lbl"><TeamMark logo={row.teamLogo} color={row.teamColor} /><span class="mark-text">{row.team}{row.grid && ` · ${fill(h.fromGrid, { grid: row.grid })}`}</span></span>
                                 </span>
-                                <span class="gap num">{row.result}{row.fastestLap && <><br /><span class="fl lbl">Fastest lap</span></>}</span>
+                                <span class="gap num">{row.result}{row.fastestLap && <><br /><span class="fl lbl">{tb.fastestLap}</span></>}</span>
                             </div>
                         ))}
                     </div>
@@ -256,16 +262,16 @@ const rest = last?.rows.slice(3) ?? [];
                     {rest.length > 0 && (
                         <div class="res__rest">
                             <div class="hd">
-                                <h2 class="lbl">Positions 4–{3 + rest.length}</h2>
-                                <a class="lbl" href={href('results.html')}>Full classification <span class="arrow">→</span></a>
+                                <h2 class="lbl">{fill(h.positions, { last: 3 + rest.length })}</h2>
+                                <a class="lbl" href={href('results.html')}>{h.fullClassification} <span class="arrow">→</span></a>
                             </div>
                             <table class="tbl">
-                                <thead class="lbl"><tr><th>Pos</th><th>Driver</th><th class="hide-m">Team</th><th class="r">Gap</th><th class="r hide-m">Grid</th><th class="r">+/−</th></tr></thead>
+                                <thead class="lbl"><tr><th>{tb.pos}</th><th>{tb.driver}</th><th class="hide-m">{tb.team}</th><th class="r">{tb.gap}</th><th class="r hide-m">{tb.grid}</th><th class="r">{tb.gained}</th></tr></thead>
                                 <tbody>
                                     {rest.map((row) => (
                                         <tr>
                                             <td class="p">{row.pos}</td>
-                                            <td class="d"><span>{row.firstName}</span>{row.lastName}{row.fastestLap && <span class="fl lbl">FL</span>}</td>
+                                            <td class="d"><span>{row.firstName}</span>{row.lastName}{row.fastestLap && <span class="fl lbl">{tb.fastestLapShort}</span>}</td>
                                             <td class="hide-m">
                                                 <span class="t">
                                                     <TeamMark logo={row.teamLogo} color={row.teamColor} />
@@ -293,11 +299,11 @@ const rest = last?.rows.slice(3) ?? [];
             {next && (
                 <div class="band band--paper">
                     <div class="wrap band__in">
-                        <span class="band__k lbl">Next race</span>
+                        <span class="band__k lbl">{h.nextRace}</span>
                         <span class="band__v">{next.name}</span>
                         <span class="band__v num" data-next-race-in></span>
                         <span class="band__rule" aria-hidden="true"></span>
-                        <a class="btn btn--ink" href={href('results.html')}>All results <span class="arrow">→</span></a>
+                        <a class="btn btn--ink" href={href('results.html')}>{h.allResults} <span class="arrow">→</span></a>
                     </div>
                 </div>
             )}
