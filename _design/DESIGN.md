@@ -27,7 +27,7 @@ Vintage Grand Prix posters, read through the Swiss / International style.
   its size, it goes.
 - **Photos are optional, never load-bearing.** Every component must look
   finished without one (see section 7).
-- **The circuit layout is a shape**, drawn flat in a single color, not a map.
+- **The circuit layout is a shape**, drawn flat in a single color, not a map. The drawings are today's official files with **thinner borders** (owner's call, 14/10): `scripts/thin-layouts.js` runs a mask along every edge of the ribbon, cutting 0.7 units off each side of each border (cut 1.4 in the 121 × 85 viewBox), and writes `img/circuits/thin/` (25 files; every layout must be named `<circuitId>-layout.svg`; known issue: in Madring, Marina Bay and Sepang the ribbon is made of pieces whose joins cross it, and the mask cuts along them, leaving small gaps; an erosion filter was tried and dropped, owner's call, 14/10); the site uses those first (`layoutNames()` in `home.ts`). Our own drawings from car positions were tried and set aside for now (`_design/tracks/`).
 
 What it must not become: a dashboard (that's the Live page's job), a magazine
 with long texts, or an imitation of F1's own broadcast graphics.

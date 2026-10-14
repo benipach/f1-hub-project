@@ -142,6 +142,15 @@ export function outcomeText(outcome: RaceOutcome, { t, plural }: I18n): string {
 }
 
 /**
+ * A circuit's layout files, in order of preference: the version with thinner
+ * borders (img/circuits/thin/, made by scripts/thin-layouts.js; owner's call,
+ * 14/10), then the original drawing.
+ */
+function layoutNames(circuitId: string): string[] {
+    return [`thin/${circuitId}-layout.svg`, `${circuitId}-layout.svg`];
+}
+
+/**
  * A circuit's layout SVG, recolored to currentColor and sized by CSS.
  *
  * Only the root <svg> loses its width and height: some files wrap the drawing
@@ -149,16 +158,18 @@ export function outcomeText(outcome: RaceOutcome, { t, plural }: I18n): string {
  * a zero-size clip that hid the whole layout (7 of the 24 files, Singapore and
  * Sepang among them; found 13/10). That clip only repeats the viewBox, so it's
  * dropped too: its fixed id would also clash when one layout is inlined twice.
+ * Only the drawing's own colour (#15151E) turns into currentColor: the thin
+ * versions' mask needs its white and black as they are.
  */
 function layoutSvg(repoRoot: URL, circuitId: string | null): string | null {
     if (!circuitId) return null;
-    for (const name of [`${circuitId}-layout.svg`, `${circuitId}.svg`]) {
+    for (const name of layoutNames(circuitId)) {
         try {
             return readFileSync(new URL(`img/circuits/${name}`, repoRoot), 'utf8')
                 .replace(/<svg\b[^>]*>/, (tag) => tag.replace(/\s(width|height)="[^"]*"/g, ''))
                 .replace(/\sclip-path="url\(#[^)]*\)"/g, '')
                 .replace(/<defs>\s*<clipPath\b[\s\S]*?<\/clipPath>\s*<\/defs>/g, '')
-                .replace(/fill="#[0-9A-Fa-f]{3,6}"/g, 'fill="currentColor"')
+                .replace(/fill="#15151E"/gi, 'fill="currentColor"')
                 .replace('<svg', '<svg aria-hidden="true" focusable="false"');
         } catch {
             // try the next name
@@ -170,7 +181,7 @@ function layoutSvg(repoRoot: URL, circuitId: string | null): string | null {
 /** A circuit's layout SVG file, as a path inside the site, if there is one. */
 function layoutFile(repoRoot: URL, circuitId: string | null): string | null {
     if (!circuitId) return null;
-    for (const name of [`${circuitId}-layout.svg`, `${circuitId}.svg`]) {
+    for (const name of layoutNames(circuitId)) {
         if (existsSync(new URL(`img/circuits/${name}`, repoRoot))) return `img/circuits/${name}`;
     }
     return null;
