@@ -1,0 +1,12 @@
+---
+// The homepage preview in every locale but English: /es/home-preview/…
+// The components read the language from Astro.currentLocale.
+import HomePreview from '../../components/pages/HomePreview.astro';
+import { DEFAULT_LOCALE, LOCALES } from '../../i18n';
+
+export function getStaticPaths() {
+    return LOCALES.filter((lang) => lang !== DEFAULT_LOCALE).map((lang) => ({ params: { lang } }));
+}
+---
+
+<HomePreview />

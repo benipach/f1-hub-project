@@ -8,24 +8,42 @@
 // `i18n.locales` in astro.config.ts, then give each page a src/pages/[lang]/
 // twin and make internal links keep the locale. Components read the page's
 // locale from Astro.currentLocale, so they need no changes.
+import { href } from '../lib/paths';
 import en from './en';
+import es from './es';
 import { fill } from './fill';
 
 export { fill };
 
-export const LOCALES = ['en'] as const;
+export const LOCALES = ['en', 'es'] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = 'en';
+
+/** Each language named in itself, so a visitor finds their own. */
+export const LANGUAGE_NAMES: Record<Locale, string> = { en: 'English', es: 'Español' };
+
+/** Path of a page in a locale: localePath('es', 'home-preview/') → "/f1-hub-project/es/home-preview/". */
+export function localePath(locale: Locale, path: string): string {
+    const clean = path.replace(/^\//, '');
+    return href(locale === DEFAULT_LOCALE ? clean : `${locale}/${clean}`);
+}
+
+/** A page's path inside the site with no locale: "/f1-hub-project/es/home-preview/" → "home-preview/". */
+export function pathWithoutLocale(pathname: string): string {
+    const inSite = pathname.replace(/^\//, '').slice(href('').replace(/^\//, '').length);
+    const [first, ...rest] = inSite.split('/');
+    return (LOCALES as readonly string[]).includes(first ?? '') ? rest.join('/') : inSite;
+}
 
 /** en.ts's shape with plain strings: what every dictionary must match. */
 type Widen<T> = { readonly [K in keyof T]: T[K] extends string ? string : Widen<T[K]> };
 export type Dict = Widen<typeof en>;
 export type Plural = { readonly one: string; readonly other: string };
 
-const DICTIONARIES: Record<Locale, Dict> = { en };
+const DICTIONARIES: Record<Locale, Dict> = { en, es };
 
 /** The BCP 47 tag for Intl: dates, numbers and plural rules. */
-const INTL_TAGS: Record<Locale, string> = { en: 'en-GB' };
+const INTL_TAGS: Record<Locale, string> = { en: 'en-GB', es: 'es' };
 
 /** The locale of a page (Astro.currentLocale), falling back to English. */
 export function toLocale(value: string | undefined): Locale {
@@ -44,6 +62,7 @@ function heroWords(t: Dict) {
         weekendComplete: t.hero.weekendComplete,
         done: t.hero.done,
         leader: t.table.leader,
+        lightsOutIn: t.calendar.lightsOutIn,
         fastest: t.table.fastest,
     };
 }

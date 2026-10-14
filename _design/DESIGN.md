@@ -128,9 +128,9 @@ Display sizes are fluid with `clamp()`. Reference scale from the mockup:
   timetable, standings leader, calendar grid, footer wordmark).
 
 Breakpoints: **1100 px** (two-column layouts collapse, calendar 5 → 3 columns),
-the navbar's hamburger also starts at 1100 px (it was 860 px with four links;
-moved on 13/10 when the navbar got eight), **760 px** (single column,
-calendar becomes a list, smaller gutters).
+**760 px** (single column, calendar becomes a list, smaller gutters, the
+navbar's season label hides). The navbar has no breakpoint of its own any
+more: its hamburger is there at every width (13/10).
 
 ### Motion
 
@@ -223,40 +223,56 @@ section goes into this list first, then into all three places.
 
 ### Navbar (site-wide)
 
-- Ink bar, 56 px, sticky. Logo, then "Season 2026" as a label next to it.
+- Ink bar, 56 px, sticky: the logo, "Season 2026" as a label next to it
+  (hidden at ≤ 760 px) and **a hamburger button at every width** (owner's
+  call, 13/10: with eight sections and the language switcher, a row of links
+  was too much for the bar). Until then the links sat in the bar on desktop
+  and the hamburger only took over below 860, then 1100, then 1200 px.
 - `<meta name="theme-color" content="#121212">` in `Base.astro`: mobile
   browsers that support it paint their own bars in the navbar's ink, so the
   page reads as starting at the top of the screen (owner's request, 13/10).
   It stays ink while a session is live: the navbar doesn't turn red.
-- Links in label type, every section in the site's order (see "Site
-  sections" below): Calendar, Live, Results, Championship, Drivers, Teams,
-  Archive, Hall of Fame. Hall of Fame has no page yet: muted,
-  not a link, with a "Soon" tag. Eight items need room: "Season 2026" hides
-  at ≤ 1280 px and the links' side padding drops from 14 to 11 px.
+- **Hamburger**: three 2 px bars that turn into an X when open; 44 × 44 px;
+  its label ("Open menu" / "Close menu", from the dictionary) is for screen
+  readers. **The menu drops down from the bar like a blind**, full screen on
+  paper (`clip-path` from `inset(0 0 100% 0)` to `inset(0)`), the links
+  coming down 16 px with it, and goes back up the same way; one
+  `transition: all .35s ease` for the whole component (owner's request,
+  13/10: it used to appear at once, behind a button that read "Menu").
+  Following a link or pressing Escape closes it; the page doesn't scroll
+  while it's open.
+- **In the menu**: every section in the site's order and groups (see "Site
+  sections" below), each with a rule under it: Calendar, Live, Results,
+  Championship · Drivers, Teams · Archive, Hall of Fame (no page yet: muted,
+  not a link, with a "Soon" tag). Then the language switcher, in label type.
+- **Two forms of the menu** (owner's call, 13/10: on a computer the
+  full-screen menu with its giant type was too loud):
+  - **≤ 760 px, full screen** on paper, dropping down from the bar, links in
+    display type at 48 px, no group labels.
+  - **≥ 761 px, a side panel** on ink, like a continuation of the bar: 440 px
+    wide, sliding in from the right (`clip-path` from `inset(0 0 0 100%)`,
+    contents moving 24 px with it) over the page dimmed at 45 % (a click
+    there closes it). Links at 30 px display type in paper, grouped under
+    small label headings (Season, The Grid, History, the footer's names);
+    hover copy and current page in `--red-hi`; the switcher at the foot,
+    after a rule. The scroll thumb hides while it's open (`<html
+    data-menu-open>`).
 - **Hover and keyboard focus: "rolling label".** The label rolls up out of
-  view while a copy in `--red-hi` rolls in from below (both stacked in a
-  one-cell grid with `overflow: hidden`; the copy is `aria-hidden`), and a
-  2 px red rule draws itself left to right under the link (`clip-path` from
-  `inset(0 100% 0 0)` to `inset(0)`). One `transition: all .35s ease` for the
-  whole component. With reduced motion it switches instantly.
-- **Current page** (`aria-current="page"`): the red rule stays drawn, so hover
-  and "you are here" speak the same language.
-- Tried and dropped on 12/10: the mockup's 1 px white border (looked like a
-  form button), a paper block inverting the link, and a full-height version
-  of that block (a dark strip stayed at the bottom; cause not found).
-- **Live link**: has an `.ldot`. When a session is live, the link turns into a
-  red block, the dot beats and the text reads "Live now".
-- **≤ 1100 px**: a **hamburger** button (three 2 px bars that turn into an X
-  when open; 44 × 44 px touch target; its label, "Open menu" / "Close menu",
-  is for screen readers) opens the menu full screen on paper, with the links
-  in display type (48 px). **The menu drops down from the bar like a blind**
-  (`clip-path` from `inset(0 0 100% 0)` to `inset(0)`), the links coming down
-  16 px with it, and goes back up the same way; one `.35s` transition, like
-  the rest of the navbar (owner's request, 13/10: it used to appear at once,
-  behind a button that read "Menu"). Following a link or pressing Escape
-  closes it. Same rolling label, with the copy in large `--red` and no drawn
-  rule (each link already has its own separator). When a session is live, a
-  red "● Live" chip stays visible next to the button.
+  view while a copy in `--red` rolls in from below (both stacked in a
+  one-cell grid with `overflow: hidden`; the copy is `aria-hidden`). With
+  reduced motion it switches instantly.
+- **Current page** (`aria-current="page"`): its link in `--red-ink` (in
+  `--red-hi` in the desktop panel). Only real pages can be current
+  (`NavPage`): Calendar is a section of the homepage, so it's never marked
+  (13/10: the homepage preview marked it, and it showed red).
+- Tried and dropped on 12/10, when the links sat in the bar: the mockup's
+  1 px white border (looked like a form button), a paper block inverting the
+  link, a full-height version of that block (a dark strip stayed at the
+  bottom; cause not found), and a red rule drawn under the hovered link.
+- **Live**: the link has an `.ldot`; while a session is live it turns red,
+  the dot beats and it reads "Live now". A red "● Live" chip also shows in
+  the bar, next to the button, so the live state is seen without opening
+  the menu.
 - The live state comes from the timetable (section 6), not from the relay.
 
 ### Homepage hero (3 states)
@@ -274,12 +290,33 @@ content grid, a `.band` at the bottom.
   13/10). Written by `hero-state.ts` (`[data-up-tag]`).
 - Left (cols 1–7): roundel with the round number, kicker, GP name in display
   type.
-- Right (cols 8–12): the circuit layout in red, with `.facts` under it: lap
-  length and turns from `circuits.json` (`layouts[*].length`, `.turns`; pick
-  the layout valid for the year). **Race laps are not in the data yet**: add
-  them to the circuit layout (reference data) or leave the cell out.
+- Right (cols 8–12): the circuit layout in red, with `.facts` under it, two
+  by two (owner's call, 13/10): lap length and turns from `circuits.json`
+  (`layouts[*].length`, `.turns`; the layout valid for the year), then **race
+  laps** and the **lap record** ("1:33.808 · Lap record · Hamilton 2025"),
+  worked out from the races in the data on that layout (`circuitRaceStats`
+  in `home.ts`): laps as the most a winner completed there (a race cut short
+  doesn't lower it), the record as the fastest race lap (rows have `bestLap`
+  from 2004; a new layout starts a new record, as in F1's own). The label
+  doesn't say it's the race lap record. A cell without data is left out.
+  **On desktop (≥ 761 px) the facts sit under the Grand Prix name**, in one
+  row of four aligned with the title (the record's holder on a second line),
+  and the layout has its column to itself; on mobile they stay under the
+  layout, two by two (owner's call, 13/10: on a 1920 × 1080 screen the hero
+  didn't fit, with an empty gap under the title). Done with the grid
+  (`.up__track { display: contents }` on desktop), not by moving the markup.
+- **The countdown digits (17vh) and "Results on the way" (12vh) also follow
+  the screen's height** (`min(…vw, …vh)`), so a wide but short screen fits
+  the whole hero, while a tall one keeps the full sizes. The Grand Prix
+  title keeps its own size (`clamp(44px, 7.4vw, 118px)`): capping it by
+  height too was tried and dropped (owner's call, 13/10).
 - Bottom left (cols 1–8): "Next session — Practice 1 starts in" and the
-  countdown (days, hours, minutes, seconds).
+  countdown (days, hours, minutes, seconds). Once every session is over but
+  the result isn't in the build yet, it gives way to "Weekend complete" and
+  **"Results on the way" in display type, always on one line**: its size
+  comes from the column's width and the title's length (`cqi` and
+  `--chars`), so it fits in any language. No explanatory sentence under it
+  (owner's call, 13/10: nobody needs it, and it saves height).
 - Bottom right (cols 9–12): the weekend timetable in the visitor's time zone,
   the next session marked in red with a "Next" tag, the race row in display
   type.
@@ -356,38 +393,54 @@ about half the width, not the whole page.
 ### Calendar: the season poster
 
 - Section on paper. Title "Season 2026" in display type; three big stats
-  (raced, cancelled, to go); a 25-segment progress bar (ink = raced, hatched =
-  cancelled, red = next, outline = to come).
-- A grid of rounds: 5 columns (3 at ≤ 1100 px), each cell with the round
-  number, a "Sprint" tag when it applies, the circuit layout as a black shape,
-  GP name, place and dates, and a footer line with the winner (team square +
-  name), "Upcoming" or "Cancelled". **Every round still to run counts down
-  to its race start in the right corner of that line** ("2mo 05d" from a
-  calendar month on, "17d 04h", "04h 12m" under a day; owner's requests,
-  13/10), updated by `hero-state.ts` with the
-  minute as its smallest unit; no `.num` (it doesn't tick every second). The
-  next round shows "Next" or "This weekend" on the left and the countdown on
-  the right; the countdown hides while a session is live and once the race
-  has started. The line's content sits centered between its rule and the
-  cell's bottom edge: 16 px above, like the cell's padding below, and its
-  text trimmed to the capitals (owner's call, 13/10).
-- Cell states: **done** (normal; the most recent one isn't marked, owner's
-  call, 13/10: its round number was red), **next** (red field, white layout; "Live now · Qualifying" while live),
-  **upcoming** (layout at 32 % opacity), **cancelled** (name struck through
-  with a 3 px line, hatched background, layout at 18 %).
-- Hover: the cell inverts to ink with a paper layout.
-- ≤ 760 px: a list. Each row has the number on the left, a text block in the
-  middle (name; place, and the dates on a line of their own so they never
-  break; the result or "Upcoming" + countdown) and the layout on the right as
-  tall as the row (72 px, in a 96 px column). Reworked on 13/10 at the
-  owner's request: the result used to have a column of its own, which
-  squeezed the names and dates and left the layout at 34 px.
-- Dates in the visitor's local time.
-- Built (12/10) as `site/src/components/home/Calendar.astro` from
-  `buildSeasonPoster()`. The layouts here are **`<img>` SVG files with lazy
-  loading**, blackened with `filter: brightness(0)` (white on red with
+  (**total, raced, to go**; owner's call, 13/10: no cancelled count, the total
+  being raced + to go so the three add up); a progress bar with a segment per
+  round (ink = raced, hatched = cancelled, red = next, outline = to come).
+- **The round cards: "Spec sheet"** (chosen by the owner on 14/10 out of four
+  directions explored with agents; the mockups and their brief are in
+  `_design/cards/`, the chosen one in `d-spec/`). Each card is a data plate
+  in four bands divided by hairlines that run edge to edge:
+  1. **The plate**: the round number huge in its corner (`clamp(72px, 6.4vw,
+     96px)`), a solid ink "Sprint" tag under it when it applies, and the
+     layout beside it (104 px tall, `object-fit: contain`, right-aligned). No
+     layout on file: an empty plate of the same size, framed and crossed by a
+     hairline, with "No layout".
+  2. **The name**: the full Grand Prix name in display type (24–30 px), on
+     two lines broken around the language's "Grand Prix" phrase, which never
+     splits ("Chinese / Grand Prix", "Gran Premio / de China").
+  3. **The fields**: the city as the label over the dates ("23–25 Oct", the
+     visitor's time zone, no year), and "Lap km" over the lap length.
+  4. **The result**: a label over a value. "Winner" over the team logo (in its
+     colours) and the full name; "Lights out in" over the countdown ("1mo
+     22d", "12d 04h", "04h 12m"; minutes are its smallest unit, no `.num`);
+     "Status" over "Cancelled". The next round reads "Next · Lights out in"
+     ("This weekend · Lights out in" once the weekend has begun, "● Live now"
+     over the session's name while one runs, "Results on the way" after the
+     last one).
+  **Labels** are label type in the soft colour; **values are in a lighter
+  face**: normal width, weight 500, as written, 16–18 px (owner's call,
+  14/10: in the 900 condensed face the card looked too loaded).
+  **Every card shares the same four rows through `subgrid`**, so plates,
+  names, fields and results line up across each row of the grid, and the
+  season reads like a timing sheet even where a name runs to three lines.
+- Card states: **done** (the latest isn't marked, owner's call, 13/10),
+  **next** (the one red field: white text and layout, rules at 50 % white,
+  white tag), **upcoming** (layout at 32 %), **cancelled** (hatched, name
+  struck through with a 3 px line, layout at 18 %, field values soft).
+- Hover: the card turns ink, layout, tag and rules paper; one
+  `transition: all .2s ease`; `background-color`, not the shorthand, so the
+  cancelled cards' hatching doesn't drop at once.
+- ≤ 760 px: a list, one row per round: number (with the Sprint tag under it)
+  | name, the city and the dates (in label type), the result inline | the
+  layout 72 px tall. The plate and fields open up (`display: contents`) into
+  the row's grid; the lap length and the "Winner" label are left out there.
+- Built in `site/src/components/home/Calendar.astro` from
+  `buildSeasonPoster()` (which gives each round its lap length and the
+  winner's full name and team). The layouts are **`<img>` SVG files with lazy
+  loading**, blackened with `filter: brightness(0)` (white with
   `invert(1)`), not inline SVG: 25 inline drawings would add hundreds of KB.
-  The GP name is the data's name with "Grand Prix" → "GP".
+  Before 14/10 the card was a stack: number, layout, name, place · dates and
+  a footer line; see the plan for its history.
 
 ### Standings
 
@@ -499,10 +552,10 @@ so nothing depends on them:
 
 ## 8b. Languages
 
-Set up on 13/10 with English only (the owner's plan: Spanish (neutral),
-Brazilian Portuguese and German first; Italian, French, Dutch, Japanese and
-Chinese later). **No component has UI text of its own**: every word comes
-from a dictionary in `site/src/i18n/`.
+Set up on 13/10: **English** and **Spanish** (neutral) so far; the owner's
+plan adds Brazilian Portuguese and German next, then Italian, French, Dutch,
+Japanese and Chinese. **No component has UI text of its own**: every word
+comes from a dictionary in `site/src/i18n/`.
 
 - `en.ts`: the base dictionary, grouped by component. `"{name}"`
   placeholders are filled with `fill()`; `{ one, other }` entries are
@@ -519,25 +572,56 @@ from a dictionary in `site/src/i18n/`.
 - Words built from data (session names, "+1 Lap", "DNF") come from the
   dictionary too: `buildHomeHero(dataDir, i18n)` takes the page's tools.
 - **Routing** (`astro.config.ts`, `i18n`): English at the root with no
-  prefix, so URLs don't change; every other locale at `/<code>/`.
-- `<html lang>` follows the page's locale.
+  prefix, so URLs don't change; every other locale at `/<code>/`. A page's
+  body is a component (`components/pages/HomePreview.astro`) rendered by
+  `pages/home-preview.astro` (English) and `pages/[lang]/home-preview.astro`
+  (`getStaticPaths` over the other locales). `localePath()` and
+  `pathWithoutLocale()` build a page's URL in another locale.
+- `<html lang>` follows the page's locale, and every page lists itself in
+  each language with `<link rel="alternate" hreflang>` (plus `x-default`,
+  English), so search engines show each visitor theirs.
+- **Language switcher** (`LangSwitch.astro`): the same page in each locale,
+  each language named in itself (`LANGUAGE_NAMES`: "English", "Español").
+  In the navbar's menu, under the links, and in the footer, under the time
+  zone line (a `codes` variant, "EN · ES", exists for a tight row).
+  Switching keeps the query and the hash (a preview's `?now=`).
+- The giant "LIVE" is sized for four letters; longer words ("EN VIVO")
+  shrink in proportion (`--fit`) so they stay on one line.
+- Words that are the same in a language stay the same (Spanish keeps
+  "Sprint", "Top 10" and the DNF / DNS / DSQ codes of the timing screens).
+  Spanish countdown units: "2M 05d" (M for months, since m is minutes).
 
-**Adding a language**, when the time comes:
-1. Its dictionary, `es.ts`: `export default { … } satisfies Dict`.
-2. Add it to `LOCALES`, `DICTIONARIES` and `INTL_TAGS` (`es` → `es`, `pt` →
-   `pt-BR`, `de` → `de-DE`) and to `i18n.locales` in `astro.config.ts`.
-3. A `src/pages/[lang]/` twin of each new page (`getStaticPaths` over the
-   non-default locales), rendering the same components.
-4. Internal links that keep the locale (a `localHref()` next to `href()`),
-   only towards new pages: the old ones stay English.
-5. A language switcher in the navbar and the footer.
-6. Data names: Grand Prix and country names per language as reference data
-   (`grandsPrix.json`, `countries.json`), not tables in code; today they're
-   the data's English, and `buildSeasonPoster()` shortens "Grand Prix" to
-   "GP", which only works in English.
-7. Check every page at 375 px in that language (German's long words in
+**Adding a language** (Spanish went this way):
+1. Its dictionary, `<code>.ts`: `export default { … } satisfies Dict`.
+2. Add it to `LOCALES`, `DICTIONARIES`, `INTL_TAGS` (`pt` → `pt-BR`, `de` →
+   `de-DE`) and `LANGUAGE_NAMES`, and to `i18n.locales` in
+   `astro.config.ts`. The `[lang]` pages and the switcher pick it up.
+3. Its names file, `data/i18n/<code>.json`, with every Grand Prix, city and
+   country (the test lists what's missing).
+4. Check every page at 375 px in that language (German's long words in
    the giant condensed titles; Spanish and Portuguese run ~20–30 % longer),
    with `hyphens: auto` where needed.
+
+**Names from the data** (13/10): Grand Prix, city and country names come in
+each language from **`data/i18n/<locale>.json`** (`{ grandsPrix, cities,
+countries }`, by id; schema `RawNames`, loader `loadNames()`), with the
+catalog's English name as the fallback (`namesIn()` in `home.ts`). A file of
+its own per language, not new fields in `grandsPrix.json` and the rest: the
+old pages read those catalogs, and `main` has changes to them that `next`
+doesn't, so editing them in `next` would clash at the big merge; a new file
+clashes with nothing. A test (`shared/test/raw.test.ts`) fails if any Grand
+Prix, city or country lacks a name in a language. The calendar breaks the
+name around the dictionary's `gpPhrase` ("Chinese / Grand Prix", "Gran
+Premio / de China"). **Proper names stay as they are**: circuits, teams and
+drivers. Plain numbers follow the language (`Intl.NumberFormat`: "4,928 km"
+in Spanish); lap and race times keep the timing screens' dot.
+
+**Still to do for every language:**
+- Internal links that keep the locale (a `localHref()`), towards new pages
+  only: the old pages exist in English only, so today every link but the
+  switcher leads to English.
+- `/design-system/` and the preview's "moments" panel stay English (they
+  don't ship).
 
 Japanese and Chinese need a font of their own (Archivo has no CJK glyphs)
 and a design pass of their own: see the plan.
@@ -548,7 +632,7 @@ and a design pass of their own: see the plan.
   homepage on their phone and it's fine.
 - ~~**Result photo**~~: closed on 13/10, the winner's photo in red and black
   duotone (section 5, Result), built with `getImage`.
-- **Race laps** for `.facts` aren't in `data/` (see the upcoming hero).
+- ~~**Race laps**~~: closed on 13/10, worked out from the races in the data (see the upcoming hero).
 - **Summary sentences** ("leads by 102 points…") must be generated, not typed.
 - **Site name**: the wordmark and logo will change if the site is renamed (see
   the plan, "Nombre del sitio").

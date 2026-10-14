@@ -9,13 +9,27 @@
 // and the browser picks the state from the current time (hero-state.ts).
 
 import { existsSync, readFileSync } from 'node:fs';
-import { loadCircuits, loadCities, loadCountries, loadDrivers, loadLatestYear, loadSeason, loadTeams } from '@f1hub/shared/data/load';
+import { loadCircuits, loadCities, loadCountries, loadDrivers, loadLatestYear, loadNames, loadSeason, loadTeams } from '@f1hub/shared/data/load';
 import { formatLapTime, type RaceOutcome } from '@f1hub/shared/data/results';
 import type { GrandPrix, SessionKey, SessionOf } from '@f1hub/shared/data/season';
 import type { useI18n } from '../i18n';
 
 /** A page's language tools (useI18n), for the words built here. */
 type I18n = ReturnType<typeof useI18n>;
+
+/**
+ * Grand Prix, city and country names in the page's language: from
+ * data/i18n/<locale>.json, or the data's own (English) name when the language
+ * has no file or no entry.
+ */
+function namesIn(dataDir: URL, locale: string) {
+    const names = loadNames(dataDir, locale);
+    return {
+        gp: (id: string, own: string) => names?.grandsPrix[id] ?? own,
+        city: (id: string, own: string) => names?.cities[id] ?? own,
+        country: (id: string, own: string) => names?.countries[id] ?? own,
+    };
+}
 
 export type HeroSession = {
     readonly key: SessionKey;
@@ -37,6 +51,10 @@ export type HeroGrandPrix = {
     /** Lap length in km and turns, for the layout valid that year. */
     readonly length: number | null;
     readonly turns: number | null;
+    /** The race distance in laps on this layout (see circuitRaceStats). */
+    readonly raceLaps: number | null;
+    /** The fastest race lap on this layout, with who set it and when. */
+    readonly lapRecord: { readonly time: string; readonly driver: string; readonly year: number } | null;
     readonly sprint: boolean;
     readonly sessions: readonly HeroSession[];
 };
@@ -81,18 +99,26 @@ export type HomeHero = {
 export type PosterRound = {
     readonly id: string;
     readonly round: number;
-    /** "Australian GP", "Bahrain GP in Malaysia" */
+    /** "Australian Grand Prix", "Gran Premio de Australia" */
     readonly name: string;
     /** "Melbourne" */
     readonly city: string | null;
     /** Layout SVG inside the site ("img/circuits/cota-layout.svg"), when there is one. */
     readonly layout: string | null;
+    /** Lap length in km of the layout valid that season. */
+    readonly lengthKm: number | null;
     readonly sprint: boolean;
     readonly status: 'done' | 'cancelled' | 'next' | 'upcoming';
     /** UTC start of the first session and of the race, for the dates. */
     readonly weekendStart: string | null;
     readonly raceStart: string | null;
-    readonly winner: { readonly name: string; readonly teamColor: string | null; readonly teamLogo: string | null } | null;
+    readonly winner: {
+        readonly firstName: string;
+        readonly name: string;
+        readonly team: string;
+        readonly teamColor: string | null;
+        readonly teamLogo: string | null;
+    } | null;
 };
 
 export type SeasonPoster = {
@@ -180,6 +206,45 @@ export function buildHomeHero(dataDir: URL, i18n: I18n): HomeHero {
     const circuits = loadCircuits(dataDir);
     const cities = loadCities(dataDir);
     const countries = loadCountries(dataDir);
+    const local = namesIn(dataDir, i18n.locale);
+
+    // Every season the stats below may read, loaded once.
+    const seasons = new Map<number, GrandPrix[]>([[season, gps]]);
+    const seasonGps = (year: number): GrandPrix[] => {
+        if (!seasons.has(year)) {
+            const exists = existsSync(new URL(`seasons/season${year}.json`, dataDir));
+            seasons.set(year, exists ? loadSeason(dataDir, year, teams) : []);
+        }
+        return seasons.get(year) ?? [];
+    };
+
+    /**
+     * A circuit's race stats on its current layout, from the races in the data
+     * (nothing typed by hand): the distance in laps, as the most laps a winner
+     * completed (a race cut short by rain doesn't lower it), and the lap record,
+     * the fastest race lap (rows have bestLap from 2004; a new layout starts a
+     * new record, as in F1's own).
+     */
+    const circuitRaceStats = (circuitId: string, from: number) => {
+        let laps = 0;
+        let record: { ms: number; driver: string; year: number } | null = null;
+        for (let year = from; year <= season; year++) {
+            for (const g of seasonGps(year)) {
+                const r = g.circuitId === circuitId ? race(g) : undefined;
+                if (!r) continue;
+                laps = Math.max(laps, r.results.find((row) => row.pos === 1)?.laps ?? 0);
+                for (const row of r.results) {
+                    if (row.bestLap !== null && (!record || row.bestLap < record.ms)) record = { ms: row.bestLap, driver: row.driver, year };
+                }
+            }
+        }
+        return {
+            raceLaps: laps || null,
+            lapRecord: record
+                ? { time: formatLapTime(record.ms), driver: drivers[record.driver]?.lastName ?? record.driver, year: record.year }
+                : null,
+        };
+    };
 
     const heroGp = (gp: GrandPrix): HeroGrandPrix => {
         const circuit = gp.circuitId ? circuits[gp.circuitId] : undefined;
@@ -191,12 +256,17 @@ export function buildHomeHero(dataDir: URL, i18n: I18n): HomeHero {
         return {
             id: gp.id,
             round: gp.round,
-            name: gp.name,
+            name: local.gp(gp.id, gp.name),
             circuit: circuit?.name ?? null,
-            place: city ? [city.name, country?.name].filter(Boolean).join(' · ') : null,
+            place: circuit && city
+                ? [local.city(circuit.location.city, city.name), country && local.country(city.country, country.name)].filter(Boolean).join(' · ')
+                : null,
             layout: layoutSvg(repoRoot, gp.circuitId),
             length: layout?.length ?? null,
             turns: layout?.turns ?? null,
+            ...(gp.circuitId && layout
+                ? circuitRaceStats(gp.circuitId, layout.validFrom)
+                : { raceLaps: null, lapRecord: null }),
             sprint: gp.sprint,
             sessions: gp.sessions.flatMap((s) =>
                 s.time?.kind === 'datetime' && s.time.end
@@ -247,8 +317,8 @@ export function buildHomeHero(dataDir: URL, i18n: I18n): HomeHero {
     };
 }
 
-/** Every round of the latest season, for the calendar poster. */
-export function buildSeasonPoster(dataDir: URL): SeasonPoster {
+/** Every round of the latest season, for the calendar poster, in the page's language. */
+export function buildSeasonPoster(dataDir: URL, i18n: I18n): SeasonPoster {
     const repoRoot = new URL('../', dataDir);
     const season = loadLatestYear(dataDir);
     const teams = loadTeams(dataDir);
@@ -256,6 +326,7 @@ export function buildSeasonPoster(dataDir: URL): SeasonPoster {
     const drivers = loadDrivers(dataDir);
     const circuits = loadCircuits(dataDir);
     const cities = loadCities(dataDir);
+    const local = namesIn(dataDir, i18n.locale);
 
     const raced = (gp: GrandPrix) => (race(gp)?.results.length ?? 0) > 0;
     const nextId = gps.find((gp) => !gp.cancelled && !raced(gp))?.id;
@@ -269,16 +340,21 @@ export function buildSeasonPoster(dataDir: URL): SeasonPoster {
         return {
             id: gp.id,
             round: gp.round,
-            name: gp.name.replace(/Grand Prix/, 'GP'),
-            city: circuit ? cities[circuit.location.city]?.name ?? null : null,
+            name: local.gp(gp.id, gp.name),
+            city: circuit ? local.city(circuit.location.city, cities[circuit.location.city]?.name ?? '') || null : null,
             layout: layoutFile(repoRoot, gp.circuitId),
+            lengthKm: circuit
+                ? Object.values(circuit.layouts).find((l) => l.validFrom <= season && (l.validTo === null || l.validTo >= season))?.length ?? null
+                : null,
             sprint: gp.sprint,
             status: gp.cancelled ? 'cancelled' : raced(gp) ? 'done' : gp.id === nextId ? 'next' : 'upcoming',
             weekendStart: starts.sort()[0] ?? null,
             raceStart: raceTime?.kind === 'datetime' ? raceTime.start : null,
             winner: winnerRow
                 ? {
+                    firstName: winner?.firstName ?? '',
                     name: winner?.lastName ?? winnerRow.driver,
+                    team: teams[winnerRow.teamId]?.name ?? winnerRow.teamId,
                     teamColor: teams[winnerRow.teamId]?.color ?? null,
                     teamLogo: teamLogo(repoRoot, winnerRow.teamId),
                 }

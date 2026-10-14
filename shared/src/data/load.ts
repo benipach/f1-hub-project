@@ -4,8 +4,8 @@
 // Validation runs on every load on purpose: a season file that drifts from
 // its schema stops the build instead of reaching a page.
 
-import { readFileSync } from 'node:fs';
-import { RawCircuits, RawCities, RawCountries, RawDrivers, RawGrandsPrix, RawLatest, RawSeason, RawTeams } from './raw';
+import { existsSync, readFileSync } from 'node:fs';
+import { RawCircuits, RawCities, RawCountries, RawDrivers, RawGrandsPrix, RawLatest, RawNames, RawSeason, RawTeams } from './raw';
 import { normalizeSeason, type GrandPrix } from './season';
 
 function readJson(dataDir: URL, path: string): unknown {
@@ -45,6 +45,15 @@ export function loadCountries(dataDir: URL): RawCountries {
 /** data/grandsPrix.json, validated. */
 export function loadGrandsPrix(dataDir: URL): RawGrandsPrix {
     return RawGrandsPrix.parse(readJson(dataDir, 'grandsPrix.json'));
+}
+
+/**
+ * The catalogs' names in a language (data/i18n/<locale>.json), validated; null
+ * when the language has no file (English: the catalogs' own names).
+ */
+export function loadNames(dataDir: URL, locale: string): RawNames | null {
+    const path = `i18n/${locale}.json`;
+    return existsSync(new URL(path, dataDir)) ? RawNames.parse(readJson(dataDir, path)) : null;
 }
 
 /** Every Grand Prix of a season, validated and normalized, by round. */

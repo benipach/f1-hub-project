@@ -70,6 +70,9 @@ function formats(intl: string) {
         date: new Intl.DateTimeFormat(intl, { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }),
         dayMonth: new Intl.DateTimeFormat(intl, { day: '2-digit', month: 'short' }),
         dayOnly: new Intl.DateTimeFormat(intl, { day: '2-digit' }),
+        // The round cards' short range: "23–25 Oct", "30 Oct–1 Nov"
+        dayNum: new Intl.DateTimeFormat(intl, { day: 'numeric' }),
+        monthShort: new Intl.DateTimeFormat(intl, { month: 'short' }),
     };
 }
 
@@ -101,6 +104,12 @@ function localizeTimes(root: ParentNode) {
         const end = new Date(el.dataset['end'] ?? '');
         if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return;
         const sameMonth = start.getMonth() === end.getMonth();
+        if (el.dataset['range'] === 'short') {
+            const month = (d: Date) => fmt.monthShort.format(d).replace('.', '');
+            const day = (d: Date) => fmt.dayNum.format(d);
+            setText(el, sameMonth ? `${day(start)}–${day(end)} ${month(end)}` : `${day(start)} ${month(start)}–${day(end)} ${month(end)}`);
+            return;
+        }
         setText(el, `${sameMonth ? fmt.dayOnly.format(start) : fmt.dayMonth.format(start)}–${fmt.dayMonth.format(end)} ${end.getFullYear()}`);
     });
 }
@@ -241,15 +250,22 @@ export function startHero() {
     // (with the beating dot).
     const calNext = document.querySelector<HTMLElement>('[data-cal-next]');
     const calDot = document.querySelector<HTMLElement>('[data-cal-dot]');
+    // The next round's result field: "Next · Lights out in" over the
+    // countdown, "This weekend · Lights out in" once the weekend has begun,
+    // "● Live now" over the session's name while one runs, and "Results on
+    // the way" when every session is over.
+    const calLive = document.querySelector<HTMLElement>('[data-cal-live]');
     function calendarNext(t: number) {
         if (!calNext) return;
         const current = sessions.find((s) => s.startMs <= t && t < s.endMs);
         const first = sessions[0];
         calDot?.toggleAttribute('hidden', !current);
-        let text = w.next;
-        if (current) text = `${w.liveNow} · ${current.name}`;
+        calLive?.toggleAttribute('hidden', !current);
+        if (current) setText(calLive, current.name);
+        let text = `${w.next} · ${w.lightsOutIn}`;
+        if (current) text = w.liveNow;
         else if (sessions.length && sessions.every((s) => s.endMs <= t)) text = w.resultsOnTheWay;
-        else if (first && first.startMs <= t) text = w.thisWeekend;
+        else if (first && first.startMs <= t) text = `${w.thisWeekend} · ${w.lightsOutIn}`;
         setText(calNext, text);
     }
 

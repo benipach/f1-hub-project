@@ -44,6 +44,11 @@ const { next, last, rounds } = hero;
 const { t, fill, intl, heroWords } = useI18n(Astro.currentLocale);
 const h = t.hero;
 const tb = t.table;
+// The giant "LIVE" is sized for four letters; a longer word ("EN VIVO")
+// shrinks in proportion so it stays on one line in its columns.
+const liveFit = Math.min(1, 4 / h.liveWord.length).toFixed(3);
+// "4.928" in English, "4,928" in Spanish
+const kmFormat = new Intl.NumberFormat(intl, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
 const race = next?.sessions.find((s) => s.key === 'race');
 const towerRows: (TowerRow | null)[] = Array.from({ length: 10 }, (_, i) => tower?.rows[i] ?? null);
 
@@ -94,10 +99,18 @@ const rest = last?.rows.slice(3) ?? [];
 
                     <div class="up__track">
                         {next.layout && <div class="trk" set:html={next.layout} />}
-                        {(next.length || next.turns) && (
+                        {(next.length || next.turns || next.raceLaps || next.lapRecord) && (
                             <div class="facts lbl">
-                                {next.length && <div><b>{next.length.toFixed(3)}</b><span>{h.kmLap}</span></div>}
+                                {next.length && <div><b>{kmFormat.format(next.length)}</b><span>{h.kmLap}</span></div>}
                                 {next.turns && <div><b>{next.turns}</b><span>{h.turns}</span></div>}
+                                {next.raceLaps && <div><b>{next.raceLaps}</b><span>{h.laps}</span></div>}
+                                {next.lapRecord && (
+                                    <div>
+                                        <b>{next.lapRecord.time}</b>
+                                        <span>{h.lapRecord}</span>
+                                        <span class="facts__by">{next.lapRecord.driver} {next.lapRecord.year}</span>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
@@ -118,8 +131,7 @@ const rest = last?.rows.slice(3) ?? [];
 
                     <div class="up__count up__wait" data-waiting hidden>
                         <p class="lbl">{h.weekendComplete}</p>
-                        <p class="cond up__wait-title">{h.resultsOnTheWay}</p>
-                        <p class="up__wait-text">{h.resultsText}</p>
+                        <p class="cond up__wait-title" style={`--chars: ${h.resultsOnTheWay.length}`}>{h.resultsOnTheWay}</p>
                     </div>
 
                     <div class="sched">
@@ -160,7 +172,7 @@ const rest = last?.rows.slice(3) ?? [];
                 </div>
 
                 <div class:list={['live g12', { 'live--tower': tower }]} data-live-grid>
-                    <p class="live__word" aria-hidden="true">{h.liveWord}</p>
+                    <p class="live__word" aria-hidden="true"><span style={`--fit: ${liveFit}`}>{h.liveWord}</span></p>
 
                     <div class="live__info">
                         <p class="lbl">{next.name} · {h.inProgress}</p>
@@ -436,17 +448,22 @@ const rest = last?.rows.slice(3) ?? [];
         color: var(--red);
     }
     .up__track .trk :global(svg) { max-height: min(36vh, 320px); }
+    /* Two by two: length and turns, then laps and the lap record (owner's
+       call, 13/10), each pair under a rule */
     .facts {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        row-gap: 10px;
         margin-top: 14px;
-        border-top: 1px solid var(--ink);
         color: var(--ink);
     }
-    .facts > div { flex: 1; padding: 8px 0 0; }
-    .facts > div + div { padding-left: 12px; border-left: 1px solid var(--ink); }
+    .facts > div { padding: 8px 0 0; border-top: 1px solid var(--ink); }
+    .facts > div:nth-child(even) { padding-left: 12px; border-left: 1px solid var(--ink); }
     /* The numbers sit inside a .lbl block: reset its wide letter-spacing */
     .facts b { display: block; font-size: 28px; font-weight: 900; font-stretch: 62%; line-height: 1; letter-spacing: 0; }
-    .facts span { color: var(--mute); }
+    .facts span { display: block; color: var(--mute); }
+    /* Who set the lap record and when, on a line of its own */
+    .facts__by { margin-top: 2px; }
 
     .up__count {
         grid-column: 1 / 9;
@@ -463,11 +480,21 @@ const rest = last?.rows.slice(3) ?? [];
         margin-bottom: 18px;
     }
     .up__count .head b { color: var(--red-ink); }
-    .up__count .digits { font-size: clamp(68px, 12vw, 190px); }
+    /* The digits follow the screen's height too, so a wide but short screen
+       (1920 × 1080 minus the browser's bars) fits the whole hero */
+    .up__count .digits { font-size: clamp(68px, min(12vw, 17vh), 190px); }
     .up__count .digits .c { color: var(--red); }
+    .up__wait { container-type: inline-size; }
     .up__wait p { margin: 0; }
-    .up__wait-title { margin: 10px 0 12px !important; font-size: clamp(48px, 7vw, 110px); }
-    .up__wait-text { max-width: 46ch; color: var(--mute); }
+    /* Always on one line (owner's call, 13/10), in any language: the size
+       comes from the column's width (cqi) and the title's length (--chars,
+       set in the markup), at ~0.46 em per letter in this condensed face,
+       up to 110 px. */
+    .up__wait-title {
+        margin: 10px 0 0 !important;
+        font-size: min(110px, 12vh, calc(100cqi / (var(--chars, 18) * .46)));
+        white-space: nowrap;
+    }
 
     .sched {
         grid-column: 9 / 13;
@@ -532,6 +559,7 @@ const rest = last?.rows.slice(3) ?? [];
         letter-spacing: -.02em;
         text-transform: uppercase;
     }
+    .live__word > span { font-size: calc(var(--fit, 1) * 1em); white-space: nowrap; }
     .live__info {
         grid-column: 1 / 8;
         grid-row: 2;
@@ -752,11 +780,32 @@ const rest = last?.rows.slice(3) ?? [];
     .eq { color: var(--mute-ink); }
 
     /* ---- Responsive ---------------------------------------------------------- */
+    /* Desktop: the circuit facts go under the Grand Prix name, in one row,
+       filling the room the title left there, and the layout gets its column
+       to itself (owner's call, 13/10: on a 1920 × 1080 screen the hero
+       didn't fit). Done with the grid, so the mobile order (facts under the
+       layout, at the end) stays as it is. */
+    @media (min-width: 761px) {
+        .up { grid-template-rows: 1fr auto auto; }
+        .up__head { grid-row: 1; align-self: end; }
+        .up__track { display: contents; }
+        .up__track .trk { grid-column: 8 / 13; grid-row: 1 / 3; align-self: center; }
+        .facts {
+            grid-column: 1 / 8;
+            grid-row: 2;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            margin: 0 0 0 calc(clamp(60px, 8.4vw, 124px) + 28px);
+        }
+        .facts > div:nth-child(n + 2) { padding-left: 12px; border-left: 1px solid var(--ink); }
+        .up__count, .sched { grid-row: 3; }
+    }
+
     @media (max-width: 1100px) {
         .up__head { grid-column: 1 / 9; }
-        .up__track { grid-column: 9 / 13; }
-        .up__count { grid-column: 1 / 13; }
-        .sched { grid-column: 1 / 13; grid-row: 3; }
+        .up__track, .up__track .trk { grid-column: 9 / 13; }
+        .facts { grid-column: 1 / 9; }
+        .up__count { grid-column: 1 / 13; grid-row: 3; }
+        .sched { grid-column: 1 / 13; grid-row: 4; }
         .live__info { grid-column: 1 / 13; }
         .live__cta { grid-column: 1 / 13; grid-row: 3; }
         /* Stacked: LIVE, the session, the tower, then the button */

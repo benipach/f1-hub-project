@@ -10,7 +10,7 @@ import ScrollThumb from '../components/ScrollThumb.astro';
 import Navbar, { type NavPage } from '../components/Navbar.astro';
 import { DATA_DIR } from '../lib/data';
 import { href } from '../lib/paths';
-import { useI18n } from '../i18n';
+import { LOCALES, DEFAULT_LOCALE, localePath, pathWithoutLocale, useI18n } from '../i18n';
 
 interface Props {
     title: string;
@@ -24,6 +24,9 @@ interface Props {
 const { title, description, current, noindex = false } = Astro.props;
 const season = loadLatestYear(DATA_DIR);
 const { locale, t } = useI18n(Astro.currentLocale);
+// This page in every language, for search engines (hreflang)
+const pagePath = pathWithoutLocale(Astro.url.pathname);
+const alternate = (code: (typeof LOCALES)[number]) => new URL(localePath(code, pagePath), Astro.site).href;
 ---
 
 <!doctype html>
@@ -44,6 +47,8 @@ const { locale, t } = useI18n(Astro.currentLocale);
     <meta name="theme-color" content="#121212" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {LOCALES.map((code) => <link rel="alternate" hreflang={code} href={alternate(code)} />)}
+    <link rel="alternate" hreflang="x-default" href={alternate(DEFAULT_LOCALE)} />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" href={href('img/icon.png')} />
 </head>

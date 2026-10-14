@@ -1,11 +1,14 @@
 ---
 // The season poster: the homepage calendar (_design/DESIGN.md, section 5).
-// A grid of every round with its layout, name, place, dates and result, plus
-// three stats and a progress bar. Dates are turned into the visitor's time
-// zone by hero-state.ts ([data-range]), which also writes the next round's
-// "in N days" / "Live now" line ([data-cal-next]).
+// Three stats, a progress bar, and a grid of round cards: direction D,
+// "Spec sheet", of the 13/10 exploration (_design/cards/). Each card is a
+// data plate in bands divided by hairlines (the number and the layout; the
+// name; the fields; the result), and every card shares the same four rows
+// through subgrid, so the grid reads like a timing sheet. hero-state.ts turns
+// the dates into the visitor's time zone ([data-range]), writes the countdowns
+// ([data-cal-cd]) and the next round's live state ([data-cal-next]).
 import { useI18n } from '../../i18n';
-import type { SeasonPoster } from '../../lib/home';
+import type { PosterRound, SeasonPoster } from '../../lib/home';
 import { href } from '../../lib/paths';
 import TeamMark from '../TeamMark.astro';
 
@@ -22,6 +25,19 @@ const last = rounds[rounds.length - 1];
 const month = (iso: string | null) =>
     iso ? new Date(iso).toLocaleDateString(intl, { month: 'long', timeZone: 'UTC' }) : '';
 const pad = (n: number) => String(n).padStart(2, '0');
+const km = new Intl.NumberFormat(intl, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+// The Grand Prix name on two lines, broken around the language's "Grand Prix"
+// phrase, which never splits: "Chinese / Grand Prix", "Gran Premio / de China".
+// Names without it ("500 Millas de Indianápolis") wrap on their own.
+const twoLines = (name: string) => {
+    const at = name.indexOf(c.gpPhrase);
+    if (at < 0) return name;
+    const phrase = c.gpPhrase.replace(/ /g, ' ');
+    const before = name.slice(0, at).trim();
+    const after = name.slice(at + c.gpPhrase.length).trim();
+    return before ? `${before}\n${phrase}${after ? ` ${after}` : ''}` : `${phrase}\n${after}`;
+};
+const upcoming = (r: PosterRound) => r.status === 'next' || r.status === 'upcoming';
 ---
 
 <section class="sec" id="calendar" aria-labelledby="cal-title">
@@ -31,8 +47,11 @@ const pad = (n: number) => String(n).padStart(2, '0');
             <h2 class="sec-title cond" id="cal-title">{c.season}<br />{season}</h2>
             <div class="sec-meta">
                 <div class="stats lbl">
+                    {/* Total, raced, to go (owner's call, 13/10: no count of cancelled
+                        rounds; they still show in the bar and their cells). The
+                        total is the rounds that are or will be run, so the three add up. */}
+                    <div><b>{pad(poster.raced + poster.toGo)}</b><span>{c.total}</span></div>
                     <div><b>{pad(poster.raced)}</b><span>{c.raced}</span></div>
-                    <div><b>{pad(poster.cancelled)}</b><span>{c.cancelled}</span></div>
                     <div><b class="is-red">{pad(poster.toGo)}</b><span>{c.toGo}</span></div>
                 </div>
             </div>
@@ -52,28 +71,58 @@ const pad = (n: number) => String(n).padStart(2, '0');
             {rounds.map((r) => (
                 <li class={`rd rd--${r.status}`}>
                     <a href={href(`grandsprix/grandprix.html?gp=${r.id}`)}>
-                        <span class="rd__no">{pad(r.round)}</span>
-                        {r.sprint && <span class="rd__tag lbl">{c.sprint}</span>}
-                        {r.layout && <img class="rd__trk" src={href(r.layout)} alt="" loading="lazy" decoding="async" />}
-                        <span class="rd__name">{r.name}{r.sprint && <span class="rd__sprint lbl">{c.sprint}</span>}</span>
-                        <span class="rd__sub lbl">
-                            {r.city}{r.city && r.weekendStart && <span class="rd__sep"> · </span>}
-                            {r.weekendStart && r.raceStart && <span class="num" data-range data-start={r.weekendStart} data-end={r.raceStart}></span>}
+                        {/* Row 1, the plate: the number in its corner, the drawing beside it */}
+                        <span class="rd__top">
+                            <span class="rd__no" aria-hidden="true">{pad(r.round)}</span>
+                            {r.sprint && <span class="rd__tag lbl">{c.sprint}</span>}
+                            {r.layout
+                                ? <img class="rd__trk" src={href(r.layout)} alt="" loading="lazy" decoding="async" />
+                                : <span class="rd__none"><span class="lbl">{c.noLayout}</span></span>}
                         </span>
+
+                        {/* Row 2, the name */}
+                        <span class="rd__name">{twoLines(r.name)}</span>
+
+                        {/* Row 3, the fields: place and dates | lap length */}
+                        <span class="rd__f">
+                            <span class="rd__cell">
+                                <span class="rd__lab lbl">{r.city}</span>
+                                <span class="rd__val" data-range="short" data-start={r.weekendStart} data-end={r.raceStart}></span>
+                            </span>
+                            <span class="rd__cell">
+                                <span class="rd__lab lbl">{c.lapKm}</span>
+                                <span class="rd__val">{r.lengthKm ? km.format(r.lengthKm) : '—'}</span>
+                            </span>
+                        </span>
+
+                        {/* Row 4, the result: winner, countdown, live or cancelled */}
                         <span class="rd__res">
                             {r.status === 'done' && r.winner && (
-                                <><TeamMark logo={r.winner.teamLogo} color={r.winner.teamColor} size={18} /><span class="mark-text"><em>{c.winner}</em> {r.winner.name}</span></>
+                                <>
+                                    <span class="rd__lab lbl">{c.winner}</span>
+                                    <span class="rd__win" title={r.winner.team}>
+                                        <TeamMark logo={r.winner.teamLogo} color={r.winner.teamColor} size={22} />
+                                        <span class="rd__val">{r.winner.firstName} {r.winner.name}</span>
+                                    </span>
+                                </>
                             )}
-                            {r.status === 'cancelled' && <span class="rd__txt">{c.cancelled}</span>}
-                            {r.status === 'next' && (
-                                <span class="rd__next">
-                                    <span class="ldot rd__dot" data-cal-dot hidden></span>
-                                    <span data-cal-next>{t.live.next}</span>
-                                </span>
+                            {r.status === 'cancelled' && (
+                                <>
+                                    <span class="rd__lab lbl">{c.status}</span>
+                                    <span class="rd__val">{c.cancelledRound}</span>
+                                </>
                             )}
-                            {r.status === 'upcoming' && <em>{c.upcoming}</em>}
-                            {(r.status === 'next' || r.status === 'upcoming') && r.raceStart && (
-                                <span class="rd__cd" data-cal-cd={r.raceStart} title={c.untilLightsOut} hidden></span>
+                            {upcoming(r) && (
+                                <>
+                                    <span class="rd__lab lbl">
+                                        {r.status === 'next' && <span class="ldot rd__dot" data-cal-dot hidden></span>}
+                                        <span data-cal-next={r.status === 'next' ? '' : undefined}>
+                                            {r.status === 'next' ? `${t.live.next} · ${c.lightsOutIn}` : c.lightsOutIn}
+                                        </span>
+                                    </span>
+                                    {r.raceStart && <span class="rd__val" data-cal-cd={r.raceStart}></span>}
+                                    {r.status === 'next' && <span class="rd__val" data-cal-live hidden></span>}
+                                </>
                             )}
                         </span>
                     </a>
@@ -116,8 +165,12 @@ const pad = (n: number) => String(n).padStart(2, '0');
     .prog .prog--cancelled { background: repeating-linear-gradient(135deg, var(--ink) 0 2px, transparent 2px 6px); }
     .prog .prog--next { background: var(--red); }
     .prog .prog--upcoming { background: transparent; box-shadow: inset 0 0 0 1px var(--ink); }
-    .prog-k { display: flex; justify-content: space-between; margin-bottom: 36px; color: var(--mute); }
+    .prog-k { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 36px; color: var(--mute); }
 
+    /* The grid, a table of the season: every card spans four rows of the
+       parent grid and shares them through subgrid, so plate, name, fields and
+       result line up across a whole row of cards, even when a name runs to
+       three lines. */
     .cal {
         display: grid;
         grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -127,28 +180,64 @@ const pad = (n: number) => String(n).padStart(2, '0');
         border-top: 4px solid var(--ink);
         border-left: 1px solid var(--ink);
     }
-    .rd { border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
-    .rd a {
+    .rd {
         display: grid;
-        grid-template-columns: 1fr auto;
-        grid-template-rows: auto 1fr auto auto auto;
-        height: 100%;
-        min-height: 248px;
-        padding: 14px 16px 16px;
-        color: inherit;
+        grid-row: span 4;
+        grid-template-rows: subgrid;
+        border-right: 1px solid var(--ink);
+        border-bottom: 1px solid var(--ink);
+    }
+    .rd a {
+        /* The card's own colours; states and hover swap them */
+        --rule: rgba(18, 18, 18, .28);
+        --soft: var(--mute);
+        display: grid;
+        grid-row: 1 / -1;
+        grid-template-rows: subgrid;
+        color: var(--ink);
         text-decoration: none;
+        background-color: transparent;
         transition: all .2s ease;
     }
-    .rd__no { grid-column: 1; grid-row: 1; font-size: 60px; font-weight: 900; font-stretch: 62%; line-height: .78; }
-    .rd__tag { grid-column: 2; grid-row: 1; align-self: start; padding: 3px 6px; border: 1px solid currentColor; }
-    .rd__trk {
-        grid-column: 1 / 3;
+
+    /* Row 1, the plate */
+    .rd__top {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-rows: 1fr auto;
+        column-gap: 12px;
+        padding: 14px 16px;
+    }
+    .rd__no {
+        grid-column: 1;
+        grid-row: 1;
+        font-size: clamp(72px, 6.4vw, 96px);
+        font-weight: 900;
+        font-stretch: 62%;
+        line-height: .74;
+        letter-spacing: -.01em;
+    }
+    .rd__tag {
+        grid-column: 1;
         grid-row: 2;
+        justify-self: start;
+        align-self: end;
+        margin-top: 10px;
+        padding: 3px 6px 2px;
+        background: var(--ink);
+        color: var(--paper);
+        font-size: 10px;
+        transition: all .2s ease;
+    }
+    .rd__trk {
+        grid-column: 2;
+        grid-row: 1 / 3;
         justify-self: end;
         align-self: center;
-        width: auto;
-        height: 84px;
-        margin: 10px 0;
+        width: 100%;
+        height: 104px;
+        object-fit: contain;
+        object-position: right center;
         filter: brightness(0);
         transition: all .2s ease;
         /* Keeps the image on its own layer: without it Chromium creates and
@@ -156,70 +245,99 @@ const pad = (n: number) => String(n).padStart(2, '0');
            layout flashes at both ends of the hover. */
         will-change: filter;
     }
+    /* No drawing on file: an empty plate, framed and crossed, same footprint */
+    .rd__none {
+        grid-column: 2;
+        grid-row: 1 / 3;
+        position: relative;
+        height: 104px;
+        border: 1px solid var(--rule);
+        background: linear-gradient(to top right, transparent calc(50% - .6px), var(--rule) 50%, transparent calc(50% + .6px));
+        color: var(--soft);
+        transition: all .2s ease;
+    }
+    .rd__none span { position: absolute; top: 7px; left: 8px; font-size: 10px; }
+
+    /* Row 2, the name */
     .rd__name {
-        grid-column: 1 / 3;
-        grid-row: 3;
-        font-size: 21px;
-        font-weight: 800;
-        font-stretch: 78%;
-        line-height: 1.02;
+        align-self: end;
+        padding: 4px 16px 14px;
+        font-size: clamp(24px, 2vw, 30px);
+        font-weight: 900;
+        font-stretch: 62%;
+        line-height: .9;
         text-transform: uppercase;
+        white-space: pre-line;
+        hyphens: auto;
     }
-    .rd__sprint { display: none; }
-    .rd__sub { grid-column: 1 / 3; grid-row: 4; margin-top: 4px; color: var(--mute); }
+
+    /* Row 3, the fields, in a hairline grid edge to edge */
+    .rd__f {
+        display: grid;
+        grid-template-columns: 5fr 3fr;
+        border-top: 1px solid var(--rule);
+        transition: all .2s ease;
+    }
+    .rd__cell { min-width: 0; padding: 9px 10px 11px 16px; }
+    .rd__cell + .rd__cell { padding-right: 16px; padding-left: 10px; border-left: 1px solid var(--rule); transition: all .2s ease; }
+    .rd__lab {
+        display: block;
+        overflow: hidden;
+        color: var(--soft);
+        font-size: 10.5px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        transition: all .2s ease;
+    }
+    /* The values in a lighter face than the display type around them (owner's
+       call, 13/10: in the 900 condensed face the card looked too loaded):
+       normal width, weight 500, as written */
+    .rd__val {
+        display: block;
+        margin-top: 6px;
+        overflow: hidden;
+        font-size: clamp(16px, 1.25vw, 18px);
+        font-weight: 500;
+        line-height: 1.15;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .rd__val[hidden] { display: none; }
+
+    /* Row 4, the result */
     .rd__res {
-        grid-column: 1 / 3;
-        grid-row: 5;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        /* The same 16px above the line's content as the cell's padding below
-           it, and room for the winner's 18px logo: everything sits centered
-           between the rule and the bottom edge. */
-        min-height: 34px;
-        margin-top: 12px;
-        padding-top: 16px;
-        border-top: 1px solid rgba(18, 18, 18, .22);
-        font-size: 13px;
-        font-weight: 600;
+        align-self: stretch;
+        padding: 9px 16px 16px;
+        border-top: 1px solid var(--rule);
+        transition: all .2s ease;
     }
-    .rd__res em { color: var(--mute); font-style: normal; font-weight: 500; }
-    /* Text boxes trimmed to the capitals, like .mark-text: otherwise the room
-       kept for descenders makes the text sit low in the line. */
-    .rd__res em, .rd__txt, .rd__cd, [data-cal-next] { text-box: trim-both cap alphabetic; }
-    /* Countdown to lights out, in the corner (hero-state.ts writes it) */
-    .rd__cd { margin-left: auto; white-space: nowrap; }
-    .rd__cd[hidden] { display: none; }
+    .rd__res .rd__lab { display: flex; align-items: center; gap: 7px; }
+    .rd__win { display: flex; align-items: center; gap: 8px; min-width: 0; margin-top: 6px; }
+    .rd__win .rd__val { margin: 0; }
+    .rd__dot { background: #fff; animation: beat 1.1s ease-in-out infinite; }
+    .rd__dot[hidden] { display: none; }
 
-    /* Hover: the cell inverts to ink. background-color, not the background
-       shorthand: the shorthand would also drop the cancelled cells' hatching
-       at once while the color fades. */
-    .rd a:hover { background-color: var(--ink); color: var(--paper); }
-    .rd a:hover .rd__trk { filter: brightness(0) invert(1); }
-    .rd a:hover .rd__sub, .rd a:hover .rd__res em { color: var(--mute-ink); }
-    .rd a:hover .rd__res { border-color: rgba(239, 234, 224, .3); }
-    .rd a:hover .sq { box-shadow: 0 0 0 1px rgba(239, 234, 224, .55); }
-
+    /* States. Upcoming: the drawing waits at 32 % */
     .rd--upcoming .rd__trk { opacity: .32; }
+
+    /* Cancelled: hatched card, name struck through, drawing at 18 % */
     .rd--cancelled a { background-image: repeating-linear-gradient(135deg, transparent 0 11px, rgba(18, 18, 18, .07) 11px 12px); }
     .rd--cancelled .rd__name { text-decoration: line-through; text-decoration-thickness: 3px; }
     .rd--cancelled .rd__trk { opacity: .18; }
-    .rd--cancelled .rd__res {
-        color: var(--red-ink);
-        font-size: 11px;
-        font-weight: 700;
-        font-stretch: 115%;
-        letter-spacing: .09em;
-        text-transform: uppercase;
-    }
-    .rd--next a { background-color: var(--red); color: #fff; }
+    .rd--cancelled .rd__none { opacity: .6; }
+    .rd--cancelled .rd__f .rd__val { color: var(--soft); }
+
+    /* Next (and live): the one red field on the screen, white drawing */
+    .rd--next a { --rule: rgba(255, 255, 255, .5); --soft: #fff; background-color: var(--red); color: #fff; }
     .rd--next .rd__trk { filter: brightness(0) invert(1); }
-    .rd--next .rd__sub, .rd--next .rd__res em { color: #fff; }
-    .rd--next .rd__res { border-color: rgba(255, 255, 255, .5); font-weight: 800; }
-    .rd--next a:hover { background-color: var(--ink); }
-    .rd__next { display: inline-flex; align-items: center; gap: 8px; }
-    .rd__dot { background: #fff; animation: beat 1.1s ease-in-out infinite; }
-    .rd__dot[hidden] { display: none; }
+    .rd--next .rd__tag { background: #fff; color: var(--red-ink); }
+
+    /* Hover: the card turns ink, drawing and rules turn paper. background-color,
+       not the shorthand, so the cancelled cards' hatching doesn't drop at once */
+    .rd a:hover { --rule: rgba(239, 234, 224, .3); --soft: var(--mute-ink); background-color: var(--ink); color: var(--paper); }
+    .rd a:hover .rd__trk { filter: brightness(0) invert(1); }
+    .rd a:hover .rd__tag { background: var(--paper); color: var(--ink); }
+    .rd--cancelled a:hover { background-image: repeating-linear-gradient(135deg, transparent 0 11px, rgba(239, 234, 224, .08) 11px 12px); }
 
     .cal-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; margin-top: 18px; color: var(--mute); }
     .cal-foot a { text-decoration: none; }
@@ -227,8 +345,14 @@ const pad = (n: number) => String(n).padStart(2, '0');
     @media (max-width: 1100px) {
         .sec-title, .sec-meta { grid-column: 1 / 13; }
         .cal { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .rd__no { font-size: 92px; }
+        .rd__name { font-size: 30px; }
+        .rd__val { font-size: clamp(16px, 2vw, 18px); }
     }
 
+    /* Mobile, one row per round: number | name, dates, result | drawing. The
+       plate and the fields open up (display: contents), so their pieces sit
+       in the row's own grid. */
     @media (max-width: 760px) {
         .sec { padding: 72px 0 80px; }
         .sec-head { margin-bottom: 28px; }
@@ -237,46 +361,26 @@ const pad = (n: number) => String(n).padStart(2, '0');
         .prog i { height: 10px; }
         .prog-k { margin-bottom: 24px; }
 
-        /* A list: the number, a text block (name; place and dates; result)
-           and the layout as large as the row (owner's call, 13/10: with the
-           result in a column of its own everything was squeezed, the names
-           and dates broke anywhere and the layout was 34px tall). */
         .cal { grid-template-columns: minmax(0, 1fr); border-left: 0; }
-        .rd { border-right: 0; }
+        .rd { display: block; grid-row: auto; border-right: 0; }
         .rd a {
-            grid-template-columns: 40px minmax(0, 1fr) 96px;
-            grid-template-rows: auto auto auto;
-            column-gap: 14px;
-            align-items: center;
-            min-height: 0;
+            grid-template-columns: 52px minmax(0, 1fr) 84px;
+            grid-template-rows: auto auto auto 1fr;
+            column-gap: 12px;
             padding: 16px 8px;
         }
-        .rd__no { grid-column: 1; grid-row: 1 / 4; font-size: 40px; }
-        .rd__tag { display: none; }
-        .rd__sprint { display: inline-block; margin-left: 8px; padding: 1px 4px; border: 1px solid currentColor; font-size: 9px; vertical-align: 3px; }
-        .rd__name { grid-column: 2; grid-row: 1; font-size: 18px; }
-        /* Place and dates on lines of their own, so the dates never break */
-        .rd__sub { grid-column: 2; grid-row: 2; margin-top: 6px; }
-        .rd__sep { display: none; }
-        .rd__sub [data-range] { display: block; margin-top: 3px; white-space: nowrap; }
-        .rd__res {
-            grid-column: 2;
-            grid-row: 3;
-            min-height: 0;
-            margin: 10px 0 0;
-            padding: 0;
-            border: 0;
-            font-size: 13px;
-        }
-        .rd--cancelled .rd__res { font-size: 10px; }
-        .rd__trk {
-            grid-column: 3;
-            grid-row: 1 / 4;
-            justify-self: center;
-            width: 100%;
-            height: 72px;
-            margin: 0;
-            object-fit: contain;
-        }
+        .rd__top, .rd__f { display: contents; }
+        .rd__no { grid-column: 1; grid-row: 1 / 3; align-self: start; font-size: 46px; line-height: .76; }
+        .rd__tag { grid-column: 1; grid-row: 3 / 5; align-self: start; margin-top: 8px; padding: 2px 4px 1px; font-size: 9px; letter-spacing: .06em; }
+        .rd__trk, .rd__none { grid-column: 3; grid-row: 1 / 5; align-self: center; height: 72px; }
+        .rd__trk { object-position: center; }
+        .rd__name { grid-column: 2; grid-row: 1; align-self: start; padding: 0; font-size: 21px; }
+        .rd__cell { grid-column: 2; grid-row: 2; margin-top: 7px; padding: 0; }
+        .rd__cell .rd__lab { font-size: 11px; }
+        .rd__cell .rd__val { margin: 3px 0 0; color: var(--soft); font-size: 11px; font-weight: 700; font-stretch: 115%; letter-spacing: .09em; line-height: 1.2; text-transform: uppercase; }
+        .rd__cell + .rd__cell { display: none; }
+        .rd__res { grid-column: 2; grid-row: 3; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: 10px; padding: 0; border: 0; }
+        .rd__res .rd__val, .rd__win { margin: 0; font-size: 16px; }
+        .rd--done .rd__res > .rd__lab { display: none; }
     }
 </style>

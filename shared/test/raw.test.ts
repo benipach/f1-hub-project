@@ -12,6 +12,7 @@ import {
     RawDrivers,
     RawGrandsPrix,
     RawLatest,
+    RawNames,
     RawSeason,
     RawTeams,
 } from '../src/data/raw';
@@ -80,5 +81,26 @@ describe('the schemas reject what they should', () => {
 
     it('rejects a catalog entry whose id does not match its key', () => {
         expect(RawTeams.safeParse({ ferrari: { id: 'mercedes', name: 'Ferrari' } }).success).toBe(false);
+    });
+});
+
+// data/i18n/<locale>.json: the catalogs' names in each language. Every
+// Grand Prix, city and country needs one, or a page in that language would
+// fall back to English for it.
+describe('names in other languages', () => {
+    const files = readdirSync(new URL('i18n/', DATA)).filter((name) => name.endsWith('.json'));
+
+    it('has at least one language', () => expect(files.length).toBeGreaterThan(0));
+
+    it.each(files)('%s', (file) => {
+        expectValid(RawNames, `i18n/${file}`);
+        const names = RawNames.parse(readJson(`i18n/${file}`));
+        const missing = (catalog: string, own: Record<string, string>) =>
+            Object.keys(readJson(catalog) as object).filter((id) => !(id in own)).map((id) => `${catalog}: ${id}`);
+        expect([
+            ...missing('grandsPrix.json', names.grandsPrix),
+            ...missing('cities.json', names.cities),
+            ...missing('countries.json', names.countries),
+        ]).toEqual([]);
     });
 });

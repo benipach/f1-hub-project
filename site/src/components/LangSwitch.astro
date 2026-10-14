@@ -1,0 +1,57 @@
+---
+// Language switcher (_design/DESIGN.md, "Languages"): this same page in each
+// locale. "codes" (EN · ES) for the navbar's row, "names" (English · Español)
+// for the menu on mobile and the footer. Each language is written in itself.
+import { LANGUAGE_NAMES, LOCALES, localePath, pathWithoutLocale, useI18n } from '../i18n';
+
+interface Props {
+    variant?: 'codes' | 'names';
+    class?: string;
+}
+
+const { variant = 'names', class: className } = Astro.props;
+const { locale, t } = useI18n(Astro.currentLocale);
+const path = pathWithoutLocale(Astro.url.pathname);
+---
+
+<span class:list={['lang', `lang--${variant}`, className]} role="group" aria-label={t.nav.language}>
+    {LOCALES.map((code, i) => (
+        <>
+            {i > 0 && <span class="lang__sep" aria-hidden="true">·</span>}
+            <a
+                href={localePath(code, path)}
+                lang={code}
+                hreflang={code}
+                aria-current={code === locale ? 'true' : undefined}
+                data-lang-link
+                title={LANGUAGE_NAMES[code]}
+            >{variant === 'codes' ? code.toUpperCase() : LANGUAGE_NAMES[code]}</a>
+        </>
+    ))}
+</span>
+
+<script>
+    // Keep the query and the hash (a preview's ?now=, #calendar) when the
+    // language changes: the links are built before anyone knows them.
+    document.querySelectorAll<HTMLAnchorElement>('[data-lang-link]').forEach((a) => {
+        a.addEventListener('click', () => { a.href = a.href.split(/[?#]/)[0] + location.search + location.hash; });
+    });
+</script>
+
+<style>
+    .lang {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .lang a {
+        color: inherit;
+        text-decoration: none;
+        opacity: .55;
+        transition: all .2s ease;
+    }
+    .lang a:hover,
+    .lang a[aria-current] { opacity: 1; }
+    .lang a[aria-current] { pointer-events: none; }
+    .lang__sep { opacity: .4; }
+</style>

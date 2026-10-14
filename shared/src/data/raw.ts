@@ -236,6 +236,16 @@ export const RawLatest = z.strictObject({
     latestSeason: z.number().int(),
 });
 
+// data/i18n/<locale>.json: the catalogs' names in a language other than
+// English, by id (the English ones are the catalogs' own). A separate file
+// per language, so the catalogs the old pages read stay as they are.
+const names = z.record(slug, z.string().min(1));
+export const RawNames = z.strictObject({
+    grandsPrix: names,
+    cities: names,
+    countries: names,
+});
+
 export type RawSeason = z.infer<typeof RawSeason>;
 export type RawGrandPrix = z.infer<typeof RawGrandPrix>;
 export type RawSessions = z.infer<typeof RawSessions>;
@@ -246,3 +256,4 @@ export type RawGrandsPrix = z.infer<typeof RawGrandsPrix>;
 export type RawCountries = z.infer<typeof RawCountries>;
 export type RawCities = z.infer<typeof RawCities>;
 export type RawLatest = z.infer<typeof RawLatest>;
+export type RawNames = z.infer<typeof RawNames>;

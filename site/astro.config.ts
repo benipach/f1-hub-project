@@ -11,7 +11,7 @@ export default defineConfig({
     // today's URLs don't change; each new locale gets /<code>/. Keep this list
     // in step with LOCALES.
     i18n: {
-        locales: ['en'],
+        locales: ['en', 'es'],
         defaultLocale: 'en',
         routing: { prefixDefaultLocale: false },
     },

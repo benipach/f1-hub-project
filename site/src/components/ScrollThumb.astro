@@ -82,7 +82,8 @@
         width: 14px;
         pointer-events: none;
     }
-    .thumb[hidden] { display: none; }
+    .thumb[hidden],
+    :global(html[data-menu-open]) .thumb { display: none; }
     .thumb b {
         position: absolute;
         top: 0;

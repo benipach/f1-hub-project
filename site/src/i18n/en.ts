@@ -32,6 +32,7 @@ export default {
         main: 'Main',
         openMenu: 'Open menu',
         closeMenu: 'Close menu',
+        language: 'Language',
     },
 
     footer: {
@@ -92,6 +93,8 @@ export default {
         sprintWeekend: 'Sprint weekend',
         kmLap: 'km lap',
         turns: 'turns',
+        laps: 'laps',
+        lapRecord: 'Lap record',
         nextSession: 'Next session',
         startsIn: 'starts in',
         days: 'Days',
@@ -100,7 +103,6 @@ export default {
         seconds: 'Seconds',
         weekendComplete: 'Weekend complete',
         resultsOnTheWay: 'Results on the way',
-        resultsText: 'The race is over. The classification is loaded automatically shortly after the session ends.',
         timetable: 'Timetable',
         yourTime: 'Your time',
         local: 'local',
@@ -152,15 +154,22 @@ export default {
     calendar: {
         sectionNo: '01 — Calendar',
         season: 'Season',
+        total: 'Total',
         raced: 'Raced',
-        cancelled: 'Cancelled',
+        /** A cancelled round's own cell (singular in some languages) */
+        cancelledRound: 'Cancelled',
         toGo: 'To go',
         sprint: 'Sprint',
         winner: 'Winner',
-        upcoming: 'Upcoming',
-        untilLightsOut: 'Until lights out',
+        // The round card's fields (DESIGN.md, Calendar)
+        lapKm: 'Lap km',
+        lightsOutIn: 'Lights out in',
+        status: 'Status',
+        noLayout: 'No layout',
         legend: 'Sprint = sprint weekend · Dates in your local time',
         archive: 'Seasons archive',
+        // The round cells break the name around this phrase: "Chinese / Grand Prix"
+        gpPhrase: 'Grand Prix',
     },
 
     standings: {

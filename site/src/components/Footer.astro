@@ -4,6 +4,7 @@
 // wordmark across the full width, legal notice.
 import { useI18n } from '../i18n';
 import { href } from '../lib/paths';
+import LangSwitch from './LangSwitch.astro';
 
 const { t } = useI18n(Astro.currentLocale);
 const s = t.sections;
@@ -51,6 +52,7 @@ const year = new Date().getFullYear();
             <div class="foot__about">
                 <p class="foot__tag">{t.footer.tagline}</p>
                 <p class="foot__tz lbl">{t.footer.timesIn} <b>{t.footer.localTime}</b><span data-tz-note></span></p>
+                <p class="foot__lang lbl"><span>{t.nav.language}</span><LangSwitch /></p>
             </div>
 
             <nav class="foot__nav" aria-label={t.footer.label}>
@@ -138,6 +140,8 @@ const year = new Date().getFullYear();
     }
     .foot__tz { margin: 22px 0 0; color: var(--mute-ink); }
     .foot__tz b { color: var(--paper); }
+    .foot__lang { display: flex; gap: 14px; margin: 10px 0 0; color: var(--mute-ink); }
+    .foot__lang :global(.lang) { color: var(--paper); }
 
     .foot__nav {
         grid-column: 7 / 13;
