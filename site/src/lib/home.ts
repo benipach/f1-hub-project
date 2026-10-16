@@ -8,7 +8,7 @@
 //   - last: the most recent one whose race has results.
 // and the browser picks the state from the current time (hero-state.ts).
 
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { loadCircuits, loadCities, loadCountries, loadDrivers, loadLatestYear, loadNames, loadSeason, loadTeams } from '@f1hub/shared/data/load';
 import { formatLapTime, type RaceOutcome } from '@f1hub/shared/data/results';
 import type { GrandPrix, SessionKey, SessionOf } from '@f1hub/shared/data/season';
@@ -46,7 +46,12 @@ export type HeroGrandPrix = {
     readonly circuit: string | null;
     /** "Austin · United States" */
     readonly place: string | null;
-    /** Inline SVG markup of the layout, drawn in currentColor. */
+    /**
+     * The layout SVG file inside the site ("img/circuits/thin/cota-layout.svg").
+     * The hero draws it as a CSS mask in currentColor, not inline: the same
+     * file the calendar loads, so it comes from the cache (an inline Singapore
+     * was 81 KB of the page; 16/10).
+     */
     readonly layout: string | null;
     /** Lap length in km and turns, for the layout valid that year. */
     readonly length: number | null;
@@ -144,39 +149,11 @@ export function outcomeText(outcome: RaceOutcome, { t, plural }: I18n): string {
 
 /**
  * A circuit's layout files, in order of preference: the version with thinner
- * borders (img/circuits/thin/, made by scripts/thin-layouts.js; owner's call,
+ * borders (img/circuits/thin/, made by scripts/thin-layouts.ts; owner's call,
  * 14/10), then the original drawing.
  */
 function layoutNames(circuitId: string): string[] {
     return [`thin/${circuitId}-layout.svg`, `${circuitId}-layout.svg`];
-}
-
-/**
- * A circuit's layout SVG, recolored to currentColor and sized by CSS.
- *
- * Only the root <svg> loses its width and height: some files wrap the drawing
- * in a clipPath whose <rect> needs its own, and stripping them everywhere left
- * a zero-size clip that hid the whole layout (7 of the 24 files, Singapore and
- * Sepang among them; found 13/10). That clip only repeats the viewBox, so it's
- * dropped too: its fixed id would also clash when one layout is inlined twice.
- * Only the drawing's own colour (#15151E) turns into currentColor: the thin
- * versions' mask needs its white and black as they are.
- */
-function layoutSvg(repoRoot: URL, circuitId: string | null): string | null {
-    if (!circuitId) return null;
-    for (const name of layoutNames(circuitId)) {
-        try {
-            return readFileSync(new URL(`img/circuits/${name}`, repoRoot), 'utf8')
-                .replace(/<svg\b[^>]*>/, (tag) => tag.replace(/\s(width|height)="[^"]*"/g, ''))
-                .replace(/\sclip-path="url\(#[^)]*\)"/g, '')
-                .replace(/<defs>\s*<clipPath\b[\s\S]*?<\/clipPath>\s*<\/defs>/g, '')
-                .replace(/fill="#15151E"/gi, 'fill="currentColor"')
-                .replace('<svg', '<svg aria-hidden="true" focusable="false"');
-        } catch {
-            // try the next name
-        }
-    }
-    return null;
 }
 
 /** A circuit's layout SVG file, as a path inside the site, if there is one. */
@@ -274,7 +251,7 @@ export function buildHomeHero(dataDir: URL, i18n: I18n): HomeHero {
             place: circuit && city
                 ? [local.city(circuit.location.city, city.name), country && local.country(city.country, country.name)].filter(Boolean).join(' · ')
                 : null,
-            layout: layoutSvg(repoRoot, gp.circuitId),
+            layout: layoutFile(repoRoot, gp.circuitId),
             length: layout?.length ?? null,
             turns: layout?.turns ?? null,
             ...(gp.circuitId && layout

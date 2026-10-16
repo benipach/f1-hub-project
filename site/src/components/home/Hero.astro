@@ -98,7 +98,7 @@ const rest = last?.rows.slice(3) ?? [];
                     </div>
 
                     <div class="up__track">
-                        {next.layout && <div class="trk" set:html={next.layout} />}
+                        {next.layout && <div class="trk" style={`--src: url(${href(next.layout)})`} aria-hidden="true"></div>}
                         {(next.length || next.turns || next.raceLaps || next.lapRecord) && (
                             <div class="facts lbl">
                                 {next.length && <div><b>{kmFormat.format(next.length)}</b><span>{h.kmLap}</span></div>}
@@ -297,7 +297,7 @@ const rest = last?.rows.slice(3) ?? [];
                     <figure class:list={['res__mark', { 'res__mark--photo': winnerPhoto }]}>
                         {winnerPhoto
                             ? <img class="res__photo" src={winnerPhoto.src} width={winnerPhoto.attributes['width']} height={winnerPhoto.attributes['height']} alt="" loading="lazy" decoding="async" />
-                            : last.gp.layout && <div class="trk" set:html={last.gp.layout} />}
+                            : last.gp.layout && <div class="trk" style={`--src: url(${href(last.gp.layout)})`} aria-hidden="true"></div>}
                         <figcaption class="lbl"><span>{last.gp.circuit}</span><span>R{last.gp.round}</span></figcaption>
                     </figure>
 
@@ -400,7 +400,16 @@ const rest = last?.rows.slice(3) ?? [];
     .strip > .grow { flex: 1; }
     .tag { display: inline-flex; align-items: center; gap: 8px; }
 
-    .trk :global(svg) { width: 100%; height: auto; }
+    /* The circuit layout: its SVG file as a mask, painted in currentColor (the
+       same file the calendar loads, so it comes from the cache). Every layout
+       shares the 121 × 85 viewBox. */
+    .trk {
+        width: 100%;
+        aspect-ratio: 121 / 85;
+        background-color: currentColor;
+        -webkit-mask: var(--src) center / contain no-repeat;
+        mask: var(--src) center / contain no-repeat;
+    }
 
     .digits {
         display: flex;
@@ -490,7 +499,7 @@ const rest = last?.rows.slice(3) ?? [];
         align-self: center;
         color: var(--red);
     }
-    .up__track .trk :global(svg) { max-height: min(36vh, 320px); }
+    .up__track .trk { max-height: min(36vh, 320px); }
     /* Two by two: length and turns, then laps and the lap record (owner's
        call, 13/10), each pair under a rule */
     .facts {
@@ -863,8 +872,7 @@ const rest = last?.rows.slice(3) ?? [];
     }
     /* Doubled class: it has to beat .res__mark figcaption, written below */
     .res__mark.res__mark--photo figcaption { color: #fff; }
-    .res__mark .trk { position: absolute; inset: 14% 12% 22%; display: grid; place-items: center; }
-    .res__mark .trk :global(svg) { max-height: 100%; }
+    .res__mark .trk { position: absolute; inset: 14% 12% 22%; width: auto; aspect-ratio: auto; }
     .res__mark figcaption {
         position: absolute;
         right: 16px;
@@ -979,7 +987,7 @@ const rest = last?.rows.slice(3) ?? [];
         .up__count { order: 2; }
         .sched { order: 3; }
         .up__track { order: 4; }
-        .up__track .trk :global(svg) { max-height: 110px; margin: 0 auto; }
+        .up__track .trk { max-height: 110px; }
         .up__count .digits { font-size: clamp(56px, 19vw, 120px); }
         .digits .u small { margin-top: 10px; font-size: 10px; }
         .band__in { gap: 8px 14px; padding-top: 16px; padding-bottom: 16px; }

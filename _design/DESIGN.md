@@ -27,7 +27,7 @@ Vintage Grand Prix posters, read through the Swiss / International style.
   its size, it goes.
 - **Photos are optional, never load-bearing.** Every component must look
   finished without one (see section 7).
-- **The circuit layout is a shape**, drawn flat in a single color, not a map. The drawings are today's official files with **thinner borders** (owner's call, 14/10): `scripts/thin-layouts.js` runs a mask along every edge of the ribbon, cutting 0.7 units off each side of each border (cut 1.4 in the 121 × 85 viewBox), and writes `img/circuits/thin/` (25 files; every layout must be named `<circuitId>-layout.svg`; known issue: in Madring, Marina Bay and Sepang the ribbon is made of pieces whose joins cross it, and the mask cuts along them, leaving small gaps; an erosion filter was tried and dropped, owner's call, 14/10); the site uses those first (`layoutNames()` in `home.ts`). Our own drawings from car positions were tried and set aside for now (`_design/tracks/`).
+- **The circuit layout is a shape**, drawn flat in a single color, not a map. The drawings are today's official files with **thinner borders** (owner's call, 14/10): `scripts/thin-layouts.ts` runs a mask along every edge of the ribbon, cutting 0.7 units off each side of each border (cut 1.4 in the 121 × 85 viewBox), and writes `img/circuits/thin/` (25 files; every layout must be named `<circuitId>-layout.svg`; known issue: in Madring, Marina Bay and Sepang the ribbon is made of pieces whose joins cross it, and the mask cuts along them, leaving small gaps; an erosion filter was tried and dropped, owner's call, 14/10); the site uses those first (`layoutNames()` in `home.ts`). Our own drawings from car positions were tried and set aside for now (`_design/tracks/`).
 
 What it must not become: a dashboard (that's the Live page's job), a magazine
 with long texts, or an imitation of F1's own broadcast graphics.
@@ -58,7 +58,8 @@ light outline on ink), next to a driver or team name. **Wherever a team is
 named (tables, the result's winner and podium, the calendar's winners) it
 shows its logo instead**: the `TeamMark` component
 (`site/src/components/TeamMark.astro`), `img/teams/<id>-logo.png` in a square
-box (20 px by default, `object-fit: contain`), falling back to the color
+box (20 px by default, `object-fit: contain`; resized at build time to
+twice the box, as WebP, 16/10), falling back to the color
 square when there's no logo file (owner's calls, 12/10; logos are
 trademarks, see the plan's intellectual-property list). **Logos always go in
 their own colors, everywhere** (owner's call, 13/10). Dropped before that: an
@@ -559,7 +560,10 @@ so nothing depends on them:
   and a screen-reader text that doesn't change every second.
 - No horizontal scroll at 375 px. Check 1440, 1100, 860, 760 and 375 px.
 - Performance floor is the owner's PC (Celeron N4020, 2 cores): one font file,
-  inline SVG layouts, no layout reads in the countdown loop (update text only),
+  layouts as files (the calendar's `<img>`, the hero's CSS mask in
+  `currentColor` on the same file; never inline: one inline Singapore was 81 KB
+  of the page, 16/10), logos resized at build time, no layout reads in the
+  countdown loop (update text only),
   animations off with reduced motion.
 
 ## 8b. Languages

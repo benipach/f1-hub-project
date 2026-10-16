@@ -2,6 +2,11 @@
 // A team's mark next to its name: the logo (img/teams/<id>-logo.png) in its
 // own colors, or the color square when there's no logo file
 // (_design/DESIGN.md, section 2).
+//
+// The logo is resized at build time (astro:assets) to twice its box, as WebP,
+// so it stays sharp on dense screens: the source PNGs are up to 250 px and
+// 66 KB, shown at 20 (16/10: the homepage's 13 logos went from ~290 KB).
+import { getImage } from 'astro:assets';
 import { href } from '../lib/paths';
 
 interface Props {
@@ -13,8 +18,15 @@ interface Props {
 }
 
 const { logo, color, size = 20 } = Astro.props;
+
+const logos = import.meta.glob<{ default: ImageMetadata }>('../../../img/teams/*-logo.png', { eager: true });
+const source = logo ? logos[`../../../${logo}`]?.default : undefined;
+// Fitted inside the doubled box: by its width when it's wider than tall
+const image = source
+    ? await getImage({ src: source, format: 'webp', quality: 80, ...(source.width >= source.height ? { width: size * 2 } : { height: size * 2 }) })
+    : null;
 ---
 
 {logo
-    ? <img class="team-mark" src={href(logo)} alt="" width={size} height={size} style={`--size: ${size}px`} loading="lazy" decoding="async" />
+    ? <img class="team-mark" src={image?.src ?? href(logo)} alt="" width={size} height={size} style={`--size: ${size}px`} loading="lazy" decoding="async" />
     : color && <span class="sq" style={`--c: ${color}`}></span>}
