@@ -72,7 +72,14 @@ export type GrandPrix = {
     /** Key in the season file: "australian-gp". */
     readonly id: string;
     readonly year: number;
-    readonly round: number;
+    /**
+     * The round among the Grands Prix that are run: a cancelled one has none
+     * (null) and the rest count on without it (2026: Miami is round 4, not 6;
+     * the owner's call, 14/10). The data's own number is `slot`.
+     */
+    readonly round: number | null;
+    /** The data's round: the Grand Prix's place in the calendar, cancelled ones included. */
+    readonly slot: number;
     readonly name: string;
     /** Missing on 95 GPs, mostly 1990–1999. */
     readonly circuitId: string | null;
@@ -159,7 +166,8 @@ export function normalizeGrandPrix(id: string, year: number, raw: RawGrandPrix, 
     return {
         id,
         year,
-        round: raw.round,
+        round: raw.cancelled ? null : raw.round,
+        slot: raw.round,
         name: raw.name,
         circuitId: raw.circuitId ?? null,
         sprint: raw.sprint,
@@ -169,9 +177,15 @@ export function normalizeGrandPrix(id: string, year: number, raw: RawGrandPrix, 
     };
 }
 
-/** Every Grand Prix of a season file, by round. */
+/**
+ * Every Grand Prix of a season file, in calendar order (cancelled ones in
+ * their place), with the rounds counted again over the ones that are run:
+ * cancelled Grands Prix get no round.
+ */
 export function normalizeSeason(year: number, raw: RawSeason, teams: Teams): GrandPrix[] {
+    let round = 0;
     return Object.entries(raw)
         .map(([id, gp]) => normalizeGrandPrix(id, year, gp, teams))
-        .sort((a, b) => a.round - b.round);
+        .sort((a, b) => a.slot - b.slot)
+        .map((gp) => (gp.cancelled ? gp : { ...gp, round: ++round }));
 }

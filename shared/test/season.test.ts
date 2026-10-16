@@ -54,9 +54,24 @@ describe('every season', () => {
         expect(years).toContain(loadLatestYear(DATA));
     });
 
+    it('2026: cancelled Grands Prix have no round and the rest count on (owner, 14/10)', () => {
+        const gps = seasons.get(2026) ?? [];
+        const round = (id: string) => gps.find((g) => g.id === id)?.round;
+        expect(round('bahrain-gp')).toBeNull();
+        expect(round('saudi-arabian-gp')).toBeNull();
+        expect(round('japanese-gp')).toBe(3);
+        expect(round('miami-gp')).toBe(4);
+        expect(round('abu-dhabi-gp')).toBe(23);
+    });
+
     it('rounds go 1, 2, 3… in every season', () => {
         for (const [year, gps] of seasons) {
-            expect(gps.map((g) => g.round), String(year)).toEqual(gps.map((_, i) => i + 1));
+            // Over the Grands Prix that are run; cancelled ones have none
+            const run = gps.filter((g) => !g.cancelled);
+            expect(run.map((g) => g.round), String(year)).toEqual(run.map((_, i) => i + 1));
+            expect(gps.filter((g) => g.cancelled).every((g) => g.round === null), String(year)).toBe(true);
+            // Calendar order stays the data's
+            expect(gps.map((g) => g.slot), String(year)).toEqual(gps.map((_, i) => i + 1));
         }
     });
 
