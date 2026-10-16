@@ -270,7 +270,8 @@ function buildRaceCard(gpId, gp, ctx, { isNext, now }) {
 
 function compactCardHTML(gpId, gp, ctx, isSprint, { statusClass, statusText, linkText }) {
     const flag       = getGpFlag(gp, ctx);
-    const roundLabel = `Round ${String(gp.round).padStart(2, '0')}`;
+    // A cancelled GP has no round: its card says so without a number
+    const roundLabel = gp.round != null ? `Round ${String(gp.round).padStart(2, '0')}` : '';
     const dateText   = formatWeekendDateRange(gp);
 
     return `

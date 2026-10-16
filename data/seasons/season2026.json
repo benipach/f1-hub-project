@@ -3007,7 +3007,7 @@
     }
   },
   "bahrain-gp": {
-    "round": 4,
+    "round": null,
     "name": "Bahrain Grand Prix",
     "circuitId": "bahrain-international-circuit",
     "sprint": false,
@@ -3051,7 +3051,7 @@
     }
   },
   "saudi-arabian-gp": {
-    "round": 5,
+    "round": null,
     "name": "Saudi Arabian Grand Prix",
     "circuitId": "jeddah-corniche-circuit",
     "sprint": false,
@@ -3125,7 +3125,7 @@
     }
   },
   "miami-gp": {
-    "round": 6,
+    "round": 4,
     "name": "Miami Grand Prix",
     "circuitId": "miami-international-autodrome",
     "sprint": true,
@@ -4165,7 +4165,7 @@
     }
   },
   "canadian-gp": {
-    "round": 7,
+    "round": 5,
     "name": "Canadian Grand Prix",
     "circuitId": "circuit-gilles-villeneuve",
     "sprint": true,
@@ -5199,7 +5199,7 @@
     }
   },
   "monaco-gp": {
-    "round": 8,
+    "round": 6,
     "name": "Monaco Grand Prix",
     "circuitId": "circuit-de-monaco",
     "sprint": false,
@@ -6202,7 +6202,7 @@
     }
   },
   "barcelona-gp": {
-    "round": 9,
+    "round": 7,
     "name": "Barcelona Grand Prix",
     "circuitId": "circuit-de-barcelona-catalunya",
     "sprint": false,
@@ -7203,7 +7203,7 @@
     }
   },
   "austrian-gp": {
-    "round": 10,
+    "round": 8,
     "name": "Austrian Grand Prix",
     "circuitId": "red-bull-ring",
     "sprint": false,
@@ -8207,7 +8207,7 @@
     }
   },
   "british-gp": {
-    "round": 11,
+    "round": 9,
     "name": "British Grand Prix",
     "circuitId": "silverstone-circuit",
     "sprint": true,
@@ -9256,7 +9256,7 @@
     }
   },
   "belgian-gp": {
-    "round": 12,
+    "round": 10,
     "name": "Belgian Grand Prix",
     "circuitId": "circuit-de-spa-francorchamps",
     "sprint": false,
@@ -10264,7 +10264,7 @@
     }
   },
   "hungarian-gp": {
-    "round": 13,
+    "round": 11,
     "name": "Hungarian Grand Prix",
     "circuitId": "hungaroring",
     "sprint": false,
@@ -11260,7 +11260,7 @@
     }
   },
   "dutch-gp": {
-    "round": 14,
+    "round": 12,
     "name": "Dutch Grand Prix",
     "circuitId": "circuit-zandvoort",
     "sprint": true,
@@ -12308,7 +12308,7 @@
     }
   },
   "italian-gp": {
-    "round": 15,
+    "round": 13,
     "name": "Italian Grand Prix",
     "circuitId": "autodromo-nazionale-di-monza",
     "sprint": false,
@@ -13312,7 +13312,7 @@
     }
   },
   "spanish-gp": {
-    "round": 16,
+    "round": 14,
     "name": "Spanish Grand Prix",
     "circuitId": "madring",
     "sprint": false,
@@ -14307,7 +14307,7 @@
     }
   },
   "azerbaijan-gp": {
-    "round": 17,
+    "round": 15,
     "name": "Azerbaijan Grand Prix",
     "circuitId": "baku-city-circuit",
     "sprint": false,
@@ -15311,7 +15311,7 @@
     }
   },
   "bahrain-gp-in-malaysia": {
-    "round": 18,
+    "round": 16,
     "name": "Bahrain Grand Prix in Malaysia",
     "circuitId": "sepang-international-circuit",
     "sprint": false,
@@ -16320,7 +16320,7 @@
     }
   },
   "singapore-gp": {
-    "round": 19,
+    "round": 17,
     "name": "Singapore Grand Prix",
     "circuitId": "marina-bay-street-circuit",
     "sprint": true,
@@ -17367,7 +17367,7 @@
     }
   },
   "united-states-gp": {
-    "round": 20,
+    "round": 18,
     "name": "US Grand Prix",
     "circuitId": "cota",
     "sprint": false,
@@ -17406,7 +17406,7 @@
     }
   },
   "mexican-gp": {
-    "round": 21,
+    "round": 19,
     "name": "Mexican Grand Prix",
     "circuitId": "hermanos-rodriguez",
     "sprint": false,
@@ -17445,7 +17445,7 @@
     }
   },
   "brazilian-gp": {
-    "round": 22,
+    "round": 20,
     "name": "Brazilian Grand Prix",
     "circuitId": "autodromo-jose-carlos-pace",
     "sprint": false,
@@ -17484,7 +17484,7 @@
     }
   },
   "las-vegas-gp": {
-    "round": 23,
+    "round": 21,
     "name": "Las Vegas Grand Prix",
     "circuitId": "las-vegas-strip-circuit",
     "sprint": false,
@@ -17523,7 +17523,7 @@
     }
   },
   "qatar-gp": {
-    "round": 24,
+    "round": 22,
     "name": "Qatar Grand Prix",
     "circuitId": "lusail-international-circuit",
     "sprint": false,
@@ -17562,7 +17562,7 @@
     }
   },
   "abu-dhabi-gp": {
-    "round": 25,
+    "round": 23,
     "name": "Abu Dhabi Grand Prix",
     "circuitId": "yas-marina-circuit",
     "sprint": false,

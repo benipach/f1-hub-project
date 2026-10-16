@@ -67,8 +67,9 @@ const raceRun = new Map();           // year → Set of rounds whose race has re
 for (const file of files) {
     const year = Number(file.match(/\d{4}/)[0]);
     const season = readJson(path.join(SEASONS_DIR, file));
-    const gps = Object.values(season).sort((a, b) => a.round - b.round);
-    seasonRounds.set(year, gps.filter(g => !g.cancelled).map(g => g.round));
+    // Cancelled GPs have no round (and no race): left out before sorting
+    const gps = Object.values(season).filter(g => !g.cancelled).sort((a, b) => a.round - b.round);
+    seasonRounds.set(year, gps.map(g => g.round));
     raceRun.set(year, new Set());
 
     const seasonPoints = {};

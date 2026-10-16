@@ -109,8 +109,13 @@ function getWeekendRange(gp) {
     return { start: new Date(Math.min(...starts)), end: new Date(Math.max(...ends)) };
 }
 
+// The Grands Prix of a season in calendar order, cancelled ones in their
+// place. A cancelled GP has no round ("round": null) and the rest count on
+// without it (2026: Miami is round 4), so the order comes from the dates,
+// not from the round.
 function getSeasonEntries(season) {
+    const when = gp => (getSessionStart(gp, 'race') ?? getWeekendRange(gp)?.start)?.getTime() ?? Infinity;
     return Object.entries(season)
-        .filter(([, gp]) => gp && typeof gp === 'object' && !Array.isArray(gp) && gp.round != null)
-        .sort(([, a], [, b]) => a.round - b.round);
+        .filter(([, gp]) => gp && typeof gp === 'object' && !Array.isArray(gp) && (gp.round != null || isGpCancelled(gp)))
+        .sort(([, a], [, b]) => when(a) - when(b));
 }

@@ -59,7 +59,8 @@
     // the chart breaks its lines there and the table lists them.
     function buildRounds(season, id, refs){
         const rounds = [];
-        const gps = Object.entries(season).sort(([, a], [, b]) => a.round - b.round);
+        // Cancelled GPs have no round and no race: left out before sorting
+        const gps = Object.entries(season).filter(([, gp]) => gp.round != null).sort(([, a], [, b]) => a.round - b.round);
 
         for(const [gpId, gp] of gps){
             const race = sessionResults(gp, 'race');

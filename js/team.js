@@ -28,11 +28,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         // ── STATS 2026 (suma de ambos pilotos) ────────────────────
+        // Cancelled GPs have no round: left out by their flag (the name check
+        // it replaces also dropped the Bahrain GP in Malaysia, which was run)
         const races = Object.values(season)
-            .filter(gp => {
-                const name = gp.name.toLowerCase();
-                return !name.includes('bahrain') && !name.includes('saudi');
-            })
+            .filter(gp => !gp.cancelled)
             .sort((a, b) => a.round - b.round);
 
         const driverNames = new Set(
