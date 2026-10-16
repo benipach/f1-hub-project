@@ -68,8 +68,8 @@ it a flat one-color silhouette (everything looked black). Don't bring either
 back. The text next to a mark goes in `.mark-text`
 (`text-box: trim-both cap alphabetic`), so it centers on the logo optically:
 otherwise the room the text box keeps for descenders makes it sit low. Rules
-in `base.css`. The color square stays for non-team marks (the red "Next race"
-tag) and the design-system palette. Never as text color and
+in `base.css`. The color square stays for the design-system palette (the
+hero strip's tags lost theirs on 16/10, owner's call). Never as text color and
 never as a field: some team colors (Red Bull `#22477A`, Alpine `#006FBA`) are
 unreadable on ink, and the square with its outline works for all of them.
 

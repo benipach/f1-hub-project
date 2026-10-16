@@ -80,7 +80,7 @@ const rest = last?.rows.slice(3) ?? [];
         <section class="hero hero--up" data-hero="upcoming" aria-labelledby="up-title">
             <div class="wrap">
                 <div class="strip lbl">
-                    <span class="tag"><span class="sq" style="--c: var(--red)"></span><span data-up-tag>{h.nextRace}</span></span>
+                    <span class="tag"><span data-up-tag>{h.nextRace}</span></span>
                     <span>{fill(h.roundOf, { round: next.round, rounds })}</span>
                     <span class="grow">{[next.circuit, next.place].filter(Boolean).join(' — ')}</span>
                     {next.sessions[0] && race && (
@@ -275,7 +275,7 @@ const rest = last?.rows.slice(3) ?? [];
         <section class="hero hero--res on-ink" data-hero="result" aria-labelledby="res-title" hidden>
             <div class="wrap">
                 <div class="strip lbl">
-                    <span class="tag"><span class="sq" style="--c: var(--red)"></span>{h.raceResult}</span>
+                    <span class="tag">{h.raceResult}</span>
                     <span>{fill(h.roundOf, { round: last.gp.round, rounds })}</span>
                     <span class="grow">{last.gp.name} — {last.gp.circuit}</span>
                     <span class="num" data-local="date" data-at={last.raceEnd}></span>
@@ -861,7 +861,8 @@ const rest = last?.rows.slice(3) ?? [];
         filter: grayscale(1) contrast(1.35) brightness(1.08);
         mix-blend-mode: multiply;
     }
-    .res__mark--photo figcaption { color: #fff; }
+    /* Doubled class: it has to beat .res__mark figcaption, written below */
+    .res__mark.res__mark--photo figcaption { color: #fff; }
     .res__mark .trk { position: absolute; inset: 14% 12% 22%; display: grid; place-items: center; }
     .res__mark .trk :global(svg) { max-height: 100%; }
     .res__mark figcaption {
