@@ -25,11 +25,11 @@ interface Props {
     /** Preview pages only: accept ?now= to simulate another moment. */
     preview?: boolean;
     /**
-     * Rows to show in the live top 10 tower, with a label saying where they
-     * come from. Preview only: on the real page the tower stays hidden until
-     * a live feed fills it (the relay's top-10 endpoint, phase 4).
+     * Rows to show in the live top 10. Preview only: on the real page the live
+     * feed fills them (the relay's top-10 endpoint, phase 4); until then they
+     * read "—".
      */
-    tower?: { label: string; rows: TowerRow[] } | undefined;
+    tower?: TowerRow[] | undefined;
     /**
      * Preview only: a race's total laps, to show an estimated "Lap 32 / 62"
      * from the elapsed time. On the real page the lap and the qualifying
@@ -44,13 +44,12 @@ const { next, last, rounds } = hero;
 const { t, fill, intl, heroWords } = useI18n(Astro.currentLocale);
 const h = t.hero;
 const tb = t.table;
-// The giant "LIVE" is sized for four letters; a longer word ("EN VIVO")
-// shrinks in proportion so it stays on one line in its columns.
-const liveFit = Math.min(1, 4 / h.liveWord.length).toFixed(3);
+// The live state's giant line: "LIVE RACE" in English, "CARRERA EN VIVO" in Spanish
+const liveFirst = h.liveLine.indexOf('{live}') < h.liveLine.indexOf('{session}');
 // "4.928" in English, "4,928" in Spanish
 const kmFormat = new Intl.NumberFormat(intl, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
 const race = next?.sessions.find((s) => s.key === 'race');
-const towerRows: (TowerRow | null)[] = Array.from({ length: 10 }, (_, i) => tower?.rows[i] ?? null);
+const towerRows: (TowerRow | null)[] = Array.from({ length: 10 }, (_, i) => tower?.[i] ?? null);
 
 // What the browser script needs: the timetable of the next Grand Prix and
 // when the last race ended.
@@ -59,6 +58,7 @@ const state = {
     lastRaceEnd: last?.raceEnd ?? null,
     preview,
     previewLaps: preview ? previewLaps ?? null : null,
+    gpName: next?.name ?? '',
     words: heroWords(),
     intl,
 };
@@ -168,50 +168,92 @@ const rest = last?.rows.slice(3) ?? [];
                 <div class="strip lbl">
                     <span class="tag"><span class="ldot ldot--on"></span>{h.liveNow}</span>
                     <span>{fill(h.roundOf, { round: next.round, rounds })}</span>
-                    <span class="grow">{next.name} — {next.circuit}</span>
+                    <span class="grow">{next.name}<span class="hide-m"> — {next.circuit}</span></span>
+                    {next.sprint && <span class="hide-m">{h.sprintWeekend}</span>}
                 </div>
 
-                <div class:list={['live g12', { 'live--tower': tower }]} data-live-grid>
-                    <p class="live__word" aria-hidden="true"><span style={`--fit: ${liveFit}`}>{h.liveWord}</span></p>
-
-                    <div class="live__info">
-                        <p class="lbl">{next.name} · {h.inProgress}</p>
-                        <h1 class="live__session cond" id="live-title" data-live-name>—</h1>
-                        <p class="live__sub"><span data-live-since></span> · <span class="num" data-live-detail></span></p>
-                    </div>
-
-                    <div class="live__cta">
-                        <a class="cta-live" href={href('live.html')}>
-                            <span class="top lbl"><span class="cta-live__src"><span class="ldot ldot--red"></span>{h.liveNow}</span><span class="arrow" aria-hidden="true">→</span></span>
-                            <span><b>{h.watchLive}</b><small>{h.watchLiveText}</small></span>
-                        </a>
-                    </div>
-
-                    <!-- Live top 10: hidden until something fills it (see the tower prop) -->
-                    <div class="tower on-ink" data-tower hidden={!tower}>
-                        <div class="tower__hd lbl">
-                            <span><span class="ldot ldot--red"></span>{h.top10}</span>
-                            <span data-tower-label>{tower?.label ?? h.liveWord}</span>
+                <div class="live g12">
+                    <div class="live__main">
+                        <!-- The giant line: "LIVE" and the session, fitted to the
+                             column by hero-state.ts (on two lines when that's bigger) -->
+                        <div class="word" data-word aria-hidden="true">
+                            <p class="word__line" data-word-line>
+                                {liveFirst
+                                    ? <><span>{h.liveWord}</span><span class="word__gap"> </span><span class="word__sess" data-live-name></span></>
+                                    : <><span class="word__sess" data-live-name></span><span class="word__gap"> </span><span>{h.liveWord}</span></>}
+                            </p>
                         </div>
-                        <!-- The result's classification table, without grid and places gained -->
-                        <table class="tbl tower__tbl">
-                            <thead class="lbl"><tr><th>{tb.pos}</th><th>{tb.driver}</th><th class="hide-m">{tb.team}</th><th class="r">{tb.gap}</th></tr></thead>
-                            <tbody>
-                                {towerRows.map((row, i) => (
-                                    <tr data-tower-row>
-                                        <td class="p" data-pos>{row?.pos ?? i + 1}</td>
-                                        <td class="d"><span data-first>{row?.firstName ?? ''}</span>{row && <span class="d__mark"><TeamMark logo={row.teamLogo} color={row.teamColor} size={18} /></span>}<span data-driver>{row?.lastName ?? '—'}</span></td>
-                                        <td class="hide-m">
-                                            <span class="t">
-                                                {row && <TeamMark logo={row.teamLogo} color={row.teamColor} />}
-                                                <span class="mark-text" data-team>{row?.team ?? ''}</span>
-                                            </span>
-                                        </td>
-                                        <td class="r num" data-gap>{row?.gap ?? ''}</td>
-                                    </tr>
+
+                        <!-- The session's progress: a readout over the bar (laps, the
+                             qualifying parts or the session clock) -->
+                        <div class="prog">
+                            <div class="prog__head lbl">
+                                <h1 id="live-title" data-live-title></h1>
+                                <span class="prog__zone" data-live-zone></span>
+                            </div>
+                            <div class="read">
+                                <div class="read__main">
+                                    <div>
+                                        <span class="read__k lbl" data-read-k></span>
+                                        <span class="read__v cond" data-read-v></span>
+                                    </div>
+                                    <span class="read__s lbl" data-read-s></span>
+                                </div>
+                                <div class="pair lbl"><span data-start-k></span><b class="num" data-start-v></b><span data-start-s></span></div>
+                                <div class="pair lbl"><span>{h.ends}</span><b class="num" data-end-v></b><span data-end-s></span></div>
+                            </div>
+                            <div class="segs" data-segs role="progressbar" aria-labelledby="live-title" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+
+                        <!-- The weekend's sessions on a line -->
+                        <div class="wk">
+                            <div class="wk__head lbl"><span>{h.weekend}</span>{next.sprint && <span>{h.sprintWeekend}</span>}</div>
+                            <ol class="tl">
+                                {next.sessions.map((s) => (
+                                    <li class="tl__cell" data-wk={s.key}>
+                                        <span class="tl__rail" aria-hidden="true"><span class="tl__fill" data-wk-fill></span></span>
+                                        <span class="tl__st lbl"><span class="ldot ldot--on"></span><span class="tl__next">{t.live.next}</span><span class="tl__txt" data-wk-txt></span></span>
+                                        <span class="tl__nm cond"><span class="l">{s.name}</span><span class="s" aria-hidden="true">{(h.sessionShort as Record<string, string>)[s.key] ?? s.name}</span></span>
+                                        <span class="tl__when">
+                                            <span class="tl__day lbl" data-local="daymonth" data-at={s.start}></span>
+                                            <span class="tl__tm num"><span data-local="time" data-at={s.start}></span>–<span data-local="time" data-at={s.end}></span></span>
+                                        </span>
+                                    </li>
                                 ))}
-                            </tbody>
-                        </table>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- The top 10, with the door to the Live page as its foot -->
+                    <div class="tower" data-tower>
+                        <h2 class="tower__hd lbl">
+                            <span><span class="ldot ldot--red" aria-hidden="true"></span>{h.top10}</span>
+                            <span class="tower__r" data-tower-label></span>
+                        </h2>
+                        <div class="top" role="table" aria-label={h.top10}>
+                            <div class="tr th lbl" role="row">
+                                <span role="columnheader">{tb.pos}</span>
+                                <span role="columnheader">{tb.driver}</span>
+                                <span role="columnheader" class="hide-m">{tb.team}</span>
+                                <span role="columnheader" class="r">{tb.gap}</span>
+                            </div>
+                            {towerRows.map((row, i) => (
+                                <div class="tr" role="row" data-tower-row>
+                                    <span class="p" role="cell" data-pos>{row?.pos ?? i + 1}</span>
+                                    <span class="d" role="cell">{row && <span class="d__mark"><TeamMark logo={row.teamLogo} color={row.teamColor} size={18} /></span>}<span class="f" data-first>{row?.firstName ?? ''}</span><span data-driver>{row?.lastName ?? '—'}</span></span>
+                                    <span class="t hide-m" role="cell">
+                                        {row && <TeamMark logo={row.teamLogo} color={row.teamColor} />}
+                                        <span class="mark-text" data-team>{row?.team ?? ''}</span>
+                                    </span>
+                                    <span class="g r num" role="cell" data-gap>{row?.gap ?? ''}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <a class="door" href={href('live.html')}>
+                            <span class="lbl">{h.watchLiveText}</span>
+                            <b>{h.watchLive}</b>
+                            <span class="arrow" aria-hidden="true">→</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -221,6 +263,7 @@ const rest = last?.rows.slice(3) ?? [];
                     <span class="band__k lbl">{h.upNext}</span>
                     <span class="band__v" data-upnext-name>—</span>
                     <span class="band__v num" data-upnext-when></span>
+                    <span class="band__k lbl" data-upnext-in></span>
                     <span class="band__rule" aria-hidden="true"></span>
                     <a class="btn btn--line" href={href(`grandsprix/grandprix.html?gp=${next.id}`)}>{h.timetableLink} <span class="arrow">→</span></a>
                 </div>
@@ -537,94 +580,207 @@ const rest = last?.rows.slice(3) ?? [];
     }
 
     /* ---- Live (red) ---------------------------------------------------------- */
+    /* Chosen on 16/10 (_design/live/e-mix): on the left, the giant "LIVE +
+       session", the session's progress and the weekend; on the right, the top
+       10 with the door to the Live page as its foot. Both columns share the
+       top and the bottom line. */
     .hero--live { background: var(--red); color: #fff; }
-    .live {
-        flex: 1;
-        grid-template-rows: 1fr auto;
-        row-gap: 24px;
-        padding: 24px 0 40px;
-    }
-    .live__word {
-        grid-column: 1 / 10;
-        grid-row: 1;
-        align-self: center;
-        display: flex;
-        align-items: center;
-        gap: .05em;
-        margin: 0;
-        font-size: clamp(120px, 25vw, 380px);
+    .hero--live :focus-visible { outline-color: #fff; }
+    .live { flex: 1; grid-template-rows: minmax(0, 1fr); padding: 24px 0 28px; }
+    .live__main { grid-column: 1 / 8; display: flex; flex-direction: column; min-width: 0; }
+
+    /* The word takes the height the other two bands leave; hero-state.ts fits
+       the line to that box once per session and on resize: on one line, or on
+       two ("LIVE" / "QUALIFYING") when two lines make it bigger. */
+    .word { position: relative; flex: 1; min-height: 90px; }
+    .word__line {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: max-content;
+        margin: 0 0 calc(var(--desc, 0) * 1em - .035em);
+        font-size: var(--fs, 160px);
         font-weight: 900;
         font-stretch: 62%;
-        line-height: .76;
-        letter-spacing: -.02em;
+        line-height: .78;
+        letter-spacing: -.012em;
         text-transform: uppercase;
+        white-space: nowrap;
     }
-    .live__word > span { font-size: calc(var(--fit, 1) * 1em); white-space: nowrap; }
-    .live__info {
-        grid-column: 1 / 8;
-        grid-row: 2;
-        padding-top: 14px;
-        border-top: 4px solid #fff;
-    }
+    .word__sess { color: var(--ink); }
+    .word__line.is-2 > span { display: block; }
+    .word__line.is-2 .word__gap { display: none; }
 
-    /* With the top 10 tower: LIVE and the session keep the left side, the
-       tower takes the right one, about half, as a column of ink. */
-    .live--tower .live__word { grid-column: 1 / 8; font-size: clamp(110px, 17vw, 300px); }
-    .live--tower .live__info { grid-column: 1 / 5; }
-    .live--tower .live__cta { grid-column: 5 / 8; }
+    /* The session's progress, across the whole column */
+    .prog { margin-top: 14px; padding-top: 12px; border-top: 4px solid #fff; }
+    .prog__head { display: flex; justify-content: space-between; gap: 16px; }
+    .prog__head h1 { margin: 0; font: inherit; }
+    .prog__zone { white-space: nowrap; }
+    .read { display: flex; align-items: flex-end; gap: 24px; margin: 10px 0 14px; }
+    .read__main { flex: 1; min-width: 0; display: flex; align-items: flex-end; gap: 16px; }
+    .read__k { display: block; margin-bottom: 6px; white-space: nowrap; }
+    .read__v { display: block; font-size: clamp(54px, min(5.6vw, 9vh), 92px); line-height: .78; white-space: nowrap; }
+    .read__s { padding-bottom: 2px; white-space: nowrap; }
+    .pair { padding-left: 18px; border-left: 1px solid rgba(255, 255, 255, .5); white-space: nowrap; }
+    .pair b { display: block; margin: 4px 0 6px; font-size: 32px; font-weight: 900; font-stretch: 62%; line-height: .8; letter-spacing: 0; }
+
+    /* The bar: one segment (laps or a clock), or three in qualifying (Q1, Q2,
+       Q3, each as long as its part; the breaks are only a gap). Built by
+       hero-state.ts when the session or what it measures changes; the tick
+       only writes --f. */
+    .segs { display: flex; gap: 8px; }
+    .segs :global(.seg) { flex: var(--w, 1) 1 0; min-width: 0; }
+    .segs :global(.bar-w) { position: relative; }
+    .segs :global(.bar) { position: relative; height: clamp(28px, 4.4vh, 44px); overflow: hidden; box-shadow: inset 0 0 0 1px #fff; }
+    .segs :global(.bar__fill) { position: absolute; inset: 0; background: var(--ink); transform: scaleX(var(--f, 0)); transform-origin: 0 50%; }
+    .segs :global(.bar__ticks) {
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(to right, transparent calc(100% - 1px), rgba(255, 255, 255, .55) calc(100% - 1px));
+        background-size: calc(100% / var(--n, 1)) 100%;
+    }
+    .segs :global(.bar__now) { position: absolute; top: -7px; bottom: -7px; left: 0; width: 100%; transform: translateX(calc(var(--f, 0) * 100%)); pointer-events: none; }
+    .segs :global(.bar__now::before) { content: ''; position: absolute; top: 0; bottom: 0; left: -1.5px; width: 3px; background: #fff; }
+    .segs :global(.seg.is-idle .bar__now) { display: none; }
+    .segs :global(.scale) { position: relative; height: 14px; margin-top: 10px; }
+    .segs :global(.scale span) { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+    .segs :global(.scale span:first-child) { transform: none; }
+    .segs :global(.scale span:last-child:not(:first-child)) { transform: translateX(-100%); }
+    .segs :global(.seg__lbl) { display: flex; justify-content: space-between; gap: 8px; margin-top: 10px; white-space: nowrap; }
+
+    /* The weekend: its sessions on a line */
+    .wk { margin-top: 22px; padding-top: 10px; border-top: 4px solid #fff; }
+    .wk__head { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+    .tl { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+    .tl__cell { display: flex; flex-direction: column; min-width: 0; }
+    .tl__rail { position: relative; height: 4px; }
+    .tl__rail::before { content: ''; position: absolute; right: 0; bottom: 0; left: 0; height: 1px; background: #fff; }
+    .tl__fill { position: absolute; inset: 0; background: #fff; transform: scaleX(var(--f, 0)); transform-origin: 0 50%; }
+    .tl__st { display: flex; align-items: center; gap: 6px; min-height: 18px; margin-top: 8px; white-space: nowrap; }
+    .tl__st .ldot, .tl__next { display: none; }
+    .tl__cell.is-live .ldot { display: inline-block; }
+    .tl__cell.is-next .tl__next { display: inline; padding: 2px 5px; background: #fff; color: var(--red-ink); }
+    .tl__nm { margin-top: auto; padding-top: 10px; font-size: clamp(20px, 1.75vw, 28px); line-height: .86; }
+    .tl__nm .s { display: none; }
+    .tl__when { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; padding-top: 8px; }
+    .tl__tm { font-size: 14px; font-weight: 600; }
+    .tl__cell.is-live { padding: 0 10px 10px; background: var(--ink); color: var(--paper); }
+    .tl__cell.is-live .tl__rail { margin: 0 -10px; }
+    .tl__cell.is-live .tl__rail::before { background: rgba(239, 234, 224, .4); }
+    .tl__cell.is-live .tl__fill { background: var(--paper); }
+
+    /* The top 10: rows share the column's height, so nothing is left empty
+       under P10. No row hover: they aren't links. */
     .tower {
         grid-column: 8 / 13;
-        grid-row: 1 / 3;
-        align-self: stretch;
         display: flex;
         flex-direction: column;
-        padding: 18px 20px 14px;
+        min-width: 0;
+        padding: 9px 20px 20px;
         background: var(--ink);
         color: var(--paper);
     }
-    .tower[hidden] { display: none; }
     .tower__hd {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         gap: 12px;
+        margin: 0;
         padding-bottom: 12px;
         border-bottom: 4px solid var(--paper);
         color: var(--mute-ink);
     }
     .tower__hd > span:first-child { display: inline-flex; align-items: center; gap: 8px; color: var(--paper); }
-    .tower__tbl { margin-top: 2px; }
-    .tower__tbl td { padding-top: 8px; padding-bottom: 8px; }
-    .tower__tbl tbody tr:first-child td { border-top: 0; }
-    .live__info p { margin: 0; }
-    .live__session { margin: 6px 0 8px; color: var(--ink); font-size: clamp(44px, 5.6vw, 88px); }
-    .live__sub { font-size: 18px; font-weight: 600; }
-    .live__cta { grid-column: 8 / 13; grid-row: 2; display: flex; }
-    .cta-live {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        gap: 24px;
-        min-height: 190px;
-        padding: 20px 22px 22px;
-        background: var(--ink);
+    .tower__r { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .top { flex: 1; display: grid; grid-template-rows: auto repeat(10, minmax(30px, 1fr)); }
+    .top .tr {
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1.25fr) minmax(0, 1fr) 86px;
+        align-items: center;
+        column-gap: 8px;
+        border-top: 1px solid rgba(239, 234, 224, .16);
+    }
+    .top .th { padding: 10px 0 8px; border-top: 0; color: var(--mute-ink); }
+    .top .tr:nth-child(2) { border-top: 0; }
+    .top .r { text-align: right; }
+    .top .p { font-size: 26px; font-weight: 900; font-stretch: 62%; line-height: 1; }
+    .top .d { min-width: 0; overflow: hidden; font-size: 16px; font-weight: 800; font-stretch: 90%; letter-spacing: .01em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+    .top .d .f { margin-right: 6px; color: var(--mute-ink); font-weight: 500; font-stretch: 100%; text-transform: none; }
+    /* The team logo next to the last name: mobile only, where the team
+       column is hidden (owner's call, 13/10) */
+    .top .d__mark { display: none; }
+    .top .t { display: flex; align-items: center; gap: 8px; min-width: 0; color: var(--mute-ink); font-size: 16px; font-weight: 500; white-space: nowrap; }
+    .top .t .mark-text { overflow: hidden; text-overflow: ellipsis; }
+    .top .g { font-size: 16px; font-weight: 600; }
+    .top .tr:nth-child(2) .g { color: var(--paper); font-weight: 800; }
+
+    /* The door: the panel's foot, the page's main action */
+    .door {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: end;
+        gap: 6px 16px;
+        margin-top: 16px;
+        padding: 16px 18px 18px;
+        background-color: var(--red);
         color: #fff;
         text-decoration: none;
         transition: all .2s ease;
     }
-    .cta-live:hover { background: #000; }
-    .cta-live .top { display: flex; justify-content: space-between; align-items: center; }
-    .cta-live__src { display: inline-flex; align-items: center; gap: 8px; }
-    .cta-live b {
-        display: block;
-        font-size: clamp(36px, 3.6vw, 56px);
-        font-weight: 900;
-        font-stretch: 62%;
-        line-height: .88;
-        text-transform: uppercase;
+    .door:hover { background-color: var(--paper); color: var(--ink); }
+    .door .lbl { grid-column: 1 / 3; }
+    .door b { font-size: clamp(32px, 3vw, 48px); font-weight: 900; font-stretch: 62%; line-height: .86; text-transform: uppercase; }
+    .door .arrow { font-size: 40px; line-height: .7; }
+
+    @media (max-width: 1100px) {
+        .live { grid-template-rows: auto auto; row-gap: 28px; }
+        .live__main, .tower { grid-column: 1 / -1; }
+        .word { flex: none; min-height: 0; }
+        .word__line { position: static; }
+        .top { grid-template-rows: auto repeat(10, 42px); }
     }
-    .cta-live .arrow { font-size: 40px; font-weight: 400; line-height: 1; }
-    .cta-live small { display: block; margin-top: 10px; color: var(--mute-ink); font-size: 13px; }
+
+    @media (max-width: 760px) {
+        .live { row-gap: 16px; padding: 16px 0 20px; }
+        /* The heading stays for screen readers only: the word and the strip
+           already say it (a phone gets ~1.2 screens of hero) */
+        .prog { margin-top: 12px; padding-top: 10px; }
+        .prog__head { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+        .read { gap: 12px; margin: 0 0 12px; }
+        .read__k { font-size: 10px; }
+        .read__v { font-size: 48px; }
+        .read__s { display: none; }
+        .pair { padding-left: 10px; font-size: 10px; }
+        .pair b { margin: 2px 0 3px; font-size: 24px; }
+        .segs :global(.bar) { height: 26px; }
+        .segs :global(.scale span.mid), .segs :global(.seg__lbl span) { display: none; }
+        /* The weekend: five short cells */
+        .wk { margin-top: 18px; padding-top: 0; }
+        .wk__head { display: none; }
+        .tl { gap: 6px; }
+        .tl__st { min-height: 0; margin-top: 6px; }
+        .tl__txt { display: none; }
+        .tl__nm { padding-top: 6px; font-size: 18px; }
+        .tl__nm .l, .tl__day, .tl__tm { display: none; }
+        .tl__nm .s { display: inline; }
+        .tl__when { padding-top: 4px; }
+        .tl__cell.is-live { padding: 0 6px 6px; }
+        .tl__cell.is-live .tl__rail { margin: 0 -6px; }
+        /* The top 10: logo + last name, gap */
+        .tower { padding: 8px 14px 14px; }
+        .tower__r { display: none; }
+        .top { grid-template-rows: auto repeat(10, 28px); }
+        .top .th { padding: 6px 0 4px; }
+        .top .tr { grid-template-columns: 34px minmax(0, 1fr) auto; }
+        .top .hide-m, .top .d .f { display: none; }
+        .top .d__mark { display: inline-block; margin-right: 10px; vertical-align: -3px; }
+        .top .p { font-size: 22px; }
+        .top .d, .top .g { font-size: 15px; }
+        .door { margin-top: 12px; padding: 12px 14px 14px; }
+        .door .lbl { display: none; }
+        .door b, .door .arrow { font-size: 30px; }
+        .hero--live [data-upnext-in], .hero--live .strip .hide-m { display: none; }
+    }
 
     /* ---- Result (ink) -------------------------------------------------------- */
     .hero--res { background: var(--ink); color: var(--paper); }
@@ -759,7 +915,7 @@ const rest = last?.rows.slice(3) ?? [];
     }
     .res__rest .hd h2 { margin: 0; }
     .res__rest .hd a { color: var(--paper); text-decoration: none; }
-    /* Classification table: the result's positions 4–10 and the live top 10 */
+    /* Classification table: the result's positions 4–10 */
     .tbl { width: 100%; margin-top: 10px; border-collapse: collapse; }
     .tbl th { padding: 10px 8px 8px 0; color: var(--mute-ink); font-weight: 700; text-align: left; vertical-align: middle; }
     /* Centered, not on the baseline: the big position number would push the
@@ -768,9 +924,6 @@ const rest = last?.rows.slice(3) ?? [];
     .tbl .p { width: 56px; font-size: 26px; font-weight: 900; font-stretch: 62%; line-height: 1; }
     .tbl .d { font-size: 16px; font-weight: 800; font-stretch: 90%; letter-spacing: .01em; text-transform: uppercase; }
     .tbl .d > span:first-child { margin-right: 6px; color: var(--mute-ink); font-weight: 500; font-stretch: 100%; text-transform: none; }
-    /* The live tower's team logo next to the last name: mobile only, where the
-       team column is hidden (owner's call, 13/10) */
-    .d__mark { display: none; }
     /* The team in the same type as the driver's first name (owner's call, 13/10) */
     .tbl .t { display: flex; align-items: center; gap: 8px; color: var(--mute-ink); font-size: 16px; font-weight: 500; font-stretch: 100%; letter-spacing: .01em; }
     .tbl .r { padding-right: 0; text-align: right; }
@@ -806,13 +959,6 @@ const rest = last?.rows.slice(3) ?? [];
         .facts { grid-column: 1 / 9; }
         .up__count { grid-column: 1 / 13; grid-row: 3; }
         .sched { grid-column: 1 / 13; grid-row: 4; }
-        .live__info { grid-column: 1 / 13; }
-        .live__cta { grid-column: 1 / 13; grid-row: 3; }
-        /* Stacked: LIVE, the session, the tower, then the button */
-        .live--tower .live__word { grid-column: 1 / 13; font-size: clamp(110px, 25vw, 280px); }
-        .live--tower .live__info { grid-column: 1 / 13; grid-row: 2; }
-        .live--tower .tower { grid-column: 1 / 13; grid-row: 3; }
-        .live--tower .live__cta { grid-column: 1 / 13; grid-row: 4; }
         .res__win, .res__pod { grid-column: 4 / 13; }
         .res__mark { display: none; }
     }
@@ -839,12 +985,6 @@ const rest = last?.rows.slice(3) ?? [];
         .band__rule { display: none; }
         .band .btn { justify-content: space-between; width: 100%; }
 
-        .live { grid-template-columns: minmax(0, 1fr); row-gap: 22px; padding: 20px 0 28px; }
-        .live__word, .live__info, .live__cta,
-        .live--tower .live__word, .live--tower .live__info, .live--tower .tower, .live--tower .live__cta { grid-column: 1; grid-row: auto; }
-        .live__word, .live--tower .live__word { font-size: clamp(100px, 36vw, 200px); }
-        .tower { padding: 14px 14px 10px; }
-        .cta-live { min-height: 150px; }
 
         .res { grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; padding: 20px 0 28px; }
         .res__one { grid-column: 1; grid-row: 2; margin-left: -.04em; font-size: clamp(150px, 46vw, 260px); }
@@ -860,8 +1000,6 @@ const rest = last?.rows.slice(3) ?? [];
         .res__rest { grid-column: 1 / 3; grid-row: 5; margin-top: 32px; }
         .tbl .hide-m { display: none; }
         .tbl .d > span:first-child { display: none; }
-        .d__mark { display: inline-block; margin-right: 10px; vertical-align: middle; }
-        .d__mark :global(.team-mark) { display: block; }
         .tbl td { padding-top: 9px; padding-bottom: 9px; }
     }
 </style>

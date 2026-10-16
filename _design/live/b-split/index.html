@@ -1,0 +1,911 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#121212">
+<title>Live hero · B: Split field</title>
+<style>
+@font-face {
+    font-family: 'Archivo';
+    src: url('../../../node_modules/@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2') format('woff2');
+    font-weight: 100 900;
+    font-stretch: 62% 125%;
+}
+
+/* ---- Tokens (DESIGN.md §2) ------------------------------------------------ */
+:root {
+    --paper: #EFEAE0;
+    --paper-2: #E6E0D3;
+    --ink: #121212;
+    --ink-2: #1E1E1E;
+    --mute: #66625A;
+    --mute-ink: #A39E93;
+    --red: #E10600;
+    --red-ink: #B30500;
+    --red-hi: #FF5A4E;
+    --rule-ink: rgba(239, 234, 224, .25);
+    --rule-ink-soft: rgba(239, 234, 224, .16);
+    --font: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --nav: 56px;
+    --gut: 32px;
+    --gap: 16px;
+    --max: 1440px;
+    /* From the wrap's edge to the screen's edge: how far the ink field bleeds */
+    --bleed: calc((100vw - min(100vw, var(--max))) / 2 + var(--gut));
+}
+@media (max-width: 760px) {
+    :root { --gut: 16px; --gap: 12px; }
+}
+
+/* ---- Base (site/src/styles/base.css) -------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; scrollbar-width: none; }
+html::-webkit-scrollbar { display: none; }
+body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+.hero :focus-visible { outline-color: #fff; }
+.sr { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.lbl { font-size: 11px; font-weight: 700; font-stretch: 115%; text-transform: uppercase; letter-spacing: .09em; line-height: 1.3; }
+.cond { font-weight: 900; font-stretch: 62%; text-transform: uppercase; line-height: .86; letter-spacing: -.005em; }
+.num { font-variant-numeric: tabular-nums lining-nums; }
+.wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 var(--gut); }
+.ldot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: #5a5650; }
+.ldot--on { background: #fff; animation: beat 1.1s ease-in-out infinite; }
+.ldot--red { background: var(--red); animation: beat 1.1s ease-in-out infinite; }
+@keyframes beat { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+.arrow { display: inline-block; transition: all .2s ease; }
+a:hover .arrow { transform: translateX(6px); }
+.btn {
+    display: inline-flex; align-items: center; gap: 14px; padding: 14px 20px; border: 0;
+    font-size: 12px; font-weight: 700; font-stretch: 115%; text-transform: uppercase; letter-spacing: .09em;
+    text-decoration: none; cursor: pointer; transition: all .2s ease;
+}
+.btn--line { --line: var(--ink); background: transparent; box-shadow: inset 0 0 0 1px var(--line); }
+.btn--line:hover { background: var(--ink); color: var(--paper); }
+.team-mark { display: inline-block; flex: none; width: var(--size, 20px); height: var(--size, 20px); object-fit: contain; }
+
+/* ---- Design note (removable) ---------------------------------------------- */
+.note { padding: 14px 0 16px; background: var(--paper-2); color: var(--mute); font-size: 13px; line-height: 1.5; }
+.note .wrap { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); row-gap: 6px; }
+.note b { color: var(--ink); }
+.note p { margin: 0; grid-column: span 6; }
+.note p:first-child { grid-column: 1 / -1; }
+@media (max-width: 1100px) { .note p { grid-column: 1 / -1; } }
+
+/* ---- Navbar --------------------------------------------------------------- */
+.nav { position: sticky; top: 0; z-index: 20; height: var(--nav); background: var(--ink); color: #fff; }
+.nav .wrap { display: flex; align-items: center; gap: 14px; height: 100%; }
+.nav__logo img { height: 22px; width: auto; }
+.nav__season { padding-left: 14px; border-left: 1px solid #3a3a3a; color: var(--mute-ink); }
+.nav__chip { display: inline-flex; align-items: center; gap: 7px; margin-left: auto; padding: 7px 11px; background: var(--red); color: #fff; text-decoration: none; }
+.nav__burger { display: grid; place-items: center; width: 44px; height: 44px; margin-right: -10px; background: none; border: 0; cursor: pointer; }
+.nav__burger span { display: block; width: 24px; height: 2px; background: #fff; box-shadow: 0 -7px 0 #fff, 0 7px 0 #fff; }
+@media (max-width: 760px) { .nav__season { display: none; } }
+
+/* ==========================================================================
+   LIVE HERO — "Split field"
+   A red field (the moment) and an ink field (the door to the Live page),
+   cut at the same column line as the other two states (7 | 5).
+   ========================================================================== */
+.hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - var(--nav));
+    overflow: hidden;
+    background: var(--red);
+    color: #fff;
+    animation: wipe .7s ease both;
+}
+@keyframes wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+.hero > .wrap { flex: 1; display: flex; flex-direction: column; }
+
+.strip { display: flex; flex-wrap: wrap; border-bottom: 1px solid currentColor; }
+.strip > * { padding: 15px 18px; border-left: 1px solid currentColor; }
+.strip > *:first-child { padding-left: 0; border-left: 0; }
+.strip > .grow { flex: 1; }
+.tag { display: inline-flex; align-items: center; gap: 8px; }
+
+/* The split: one 12-column grid, three rows shared by both fields
+   (header | body | foot), so their rules, tops and baselines line up. */
+.split {
+    flex: 1;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    column-gap: var(--gap);
+    padding: 28px 0 32px;
+    isolation: isolate;
+}
+.side { display: contents; }
+
+/* The ink field: from column 8 to the screen's right edge, from the strip
+   down to the band. */
+.inkbg {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc((100% - 11 * var(--gap)) * 7 / 12 + 7 * var(--gap));
+    right: calc(-1 * var(--bleed));
+    z-index: -1;
+    background: var(--ink);
+}
+
+/* Headers of both fields: a label row closed by a 4 px rule, same line */
+.hd {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 6px 16px;
+    flex-wrap: wrap;
+    align-self: end;
+    padding-bottom: 12px;
+}
+.hd { margin: 0; }
+.hd > span { display: inline-flex; align-items: center; gap: 8px; }
+.hd > .cols { display: grid; }
+
+/* ---- Red field: the moment ------------------------------------------------ */
+.m-hd { grid-column: 1 / 8; grid-row: 1; border-bottom: 4px solid #fff; }
+.moment {
+    grid-column: 1 / 8;
+    grid-row: 2 / 4;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+}
+.m-name {
+    margin: 26px 0 0;
+    font-size: var(--s, 200px);
+    line-height: .84;
+    letter-spacing: -.015em;
+    text-box: trim-both cap alphabetic;
+}
+.m-name .ln { display: block; white-space: nowrap; }
+.m-space { flex: 1; min-height: 20px; }
+.m-prog { position: relative; display: flex; gap: 2px; height: 4px; margin-bottom: 14px; }
+.m-prog i { flex: 1; background: #fff; }
+.m-prog i.on { background: var(--ink); }
+.m-prog--bar { background: #fff; }
+.m-prog--bar b { position: absolute; inset: 0; background: var(--ink); transform-origin: 0 50%; transform: scaleX(var(--f, 0)); }
+.m-lbl { display: flex; justify-content: space-between; gap: 6px 16px; flex-wrap: wrap; margin: 0 0 14px; }
+.m-digits {
+    margin: 0;
+    color: var(--ink);
+    font-size: var(--d, 120px);
+    line-height: 1;
+    letter-spacing: -.01em;
+    white-space: nowrap;
+    text-box: trim-both cap alphabetic;
+}
+.m-digits .w { color: #fff; }
+
+/* ---- Ink field: the door -------------------------------------------------- */
+.ink { color: var(--paper); }
+.i-hd { grid-column: 8 / 13; grid-row: 1; margin-left: var(--gut); border-bottom: 4px solid var(--paper); color: var(--mute-ink); }
+.i-hd .hi { color: var(--paper); }
+.i-body { grid-column: 8 / 13; grid-row: 2; margin-left: var(--gut); min-height: 0; container-type: inline-size; }
+.i-cta {
+    display: block;
+    grid-column: 8 / 13;
+    grid-row: 3;
+    align-self: end;
+    margin-left: var(--gut);
+    padding-top: 22px;
+    color: var(--paper);
+    text-decoration: none;
+}
+.i-cta__sub { display: block; margin-bottom: 18px; color: var(--mute-ink); font-size: 14px; line-height: 1.4; }
+[data-feed="on"] .i-cta__sub { display: none; }
+.i-cta__t {
+    display: block;
+    font-size: var(--c, 64px);
+    line-height: .86;
+    text-box: trim-both cap alphabetic;
+    transition: all .2s ease;
+}
+.i-cta__t .ln { display: block; white-space: nowrap; }
+.i-cta .arrow { font-weight: 400; margin-left: .12em; }
+.i-cta:hover .i-cta__t { color: var(--red-hi); }
+[data-feed="on"] .i-cta { border-top: 1px solid var(--rule-ink); }
+/* The ink field's contents wipe in when the feed arrives */
+.swap { animation: wipe .5s ease both; }
+
+/* The ink header, with feed: the table's column heads */
+.cols { display: grid; grid-template-columns: var(--tcols); column-gap: 12px; align-items: end; width: 100%; }
+.cols .r { justify-self: end; }
+.hd-simple { display: none !important; }
+
+/* Top 10: ten rows that share the body's height, no dead space under P10 */
+.tt { display: grid; grid-template-rows: repeat(10, minmax(0, 1fr)); height: 100%; margin: 0; padding: 0; list-style: none; }
+.tt li {
+    display: grid;
+    grid-template-columns: var(--tcols);
+    column-gap: 12px;
+    align-items: center;
+    min-height: 0;
+    border-top: 1px solid var(--rule-ink-soft);
+}
+.tt li:first-child { border-top: 0; }
+.i-body, .i-hd { --tcols: 44px minmax(0, 1.35fr) minmax(0, 1fr) 96px; }
+.tt .p { font-size: clamp(24px, 3.4vh, 34px); font-weight: 900; font-stretch: 62%; line-height: 1; }
+.tt .d { overflow: hidden; font-size: 16px; font-weight: 800; font-stretch: 90%; letter-spacing: .01em; text-transform: uppercase; white-space: nowrap; text-overflow: ellipsis; }
+.tt .d .f { margin-right: 6px; color: var(--mute-ink); font-weight: 500; font-stretch: 100%; text-transform: none; }
+.tt .d .code { display: none; }
+.tt .t { display: flex; align-items: center; gap: 8px; min-width: 0; color: var(--mute-ink); font-size: 15px; font-weight: 500; white-space: nowrap; }
+.tt .t span { overflow: hidden; text-overflow: ellipsis; line-height: 1; text-box: trim-both cap alphabetic; }
+.tt .g { display: flex; flex-direction: column; align-items: flex-end; justify-self: end; font-size: 16px; font-weight: 700; line-height: 1.15; white-space: nowrap; }
+.tt .g small { margin-bottom: 2px; color: var(--mute-ink); font-size: 10px; font-weight: 700; font-stretch: 115%; letter-spacing: .09em; text-transform: uppercase; }
+.tt .m-logo { display: none; }
+/* A narrow ink field (1101–1300 px): the team keeps its logo, loses its name */
+@container (max-width: 470px) {
+    .tt .t span { display: none; }
+    .tt .d .f { display: none; }
+}
+
+/* Without feed: the weekend timetable, the live session marked */
+.sch { display: grid; grid-template-rows: repeat(5, minmax(0, 1fr)); height: 100%; margin: 0; padding: 0; list-style: none; }
+.sch li {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr) auto 70px;
+    column-gap: 12px;
+    align-items: center;
+    min-height: 0;
+    border-top: 1px solid var(--rule-ink-soft);
+}
+.sch li:first-child { border-top: 0; }
+.sch .day { color: var(--mute-ink); }
+.sch .nm, .sch .tm { font-size: clamp(22px, 2.3vw, 34px); font-weight: 900; font-stretch: 62%; line-height: 1; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sch .tm { justify-self: end; }
+.sch .st { color: var(--mute-ink); }
+.sch .is-done .nm, .sch .is-done .tm { color: var(--mute-ink); }
+.sch .is-live .st { display: inline-flex; align-items: center; gap: 7px; padding: 5px 8px; background: var(--red); color: #fff; }
+.sch .is-next .st { color: var(--red-hi); }
+
+/* ---- Band (paper): what comes next ---------------------------------------- */
+.band { background: var(--paper); color: var(--ink); border-bottom: 1px solid rgba(18, 18, 18, .22); }
+.band__in { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; min-height: 76px; padding-top: 12px; padding-bottom: 12px; }
+.band__k { color: var(--mute); }
+.band__v { font-size: 30px; font-weight: 900; font-stretch: 62%; line-height: 1; text-transform: uppercase; }
+.band__rule { flex: 1; min-width: 24px; height: 1px; background: rgba(18, 18, 18, .3); }
+.band__facts { color: var(--mute); }
+.band__facts b { color: var(--ink); }
+
+/* ---- Next section: the calendar's first lines ----------------------------- */
+.cal { padding: 112px 0 160px; background: var(--paper); }
+.cal h2 { margin: 0; font-size: clamp(72px, 12vw, 196px); }
+.cal p { margin: 18px 0 0; color: var(--mute); }
+
+/* ---- Switcher (mockup only) ----------------------------------------------- */
+.sw[hidden] { display: none; }
+.still *, .still *::before { animation: none !important; transition: none !important; }
+.sw {
+    position: fixed;
+    left: 50%;
+    bottom: 14px;
+    z-index: 30;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 14px;
+    max-width: calc(100vw - 20px);
+    padding: 8px 12px;
+    background: var(--ink);
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    transform: translateX(-50%);
+}
+.sw__g { display: flex; align-items: center; gap: 2px; }
+.sw__g > span { margin-right: 6px; color: var(--mute-ink); }
+.sw button { padding: 6px 8px; background: none; border: 0; color: #fff; cursor: pointer; }
+.sw button[aria-pressed="true"] { background: var(--red); }
+.sw button:hover { color: var(--red-hi); }
+.sw button[aria-pressed="true"]:hover { color: #fff; }
+
+/* Measuring box for the fitted display type (read on load and resize only) */
+.meas { position: absolute; top: 0; left: -9999px; visibility: hidden; white-space: nowrap; font-size: 100px; font-weight: 900; font-stretch: 62%; text-transform: uppercase; line-height: 1; }
+
+/* ==========================================================================
+   ≤ 1100: the split becomes a stack. Red on top (the moment), then the ink
+   field, full-bleed, with a compact top 10 in two columns of five.
+   ========================================================================== */
+@media (max-width: 1100px) {
+    .split { display: block; padding: 0; }
+    .inkbg { display: none; }
+    .side { display: block; }
+    .side--red { padding: 24px 0 30px; }
+    .side--ink { margin: 0 calc(-1 * var(--gut)); padding: 22px var(--gut) 26px; background: var(--ink); }
+    .i-hd, .i-body, .i-cta { margin-left: 0; }
+    .m-name { margin-top: 22px; }
+    .m-space { flex: none; min-height: 26px; }
+    .hd-cols { display: none !important; }
+    .hd-simple { display: flex !important; justify-content: space-between; width: 100%; }
+
+    .tt { grid-template-rows: repeat(5, auto); grid-auto-flow: column; grid-template-columns: 1fr 1fr; column-gap: 32px; height: auto; }
+    .tt li { grid-template-columns: 40px 22px minmax(0, 1fr) auto; height: 46px; }
+    .tt li:nth-child(6) { border-top: 0; }
+    .tt .t { display: none; }
+    .tt .m-logo { display: block; }
+    .tt .d .f { display: none; }
+    .sch { grid-template-rows: none; height: auto; }
+    .sch li { height: 50px; }
+    .i-cta { padding-top: 20px; }
+    [data-feed="on"] .i-cta { margin-top: 0; }
+}
+
+/* 761–1100: the red block keeps the 7 | 5 cut of the desktop split inside
+   it: the session's name on columns 1–7, its lap or clock on 8–12, both on
+   one baseline, the progress rule under the two. */
+@media (min-width: 761px) and (max-width: 1100px) {
+    .moment { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); align-items: end; padding-top: 30px; }
+    .m-name { grid-column: 1 / 8; grid-row: 1; margin: 0; }
+    .m-space { display: none; }
+    .m-metric { grid-column: 8 / 13; grid-row: 1; }
+    .m-prog { grid-column: 1 / 13; grid-row: 2; margin: 28px 0 0; }
+    /* The ink block takes the rest of the screen, the door at its foot */
+    .split { display: flex; flex-direction: column; }
+    .side--ink { flex: 1; display: flex; flex-direction: column; }
+    .side--ink > * { align-self: stretch; }
+    .side--ink .i-cta { margin-top: auto; }
+    .i-body { flex: 1; display: flex; flex-direction: column; }
+    .tt { flex: 1; height: auto; grid-template-rows: repeat(5, minmax(46px, 1fr)); }
+    .tt li { height: auto; }
+    .sch { flex: 1; height: auto; grid-template-rows: repeat(5, minmax(50px, 1fr)); }
+    .sch li { height: auto; }
+}
+
+@media (max-width: 760px) {
+    .hero { min-height: 0; }
+    .strip > * { padding: 11px 12px; }
+    .strip > .grow { flex-basis: 100%; order: 3; padding-left: 0; border-top: 1px solid currentColor; border-left: 0; }
+    .strip > :last-child:not(.grow) { display: none; }
+    .strip > :nth-child(2) { flex: 1; }
+    .side--red { padding: 18px 0 22px; }
+    .side--ink { padding: 18px var(--gut) 20px; }
+    .m-name { margin-top: 18px; }
+    .m-space { min-height: 20px; }
+    .m-prog { gap: 1px; margin-bottom: 12px; }
+    .m-lbl { margin-bottom: 10px; }
+
+    /* Codes, not names: P1–P5 | P6–P10 */
+    .tt { column-gap: 20px; }
+    .tt li { grid-template-columns: 22px 18px minmax(0, 1fr) auto; column-gap: 8px; height: 36px; }
+    .tt .p { font-size: 22px; }
+    .tt .d { font-size: 15px; font-stretch: 80%; }
+    .tt .d .last { display: none; }
+    .tt .d .code { display: inline; }
+    .tt .g { font-size: 13px; }
+    .tt .g small { display: none; }
+    .sch li { grid-template-columns: 40px minmax(0, 1fr) auto 52px; column-gap: 10px; height: 40px; }
+    .sch .nm, .sch .tm { font-size: 22px; }
+    .i-cta__sub { margin-bottom: 12px; font-size: 13px; }
+
+    .band__in { gap: 6px 14px; padding-top: 16px; padding-bottom: 16px; }
+    .band__k { flex-basis: 100%; }
+    .band__v { font-size: 24px; }
+    .band__rule { display: none; }
+    .band .btn { justify-content: space-between; width: 100%; margin-top: 8px; }
+    .cal { padding: 72px 0 120px; }
+    .sw { bottom: 8px; gap: 2px 8px; padding: 6px 8px; }
+    .sw__g > span { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<aside class="note" aria-label="Design note">
+    <div class="wrap">
+        <p><b>B · Split field.</b> A Swiss poster cut in two: the red field carries the moment (the session's name and its lap or clock, both fitted to the field's width and height), the ink field runs to the screen's right edge, strip to band, and is the door to the Live page. <b>Split 7 | 5</b>, at column 8: the line where the upcoming state's title meets its track and where today's tower starts, so the three states share one cut, and the moment (the news) gets the bigger field while a top 10 still fits in five columns.</p>
+        <p><b>Changed vs today:</b> the giant “LIVE” gives its room to the session and its lap or clock (the strip tag, the navbar chip and the red field already say live); the floating CTA box and the tower merge into one ink field that shares the red header's 4 px rule and the bottom baseline (digits and “Watch live timing →” end on the same line); rows share the field's height, so nothing is left under P10. The band turns paper so the ink field doesn't run into it. ≤ 1100 it stacks (name | clock on the same 7 | 5 cut, top 10 in two columns of five); ≤ 760 codes instead of names.</p>
+        <p><b>Without feed</b> the same ink field stays and becomes the door: the weekend timetable with the live session marked, and “Watch live timing →” big at its foot; the red field shows the elapsed time (races) or the time left (timed sessions) from the timetable. When the feed arrives only the ink body swaps in place and the red digits change text. <b>Feed fields:</b> nothing new (lap / total, quali part and clock, top 10). <b>ES</b> in the switcher tests the 20–30 % longer copy.</p>
+    </div>
+</aside>
+
+<header class="nav">
+    <div class="wrap">
+        <a class="nav__logo" href="#"><img src="../../../img/logo.png" alt="F1 Hub" width="110" height="22"></a>
+        <span class="nav__season lbl" data-t="season">Season 2026</span>
+        <a class="nav__chip lbl" href="#"><span class="ldot ldot--on"></span><span data-t="chip">Live</span></a>
+        <button class="nav__burger" type="button" aria-label="Open menu"><span></span></button>
+    </div>
+</header>
+
+<main>
+    <section class="hero" id="hero" data-feed="on" aria-labelledby="live-title">
+        <div class="wrap">
+            <div class="strip lbl">
+                <span class="tag"><span class="ldot ldot--on"></span><span data-x="liveNow"></span></span>
+                <span data-x="round"></span>
+                <span class="grow" data-x="place"></span>
+                <span data-x="sprint"></span>
+            </div>
+
+            <div class="split">
+                <div class="inkbg" aria-hidden="true"></div>
+
+                <div class="side side--red">
+                    <p class="hd m-hd lbl"><span data-x="inProgress"></span><span data-x="since"></span></p>
+                    <div class="moment" data-moment>
+                        <h1 class="m-name cond" id="live-title"><span class="sr" data-x="srLive"></span><span data-x="name"></span></h1>
+                        <div class="m-space"></div>
+                        <div class="m-prog" data-prog aria-hidden="true"></div>
+                        <div class="m-metric" role="timer" aria-labelledby="metric-lbl">
+                            <p class="m-lbl lbl"><span id="metric-lbl" data-x="metricLbl"></span><span data-x="metricAside"></span></p>
+                            <p class="m-digits cond" data-digits aria-hidden="true"></p>
+                            <span class="sr" data-x="metricSr"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="side side--ink ink">
+                    <div class="hd i-hd lbl" data-ihd></div>
+                    <div class="i-body" data-ibody></div>
+                    <a class="i-cta" href="../../../live.html" data-cta>
+                        <span class="i-cta__sub" data-x="watchText"></span>
+                        <span class="i-cta__t cond" data-cta-t></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="band">
+            <div class="wrap band__in">
+                <span class="band__k lbl" data-x="upNextK"></span>
+                <span class="band__v" data-x="upNextV"></span>
+                <span class="band__v num" data-x="upNextW"></span>
+                <span class="band__rule" aria-hidden="true"></span>
+                <a class="btn btn--line" href="#"><span data-x="timetableLink"></span> <span class="arrow">→</span></a>
+            </div>
+        </div>
+    </section>
+
+    <section class="cal">
+        <div class="wrap">
+            <h2 class="cond" data-t="season">Season 2026</h2>
+            <p class="lbl" data-t="calSub">23 rounds · 16 raced · 7 to go</p>
+        </div>
+    </section>
+</main>
+
+<nav class="sw lbl" aria-label="Mockup switcher">
+    <div class="sw__g" data-g="scenario"><span>Scenario</span>
+        <button type="button" data-v="race">Race</button>
+        <button type="button" data-v="qualifying">Q2 live</button>
+        <button type="button" data-v="qualiBreak">Q1–Q2 break</button>
+        <button type="button" data-v="practice">Practice</button>
+    </div>
+    <div class="sw__g" data-g="feed"><span>Feed</span>
+        <button type="button" data-v="on">On</button>
+        <button type="button" data-v="off">Off</button>
+    </div>
+    <div class="sw__g" data-g="lang"><span>Lang</span>
+        <button type="button" data-v="en">EN</button>
+        <button type="button" data-v="es">ES</button>
+    </div>
+</nav>
+
+<span class="meas" aria-hidden="true" data-meas></span>
+
+<script>
+(() => {
+    'use strict';
+
+    // ---- Words (the site keeps them in its dictionaries; Spanish to test lengths)
+    const WORDS = {
+        en: {
+            intl: 'en-GB', chip: 'Live', season: 'Season 2026', calSub: '23 rounds · 16 raced · 7 to go',
+            liveNow: 'Live now', round: 'Round {r} / {n}', sprint: 'Sprint weekend',
+            inProgress: 'Session in progress', startedAgo: 'Started {x} ago', startedAt: 'Started {t}', ends: 'Ends {t}',
+            min: '{n} min', hmin: '{h} h {m} min',
+            lap: 'Lap', lapsToGo: '{n} laps to go', running: 'Running for', timeLeft: 'Time left',
+            qLeft: '{q} · time left', qNext: '{q} starts in',
+            top10: 'Top 10', team: 'Team', gap: 'Gap', leader: 'Leader', fastest: 'Fastest',
+            watch: 'Watch live timing', watchText: 'Positions, gaps, sectors and tyres from F1’s official feed.',
+            timetable: 'Weekend timetable', yourTime: 'Your time', done: 'Done', live: 'Live', next: 'Next',
+            upNext: 'Up next', raceResult: 'Race result', afterFlag: 'After the flag', inX: 'in {x}',
+            timetableLink: 'Weekend timetable', km: 'km lap', turns: 'turns', record: 'Lap record',
+            srLive: 'Live now: ', srLap: 'Lap {c} of {t}', srLeft: 'About {n} minutes left', srIn: 'Starts in about {n} minutes', srRun: 'Running for {n} minutes',
+            sessions: { fp1: 'Practice 1', sprintQualy: 'Sprint Qualifying', sprintRace: 'Sprint', qualifying: 'Qualifying', race: 'Race' },
+        },
+        es: {
+            intl: 'es', chip: 'En vivo', season: 'Temporada 2026', calSub: '23 rondas · 16 corridas · faltan 7',
+            liveNow: 'En vivo', round: 'Ronda {r} / {n}', sprint: 'Fin de semana sprint',
+            inProgress: 'Sesión en curso', startedAgo: 'Empezó hace {x}', startedAt: 'Empezó a las {t}', ends: 'Termina {t}',
+            min: '{n} min', hmin: '{h} h {m} min',
+            lap: 'Vuelta', lapsToGo: 'Faltan {n} vueltas', running: 'En pista desde hace', timeLeft: 'Tiempo restante',
+            qLeft: '{q} · tiempo restante', qNext: '{q} empieza en',
+            top10: 'Top 10', team: 'Equipo', gap: 'Dif.', leader: 'Líder', fastest: 'Más rápido',
+            watch: 'Ver el timing en vivo', watchText: 'Posiciones, diferencias, sectores y neumáticos del feed oficial de la F1.',
+            timetable: 'Horario del fin de semana', yourTime: 'Tu hora', done: 'Terminada', live: 'En vivo', next: 'Próxima',
+            upNext: 'A continuación', raceResult: 'Resultado de la carrera', afterFlag: 'Tras la bandera', inX: 'en {x}',
+            timetableLink: 'Horario del fin de semana', km: 'km por vuelta', turns: 'curvas', record: 'Récord',
+            srLive: 'En vivo: ', srLap: 'Vuelta {c} de {t}', srLeft: 'Quedan unos {n} minutos', srIn: 'Empieza en unos {n} minutos', srRun: 'En pista desde hace {n} minutos',
+            sessions: { fp1: 'Práctica 1', sprintQualy: 'Clasificación Sprint', sprintRace: 'Sprint', qualifying: 'Clasificación', race: 'Carrera' },
+        },
+    };
+    const fill = (s, o) => s.replace(/\{(\w+)\}/g, (_, k) => o[k]);
+    const ROOT = '../../../';
+
+    const $ = (s, r = document) => r.querySelector(s);
+    const hero = $('#hero');
+    const els = {};
+    document.querySelectorAll('[data-x]').forEach((e) => { els[e.dataset.x] = e; });
+    const set = (k, v) => { if (els[k] && els[k].textContent !== v) els[k].textContent = v; };
+
+    // ---- State from the URL
+    const qs = new URLSearchParams(location.search);
+    const st = {
+        scenario: ['race', 'qualifying', 'qualiBreak', 'practice'].includes(qs.get('scenario')) ? qs.get('scenario') : 'race',
+        feed: qs.get('feed') !== 'off',
+        lang: qs.get('lang') === 'es' ? 'es' : 'en',
+    };
+
+    let D, W, sc, sess, now0, t0, plan;
+
+    const simNow = () => now0 + (performance.now() - t0);
+    const pad = (n) => String(n).padStart(2, '0');
+    const fmtTime = (ms) => new Intl.DateTimeFormat(W.intl, { hour: '2-digit', minute: '2-digit', hour12: false }).format(ms);
+    const fmtDay = (ms) => new Intl.DateTimeFormat(W.intl, { weekday: 'short' }).format(ms).replace('.', '');
+    const tzName = () => {
+        const p = new Intl.DateTimeFormat('en-GB', { timeZoneName: 'short' }).formatToParts(new Date()).find((x) => x.type === 'timeZoneName');
+        return p ? p.value : '';
+    };
+    const clock = (ms, withH) => {
+        const s = Math.max(0, Math.floor(ms / 1000));
+        const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = s % 60;
+        return withH || h > 0 ? `${h}:${pad(m)}:${pad(x)}` : `${pad(m)}:${pad(x)}`;
+    };
+    const mmss = (str) => { const [m, s] = str.split(':').map(Number); return (m * 60 + s) * 1000; };
+    const ago = (ms) => {
+        const m = Math.max(0, Math.floor(ms / 60000));
+        return m < 60 ? fill(W.min, { n: m }) : fill(W.hmin, { h: Math.floor(m / 60), m: pad(m % 60) });
+    };
+    const compact = (ms) => {
+        const m = Math.max(0, Math.round(ms / 60000));
+        const d = Math.floor(m / 1440), h = Math.floor((m % 1440) / 60), mi = m % 60;
+        return d ? `${d}d ${pad(h)}h` : h ? `${h}h ${pad(mi)}m` : `${mi}m`;
+    };
+    const raceLike = (k) => k === 'race' || k === 'sprintRace';
+    const qualiLike = (k) => k === 'qualifying' || k === 'sprintQualy';
+
+    // ---- What the red field shows, worked out once per render
+    function makePlan() {
+        const start = Date.parse(sess.start), end = Date.parse(sess.end);
+        const p = { start, end, lapMode: false };
+        if (st.feed && raceLike(sess.key) && sc.lap) {
+            p.lapMode = true;
+            p.label = W.lap;
+            p.aside = fill(W.lapsToGo, { n: sc.lap.total - sc.lap.current });
+        } else if (st.feed && qualiLike(sess.key) && sc.qualiPart) {
+            p.target = now0 + mmss(sc.between ? sc.nextPartIn : sc.clockLeft);
+            p.label = fill(sc.between ? W.qNext : W.qLeft, { q: sc.qualiPart });
+            p.aside = fill(W.ends, { t: fmtTime(end) });
+            p.down = true;
+            p.sr = sc.between ? W.srIn : W.srLeft;
+        } else if (raceLike(sess.key)) {
+            p.up = true;
+            p.label = W.running;
+            p.aside = fill(W.ends, { t: fmtTime(end) });
+            p.sr = W.srRun;
+        } else {
+            p.target = sc.ends ? Date.parse(sc.ends) : end;
+            p.label = W.timeLeft;
+            p.aside = fill(W.ends, { t: fmtTime(end) });
+            p.down = true;
+            p.sr = W.srLeft;
+        }
+        return p;
+    }
+
+    function digitsText(now) {
+        if (plan.lapMode) return null;
+        if (plan.up) return clock(now - plan.start, true);
+        return clock(plan.target - now, false);
+    }
+
+    function renderDigits(now) {
+        const el = $('[data-digits]');
+        if (plan.lapMode) {
+            el.classList.remove('num');
+            el.innerHTML = `${sc.lap.current}<span class="w">/${sc.lap.total}</span>`;
+            return;
+        }
+        el.classList.add('num');
+        const t = digitsText(now);
+        // Separators in white, like the countdown's red ones on paper
+        el.innerHTML = t.replace(/:/g, '<span class="w">:</span>');
+    }
+
+    function renderProg() {
+        const box = $('[data-prog]');
+        if (plan.lapMode) {
+            box.className = 'm-prog';
+            let h = '';
+            for (let i = 1; i <= sc.lap.total; i++) h += `<i${i <= sc.lap.current ? ' class="on"' : ''}></i>`;
+            box.innerHTML = h;
+        } else {
+            box.className = 'm-prog m-prog--bar';
+            box.innerHTML = '<b></b>';
+        }
+    }
+
+    // ---- The ink field
+    function teamImg(r, size) {
+        return `<img class="team-mark" style="--size:${size}px" src="${ROOT}${r.teamLogo}" alt="" width="${size}" height="${size}">`;
+    }
+    function gapCell(r) {
+        if (r.pos !== 1) return r.gap;
+        if (r.gap === 'Leader') return W.leader;
+        return `<small>${W.fastest}</small>${r.gap}`;
+    }
+
+    function renderInk() {
+        const hd = $('[data-ihd]'), body = $('[data-ibody]');
+        if (st.feed) {
+            hd.innerHTML =
+                `<span class="hd-cols cols"><span class="hi" style="grid-column: 1 / 3; display:inline-flex; align-items:center; gap:8px"><span class="ldot ldot--red"></span>${W.top10}${sc.qualiPart ? " · " + sc.qualiPart : ""}</span><span>${W.team}</span><span class="r">${W.gap}</span></span>` +
+                `<span class="hd-simple"><span class="hi" style="display:inline-flex; align-items:center; gap:8px"><span class="ldot ldot--red"></span>${W.top10}</span><span>${W.gap}</span></span>`;
+            body.innerHTML = `<ol class="tt">${sc.top10.map((r) => `
+                <li>
+                    <span class="p">${r.pos}</span>
+                    <span class="m-logo">${teamImg(r, 18)}</span>
+                    <span class="d"><span class="f">${r.firstName}</span><span class="last">${r.lastName}</span><span class="code">${r.code}</span></span>
+                    <span class="t">${teamImg(r, 20)}<span>${r.team}</span></span>
+                    <span class="g num">${gapCell(r)}</span>
+                </li>`).join('')}</ol>`;
+        } else {
+            hd.innerHTML = `<span class="hi">${W.timetable}</span><span>${W.yourTime} · ${tzName()}</span>`;
+            const now = simNow();
+            const liveIdx = D.sessions.indexOf(sess);
+            body.innerHTML = `<ol class="sch">${D.sessions.map((s, i) => {
+                const cls = i < liveIdx ? 'is-done' : i === liveIdx ? 'is-live' : i === liveIdx + 1 ? 'is-next' : '';
+                const tag = i < liveIdx ? '' : i === liveIdx ? `<span class="ldot ldot--on"></span>${W.live}` : i === liveIdx + 1 ? W.next : '';
+                return `<li class="${cls}">
+                    <span class="day lbl">${fmtDay(Date.parse(s.start))}</span>
+                    <span class="nm">${W.sessions[s.key]}</span>
+                    <span class="st lbl">${tag}</span>
+                    <span class="tm num">${fmtTime(Date.parse(s.start))}</span>
+                </li>`;
+            }).join('')}</ol>`;
+        }
+        set('watchText', W.watchText);
+    }
+
+    // ---- Everything that doesn't tick
+    function render(animate) {
+        W = WORDS[st.lang];
+        document.documentElement.lang = st.lang;
+        sc = D.scenarios[st.scenario];
+        sess = D.sessions.find((s) => s.key === sc.session);
+        now0 = Date.parse(sc.now);
+        t0 = performance.now();
+        plan = makePlan();
+        hero.dataset.feed = st.feed ? 'on' : 'off';
+
+        document.querySelectorAll('[data-t]').forEach((e) => { e.textContent = W[e.dataset.t]; });
+        const gpName = st.lang === 'es' ? D.gp.nameEs : D.gp.name;
+        set('liveNow', W.liveNow);
+        set('round', fill(W.round, { r: D.gp.round, n: D.gp.rounds }));
+        set('place', `${gpName} — ${D.gp.circuit}`);
+        set('sprint', D.gp.sprint ? W.sprint : '');
+        set('inProgress', W.inProgress);
+        set('name', W.sessions[sess.key]);
+        set('srLive', W.srLive);
+        set('metricLbl', plan.label);
+        set('metricAside', plan.aside);
+        set('timetableLink', W.timetableLink);
+
+        renderProg();
+        renderInk();
+        renderDigits(simNow());
+        tick(true);
+        fit();
+
+        if (animate === 'feed') {
+            document.querySelectorAll('.side--ink > *').forEach((e) => { e.classList.remove('swap'); void e.offsetWidth; e.classList.add('swap'); });
+        } else if (animate) {
+            hero.style.animation = 'none'; void hero.offsetWidth; hero.style.animation = '';
+        }
+    }
+
+    // ---- The tick: text and one transform, no layout reads
+    let lastMin = -1;
+    function tick(force) {
+        const now = simNow();
+        if (!plan.lapMode) renderDigits(now);
+        const f = Math.min(1, Math.max(0, (now - plan.start) / (plan.end - plan.start)));
+        const bar = $('[data-prog] b');
+        if (bar) bar.style.setProperty('--f', f.toFixed(4));
+
+        const min = Math.floor(now / 60000);
+        if (min === lastMin && !force) return;
+        lastMin = min;
+        // Per minute: "Started N min ago", the screen-reader line, the band
+        set('since', raceLike(sess.key) && !plan.lapMode
+            ? `${fill(W.startedAt, { t: fmtTime(plan.start) })}`
+            : fill(W.startedAgo, { x: ago(now - plan.start) }));
+        if (plan.lapMode) set('metricSr', fill(W.srLap, { c: sc.lap.current, t: sc.lap.total }));
+        else {
+            const ms = plan.up ? now - plan.start : plan.target - now;
+            set('metricSr', `${plan.label}. ${fill(plan.sr, { n: Math.max(0, Math.round(ms / 60000)) })}`);
+        }
+        const nxt = D.sessions.find((s) => Date.parse(s.start) > now);
+        if (nxt) {
+            set('upNextK', W.upNext);
+            set('upNextV', `${W.sessions[nxt.key]} · ${fmtDay(Date.parse(nxt.start))} ${fmtTime(Date.parse(nxt.start))}`);
+            set('upNextW', fill(W.inX, { x: compact(Date.parse(nxt.start) - now) }));
+        } else {
+            set('upNextK', W.upNext);
+            set('upNextV', W.raceResult);
+            set('upNextW', W.afterFlag);
+        }
+    }
+
+    // ---- Fitted display type: measured on render and resize, never in the tick
+    const meas = $('[data-meas]');
+    function textW(text, opts = {}) {
+        meas.style.letterSpacing = opts.ls || '-.015em';
+        meas.style.fontVariantNumeric = opts.tab ? 'tabular-nums lining-nums' : 'normal';
+        meas.textContent = text;
+        return meas.getBoundingClientRect().width / 100;
+    }
+    let CAP = .7;
+    function capRatio() {
+        const s = document.createElement('span');
+        s.className = 'cond';
+        s.style.cssText = 'position:absolute;left:-9999px;top:0;font-size:100px;line-height:1;text-box:trim-both cap alphabetic;display:inline-block';
+        s.textContent = 'H';
+        document.body.appendChild(s);
+        const h = s.getBoundingClientRect().height / 100;
+        s.remove();
+        return h > .4 && h < .95 ? h : .72;
+    }
+    // Every way to break a few words into n lines, keeping words whole
+    function splits(words, n) {
+        if (n === 1) return [[words.join(' ')]];
+        const out = [];
+        for (let i = 1; i <= words.length - n + 1; i++) {
+            for (const rest of splits(words.slice(i), n - 1)) out.push([words.slice(0, i).join(' '), ...rest]);
+        }
+        return out;
+    }
+    const blockH = (n, size, lh) => (n - 1) * lh * size + CAP * size;
+    // Biggest size for a text in a box, trying 1..maxLines lines
+    function best(text, w, h, maxLines, maxSize, lh, opts) {
+        // A number or a short word stays with the word before it ("Practice 1")
+        const words = text.split(/\s+/).reduce((a, w) => {
+            if (a.length && w.length <= 2) a[a.length - 1] += ' ' + w; else a.push(w);
+            return a;
+        }, []);
+        let top = { size: 0, lines: [text] };
+        for (let n = 1; n <= Math.min(maxLines, words.length); n++) {
+            for (const lines of splits(words, n)) {
+                const lw = Math.max(...lines.map((l) => textW(l, opts)));
+                const size = Math.min(w / lw, h / blockH(n, 1, lh), maxSize);
+                if (size > top.size + .5) top = { size, lines };
+            }
+        }
+        return top;
+    }
+    const lines = (arr) => arr.map((l) => `<span class="ln">${l}</span>`).join('');
+
+    function fit() {
+        const stacked = matchMedia('(max-width: 1100px)').matches;
+        const mobile = matchMedia('(max-width: 760px)').matches;
+        const moment = $('[data-moment]');
+        const nameEl = $('.m-name'), nameT = els.name, dig = $('[data-digits]');
+        const cta = $('[data-cta]'), ctaT = $('[data-cta-t]');
+        const Wm = moment.clientWidth - 6;
+        const dText = plan.lapMode ? `${sc.lap.current}/${sc.lap.total}` : digitsText(simNow()).replace(/\d/g, '0');
+        const dW = textW(dText, { ls: '-.01em', tab: !plan.lapMode });
+        const nm = W.sessions[sess.key];
+
+        if (stacked) {
+            // Mobile: name over metric. Tablet: name (cols 1–7) beside metric (8–12).
+            const Wn = (mobile ? moment.clientWidth - 6 : nameEl.clientWidth - 28);
+            const Wd = (mobile ? moment.clientWidth : $('.m-metric').clientWidth) - 6;
+            const capS = mobile ? 132 : 230;
+            const b = best(nm, Wn, capS * CAP * 1.7, 2, capS, .84);
+            const D = mobile ? Math.min(Wd / dW, 84) : Math.min(Wd / dW, 170, Math.max(96, b.size));
+            nameT.innerHTML = lines(b.lines);
+            nameEl.style.setProperty('--s', b.size.toFixed(1) + 'px');
+            dig.style.setProperty('--d', D.toFixed(1) + 'px');
+        } else {
+            // The red field: the session's name and the metric share the
+            // body's height; the name takes what's left after a first share
+            // for the digits, the digits then take any room the name can't use.
+            const H = moment.clientHeight;
+            const lblH = $('.m-lbl').offsetHeight;
+            const fixed = 26 + 20 + 4 + 14 + lblH + 14;
+            const avail = Math.max(120, H - fixed);
+            const Dw = Wm / dW;
+            const D0 = Math.min(Dw, avail * .3 / CAP, window.innerHeight * .22);
+            const b = best(nm, Wm, avail - D0 * CAP, 3, 560, .84);
+            const left = avail - blockH(b.lines.length, b.size, .84) - D0 * CAP;
+            // The digits take what the name leaves, up to the width: with a
+            // long name the clock becomes the co-headline (it is the news)
+            const Dfin = Math.min(Dw, D0 + Math.max(0, left) / CAP);
+            nameT.innerHTML = lines(b.lines);
+            nameEl.style.setProperty('--s', b.size.toFixed(1) + 'px');
+            dig.style.setProperty('--d', Dfin.toFixed(1) + 'px');
+        }
+
+        // The door: one line with the feed; without it, as big as the
+        // ink field's width and ~40 % of its body allow
+        const Wc = cta.clientWidth - 4;
+        const text = `${W.watch} →`;
+        const opts = { ls: '-.005em' };
+        let c;
+        if (stacked) c = best(text, Wc, 999, 1, mobile ? 52 : 76, .86, opts);
+        else if (st.feed) c = best(text, Wc, 999, 1, 76, .86, opts);
+        else {
+            const H = moment.clientHeight - $('.i-cta__sub').offsetHeight - 40;
+            c = best(text, Wc, H * .42, 3, 190, .86, opts);
+        }
+        const ls = c.lines.slice();
+        ls[ls.length - 1] = ls[ls.length - 1].replace(/ →$/, ' <span class="arrow" aria-hidden="true">→</span>');
+        ctaT.innerHTML = lines(ls);
+        ctaT.style.setProperty('--c', c.size.toFixed(1) + 'px');
+    }
+
+    // ---- Switcher
+    function syncSwitcher() {
+        const vals = { scenario: st.scenario, feed: st.feed ? 'on' : 'off', lang: st.lang };
+        document.querySelectorAll('.sw__g').forEach((g) => {
+            g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === vals[g.dataset.g])));
+        });
+        const u = new URLSearchParams({ scenario: st.scenario, feed: vals.feed });
+        if (st.lang !== 'en') u.set('lang', st.lang);
+        history.replaceState(null, '', `?${u}`);
+    }
+    document.querySelector('.sw').addEventListener('click', (e) => {
+        const b = e.target.closest('button');
+        if (!b) return;
+        const g = b.closest('.sw__g').dataset.g;
+        let anim = 'hero';
+        if (g === 'scenario') st.scenario = b.dataset.v;
+        if (g === 'feed') { st.feed = b.dataset.v === 'on'; anim = 'feed'; }
+        if (g === 'lang') st.lang = b.dataset.v;
+        syncSwitcher();
+        render(anim);
+    });
+
+    let rq = 0;
+    addEventListener('resize', () => { cancelAnimationFrame(rq); rq = requestAnimationFrame(fit); });
+
+    // ---- Start
+    if (qs.get('note') === 'off') document.querySelector('.note').hidden = true;
+    if (qs.get('tool') === 'off') document.querySelector('.sw').hidden = true;
+    if (qs.get('anim') === 'off') document.documentElement.classList.add('still');
+    Promise.all([fetch('../data.json').then((r) => r.json()), document.fonts.load('900 100px Archivo').catch(() => null)]).then(([data]) => {
+        D = data;
+        CAP = capRatio();
+        syncSwitcher();
+        render(false);
+        // The fit needs the final layout: once more after the first frame
+        requestAnimationFrame(fit);
+        setInterval(() => tick(false), 1000);
+    });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,590 @@
+{
+  "_note": "Real data. The hero belongs to the Singapore GP weekend (2026). The live classifications are the real ones of the previous weekend (Bahrain GP in Malaysia), as the site preview uses them. All times UTC.",
+  "gp": {
+    "id": "singapore-gp",
+    "name": "Singapore Grand Prix",
+    "nameEs": "Gran Premio de Singapur",
+    "round": 17,
+    "rounds": 23,
+    "sprint": true,
+    "circuit": "Marina Bay Street Circuit",
+    "city": "Singapore",
+    "country": "Singapore",
+    "layout": "img/circuits/thin/marina-bay-street-circuit-layout.svg",
+    "lengthKm": 4.928,
+    "turns": 19,
+    "raceLaps": 62,
+    "lapRecord": {
+      "time": "1:33.808",
+      "driver": "Hamilton",
+      "year": 2025
+    }
+  },
+  "sessions": [
+    {
+      "key": "fp1",
+      "name": "Practice 1",
+      "start": "2026-10-09T09:30:00Z",
+      "end": "2026-10-09T10:30:00Z"
+    },
+    {
+      "key": "sprintQualy",
+      "name": "Sprint Qualifying",
+      "start": "2026-10-09T13:00:00Z",
+      "end": "2026-10-09T14:00:00Z"
+    },
+    {
+      "key": "sprintRace",
+      "name": "Sprint",
+      "start": "2026-10-10T09:30:00Z",
+      "end": "2026-10-10T10:30:00Z"
+    },
+    {
+      "key": "qualifying",
+      "name": "Qualifying",
+      "start": "2026-10-10T13:00:00Z",
+      "end": "2026-10-10T14:00:00Z"
+    },
+    {
+      "key": "race",
+      "name": "Race",
+      "start": "2026-10-11T12:00:00Z",
+      "end": "2026-10-11T14:00:00Z"
+    }
+  ],
+  "scenarios": {
+    "race": {
+      "session": "race",
+      "now": "2026-10-11T12:40:00Z",
+      "lap": {
+        "current": 19,
+        "total": 62
+      },
+      "p1Label": "Leader",
+      "top10": [
+        {
+          "pos": 1,
+          "number": 3,
+          "code": "VER",
+          "firstName": "Max",
+          "lastName": "Verstappen",
+          "teamId": "red-bull-racing",
+          "team": "Red Bull Racing",
+          "teamColor": "#22477A",
+          "teamLogo": "img/teams/red-bull-racing-logo.png",
+          "gap": "Leader"
+        },
+        {
+          "pos": 2,
+          "number": 12,
+          "code": "ANT",
+          "firstName": "Kimi",
+          "lastName": "Antonelli",
+          "teamId": "mercedes",
+          "team": "Mercedes-AMG",
+          "teamColor": "#2BFFDB",
+          "teamLogo": "img/teams/mercedes-logo.png",
+          "gap": "+2.307s"
+        },
+        {
+          "pos": 3,
+          "number": 44,
+          "code": "HAM",
+          "firstName": "Lewis",
+          "lastName": "Hamilton",
+          "teamId": "ferrari",
+          "team": "Ferrari",
+          "teamColor": "#FF0019",
+          "teamLogo": "img/teams/ferrari-logo.png",
+          "gap": "+4.919s"
+        },
+        {
+          "pos": 4,
+          "number": 16,
+          "code": "LEC",
+          "firstName": "Charles",
+          "lastName": "Leclerc",
+          "teamId": "ferrari",
+          "team": "Ferrari",
+          "teamColor": "#FF0019",
+          "teamLogo": "img/teams/ferrari-logo.png",
+          "gap": "+7.258s"
+        },
+        {
+          "pos": 5,
+          "number": 6,
+          "code": "HAD",
+          "firstName": "Isack",
+          "lastName": "Hadjar",
+          "teamId": "red-bull-racing",
+          "team": "Red Bull Racing",
+          "teamColor": "#22477A",
+          "teamLogo": "img/teams/red-bull-racing-logo.png",
+          "gap": "+8.571s"
+        },
+        {
+          "pos": 6,
+          "number": 81,
+          "code": "PIA",
+          "firstName": "Oscar",
+          "lastName": "Piastri",
+          "teamId": "mclaren",
+          "team": "McLaren",
+          "teamColor": "#FF7F00",
+          "teamLogo": "img/teams/mclaren-logo.png",
+          "gap": "+9.454s"
+        },
+        {
+          "pos": 7,
+          "number": 30,
+          "code": "LAW",
+          "firstName": "Liam",
+          "lastName": "Lawson",
+          "teamId": "racing-bulls",
+          "team": "Racing Bulls",
+          "teamColor": "#667DFF",
+          "teamLogo": "img/teams/racing-bulls-logo.png",
+          "gap": "+12.753s"
+        },
+        {
+          "pos": 8,
+          "number": 14,
+          "code": "ALO",
+          "firstName": "Fernando",
+          "lastName": "Alonso",
+          "teamId": "aston-martin",
+          "team": "Aston Martin",
+          "teamColor": "#229971",
+          "teamLogo": "img/teams/aston-martin-logo.png",
+          "gap": "+13.372s"
+        },
+        {
+          "pos": 9,
+          "number": 1,
+          "code": "NOR",
+          "firstName": "Lando",
+          "lastName": "Norris",
+          "teamId": "mclaren",
+          "team": "McLaren",
+          "teamColor": "#FF7F00",
+          "teamLogo": "img/teams/mclaren-logo.png",
+          "gap": "+13.993s"
+        },
+        {
+          "pos": 10,
+          "number": 41,
+          "code": "LIN",
+          "firstName": "Arvid",
+          "lastName": "Lindblad",
+          "teamId": "racing-bulls",
+          "team": "Racing Bulls",
+          "teamColor": "#667DFF",
+          "teamLogo": "img/teams/racing-bulls-logo.png",
+          "gap": "+15.928s"
+        }
+      ]
+    },
+    "qualifying": {
+      "session": "qualifying",
+      "now": "2026-10-10T13:32:00Z",
+      "qualiPart": "Q2",
+      "clockLeft": "07:24",
+      "p1Label": "Fastest",
+      "top10": [
+        {
+          "pos": 1,
+          "number": 3,
+          "code": "VER",
+          "firstName": "Max",
+          "lastName": "Verstappen",
+          "teamId": "red-bull-racing",
+          "team": "Red Bull Racing",
+          "teamColor": "#22477A",
+          "teamLogo": "img/teams/red-bull-racing-logo.png",
+          "gap": "1:35.130"
+        },
+        {
+          "pos": 2,
+          "number": 44,
+          "code": "HAM",
+          "firstName": "Lewis",
+          "lastName": "Hamilton",
+          "teamId": "ferrari",
+          "team": "Ferrari",
+          "teamColor": "#FF0019",
+          "teamLogo": "img/teams/ferrari-logo.png",
+          "gap": "+0.298s"
+        },
+        {
+          "pos": 3,
+          "number": 6,
+          "code": "HAD",
+          "firstName": "Isack",
+          "lastName": "Hadjar",
+          "teamId": "red-bull-racing",
+          "team": "Red Bull Racing",
+          "teamColor": "#22477A",
+          "teamLogo": "img/teams/red-bull-racing-logo.png",
+          "gap": "+0.428s"
+        },
+        {
+          "pos": 4,
+          "number": 12,
+          "code": "ANT",
+          "firstName": "Kimi",
+          "lastName": "Antonelli",
+          "teamId": "mercedes",
+          "team": "Mercedes-AMG",
+          "teamColor": "#2BFFDB",
+          "teamLogo": "img/teams/mercedes-logo.png",
+          "gap": "+0.501s"
+        },
+        {
+          "pos": 5,
+          "number": 16,
+          "code": "LEC",
+          "firstName": "Charles",
+          "lastName": "Leclerc",
+          "teamId": "ferrari",
+          "team": "Ferrari",
+          "teamColor": "#FF0019",
+          "teamLogo": "img/teams/ferrari-logo.png",
+          "gap": "+0.536s"
+        },
+        {
+          "pos": 6,
+          "number": 1,
+          "code": "NOR",
+          "firstName": "Lando",
+          "lastName": "Norris",
+          "teamId": "mclaren",
+          "team": "McLaren",
+          "teamColor": "#FF7F00",
+          "teamLogo": "img/teams/mclaren-logo.png",
+          "gap": "+0.627s"
+        },
+        {
+          "pos": 7,
+          "number": 81,
+          "code": "PIA",
+          "firstName": "Oscar",
+          "lastName": "Piastri",
+          "teamId": "mclaren",
+          "team": "McLaren",
+          "teamColor": "#FF7F00",
+          "teamLogo": "img/teams/mclaren-logo.png",
+          "gap": "+0.632s"
+        },
+        {
+          "pos": 8,
+          "number": 63,
+          "code": "RUS",
+          "firstName": "George",
+          "lastName": "Russell",
+          "teamId": "mercedes",
+          "team": "Mercedes-AMG",
+          "teamColor": "#2BFFDB",
+          "teamLogo": "img/teams/mercedes-logo.png",
+          "gap": "+0.741s"
+        },
+        {
+          "pos": 9,
+          "number": 10,
+          "code": "GAS",
+          "firstName": "Pierre",
+          "lastName": "Gasly",
+          "teamId": "alpine",
+          "team": "Alpine",
+          "teamColor": "#006FBA",
+          "teamLogo": "img/teams/alpine-logo.png",
+          "gap": "+2.080s"
+        },
+        {
+          "pos": 10,
+          "number": 5,
+          "code": "BOR",
+          "firstName": "Gabriel",
+          "lastName": "Bortoleto",
+          "teamId": "audi",
+          "team": "Audi",
+          "teamColor": "#FF2E2E",
+          "teamLogo": "img/teams/audi-logo.png",
+          "gap": "+2.543s"
+        }
+      ]
+    },
+    "qualiBreak": {
+      "session": "qualifying",
+      "now": "2026-10-10T13:21:00Z",
+      "qualiPart": "Q2",
+      "between": true,
+      "nextPartIn": "04:00",
+      "p1Label": "Fastest",
+      "top10": [
+        {
+          "pos": 1,
+          "number": 3,
+          "code": "VER",
+          "firstName": "Max",
+          "lastName": "Verstappen",
+          "teamId": "red-bull-racing",
+          "team": "Red Bull Racing",
+          "teamColor": "#22477A",
+          "teamLogo": "img/teams/red-bull-racing-logo.png",
+          "gap": "1:35.130"
+        },
+        {
+          "pos": 2,
+          "number": 44,
+          "code": "HAM",
+          "firstName": "Lewis",
+          "lastName": "Hamilton",
+          "teamId": "ferrari",
+          "team": "Ferrari",
+          "teamColor": "#FF0019",
+          "teamLogo": "img/teams/ferrari-logo.png",
+          "gap": "+0.298s"
+        },
+        {
+          "pos": 3,
+          "number": 6,
+          "code": "HAD",
+          "firstName": "Isack",
+          "lastName": "Hadjar",
+          "teamId": "red-bull-racing",
+          "team": "Red Bull Racing",
+          "teamColor": "#22477A",
+          "teamLogo": "img/teams/red-bull-racing-logo.png",
+          "gap": "+0.428s"
+        },
+        {
+          "pos": 4,
+          "number": 12,
+          "code": "ANT",
+          "firstName": "Kimi",
+          "lastName": "Antonelli",
+          "teamId": "mercedes",
+          "team": "Mercedes-AMG",
+          "teamColor": "#2BFFDB",
+          "teamLogo": "img/teams/mercedes-logo.png",
+          "gap": "+0.501s"
+        },
+        {
+          "pos": 5,
+          "number": 16,
+          "code": "LEC",
+          "firstName": "Charles",
+          "lastName": "Leclerc",
+          "teamId": "ferrari",
+          "team": "Ferrari",
+          "teamColor": "#FF0019",
+          "teamLogo": "img/teams/ferrari-logo.png",
+          "gap": "+0.536s"
+        },
+        {
+          "pos": 6,
+          "number": 1,
+          "code": "NOR",
+          "firstName": "Lando",
+          "lastName": "Norris",
+          "teamId": "mclaren",
+          "team": "McLaren",
+          "teamColor": "#FF7F00",
+          "teamLogo": "img/teams/mclaren-logo.png",
+          "gap": "+0.627s"
+        },
+        {
+          "pos": 7,
+          "number": 81,
+          "code": "PIA",
+          "firstName": "Oscar",
+          "lastName": "Piastri",
+          "teamId": "mclaren",
+          "team": "McLaren",
+          "teamColor": "#FF7F00",
+          "teamLogo": "img/teams/mclaren-logo.png",
+          "gap": "+0.632s"
+        },
+        {
+          "pos": 8,
+          "number": 63,
+          "code": "RUS",
+          "firstName": "George",
+          "lastName": "Russell",
+          "teamId": "mercedes",
+          "team": "Mercedes-AMG",
+          "teamColor": "#2BFFDB",
+          "teamLogo": "img/teams/mercedes-logo.png",
+          "gap": "+0.741s"
+        },
+        {
+          "pos": 9,
+          "number": 10,
+          "code": "GAS",
+          "firstName": "Pierre",
+          "lastName": "Gasly",
+          "teamId": "alpine",
+          "team": "Alpine",
+          "teamColor": "#006FBA",
+          "teamLogo": "img/teams/alpine-logo.png",
+          "gap": "+2.080s"
+        },
+        {
+          "pos": 10,
+          "number": 5,
+          "code": "BOR",
+          "firstName": "Gabriel",
+          "lastName": "Bortoleto",
+          "teamId": "audi",
+          "team": "Audi",
+          "teamColor": "#FF2E2E",
+          "teamLogo": "img/teams/audi-logo.png",
+          "gap": "+2.543s"
+        }
+      ]
+    },
+    "practice": {
+      "session": "fp1",
+      "now": "2026-10-09T09:48:00Z",
+      "ends": "2026-10-09T10:30:00Z",
+      "p1Label": "Fastest",
+      "top10": [
+        {
+          "pos": 1,
+          "number": 3,
+          "code": "VER",
+          "firstName": "Max",
+          "lastName": "Verstappen",
+          "teamId": "red-bull-racing",
+          "team": "Red Bull Racing",
+          "teamColor": "#22477A",
+          "teamLogo": "img/teams/red-bull-racing-logo.png",
+          "gap": "1:37.520"
+        },
+        {
+          "pos": 2,
+          "number": 63,
+          "code": "RUS",
+          "firstName": "George",
+          "lastName": "Russell",
+          "teamId": "mercedes",
+          "team": "Mercedes-AMG",
+          "teamColor": "#2BFFDB",
+          "teamLogo": "img/teams/mercedes-logo.png",
+          "gap": "+0.383s"
+        },
+        {
+          "pos": 3,
+          "number": 6,
+          "code": "HAD",
+          "firstName": "Isack",
+          "lastName": "Hadjar",
+          "teamId": "red-bull-racing",
+          "team": "Red Bull Racing",
+          "teamColor": "#22477A",
+          "teamLogo": "img/teams/red-bull-racing-logo.png",
+          "gap": "+0.783s"
+        },
+        {
+          "pos": 4,
+          "number": 16,
+          "code": "LEC",
+          "firstName": "Charles",
+          "lastName": "Leclerc",
+          "teamId": "ferrari",
+          "team": "Ferrari",
+          "teamColor": "#FF0019",
+          "teamLogo": "img/teams/ferrari-logo.png",
+          "gap": "+0.847s"
+        },
+        {
+          "pos": 5,
+          "number": 12,
+          "code": "ANT",
+          "firstName": "Kimi",
+          "lastName": "Antonelli",
+          "teamId": "mercedes",
+          "team": "Mercedes-AMG",
+          "teamColor": "#2BFFDB",
+          "teamLogo": "img/teams/mercedes-logo.png",
+          "gap": "+1.060s"
+        },
+        {
+          "pos": 6,
+          "number": 44,
+          "code": "HAM",
+          "firstName": "Lewis",
+          "lastName": "Hamilton",
+          "teamId": "ferrari",
+          "team": "Ferrari",
+          "teamColor": "#FF0019",
+          "teamLogo": "img/teams/ferrari-logo.png",
+          "gap": "+1.070s"
+        },
+        {
+          "pos": 7,
+          "number": 10,
+          "code": "GAS",
+          "firstName": "Pierre",
+          "lastName": "Gasly",
+          "teamId": "alpine",
+          "team": "Alpine",
+          "teamColor": "#006FBA",
+          "teamLogo": "img/teams/alpine-logo.png",
+          "gap": "+1.195s"
+        },
+        {
+          "pos": 8,
+          "number": 30,
+          "code": "LAW",
+          "firstName": "Liam",
+          "lastName": "Lawson",
+          "teamId": "racing-bulls",
+          "team": "Racing Bulls",
+          "teamColor": "#667DFF",
+          "teamLogo": "img/teams/racing-bulls-logo.png",
+          "gap": "+1.586s"
+        },
+        {
+          "pos": 9,
+          "number": 41,
+          "code": "LIN",
+          "firstName": "Arvid",
+          "lastName": "Lindblad",
+          "teamId": "racing-bulls",
+          "team": "Racing Bulls",
+          "teamColor": "#667DFF",
+          "teamLogo": "img/teams/racing-bulls-logo.png",
+          "gap": "+1.677s"
+        },
+        {
+          "pos": 10,
+          "number": 27,
+          "code": "HUL",
+          "firstName": "Nico",
+          "lastName": "Hülkenberg",
+          "teamId": "audi",
+          "team": "Audi",
+          "teamColor": "#FF2E2E",
+          "teamLogo": "img/teams/audi-logo.png",
+          "gap": "+1.691s"
+        }
+      ]
+    }
+  },
+  "optionalFeedFields": {
+    "_note": "NOT in the planned endpoint today. You may use at most these, marked in your note as \"needs feed field X\". Values are examples.",
+    "trackStatus": [
+      "green",
+      "yellow",
+      "safetyCar",
+      "vsc",
+      "red"
+    ],
+    "weather": {
+      "airC": 30.1,
+      "trackC": 41.6,
+      "rain": false
+    }
+  }
+}

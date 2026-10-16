@@ -40,19 +40,16 @@ const moments = [
 ].filter((m) => m.label === 'Now' || m.now);
 
 // The live top 10 needs the relay (phase 4). Here it's filled with the last
-// race's real classification so the layout can be judged; the label says so.
-const tower = hero.last && {
-    label: `${i18n.t.hero.preview} · ${hero.last.gp.name}`,
-    rows: hero.last.rows.map((row) => ({
-        pos: row.pos,
-        firstName: row.firstName,
-        lastName: row.lastName,
-        team: row.team,
-        teamColor: row.teamColor,
-        teamLogo: row.teamLogo,
-        gap: row.pos === 1 ? i18n.t.table.leader : row.result,
-    })),
-};
+// race's real classification so the layout can be judged.
+const tower = hero.last?.rows.map((row) => ({
+    pos: row.pos,
+    firstName: row.firstName,
+    lastName: row.lastName,
+    team: row.team,
+    teamColor: row.teamColor,
+    teamLogo: row.teamLogo,
+    gap: row.pos === 1 ? i18n.t.table.leader : row.result,
+}));
 ---
 
 <Base title="Home preview | F1 Hub" description="Preview of the new F1 Hub homepage." noindex>

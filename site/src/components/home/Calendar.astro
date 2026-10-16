@@ -20,8 +20,10 @@ const { poster } = Astro.props;
 const { season, rounds } = poster;
 const { t, intl } = useI18n(Astro.currentLocale);
 const c = t.calendar;
-const first = rounds[0];
-const last = rounds[rounds.length - 1];
+// The first and last rounds that are run (a cancelled one has no number)
+const run = rounds.filter((r) => r.round !== null);
+const first = run[0];
+const last = run[run.length - 1];
 const month = (iso: string | null) =>
     iso ? new Date(iso).toLocaleDateString(intl, { month: 'long', timeZone: 'UTC' }) : '';
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -58,7 +60,7 @@ const upcoming = (r: PosterRound) => r.status === 'next' || r.status === 'upcomi
         </header>
 
         <div class="prog" style={`--rounds: ${rounds.length}`} aria-hidden="true">
-            {rounds.map((r) => <i class={`prog--${r.status}`} title={`R${r.round}`}></i>)}
+            {rounds.map((r) => <i class={`prog--${r.status}`} title={r.round !== null ? `R${r.round}` : c.cancelledRound}></i>)}
         </div>
         {first && last && (
             <div class="prog-k lbl" aria-hidden="true">
@@ -73,7 +75,8 @@ const upcoming = (r: PosterRound) => r.status === 'next' || r.status === 'upcomi
                     <a href={href(`grandsprix/grandprix.html?gp=${r.id}`)}>
                         {/* Row 1, the plate: the number in its corner, the drawing beside it */}
                         <span class="rd__top">
-                            <span class="rd__no" aria-hidden="true">{pad(r.round)}</span>
+                            {/* A cancelled Grand Prix has no round, so no number (owner, 14/10) */}
+                            {r.round !== null && <span class="rd__no" aria-hidden="true">{pad(r.round)}</span>}
                             {r.sprint && <span class="rd__tag lbl">{c.sprint}</span>}
                             {r.layout
                                 ? <img class="rd__trk" src={href(r.layout)} alt="" loading="lazy" decoding="async" />

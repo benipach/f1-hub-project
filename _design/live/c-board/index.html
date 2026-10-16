@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#121212">
+<title>Live hero · C · Running order</title>
+<style>
+@font-face {
+    font-family: 'Archivo';
+    src: url('../../../node_modules/@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2') format('woff2');
+    font-weight: 100 900;
+    font-stretch: 62% 125%;
+}
+
+/* ---- Tokens (DESIGN.md §2) ------------------------------------------------ */
+:root {
+    --paper: #EFEAE0;
+    --paper-2: #E6E0D3;
+    --ink: #121212;
+    --ink-2: #1E1E1E;
+    --mute: #66625A;
+    --mute-ink: #A39E93;
+    --red: #E10600;
+    --red-ink: #B30500;
+    --red-hi: #FF5A4E;
+    --gut: 32px;
+    --gap: 16px;
+    --nav: 56px;
+    --max: 1440px;
+    --font: 'Archivo', system-ui, sans-serif;
+    /* Hairlines on the red field: white, translucent between rows */
+    --rule-red: rgba(255, 255, 255, .42);
+}
+@media (max-width: 760px) {
+    :root { --gut: 16px; --gap: 12px; }
+}
+
+/* ---- Base (site/src/styles/base.css) -------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; scrollbar-width: none; }
+html::-webkit-scrollbar { display: none; }
+body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+p, ol, h1, h2 { margin: 0; }
+ol { padding: 0; list-style: none; }
+:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+/* On the red field the focus ring goes ink, or it would vanish */
+.hero :focus-visible { outline-color: var(--ink); }
+.sr {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+.lbl {
+    font-size: 11px;
+    font-weight: 700;
+    font-stretch: 115%;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    line-height: 1.3;
+}
+.cond {
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    line-height: .86;
+    letter-spacing: -.005em;
+}
+.num { font-variant-numeric: tabular-nums lining-nums; }
+.wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 var(--gut); }
+.g12 { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); }
+.ldot { flex: none; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #5a5650; }
+.ldot--on { background: #fff; animation: beat 1.1s ease-in-out infinite; }
+.ldot--red { background: var(--red); animation: beat 1.1s ease-in-out infinite; }
+@keyframes beat { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+.arrow { display: inline-block; transition: all .2s ease; }
+a:hover .arrow { transform: translateX(6px); }
+.btn {
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 14px 20px; border: 0;
+    font-size: 12px; font-weight: 700; font-stretch: 115%;
+    text-transform: uppercase; letter-spacing: .09em;
+    text-decoration: none; cursor: pointer;
+    transition: all .2s ease;
+}
+.btn--line { --line: var(--paper); background: transparent; color: #fff; box-shadow: inset 0 0 0 1px var(--line); }
+.btn--line:hover { background: var(--paper); color: var(--ink); }
+
+/* ---- Designer's note (removable) ------------------------------------------ */
+.note {
+    position: relative;
+    padding: 10px var(--gut) 11px;
+    padding-right: 56px;
+    background: var(--paper-2);
+    color: var(--mute);
+    font-size: 12.5px;
+    line-height: 1.45;
+}
+.note b { color: var(--ink); }
+.note p + p { margin-top: 3px; }
+.note button {
+    position: absolute; top: 6px; right: 12px;
+    width: 32px; height: 32px;
+    border: 0; background: none; cursor: pointer;
+    color: var(--mute); font-size: 18px; line-height: 1;
+}
+.note[hidden] { display: none; }
+
+/* ---- Navbar ------------------------------------------------------------- */
+.nav { position: sticky; top: 0; z-index: 20; height: var(--nav); background: var(--ink); color: #fff; }
+.nav .wrap { display: flex; align-items: center; gap: 18px; height: 100%; }
+.nav__logo img { height: 24px; width: auto; }
+.nav__season { padding-left: 18px; border-left: 1px solid #3a3a3a; color: var(--mute-ink); }
+.nav__chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-left: auto; padding: 8px 12px;
+    background: var(--red); color: #fff; text-decoration: none;
+}
+.nav__burger {
+    display: grid; place-content: center; gap: 6px;
+    width: 44px; height: 44px; margin-right: -10px;
+    border: 0; background: none; cursor: pointer;
+}
+.nav__burger span { display: block; width: 24px; height: 2px; background: #fff; }
+@media (max-width: 760px) { .nav__season { display: none; } }
+
+/* ==== The live hero ======================================================== */
+.hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - var(--nav));
+    background: var(--red);
+    color: #fff;
+    overflow: hidden;
+}
+.hero.wipe { animation: wipe .7s ease both; }
+@keyframes wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+.hero > .wrap { flex: 1; display: flex; flex-direction: column; }
+
+/* Strip: LIVE is its stamp now, not a giant word */
+.strip { display: flex; flex-wrap: wrap; border-bottom: 1px solid currentColor; }
+.strip > * { padding: 15px 18px; border-left: 1px solid currentColor; }
+.strip > *:first-child { padding-left: 0; border-left: 0; }
+.strip > .grow { flex: 1; }
+.stamp {
+    display: inline-flex; align-items: center; gap: 9px;
+    align-self: center;
+    margin: 8px 18px 8px 0;
+    padding: 7px 12px 7px 11px !important;
+    background: #fff; color: var(--ink);
+}
+.stamp + * { border-left: 1px solid currentColor; }
+
+/* The stage: the board (the order) and the head (what's on, how far in,
+   and the door). Three rows shared by both: the 4 px rules, the main
+   block, and the bottom row where the door sits beside the order's tail. */
+.stage {
+    flex: 1;
+    grid-template-rows: auto 1fr auto;
+    padding: 22px 0 28px;
+}
+.hd {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+    padding: 11px 0 12px;
+    border-top: 4px solid #fff;
+}
+.hd--head { grid-column: 1 / 5; grid-row: 1; }
+.hd--board { grid-column: 5 / 13; grid-row: 1; }
+
+/* Feed / timetable variants of the same slot */
+.hero[data-feed="on"] .only-tt,
+.hero[data-feed="off"] .only-feed { display: none; }
+
+/* ---- Head: session, readout ---------------------------------------------- */
+.head {
+    grid-column: 1 / 5;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 6px 0 22px;
+    container-type: inline-size;
+}
+/* The headline: the session's name with the feed; without it the board
+   names the session, so the headline names the Grand Prix instead. Both
+   stay laid out in the same cell, so the swap doesn't move anything. */
+.head__name { display: grid; color: var(--ink); }
+.head__name > [aria-hidden] { grid-area: 1 / 1; align-self: start; transition: all .3s ease; }
+.hero[data-feed="on"] .nm-gp,
+.hero[data-feed="off"] .nm-ses { opacity: 0; visibility: hidden; }
+/* Each fits its longest word in the column (--w, set by the script), in any language */
+.nm-ses { font-size: min(clamp(60px, min(11vw, 18vh), 172px), calc(100cqi / (var(--w, 6) * .5))); }
+.nm-gp { font-size: min(clamp(48px, min(6.6vw, 11vh), 100px), calc(100cqi / (var(--w, 9) * .52))); }
+.read { display: grid; }
+.read > * { grid-area: 1 / 1; align-self: end; transition: all .3s ease; }
+.hero[data-feed="on"] .read__tt,
+.hero[data-feed="off"] .read__feed { opacity: 0; visibility: hidden; }
+.read__k { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.read__v {
+    font-size: min(clamp(84px, min(11vw, 18.5vh), 176px), calc(100cqi / (var(--rc, 5) * .5)));
+    line-height: .78;
+    letter-spacing: -.01em;
+    white-space: nowrap;
+}
+.read__v .of { color: var(--ink); font-size: .5em; letter-spacing: 0; }
+.read__sub { margin-top: 14px; font-size: 18px; font-weight: 600; line-height: 1.3; }
+
+/* ---- Door: the main action, sharing the bottom row with the order -------- */
+.door {
+    grid-column: 1 / 5;
+    grid-row: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 172px;
+    padding: 18px 20px 20px;
+    background: var(--ink);
+    color: #fff;
+    text-decoration: none;
+    transition: all .2s ease;
+}
+.door__top { display: flex; justify-content: space-between; align-items: center; }
+.door__top .lbl { display: inline-flex; align-items: center; gap: 8px; }
+.door .arrow { font-size: 40px; line-height: 1; }
+.door b { display: block; font-size: clamp(38px, 3.6vw, 56px); }
+.door small { display: block; margin-top: 8px; color: var(--mute-ink); font-size: 13px; line-height: 1.35; transition: all .2s ease; }
+/* Hover goes paper: it contrasts with the red field around it */
+.door:hover { background: var(--paper); color: var(--ink); }
+.door:hover small { color: var(--mute); }
+
+/* ---- Board ---------------------------------------------------------------- */
+.board {
+    grid-column: 5 / 13;
+    grid-row: 2 / 4;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: subgrid;
+}
+/* Both contents stay laid out (one invisible), so the feed arriving or
+   dropping swaps what's in the board without moving its frame. */
+.layer { grid-column: 1; grid-row: 1 / 3; transition: all .3s ease; }
+.hero[data-feed="on"] .layer--tt,
+.hero[data-feed="off"] .layer--feed { opacity: 0; visibility: hidden; }
+.layer--feed { display: grid; grid-template-rows: subgrid; }
+
+/* Top three: the poster */
+.top3 { grid-row: 1; display: grid; grid-template-rows: 1.32fr 1fr 1fr; }
+.pod {
+    display: grid;
+    grid-template-columns: var(--posw) var(--tile) minmax(0, 1fr) auto;
+    align-items: end;
+    column-gap: 20px;
+    padding: 10px 0 12px;
+    border-bottom: 1px solid var(--rule-red);
+    --posw: clamp(80px, 8vw, 116px);
+    --tile: 48px;
+}
+.pod:last-child { border-bottom-color: #fff; }
+.pod__n {
+    color: var(--ink);
+    font-size: clamp(76px, min(8.2vw, 13vh), 124px);
+    line-height: .73;
+    letter-spacing: -.03em;
+    margin-left: -.04em;
+}
+.pod--1 .pod__n { font-size: clamp(110px, min(13vw, 21vh), 200px); }
+.tile {
+    display: grid; place-items: center;
+    width: var(--tile); height: var(--tile);
+    background: var(--paper);
+}
+.tile img { width: 72%; height: 72%; object-fit: contain; }
+.pod .tile { margin-bottom: 2px; }
+.pod__first .tile { display: none; }
+.pod--1 { --tile: 56px; }
+.pod__who { container-type: inline-size; min-width: 0; }
+.pod__first { display: block; margin-bottom: 6px; font-size: 16px; font-weight: 500; line-height: 1; }
+.pod__last {
+    display: block;
+    font-size: min(clamp(40px, min(4.6vw, 7.6vh), 72px), calc(100cqi / (var(--chars) * .47)));
+    white-space: nowrap;
+}
+.pod--1 .pod__last { font-size: min(clamp(54px, min(6.6vw, 11vh), 104px), calc(100cqi / (var(--chars) * .47))); }
+.pod__gap { text-align: right; }
+.pod__gap .lbl { display: block; margin-bottom: 8px; }
+.pod__gap b { display: block; text-transform: none; font-size: clamp(26px, min(2.6vw, 4.4vh), 40px); line-height: .86; }
+.pod__gap b.word { text-transform: uppercase; }
+.pod--1 .pod__gap b.word { color: var(--ink); font-size: clamp(30px, min(3.2vw, 5.4vh), 50px); }
+
+/* Fourth to tenth: a ruled list in two columns, the last cell is the way on */
+.rest {
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(4, auto);
+    grid-auto-flow: column;
+    column-gap: 32px;
+    align-content: start;
+}
+.row {
+    display: grid;
+    grid-template-columns: 38px 24px minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 12px;
+    padding: 8px 0 9px;
+    border-bottom: 1px solid var(--rule-red);
+}
+.row__n { color: var(--ink); font-size: 28px; line-height: .8; }
+.row .tile { --tile: 24px; }
+.row__nm { font-size: 28px; line-height: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-block: 2px; }
+.row__gap { font-size: 15px; font-weight: 700; }
+.more {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 8px 0 9px;
+    border-bottom: 1px solid var(--rule-red);
+    text-decoration: none;
+    transition: all .2s ease;
+}
+.more:hover { color: var(--ink); }
+
+/* Without feed: the weekend's running order */
+.layer--tt { display: flex; flex-direction: column; }
+.ses {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: clamp(80px, 8vw, 116px) minmax(0, 1fr) auto;
+    align-items: end;
+    column-gap: 20px;
+    padding: 10px 0 12px;
+    border-bottom: 1px solid var(--rule-red);
+}
+.ses:last-child { border-bottom-color: #fff; }
+.ses__when .lbl { display: block; margin-bottom: 6px; }
+.ses__when b { display: block; font-size: 30px; line-height: .8; }
+.ses__nm { container-type: inline-size; min-width: 0; }
+.ses__nm b { display: block; font-size: min(clamp(40px, min(4.6vw, 7.4vh), 68px), calc(100cqi / (var(--chars) * .47))); white-space: nowrap; }
+.ses__st { text-align: right; }
+.chip { display: inline-flex; align-items: center; gap: 8px; padding: 6px 9px; background: #fff; color: var(--red-ink); }
+/* Done: in ink, smaller, crossed off */
+.ses--done { flex-grow: .6; }
+/* Ink only on the large type (3.8:1 on red passes for large text); the
+   small labels stay white (5:1) */
+.ses--done .ses__nm b, .ses--done .ses__when b { color: var(--ink); }
+.ses--done .ses__nm b { font-size: min(clamp(28px, min(3vw, 5vh), 46px), calc(100cqi / (var(--chars) * .47))); }
+.ses--done .ses__when b { font-size: 22px; }
+.ses--done .ses__nm b span { text-decoration: line-through; text-decoration-thickness: 3px; }
+/* Live: the big one, with the beating dot */
+.ses--live { flex-grow: 2.4; border-bottom-color: #fff; }
+.ses--live:not(:first-child) { border-top: 4px solid #fff; margin-top: -1px; }
+.ses--live .ses__nm b {
+    font-size: min(clamp(72px, min(10vw, 16.5vh), 156px), calc(100cqi / (var(--w) * .47)));
+    white-space: normal;
+}
+.ses--live .ses__when b { font-size: clamp(30px, 3vw, 44px); }
+.ses--live .ses__now { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.ses--live .ses__nm .sub { display: block; margin-top: 12px; font-size: 18px; font-weight: 600; line-height: 1.3; }
+.ses--live .ses__nm .sub:empty { display: none; }
+
+/* ---- Band ------------------------------------------------------------------ */
+.band { background: var(--ink); color: #fff; }
+.band__in { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; min-height: 76px; padding-top: 12px; padding-bottom: 12px; }
+.band__k { color: var(--mute-ink); }
+.band__v { font-size: 30px; line-height: 1; }
+.band__soft { color: var(--mute-ink); font-size: 15px; font-weight: 600; }
+.band__rule { flex: 1; min-width: 24px; height: 1px; background: #3a3a3a; }
+
+/* ---- Next section (paper calendar) -------------------------------------- */
+.cal { padding: 112px 0 120px; background: var(--paper); }
+.cal .lbl { color: var(--mute); margin-bottom: 18px; }
+.cal h2 { font-size: clamp(72px, 12vw, 196px); }
+
+/* ---- Switcher (mockup only) ---------------------------------------------- */
+.sw {
+    position: fixed; left: 50%; bottom: 14px; z-index: 30;
+    transform: translateX(-50%);
+    display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px;
+    max-width: calc(100vw - 24px);
+    padding: 8px 12px;
+    background: var(--ink); color: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+}
+.sw__g { display: flex; align-items: center; gap: 2px; }
+.sw__g > span { margin-right: 6px; color: var(--mute-ink); }
+.sw button {
+    padding: 7px 8px; border: 0; background: none; cursor: pointer;
+    color: var(--mute-ink); transition: all .2s ease;
+}
+.sw button:hover { color: #fff; }
+.sw button[aria-pressed="true"] { background: #fff; color: var(--ink); }
+.sw__hide { margin-left: 4px; font-size: 14px; }
+.sw[data-min] .sw__g { display: none; }
+.sw[hidden] { display: none; }
+
+/* ==== ≤ 1100: one column; the head on top, the door, then the order ====== */
+@media (max-width: 1100px) {
+    .hero { min-height: 0; }
+    .stage { grid-template-rows: none; row-gap: 0; padding-bottom: 32px; }
+    .hd--head { grid-column: 1 / 13; grid-row: 1; }
+    .head {
+        grid-column: 1 / 13; grid-row: 2;
+        flex-direction: row; align-items: flex-end; gap: 24px;
+        padding: 6px 0 22px;
+    }
+    .head__name { flex: 1; min-width: 0; }
+    .hero[data-feed="on"] .nm-gp,
+    .hero[data-feed="off"] .nm-ses { display: none; }
+    .nm-ses { font-size: min(clamp(60px, 10vw, 112px), calc(55cqi / (var(--w, 6) * .47))); }
+    .nm-gp { font-size: min(clamp(40px, 6.4vw, 72px), calc(55cqi / (var(--w, 9) * .47))); }
+    .read { flex: none; text-align: right; }
+    .read__k { justify-content: flex-end; }
+    .read__v { font-size: clamp(76px, 12vw, 132px); }
+    .door {
+        grid-column: 1 / 13; grid-row: 3;
+        flex-direction: row; align-items: center; min-height: 0;
+        padding: 18px 20px;
+    }
+    .door__top { order: 2; gap: 18px; }
+    .door b { font-size: clamp(32px, 4.4vw, 46px); }
+    .door small { display: none; }
+    .hd--board { grid-column: 1 / 13; grid-row: 4; margin-top: 32px; }
+    .board { grid-column: 1 / 13; grid-row: 5; grid-template-rows: none; display: block; }
+    .layer { animation: fade .3s ease both; }
+    .hero[data-feed="on"] .layer--tt,
+    .hero[data-feed="off"] .layer--feed { display: none; }
+    .layer--feed { display: block; }
+    .top3 { display: block; }
+    .pod { padding: 14px 0 14px; }
+    .pod--1 .pod__n { font-size: clamp(110px, 17vw, 170px); }
+    .pod__n { font-size: clamp(72px, 11vw, 110px); }
+    .ses { padding: 14px 0; }
+    .ses--live .ses__nm b { font-size: min(clamp(64px, 13vw, 130px), calc(100cqi / (var(--w) * .47))); }
+}
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* ==== ≤ 760: phone ======================================================== */
+@media (max-width: 760px) {
+    .strip > * { padding: 11px 12px; }
+    .stamp { margin: 6px 12px 6px 0; }
+    .strip > .grow { flex-basis: 100%; order: 3; padding-left: 0; border-top: 1px solid currentColor; border-left: 0; }
+    .strip > .sprint { display: none; }
+    .stage { padding: 16px 0 24px; }
+    .hd { padding: 9px 0 10px; }
+    /* The name on its own line, then the readout as one row: the big
+       number left, its label and the "started" line beside it */
+    .head { flex-direction: column; align-items: stretch; gap: 14px; padding: 4px 0 16px; }
+    .nm-ses { font-size: min(72px, calc(100cqi / (var(--w, 6) * .5))); }
+    .nm-gp { font-size: min(40px, calc(100cqi / (var(--w, 9) * .52))); }
+    .read { text-align: left; }
+    .read > * {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-rows: 1fr auto;
+        column-gap: 14px;
+        align-items: end;
+    }
+    .read__v { grid-column: 1; grid-row: 1 / 3; font-size: clamp(58px, 19vw, 80px); }
+    .read__k { grid-column: 2; grid-row: 1; justify-content: flex-start; margin-bottom: 6px; }
+    .read__sub { grid-column: 2; grid-row: 2; margin-top: 0; font-size: 14px; }
+    .door { padding: 14px 16px; }
+    .door b { font-size: 30px; }
+    .door .arrow { font-size: 30px; }
+    .door__top .lbl { display: none; }
+    .hd--board { margin-top: 24px; }
+
+    .pod { --posw: 54px; --tile: 30px; column-gap: 12px; padding: 10px 0; grid-template-columns: var(--posw) minmax(0, 1fr) auto; }
+    .pod--1 { --tile: 30px; }
+    .pod .tile { display: none; }
+    .pod__first { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 14px; }
+    .pod__first .tile { display: grid; --tile: 22px; margin: 0; }
+    .pod--1 .pod__n { font-size: 96px; }
+    .pod__n { font-size: 68px; }
+    .pod--1 .pod__last { font-size: min(48px, calc(100cqi / (var(--chars) * .47))); }
+    .pod__last { font-size: min(36px, calc(100cqi / (var(--chars) * .47))); }
+    .pod__gap b { font-size: 22px; }
+    .pod--1 .pod__gap b.word { font-size: 26px; }
+    .pod__gap .lbl { margin-bottom: 6px; }
+
+    .rest { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; }
+    .row { grid-template-columns: 30px 20px minmax(0, 1fr) auto; column-gap: 10px; padding: 6px 0 7px; }
+    .row .tile { --tile: 20px; }
+    .row__n, .row__nm { font-size: 22px; }
+    .row__gap { font-size: 14px; }
+
+    .ses { grid-template-columns: 62px minmax(0, 1fr) auto; column-gap: 12px; padding: 10px 0; }
+    .ses__when b { font-size: 22px; }
+    .ses__when .lbl { margin-bottom: 4px; }
+    .ses__nm b { font-size: min(34px, calc(100cqi / (var(--chars) * .47))); }
+    .ses--done .ses__nm b { font-size: min(24px, calc(100cqi / (var(--chars) * .47))); }
+    .ses--done .ses__when b { font-size: 18px; }
+    .ses--live .ses__nm b { font-size: min(64px, calc(100cqi / (var(--w) * .47))); }
+    .ses--live .ses__when b { font-size: 26px; }
+    .ses--live .ses__nm .sub { font-size: 14px; }
+    .ses__st .chip { padding: 5px 7px; }
+
+    .band__in { gap: 8px 14px; padding-top: 16px; padding-bottom: 16px; }
+    .band__v { font-size: 26px; }
+    .band__rule { display: none; }
+    .band .btn { justify-content: space-between; width: 100%; }
+    .cal { padding: 72px 0 80px; }
+    .sw { bottom: 8px; gap: 2px 10px; padding: 6px 8px; }
+    .sw__g > span { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<aside class="note" id="note">
+    <p><b>C · Running order.</b> The order is the poster: with the feed, the top 10 is the hero's graphic (1, 2, 3 in giant type, 4–10 as a ruled list); without it, the weekend's timetable fills the same board, crossed off down to the live session.</p>
+    <p><b>Changed vs today:</b> the giant LIVE becomes the strip's stamp (it said the obvious and took the most room); the session and its lap or clock get a headline column on the left, with "Watch live timing" anchored under it, sharing the board's top rule and bottom row, so nothing floats; the frame is the same with and without feed. <b>Feed fields:</b> none new (top 10, lap, Q part and clock, as planned).</p>
+    <button type="button" aria-label="Hide note" onclick="this.parentElement.hidden = true">×</button>
+</aside>
+
+<header class="nav">
+    <div class="wrap">
+        <a class="nav__logo" href="#"><img src="../../../img/logo.png" alt="F1 Hub" width="120" height="24"></a>
+        <span class="nav__season lbl">Season 2026</span>
+        <a class="nav__chip lbl" href="../../../live.html"><span class="ldot ldot--on"></span>Live</a>
+        <button class="nav__burger" type="button" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+</header>
+
+<main>
+    <section class="hero" id="hero" data-feed="on" aria-labelledby="live-title">
+        <div class="wrap">
+            <div class="strip lbl">
+                <span class="stamp"><span class="ldot ldot--red"></span>Live now</span>
+                <span data-round>Round —</span>
+                <span class="grow" data-where>—</span>
+                <span class="sprint" data-sprint hidden>Sprint weekend</span>
+            </div>
+
+            <div class="stage g12">
+                <div class="hd hd--head lbl">
+                    <span>On track now</span>
+                    <span class="soft" data-ses-of></span>
+                </div>
+                <div class="hd hd--board lbl">
+                    <span class="only-feed" data-board-k>Running order · Top 10</span>
+                    <span class="only-feed soft" data-board-r></span>
+                    <span class="only-tt">The weekend · running order</span>
+                    <span class="only-tt soft" data-tz>Your time</span>
+                </div>
+
+                <div class="head">
+                    <h1 class="head__name cond" id="live-title"><span class="sr" data-h1>Live now</span><span class="nm-ses" aria-hidden="true" data-ses-name>—</span><span class="nm-gp" aria-hidden="true" data-gp-name>—</span></h1>
+                    <div class="read" data-read></div>
+                </div>
+
+                <a class="door" href="../../../live.html">
+                    <span class="door__top"><span class="lbl"><span class="ldot ldot--red"></span>Live timing</span><span class="arrow" aria-hidden="true">→</span></span>
+                    <span><b class="cond">Watch live timing</b><small>Every position, gap, sector and tyre, as it happens.</small></span>
+                </a>
+
+                <div class="board">
+                    <div class="layer layer--feed" data-layer-feed></div>
+                    <ol class="layer layer--tt" data-layer-tt></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="band">
+            <div class="wrap band__in" data-band></div>
+        </div>
+    </section>
+
+    <section class="cal" aria-labelledby="cal-title">
+        <div class="wrap">
+            <p class="lbl">The calendar</p>
+            <h2 class="cond" id="cal-title">Season 2026</h2>
+        </div>
+    </section>
+</main>
+
+<nav class="sw lbl" aria-label="Mockup switcher">
+    <div class="sw__g" data-g="scenario">
+        <span>Scenario</span>
+        <button type="button" data-v="race">Race</button>
+        <button type="button" data-v="qualifying">Qualifying</button>
+        <button type="button" data-v="qualiBreak">Q break</button>
+        <button type="button" data-v="practice">Practice</button>
+    </div>
+    <div class="sw__g" data-g="feed">
+        <span>Feed</span>
+        <button type="button" data-v="on">On</button>
+        <button type="button" data-v="off">Off</button>
+        <button type="button" data-v="late" title="Off, then the feed arrives after 3 s">Late</button>
+    </div>
+    <button type="button" class="sw__hide" aria-label="Minimise switcher" onclick="const n = this.parentElement; n.toggleAttribute('data-min'); this.textContent = n.hasAttribute('data-min') ? 'Preview +' : '×'">×</button>
+</nav>
+
+<script>
+(() => {
+    const ROOT = '../../../';
+    const hero = document.getElementById('hero');
+    const $ = (s) => hero.querySelector(s);
+    const params = new URLSearchParams(location.search);
+    const SCEN = ['race', 'qualifying', 'qualiBreak', 'practice'];
+    const state = {
+        scenario: SCEN.includes(params.get('scenario')) ? params.get('scenario') : 'race',
+        feed: ['on', 'off', 'late'].includes(params.get('feed')) ? params.get('feed') : 'on',
+    };
+    if (params.get('note') === 'off') document.getElementById('note').hidden = true;
+    if (params.get('sw') === 'off') document.querySelector('.sw').hidden = true;
+
+    const LOCALE = 'en-GB';
+    const fTime = new Intl.DateTimeFormat(LOCALE, { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+    const fDay = new Intl.DateTimeFormat(LOCALE, { weekday: 'short' });
+    const zone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    const zoneCity = zone.split('/').pop().replace(/_/g, ' ');
+    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    // A short last word ("Practice 1") stays with the one before it
+    const glue = (s) => s.replace(/ (\S{1,2})$/, ' $1');
+    const longestWord = (s) => Math.max(...glue(s).split(/ +/).map((w) => w.length));
+    const pad = (n) => String(n).padStart(2, '0');
+    const mmss = (sec) => `${pad(Math.floor(sec / 60))}:${pad(sec % 60)}`;
+    const toSec = (s) => { const [m, x] = s.split(':').map(Number); return m * 60 + x; };
+    const ago = (min) => min < 60 ? `${min} min ago` : `${Math.floor(min / 60)} h ${pad(min % 60)} min ago`;
+    const inTime = (min) => min < 60 ? `in ${min} min` : min < 1440 ? `in ${Math.floor(min / 60)} h ${pad(min % 60)} min` : `in ${Math.floor(min / 1440)} d ${Math.floor((min % 1440) / 60)} h`;
+
+    let data = null;
+    let t0 = 0;        // the scenario's "now", in ms
+    let perf0 = 0;     // when we started counting from it
+    let lateTimer = 0;
+    let ticks = [];    // what changes with time: text only
+
+    const now = () => t0 + (performance.now() - perf0);
+
+    // ---- Markup -------------------------------------------------------------
+    const tile = (r) => `<span class="tile"><img src="${ROOT}${esc(r.teamLogo)}" alt="${esc(r.team)}" width="40" height="40" loading="lazy" decoding="async"></span>`;
+
+    function feedLayer(sc) {
+        const race = sc.session === 'race' || sc.session === 'sprintRace';
+        const [p1, p2, p3] = sc.top10;
+        const pod = (r, i) => {
+            const isWord = r.gap === sc.p1Label;
+            const gap = i === 0
+                ? (isWord
+                    ? `<b class="cond word">${esc(r.gap)}</b>`
+                    : `<span class="lbl">${esc(sc.p1Label)}</span><b class="cond num">${esc(r.gap)}</b>`)
+                : `<b class="cond num">${esc(r.gap)}</b>`;
+            return `<li class="pod pod--${i + 1}">
+                <span class="pod__n cond" aria-hidden="true">${r.pos}</span>
+                ${tile(r)}
+                <span class="pod__who">
+                    <span class="pod__first"><span class="sr">P${r.pos} </span>${tile(r)}${esc(r.firstName)}</span>
+                    <span class="pod__last cond" style="--chars:${r.lastName.length}">${esc(r.lastName)}</span>
+                </span>
+                <span class="pod__gap">${gap}</span>
+            </li>`;
+        };
+        const rows = sc.top10.slice(3).map((r) => `<li class="row">
+            <span class="row__n cond">${r.pos}</span>
+            ${tile(r)}
+            <span class="row__nm cond"><span class="sr">${esc(r.firstName)} </span>${esc(r.lastName)}</span>
+            <span class="row__gap num">${esc(r.gap)}</span>
+        </li>`).join('');
+        return `<ol class="top3">${[p1, p2, p3].map(pod).join('')}</ol>
+            <ol class="rest" start="4">${rows}
+                <li><a class="more lbl" href="${ROOT}live.html">${race ? 'The whole field' : 'Positions 11–22'} on live timing <span class="arrow" aria-hidden="true">→</span></a></li>
+            </ol>`;
+    }
+
+    function ttLayer(cur) {
+        const t = now();
+        let nextMarked = false;
+        return data.sessions.map((s) => {
+            const st = Date.parse(s.start), en = Date.parse(s.end);
+            const live = s.key === cur.key;
+            const done = !live && en <= t;
+            let cls = 'ses', status = '';
+            if (live) {
+                cls += ' ses--live';
+                status = '';
+            } else if (done) {
+                cls += ' ses--done';
+                status = '<span class="lbl">Done</span>';
+            } else if (!nextMarked) {
+                nextMarked = true;
+                status = '<span class="chip lbl">Next</span>';
+            }
+            const name = live
+                ? `<span class="ses__now lbl"><span class="ldot ldot--on"></span>Now · on track</span>
+                   <b class="cond" style="--w:${longestWord(s.name)}">${esc(glue(s.name))}</b>
+                   <span class="sub"></span>`
+                : `<b class="cond" style="--chars:${s.name.length}"><span>${esc(s.name)}</span></b>`;
+            return `<li class="${cls}">
+                <span class="ses__when"><span class="lbl">${fDay.format(st)}</span><b class="cond num">${fTime.format(st)}</b></span>
+                <span class="ses__nm">${name}${done ? '<span class="sr"> (done)</span>' : ''}</span>
+                <span class="ses__st">${status}</span>
+            </li>`;
+        }).join('');
+    }
+
+    // The readout: the one number that says how far into the session we are
+    function readout(sc, cur) {
+        const endLocal = fTime.format(Date.parse(cur.end));
+        const ends = `<div class="read__tt">
+            <p class="read__k lbl">${esc(cur.name)} ends · your time</p>
+            <p class="read__v cond" style="--rc:5">${endLocal}</p>
+            <p class="read__sub">Started <span data-tick="since"></span></p>
+        </div>`;
+        let feed;
+        if (sc.lap) {
+            feed = `<div class="read__feed">
+                <p class="read__k lbl">Lap</p>
+                <p class="read__v cond" style="--rc:5"><span class="sr">Lap </span>${sc.lap.current}<span class="of"><span class="sr"> of </span>/${sc.lap.total}</span></p>
+                <p class="read__sub">Started <span data-tick="since"></span></p>
+            </div>`;
+        } else if (sc.qualiPart && sc.between) {
+            feed = `<div class="read__feed" role="timer" aria-label="${sc.qualiPart} starts in about ${Math.round(toSec(sc.nextPartIn) / 60)} minutes">
+                <p class="read__k lbl" aria-hidden="true">${sc.qualiPart} next · starts in</p>
+                <p class="read__v cond num" style="--rc:5" aria-hidden="true" data-tick="clock" data-from="${toSec(sc.nextPartIn)}">${sc.nextPartIn}</p>
+                <p class="read__sub">Started <span data-tick="since"></span> · Ends ${endLocal}</p>
+            </div>`;
+        } else if (sc.qualiPart) {
+            feed = `<div class="read__feed" role="timer" aria-label="${sc.qualiPart}, about ${Math.round(toSec(sc.clockLeft) / 60)} minutes left">
+                <p class="read__k lbl" aria-hidden="true">${sc.qualiPart} · Time left</p>
+                <p class="read__v cond num" style="--rc:5" aria-hidden="true" data-tick="clock" data-from="${toSec(sc.clockLeft)}">${sc.clockLeft}</p>
+                <p class="read__sub">Started <span data-tick="since"></span> · Ends ${endLocal}</p>
+            </div>`;
+        } else {
+            feed = ends.replace('read__tt', 'read__feed');
+        }
+        return feed + ends;
+    }
+
+    function band(cur) {
+        const t = now();
+        const next = data.sessions.find((s) => Date.parse(s.start) > t && s.key !== cur.key);
+        const link = `<a class="btn btn--line" href="${ROOT}grandsprix/grandprix.html?gp=${data.gp.id}">Weekend timetable <span class="arrow">→</span></a>`;
+        if (!next) {
+            return `<span class="band__k lbl">Up next</span>
+                <span class="band__v cond">Race result</span>
+                <span class="band__soft">Here, once the flag falls</span>
+                <span class="band__rule" aria-hidden="true"></span>${link}`;
+        }
+        const st = Date.parse(next.start);
+        return `<span class="band__k lbl">Up next</span>
+            <span class="band__v cond">${esc(next.name)}</span>
+            <span class="band__v cond num">${fDay.format(st)} ${fTime.format(st)}</span>
+            <span class="band__soft" data-tick="in" data-at="${st}"></span>
+            <span class="band__rule" aria-hidden="true"></span>${link}`;
+    }
+
+    // ---- Render ---------------------------------------------------------------
+    function render(wipe) {
+        const sc = data.scenarios[state.scenario];
+        const cur = data.sessions.find((s) => s.key === sc.session);
+        const idx = data.sessions.indexOf(cur);
+        t0 = Date.parse(sc.now);
+        perf0 = performance.now();
+
+        $('[data-round]').textContent = `Round ${data.gp.round} / ${data.gp.rounds}`;
+        $('[data-where]').textContent = `${data.gp.name} — ${data.gp.circuit}`;
+        $('[data-sprint]').hidden = !data.gp.sprint;
+        $('[data-ses-of]').textContent = `Session ${idx + 1} of ${data.sessions.length}`;
+        const nameEl = $('[data-ses-name]');
+        nameEl.textContent = glue(cur.name);
+        nameEl.style.setProperty('--w', longestWord(cur.name));
+        const gpEl = $('[data-gp-name]');
+        // "Grand Prix" never splits (DESIGN.md, calendar cards)
+        const gpName = data.gp.name.replace(/Grand Prix/, 'Grand Prix');
+        gpEl.textContent = gpName;
+        gpEl.style.setProperty('--w', longestWord(gpName));
+        $('[data-h1]').textContent = `Live now: ${cur.name}, ${data.gp.name}`;
+        const race = sc.session === 'race' || sc.session === 'sprintRace';
+        $('[data-board-r]').textContent = race ? 'Gap to leader' : 'Gap to fastest';
+        $('[data-board-k]').textContent = sc.between ? `Running order · Top 10 after ${sc.qualiPart === 'Q2' ? 'Q1' : 'Q2'}` : 'Running order · Top 10';
+        const off = new Intl.DateTimeFormat(LOCALE, { timeZoneName: 'shortOffset' }).formatToParts(t0).find((p) => p.type === 'timeZoneName');
+        $('[data-tz]').textContent = `Your time · ${zoneCity}${off ? ' · ' + off.value : ''}`;
+
+        $('[data-read]').innerHTML = readout(sc, cur);
+        $('[data-layer-feed]').innerHTML = feedLayer(sc);
+        $('[data-layer-tt]').innerHTML = ttLayer(cur);
+        $('[data-band]').innerHTML = band(cur);
+
+        // The live row's line: started, ends (timetable only)
+
+        ticks = [...hero.querySelectorAll('[data-tick]')].map((el) => ({ el, kind: el.dataset.tick, from: +el.dataset.from || 0, at: +el.dataset.at || 0, start: Date.parse(cur.start), last: '' }));
+        setFeed();
+        tick();
+
+        if (wipe) {
+            hero.classList.remove('wipe');
+            void hero.offsetWidth; // restart the wipe (on a switch only)
+            hero.classList.add('wipe');
+        }
+        document.querySelectorAll('.sw [data-g]').forEach((g) => {
+            g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === state[g.dataset.g])));
+        });
+    }
+
+    function setFeed() {
+        clearTimeout(lateTimer);
+        if (state.feed === 'late') {
+            hero.dataset.feed = 'off';
+            lateTimer = setTimeout(() => { hero.dataset.feed = 'on'; }, 3000);
+        } else {
+            hero.dataset.feed = state.feed;
+        }
+    }
+
+    // Text only, no layout reads (Celeron floor)
+    function tick() {
+        const t = now();
+        const el0 = Math.floor((t - t0) / 1000);
+        for (const k of ticks) {
+            let v = '';
+            if (k.kind === 'since') v = ago(Math.max(0, Math.floor((t - k.start) / 60000)));
+            else if (k.kind === 'clock') v = mmss(Math.max(0, k.from - el0));
+            else if (k.kind === 'in') v = inTime(Math.max(0, Math.ceil((k.at - t) / 60000)));
+            if (v !== k.last) { k.el.textContent = v; k.last = v; }
+        }
+    }
+
+    // ---- Switcher ---------------------------------------------------------------
+    document.querySelectorAll('.sw [data-g]').forEach((g) => {
+        g.addEventListener('click', (e) => {
+            const b = e.target.closest('button');
+            if (!b) return;
+            state[g.dataset.g] = b.dataset.v;
+            const u = new URL(location.href);
+            u.searchParams.set('scenario', state.scenario);
+            u.searchParams.set('feed', state.feed);
+            history.replaceState(null, '', u);
+            if (g.dataset.g === 'feed') {
+                setFeed();
+                g.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+            } else {
+                render(true);
+            }
+        });
+    });
+
+    fetch('../data.json').then((r) => r.json()).then((d) => {
+        data = d;
+        render(true);
+        setInterval(tick, 1000);
+    });
+})();
+</script>
+</body>
+</html>

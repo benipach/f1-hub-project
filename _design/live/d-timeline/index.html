@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#121212">
+<title>Live hero · D: Horizontal / timeline</title>
+<style>
+@font-face {
+    font-family: 'Archivo';
+    src: url('../../../node_modules/@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2') format('woff2');
+    font-weight: 100 900;
+    font-stretch: 62% 125%;
+}
+:root {
+    --paper: #EFEAE0; --paper-2: #E6E0D3; --ink: #121212; --ink-2: #1E1E1E;
+    --mute: #66625A; --mute-ink: #A39E93;
+    --red: #E10600; --red-ink: #B30500; --red-hi: #FF5A4E;
+    --font: 'Archivo', system-ui, sans-serif;
+    --max: 1440px; --gut: 32px; --gap: 16px; --nav: 56px;
+    --line-w: rgba(255, 255, 255, .5);
+}
+@media (max-width: 760px) { :root { --gut: 16px; --gap: 12px; } }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; scrollbar-width: none; }
+html::-webkit-scrollbar { display: none; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.45; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+.hero :focus-visible { outline-color: #fff; }
+.sr { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.lbl { font-size: 11px; font-weight: 700; font-stretch: 115%; text-transform: uppercase; letter-spacing: .09em; line-height: 1.3; }
+.cond { font-weight: 900; font-stretch: 62%; text-transform: uppercase; line-height: .86; letter-spacing: -.005em; }
+.num { font-variant-numeric: tabular-nums lining-nums; }
+.wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 var(--gut); }
+.g12 { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); }
+.ldot { flex: none; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #5a5650; }
+.ldot--on { background: #fff; animation: beat 1.1s ease-in-out infinite; }
+.ldot--red { background: var(--red); animation: beat 1.1s ease-in-out infinite; }
+@keyframes beat { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+.arrow { display: inline-block; transition: all .2s ease; }
+a:hover .arrow { transform: translateX(6px); }
+.btn { display: inline-flex; align-items: center; gap: 14px; padding: 14px 20px; border: 0; font-size: 12px; font-weight: 700; font-stretch: 115%; text-transform: uppercase; letter-spacing: .09em; text-decoration: none; cursor: pointer; transition: all .2s ease; }
+.btn--line { --line: var(--paper); background: transparent; box-shadow: inset 0 0 0 1px var(--line); }
+.btn--line:hover { background: var(--paper); color: var(--ink); }
+
+/* ---- Mockup note (removable) ---------------------------------------------- */
+.note { background: var(--paper-2); color: var(--mute); font-size: 12px; line-height: 1.5; }
+.note .wrap { display: flex; gap: 24px; align-items: flex-start; padding-top: 10px; padding-bottom: 10px; }
+.note p { margin: 0; max-width: 1100px; }
+.note b { color: var(--ink); }
+.note button { flex: none; margin-left: auto; padding: 4px 8px; border: 0; background: none; color: var(--ink); cursor: pointer; }
+.note[hidden] { display: none; }
+
+/* ---- Navbar --------------------------------------------------------------- */
+.nav { position: sticky; top: 0; z-index: 50; height: var(--nav); background: var(--ink); color: #fff; }
+.nav .wrap { display: flex; align-items: center; gap: 14px; height: 100%; }
+.nav__logo img { height: 22px; width: auto; }
+.nav__season { padding-left: 14px; border-left: 1px solid #3a3a3a; color: var(--mute-ink); }
+.nav__chip { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; padding: 8px 12px; background: var(--red); color: #fff; }
+.nav__burger { display: grid; place-content: center; gap: 6px; width: 44px; height: 44px; margin-right: -10px; border: 0; background: none; cursor: pointer; }
+.nav__burger span { display: block; width: 24px; height: 2px; background: #fff; }
+@media (max-width: 760px) { .nav__season { display: none; } }
+
+/* ---- Hero (live, red): horizontal bands ----------------------------------- */
+.hero {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - var(--nav));
+    overflow: hidden;
+    background: var(--red);
+    color: #fff;
+    animation: wipe .7s ease both;
+}
+@keyframes wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+.hero__in { flex: 1; display: flex; flex-direction: column; padding-bottom: 28px; }
+
+.strip { display: flex; flex-wrap: wrap; border-bottom: 1px solid #fff; }
+.strip > * { padding: 15px 18px; border-left: 1px solid #fff; }
+.strip > *:first-child { padding-left: 0; border-left: 0; }
+.strip > .grow { flex: 1; }
+.tag { display: inline-flex; align-items: center; gap: 8px; }
+
+/* Band 1: the word. It takes whatever height the other bands leave and the
+   line is fitted to it (width and height) once, on render and on resize.
+   It stands on the progress band's 4 px rule, like a car on the track. */
+.word { position: relative; flex: 1; min-height: 96px; margin-top: 12px; }
+.word__line {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin: 0 0 calc(var(--desc, 0) * 1em - .035em);
+    font-size: var(--fs, 200px);
+    font-weight: 900;
+    font-stretch: 62%;
+    line-height: .76;
+    letter-spacing: -.012em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.word__sess { color: var(--ink); }
+
+/* Band 2: progress. The bar runs across 9 columns into the door (cols 10-12). */
+.prog { padding-top: 12px; border-top: 4px solid #fff; }
+.prog__main { grid-column: 1 / 10; display: flex; flex-direction: column; min-width: 0; }
+.prog__head { display: flex; justify-content: space-between; gap: 16px; margin: 0; }
+.prog__head h1 { margin: 0; font: inherit; }
+.prog__zone { white-space: nowrap; }
+.read { display: flex; align-items: flex-end; gap: 28px; margin: 10px 0 16px; }
+.read__main { flex: 1; min-width: 0; display: flex; align-items: flex-end; gap: 16px; }
+.read__k { display: block; margin-bottom: 6px; }
+.read__v { display: block; font-size: clamp(54px, min(6.4vw, 9.4vh), 100px); line-height: .78; white-space: nowrap; }
+.read__v--ink { color: var(--ink); }
+.read__s { padding-bottom: 2px; white-space: nowrap; }
+.pair { padding-left: 18px; border-left: 1px solid var(--line-w); white-space: nowrap; }
+.pair b { display: block; margin: 4px 0 6px; font-size: 34px; font-weight: 900; font-stretch: 62%; line-height: .8; letter-spacing: 0; }
+
+.bar-w { position: relative; }
+.bar { position: relative; height: clamp(28px, 4.6vh, 46px); overflow: hidden; box-shadow: inset 0 0 0 1px #fff; }
+.bar__fill { position: absolute; inset: 0; background: var(--ink); transform: scaleX(0); transform-origin: 0 50%; }
+/* One tick per lap (or per scale step): a white hairline at the end of each tile */
+.bar__ticks {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(to right, transparent calc(100% - 1px), rgba(255, 255, 255, .55) calc(100% - 1px));
+    background-size: calc(100% / var(--n, 4)) 100%;
+}
+.bar__now { position: absolute; top: -7px; bottom: -7px; left: 0; width: 100%; transform: translateX(0); pointer-events: none; }
+.bar__now::before { content: ''; position: absolute; top: 0; bottom: 0; left: -1.5px; width: 3px; background: #fff; }
+.scale { position: relative; height: 14px; margin-top: 10px; }
+.scale span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.scale span:first-child { transform: none; }
+.scale span:last-child { transform: translateX(-100%); }
+
+/* The door: at the end of the bar, the same height as the band */
+.cta {
+    grid-column: 10 / 13;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 16px 20px 18px;
+    background-color: var(--ink);
+    color: #fff;
+    text-decoration: none;
+    transition: all .2s ease;
+}
+.cta:hover { background-color: var(--paper); color: var(--ink); }
+.cta__top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.cta__top > span:first-child { display: inline-flex; align-items: center; gap: 8px; }
+.cta b { display: block; font-size: clamp(32px, 3.1vw, 48px); line-height: .84; }
+
+/* Band 3: the deck. Two layers in one grid cell (timeline, top 10): the
+   feed swaps them with a fade and nothing above moves. */
+.deck { margin-top: 22px; padding-top: 10px; border-top: 4px solid #fff; }
+.deck__layers { display: grid; }
+.layer { grid-area: 1 / 1; display: flex; flex-direction: column; min-width: 0; transition: all .45s ease; }
+.layer > ol { flex: 1; }
+.layer.is-off { opacity: 0; visibility: hidden; }
+.deck__head { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+.deck__head > span:first-child { display: inline-flex; align-items: center; gap: 8px; }
+
+/* Top 10 as plates, left to right like cars on a straight */
+.plates { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: var(--gap); margin: 0; padding: 0; list-style: none; }
+.plate { display: flex; flex-direction: column; min-width: 0; padding: 10px 12px 10px; background: var(--ink); color: var(--paper); }
+.plate__top { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; }
+.plate__pos { font-size: 40px; line-height: .78; }
+.plate__logo { width: 26px; height: 26px; object-fit: contain; }
+.plate__code { margin-top: 14px; font-size: 34px; line-height: .8; }
+.plate__name { margin-top: 6px; overflow: hidden; color: var(--mute-ink); text-overflow: ellipsis; white-space: nowrap; }
+.plate__gap { margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(239, 234, 224, .22); font-size: 15px; font-weight: 600; line-height: 1.2; white-space: nowrap; }
+.plate--p1 { background: var(--paper); color: var(--ink); }
+.plate--p1 .plate__name { color: var(--mute); }
+.plate--p1 .plate__gap { border-top-color: rgba(18, 18, 18, .25); font-weight: 800; }
+
+/* The weekend, as a line through its five sessions */
+.tl { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--gap); margin: 0; padding: 0; list-style: none; }
+.tl__cell { display: flex; flex-direction: column; min-width: 0; }
+.tl__rail { position: relative; height: 4px; }
+.tl__rail::before { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: #fff; }
+.tl__fill { position: absolute; inset: 0; background: #fff; transform: scaleX(var(--f, 0)); transform-origin: 0 50%; }
+.tl__st { display: flex; align-items: center; gap: 8px; min-height: 20px; margin-top: 10px; }
+.tl__next { padding: 2px 6px; background: #fff; color: var(--red-ink); }
+.tl__nm { margin-top: auto; padding-top: 12px; font-size: clamp(26px, 2.7vw, 40px); line-height: .84; }
+.tl__when { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; padding-top: 10px; }
+.tl__tm { font-size: 15px; font-weight: 600; }
+/* The session that's running: an ink plate, like the door and the cars */
+.tl__cell.is-live { padding: 0 12px 12px; background: var(--ink); color: var(--paper); }
+.tl__cell.is-live .tl__rail { margin: 0 -12px; }
+.tl__cell.is-live .tl__rail::before { background: rgba(239, 234, 224, .4); }
+.tl__cell.is-live .tl__fill { background: var(--paper); }
+
+/* Band 4 (ink): what comes next, and the weekend timetable */
+.band { background: var(--ink); color: #fff; }
+.band__in { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; min-height: 76px; padding-top: 12px; padding-bottom: 12px; }
+.band__k { color: var(--mute-ink); }
+.band__v { font-size: 30px; font-weight: 900; font-stretch: 62%; line-height: 1; text-transform: uppercase; }
+.band__rule { flex: 1; min-width: 24px; height: 1px; background: #3a3a3a; }
+
+/* ---- Next section (paper) ------------------------------------------------- */
+.next { padding: 112px 0 120px; }
+.next .lbl { color: var(--mute); }
+.next h2 { margin: 18px 0 0; font-size: clamp(72px, 12vw, 196px); }
+
+/* ---- Preview switcher (doesn't ship) --------------------------------------- */
+.sw {
+    position: fixed;
+    z-index: 60;
+    left: 50%;
+    bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 4px;
+    max-width: calc(100vw - 24px);
+    padding: 6px 8px;
+    background: var(--ink);
+    color: #fff;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, .35);
+    transform: translateX(-50%);
+}
+.sw span { padding: 0 6px; color: var(--mute-ink); }
+.sw button { padding: 8px 9px; border: 0; background: none; cursor: pointer; transition: all .2s ease; }
+.sw button:hover { color: var(--red-hi); }
+.sw button[aria-pressed="true"] { background: var(--paper); color: var(--ink); }
+.sw i { width: 1px; height: 20px; margin: 0 6px; background: #3a3a3a; }
+
+/* ---- ≤ 1100: one row of compact plates ------------------------------------ */
+@media (max-width: 1100px) {
+    .prog__main { grid-column: 1 / 9; }
+    .cta { grid-column: 9 / 13; }
+    .read { gap: 18px; }
+    .read__s { display: none; }
+    .plate { padding: 8px 8px 8px; }
+    .plate__pos { font-size: 30px; }
+    .plate__logo { width: 20px; height: 20px; }
+    .plate__code { margin-top: 12px; font-size: 28px; }
+    .plate__name { display: none; }
+    .plate__gap { font-size: 13px; }
+}
+
+/* ---- ≤ 760: bands stay, lists go vertical -------------------------------- */
+@media (max-width: 760px) {
+    .strip > * { padding: 11px 12px; }
+    .strip > .grow { flex-basis: 100%; order: 3; padding-left: 0; border-top: 1px solid #fff; border-left: 0; }
+    .strip .hide-m { display: none; }
+    .strip > :nth-child(2) { flex: 1; }
+    .hero__in { padding-bottom: 20px; }
+    .word { min-height: 72px; margin-top: 8px; }
+    .prog { row-gap: 14px; }
+    .prog__main, .cta { grid-column: 1 / -1; }
+    .prog__zone { display: none; }
+    .read { flex-wrap: wrap; gap: 10px 14px; margin: 8px 0 12px; }
+    .read__main { flex-basis: 100%; }
+    .read__v { font-size: 56px; }
+    .read__s { display: block; }
+    .pair { flex: 1; }
+    .read__main + .pair { padding-left: 0; border-left: 0; }
+    .pair b { font-size: 26px; margin: 2px 0 4px; }
+    .bar { height: 28px; }
+    .scale span.mid { display: none; }
+    .cta { flex-direction: row; align-items: center; padding: 14px 16px; }
+    .cta__top > span:first-child { display: none; }
+    .cta__top { order: 2; }
+    .cta b { font-size: 30px; }
+    .deck { margin-top: 18px; }
+    .deck__head > span:last-child { display: none; }
+    /* Top 10: two columns of five, reading down */
+    .plates { grid-template-columns: 1fr 1fr; grid-template-rows: repeat(5, auto); grid-auto-flow: column; gap: 0 var(--gap); }
+    .plate { display: grid; grid-template-columns: 26px 20px minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 7px 8px; border-top: 1px solid rgba(239, 234, 224, .16); }
+    .plate:nth-child(6) { border-top: 0; }
+    .plate__top { display: contents; }
+    .plate__pos { order: 0; font-size: 24px; }
+    .plate__logo { order: 1; width: 18px; height: 18px; }
+    .plate__code { order: 2; margin: 0; font-size: 22px; }
+    .plate__gap { order: 3; margin: 0; padding: 0; border: 0; font-size: 12px; }
+    .plate--p1 { border-top: 0; }
+    /* The weekend: one row per session */
+    .tl { grid-template-columns: 1fr; gap: 0; }
+    .tl__cell { display: grid; grid-template-columns: 4px minmax(0, 1fr) auto; column-gap: 12px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--line-w); }
+    .tl__rail { grid-column: 1; grid-row: 1 / 3; align-self: stretch; width: 4px; height: auto; margin: -7px 0; }
+    .tl__rail::before { top: 0; left: auto; right: 0; width: 1px; height: auto; }
+    .tl__fill { transform: scaleY(var(--f, 0)); transform-origin: 50% 0; }
+    .tl__cell.is-live { padding: 7px 10px 7px 0; }
+    .tl__cell.is-live .tl__rail { margin: -7px 0; }
+    .tl__nm { grid-column: 2; grid-row: 1; margin: 0; padding: 0; font-size: 21px; }
+    .tl__when { grid-column: 2; grid-row: 2; flex-wrap: nowrap; gap: 8px; padding-top: 4px; }
+    .tl__tm { font-size: 13px; }
+    .tl__st { grid-column: 3; grid-row: 1 / 3; justify-content: flex-end; min-height: 0; margin: 0; }
+    .band__in { gap: 8px 14px; padding-top: 16px; padding-bottom: 16px; }
+    .band__rule { display: none; }
+    .band .btn { justify-content: space-between; width: 100%; }
+    .next { padding: 72px 0 80px; }
+    .sw { bottom: 8px; }
+}
+
+
+/* Phones: each car's row puts the gap under the code, so the lap time fits */
+@media (max-width: 420px) {
+    .plate { grid-template-columns: 22px 18px minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 8px; row-gap: 3px; }
+    .plate__pos { grid-row: 1 / 3; }
+    .plate__logo { grid-row: 1 / 3; }
+    .plate__code { grid-column: 3; grid-row: 1; }
+    .plate__gap { grid-column: 3; grid-row: 2; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<aside class="note" id="note">
+    <div class="wrap">
+        <p><b>D · Horizontal / timeline.</b> The hero reads like a race seen from the side: four full-width bands, top to bottom. The word ("LIVE" + the session, fitted to the 12 columns), the session's progress as one heavy bar that runs into the "Watch live timing" door, then the weekend's five sessions on a line, which the top 10 replaces, plate by plate, when the feed arrives.
+        <b>Versus today:</b> the session is now the giant word, not a small line at the bottom; the CTA ends the progress bar instead of floating; the feed-less hero has a real job (time through the session and the weekend), so the tower's absence leaves no hole, and the feed swaps one band in place without moving anything. Mobile keeps the bands and turns the plates into two columns of five.
+        <b>Feed fields:</b> none new (lap / total, Q part and clock, top 10 as planned).</p>
+        <button type="button" class="lbl" onclick="document.getElementById('note').hidden = true">Hide</button>
+    </div>
+</aside>
+
+<header class="nav">
+    <div class="wrap">
+        <a class="nav__logo" href="#"><img src="../../../img/logo.png" alt="F1 Hub" width="110" height="22"></a>
+        <span class="nav__season lbl">Season 2026</span>
+        <span class="nav__chip lbl"><span class="ldot ldot--on"></span>Live</span>
+        <button class="nav__burger" type="button" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+</header>
+
+<main>
+<section class="hero" id="hero" aria-labelledby="live-title">
+    <div class="wrap hero__in">
+        <div class="strip lbl">
+            <span class="tag"><span class="ldot ldot--on"></span>Live now</span>
+            <span data-round></span>
+            <span class="grow" data-place></span>
+            <span class="hide-m" data-sprint></span>
+        </div>
+
+        <div class="word" data-word aria-hidden="true">
+            <p class="word__line" data-word-line><span data-w-live>Live</span> <span class="word__sess" data-w-sess></span></p>
+        </div>
+
+        <div class="prog g12">
+            <div class="prog__main">
+                <div class="prog__head lbl">
+                    <h1 id="live-title" data-title></h1>
+                    <span class="prog__zone" data-zone></span>
+                </div>
+                <div class="read">
+                    <div class="read__main">
+                        <div>
+                            <span class="read__k lbl" data-read-k></span>
+                            <span class="read__v cond" data-read-v></span>
+                        </div>
+                        <span class="read__s lbl" data-read-s></span>
+                    </div>
+                    <div class="pair lbl"><span data-start-k></span><b class="num" data-start-v></b><span data-start-s></span></div>
+                    <div class="pair lbl"><span>Ends</span><b class="num" data-end-v></b><span data-end-s></span></div>
+                </div>
+                <div class="bar-w">
+                    <div class="bar" data-bar role="progressbar" aria-valuemin="0">
+                        <div class="bar__fill" data-fill></div>
+                        <div class="bar__ticks" data-ticks></div>
+                    </div>
+                    <div class="bar__now" data-now aria-hidden="true"></div>
+                </div>
+                <div class="scale lbl num" data-scale aria-hidden="true"></div>
+            </div>
+            <a class="cta" href="../../../live.html">
+                <span class="cta__top lbl"><span><span class="ldot ldot--red"></span>Live timing</span></span>
+                <b class="cond">Watch live timing <span class="arrow" aria-hidden="true">→</span></b>
+            </a>
+        </div>
+
+        <div class="deck">
+            <div class="deck__layers">
+                <div class="layer" data-layer="tl">
+                    <div class="deck__head lbl"><span data-tl-k></span><span data-tl-zone></span></div>
+                    <ol class="tl" data-tl></ol>
+                </div>
+                <div class="layer is-off" data-layer="top">
+                    <div class="deck__head lbl"><span><span class="ldot ldot--on"></span><span data-top-k></span></span><span data-top-r></span></div>
+                    <ol class="plates" data-plates></ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="band">
+        <div class="wrap band__in">
+            <span class="band__k lbl">Up next</span>
+            <span class="band__v" data-next-name></span>
+            <span class="band__v num" data-next-when></span>
+            <span class="band__k lbl" data-next-in></span>
+            <span class="band__rule" aria-hidden="true"></span>
+            <a class="btn btn--line" href="#">Weekend timetable <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+    </div>
+</section>
+
+<section class="next">
+    <div class="wrap">
+        <p class="lbl">01 — Calendar</p>
+        <h2 class="cond">Season 2026</h2>
+    </div>
+</section>
+</main>
+
+<nav class="sw lbl" aria-label="Preview">
+    <span>Scenario</span>
+    <button type="button" data-sc="race">Race</button>
+    <button type="button" data-sc="qualifying">Qualifying</button>
+    <button type="button" data-sc="qualiBreak">Q1–Q2 break</button>
+    <button type="button" data-sc="practice">Practice</button>
+    <i></i>
+    <span>Feed</span>
+    <button type="button" data-feed="on">On</button>
+    <button type="button" data-feed="off">Off</button>
+</nav>
+
+<script>
+(() => {
+    const q = new URLSearchParams(location.search);
+    const S = {
+        scenario: ['race', 'qualifying', 'qualiBreak', 'practice'].includes(q.get('scenario')) ? q.get('scenario') : 'race',
+        feed: q.get('feed') !== 'off',
+    };
+    if (q.get('note') === 'off') document.getElementById('note').hidden = true;
+
+    // Words (would come from the dictionary)
+    const W = {
+        live: 'Live', round: 'Round {r} / {n}', sprintWeekend: 'Sprint weekend', inProgress: 'in progress',
+        started: 'Started', lightsOut: 'Lights out', ago: '{t} ago', inT: 'in {t}',
+        lap: 'Lap', toGo: '{n} to go', laps: '{n} laps', raceTime: 'Race time', timeLeft: 'Time left',
+        partLeft: '{p} · time left', partOf: 'Part {i} of 3', partNext: '{p} next · starts in', partDone: 'Q{i} complete',
+        session: '{m} min session', weekend: 'The weekend', yourTime: 'Your time · {z}',
+        done: 'Done', liveNow: 'Live now', next: 'Next', top10: 'Top 10',
+        gapLeader: 'Gap to the leader', gapFastest: 'Gaps to P1', fastest: 'Fastest lap', p1: { Leader: 'Leader', Fastest: 'Fastest' },
+        result: 'Race result', afterFlag: 'Here, after the flag',
+    };
+    const fill = (s, o) => s.replace(/\{(\w+)\}/g, (_, k) => o[k]);
+
+    const $ = (s, r = document) => r.querySelector(s);
+    const el = {
+        hero: $('#hero'), round: $('[data-round]'), place: $('[data-place]'), sprint: $('[data-sprint]'),
+        word: $('[data-word]'), line: $('[data-word-line]'), wSess: $('[data-w-sess]'),
+        title: $('[data-title]'), zone: $('[data-zone]'),
+        readK: $('[data-read-k]'), readV: $('[data-read-v]'), readS: $('[data-read-s]'),
+        startK: $('[data-start-k]'), startV: $('[data-start-v]'), startS: $('[data-start-s]'),
+        endV: $('[data-end-v]'), endS: $('[data-end-s]'),
+        bar: $('[data-bar]'), fill: $('[data-fill]'), ticks: $('[data-ticks]'), now: $('[data-now]'), scale: $('[data-scale]'),
+        tlK: $('[data-tl-k]'), tlZone: $('[data-tl-zone]'), tl: $('[data-tl]'),
+        topK: $('[data-top-k]'), topR: $('[data-top-r]'), plates: $('[data-plates]'),
+        layTl: $('[data-layer="tl"]'), layTop: $('[data-layer="top"]'),
+        nextName: $('[data-next-name]'), nextWhen: $('[data-next-when]'), nextIn: $('[data-next-in]'),
+    };
+
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    const zoneName = tz.split('/').pop().replace(/_/g, ' ');
+    const fTime = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit' });
+    const fDay = new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+    const fDayShort = new Intl.DateTimeFormat('en-GB', { weekday: 'short' });
+    const pad = (n) => String(n).padStart(2, '0');
+    const clock = (sec) => {
+        sec = Math.max(0, Math.floor(sec));
+        const h = Math.floor(sec / 3600), m = Math.floor(sec / 60) % 60, s = sec % 60;
+        return h ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+    };
+    const mins = (ms) => {
+        const m = Math.max(0, Math.floor(ms / 60000));
+        return m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${pad(m % 60)} min`;
+    };
+    const until = (ms) => { // card format: 1d 22h, 03h 12m, 28m
+        const m = Math.max(0, Math.floor(ms / 60000)), d = Math.floor(m / 1440), h = Math.floor(m / 60) % 24;
+        return d ? `${d}d ${pad(h)}h` : h ? `${pad(h)}h ${pad(m % 60)}m` : `${m % 60}m`;
+    };
+    const parseClock = (s) => { const [m, sec] = s.split(':').map(Number); return m * 60 + sec; };
+
+    let D, sc, sess, t0, sNow, feedTimer, tlFills = [], ctx = {};
+    const now = () => sNow + (performance.now() - t0);
+    const mq = matchMedia('(max-width: 760px)');
+
+    // Fit the word to the band: width of the 12 columns, height left by the
+    // other bands. One measure per render or resize, never in the tick.
+    function fit() {
+        const w = el.word.clientWidth, h = el.word.clientHeight;
+        // Capitals that hang below the baseline (Q's tail) get room above
+        // the rule, so they never cut into the progress band's heading
+        const desc = /[QJ,]/i.test(el.line.textContent) ? .13 : 0;
+        el.line.style.setProperty('--desc', desc);
+        el.line.style.setProperty('--fs', '100px');
+        const nat = el.line.scrollWidth;
+        const fs = Math.min(w * 100 / nat, h / (.78 + desc), 440);
+        el.line.style.setProperty('--fs', `${Math.floor(fs)}px`);
+    }
+
+    function render() {
+        sc = D.scenarios[S.scenario];
+        sess = D.sessions.find((s) => s.key === sc.session);
+        t0 = performance.now();
+        sNow = Date.parse(sc.now);
+        const g = D.gp, start = Date.parse(sess.start), end = Date.parse(sess.end);
+        const isRace = sess.key === 'race' || sess.key === 'sprintRace';
+        const isQuali = sess.key === 'qualifying' || sess.key === 'sprintQualy';
+        const feed = S.feed;
+
+        el.round.textContent = fill(W.round, { r: g.round, n: g.rounds });
+        el.place.innerHTML = `${g.name}<span class="hide-m"> — ${g.circuit}</span>`;
+        el.sprint.textContent = g.sprint ? W.sprintWeekend : g.city;
+        el.wSess.textContent = sess.name;
+        el.title.textContent = `${sess.name} ${W.inProgress} · ${g.name}`;
+        el.zone.textContent = fill(W.yourTime, { z: zoneName });
+
+        el.startK.textContent = isRace ? W.lightsOut : W.started;
+        el.startV.textContent = fTime.format(start);
+        el.endV.textContent = fTime.format(end);
+
+        // What the bar measures: laps (race with feed) or the session's time
+        ctx = { start, end, isRace, isQuali, mode: 'time' };
+        if (feed && isRace && sc.lap) ctx.mode = 'laps';
+        else if (feed && isQuali && sc.between) ctx.mode = 'break';
+        else if (feed && isQuali) ctx.mode = 'part';
+        else if (isRace) ctx.mode = 'raceTime';
+        ctx.clockAt = sc.clockLeft ? parseClock(sc.clockLeft) : sc.nextPartIn ? parseClock(sc.nextPartIn) : 0;
+
+        el.readV.classList.toggle('num', ctx.mode !== 'laps');
+        el.readV.classList.remove('read__v--ink');
+        el.readV.setAttribute('role', ctx.mode === 'laps' ? 'text' : 'timer');
+        const dur = Math.round((end - start) / 60000);
+        if (ctx.mode === 'laps') {
+            el.readK.textContent = W.lap;
+            el.readV.textContent = `${sc.lap.current}/${sc.lap.total}`;
+            el.readS.textContent = fill(W.toGo, { n: sc.lap.total - sc.lap.current });
+        } else if (ctx.mode === 'part') {
+            el.readK.textContent = fill(W.partLeft, { p: sc.qualiPart });
+            el.readS.textContent = fill(W.partOf, { i: sc.qualiPart.slice(1) });
+        } else if (ctx.mode === 'break') {
+            el.readK.textContent = fill(W.partNext, { p: sc.qualiPart });
+            el.readS.textContent = fill(W.partDone, { i: Number(sc.qualiPart.slice(1)) - 1 });
+        } else if (ctx.mode === 'raceTime') {
+            el.readK.textContent = W.raceTime;
+            el.readS.textContent = fill(W.laps, { n: g.raceLaps });
+        } else {
+            el.readK.textContent = W.timeLeft;
+            el.readS.textContent = fill(W.session, { m: dur });
+        }
+
+        // Bar ticks and scale
+        let marks = [];
+        if (ctx.mode === 'laps') {
+            const n = sc.lap.total;
+            el.ticks.style.setProperty('--n', n);
+            el.bar.setAttribute('aria-valuemax', n);
+            el.bar.setAttribute('aria-valuenow', sc.lap.current);
+            el.bar.setAttribute('aria-valuetext', `${W.lap} ${sc.lap.current} / ${n}`);
+            marks.push([0, `${W.lap} 1`]);
+            for (let l = 10; l < n - 4; l += 10) marks.push([l / n, String(l)]);
+            marks.push([1, String(n)]);
+        } else {
+            const step = dur <= 60 ? 15 : dur <= 120 ? 30 : 60;
+            el.ticks.style.setProperty('--n', dur / step);
+            el.bar.setAttribute('aria-valuemax', dur);
+            for (let m = 0; m <= dur; m += step) marks.push([m / dur, fTime.format(start + m * 60000)]);
+        }
+        el.scale.innerHTML = marks.map(([p, t], i) =>
+            `<span class="${i && i < marks.length - 1 ? 'mid' : ''}" style="left:${(p * 100).toFixed(3)}%">${t}</span>`).join('');
+
+        // The weekend line
+        el.tlK.textContent = `${W.weekend} · ${g.sprint ? W.sprintWeekend : g.city}`;
+        el.tlZone.textContent = fill(W.yourTime, { z: zoneName });
+        const n0 = sNow;
+        const nextS = D.sessions.find((s) => Date.parse(s.start) > n0);
+        tlFills = [];
+        el.tl.innerHTML = D.sessions.map((s) => {
+            const a = Date.parse(s.start), b = Date.parse(s.end);
+            const st = b <= n0 ? 'done' : a <= n0 ? 'live' : s === nextS ? 'next' : 'later';
+            const tag = st === 'done' ? W.done
+                : st === 'live' ? `<span class="ldot ldot--on"></span>${W.liveNow}`
+                : st === 'next' ? `<span class="tl__next">${W.next}</span><span data-tl-in></span>` : '';
+            return `<li class="tl__cell is-${st}">
+                <span class="tl__rail" aria-hidden="true"><span class="tl__fill" style="--f:${st === 'done' ? 1 : 0}"${st === 'live' ? ' data-tl-live' : ''}></span></span>
+                <span class="tl__st lbl">${tag}</span>
+                <span class="tl__nm cond">${s.name}</span>
+                <span class="tl__when"><span class="tl__day lbl">${fDay.format(a)}</span><span class="tl__tm num">${fTime.format(a)}–${fTime.format(b)}</span></span>
+            </li>`;
+        }).join('');
+        ctx.tlLive = $('[data-tl-live]', el.tl);
+        ctx.tlIn = $('[data-tl-in]', el.tl);
+        ctx.next = nextS;
+
+        // Top 10 plates
+        el.topK.textContent = ctx.mode === 'laps' ? `${W.top10} · ${W.lap} ${sc.lap.current}` : isQuali ? `${W.top10} · ${sc.qualiPart}` : `${W.top10} · ${sess.name}`;
+        el.topR.textContent = isRace ? W.gapLeader : `${W.fastest} ${sc.top10[0].gap} · ${W.gapFastest}`;
+        el.plates.innerHTML = sc.top10.map((r) => `<li class="plate${r.pos === 1 ? ' plate--p1' : ''}">
+            <span class="plate__top"><span class="plate__pos cond">${r.pos}</span><img class="plate__logo" src="../../../${r.teamLogo}" alt="${r.team}" width="26" height="26"></span>
+            <span class="plate__code cond" title="${r.firstName} ${r.lastName}">${r.code}<span class="sr"> ${r.firstName} ${r.lastName}</span></span>
+            <span class="plate__name lbl" aria-hidden="true">${r.lastName}</span>
+            <span class="plate__gap num">${r.pos === 1 ? W.p1[sc.p1Label] : r.gap}</span>
+        </li>`).join('');
+
+        // Up next (band)
+        if (nextS) {
+            el.nextName.textContent = nextS.name;
+            el.nextWhen.textContent = `${fDayShort.format(Date.parse(nextS.start))} ${fTime.format(Date.parse(nextS.start))}`;
+        } else {
+            el.nextName.textContent = W.result;
+            el.nextWhen.textContent = '';
+            el.nextIn.textContent = W.afterFlag;
+        }
+
+        // The feed comes a moment after the page: start without it, then swap
+        clearTimeout(feedTimer);
+        setLayers(false);
+        // ?delay=ms sets how late the feed lands (default 1.2 s; 0 = at once)
+        const delay = q.has('delay') ? Number(q.get('delay')) : 1200;
+        if (feed && !delay) setLayers(true);
+        else if (feed) feedTimer = setTimeout(() => setLayers(true), delay);
+
+        ctx.lastMin = -1;
+        tick();
+        fit();
+    }
+
+    // Before the feed: the bar and the readout show the timetable's view
+    // (time); with it, laps or the Q clock. Same boxes, so nothing moves.
+    let feedOn = false;
+    function setLayers(on) {
+        feedOn = on;
+        el.layTl.classList.toggle('is-off', on);
+        el.layTop.classList.toggle('is-off', !on);
+        el.layTl.inert = on;
+        el.layTop.inert = !on;
+        el.hero.dataset.feed = on ? 'on' : 'off';
+        ctx.lastMin = -1;
+        tick();
+    }
+
+    function tick() {
+        if (!ctx.start) return;
+        const t = now(), el0 = t - ctx.start, span = ctx.end - ctx.start;
+        const frac = Math.min(1, Math.max(0, el0 / span));
+        const sec = (performance.now() - t0) / 1000;
+        const mode = feedOn ? ctx.mode : (ctx.isRace ? 'raceTime' : 'time');
+
+        // Readout (the feed's view replaces the timetable's when it lands)
+        if (mode === 'laps') {
+            el.readK.textContent = W.lap;
+            el.readV.textContent = `${sc.lap.current}/${sc.lap.total}`;
+            el.readS.textContent = fill(W.toGo, { n: sc.lap.total - sc.lap.current });
+        } else if (mode === 'part') {
+            el.readK.textContent = fill(W.partLeft, { p: sc.qualiPart });
+            el.readV.textContent = clock(ctx.clockAt - sec);
+            el.readS.textContent = fill(W.partOf, { i: sc.qualiPart.slice(1) });
+        } else if (mode === 'break') {
+            el.readK.textContent = fill(W.partNext, { p: sc.qualiPart });
+            el.readV.textContent = clock(ctx.clockAt - sec);
+            el.readS.textContent = fill(W.partDone, { i: Number(sc.qualiPart.slice(1)) - 1 });
+        } else if (mode === 'raceTime') {
+            el.readK.textContent = W.raceTime;
+            el.readV.textContent = clock(el0 / 1000);
+            el.readS.textContent = fill(W.laps, { n: D.gp.raceLaps });
+        } else {
+            el.readK.textContent = W.timeLeft;
+            el.readV.textContent = clock((ctx.end - t) / 1000);
+            el.readS.textContent = fill(W.session, { m: Math.round(span / 60000) });
+        }
+
+        // Bar: laps, or the session's time
+        const lapsMode = mode === 'laps';
+        const p = lapsMode ? sc.lap.current / sc.lap.total : frac;
+        el.fill.style.transform = `scaleX(${p})`;
+        el.now.style.transform = `translateX(${(p * 100).toFixed(3)}%)`;
+        if (ctx.tlLive) ctx.tlLive.style.setProperty('--f', frac.toFixed(4));
+
+        // Once a minute: the texts that read in minutes (and the screen-reader ones)
+        const m = Math.floor(t / 60000);
+        if (m !== ctx.lastMin) {
+            ctx.lastMin = m;
+            el.startS.textContent = fill(W.ago, { t: mins(el0) });
+            el.endS.textContent = fill(W.inT, { t: mins(ctx.end - t) });
+            if (lapsMode !== ctx.lastLaps) { ctx.lastLaps = lapsMode; }
+            if (!lapsMode) {
+                const dur = Math.round(span / 60000), done = Math.floor(el0 / 60000);
+                el.bar.setAttribute('aria-valuemax', dur);
+                el.bar.setAttribute('aria-valuenow', Math.min(done, dur));
+                el.bar.setAttribute('aria-valuetext', `${done} of ${dur} minutes`);
+                el.ticks.style.setProperty('--n', dur / (dur <= 60 ? 15 : dur <= 120 ? 30 : 60));
+            } else {
+                el.bar.setAttribute('aria-valuemax', sc.lap.total);
+                el.bar.setAttribute('aria-valuenow', sc.lap.current);
+                el.bar.setAttribute('aria-valuetext', `${W.lap} ${sc.lap.current} / ${sc.lap.total}`);
+                el.ticks.style.setProperty('--n', sc.lap.total);
+            }
+            el.readV.setAttribute('aria-label', mode === 'laps' ? `${W.lap} ${sc.lap.current} / ${sc.lap.total}`
+                : `${el.readK.textContent}: ${mins(mode === 'part' || mode === 'break' ? (ctx.clockAt - sec) * 1000 : mode === 'raceTime' ? el0 : ctx.end - t)}`);
+            el.readV.setAttribute('role', mode === 'laps' ? 'text' : 'timer');
+            el.readV.classList.toggle('num', mode !== 'laps');
+            if (ctx.next) {
+                const txt = fill(W.inT, { t: until(Date.parse(ctx.next.start) - t) });
+                el.nextIn.textContent = txt;
+                if (ctx.tlIn) ctx.tlIn.textContent = txt;
+            }
+        }
+        // the scale follows the bar's measure
+        if (lapsMode !== ctx.scaleLaps) { ctx.scaleLaps = lapsMode; drawScale(lapsMode); }
+    }
+
+    function drawScale(laps) {
+        const marks = [];
+        if (laps) {
+            const n = sc.lap.total;
+            marks.push([0, `${W.lap} 1`]);
+            for (let l = 10; l < n - 4; l += 10) marks.push([l / n, String(l)]);
+            marks.push([1, String(n)]);
+        } else {
+            const dur = Math.round((ctx.end - ctx.start) / 60000), step = dur <= 60 ? 15 : dur <= 120 ? 30 : 60;
+            for (let m = 0; m <= dur; m += step) marks.push([m / dur, fTime.format(ctx.start + m * 60000)]);
+        }
+        el.scale.innerHTML = marks.map(([p, t], i) =>
+            `<span class="${i && i < marks.length - 1 ? 'mid' : ''}" style="left:${(p * 100).toFixed(3)}%">${t}</span>`).join('');
+    }
+
+    // Switcher
+    const sw = document.querySelector('.sw');
+    function syncSw() {
+        sw.querySelectorAll('[data-sc]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.sc === S.scenario));
+        sw.querySelectorAll('[data-feed]').forEach((b) => b.setAttribute('aria-pressed', (b.dataset.feed === 'on') === S.feed));
+        const u = new URL(location.href);
+        u.searchParams.set('scenario', S.scenario);
+        u.searchParams.set('feed', S.feed ? 'on' : 'off');
+        history.replaceState(null, '', u);
+    }
+    sw.addEventListener('click', (e) => {
+        const b = e.target.closest('button');
+        if (!b) return;
+        if (b.dataset.sc) S.scenario = b.dataset.sc;
+        if (b.dataset.feed) S.feed = b.dataset.feed === 'on';
+        syncSw();
+        ctx.scaleLaps = undefined;
+        render();
+    });
+
+    fetch('../data.json').then((r) => r.json()).then((d) => {
+        D = d;
+        syncSw();
+        render();
+        setInterval(tick, 1000);
+        if (document.fonts) document.fonts.ready.then(fit);
+        new ResizeObserver(fit).observe(el.word);
+    });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live hero: compare</title>
+<style>
+    @font-face {
+        font-family: 'Archivo';
+        src: url('../../node_modules/@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2') format('woff2');
+        font-weight: 100 900;
+        font-stretch: 62% 125%;
+    }
+    :root { --paper: #EFEAE0; --ink: #121212; --mute-ink: #A39E93; --red: #E10600; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--ink); color: var(--paper); font-family: 'Archivo', sans-serif; }
+    header {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 24px;
+        padding: 14px 24px;
+        border-bottom: 1px solid #2a2a2a;
+        background: var(--ink);
+    }
+    h1 { margin: 0; font-size: 28px; font-weight: 900; font-stretch: 62%; text-transform: uppercase; }
+    .lbl { font-size: 11px; font-weight: 700; font-stretch: 115%; letter-spacing: .09em; text-transform: uppercase; }
+    .ctl { display: flex; align-items: center; gap: 10px; }
+    .ctl > span { color: var(--mute-ink); }
+    .group { display: flex; gap: 2px; }
+    button {
+        padding: 8px 12px;
+        border: 1px solid #3a3a3a;
+        background: none;
+        color: var(--paper);
+        font: inherit;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+    button:hover { border-color: var(--paper); }
+    button[aria-pressed='true'] { border-color: var(--paper); background: var(--paper); color: var(--ink); }
+    main { display: grid; gap: 32px; padding: 24px; }
+    section { display: grid; gap: 10px; }
+    section[hidden] { display: none; }
+    section h2 { margin: 0; display: flex; justify-content: space-between; gap: 16px; color: var(--mute-ink); }
+    section h2 a { color: var(--paper); }
+    .frame { overflow: hidden; border: 1px solid #2a2a2a; background: #000; }
+    .scaler { transform-origin: 0 0; }
+    iframe { display: block; border: 0; background: var(--paper); }
+    .note { color: var(--mute-ink); font-size: 13px; }
+</style>
+</head>
+<body>
+<header>
+    <h1>Live hero</h1>
+    <div class="ctl"><span class="lbl">Screen</span>
+        <div class="group" data-group="size">
+            <button class="lbl" data-size="1920x960">1920</button>
+            <button class="lbl" data-size="1440x900" aria-pressed="true">1440</button>
+            <button class="lbl" data-size="1100x900">1100</button>
+            <button class="lbl" data-size="375x780">375</button>
+        </div>
+    </div>
+    <div class="ctl"><span class="lbl">Session</span>
+        <div class="group" data-group="scenario">
+            <button class="lbl" data-scenario="race" aria-pressed="true">Race</button>
+            <button class="lbl" data-scenario="qualifying">Qualifying</button>
+            <button class="lbl" data-scenario="qualiBreak">Q break</button>
+            <button class="lbl" data-scenario="practice">Practice</button>
+        </div>
+    </div>
+    <div class="ctl"><span class="lbl">Feed</span>
+        <div class="group" data-group="feed">
+            <button class="lbl" data-feed="on" aria-pressed="true">With top 10</button>
+            <button class="lbl" data-feed="off">Without</button>
+        </div>
+    </div>
+    <div class="ctl"><span class="lbl">Show</span>
+        <div class="group" data-group="show">
+            <button class="lbl" data-show="all" aria-pressed="true">All</button>
+            <button class="lbl" data-show="today">Today</button>
+            <button class="lbl" data-show="a-session">A</button>
+            <button class="lbl" data-show="b-split">B</button>
+            <button class="lbl" data-show="c-board">C</button>
+            <button class="lbl" data-show="d-timeline">D</button>
+            <button class="lbl" data-show="e-mix">E · Mix</button>
+        </div>
+    </div>
+</header>
+<main>
+    <section data-dir="e-mix"><h2 class="lbl"><span>E · Mix of A and D (the owner's pick, 16/10)</span><a data-open target="_blank">Open ↗</a></h2><div class="frame"><div class="scaler"><iframe title="E"></iframe></div></div></section>
+    <section data-dir="a-session"><h2 class="lbl"><span>A · Session first</span><a data-open target="_blank">Open ↗</a></h2><div class="frame"><div class="scaler"><iframe title="A"></iframe></div></div></section>
+    <section data-dir="b-split"><h2 class="lbl"><span>B · Split field</span><a data-open target="_blank">Open ↗</a></h2><div class="frame"><div class="scaler"><iframe title="B"></iframe></div></div></section>
+    <section data-dir="c-board"><h2 class="lbl"><span>C · Running order</span><a data-open target="_blank">Open ↗</a></h2><div class="frame"><div class="scaler"><iframe title="C"></iframe></div></div></section>
+    <section data-dir="d-timeline"><h2 class="lbl"><span>D · Timeline</span><a data-open target="_blank">Open ↗</a></h2><div class="frame"><div class="scaler"><iframe title="D"></iframe></div></div></section>
+    <section data-dir="today"><h2 class="lbl"><span>Today (for reference; needs <code>npm.cmd run dev</code>; always shows the top 10)</span><a data-open target="_blank">Open ↗</a></h2><div class="frame"><div class="scaler"><iframe title="Today"></iframe></div></div></section>
+</main>
+<script>
+    // The current page simulates each moment with ?now= (the Singapore weekend)
+    const TODAY_NOW = {
+        race: '2026-10-11T12:40:00Z',
+        qualifying: '2026-10-10T13:32:00Z',
+        qualiBreak: '2026-10-10T13:21:00Z',
+        practice: '2026-10-09T09:48:00Z',
+    };
+    const state = { size: '1440x900', scenario: 'race', feed: 'on' };
+    const sections = [...document.querySelectorAll('section')];
+
+    function url(dir) {
+        if (dir === 'today') return `http://localhost:4321/f1-hub-project/home-preview/?now=${TODAY_NOW[state.scenario]}`;
+        return `${dir}/index.html?scenario=${state.scenario}&feed=${state.feed}`;
+    }
+
+    // Each design is shown at the real screen size, scaled down to fit the
+    // window's width, so 1920 and 1440 can be judged as on the monitor.
+    function render() {
+        const [w, h] = state.size.split('x').map(Number);
+        const avail = document.querySelector('main').clientWidth;
+        const k = Math.min(1, avail / w);
+        for (const s of sections) {
+            const f = s.querySelector('iframe');
+            const src = url(s.dataset.dir);
+            if (f.getAttribute('src') !== src) f.setAttribute('src', src);
+            s.querySelector('[data-open]').href = src;
+            f.style.width = `${w}px`;
+            f.style.height = `${h}px`;
+            const sc = s.querySelector('.scaler');
+            sc.style.transform = `scale(${k})`;
+            s.querySelector('.frame').style.height = `${h * k + 2}px`;
+            s.querySelector('.frame').style.width = `${w * k + 2}px`;
+        }
+    }
+
+    document.querySelectorAll('[data-group]').forEach((group) => {
+        group.addEventListener('click', (e) => {
+            const b = e.target.closest('button');
+            if (!b) return;
+            group.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+            const { size, scenario, feed, show } = b.dataset;
+            if (size) state.size = size;
+            if (scenario) state.scenario = scenario;
+            if (feed) state.feed = feed;
+            if (show) sections.forEach((s) => { s.hidden = show !== 'all' && s.dataset.dir !== show; });
+            render();
+        });
+    });
+    addEventListener('resize', render);
+    render();
+</script>
+</body>
+</html>

@@ -98,7 +98,8 @@ export type HomeHero = {
 /** A round of the season poster (the calendar section). */
 export type PosterRound = {
     readonly id: string;
-    readonly round: number;
+    /** null for a cancelled Grand Prix: it has no round (owner, 14/10). */
+    readonly round: number | null;
     /** "Australian Grand Prix", "Gran Premio de Australia" */
     readonly name: string;
     /** "Melbourne" */
@@ -266,7 +267,8 @@ export function buildHomeHero(dataDir: URL, i18n: I18n): HomeHero {
             : undefined;
         return {
             id: gp.id,
-            round: gp.round,
+            // The hero's Grands Prix (next, last raced) are never cancelled
+            round: gp.round ?? 0,
             name: local.gp(gp.id, gp.name),
             circuit: circuit?.name ?? null,
             place: circuit && city
@@ -322,7 +324,8 @@ export function buildHomeHero(dataDir: URL, i18n: I18n): HomeHero {
 
     return {
         season,
-        rounds: gps.length,
+        // Rounds in the season: cancelled Grands Prix don't count (owner, 14/10)
+        rounds: gps.filter((gp) => !gp.cancelled).length,
         next: next ? heroGp(next) : null,
         last: lastResult,
     };
@@ -454,7 +457,8 @@ export function buildStandings(dataDir: URL): Standings {
 
     return {
         afterRound: raced[raced.length - 1]?.round ?? 0,
-        rounds: gps.length,
+        // Rounds in the season: cancelled Grands Prix don't count (owner, 14/10)
+        rounds: gps.filter((gp) => !gp.cancelled).length,
         toGo: gps.filter((gp) => !gp.cancelled && !raced.includes(gp)).length,
         drivers: driverRows,
         teams: teamRows,

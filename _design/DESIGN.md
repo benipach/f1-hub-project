@@ -104,7 +104,7 @@ Display sizes are fluid with `clamp()`. Reference scale from the mockup:
 | Element | Size |
 |---|---|
 | Giant result "1" | `clamp(240px, 44vw, 660px)` |
-| "LIVE" word | `clamp(120px, 25vw, 380px)` |
+| "LIVE + session" line | fitted to its box by script (up to 400 px) |
 | Section titles ("Season 2026") | `clamp(72px, 12vw, 196px)` |
 | Countdown digits | `clamp(68px, 12vw, 190px)` |
 | Hero GP title | `clamp(44px, 7.4vw, 118px)` |
@@ -323,42 +323,53 @@ content grid, a `.band` at the bottom.
 - Band: "Race", its day and time, "Lights out in" with a compact countdown,
   and the Grand Prix page as the red action.
 
-**Live (red).** Reworked on 12/10 at the owner's request: the giant "LIVE"
-stays in the foreground, and the live classification sits next to it taking
-about half the width, not the whole page.
-- Strip: beating "Live now" tag, round, GP and circuit.
-- Left: a giant "LIVE" word, on its own (no dot next to it: owner's call,
-  12/10; the strip's "Live now" tag carries the beating dot); under it the session in
-  display type with "Started 18 min ago · Ends 20:00" (from the timetable).
-  **In a race or sprint the end time gives way to the lap, "Lap 32 / 62"; in
-  qualifying (and sprint qualifying) to the part and its clock, "Q2 · 07:24
-  left", or "Q2 next" between parts** (owner's calls, 12/10), when the live
-  feed provides them; without it the end time stays. The feed contract (data
-  attributes on the hero root) is documented in `site/src/lib/hero-state.ts`.
-  Then
-  and an ink block "● Live now / Watch live timing →" to the Live page.
-- Right (cols 8–12, both rows): the **top 10 tower**, an ink column with a
-  4 px paper rule under its header, holding **the same classification table
-  as the result state minus grid and places gained**: position, driver, team,
-  gap (owner's call, 12/10). Team logos in **their own colors**, like
-  everywhere. **On mobile**, where the team column and the first name are
-  hidden, the team logo goes left of the last name (`.d__mark`, 18 px;
-  owner's call, 13/10). **No row hover**
-  (owner's call, 13/10: it had one, paper at 7 %, and the rows looked like
-  buttons; they aren't links), and no side padding, so the table lines up
-  with its header like the result's. P1's gap cell names what P1 is in that session:
-  **"Leader"** in a race or sprint, **"Fastest"** in qualifying, sprint
-  qualifying and practice. No track layout in this state.
-- ≤ 1100 px it stacks: LIVE, session, tower, button.
-- **The tower needs live data, and the homepage must not depend on the relay
-  to work.** It stays hidden (and LIVE takes the full width) until something
-  fills it. The plan: when the relay moves to Oracle (phase 4) it gets a tiny
-  top-10 endpoint (position, driver, gap; a few hundred bytes) that the page
-  polls every ~5 s, instead of the full feed the Live page uses (~3 MB/h per
-  viewer, which is what exhausted Render's free bandwidth). On preview pages
-  the tower is filled with the last race's real classification, labelled
-  "Preview".
-- Band: what comes next and when; the timetable as a secondary action.
+**Live (red).** Redesigned from zero on 16/10 (owner's call, after four
+directions explored with agents in `_design/live/`; the chosen one is a mix
+of A's table and D's layout, `_design/live/e-mix/`). Two columns that share
+the top and the bottom line, **7 | 5**:
+- Strip: beating "Live now" tag, round, GP and circuit, "Sprint weekend".
+- **Left (cols 1–7), three bands:**
+  1. **The giant line**, "LIVE" in white and the session in ink ("LIVE
+     RACE", "LIVE / QUALIFYING"; Spanish "CARRERA / EN VIVO", the order
+     from the dictionary's `liveLine`). It takes the height the other bands
+     leave and is fitted to its box by `hero-state.ts` (on one line, or on
+     two when two lines make it bigger), once per session and on resize,
+     never in the tick.
+  2. **The session's progress**, under a 4 px rule: the heading ("Race in
+     progress · Singapore Grand Prix", your time zone), a big readout, the
+     start ("Lights out" in a race) and the end with "40 min ago" / "in 1 h
+     19 min", and a heavy bar across the column. **What the bar measures
+     (owner's calls, 16/10):** in a race or sprint, the laps (a tick per
+     lap); in qualifying, **three segments, Q1, Q2, Q3, each as long as its
+     part** (18 / 15 / 12 min; sprint 12 / 10 / 8), not ticks every 15
+     minutes, the breaks only a gap; in practice, **the session's clock**
+     (60:00 to 00:00). **The bar follows the session's clock, not the wall
+     clock**, because a red flag stops it; the feed sends that clock
+     (contract in `hero-state.ts`). Without the feed it falls back to the
+     timetable (qualifying parts estimated from the standard format).
+  3. **The weekend**, under a 4 px rule: its sessions in a row (done, the
+     live one as an ink block with its own progress, the next one with a
+     white "Next" tag and how far away it is).
+- **Right (cols 8–12): the top 10**, an ink panel from the top line to the
+  band: header "● Top 10" and "Race · Gap to leader" (or "· Best lap"),
+  then the classification (position, first name muted + LAST NAME, team
+  logo in its colours + name, gap), rows sharing the height so nothing is
+  left empty under P10, **no row hover**. P1's gap cell says "Leader" in a
+  race or sprint, "Fastest" otherwise. **Its foot is the page's main
+  action**, a red block "Positions, gaps, sectors and tyres / WATCH LIVE
+  TIMING →" (hover: paper). **The top 10 is always there** (owner's call,
+  16/10: no version without it); until the relay's endpoint fills it
+  (phase 4) the real page shows its rows as "—", and preview pages fill it
+  with the last race's classification.
+- Band (ink): "Up next", the next session, its day and time, how far away;
+  "Weekend timetable →". After the race: "Race result · Here, after the
+  flag".
+- ≤ 1100 px it stacks: the three bands, then the top 10 at full width.
+  ≤ 760 px: the heading only for screen readers, the readout and the two
+  times on one row, the weekend as five short cells ("P1", "SQ", "Quali"),
+  the table as logo + last name + gap. About 1.2 screens with the table.
+- Dropped on 16/10: the giant "LIVE" on its own with the session small
+  under it, and the floating "Watch live timing" ink box (12/10 version).
 
 **Result (ink), until 24 h after the race ends.**
 - Strip: "Race result" tag, round, GP and circuit, date.
@@ -423,6 +434,7 @@ about half the width, not the whole page.
   **Every card shares the same four rows through `subgrid`**, so plates,
   names, fields and results line up across each row of the grid, and the
   season reads like a timing sheet even where a name runs to three lines.
+- **Rounds count only the Grands Prix that are run** (owner's call, 14/10): a cancelled one has no round and **no number on its card** (the corner stays empty), and the rest count on without it (2026: Miami is round 4, Abu Dhabi 23; "Round 17 / 23"). The normalized data does it (`GrandPrix.round` is null when cancelled; `slot` keeps the calendar place).
 - Card states: **done** (the latest isn't marked, owner's call, 13/10),
   **next** (the one red field: white text and layout, rules at 50 % white,
   white tag), **upcoming** (layout at 32 %), **cancelled** (hatched, name
@@ -585,8 +597,9 @@ comes from a dictionary in `site/src/i18n/`.
   In the navbar's menu, under the links, and in the footer, under the time
   zone line (a `codes` variant, "EN · ES", exists for a tight row).
   Switching keeps the query and the hash (a preview's `?now=`).
-- The giant "LIVE" is sized for four letters; longer words ("EN VIVO")
-  shrink in proportion (`--fit`) so they stay on one line.
+- The live hero's giant line is fitted by script to any length, and the
+  dictionary sets the order of its two words (`liveLine`: "LIVE RACE",
+  "CARRERA EN VIVO").
 - Words that are the same in a language stay the same (Spanish keeps
   "Sprint", "Top 10" and the DNF / DNS / DSQ codes of the timing screens).
   Spanish countdown units: "2M 05d" (M for months, since m is minutes).
