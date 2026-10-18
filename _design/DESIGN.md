@@ -154,6 +154,11 @@ more: its hamburger is there at every width (13/10).
     element also has a `background-image` (it would vanish at once).
 - **Wipe** when the hero changes state: `clip-path` from `inset(0 100% 0 0)` to
   `inset(0)`, 0.7 s, `ease`.
+- **Loading** (16/10): every animation waits, paused at its first frame, until
+  the font is in, at most 1.5 s (`html.is-loading`, set by an inline script in
+  `Base.astro`, rule in `base.css`), so the wipe never runs in the fallback
+  font and swaps letters halfway. No loading screen, no minimum duration: the
+  page is there at once, only the motion waits.
 - **Beat** for anything live (dots): opacity 1 → .35 and back, ~1.1 s loop.
   The dot keeps its size (owner's call, 12/10: the mockup's scaling pulse
   changed it too much).
@@ -502,6 +507,29 @@ the top and the bottom line, **7 | 5**:
   change with the site's name.
 - Legal notice in small muted text, then copyright, social links and "Back to
   top".
+
+### Old pages: the new navbar and footer (option B)
+
+While the pages are rebuilt one at a time, the old ones get the new navbar
+and footer, so the site reads as one (owner's call, 13/10; built 16/10).
+`src/pages/legacy-chrome.astro` renders the two (`legacy` prop: no language
+switcher, the old pages are English only) with `legacy-chrome.css`; the
+`legacy-site` integration puts them into every old page, at build time and in
+`astro dev`, in place of `<header class="navbar">` and `<footer
+class="footer">`, drops `js/navbar.js` and `js/footer.js`, adds the chrome's
+stylesheets and scripts after the page's own and `theme-color`, marks the
+page's section (`aria-current`), and removes the helper page from the build.
+- **Only the chrome changes:** the old pages keep their reset, type and
+  native scrollbar. That's why `base.css` (the reset) and `primitives.css`
+  (the classes) are two files: the old pages load only the second.
+- `legacy-chrome.css` undoes what the old `style.css` does to any `nav ul li a`
+  (margin, uppercase, red underline), sets the chrome's font, and keeps the
+  bar **fixed**, as the old one was (the old layouts leave room for it), at
+  z-index 100. Results' sticky year bar sits at `var(--nav)`.
+- **Arrows as text** in the footer (`↗︎`, `↑︎`, with U+FE0E): the old pages run
+  Twemoji over the whole page, which turned them into emoji images.
+- `live.html` (no navbar, full-screen app) and the two redirects are left as
+  they are.
 
 ## 6. When the hero shows each state
 

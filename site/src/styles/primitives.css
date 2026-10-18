@@ -1,0 +1,145 @@
+/* Primitives of the "Poster" system (_design/DESIGN.md, sections 2 and 4):
+   type roles, layout and the small shared pieces. Kept apart from base.css
+   (the reset and the page-wide rules) so the old pages can load them for the
+   new navbar and footer without the reset (legacy-chrome.css, 16/10). */
+
+/* Visually hidden, still read by screen readers */
+.sr {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ---- Type roles ---------------------------------------------------------- */
+
+/* Labels: kickers, column heads, buttons, tags */
+.lbl {
+    font-size: 11px;
+    font-weight: 700;
+    font-stretch: 115%;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    line-height: 1.3;
+}
+
+/* Display: numbers, names, titles */
+.cond {
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    line-height: .86;
+    letter-spacing: -.005em;
+}
+
+/* Anything that ticks or lines up in a column */
+.num { font-variant-numeric: tabular-nums lining-nums; }
+
+/* ---- Layout -------------------------------------------------------------- */
+
+.wrap {
+    width: 100%;
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 var(--gut);
+}
+
+.g12 {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+}
+
+/* ---- Primitives ---------------------------------------------------------- */
+
+/* Team color square: <span class="sq" style="--c: #FF0019"> */
+.sq {
+    display: inline-block;
+    flex: none;
+    width: 10px;
+    height: 10px;
+    background: var(--c, #999);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .35);
+    vertical-align: baseline;
+}
+.on-ink .sq { box-shadow: 0 0 0 1px rgba(239, 234, 224, .55); }
+
+/* Team logos (TeamMark), in their own colors in a square box. (They were in
+   an ink/paper duotone until 13/10; the owner dropped it.) */
+.team-mark {
+    display: inline-block;
+    flex: none;
+    width: var(--size);
+    height: var(--size);
+    object-fit: contain;
+}
+
+/* Text next to a team mark: its box trimmed to the cap height and the
+   baseline, so centering it with the logo is optically right (the box's
+   room for descenders made the text sit low). */
+.mark-text {
+    line-height: 1;
+    text-box: trim-both cap alphabetic;
+}
+
+/* Live dot: gray when idle, white and beating when live */
+.ldot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #5a5650;
+}
+
+/* Live pulse: fades, never changes size */
+@keyframes beat {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .35; }
+}
+
+/* "→" that slides when its link is hovered. Same duration as the buttons it
+   sits in, so both finish together. */
+.arrow {
+    display: inline-block;
+    transition: all .2s ease;
+}
+a:hover .arrow { transform: translateX(6px); }
+
+/* Square buttons in label type */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    border: 0;
+    font-size: 12px;
+    font-weight: 700;
+    font-stretch: 115%;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+/* Hover always moves to a color that contrasts with the field the button sits
+   on: a red button turning ink on an ink band would fade into it mid-way. */
+.btn--red { background: var(--red); color: #fff; }
+.btn--red:hover { background: var(--ink); }
+.on-ink .btn--red:hover { background: var(--paper); color: var(--ink); }
+.btn--ink { background: var(--ink); color: #fff; }
+.btn--ink:hover { background: #000; }
+
+/* The line is an explicit color, not currentColor: a currentColor shadow
+   doesn't always follow `color` while it animates (it can jump to the end
+   color), and an explicit color transitions like everything else. */
+.btn--line {
+    --line: var(--ink);
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--line);
+}
+.on-ink .btn--line { --line: var(--paper); }
+.btn--line:hover { background: var(--ink); color: var(--paper); }
+.on-ink .btn--line:hover { background: var(--paper); color: var(--ink); }
+

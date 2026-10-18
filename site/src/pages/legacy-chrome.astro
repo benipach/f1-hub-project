@@ -1,0 +1,31 @@
+---
+// The new navbar and footer, rendered on their own for the old pages (option
+// B, _design/DESIGN.md section 5 "Old pages"). Not a page anyone visits: the
+// legacy-site integration reads it (at build time from the output, in dev
+// from the dev server), puts its <body> into every old page in place of the
+// old navbar and footer, copies its stylesheets and scripts into their
+// <head>, and removes it from the build.
+import '@fontsource-variable/archivo/wdth.css';
+import '../styles/tokens.css';
+import '../styles/primitives.css';
+import '../styles/legacy-chrome.css';
+import { loadLatestYear } from '@f1hub/shared/data/load';
+import Footer from '../components/Footer.astro';
+import Navbar from '../components/Navbar.astro';
+import { DATA_DIR } from '../lib/data';
+
+const season = loadLatestYear(DATA_DIR);
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>Legacy chrome | F1 Hub</title>
+</head>
+<body>
+    <Navbar season={season} legacy />
+    <Footer legacy />
+</body>
+</html>

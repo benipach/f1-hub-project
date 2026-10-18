@@ -6,6 +6,16 @@ import { useI18n } from '../i18n';
 import { href } from '../lib/paths';
 import LangSwitch from './LangSwitch.astro';
 
+interface Props {
+    /** On the old pages (legacy-chrome.astro): no language switcher, since they exist in English only. */
+    legacy?: boolean;
+}
+
+const { legacy = false } = Astro.props;
+// The arrows as text, never as emoji (U+FE0E): the old pages run Twemoji over
+// the whole page, which turned them into blue emoji images (16/10).
+const NE = '↗\uFE0E';
+const UP = '↑\uFE0E';
 const { t } = useI18n(Astro.currentLocale);
 const s = t.sections;
 
@@ -52,7 +62,7 @@ const year = new Date().getFullYear();
             <div class="foot__about">
                 <p class="foot__tag">{t.footer.tagline}</p>
                 <p class="foot__tz lbl">{t.footer.timesIn} <b>{t.footer.localTime}</b><span data-tz-note></span></p>
-                <p class="foot__lang lbl"><span>{t.nav.language}</span><LangSwitch /></p>
+                {!legacy && <p class="foot__lang lbl"><span>{t.nav.language}</span><LangSwitch /></p>}
             </div>
 
             <nav class="foot__nav" aria-label={t.footer.label}>
@@ -74,7 +84,7 @@ const year = new Date().getFullYear();
                     <h2 class="lbl">{t.footer.resources}</h2>
                     <ul>
                         {resources.map(([label, url]) => (
-                            <li><a href={url} target="_blank" rel="noopener noreferrer">{label} ↗</a></li>
+                            <li><a href={url} target="_blank" rel="noopener noreferrer">{label} {NE}</a></li>
                         ))}
                     </ul>
                 </div>
@@ -91,9 +101,9 @@ const year = new Date().getFullYear();
         <div class="foot__bot">
             <span class="foot__cr">© {year} F1 Hub · {t.footer.builtBy} <a href="https://benipach.dev" target="_blank" rel="noopener noreferrer">Benicio Pacheco</a></span>
             <span class="foot__social lbl">
-                {social.map(([label, url]) => <a href={url} target="_blank" rel="noopener noreferrer">{label} ↗</a>)}
+                {social.map(([label, url]) => <a href={url} target="_blank" rel="noopener noreferrer">{label} {NE}</a>)}
             </span>
-            <a class="foot__top-link lbl" href="#top">{t.footer.backToTop} ↑</a>
+            <a class="foot__top-link lbl" href="#top">{t.footer.backToTop} {UP}</a>
         </div>
     </div>
 </footer>

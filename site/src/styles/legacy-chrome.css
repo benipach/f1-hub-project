@@ -1,0 +1,52 @@
+/* The new navbar and footer on the old pages (option B, _design/DESIGN.md
+   section 5 "Old pages"). legacy-chrome.astro renders them with this sheet;
+   the legacy-site integration puts both into every old page, after the page's
+   own stylesheets, so these rules come later in the cascade. Only the chrome
+   is touched: the old pages keep their reset, type and scrollbar. */
+
+/* The chrome's own type and reset: the old body sets its own font, size and
+   line-height, and has no base.css */
+.nav,
+.foot {
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+}
+:is(.nav, .foot) img,
+:is(.nav, .foot) svg { display: block; max-width: 100%; }
+:is(.nav, .foot) a { color: inherit; }
+:is(.nav, .foot) button { font: inherit; color: inherit; }
+:is(.nav, .foot) :focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+
+/* The old style.css styles every `nav ul li a` as its own menu: a left
+   margin, uppercase, 16 px and a red underline that grows on hover. Undone
+   inside the chrome (its own rules are more specific and still apply). */
+:is(.nav, .foot) nav ul { display: block; }
+:is(.nav, .foot) nav ul li a {
+    position: static;
+    display: inline;
+    margin: 0;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+    text-transform: none;
+}
+:is(.nav, .foot) nav ul li a::after { content: none; }
+:is(.nav, .foot) nav ul li a:hover { color: inherit; }
+
+/* The bar is fixed, like the old one: the old pages' layouts leave room for a
+   fixed bar on top (60 px, 50 on phones), so their content doesn't move. The
+   id beats the bar's own (scoped) rule. */
+#top.nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    /* the old bar's: above everything the old pages lay over their content */
+    z-index: 100;
+}
+
+/* Results: its sticky year bar sits right under the navbar (it was 60 px,
+   50 on phones, for the old one) */
+.results-bar { top: var(--nav); }

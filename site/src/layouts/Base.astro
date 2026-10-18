@@ -4,6 +4,7 @@
 import '@fontsource-variable/archivo/wdth.css';
 import '../styles/tokens.css';
 import '../styles/base.css';
+import '../styles/primitives.css';
 import { loadLatestYear } from '@f1hub/shared/data/load';
 import Footer from '../components/Footer.astro';
 import ScrollThumb from '../components/ScrollThumb.astro';
@@ -41,6 +42,24 @@ const alternate = (code: (typeof LOCALES)[number]) => new URL(localePath(code, p
         gtag('config', 'G-V7JKWRTE0S');
     </script>
     <meta charset="utf-8" />
+    <!-- Loading (DESIGN.md, Motion): every animation waits, paused at its
+         first frame, until the font is in (at most 1.5 s), so the entrance
+         wipe never runs in the fallback font and swaps letters halfway. No
+         loading screen: the page is there, only the motion waits. -->
+    <script is:inline>
+        (function () {
+            var root = document.documentElement;
+            if (!document.fonts || !document.fonts.load) return;
+            root.classList.add('is-loading');
+            var ready = function () { root.classList.remove('is-loading'); };
+            setTimeout(ready, 1500);
+            // After the stylesheets: before them the font isn't declared yet
+            // and load() would resolve at once, with nothing
+            document.addEventListener('DOMContentLoaded', function () {
+                document.fonts.load('900 1em "Archivo Variable"').then(ready, ready);
+            });
+        })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- Mobile browsers paint their bars in the navbar's ink (--ink), so the
          page starts at the very top of the screen. -->

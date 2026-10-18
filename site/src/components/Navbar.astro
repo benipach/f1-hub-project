@@ -20,9 +20,14 @@ interface Props {
     current?: NavPage | undefined;
     /** Season shown next to the logo. */
     season: number;
+    /**
+     * On the old pages (legacy-chrome.astro): no language switcher, since
+     * they exist in English only.
+     */
+    legacy?: boolean;
 }
 
-const { current, season } = Astro.props;
+const { current, season, legacy = false } = Astro.props;
 const { t, fill } = useI18n(Astro.currentLocale);
 const s = t.sections;
 
@@ -86,7 +91,7 @@ const target = (to: string) => (to.startsWith('#') ? href('') + to : href(to));
                                 ))}
                 </div>
             ))}
-            <div class="nav__lang lbl"><LangSwitch /></div>
+            {!legacy && <div class="nav__lang lbl"><LangSwitch /></div>}
         </nav>
     </div>
     <!-- Desktop: the page behind the side panel, dimmed; a click closes it -->
