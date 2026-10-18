@@ -4,9 +4,11 @@
 // Note: `next` doesn't get the automatic data commits (they go to main), so
 // data/ here stops at 09/10. The 2026 examples use races run before that.
 
-import { readdirSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { loadLatestYear, loadSeason, loadTeams } from '../src/data/load';
+import { RawSeason } from '../src/data/raw';
+import { normalizeSeason } from '../src/data/season';
 import type { GrandPrix, SessionKey, SessionOf, SessionResult } from '../src/data/season';
 
 const DATA = new URL('../../data/', import.meta.url);
@@ -62,6 +64,23 @@ describe('every season', () => {
         expect(round('japanese-gp')).toBe(3);
         expect(round('miami-gp')).toBe(4);
         expect(round('abu-dhabi-gp')).toBe(23);
+    });
+
+    it('2026 reads the same from main’s files, where a cancelled GP has "round": null (16/10)', () => {
+        // next's data still numbers the cancelled GPs; main's doesn't since
+        // fix/cancelled-rounds. Rewrite the file the way main has it.
+        const file = JSON.parse(readFileSync(new URL('seasons/season2026.json', DATA), 'utf8')) as Record<string, { round: number | null; cancelled: boolean }>;
+        let n = 0;
+        for (const raw of Object.values(file)) raw.round = raw.cancelled ? null : ++n;
+        const fromMain = normalizeSeason(2026, RawSeason.parse(file), teams);
+        const pick = (gps: readonly GrandPrix[]) => gps.map((g) => [g.id, g.round, g.slot]);
+        expect(pick(fromMain)).toEqual(pick(seasons.get(2026) ?? []));
+    });
+
+    it('only a cancelled Grand Prix may have no round', () => {
+        const file = JSON.parse(readFileSync(new URL('seasons/season2026.json', DATA), 'utf8')) as Record<string, { round: number | null }>;
+        file['miami-gp']!.round = null;
+        expect(RawSeason.safeParse(file).success).toBe(false);
     });
 
     it('rounds go 1, 2, 3… in every season', () => {

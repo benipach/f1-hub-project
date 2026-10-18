@@ -126,7 +126,9 @@ export const RawSessions = z.strictObject({
 });
 
 export const RawGrandPrix = z.strictObject({
-    round: z.number().int().positive(),
+    // null for a cancelled GP, which has no round (main, since fix/cancelled-rounds,
+    // 16/10); the data frozen in next still numbers them. Checked below.
+    round: z.number().int().positive().nullable(),
     name: z.string().min(1),
     // Missing on 95 GPs, mostly 1990–1999 (data/seasons/missing-circuits.txt).
     circuitId: slug.optional(),
@@ -135,7 +137,7 @@ export const RawGrandPrix = z.strictObject({
     // Editorial note shown on the GP page (2026 only).
     info: z.strictObject({ title: z.string(), text: z.string(), date: isoDate }).optional(),
     sessions: RawSessions,
-});
+}).refine((gp) => gp.round !== null || gp.cancelled, { message: 'only a cancelled Grand Prix has no round', path: ['round'] });
 
 // data/seasons/season{year}.json, keyed by GP id ("australian-gp").
 export const RawSeason = z.record(slug, RawGrandPrix);

@@ -78,7 +78,7 @@ export type GrandPrix = {
      * the owner's call, 14/10). The data's own number is `slot`.
      */
     readonly round: number | null;
-    /** The data's round: the Grand Prix's place in the calendar, cancelled ones included. */
+    /** The Grand Prix's place in the calendar (by the race's date), cancelled ones included. */
     readonly slot: number;
     readonly name: string;
     /** Missing on 95 GPs, mostly 1990–1999. */
@@ -167,7 +167,8 @@ export function normalizeGrandPrix(id: string, year: number, raw: RawGrandPrix, 
         id,
         year,
         round: raw.cancelled ? null : raw.round,
-        slot: raw.round,
+        // Set by normalizeSeason, from the calendar order
+        slot: 0,
         name: raw.name,
         circuitId: raw.circuitId ?? null,
         sprint: raw.sprint,
@@ -183,9 +184,18 @@ export function normalizeGrandPrix(id: string, year: number, raw: RawGrandPrix, 
  * cancelled Grands Prix get no round.
  */
 export function normalizeSeason(year: number, raw: RawSeason, teams: Teams): GrandPrix[] {
+    // The order comes from the race's date, not from the data's round: a
+    // cancelled GP has none in the files since 16/10 ("round": null), while
+    // the data frozen in next still numbers it. Both read the same.
+    const raceDay = (gp: GrandPrix): string => {
+        const time = gp.sessions.find((s) => s.key === 'race')?.time;
+        return time?.kind === 'datetime' ? time.start : time?.kind === 'date' ? time.date : '';
+    };
     let round = 0;
     return Object.entries(raw)
-        .map(([id, gp]) => normalizeGrandPrix(id, year, gp, teams))
-        .sort((a, b) => a.slot - b.slot)
-        .map((gp) => (gp.cancelled ? gp : { ...gp, round: ++round }));
+        .map(([id, gp], i) => ({ gp: normalizeGrandPrix(id, year, gp, teams), day: '', order: gp.round ?? Infinity, i }))
+        .map((entry) => ({ ...entry, day: raceDay(entry.gp) }))
+        // ISO dates sort as text; ties (or no date) keep the data's round, then the file's order
+        .sort((a, b) => (a.day && b.day && a.day !== b.day ? (a.day < b.day ? -1 : 1) : a.order - b.order || a.i - b.i))
+        .map(({ gp }, i) => ({ ...gp, slot: i + 1, round: gp.cancelled ? null : ++round }));
 }

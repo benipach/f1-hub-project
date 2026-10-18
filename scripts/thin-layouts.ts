@@ -11,27 +11,29 @@
 //
 // Writes img/circuits/thin/<id>-layout.svg; the originals stay as they are
 // (the old pages use them).
-// Usage: node scripts/thin-layouts.js [cut=1.4] [outDir=img/circuits/thin]
+// Usage: node scripts/thin-layouts.ts [cut=1.4] [outDir=img/circuits/thin]
+// (TypeScript run by Node 24 as is: it strips the types, nothing to install)
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 
-const CUT = Number(process.argv[2] ?? 1.4);
+const CUT: number = Number(process.argv[2] ?? 1.4);
+if (!(CUT > 0)) throw new Error(`cut must be a positive number, got "${process.argv[2]}"`);
 
-const SRC = path.join(HERE, '..', 'img', 'circuits');
-const OUT = path.resolve(process.argv[3] ?? path.join(SRC, 'thin'));
+const SRC: string = path.join(HERE, '..', 'img', 'circuits');
+const OUT: string = path.resolve(process.argv[3] ?? path.join(SRC, 'thin'));
 
 fs.mkdirSync(OUT, { recursive: true });
-let count = 0;
+let count: number = 0;
 for (const file of fs.readdirSync(SRC).filter((f) => f.endsWith('-layout.svg'))) {
     const svg = fs.readFileSync(path.join(SRC, file), 'utf8');
     const id = `thin-${file.replace('-layout.svg', '')}`;
     const viewBox = svg.match(/viewBox="([^"]+)"/)?.[1] ?? '0 0 121 85';
-    const [x, y, w, h] = viewBox.split(/\s+/).map(Number);
+    const [x = 0, y = 0, w = 121, h = 85] = viewBox.split(/\s+/).map(Number);
     // Every path, without its fill (set again below) or clip reference
-    const paths = [...svg.matchAll(/<path\b[^>]*\/>/g)].map((m) => m[0].replace(/\s(fill|clip-path)="[^"]*"/g, ''));
+    const paths: string[] = [...svg.matchAll(/<path\b[^>]*\/>/g)].map((m) => m[0].replace(/\s(fill|clip-path)="[^"]*"/g, ''));
     const shapes = paths.map((p) => p.replace('<path', '<path fill="#15151E"')).join('');
     const edges = paths.map((p) => p.replace('<path', `<path fill="none" stroke="#000" stroke-width="${CUT}" stroke-linejoin="round"`)).join('');
     const region = `x="${x - 5}" y="${y - 5}" width="${w + 10}" height="${h + 10}"`;
