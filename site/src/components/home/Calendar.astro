@@ -60,7 +60,7 @@ const upcoming = (r: PosterRound) => r.status === 'next' || r.status === 'upcomi
         </header>
 
         <div class="prog" style={`--rounds: ${rounds.length}`} aria-hidden="true">
-            {rounds.map((r) => <i class={`prog--${r.status}`} title={r.round !== null ? `R${r.round}` : c.cancelledRound}></i>)}
+            {rounds.map((r) => <i class={`prog--${r.status}`}></i>)}
         </div>
         {first && last && (
             <div class="prog-k lbl" aria-hidden="true">
@@ -103,7 +103,7 @@ const upcoming = (r: PosterRound) => r.status === 'next' || r.status === 'upcomi
                             {r.status === 'done' && r.winner && (
                                 <>
                                     <span class="rd__lab lbl">{c.winner}</span>
-                                    <span class="rd__win" title={r.winner.team}>
+                                    <span class="rd__win">
                                         <TeamMark logo={r.winner.teamLogo} color={r.winner.teamColor} size={22} />
                                         <span class="rd__val">{r.winner.firstName} {r.winner.name}</span>
                                     </span>

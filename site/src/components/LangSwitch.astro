@@ -24,7 +24,7 @@ const path = pathWithoutLocale(Astro.url.pathname);
                 hreflang={code}
                 aria-current={code === locale ? 'true' : undefined}
                 data-lang-link
-                title={LANGUAGE_NAMES[code]}
+                aria-label={variant === 'codes' ? LANGUAGE_NAMES[code] : undefined}
             >{variant === 'codes' ? code.toUpperCase() : LANGUAGE_NAMES[code]}</a>
         </>
     ))}

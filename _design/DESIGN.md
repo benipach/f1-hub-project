@@ -152,6 +152,12 @@ more: its hamburger is there at every width (13/10).
     its layer and doesn't flash when the transition starts and ends;
   - change `background-color`, not the `background` shorthand, when the
     element also has a `background-image` (it would vanish at once).
+- **Never the browser's tooltip** (owner, 29/10, a standing rule: "el
+  textito ese de windows", not wanted unless they say otherwise). No `title`
+  attribute on anything shown on a page. When hovering something needs to
+  tell more, the site draws its own card (ink, a 3–4 px rule on top, the
+  site's type), like the driver page's `data-tt` card. An element that
+  scales up on hover is solid, or its neighbours' edges show through it.
 - **Wipe** when the hero changes state: `clip-path` from `inset(0 100% 0 0)` to
   `inset(0)`, 0.7 s, `ease`.
 - **Loading** (16/10): every animation waits, paused at its first frame, until
