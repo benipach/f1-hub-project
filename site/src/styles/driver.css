@@ -1,0 +1,508 @@
+/* The driver profile (_design/DESIGN.md, "Driver profile"), ported from the
+   approved mockup (_design/driver/index.html, 18–29/10); every "owner" note
+   is a call the owner made there. Global on purpose: the season panel and
+   the boards are written as HTML strings (lib/driver-view.ts), which scoped
+   styles don't reach. Loaded by DriverPage.astro only. */
+
+/* Color fields: the sections alternate ink and paper, the hero on ink */
+.f-ink { background: var(--ink); color: var(--paper); }
+.f-paper { background: var(--paper); color: var(--ink); }
+.f-ink .mute, .f-ink.mute { color: var(--mute-ink); }
+.mute { color: var(--mute); }
+.sec { padding: 112px 0 120px; }
+@media (max-width: 760px) { .sec { padding: 72px 0 80px; } }
+
+/* Section head: kicker, then a big title, on a 4px rule */
+.sec__head { display: flex; align-items: end; justify-content: space-between; gap: 24px; padding-top: 14px; border-top: 4px solid currentColor; margin-bottom: 40px; }
+.sec__title { margin: 10px 0 0; font-size: clamp(56px, 8vw, 128px); }
+.sec__kick { margin: 0; }
+@media (max-width: 760px) {
+    /* --len: the title's longest word (the picker's: the whole line, which
+       can't wrap); a capital is ~.55 em wide in this type */
+    .sec__title { font-size: min(56px, calc((100vw - 2 * var(--gut)) / (var(--len, 6) * .55))); }
+}
+
+.hide { display: none !important; }
+
+/* 1. Hero */
+/* The whole first screen (owner, 29/10), as the homepage's hero: the body
+   takes what's left, so the photo grows and the figures sit at the foot */
+.hero { display: flex; flex-direction: column; min-height: calc(100svh - var(--nav)); padding: 0; }
+.hero > .wrap { display: flex; flex: 1; flex-direction: column; width: 100%; }
+.hero__body { flex: 1; }
+.strip { display: flex; flex-wrap: wrap; align-items: center; border-bottom: 1px solid var(--rule-ink); }
+.strip > * { display: flex; align-items: center; gap: 10px; padding: 16px 20px; border-right: 1px solid var(--rule-ink); }
+.strip > :first-child { padding-left: 0; }
+.strip > :last-child { margin-left: auto; padding-right: 0; border-right: 0; }
+.strip .live::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--paper); }
+/* Short screens (1280×720): spaces and sizes also follow the height, so
+   the hero fits the first screen instead of running past it */
+.hero__body { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--gap); padding: clamp(24px, 5svh, 48px) 0 0; }
+.hero__first { margin: 0; font-size: clamp(40px, 4.6vw, 72px); font-weight: 800; font-stretch: 62%; text-transform: uppercase; line-height: .86; }
+.hero__last { margin: 2px 0 0; }
+.hero__last span { display: block; line-height: .8; }
+.hero__num { display: flex; align-items: end; gap: 18px; margin-top: clamp(12px, 3svh, 28px); }
+.hero__num b { font-size: min(clamp(110px, 13vw, 200px), 18svh); line-height: .74; color: var(--red); }
+.hero__num span { padding-bottom: 6px; }
+.photo { position: relative; align-self: stretch; min-height: clamp(240px, 40svh, 420px); overflow: hidden; background: var(--ink); }
+/* Ink and paper duotone (SVG filter #duo, below): the photo in black and white,
+   with black mapped to --ink (#121212) and white to --paper (#EFEAE0); no red
+   on top (tried and dropped by the owner, 18/10). Owner's
+   call, 18/10, after the red versions (the multiply one turned shadows black). */
+.photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 30% 20%; filter: url(#duo); }
+.photo--none { display: grid; place-items: center; background: var(--ink-2); box-shadow: inset 0 0 0 1px var(--rule-ink); }
+.photo--none b { font-size: clamp(160px, 18vw, 300px); color: transparent; -webkit-text-stroke: 2px var(--mute-ink); }
+.photo__cap { position: absolute; left: 12px; bottom: 12px; color: #fff; mix-blend-mode: normal; }
+/* Up to five figures, always in one row; fitFigs() (below) sizes the numbers so
+   the widest one fits its column, and gives them all that size (owner, 18/10) */
+.figs { display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: var(--gap); margin-top: clamp(24px, 5svh, 56px); padding-bottom: clamp(24px, 6svh, 72px); }
+.fig { min-width: 0; }
+.fig { padding-top: 14px; border-top: 4px solid var(--paper); }
+.fig b { display: flex; align-items: flex-end; gap: .1em; width: max-content; font-size: 132px; }
+.fig b.red { color: var(--red); }
+.fig .lbl { display: block; margin-top: 14px; }
+.fig .note { margin-top: 6px; color: var(--mute-ink); }
+/* minmax(0, …): a long last name (SCHUMACHER) must not widen its column
+   before fitName() sizes it to that column */
+.hero__body > div { min-width: 0; }
+@media (max-width: 1100px) { .hero__body { grid-template-columns: minmax(0, 1fr); } .photo { min-height: 320px; } }
+/* Phone: stacked, it's longer than the screen anyway (the homepage's too) */
+@media (max-width: 760px) { .hero { min-height: 0; } }
+@media (max-width: 760px) {
+    .strip > * { padding: 12px; }
+    /* Five in a row: a long word ("MUNDIALES") must fit its column */
+    .fig .lbl { font-size: 9px; font-stretch: 100%; letter-spacing: .03em; }
+}
+
+/* 2. Driver info: a spec sheet */
+.info { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 4px solid currentColor; border-left: 1px solid currentColor; }
+.cell { min-width: 0; display: flex; flex-direction: column; min-height: 132px; padding: 14px 16px 16px; border-right: 1px solid currentColor; border-bottom: 1px solid currentColor; }
+.cell__v { margin-top: auto; padding-top: 20px; font-size: clamp(28px, 2.6vw, 40px); }
+.cell__s { margin-top: 8px; }
+/* Flag: flat 4:3, cap height of the text next to it, the same 1px outline as
+   the team squares (light flags like Japan's would vanish on paper otherwise) */
+.nat { display: flex; align-items: center; gap: .3em; }
+.flag { flex: none; width: auto; height: .74em; aspect-ratio: 4 / 3; object-fit: cover; box-shadow: 0 0 0 1px rgba(18, 18, 18, .35); }
+.cell--2 { grid-column: span 2; }
+.cell--4 { grid-column: 1 / -1; padding-bottom: 13px; } /* the teams table: last row's text as far from the border as from the rule above */
+/* Teams: one row per stint, across the full width (owner's pick, option A of
+   teams-lab.html, 18/10); a red mark on the stints with a world title */
+.teams { width: 100%; margin-top: 18px; border-collapse: collapse; }
+.teams th { padding: 0 12px 8px 0; text-align: left; white-space: nowrap; }
+/* Every cell centered on the row's middle, with its text trimmed to the cap
+   height and the baseline, so names, tags and figures all share one optical
+   center (owner, 18/10: the baseline left room for descenders below) */
+.teams td { padding: 12px 12px 12px 0; border-top: 1px solid rgba(18, 18, 18, .25); white-space: nowrap; vertical-align: middle; line-height: 1; text-box: trim-both cap alphabetic; }
+.teams .n { text-align: right; }
+/* The cell's own padding already closes the table: no row padding stacked on it */
+.teams tbody tr:last-child td { padding-bottom: 0; }
+.teams td.n { font-size: 24px; }
+.teams td.yr { font-size: 22px; }
+.teams .tm { display: flex; align-items: center; gap: 10px; }
+/* Logo, name and the champion tag centered on one line: the name's box trimmed
+   to its cap height so it centers optically (as .mark-text does) */
+.teams .tm b { font-size: 26px; line-height: 1; text-box: trim-both cap alphabetic; }
+.teams .tag { margin-left: 4px; padding: 5px 6px; border: 1px solid currentColor; line-height: 1; text-box: trim-both cap alphabetic; }
+@media (max-width: 760px) {
+    /* Phone: team, years, races and wins only */
+    .teams th:nth-child(n+5), .teams td:nth-child(n+5) { display: none; }
+    .teams th, .teams td { padding-right: 8px; }
+    .teams .tag { display: none; }
+    .teams .tm { gap: 6px; }
+    .teams .tm b { font-size: 18px; }
+    .teams td.yr { font-size: 16px; }
+    .teams td.n { font-size: 18px; }
+    /* Spanish heads are longer ("CARRERAS", "VICTORIAS"): the team's name
+       takes two lines and the heads a size less, so it fits 375 px */
+    .teams th { font-size: 9px; letter-spacing: .04em; }
+    .teams td:first-child { white-space: normal; }
+    .teams .tm b { line-height: .95; text-box: none; }
+}
+/* Before / Beyond F1: "2017 · FIA Formula 3 European champion", one per line */
+/* Side by side, both always there (owner, 18/10): Beyond F1 stays blank when
+   there's nothing; the list starts at the top of the cell, not at its foot */
+.cell--rec { justify-content: flex-start; }
+.rec { margin: 18px 0 0; padding: 0; list-style: none; }
+.rec li { display: grid; grid-template-columns: 4.2em 1fr; gap: 16px; align-items: center; padding: 10px 0; border-top: 1px solid rgba(18, 18, 18, .25); }
+.rec li:last-child { padding-bottom: 0; }
+.rec__y { font-size: 24px; line-height: 1; white-space: nowrap; text-box: trim-both cap alphabetic; }
+.rec__t { font-size: 18px; font-weight: 600; line-height: 1.2; }
+@media (max-width: 1100px) { .info { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 760px) { .info { grid-template-columns: 1fr; } .cell--2 { grid-column: auto; } .cell { min-height: 0; } }
+
+/* 3. One season: racecraft */
+/* Season picker: a button and its own list instead of a <select> (the native
+   list can't take the site's type), as the current page does with
+   js/shared/season-picker.js. Every year in the list at the title's size. */
+.picker { display: inline-flex; align-items: center; gap: .18em; }
+.yp { position: relative; display: inline-block; }
+.yp__btn { all: unset; display: inline-flex; align-items: center; gap: .12em; cursor: pointer; font: inherit; color: inherit; line-height: inherit; }
+.yp__btn:focus-visible { outline: 3px solid var(--red); outline-offset: 4px; }
+.yp__chev { width: .32em; height: .32em; fill: none; stroke: currentColor; stroke-width: 2.4; transition: all .35s ease; }
+.yp.is-open .yp__chev { transform: rotate(180deg); }
+.yp__btn:hover .yp__chev { stroke: var(--red-hi); }
+/* The panel: opens beside the chevron, from the top of the year, in a smaller
+   size than the title (owner, 18/10). The list scrolls inside it, and the
+   thumb floats over its right edge. */
+.yp__panel {
+    position: absolute; z-index: 20; top: 0; left: calc(100% + 18px);
+    font-size: .36em;
+    background: var(--ink-2); box-shadow: 0 0 0 1px var(--rule-ink), 0 18px 40px rgba(0, 0, 0, .45);
+    visibility: hidden; clip-path: inset(0 0 100% 0); transition: all .35s ease;
+}
+.yp__list {
+    display: flex; flex-direction: column;
+    max-height: min(60vh, 7.4em); overflow-y: auto; scrollbar-width: none;
+    padding: 0 18px 0 14px;
+}
+.yp__list::-webkit-scrollbar { display: none; }
+/* The scroll thumb, the same as the homepage's (ScrollThumb.astro on next):
+   drawn by the site instead of the native bar, 4px of a see-through gray with
+   no track, 6px and darker on hover or while dragged; it can be dragged */
+.yp__thumb { position: absolute; top: 0; right: 0; display: flex; justify-content: flex-end; width: 14px; cursor: pointer; will-change: transform; }
+.yp__thumb[hidden] { display: none; }
+.yp__thumb i { display: block; width: 4px; height: 100%; background-color: rgba(128, 124, 116, .6); transition: all .2s ease; }
+.yp__thumb:hover i, .yp__thumb.is-drag i { width: 6px; background-color: rgba(128, 124, 116, .9); }
+/* Phone: no room beside the chevron, so it drops below it, right-aligned */
+@media (max-width: 760px) {
+    .yp__panel { top: calc(100% + 8px); left: auto; right: 0; font-size: .5em; }
+}
+.yp.is-open .yp__panel { visibility: visible; clip-path: inset(0); }
+.yp__opt { all: unset; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: .4em; padding: .16em 0; border-bottom: 1px solid var(--rule-ink); cursor: pointer; color: var(--mute-ink); font: inherit; line-height: .9; transition: all .35s ease; }
+.yp__opt:last-child { border-bottom: 0; }
+.yp__opt:hover, .yp__opt:focus { color: var(--paper); outline: none; }
+.yp__opt[aria-selected='true'] { color: var(--paper); }
+.yp__opt[aria-selected='true']::after { content: ''; width: .14em; height: .14em; background: var(--red); }
+.yp__opt small { font-size: 11px; font-weight: 700; font-stretch: 115%; letter-spacing: .09em; color: var(--mute-ink); }
+.band { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--gap); }
+.band > div { padding-top: 10px; border-top: 4px solid var(--paper); }
+.band b { display: block; font-size: clamp(44px, 5vw, 80px); }
+.band .lbl { display: block; margin-top: 10px; }
+/* Teammate duel: who, then three split bars (driver in paper, teammate in gray) */
+.duel { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap); align-items: center; margin-top: 32px; padding-bottom: 28px; border-bottom: 1px solid var(--rule-ink); }
+.duel__who p { margin: 10px 0 0; font-size: clamp(36px, 3.6vw, 56px); }
+.duel__who p .mute { font-size: .5em; }
+.duel__rows { display: grid; gap: 12px; }
+.duel__row { display: grid; grid-template-columns: 110px 56px 1fr 56px; align-items: center; gap: 14px; }
+.duel__row b { font-size: 30px; line-height: 1; text-box: trim-both cap alphabetic; }
+.duel__a { text-align: right; }
+.duel__row.mate .duel__a, .duel__row.me .duel__b { color: var(--mute-ink); }
+.duel__bar { position: relative; display: flex; gap: 3px; height: 12px; }
+/* The halfway mark: who's past it leads the duel (owner, 18/10) */
+.duel__bar::after { content: ''; position: absolute; left: 50%; top: -5px; bottom: -5px; width: 2px; margin-left: -1px; background: var(--red); }
+.duel__bar i:first-child { background: var(--paper); }
+.duel__bar i:last-child { background: #4a4741; }
+.duel__none { grid-column: 2 / -1; }
+@media (max-width: 1100px) { .duel { grid-template-columns: 1fr; } }
+/* "CLASIFICACIÓN" needs the wider label column */
+@media (max-width: 760px) { .duel__row { grid-template-columns: 92px 30px 1fr 30px; gap: 8px; } .duel__row .lbl { font-size: 9px; letter-spacing: .04em; } .duel__row b { font-size: 22px; } }
+/* Team(s) of the season: logo and name centered on each other, the name's box
+   trimmed to its cap height (.mark-text), as the site does next to a TeamMark */
+.craft__team { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-left: auto; }
+.craft__team > span { display: inline-flex; align-items: center; gap: 10px; }
+.craft__team .cond { font-size: 26px; letter-spacing: 0; color: var(--paper); }
+.craft { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 36px; padding: 16px 0; border-top: 1px solid var(--rule-ink); border-bottom: 1px solid var(--rule-ink); }
+.craft__tag { padding: 5px 8px; background: var(--paper); color: var(--ink); }
+.craft__tag.is-top { background: var(--red); color: #fff; }
+.chart { margin-top: 40px; }
+/* Race card on hover, next to the race's point */
+.chart__plot { position: relative; }
+.hit { cursor: default; }
+.dot { transition: all .2s ease; }
+.dot.is-on { stroke: var(--paper); stroke-width: 6; stroke-opacity: .25; }
+/* It slides from race to race and fades in and out of the chart (owner,
+   18/10: moving between races "se ve escalonado"); .is-instant places it with
+   no slide the first time, so it doesn't travel in from the last race shown */
+.tip { position: absolute; z-index: 5; left: 0; top: 0; display: flex; flex-direction: column; gap: 10px; min-width: 190px; padding: 12px 14px 14px; background: var(--ink-2); border-top: 4px solid var(--paper); box-shadow: 0 0 0 1px var(--rule-ink), 0 14px 30px rgba(0, 0, 0, .5); pointer-events: none; opacity: 0; visibility: hidden; transition: all .22s ease; }
+.tip.is-on { opacity: 1; visibility: visible; }
+.tip.is-instant { transition: none; }
+.tip__gf { display: flex; align-items: baseline; gap: 10px; font-size: 44px; line-height: .9; }
+.tip__arr { font-size: .5em; color: var(--mute-ink); }
+.tip__win { color: var(--red); }
+.tip__out { color: var(--red-hi); }
+.tip__spr { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 10px; padding-top: 8px; border-top: 1px solid var(--rule-ink); }
+.tip__spr .cond { font-size: 20px; letter-spacing: 0; }
+.tip__ft { display: flex; justify-content: space-between; gap: 14px; padding-top: 8px; border-top: 1px solid var(--rule-ink); }
+.chart__head { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.chart__key { display: flex; gap: 18px; flex-wrap: wrap; }
+.chart__key i { display: inline-block; width: 18px; height: 0; margin-right: 6px; vertical-align: 3px; border-top: 3px solid var(--paper); }
+.chart__key i.g { border-top: 2px dashed var(--mute-ink); }
+.chart svg { display: block; width: 100%; height: auto; margin-top: 16px; overflow: visible; font-family: var(--font); }
+.chart .tip { fill: var(--paper); }
+
+.chart__note { margin-top: 12px; }
+.rounds { width: 100%; margin-top: 48px; border-collapse: collapse; }
+.rounds th { padding: 0 10px 10px 0; text-align: left; }
+.rounds td { padding: 10px 10px 10px 0; border-top: 1px solid var(--rule-ink); }
+.rounds .n { text-align: right; }
+.rounds td.r { width: 1%; font-size: 22px; }
+.rounds td.gp { font-size: 22px; }
+/* Race and sprint as two column groups, one row per weekend (owner, 18/10).
+   Group heads on a 4px rule; a hairline opens the sprint group; the sprint a
+   step quieter than the race; blank on weekends without one. */
+.rounds tr.grp th { padding: 0 12px 10px 0; color: var(--paper); }
+.rounds tr.grp th.grp__race, .rounds tr.grp th.grp__spr { border-bottom: 4px solid var(--paper); }
+.rounds tr.grp th.grp__spr { border-bottom-color: var(--mute-ink); color: var(--mute-ink); }
+.rounds .s1 { padding-left: 22px !important; border-left: 1px solid var(--rule-ink); }
+.rounds thead tr:last-child th { padding-top: 10px; }
+.with-spr tbody td.spr { color: var(--mute-ink); }
+.with-spr tbody td.spr.up { color: var(--mute-ink); }
+.with-spr tbody td.spr .podium { background: var(--mute-ink); }
+.with-spr tbody td.spr .podium.win { background: var(--red); color: #fff; }
+.with-spr td.gf, .with-spr td.d { font-size: 20px; }
+.gpn { display: flex; align-items: center; gap: 12px; }
+.gpn .cond { line-height: 1; text-box: trim-both cap alphabetic; }
+.flw { display: inline-block; width: auto; height: .82em; margin-left: 10px; vertical-align: -.08em; fill: var(--fl); }
+.on-ink .flag { box-shadow: 0 0 0 1px rgba(239, 234, 224, .3); }
+.rounds .flag { height: .7em; }
+.rounds td.gf { font-size: 22px; white-space: nowrap; }
+.rounds td.gf .arr { margin: 0 8px; color: var(--mute-ink); }
+.rounds td.d { font-size: 20px; }
+.up { color: var(--paper); }
+.down { color: var(--red-hi); }
+.rounds tr.is-dim td { color: var(--mute-ink); }
+.rounds .podium { display: inline-block; min-width: 36px; padding: 2px 6px; text-align: center; background: var(--paper); color: var(--ink); }
+.rounds .win { background: var(--red); color: #fff; }
+.rounds .flg { margin-left: 8px; color: var(--fl); }
+/* Row hover (owner, 29/10): a red bar on the left, a paper tint across,
+   the round number red and the name a step right; the race's point lights
+   up on the form curve, and a point hovered there lights its row (.is-hl) */
+.rounds th:first-child, .rounds td:first-child { padding-left: 14px; }
+.rounds tbody tr:not(.is-dim) td { transition: background-color .2s ease, box-shadow .2s ease, color .2s ease; }
+.rounds .gpn { transition: transform .25s cubic-bezier(.2, .7, .2, 1); }
+.rounds tbody tr.is-hl td { background-color: rgba(239, 234, 224, .06); }
+.rounds tbody tr.is-hl td:first-child { box-shadow: inset 4px 0 0 var(--red); color: var(--red-hi); }
+.rounds tbody tr.is-hl .gpn { transform: translateX(6px); }
+@media (prefers-reduced-motion: reduce) { .rounds .gpn { transition: none; } .rounds tbody tr.is-hl .gpn { transform: none; } }
+@media (max-width: 760px) {
+    .band { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 20px; }
+    .rounds .hide-s { display: none; }
+    .rounds td.gp, .rounds td.gf { font-size: 18px; }
+    /* Phone with sprints: no room for +/−, the groups keep start → finish and points */
+    .with-spr th:nth-child(4), .with-spr td:nth-child(4), .with-spr thead tr:last-child th:nth-child(7), .with-spr td:nth-child(7) { display: none; }
+    .with-spr td.gf, .with-spr td.d { font-size: 15px; }
+    .with-spr .s1 { padding-left: 10px !important; }
+    .with-spr .gpn .cond { font-size: 15px; }
+    /* Phone: the table slides sideways when the sprint group doesn't fit; the
+       small tags go (classified, fastest lap) */
+    .rounds-wrap { overflow-x: auto; scrollbar-width: none; margin-right: calc(var(--gut) * -1); }
+    .rounds-wrap::-webkit-scrollbar { display: none; }
+    .with-spr { min-width: 560px; }
+    .rounds .gf .lbl, .rounds .flg { display: none; }
+}
+
+/* 4. Season by season */
+/* Everything grows with the width of a season's column (few seasons, room to
+   spare: bigger), each size capped (owner, 18/10). --col is that width,
+   measured against the section (a container) minus the label column. */
+.sbs__wrap { container-type: inline-size; }
+.sbs { --n: 1; --lab: 120px; --col: calc((100cqi - var(--lab) - (var(--n) - 1) * 3px) / var(--n)); }
+.sbs__grid { display: grid; grid-template-columns: var(--lab) repeat(var(--n), minmax(0, 1fr)); column-gap: 3px; }
+.sbs__bars { height: clamp(220px, calc(var(--col) * .9), 320px) !important; }
+.sbs__bars span { font-size: clamp(20px, calc(var(--col) * .42), 64px) !important; }
+.sbs__row { font-size: clamp(16px, calc(var(--col) * .3), 36px); padding: clamp(10px, calc(var(--col) * .05), 16px) 2px !important; }
+.sbs__row.y { font-size: clamp(20px, calc(var(--col) * .42), 52px) !important; }
+.sbs__row.mute { font-size: clamp(11px, calc(var(--col) * .09), 16px) !important; }
+.sbs__row .team-mark { width: clamp(18px, calc(var(--col) * .16), 40px) !important; height: clamp(18px, calc(var(--col) * .16), 40px) !important; }
+.sbs__lab { display: flex; flex-direction: column; justify-content: center; padding: 0 12px 0 0; border-top: 1px solid transparent; }
+.sbs__lab:first-child { justify-content: flex-end; padding-bottom: 8px; border-top: 0; }
+.sbs__col { all: unset; box-sizing: border-box; display: contents; cursor: pointer; }
+.sbs__bars { all: unset; box-sizing: border-box; display: block; cursor: pointer; position: relative; height: 220px; }
+.sbs__bars i { position: absolute; left: 0; right: 0; bottom: 0; height: var(--h); background: currentColor; transition: all .2s ease; }
+/* A title season: the whole bar red (owner, 29/10). It was an 8px square
+   over the bar, clipped away on a P1 bar (full height, at the wrap's edge) */
+.sbs__bars.is-title i { background: var(--red); }
+/* The season still running: a solid bar like the rest, "Now" over its number */
+.sbs__bars.in .now { bottom: calc(var(--h) + 8px); }
+.sbs__bars .now { position: absolute; left: 0; right: 0; bottom: calc(var(--h) + 18px + 1.3em); text-align: center; font-size: 10px; color: var(--mute); }
+.sbs__bars span { position: absolute; z-index: 1; left: 0; right: 0; bottom: calc(var(--h) + 18px); text-align: center; font-size: clamp(14px, 1.6vw, 26px); }
+.sbs__bars.in span { bottom: calc(var(--h) - 1.3em); color: var(--paper); }
+.sbs__row { padding: 10px 2px; border-top: 1px solid currentColor; text-align: center; overflow: hidden; white-space: nowrap; }
+.sbs__row.y { font-size: clamp(14px, 1.6vw, 24px); }
+.sbs__row .team-mark, .sbs__row .sq { margin: 0 auto; }
+.sbs__row.mute { font-size: 11px; }
+.sbs__row.sbs__sel { box-shadow: inset 0 -4px 0 var(--red); }
+.sbs__key { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 18px; }
+.sbs__key i { display: inline-block; width: 10px; height: 10px; margin-right: 6px; vertical-align: -1px; border-radius: 50%; }
+.sbs__wrap { overflow-x: auto; scrollbar-width: none; }
+.sbs__wrap > div { min-width: calc(120px + var(--n) * 30px); }
+@media (max-width: 760px) {
+    .sbs { --lab: 74px; }
+    .sbs__grid { grid-template-columns: var(--lab) repeat(var(--n), minmax(26px, 1fr)); }
+    .sbs__bars { height: clamp(150px, calc(var(--col) * .9), 220px) !important; }
+    .sbs__row .team-mark { --size: 14px !important; width: 14px; height: 14px; }
+}
+
+/* 5. Career stats */
+.crown { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap); align-items: end; padding-bottom: 48px; }
+.crown__n { margin: 0; font-size: clamp(220px, 30vw, 460px); line-height: .73; color: var(--red); }
+.crown__t { display: grid; gap: 0; }
+.crown__t > div { display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 18px; padding: 14px 0; border-top: 1px solid var(--rule-ink); }
+.crown__t b { font-size: clamp(40px, 4.4vw, 68px); }
+.crown__t > div:first-child { border-top: 4px solid var(--paper); }
+.ranks { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--gap); }
+.rank { padding-top: 10px; border-top: 4px solid var(--paper); }
+.rank b { display: block; font-size: clamp(44px, 5vw, 80px); }
+.rank .lbl { display: block; margin-top: 10px; }
+.rank .pos { display: inline-block; margin-top: 10px; padding: 3px 6px; box-shadow: inset 0 0 0 1px var(--paper); }
+.rank .pos.top { background: var(--paper); color: var(--ink); }
+.boardw { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap); margin-top: 72px; }
+.tabs { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding-top: 10px; border-top: 4px solid var(--paper); }
+.tabs button { all: unset; cursor: pointer; padding: 6px 0; font-size: clamp(30px, 3vw, 44px); font-weight: 900; font-stretch: 62%; text-transform: uppercase; line-height: .9; color: var(--mute-ink); transition: all .2s ease; }
+.tabs button[aria-pressed='true'], .tabs button:hover { color: var(--paper); }
+/* Animations (owner, 29/10). Tabs: the arrow is always there, hidden, and
+   slides in on the chosen one, so the word doesn't jump; a hovered tab
+   steps right. Board: on each switch the rows come up one after another,
+   a bar of each row's value against the leader's grows behind it and the
+   numbers count up. */
+.tabs button::after { content: '→'; display: inline-block; margin-left: .2em; opacity: 0; transform: translateX(-12px); transition: all .3s cubic-bezier(.2, .7, .2, 1); }
+.tabs button[aria-pressed='true']::after { opacity: 1; transform: none; }
+.tabs button:hover:not([aria-pressed='true']) { transform: translateX(8px); }
+.board li:not(.gap) { position: relative; isolation: isolate; transition: background-color .2s ease; }
+.board li:not(.gap)::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; z-index: -1; width: var(--w, 0%); background: rgba(239, 234, 224, .07); transform-origin: left; }
+.board.is-anim li:not(.gap)::before { animation: bar-in .7s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--d, 0) * 45ms + 120ms); }
+.board li.me::before { background: rgba(18, 18, 18, .09); }
+.board li > span:nth-child(2) { transition: transform .25s cubic-bezier(.2, .7, .2, 1); }
+.board li:not(.gap):not(.me):hover { background-color: rgba(239, 234, 224, .05); }
+.board li:not(.gap):hover > span:nth-child(2) { transform: translateX(6px); }
+.board.is-anim li { animation: row-in .45s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--d, 0) * 45ms); }
+@keyframes row-in { from { opacity: 0; transform: translateY(10px); } }
+@keyframes bar-in { from { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) { .board li, .board li::before { animation: none; } .tabs button, .tabs button::after { transition: none; } }
+.board { margin: 0; padding: 0; list-style: none; border-top: 4px solid var(--paper); }
+.board li { display: grid; grid-template-columns: 60px 1fr auto; align-items: baseline; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule-ink); }
+.board li b { font-size: 30px; }
+.board li .v { font-size: 30px; }
+.board li.me { background: var(--paper); color: var(--ink); padding-left: 10px; padding-right: 10px; }
+.board li.gap { display: block; padding: 6px 0; color: var(--mute-ink); text-align: center; }
+@media (max-width: 1100px) { .ranks { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 28px; } .crown, .boardw { grid-template-columns: 1fr; } .tabs { flex-direction: row; flex-wrap: wrap; gap: 4px 18px; } }
+@media (max-width: 760px) { .ranks { grid-template-columns: 1fr 1fr; } .tabs button { font-size: 26px; } }
+
+/* 6. Career journey */
+.ribbon { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 3px; }
+.ribbon__y { display: flex; flex-direction: column; gap: 6px; }
+/* One stretch per run of races with the same team (or missed, or still to
+   run), as wide as its races: no line between races (owner, 28/10) */
+.ribbon__cells { display: flex; gap: 2px; height: 64px; }
+.ribbon__cells i { flex: var(--n, 1) 1 0; min-width: 2px; background: var(--c, #8a857b); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .3); }
+.ribbon__cells i.off { background: repeating-linear-gradient(-45deg, rgba(18,18,18,.35) 0 2px, transparent 2px 5px); box-shadow: inset 0 0 0 1px rgba(18,18,18,.3); }
+.ribbon__cells i.tbd { background: transparent; box-shadow: inset 0 0 0 1px rgba(18,18,18,.3); }
+.ribbon__y.is-gap .ribbon__cells { background: repeating-linear-gradient(-45deg, rgba(18,18,18,.35) 0 2px, transparent 2px 5px); }
+.ribbon__y .lbl { display: flex; justify-content: space-between; }
+.ribbon__y .t { width: 8px; height: 8px; background: var(--red); }
+/* Hover (owner, 29/10; the browser's hover text is gone, the card below
+   tells the stretch): the hovered year lifts and the rest step back. No
+   entrance animation (tried and dropped the same day, owner). */
+.ribbon__y { transition: opacity .25s ease; }
+.ribbon__cells i { transition: transform .3s cubic-bezier(.2, .7, .2, 1); }
+.ribbon__y .lbl > span:first-child { transition: color .2s ease; }
+@media (hover: hover) {
+    .ribbon:hover .ribbon__y { opacity: .4; }
+    .ribbon .ribbon__y:hover { opacity: 1; }
+    .ribbon__y:hover .ribbon__cells i { transform: translateY(-6px); }
+    .ribbon__y:hover .lbl > span:first-child { color: var(--red-ink); }
+}
+@media (prefers-reduced-motion: reduce) { .ribbon__cells i, .ribbon__y { transition: none; } .ribbon__y:hover .ribbon__cells i { transform: none; } }
+/* The stretch's card: ink on the paper section, over the stretch */
+.ribbon { position: relative; }
+.rtip { position: absolute; z-index: 5; left: 0; top: 0; display: flex; flex-direction: column; gap: 6px; min-width: 150px; padding: 10px 14px 12px; background: var(--ink); color: var(--paper); border-top: 4px solid var(--tc, var(--paper)); box-shadow: 0 12px 26px rgba(18, 18, 18, .3); pointer-events: none; opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity .2s ease, visibility .2s ease, transform .25s cubic-bezier(.2, .7, .2, 1), left .25s cubic-bezier(.2, .7, .2, 1), top .25s cubic-bezier(.2, .7, .2, 1); }
+.rtip.is-on { opacity: 1; visibility: visible; transform: none; }
+.rtip.is-instant { transition: opacity .2s ease, visibility .2s ease, transform .25s cubic-bezier(.2, .7, .2, 1); }
+.rtip__team { display: flex; align-items: center; gap: 10px; }
+.rtip__name { font-size: 24px; line-height: .95; white-space: nowrap; }
+.rtip__n { font-size: 44px; line-height: .85; }
+.rtip__n span { color: var(--mute-ink); font-size: .55em; }
+.eras { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 22px; }
+.eras span { display: inline-flex; align-items: center; gap: 8px; }
+
+.every { margin-top: 72px; }
+.every__head { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 14px; padding-top: 12px; border-top: 4px solid currentColor; }
+.every__head h3 { margin: 0; font-size: clamp(40px, 5vw, 76px); }
+.key { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.key span { display: inline-flex; align-items: center; gap: 6px; }
+.key i { display: inline-grid; place-items: center; width: 22px; height: 22px; font-style: normal; font-size: 11px; }
+.rows { margin-top: 24px; }
+.row { display: grid; grid-template-columns: 96px minmax(0, 1fr); align-items: center; gap: 12px; padding: 5px 0; border-top: 1px solid rgba(18, 18, 18, .2); }
+.row__y { display: flex; align-items: center; gap: 8px; }
+.row__y b { font-size: 24px; }
+.row__y { position: relative; align-self: stretch; padding-left: 14px; }
+.row__y::before { content: ''; position: absolute; left: 0; top: -6px; bottom: -5px; width: 4px; background: var(--red); transform: scaleY(0); transform-origin: top; transition: transform .3s cubic-bezier(.2, .7, .2, 1); }
+.row__y > * { transition: translate .3s cubic-bezier(.2, .7, .2, 1); }
+.cells { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: 2px; }
+.c { position: relative; display: grid; place-items: center; aspect-ratio: 5 / 4; min-width: 0; font-size: clamp(9px, 1vw, 15px); font-weight: 900; font-stretch: 62%; line-height: 1; cursor: default; }
+.c.win { background: var(--ink); color: var(--paper); }
+.c.pod { background: var(--ink); color: var(--paper); opacity: .72; }
+.c.pts { box-shadow: inset 0 0 0 2px var(--ink); }
+.c.nop { box-shadow: inset 0 0 0 1px rgba(18,18,18,.3); color: var(--mute); }
+.c.out { color: var(--red-ink); box-shadow: inset 0 0 0 1px rgba(18,18,18,.3); }
+.c.miss { background: repeating-linear-gradient(-45deg, rgba(18,18,18,.22) 0 2px, transparent 2px 5px); }
+.c.tbd { box-shadow: inset 0 0 0 1px rgba(18,18,18,.15); }
+.c.ms::after { content: ''; position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; background: var(--red); box-shadow: 0 0 0 2px var(--paper); }
+.c.sel { outline: 3px solid var(--red); outline-offset: 1px; z-index: 1; }
+/* Hover (owner, 29/10): a race grows over its neighbours and its season's
+   year turns red. Opacity runs with a delay by column, so a milestone dims
+   the grid as a wave. No entrance animation (tried and dropped, owner). */
+.c { transition: opacity .35s ease calc(var(--k, 0) * 16ms), scale .18s ease 0s; }
+.row__y b { transition: color .2s ease, translate .3s cubic-bezier(.2, .7, .2, 1); }
+@media (hover: hover) {
+    /* Solid while it's over its neighbours, or their edges show through
+       (owner, 29/10); a podium's gray is its .72 ink made solid */
+    .cells .c:not(.tbd):hover { z-index: 2; scale: 1.25; background-color: var(--paper); box-shadow: inset 0 0 0 2px var(--ink), 0 6px 14px rgba(18, 18, 18, .25); }
+    .cells .c.win:hover { background-color: var(--ink); }
+    .cells .c.pod:hover { opacity: 1; background-color: #504f4c; }
+    .row:hover .row__y b { color: var(--red-ink); }
+    /* The milestones' hover on the season's year (owner, 29/10): a red bar
+       grows on its left and the year steps right (`translate`) */
+    .row:hover .row__y::before { transform: none; }
+    .row:hover .row__y > * { translate: 6px 0; }
+}
+@media (prefers-reduced-motion: reduce) { .c { transition: none; } .cells .c:hover { scale: none; } }
+.row__s { grid-column: 2; display: flex; gap: 16px; padding-bottom: 4px; }
+
+.ledger { margin-top: 72px; }
+.ledger__list { margin: 24px 0 0; padding: 0; list-style: none; columns: 2; column-gap: calc(var(--gap) * 3); }
+.ledger__list li { display: grid; grid-template-columns: 54px 1fr auto; gap: 12px; align-items: baseline; padding: 12px 0; border-top: 1px solid currentColor; break-inside: avoid; cursor: pointer; }
+.ledger__list li:hover b, .ledger__list li.sel b { color: var(--red-ink); }
+.ledger__list b { font-size: 26px; transition: all .2s ease; }
+/* Animation (owner, 29/10: "están medio xd"). A hovered milestone: a red bar grows on its
+   left, year and label turn red and the label steps right. In the grid the
+   rest of the races fade back (a wave, left to right) and the milestone's
+   race grows with a red ring pulsing out of it. A click also scrolls to it. */
+.ledger__list li { position: relative; padding-left: 16px; }
+.ledger__list li::before { content: ''; position: absolute; left: 0; top: -1px; bottom: 0; width: 4px; background: var(--red); transform: scaleY(0); transform-origin: top; transition: transform .3s cubic-bezier(.2, .7, .2, 1); }
+.ledger__list li:hover::before, .ledger__list li.sel::before { transform: none; }
+.ledger__list li > span:nth-child(2) { transition: transform .3s cubic-bezier(.2, .7, .2, 1); }
+.ledger__list li:hover > span:nth-child(2), .ledger__list li.sel > span:nth-child(2) { transform: translateX(6px); }
+.ledger__list .y { transition: color .2s ease; }
+.ledger__list li:hover .y, .ledger__list li.sel .y { color: var(--red-ink); }
+.rows.is-marking .c { opacity: .25; }
+.rows.is-marking .c.sel { opacity: 1; scale: 1.25; z-index: 3; }
+.c.sel::before { content: ''; position: absolute; inset: -3px; border: 3px solid var(--red); pointer-events: none; animation: ms-ping 1.4s cubic-bezier(.2, .7, .2, 1) infinite; }
+@keyframes ms-ping { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(1.9); } }
+@media (prefers-reduced-motion: reduce) { .c.sel::before { animation: none; } .ledger__list li, .ledger__list li::before, .ledger__list li > span { transition: none; } }
+.ledger__list .y { font-size: 22px; }
+@media (max-width: 1100px) { .ledger__list { columns: 1; } }
+@media (max-width: 760px) {
+    .row { grid-template-columns: 1fr; gap: 6px; }
+    .row__s { grid-column: 1; }
+    .c { font-size: 9px; }
+    .ribbon__cells { height: 44px; }
+    .ribbon__y .lbl small { display: none; }
+    /* A long career: one year in five, the first and the last, or they overlap */
+    .ribbon.is-long .ribbon__y:not(.keep) .lbl > span:first-child { visibility: hidden; }
+}
+
+/* The site's own hover card for anything with data-tt. Never the browser's
+   title tooltip (owner, 29/10: "el textito ese de windows", not wanted
+   anywhere unless asked). Lines split on " · "; the first one leads. */
+.tt { font-family: var(--font); position: fixed; z-index: 90; left: 0; top: 0; display: flex; flex-direction: column; gap: 4px; max-width: 280px; padding: 8px 12px 10px; background: var(--ink); color: var(--paper); border-top: 3px solid var(--red); box-shadow: 0 10px 24px rgba(0, 0, 0, .35); font-size: 11px; font-weight: 700; font-stretch: 105%; letter-spacing: .06em; line-height: 1.3; text-transform: uppercase; pointer-events: none; opacity: 0; transform: translateY(4px); transition: opacity .15s ease, transform .2s cubic-bezier(.2, .7, .2, 1), left .25s cubic-bezier(.2, .7, .2, 1), top .25s cubic-bezier(.2, .7, .2, 1); }
+.tt.is-on { opacity: 1; transform: none; }
+/* Shown for the first time: in place at once, only the fade; from then on it
+   slides from one item to the next (owner, 29/10: jumping looked bad) */
+.tt.is-instant { transition: opacity .15s ease, transform .2s cubic-bezier(.2, .7, .2, 1); }
+@media (prefers-reduced-motion: reduce) { .tt { transition: opacity .15s ease; } }
+.tt b { font-size: 15px; font-weight: 800; letter-spacing: .02em; }
+.tt span { color: var(--mute-ink); }
+
+/* The duotone filter's SVG, out of the flow */
+.defs { position: absolute; }

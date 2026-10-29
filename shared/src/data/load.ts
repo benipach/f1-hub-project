@@ -5,7 +5,7 @@
 // its schema stops the build instead of reaching a page.
 
 import { existsSync, readFileSync } from 'node:fs';
-import { RawCircuits, RawCities, RawCountries, RawDrivers, RawGrandsPrix, RawLatest, RawNames, RawSeason, RawTeams } from './raw';
+import { RawCareers, RawCircuits, RawCities, RawCountries, RawDrivers, RawGrandsPrix, RawLatest, RawNames, RawSeason, RawSeasonsIndex, RawTeams } from './raw';
 import { normalizeSeason, type GrandPrix } from './season';
 
 function readJson(dataDir: URL, path: string): unknown {
@@ -25,6 +25,16 @@ export function loadTeams(dataDir: URL): RawTeams {
 /** data/drivers.json, validated. */
 export function loadDrivers(dataDir: URL): RawDrivers {
     return RawDrivers.parse(readJson(dataDir, 'drivers.json'));
+}
+
+/** data/careers.json, validated. */
+export function loadCareers(dataDir: URL): RawCareers {
+    return RawCareers.parse(readJson(dataDir, 'careers.json'));
+}
+
+/** data/seasons-index.json, validated. */
+export function loadSeasonsIndex(dataDir: URL): RawSeasonsIndex {
+    return RawSeasonsIndex.parse(readJson(dataDir, 'seasons-index.json'));
 }
 
 /** data/circuits.json, validated. */

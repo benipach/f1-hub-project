@@ -160,6 +160,13 @@ more: its hamburger is there at every width (13/10).
   scales up on hover is solid, or its neighbours' edges show through it.
 - **Wipe** when the hero changes state: `clip-path` from `inset(0 100% 0 0)` to
   `inset(0)`, 0.7 s, `ease`.
+- **Every page comes in with the wipe on load and on reload** (owner,
+  29/10, a standing rule for every new page): its first field, the hero,
+  takes `.wipe-in` (primitives.css: the same `clip-path` wipe, 0.7 s,
+  `ease`), the homepage's hero does it with its own rule. It waits for the
+  font like every animation (below) and is off with reduced motion. Nothing
+  else enters with motion: below the hero the sections are simply there
+  (owner, 29/10, on the driver page).
 - **Loading** (16/10): every animation waits, paused at its first frame, until
   the font is in, at most 1.5 s (`html.is-loading`, set by an inline script in
   `Base.astro`, rule in `base.css`), so the wipe never runs in the fallback
@@ -544,6 +551,84 @@ part).
 - Legal notice in small muted text, then copyright, social links and "Back to
   top".
 
+### Driver profile
+
+Built on 29/10 from the approved mockup (`_design/driver/index.html` in the
+owner's working copy, 18–29/10, where every call below was made). One page
+per driver in `careers.json` (205), at `/driver-preview/<id>/` and
+`/es/driver-preview/<id>/` while the new site is built: `noindex`, not
+linked, and not under `/drivers/`, which belongs to the old pages
+(`LEGACY_PATHS`) until they go. The old `drivers/driver.html?driver=<id>` is
+still the live one.
+
+- **Code:** `site/src/lib/driver.ts` (the data, from the season files,
+  `careers.json` and `seasons-index.json` through the normalized layer, read
+  once per build), `lib/driver-view.ts` (the season panel and the all-time
+  board as HTML strings: the build writes the first state, the browser script
+  redraws on a pick with the same functions), `components/driver/
+  DriverPage.astro` (the page and its script) and `styles/driver.css`
+  (global, since the strings aren't reached by scoped styles; only this page
+  loads it). Personal facts that aren't in `data/` (full name, birthplace,
+  before and beyond F1) are in `lib/driver-facts.ts` for the mockup's four
+  drivers, until the owner decides where they go; without them those cells
+  are left out.
+- **Fields, top to bottom:** hero on ink, then paper and ink in turn: driver
+  info, one season, season by season, career stats, career journey.
+- **Hero:** the whole first screen (`100svh` minus the navbar, as the
+  homepage's; owner, 29/10): the body takes what is left, so the photo grows
+  and the figures sit at the foot; on short screens (1280×720) the spaces,
+  the number, the last name (≤ 28 % of the height) and the figures (≤ 14 %)
+  follow the height too, so it fits instead of running past. Phones: as
+  long as it needs. A strip (Driver · nationality · current or last team · "On the
+  grid" or the years · code), the first name, the last name fitted to its
+  column, the number in red, the photo (or the number, outlined, without
+  one) and up to five figures in one row, the ones that aren't zero first,
+  one size for all (the widest fits). The photo is the ink → paper duotone
+  (`#duo`), no red over it (owner, 18/10). Photos only for drivers on the
+  current grid: the files go by last name, so Jos Verstappen would get Max's.
+- **Driver info:** a spec sheet in cells; teams as one row per stint with a
+  "Champion" tag; before and beyond F1 side by side.
+- **One season:** a season picker of its own (button + listbox, not a
+  `<select>`; keyboard as the old page; its list has the site's scroll
+  thumb), six figures, racecraft (places gained in races, against the year's
+  best), the teammate duel (qualifying, race, points as split bars with a red
+  halfway mark), the form curve (start dashed, finish solid, monotone curves
+  that never break; a retirement is a white dot with a red × where it was
+  classified; the foot is that season's field) with a race card that slides
+  from race to race, and the rounds table (sprint and race as two column
+  groups, never added up; the GP's full name and flag; the fastest-lap
+  stopwatch in `--fl`). Shown first: the season running, or the best
+  finished one.
+- **Season by season:** a bar per season as tall as its final position, red
+  for a title season (an 8 px square was clipped on P1 bars), then team,
+  points, wins, podiums, the teammate record and who; a click opens it above.
+- **Career stats:** the titles as a giant red number with their years, six
+  totals with their all-time rank (paper tag in the top ten), and the
+  all-time board with tabs (the top five and the driver after them).
+- **Career journey:** a ribbon with a stretch per run of races with one team
+  (no line between races, owner 28/10), a card over it on hover ("Aston
+  Martin 22/22": races with the team out of the season's); the stints in a
+  line; "Every race", a grid of every result (win, podium, points, no
+  points, out, missed, milestone); and the milestones in the order they
+  happened.
+- **Hover, the only motion** (owner, 29/10: no entrance animations): rows of
+  the rounds table light their point on the curve and back; the ribbon's
+  year lifts and the rest step back; a race in the grid grows over its
+  neighbours, solid; a season's year in the grid and a milestone get a red
+  bar on their left and step right; a milestone dims the grid in a wave and
+  rings its race (a click pins it and scrolls there; a click elsewhere or Esc
+  lets go). The board animates on a tab switch: rows come up, a bar of each
+  value against the leader's grows behind it, the numbers count up.
+- **Hover cards:** anything with `data-tt` gets the site's card (ink, a red
+  3 px rule, the first part of the text big), sliding from one item to the
+  next; never the browser's `title`.
+- **Flags:** `img/flags/<iso>.svg`, from flag-icons 7.2.3 (MIT, licence in
+  the folder), one per country in `countries.json`, by its `isoCode`.
+- ≤ 760 px: the rounds table and "Season by season" slide sideways; the
+  teams table keeps team, years, races and wins, with the team's name on two
+  lines if needed. Checked at 375 px in English and Spanish, no page wider
+  than the screen.
+
 ### Old pages: the new navbar and footer (option B)
 
 While the pages are rebuilt one at a time, the old ones get the new navbar
@@ -592,8 +677,10 @@ so nothing depends on them:
   shows the winner's photo in red and black duotone when there is one, and
   falls back to paper + circuit layout when there isn't.
 - Driver and team pages: a big condensed name, number and team square. A
-  photo, if there is one, goes in a flat field, duotoned (grayscale, high
-  contrast, `mix-blend-mode: multiply` on red), never as a background.
+  photo, if there is one, goes in a flat field, never as a background. On
+  the driver profile it is the ink → paper duotone, no red (owner, 18/10:
+  the red multiply turned every shadow black); without one, the number
+  outlined in its place.
 
 ## 8. Accessibility and performance
 

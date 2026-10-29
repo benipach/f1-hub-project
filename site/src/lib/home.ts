@@ -22,7 +22,7 @@ type I18n = ReturnType<typeof useI18n>;
  * data/i18n/<locale>.json, or the data's own (English) name when the language
  * has no file or no entry.
  */
-function namesIn(dataDir: URL, locale: string) {
+export function namesIn(dataDir: URL, locale: string) {
     const names = loadNames(dataDir, locale);
     return {
         gp: (id: string, own: string) => names?.grandsPrix[id] ?? own,
@@ -170,13 +170,13 @@ function layoutFile(repoRoot: URL, circuitId: string | null): string | null {
  * the old driver pages use as a cover and the mockup used for the winner),
  * if there is one. 1920×1080 PNGs of ~2–5 MB: the page resizes them.
  */
-function driverPhoto(repoRoot: URL, driverId: string): string | null {
+export function driverPhoto(repoRoot: URL, driverId: string): string | null {
     const path = `img/drivers/${driverId.split('-').pop()}-2.png`;
     return existsSync(new URL(path, repoRoot)) ? path : null;
 }
 
 /** The team's logo, if img/teams has one (same file the old pages use). */
-function teamLogo(repoRoot: URL, teamId: string): string | null {
+export function teamLogo(repoRoot: URL, teamId: string): string | null {
     const path = `img/teams/${teamId}-logo.png`;
     return existsSync(new URL(path, repoRoot)) ? path : null;
 }

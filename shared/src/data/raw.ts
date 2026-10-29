@@ -248,6 +248,94 @@ export const RawNames = z.strictObject({
     countries: names,
 });
 
+// data/careers.json, written by scripts/build-careers.js from the season
+// files: one entry per driver with a race start since 1990, keyed by driver
+// id. What the driver profile reads; checked on 29/10 over all 205 entries.
+const stint = {
+    teamId: z.string().min(1),
+    team: z.string().min(1),
+    color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).nullable(),
+};
+export const RawCareers = z.record(
+    driverKey,
+    z.strictObject({
+        races: z.number().int().nonnegative(),
+        debut: isoDate,
+        seasons: z.array(z.number().int()).min(1),
+        number: z.number().int(),
+        points: z.number(),
+        wins: z.number().int(),
+        podiums: z.number().int(),
+        poles: z.number().int(),
+        fastestLaps: z.number().int(),
+        titleYears: z.array(z.number().int()),
+        titles: z.array(z.strictObject({ year: z.number().int(), ...stint, races: z.number().int(), wins: z.number().int(), podiums: z.number().int(), points: z.number() })),
+        bestFinish: z.strictObject({ pos: z.number().int(), years: z.array(z.number().int()) }),
+        eras: z.array(z.strictObject({
+            ...stint,
+            seasons: z.array(z.number().int()),
+            from: z.number().int(),
+            to: z.number().int(),
+            races: z.number().int(),
+            points: z.number(),
+            wins: z.number().int(),
+            podiums: z.number().int(),
+            poles: z.number().int(),
+            best: z.number().int().nullable(),
+            titles: z.array(z.number().int()),
+        })).min(1),
+        // Finishing position per round, by year (null: not classified or not
+        // run; "TBD": a round of the running season still to come)
+        seasonRaces: z.record(z.string(), z.array(z.union([z.number().int(), z.null(), z.literal('TBD')]))),
+        seasonStats: z.record(z.string(), z.strictObject({ pos: z.number().int(), pts: z.number(), races: z.number().int() })),
+        // gp is the short English name ("Australian", "Bahrain Grand Prix in Malaysia")
+        milestones: z.array(z.strictObject({
+            label: z.string().min(1),
+            year: z.number().int(),
+            gp: z.string().min(1),
+            iso: z.string().regex(/^[A-Z]{2}$/).nullable(),
+            date: isoDate,
+            pos: z.number().int(),
+            grid: z.number().int().nullable(),
+            team: z.string().min(1),
+            teamColor: z.string().nullable(),
+            streakLength: z.number().int().optional(),
+            record: z.strictObject({
+                key: z.string().min(1),
+                kind: z.string().min(1),
+                value: z.number(),
+                // Missing when the record was only equalled
+                peak: z.number().optional(),
+                // Who took the record next; `current` when nobody has yet
+                after: z.strictObject({ type: z.string(), by: z.string(), year: z.number().int(), gp: z.string(), date: isoDate }).optional(),
+                current: z.boolean().optional(),
+            }).optional(),
+        })),
+        // When each total reached its current value (all-time tie breaks)
+        achievedAt: z.strictObject({
+            races: isoDate,
+            wins: isoDate.nullable(),
+            podiums: isoDate.nullable(),
+            poles: isoDate.nullable(),
+            fastestLaps: isoDate.nullable(),
+            points: isoDate.nullable(),
+            titles: isoDate.nullable(),
+        }),
+    }),
+);
+
+// data/seasons-index.json (scripts/build-seasons-index.js): one line per season.
+export const RawSeasonsIndex = z.strictObject({
+    seasons: z.array(z.strictObject({
+        year: z.number().int(),
+        rounds: z.number().int(),
+        raced: z.number().int(),
+        sessions: z.array(z.string()),
+        driverChampion: z.strictObject({ id: driverKey, name: z.string(), points: z.number(), wins: z.number().int(), teamId: z.string(), teamName: z.string() }).nullable(),
+        teamChampion: z.strictObject({ id: z.string(), name: z.string(), points: z.number() }).nullable(),
+    })),
+});
+
 export type RawSeason = z.infer<typeof RawSeason>;
 export type RawGrandPrix = z.infer<typeof RawGrandPrix>;
 export type RawSessions = z.infer<typeof RawSessions>;
@@ -259,3 +347,5 @@ export type RawCountries = z.infer<typeof RawCountries>;
 export type RawCities = z.infer<typeof RawCities>;
 export type RawLatest = z.infer<typeof RawLatest>;
 export type RawNames = z.infer<typeof RawNames>;
+export type RawCareers = z.infer<typeof RawCareers>;
+export type RawSeasonsIndex = z.infer<typeof RawSeasonsIndex>;

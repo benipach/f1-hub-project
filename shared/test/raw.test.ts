@@ -6,6 +6,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import * as z from 'zod';
 import {
+    RawCareers,
     RawCircuits,
     RawCities,
     RawCountries,
@@ -14,6 +15,7 @@ import {
     RawLatest,
     RawNames,
     RawSeason,
+    RawSeasonsIndex,
     RawTeams,
 } from '../src/data/raw';
 
@@ -38,6 +40,8 @@ describe('catalogs', () => {
         ['countries.json', RawCountries],
         ['cities.json', RawCities],
         ['latest.json', RawLatest],
+        ['careers.json', RawCareers],
+        ['seasons-index.json', RawSeasonsIndex],
     ] as const)('%s', (path, schema) => expectValid(schema, path));
 });
 

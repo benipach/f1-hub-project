@@ -99,6 +99,16 @@
     50% { opacity: .35; }
 }
 
+/* Page load: every page's first field (its hero) comes in from left to
+   right, as the homepage's hero does (owner, 29/10: on every page, on load
+   and on reload). It waits for the font with every other animation
+   (html.is-loading, base.css) and is off with reduced motion. */
+@keyframes wipe-in {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0); }
+}
+.wipe-in { animation: wipe-in .7s ease both; }
+
 /* "→" that slides when its link is hovered. Same duration as the buttons it
    sits in, so both finish together. */
 .arrow {
