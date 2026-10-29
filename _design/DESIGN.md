@@ -445,9 +445,12 @@ the top and the bottom line, **7 | 5**:
   **next** (the one red field: white text and layout, rules at 50 % white,
   white tag), **upcoming** (layout at 32 %), **cancelled** (hatched, name
   struck through with a 3 px line, layout at 18 %, field values soft).
-- Hover: the card turns ink, layout, tag and rules paper; one
-  `transition: all .2s ease`; `background-color`, not the shorthand, so the
-  cancelled cards' hatching doesn't drop at once.
+- Hover (reworked 29/10): ink rises from the card's foot like a curtain
+  (a `::before` layer under the content, `scaleY` in .38 s; it carries its
+  own hatching on cancelled cards), layout, tag and rules turn paper, the
+  round number turns red and shifts 4 px. A red light lapping the circuit
+  (a turning `conic-gradient` masked by the drawing) was tried and dropped
+  the same day (owner).
 - ≤ 760 px: a list, one row per round: number (with the Sprint tag under it)
   | name, the city and the dates (in label type), the result inline | the
   layout 72 px tall. The plate and fields open up (`display: contents`) into
@@ -462,22 +465,49 @@ the top and the bottom line, **7 | 5**:
 
 ### Standings
 
-- Section on ink. Two boards side by side (stacked at ≤ 1100 px): drivers and
-  constructors.
-- Each board: the **leader** under a 4 px paper rule (label "Leader", name in
-  display type, team square, lead over second) with their points as a huge
-  red number; then positions 2–10 as rows: position, name (+ first name
-  small), a bar proportional to the leader's points, points.
+Redesigned on 28/10 ("podium poster", chosen out of four proposals; the
+old two boards with bars are gone). Section on ink, built from three pieces
+only: **the step** (a solid field, paper or red), **the column** (under a
+4 px rule in the team's color) and **the figures row** (label + number
+pairs split by 1 px hairlines: "Behind 84 | Wins 3", the owner's favorite
+part).
+
 - A short sentence in the section header summarizes the fight ("Antonelli
-  leads by 102 points with six rounds to go"). Generate it from the data.
-- Built (13/10) as `site/src/components/home/Standings.astro` from
+  leads by 84 points with 7 rounds to go…"). Generated from the data.
+- **Podium, 2-1-3:** each driver is a photo on top of a step. The photo is
+  sharp, in the ink and paper duotone of the driver pages (SVG filter
+  `#duo-standings`, same values as `_design/driver`'s `#duo`), with a clean
+  edge: **no blend, veil or gradient over it** (all tried and dropped,
+  28/10). Steps at fixed podium heights (440 / 380 / 340 px), not point
+  heights: the numbers carry the gaps. Paper steps for 2nd and 3rd, red for
+  the leader. A square position tab ("P1") in the step's color sits on the
+  photo's bottom-left corner. On the step: first name, last name in display
+  type, team (17 px, logo 30 px; 19 / 34 for the leader), points with a
+  "PTS" unit, and the figures row (leader: wins | podiums; others: behind |
+  wins). No big outlined position number (it competed with the points).
+  Without a photo, the photo box shows the team logo.
+- **The chasing pack, P4–P10:** seven columns across the full width, each
+  under its team's color rule: position, logo, first and last name, points,
+  "Behind". No bars of points (too heavy, owner 28/10). Then a full-width
+  band "All 23 drivers →" to `championship.html`: the home shows the top
+  ten only. At ≤ 760 px the columns become rows with the rule on the left.
+- **Constructors**, under a heading of their own ("Teams"): the leader as a
+  wide red step (P1, logo, name, points, and wins | lead | each of its two
+  drivers' points), the rest as pack columns, five to a row.
+- Photos resized at build time like the hero's winner (`getImage`, 1000 px
+  WebP; the sources are 2–5 MB PNGs).
+- Built as `site/src/components/home/Standings.astro` from
   `buildStandings()`, which adds up the race and sprint points in the season
-  file (nothing typed by hand). Team logos in their own colors. The rows have **no hover** (owner's call, 13/10: they
-  aren't links, so a hover made them look like buttons; it was the live
-  tower's, paper at 7 %). Names keep room for descenders and accents inside
-  their ellipsis clip (`padding-block` with an equal negative margin).
-  The title breaks as "STAND-INGS" through a soft hyphen (`&shy;`) when it
-  doesn't fit its 8 columns: kept on purpose (owner's call). Ties go to more wins, then alphabetical:
+  file (nothing typed by hand); wins and podiums count classified Grand Prix
+  finishes. Hover (owner, 29/10, pointer devices only): a podium step rises
+  14 px, its photo leaves the duotone for color (a second, unfiltered copy
+  fades in) and zooms 5 %, and a 6 px rule in the team's color runs across
+  the top of the block. The pack columns (drivers and constructors): the
+  team's color floods down from their rule as a tint (34 % to 10 %) and the
+  position number turns paper. Nothing else in the section has a hover
+  except its links. The title
+  breaks as "STAND-INGS" through a soft hyphen (`&shy;`) when it doesn't
+  fit its 7 columns: kept on purpose (owner's call). Ties go to more wins, then alphabetical:
   **not the FIA's full rule** (then most 2nd places, 3rds…), to fix for the
   championship page.
 

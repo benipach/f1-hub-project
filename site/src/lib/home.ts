@@ -368,10 +368,14 @@ export type StandingRow = {
     /** Drivers only: shown small next to the last name. */
     readonly firstName: string | null;
     readonly team: string;
+    readonly teamId: string;
     readonly teamColor: string | null;
     readonly teamLogo: string | null;
+    /** Drivers only: the wide photo, as a path inside the site. */
+    readonly photo: string | null;
     readonly points: number;
     readonly wins: number;
+    readonly podiums: number;
 };
 
 export type Standings = {
@@ -396,7 +400,7 @@ export function buildStandings(dataDir: URL): Standings {
     const gps = loadSeason(dataDir, season, teams);
     const drivers = loadDrivers(dataDir);
 
-    type Tally = { points: number; wins: number; teamId: string };
+    type Tally = { points: number; wins: number; podiums: number; teamId: string };
     const byDriver = new Map<string, Tally>();
     const byTeam = new Map<string, Tally>();
 
@@ -405,12 +409,15 @@ export function buildStandings(dataDir: URL): Standings {
         for (const session of gp.sessions) {
             if (session.kind !== 'race') continue;
             for (const row of session.results) {
-                const win = session.key === 'race' && row.pos === 1 ? 1 : 0;
+                // Wins and podiums count in the Grand Prix only, classified finishers
+                const finished = session.key === 'race' && !['dnf', 'dns', 'dsq'].includes(row.outcome.kind);
+                const win = finished && row.pos === 1 ? 1 : 0;
+                const podium = finished && row.pos <= 3 ? 1 : 0;
                 // A driver's team is the one of their latest race (rounds go in order).
-                const d = byDriver.get(row.driver) ?? { points: 0, wins: 0, teamId: row.teamId };
-                byDriver.set(row.driver, { points: d.points + row.points, wins: d.wins + win, teamId: row.teamId });
-                const t = byTeam.get(row.teamId) ?? { points: 0, wins: 0, teamId: row.teamId };
-                byTeam.set(row.teamId, { points: t.points + row.points, wins: t.wins + win, teamId: row.teamId });
+                const d = byDriver.get(row.driver) ?? { points: 0, wins: 0, podiums: 0, teamId: row.teamId };
+                byDriver.set(row.driver, { points: d.points + row.points, wins: d.wins + win, podiums: d.podiums + podium, teamId: row.teamId });
+                const t = byTeam.get(row.teamId) ?? { points: 0, wins: 0, podiums: 0, teamId: row.teamId };
+                byTeam.set(row.teamId, { points: t.points + row.points, wins: t.wins + win, podiums: t.podiums + podium, teamId: row.teamId });
             }
         }
     }
@@ -419,16 +426,17 @@ export function buildStandings(dataDir: URL): Standings {
         b.points - a.points || b.wins - a.wins || a.name.localeCompare(b.name);
     const mark = (teamId: string) => ({
         team: teams[teamId]?.name ?? teamId,
+        teamId,
         teamColor: teams[teamId]?.color ?? null,
         teamLogo: teamLogo(repoRoot, teamId),
     });
 
     const driverRows = [...byDriver.entries()]
-        .map(([id, t]) => ({ name: drivers[id]?.lastName ?? id, firstName: drivers[id]?.firstName ?? null, ...mark(t.teamId), points: t.points, wins: t.wins }))
+        .map(([id, t]) => ({ name: drivers[id]?.lastName ?? id, firstName: drivers[id]?.firstName ?? null, ...mark(t.teamId), photo: driverPhoto(repoRoot, id), points: t.points, wins: t.wins, podiums: t.podiums }))
         .sort(order)
         .map((row, i) => ({ pos: i + 1, ...row }));
     const teamRows = [...byTeam.entries()]
-        .map(([id, t]) => ({ ...mark(id), name: teams[id]?.name ?? id, firstName: null, points: t.points, wins: t.wins }))
+        .map(([id, t]) => ({ ...mark(id), name: teams[id]?.name ?? id, firstName: null, photo: null, points: t.points, wins: t.wins, podiums: t.podiums }))
         .sort(order)
         .map((row, i) => ({ pos: i + 1, ...row }));
 

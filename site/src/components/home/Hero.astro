@@ -719,7 +719,11 @@ const rest = last?.rows.slice(3) ?? [];
        column is hidden (owner's call, 13/10) */
     .top .d__mark { display: none; }
     .top .t { display: flex; align-items: center; gap: 8px; min-width: 0; color: var(--mute-ink); font-size: 16px; font-weight: 500; white-space: nowrap; }
+    /* The ellipsis clips at the line box: padding gives descenders (g, j, p,
+       q, y: "Racing Bulls") room inside it, an equal negative margin keeps
+       the row's height (owner, 29/10) */
     .top .t .mark-text { overflow: hidden; text-overflow: ellipsis; }
+    .top .d, .top .t .mark-text, .tower__r { padding-block: .2em; margin-block: -.2em; }
     .top .g { font-size: 16px; font-weight: 600; }
     .top .tr:nth-child(2) .g { color: var(--paper); font-weight: 800; }
 

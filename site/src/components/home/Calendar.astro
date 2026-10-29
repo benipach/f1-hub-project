@@ -46,7 +46,7 @@ const upcoming = (r: PosterRound) => r.status === 'next' || r.status === 'upcomi
     <div class="wrap">
         <header class="sec-head g12">
             <p class="sec-no lbl">{c.sectionNo}</p>
-            <h2 class="sec-title cond" id="cal-title">{c.season}<br />{season}</h2>
+            <h2 class="sec-title cond" id="cal-title" style={`--len: ${Math.max(c.season.length, String(season).length)}`}>{c.season}<br />{season}</h2>
             <div class="sec-meta">
                 <div class="stats lbl">
                     {/* Total, raced, to go (owner's call, 13/10: no count of cancelled
@@ -194,6 +194,8 @@ const upcoming = (r: PosterRound) => r.status === 'next' || r.status === 'upcomi
         /* The card's own colours; states and hover swap them */
         --rule: rgba(18, 18, 18, .28);
         --soft: var(--mute);
+        position: relative;
+        isolation: isolate;
         display: grid;
         grid-row: 1 / -1;
         grid-template-rows: subgrid;
@@ -335,12 +337,32 @@ const upcoming = (r: PosterRound) => r.status === 'next' || r.status === 'upcomi
     .rd--next .rd__trk { filter: brightness(0) invert(1); }
     .rd--next .rd__tag { background: #fff; color: var(--red-ink); }
 
-    /* Hover: the card turns ink, drawing and rules turn paper. background-color,
-       not the shorthand, so the cancelled cards' hatching doesn't drop at once */
-    .rd a:hover { --rule: rgba(239, 234, 224, .3); --soft: var(--mute-ink); background-color: var(--ink); color: var(--paper); }
+    /* Hover (reworked 29/10, owner: "mejorá el hover"): ink rises from the
+       foot of the card like a curtain, drawing and rules turn paper, the
+       number turns red. A red light lapping the circuit was tried and
+       dropped (owner, 29/10). The ink is a layer under the content, so the cancelled cards'
+       hatching stays put until it is covered (the layer carries its own). */
+    .rd a::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: var(--ink);
+        transform: scaleY(0);
+        transform-origin: bottom;
+        transition: transform .38s cubic-bezier(.2, .7, .2, 1);
+    }
+    .rd--cancelled a::before { background: repeating-linear-gradient(135deg, transparent 0 11px, rgba(239, 234, 224, .08) 11px 12px) var(--ink); }
+    .rd__no { transition: color .25s ease .08s, transform .38s cubic-bezier(.2, .7, .2, 1); }
+    .rd a:hover { --rule: rgba(239, 234, 224, .3); --soft: var(--mute-ink); color: var(--paper); }
+    .rd a:hover::before { transform: scaleY(1); }
+    .rd a:hover .rd__no { color: var(--red-hi); transform: translateX(4px); }
     .rd a:hover .rd__trk { filter: brightness(0) invert(1); }
     .rd a:hover .rd__tag { background: var(--paper); color: var(--ink); }
-    .rd--cancelled a:hover { background-image: repeating-linear-gradient(135deg, transparent 0 11px, rgba(239, 234, 224, .08) 11px 12px); }
+    .rd--next a:hover .rd__tag { background: var(--red); color: #fff; }
+    @media (prefers-reduced-motion: reduce) {
+        .rd a::before { transition: none; }
+    }
 
     .cal-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; margin-top: 18px; color: var(--mute); }
     .cal-foot a { text-decoration: none; }
@@ -359,7 +381,9 @@ const upcoming = (r: PosterRound) => r.status === 'next' || r.status === 'upcomi
     @media (max-width: 760px) {
         .sec { padding: 72px 0 80px; }
         .sec-head { margin-bottom: 28px; }
-        .sec-title { font-size: clamp(64px, 22vw, 120px); }
+        /* Capped so the longest word fits the width: "TEMPORADA" overflowed
+           375 px by 30 px (28/10). A capital is ~.53 em wide in this type. */
+        .sec-title { font-size: min(clamp(64px, 22vw, 120px), calc((100vw - 2 * var(--gut)) / (var(--len, 6) * .53))); }
         .prog { gap: 2px; }
         .prog i { height: 10px; }
         .prog-k { margin-bottom: 24px; }
