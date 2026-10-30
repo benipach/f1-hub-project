@@ -18380,8 +18380,192 @@
       "fp1": {
         "date": "2026-10-30T18:30:00Z",
         "endDate": "2026-10-30T19:30:00Z",
-        "weather": {},
-        "results": []
+        "weather": {
+          "air_temperature": 22.8,
+          "track_temperature": 43,
+          "humidity": 50,
+          "wind_speed": 1.3,
+          "wind_direction": 252,
+          "rainfall": 0
+        },
+        "results": [
+          {
+            "pos": 1,
+            "driver": "charles-leclerc",
+            "number": 16,
+            "lapTime": "1:18.128",
+            "laps": "29",
+            "team": "Ferrari"
+          },
+          {
+            "pos": 2,
+            "driver": "kimi-antonelli",
+            "number": 12,
+            "lapTime": "1:18.787",
+            "laps": "30",
+            "team": "Mercedes-AMG"
+          },
+          {
+            "pos": 3,
+            "driver": "frederik-vesti",
+            "number": 72,
+            "lapTime": "1:18.861",
+            "laps": "24",
+            "team": "Mercedes-AMG"
+          },
+          {
+            "pos": 4,
+            "driver": "lewis-hamilton",
+            "number": 44,
+            "lapTime": "1:18.866",
+            "laps": "25",
+            "team": "Ferrari"
+          },
+          {
+            "pos": 5,
+            "driver": "ayumu-iwasa",
+            "number": 36,
+            "lapTime": "1:19.113",
+            "laps": "23",
+            "team": "Red Bull"
+          },
+          {
+            "pos": 6,
+            "driver": "pierre-gasly",
+            "number": 10,
+            "lapTime": "1:19.210",
+            "laps": "33",
+            "team": "Alpine"
+          },
+          {
+            "pos": 7,
+            "driver": "fernando-alonso",
+            "number": 14,
+            "lapTime": "1:19.357",
+            "laps": "29",
+            "team": "Aston Martin"
+          },
+          {
+            "pos": 8,
+            "driver": "oscar-piastri",
+            "number": 81,
+            "lapTime": "1:19.376",
+            "laps": "30",
+            "team": "McLaren"
+          },
+          {
+            "pos": 9,
+            "driver": "oliver-bearman",
+            "number": 87,
+            "lapTime": "1:19.412",
+            "laps": "28",
+            "team": "Haas"
+          },
+          {
+            "pos": 10,
+            "driver": "arvid-lindblad",
+            "number": 41,
+            "lapTime": "1:19.478",
+            "laps": "30",
+            "team": "Racing Bulls"
+          },
+          {
+            "pos": 11,
+            "driver": "isack-hadjar",
+            "number": 6,
+            "lapTime": "1:19.545",
+            "laps": "21",
+            "team": "Red Bull"
+          },
+          {
+            "pos": 12,
+            "driver": "nikola-tsolov",
+            "number": 91,
+            "lapTime": "1:19.604",
+            "laps": "29",
+            "team": "Racing Bulls"
+          },
+          {
+            "pos": 13,
+            "driver": "nico-hulkenberg",
+            "number": 27,
+            "lapTime": "1:19.608",
+            "laps": "27",
+            "team": "Audi"
+          },
+          {
+            "pos": 14,
+            "driver": "gabriele-mini",
+            "number": 62,
+            "lapTime": "1:19.946",
+            "laps": "22",
+            "team": "Alpine"
+          },
+          {
+            "pos": 15,
+            "driver": "ryo-hirakawa",
+            "number": 50,
+            "lapTime": "1:19.982",
+            "laps": "30",
+            "team": "Haas"
+          },
+          {
+            "pos": 16,
+            "driver": "carlos-sainz",
+            "number": 55,
+            "lapTime": "1:20.006",
+            "laps": "31",
+            "team": "Williams"
+          },
+          {
+            "pos": 17,
+            "driver": "leonardo-fornaroli",
+            "number": 67,
+            "lapTime": "1:20.235",
+            "laps": "25",
+            "team": "McLaren"
+          },
+          {
+            "pos": 18,
+            "driver": "sergio-perez",
+            "number": 11,
+            "lapTime": "1:20.395",
+            "laps": "31",
+            "team": "Cadillac"
+          },
+          {
+            "pos": 19,
+            "driver": "jak-crawford",
+            "number": 34,
+            "lapTime": "1:20.803",
+            "laps": "15",
+            "team": "Aston Martin"
+          },
+          {
+            "pos": 20,
+            "driver": "luke-browning",
+            "number": 46,
+            "lapTime": "1:20.869",
+            "laps": "33",
+            "team": "Williams"
+          },
+          {
+            "pos": 21,
+            "driver": "freddie-slater",
+            "number": 98,
+            "lapTime": "1:20.945",
+            "laps": "14",
+            "team": "Audi"
+          },
+          {
+            "pos": 22,
+            "driver": "colton-herta",
+            "number": 25,
+            "lapTime": "1:21.365",
+            "laps": "30",
+            "team": "Cadillac"
+          }
+        ]
       },
       "fp2": {
         "date": "2026-10-30T22:00:00Z",
