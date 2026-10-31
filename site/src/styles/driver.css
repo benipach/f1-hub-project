@@ -11,6 +11,12 @@
 .mute { color: var(--mute); }
 .sec { padding: 112px 0 120px; }
 @media (max-width: 760px) { .sec { padding: 72px 0 80px; } }
+/* The sections from Season by season down aren't laid out until they're near
+   the screen: the page is ~4,900 boxes. Measured on a 6x slower CPU (31/10),
+   the page shows ~550 ms sooner (LCP ~1.6 s → ~1.0 s); the blocking after it
+   grows ~120 ms. The season (second section) is left out: the browser draws
+   it right away anyway. `auto` keeps each one's real height once drawn. */
+.sec + .sec + .sec { content-visibility: auto; contain-intrinsic-size: auto 1200px; }
 
 /* Section head: kicker, then a big title, on a 4px rule */
 .sec__head { display: flex; align-items: end; justify-content: space-between; gap: 24px; padding-top: 14px; border-top: 4px solid currentColor; margin-bottom: 40px; }
@@ -139,7 +145,7 @@
 .yp { position: relative; display: inline-block; }
 .yp__btn { all: unset; display: inline-flex; align-items: center; gap: .12em; cursor: pointer; font: inherit; color: inherit; line-height: inherit; }
 .yp__btn:focus-visible { outline: 3px solid var(--red); outline-offset: 4px; }
-.yp__chev { width: .32em; height: .32em; fill: none; stroke: currentColor; stroke-width: 2.4; transition: all .35s ease; }
+.yp__chev { width: .32em; height: .32em; fill: none; stroke: currentColor; stroke-width: 2.4; transition: transform .35s ease, stroke .35s ease; }
 .yp.is-open .yp__chev { transform: rotate(180deg); }
 .yp__btn:hover .yp__chev { stroke: var(--red-hi); }
 /* The panel: opens beside the chevron, from the top of the year, in a smaller
@@ -149,7 +155,7 @@
     position: absolute; z-index: 20; top: 0; left: calc(100% + 18px);
     font-size: .36em;
     background: var(--ink-2); box-shadow: 0 0 0 1px var(--rule-ink), 0 18px 40px rgba(0, 0, 0, .45);
-    visibility: hidden; clip-path: inset(0 0 100% 0); transition: all .35s ease;
+    visibility: hidden; clip-path: inset(0 0 100% 0); transition: clip-path .35s ease, visibility .35s;
 }
 .yp__list {
     display: flex; flex-direction: column;
@@ -162,14 +168,14 @@
    no track, 6px and darker on hover or while dragged; it can be dragged */
 .yp__thumb { position: absolute; top: 0; right: 0; display: flex; justify-content: flex-end; width: 14px; cursor: pointer; will-change: transform; }
 .yp__thumb[hidden] { display: none; }
-.yp__thumb i { display: block; width: 4px; height: 100%; background-color: rgba(128, 124, 116, .6); transition: all .2s ease; }
+.yp__thumb i { display: block; width: 4px; height: 100%; background-color: rgba(128, 124, 116, .6); transition: width .2s ease, background-color .2s ease; }
 .yp__thumb:hover i, .yp__thumb.is-drag i { width: 6px; background-color: rgba(128, 124, 116, .9); }
 /* Phone: no room beside the chevron, so it drops below it, right-aligned */
 @media (max-width: 760px) {
     .yp__panel { top: calc(100% + 8px); left: auto; right: 0; font-size: .5em; }
 }
 .yp.is-open .yp__panel { visibility: visible; clip-path: inset(0); }
-.yp__opt { all: unset; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: .4em; padding: .16em 0; border-bottom: 1px solid var(--rule-ink); cursor: pointer; color: var(--mute-ink); font: inherit; line-height: .9; transition: all .35s ease; }
+.yp__opt { all: unset; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: .4em; padding: .16em 0; border-bottom: 1px solid var(--rule-ink); cursor: pointer; color: var(--mute-ink); font: inherit; line-height: .9; transition: color .35s ease; }
 .yp__opt:last-child { border-bottom: 0; }
 .yp__opt:hover, .yp__opt:focus { color: var(--paper); outline: none; }
 .yp__opt[aria-selected='true'] { color: var(--paper); }
@@ -216,12 +222,12 @@
 /* Race card on hover, next to the race's point */
 .chart__plot { position: relative; }
 .hit { cursor: default; }
-.dot { transition: all .2s ease; }
+.dot { transition: stroke .2s ease, stroke-width .2s ease, stroke-opacity .2s ease; }
 .dot.is-on { stroke: var(--paper); stroke-width: 6; stroke-opacity: .25; }
 /* It slides from race to race and fades in and out of the chart (owner,
    18/10: moving between races "se ve escalonado"); .is-instant places it with
    no slide the first time, so it doesn't travel in from the last race shown */
-.tip { position: absolute; z-index: 5; left: 0; top: 0; display: flex; flex-direction: column; gap: 10px; min-width: 190px; padding: 12px 14px 14px; background: var(--ink-2); border-top: 4px solid var(--paper); box-shadow: 0 0 0 1px var(--rule-ink), 0 14px 30px rgba(0, 0, 0, .5); pointer-events: none; opacity: 0; visibility: hidden; transition: all .22s ease; }
+.tip { position: absolute; z-index: 5; left: 0; top: 0; display: flex; flex-direction: column; gap: 10px; min-width: 190px; padding: 12px 14px 14px; background: var(--ink-2); border-top: 4px solid var(--paper); box-shadow: 0 0 0 1px var(--rule-ink), 0 14px 30px rgba(0, 0, 0, .5); pointer-events: none; opacity: 0; visibility: hidden; transition: opacity .22s ease, visibility .22s, translate .22s ease; }
 .tip.is-on { opacity: 1; visibility: visible; }
 .tip.is-instant { transition: none; }
 .tip__gf { display: flex; align-items: baseline; gap: 10px; font-size: 44px; line-height: .9; }
@@ -350,7 +356,7 @@
 .sbs__lab:first-child { justify-content: flex-end; padding-bottom: 8px; border-top: 0; }
 .sbs__col { all: unset; box-sizing: border-box; display: contents; cursor: pointer; }
 .sbs__bars { all: unset; box-sizing: border-box; display: block; cursor: pointer; position: relative; height: 220px; }
-.sbs__bars i { position: absolute; left: 0; right: 0; bottom: 0; height: var(--h); background: currentColor; transition: all .2s ease; }
+.sbs__bars i { position: absolute; left: 0; right: 0; bottom: 0; height: var(--h); background: currentColor; }
 /* A title season: the whole bar red (owner, 29/10). It was an 8px square
    over the bar, clipped away on a P1 bar (full height, at the wrap's edge) */
 .sbs__bars.is-title i { background: var(--red); }
@@ -399,32 +405,26 @@
 }
 
 /* 5. Career stats */
-.crown { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap); align-items: end; padding-bottom: 48px; }
-.crown__n { margin: 0; font-size: clamp(220px, 30vw, 460px); line-height: .73; color: var(--red); }
-.crown__t { display: grid; gap: 0; }
-.crown__t > div { display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 18px; padding: 14px 0; border-top: 1px solid var(--rule-ink); }
-.crown__t b { font-size: clamp(40px, 4.4vw, 68px); }
-.crown__t > div:first-child { border-top: 4px solid var(--paper); }
+/* The titles: a wall of years under one line (the count is the hero's) */
+.crown { padding-bottom: 64px; }
+.crown > .lbl { margin: 0; padding-top: 10px; border-top: 4px solid var(--paper); }
+.crown__t { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); column-gap: var(--gap); }
+.crown__t > div { display: grid; align-content: start; gap: 8px; padding: 18px 0; border-bottom: 1px solid var(--rule-ink); }
+.crown__t b { font-size: clamp(48px, 5vw, 80px); line-height: .85; }
+.crown__t .lbl { display: flex; align-items: center; gap: 8px; }
+/* The ranks: the place among every driver big, the total under it; each
+   one is the board's switch, the chosen one lit as the old tabs were */
 .ranks { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--gap); }
-.rank { padding-top: 10px; border-top: 4px solid var(--paper); }
-.rank b { display: block; font-size: clamp(44px, 5vw, 80px); }
+.rank { display: block; padding: 10px 0 0; border: 0; border-top: 4px solid var(--rule-ink); background: none; color: var(--mute-ink); font: inherit; text-align: left; cursor: pointer; transition: color .2s ease, border-color .2s ease; }
+.rank b { display: block; font-size: clamp(44px, 5vw, 80px); line-height: .9; }
 .rank .lbl { display: block; margin-top: 10px; }
-.rank .pos { display: inline-block; margin-top: 10px; padding: 3px 6px; box-shadow: inset 0 0 0 1px var(--paper); }
-.rank .pos.top { background: var(--paper); color: var(--ink); }
-.boardw { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap); margin-top: 72px; }
-.tabs { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding-top: 10px; border-top: 4px solid var(--paper); }
-.tabs button { all: unset; cursor: pointer; padding: 6px 0; font-size: clamp(30px, 3vw, 44px); font-weight: 900; font-stretch: 62%; text-transform: uppercase; line-height: .9; color: var(--mute-ink); transition: all .2s ease; }
-.tabs button[aria-pressed='true'], .tabs button:hover { color: var(--paper); }
-/* all: unset took base.css's focus ring with it */
-.tabs button:focus-visible { outline: 3px solid var(--red); outline-offset: 4px; }
-/* Animations (owner, 29/10). Tabs: the arrow is always there, hidden, and
-   slides in on the chosen one, so the word doesn't jump; a hovered tab
-   steps right. Board: on each switch the rows come up one after another,
+.rank .lbl + .lbl { margin-top: 4px; }
+.rank:hover, .rank[aria-pressed='true'] { color: var(--paper); }
+.rank[aria-pressed='true'] { border-top-color: var(--paper); }
+/* Board (owner, 29/10): on each switch the rows come up one after another,
    a bar of each row's value against the leader's grows behind it and the
    numbers count up. */
-.tabs button::after { content: '→'; display: inline-block; margin-left: .2em; opacity: 0; transform: translateX(-12px); transition: all .3s cubic-bezier(.2, .7, .2, 1); }
-.tabs button[aria-pressed='true']::after { opacity: 1; transform: none; }
-.tabs button:hover:not([aria-pressed='true']) { transform: translateX(8px); }
+.board[data-board] { margin-top: 48px; }
 .board li:not(.gap) { position: relative; isolation: isolate; transition: background-color .2s ease; }
 .board li:not(.gap)::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; z-index: -1; width: var(--w, 0%); background: rgba(239, 234, 224, .07); transform-origin: left; }
 .board.is-anim li:not(.gap)::before { animation: bar-in .7s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--d, 0) * 45ms + 120ms); }
@@ -435,15 +435,15 @@
 .board.is-anim li { animation: row-in .45s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--d, 0) * 45ms); }
 @keyframes row-in { from { opacity: 0; transform: translateY(10px); } }
 @keyframes bar-in { from { transform: scaleX(0); } }
-@media (prefers-reduced-motion: reduce) { .board li, .board li::before { animation: none; } .tabs button, .tabs button::after { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .board li, .board li::before { animation: none; } .rank { transition: none; } }
 .board { margin: 0; padding: 0; list-style: none; border-top: 4px solid var(--paper); }
 .board li { display: grid; grid-template-columns: 60px 1fr auto; align-items: baseline; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule-ink); }
 .board li b { font-size: 30px; }
 .board li .v { font-size: 30px; }
 .board li.me { background: var(--paper); color: var(--ink); padding-left: 10px; padding-right: 10px; }
 .board li.gap { display: block; padding: 6px 0; color: var(--mute-ink); text-align: center; }
-@media (max-width: 1100px) { .ranks { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 28px; } .crown, .boardw { grid-template-columns: 1fr; } .tabs { flex-direction: row; flex-wrap: wrap; gap: 4px 18px; } }
-@media (max-width: 760px) { .ranks { grid-template-columns: 1fr 1fr; } .tabs button { font-size: 26px; } }
+@media (max-width: 1100px) { .ranks { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 28px; } }
+@media (max-width: 760px) { .ranks { grid-template-columns: 1fr 1fr; } .crown__t { grid-template-columns: 1fr 1fr; } }
 
 /* 6. Career journey */
 .ribbon { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 3px; }
@@ -537,7 +537,7 @@
 button.ledger__btn { cursor: pointer; }
 .ledger__btn:focus-visible { outline: 3px solid var(--red); outline-offset: 6px; }
 .ledger__list li:is(:hover, :focus-within, .sel) b { color: var(--red-ink); }
-.ledger__list b { font-size: 26px; transition: all .2s ease; }
+.ledger__list b { font-size: 26px; transition: color .2s ease; }
 /* Animation (owner, 29/10: "están medio xd"). A hovered milestone: a red bar grows on its
    left, year and label turn red and the label steps right. In the grid the
    rest of the races fade back (a wave, left to right) and the milestone's

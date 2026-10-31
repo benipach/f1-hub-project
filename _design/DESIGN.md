@@ -580,7 +580,7 @@ still the live one.
   the number, the last name (≤ 28 % of the height) and the figures (≤ 14 %)
   follow the height too, so it fits instead of running past. Phones: as
   long as it needs. A strip (Driver · nationality · current or last team · "On the
-  grid" or the years · code), the first name, the last name fitted to its
+  grid" or the years), the first name, the last name fitted to its
   column, the number in red, the photo (or the number, outlined, without
   one) and up to five figures in one row, the ones that aren't zero first,
   one size for all (the widest fits). The photo is the ink → paper duotone
@@ -602,13 +602,16 @@ still the live one.
 - **Season by season:** a bar per season as tall as its final position, red
   for a title season (an 8 px square was clipped on P1 bars), then team,
   points, wins, podiums, the teammate record and who; a click opens it above.
-- **Career stats:** the titles as a giant red number with their years, six
-  totals with their all-time rank (paper tag in the top ten), and the
-  all-time board with tabs (the top five and the driver after them).
+- **Career stats:** nothing the hero already says (owner, 31/10). The titles
+  as a wall of their years (team, points, wins), under one line with the
+  count and its all-time rank; six all-time ranks, the place big and the
+  total under it, each one the switch for the all-time board below (the top
+  five and the driver after them).
 - **Career journey:** a ribbon with a stretch per run of races with one team
   (no line between races, owner 28/10), a card over it on hover ("Aston
-  Martin 22/22": races with the team out of the season's); the stints in a
-  line; "Every race", a grid of every result (win, podium, points, no
+  Martin 22/22": races with the team out of the season's); its key, each
+  team once (logo and name; years and races are Driver info's table);
+  "Every race", a grid of every result (win, podium, points, no
   points, out, missed, milestone); and the milestones in the order they
   happened.
 - **Hover, the only motion** (owner, 29/10: no entrance animations): rows of

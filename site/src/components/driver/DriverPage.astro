@@ -6,7 +6,7 @@
 //
 // The build writes the whole page. The browser script at the bottom only
 // redraws the season panel (season picker, "Season by season") and the
-// all-time board (its tabs) with the same functions (lib/driver-view.ts),
+// all-time board (picked by its ranks) with the same functions (lib/driver-view.ts),
 // and runs the hovers: race cards, the ribbon's cards, milestones in the grid.
 import { getImage } from 'astro:assets';
 import '../../styles/driver.css';
@@ -198,8 +198,6 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
                     {D.nationality && <span>{D.nationality}</span>}
                     <span><TeamMark logo={lastEra.logo} color={lastEra.color} size={20} /> {lastEra.name}{D.active ? '' : ` · ${fill(T_.until, { year: lastEra.to })}`}</span>
                     {D.active ? <span class="live">{T_.onTheGrid}</span> : <span class="mute">{status}</span>}
-                    {/* No code (most drivers before 2014): no empty box at the strip's end */}
-                    {D.code && <span>{D.code}</span>}
                 </div>
                 <div class="hero__body">
                     <div>
@@ -328,34 +326,35 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
         <section class="sec f-ink on-ink">
             <div class="wrap">
                 <div class="sec__head"><div><p class="sec__kick lbl">{T_.stats.kick}</p><h2 class="sec__title cond" style={lenOf(T_.stats.title)}>{T_.stats.title}</h2></div></div>
+                {/* The count is the hero's red figure: here, the years (owner, 31/10) */}
                 {T.titles > 0 && (
                     <div class="crown">
-                        <p class="crown__n cond">{T.titles}</p>
+                        <p class="lbl">{T.titles === 1 ? T_.stats.champion : fill(T_.stats.champions, { n: T.titles })} · {fill(T_.stats.allTime, { rank: ord(view, D.ranks.titles) })}</p>
                         <div class="crown__t">
-                            <p class="lbl" style="margin: 0 0 12px">{T.titles === 1 ? T_.stats.champion : fill(T_.stats.champions, { n: T.titles })} · {fill(T_.stats.allTime, { rank: ord(view, D.ranks.titles) })}</p>
                             {S.filter((s) => s.champion).map((s) => (
                                 <div><b class="cond">{s.year}</b><span class="lbl"><TeamMark logo={s.teams[0]!.logo} color={s.teams[0]!.color} size={20} /> {s.teams[0]!.name}</span><span class="lbl mute">{fill(T_.stats.titleLine, { pts: n(s.pts), wins: s.wins })}</span></div>
                             ))}
                         </div>
                     </div>
                 )}
-                <div class="ranks">
-                    {STATS.map(([k, label]) => (
-                        <div class="rank"><b class="cond">{n(T[k])}</b><span class="lbl">{label}</span>{T[k] > 0 && <span class:list={['pos lbl', { top: D.ranks[k] <= 10 }]}>{fill(T_.stats.allTime, { rank: ord(view, D.ranks[k]) })}</span>}</div>
+                {/* The totals are the hero's figures: here the place among every
+                    driver leads, and each one picks the board below (owner, 31/10).
+                    Toggle buttons, one pressed (a tablist needs tab roles and arrow keys) */}
+                <div class="ranks" role="group" aria-label={T_.stats.title}>
+                    {STATS.map(([k, label], i) => (
+                        <button class="rank" type="button" data-k={k} aria-pressed={i === 0 ? 'true' : 'false'} aria-label={`${label}: ${n(T[k])}${T[k] > 0 ? ` · ${fill(T_.stats.allTime, { rank: ord(view, D.ranks[k]) })}` : ''}`}>
+                            <b class="cond">{T[k] > 0 ? ord(view, D.ranks[k]) : '—'}</b><span class="lbl">{label}</span><span class="lbl mute">{n(T[k])}</span>
+                        </button>
                     ))}
                 </div>
-                <div class="boardw">
-                    {/* Toggle buttons, one pressed (a tablist needs tab roles and arrow keys) */}
-                    <div class="tabs" role="group" aria-label={T_.stats.title}>{STATS.map(([k, label], i) => <button type="button" data-k={k} aria-pressed={i === 0 ? 'true' : 'false'}>{label}</button>)}</div>
-                    <ol class="board" data-board set:html={boardHtml(view, D, 'wins')} />
-                </div>
+                <ol class="board" data-board set:html={boardHtml(view, D, 'wins')} />
             </div>
         </section>
 
         <!-- 6. Career journey -->
         <section class="sec f-paper">
             <div class="wrap">
-                <div class="sec__head"><div><p class="sec__kick lbl">{plural(view, J.seasons, T.seasons)} · {plural(view, J.races, T.races, { n: n(T.races) })} · {plural(view, J.teams, D.eras.length)}</p><h2 class="sec__title cond" style={lenOf(J.title)}>{J.title}</h2></div></div>
+                <div class="sec__head"><div><p class="sec__kick lbl">{J.kick}</p><h2 class="sec__title cond" style={lenOf(J.title)}>{J.title}</h2></div></div>
                 <div class:list={['ribbon', { 'is-long': longRibbon }]} style={`--n: ${years.length}`}>
                     {ribbon.map((y, i) => y.gap
                         ? <div class:list={['ribbon__y is-gap', { keep: keepYear(y.y, i) }]}><div class="ribbon__cells" data-tip={y.tip}><span class="sr">{y.label}</span></div><span class="lbl mute" aria-hidden="true"><span>{yy(y.y, longRibbon)}</span></span></div>
@@ -368,8 +367,10 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
                         ))}
                     <div class="rtip" aria-hidden="true"></div>
                 </div>
+                {/* The ribbon's key: each team once (stints, years and races are
+                    in Driver info's table) */}
                 <div class="eras lbl">
-                    {D.eras.map((e) => <span><TeamMark logo={e.logo} color={e.color} size={18} /> {e.name} <span class="mute">{span(e.from, e.to)} · {plural(view, J.races, e.races)}</span></span>)}
+                    {D.eras.filter((e, i) => D.eras.findIndex((x) => x.id === e.id) === i).map((e) => <span><TeamMark logo={e.logo} color={e.color} size={18} /> {e.name}</span>)}
                 </div>
 
                 <div class="every">
@@ -559,8 +560,8 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
             // The first race shown appears in place; the next ones slide (owner, 18/10)
             const firstShown = !tip.classList.contains('is-on');
             tip.classList.toggle('is-instant', firstShown);
-            tip.style.left = `${left}px`;
-            tip.style.top = `${below ? cy + 16 : cy - 16 - tip.offsetHeight}px`;
+            // Moved with `translate` (from its 0,0 corner), so the slide runs off the main thread
+            tip.style.translate = `${left}px ${below ? cy + 16 : cy - 16 - tip.offsetHeight}px`;
             if (firstShown) { void tip.offsetWidth; tip.classList.remove('is-instant'); }
             tip.classList.add('is-on');
             light(i);
@@ -593,7 +594,10 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
 
     // ---- Season by season: on a phone it slides sideways ----------------------
     // It opens on the latest seasons (the ones a race weekend is about), and a
-    // fade on either side says there's more that way
+    // fade on either side says there's more that way. All of it is measured,
+    // so it waits until the section nears the screen: until then the browser
+    // doesn't lay it out (`content-visibility`, driver.css), and reading its
+    // sizes early cost ~95 ms on a 6x slower CPU (31/10)
     {
         const wrap = main.querySelector<HTMLElement>('.sbs__wrap')!;
         const edges = () => {
@@ -601,21 +605,27 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
             wrap.classList.toggle('fade-l', wrap.scrollLeft > 2);
             wrap.classList.toggle('fade-r', wrap.scrollLeft < end - 2);
         };
-        wrap.scrollLeft = wrap.scrollWidth;
-        edges();
-        wrap.addEventListener('scroll', edges, { passive: true });
-        addEventListener('resize', edges);
 
         // The position goes inside its bar only when it fits there with room
         // to spare: the figure grows with the column, so a share of the
-        // height (16 %) left an 18th half outside a short bar (owner, 31/10)
+        // height (16 %) left an 18th half outside a short bar (owner, 31/10).
+        // All the sizes are read before any class changes, or each bar would
+        // lay the grid out again.
         const bars = [...wrap.querySelectorAll<HTMLElement>('.sbs__bars')];
-        const inside = () => bars.forEach((b) => {
-            const fig = b.querySelector<HTMLElement>('span')!;
-            b.classList.toggle('in', b.querySelector('i')!.offsetHeight >= fig.offsetHeight * 1.6);
-        });
-        inside();
-        addEventListener('resize', inside);
+        const inside = () => {
+            const fits = bars.map((b) => b.querySelector('i')!.offsetHeight >= b.querySelector('span')!.offsetHeight * 1.6);
+            bars.forEach((b, i) => b.classList.toggle('in', fits[i]));
+        };
+
+        new IntersectionObserver((seen, io) => {
+            if (!seen.some((e) => e.isIntersecting)) return;
+            io.disconnect();
+            wrap.scrollLeft = wrap.scrollWidth;
+            edges();
+            inside();
+            wrap.addEventListener('scroll', edges, { passive: true });
+            addEventListener('resize', () => { inside(); edges(); });
+        }, { rootMargin: '50% 0px' }).observe(wrap);
     }
 
     // ---- Season by season: the teammate's whole surname ---------------------
@@ -723,9 +733,9 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
                 setTimeout(() => { el.textContent = fmt(view, to); }, delay + dur + 100);
             });
         }
-        main.querySelectorAll<HTMLElement>('.tabs button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.k === k)));
+        main.querySelectorAll<HTMLElement>('.ranks button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.k === k)));
     }
-    main.querySelectorAll<HTMLElement>('.tabs button').forEach((b) => b.addEventListener('click', () => drawBoard(b.dataset.k as BoardStat)));
+    main.querySelectorAll<HTMLElement>('.ranks button').forEach((b) => b.addEventListener('click', () => drawBoard(b.dataset.k as BoardStat)));
 
     // ---- Milestones ↔ grid ----------------------------------------------------
     {

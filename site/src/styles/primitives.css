@@ -113,7 +113,7 @@
    sits in, so both finish together. */
 .arrow {
     display: inline-block;
-    transition: all .2s ease;
+    transition: transform .2s ease;
 }
 a:hover .arrow { transform: translateX(6px); }
 
@@ -131,7 +131,7 @@ a:hover .arrow { transform: translateX(6px); }
     letter-spacing: .09em;
     text-decoration: none;
     cursor: pointer;
-    transition: all .2s ease;
+    transition: background-color .2s ease, color .2s ease;
 }
 /* Hover always moves to a color that contrasts with the field the button sits
    on: a red button turning ink on an ink band would fade into it mid-way. */

@@ -354,9 +354,7 @@ export default {
             races: 'Races',
         },
         journey: {
-            seasons: { one: '{n} season', other: '{n} seasons' },
-            races: { one: '{n} race', other: '{n} races' },
-            teams: { one: '{n} team', other: '{n} stints' },
+            kick: 'Team by team, from the debut',
             title: 'Career journey',
             noRaces: 'No races',
             toCome: 'To come',
