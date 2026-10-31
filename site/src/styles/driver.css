@@ -70,8 +70,9 @@
 @media (max-width: 760px) { .hero { min-height: 0; } }
 @media (max-width: 760px) {
     .strip > * { padding: 12px; }
-    /* Five in a row: a long word ("MUNDIALES") must fit its column */
-    .fig .lbl { font-size: 9px; font-stretch: 100%; letter-spacing: .03em; }
+    /* Five in a row: a long word ("MUNDIALES") must fit its column. The
+       label's size stays (11 px, the floor for .lbl); the face narrows */
+    .fig .lbl { font-stretch: 62%; letter-spacing: .03em; }
 }
 
 /* 2. Driver info: a spec sheet */
@@ -113,8 +114,8 @@
     .teams td.yr { font-size: 16px; }
     .teams td.n { font-size: 18px; }
     /* Spanish heads are longer ("CARRERAS", "VICTORIAS"): the team's name
-       takes two lines and the heads a size less, so it fits 375 px */
-    .teams th { font-size: 9px; letter-spacing: .04em; }
+       takes two lines and the heads a narrower face, so it fits 375 px */
+    .teams th { font-stretch: 75%; letter-spacing: .04em; }
     .teams td:first-child { white-space: normal; }
     .teams .tm b { line-height: .95; text-box: none; }
 }
@@ -194,8 +195,15 @@
 .duel__bar i:last-child { background: #4a4741; }
 .duel__none { grid-column: 2 / -1; }
 @media (max-width: 1100px) { .duel { grid-template-columns: 1fr; } }
-/* "CLASIFICACIÓN" needs the wider label column */
-@media (max-width: 760px) { .duel__row { grid-template-columns: 92px 30px 1fr 30px; gap: 8px; } .duel__row .lbl { font-size: 9px; letter-spacing: .04em; } .duel__row b { font-size: 22px; } }
+/* Phone: each label over its bar, so the bar gets the whole width and the
+   label ("CLASIFICACIÓN") keeps its size */
+@media (max-width: 760px) {
+    .duel__rows { gap: 16px; }
+    .duel__row { grid-template-columns: 30px 1fr 30px; gap: 6px 8px; }
+    .duel__row > .lbl:first-child { grid-column: 1 / -1; }
+    .duel__none { grid-column: 1 / -1; }
+    .duel__row b { font-size: 22px; }
+}
 /* Team(s) of the season: logo and name centered on each other, the name's box
    trimmed to its cap height (.mark-text), as the site does next to a TeamMark */
 .craft__team { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-left: auto; }
@@ -276,6 +284,8 @@
 @media (prefers-reduced-motion: reduce) { .rounds .gpn { transition: none; } .rounds tbody tr.is-hl .gpn { transform: none; } }
 @media (max-width: 760px) {
     .band { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 20px; }
+    /* "CHAMPIONSHIP" in a third of a 360 px screen */
+    .band .lbl { font-stretch: 85%; letter-spacing: .06em; }
     .rounds .hide-s { display: none; }
     .rounds td.gp, .rounds td.gf { font-size: 18px; }
     /* Phone with sprints: no room for +/−, the groups keep start → finish and points */
@@ -283,27 +293,59 @@
     .with-spr td.gf, .with-spr td.d { font-size: 15px; }
     .with-spr .s1 { padding-left: 10px !important; }
     .with-spr .gpn .cond { font-size: 15px; }
-    /* Phone: the table slides sideways when the sprint group doesn't fit; the
-       small tags go (classified, fastest lap) */
-    .rounds-wrap { overflow-x: auto; scrollbar-width: none; margin-right: calc(var(--gut) * -1); }
-    .rounds-wrap::-webkit-scrollbar { display: none; }
-    .with-spr { min-width: 560px; }
+    /* The small tags go (classified, fastest lap) */
     .rounds .gf .lbl, .rounds .flg { display: none; }
+    /* Phone with sprints: no sideways slide (it hid the race, the column that
+       matters, off the right edge). Each weekend stacks: the GP, then the race
+       and the sprint on lines of their own, each named, points on the right.
+       The race leads here; the wide table keeps the sprint first. */
+    .with-spr, .with-spr tbody { display: block; }
+    .with-spr thead { display: none; }
+    .with-spr tbody tr { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: 8px 10px; padding: 12px 0; border-top: 1px solid var(--rule-ink); }
+    .with-spr tbody td { display: block; padding: 0; border: 0; }
+    .with-spr tbody td:empty { display: none; }
+    .with-spr tbody td.r { grid-row: 1 / span 3; align-self: start; }
+    .with-spr tbody td.gp { grid-column: 2 / -1; }
+    .with-spr .s1 { padding-left: 0 !important; border-left: 0; }
+    .with-spr tbody td:nth-child(6) { grid-area: 2 / 2; }
+    .with-spr tbody td:nth-child(8) { grid-area: 2 / 3; }
+    .with-spr tbody td:nth-child(3) { grid-area: 3 / 2; }
+    .with-spr tbody td:nth-child(5) { grid-area: 3 / 3; }
+    .with-spr tr.is-dim td.lbl { grid-column: 2 / -1; }
+    .with-spr .z { display: none; }
+    .with-spr td[data-l]::before { content: attr(data-l); display: inline-block; width: 84px; font-size: 11px; font-weight: 700; font-stretch: 115%; letter-spacing: .09em; color: var(--mute-ink); vertical-align: .12em; }
+    .with-spr td.gf, .with-spr td.d { font-size: 18px; }
+    .with-spr .gpn .cond { font-size: 18px; }
+    .rounds td .u { display: inline; }
+    .with-spr tbody tr.is-hl { background-color: rgba(239, 234, 224, .06); }
+    .with-spr tbody tr.is-hl td { background-color: transparent; }
 }
+.rounds .u { display: none; }
 
 /* 4. Season by season */
 /* Everything grows with the width of a season's column (few seasons, room to
    spare: bigger), each size capped (owner, 18/10). --col is that width,
    measured against the section (a container) minus the label column. */
 .sbs__wrap { container-type: inline-size; }
-.sbs { --n: 1; --lab: 120px; --col: calc((100cqi - var(--lab) - (var(--n) - 1) * 3px) / var(--n)); }
-.sbs__grid { display: grid; grid-template-columns: var(--lab) repeat(var(--n), minmax(0, 1fr)); column-gap: 3px; }
+/* A column is at most 160 px: a rookie's one season was a single black slab
+   across the whole page; few seasons now sit at the left, at that width */
+.sbs { --n: 1; --lab: 120px; --col: min(160px, calc((100cqi - var(--lab) - (var(--n) - 1) * 3px) / var(--n))); }
+.sbs__grid { display: grid; grid-template-columns: var(--lab) repeat(var(--n), minmax(0, 1fr)); column-gap: 3px; max-width: calc(var(--lab) + var(--n) * 163px); }
 .sbs__bars { height: clamp(220px, calc(var(--col) * .9), 320px) !important; }
 .sbs__bars span { font-size: clamp(20px, calc(var(--col) * .42), 64px) !important; }
 .sbs__row { font-size: clamp(16px, calc(var(--col) * .3), 36px); padding: clamp(10px, calc(var(--col) * .05), 16px) 2px !important; }
 .sbs__row.y { font-size: clamp(20px, calc(var(--col) * .42), 52px) !important; }
 .sbs__row.mute { font-size: clamp(11px, calc(var(--col) * .09), 16px) !important; }
-.sbs__row .team-mark { width: clamp(18px, calc(var(--col) * .16), 40px) !important; height: clamp(18px, calc(var(--col) * .16), 40px) !important; }
+/* The logo files are 250 px squares with the mark across their full width,
+   so the square box grows with the column (a Red Bull mark is a third as
+   tall as it's wide), capped for careers of one or two seasons. Two teams
+   in a year make one mark: the first's left half against the second's
+   right half, no gap (owner, 31/10) */
+.sbs { --mark: clamp(26px, calc(var(--col) * .4), 52px); }
+.sbs__row .team-mark { width: var(--mark) !important; height: var(--mark) !important; }
+.sbs__row:has(.team-mark + .team-mark) { display: flex; justify-content: center; }
+.sbs__row .team-mark:is(:first-child:nth-last-child(2), :last-child:nth-child(2)) { width: calc(var(--mark) / 2) !important; margin: 0; object-fit: cover; object-position: left; }
+.sbs__row .team-mark:last-child:nth-child(2) { object-position: right; }
 .sbs__lab { display: flex; flex-direction: column; justify-content: center; padding: 0 12px 0 0; border-top: 1px solid transparent; }
 .sbs__lab:first-child { justify-content: flex-end; padding-bottom: 8px; border-top: 0; }
 .sbs__col { all: unset; box-sizing: border-box; display: contents; cursor: pointer; }
@@ -314,7 +356,7 @@
 .sbs__bars.is-title i { background: var(--red); }
 /* The season still running: a solid bar like the rest, "Now" over its number */
 .sbs__bars.in .now { bottom: calc(var(--h) + 8px); }
-.sbs__bars .now { position: absolute; left: 0; right: 0; bottom: calc(var(--h) + 18px + 1.3em); text-align: center; font-size: 10px; color: var(--mute); }
+.sbs__bars .now { position: absolute; left: 0; right: 0; bottom: calc(var(--h) + 18px + 1.3em); text-align: center; font-stretch: 75%; color: var(--mute); }
 .sbs__bars span { position: absolute; z-index: 1; left: 0; right: 0; bottom: calc(var(--h) + 18px); text-align: center; font-size: clamp(14px, 1.6vw, 26px); }
 .sbs__bars.in span { bottom: calc(var(--h) - 1.3em); color: var(--paper); }
 .sbs__row { padding: 10px 2px; border-top: 1px solid currentColor; text-align: center; overflow: hidden; white-space: nowrap; }
@@ -322,15 +364,38 @@
 .sbs__row .team-mark, .sbs__row .sq { margin: 0 auto; }
 .sbs__row.mute { font-size: 11px; }
 .sbs__row.sbs__sel { box-shadow: inset 0 -4px 0 var(--red); }
+/* Over a season, the rest of its teammate's surname appears after the three
+   letters, one letter after another, while the column widens for it (the
+   page's script sets the tracks and the room, --w). On the way out the same
+   runs backwards: the last letter goes first, and the room closes behind
+   the letters (the script waits as long before narrowing the column) */
+.sbs__grid { transition: grid-template-columns .35s ease; }
+.sbs__rest { display: inline-block; vertical-align: top; max-width: 0; overflow: hidden; transition: max-width .35s ease max(0ms, calc((var(--n) - 1) * 45ms - 150ms)); }
+.sbs__rest span { opacity: 0; transition: opacity .2s ease calc((var(--n) - 1 - var(--i)) * 45ms); }
+.sbs__mate.open .sbs__rest { max-width: var(--w); transition-delay: 0ms; }
+.sbs__mate.open .sbs__rest span { opacity: 1; transition: opacity .2s ease calc(var(--i) * 45ms); }
 .sbs__key { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 18px; }
 .sbs__key i { display: inline-block; width: 10px; height: 10px; margin-right: 6px; vertical-align: -1px; border-radius: 50%; }
-.sbs__wrap { overflow-x: auto; scrollbar-width: none; }
+/* The top padding is room for "Now" over a tall bar: the sideways scroll
+   clips anything above the box */
+.sbs__wrap { overflow-x: auto; scrollbar-width: none; padding-top: 28px; }
 .sbs__wrap > div { min-width: calc(120px + var(--n) * 30px); }
 @media (max-width: 760px) {
-    .sbs { --lab: 74px; }
-    .sbs__grid { grid-template-columns: var(--lab) repeat(var(--n), minmax(26px, 1fr)); }
+    /* The labels stay put while the seasons slide under them, wide enough
+       for "VS COMPAÑERO" on two lines (at 74 px they ran over the data) */
+    .sbs { --lab: 96px; }
+    /* 34 px: a teammate record ("10–11") fits its column */
+    .sbs__grid { grid-template-columns: var(--lab) repeat(var(--n), minmax(34px, 1fr)); }
+    .sbs__wrap > div { min-width: calc(96px + var(--n) * 37px); }
+    /* A narrower face, so "CHAMPIONSHIP" fits on one line at the label's size */
+    .sbs .sbs__lab { position: sticky; left: 0; z-index: 2; background: var(--paper); font-stretch: 75%; letter-spacing: .04em; line-height: 1.15; }
+    /* There's more that way: the seasons fade out at the edge they continue
+       past (the page's script sets the classes; the labels never fade) */
+    .sbs__wrap.fade-r { mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent); }
+    .sbs__wrap.fade-l { mask-image: linear-gradient(90deg, #000 96px, transparent 96px, #000 144px); }
+    .sbs__wrap.fade-l.fade-r { mask-image: linear-gradient(90deg, #000 96px, transparent 96px, #000 144px, #000 calc(100% - 48px), transparent); }
     .sbs__bars { height: clamp(150px, calc(var(--col) * .9), 220px) !important; }
-    .sbs__row .team-mark { --size: 14px !important; width: 14px; height: 14px; }
+    .sbs { --mark: 28px; }
 }
 
 /* 5. Career stats */
@@ -350,6 +415,8 @@
 .tabs { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding-top: 10px; border-top: 4px solid var(--paper); }
 .tabs button { all: unset; cursor: pointer; padding: 6px 0; font-size: clamp(30px, 3vw, 44px); font-weight: 900; font-stretch: 62%; text-transform: uppercase; line-height: .9; color: var(--mute-ink); transition: all .2s ease; }
 .tabs button[aria-pressed='true'], .tabs button:hover { color: var(--paper); }
+/* all: unset took base.css's focus ring with it */
+.tabs button:focus-visible { outline: 3px solid var(--red); outline-offset: 4px; }
 /* Animations (owner, 29/10). Tabs: the arrow is always there, hidden, and
    slides in on the chosen one, so the word doesn't jump; a hovered tab
    steps right. Board: on each switch the rows come up one after another,
@@ -423,11 +490,13 @@
 .key i { display: inline-grid; place-items: center; width: 22px; height: 22px; font-style: normal; font-size: 11px; }
 .rows { margin-top: 24px; }
 .row { display: grid; grid-template-columns: 96px minmax(0, 1fr); align-items: center; gap: 12px; padding: 5px 0; border-top: 1px solid rgba(18, 18, 18, .2); }
-.row__y { display: flex; align-items: center; gap: 8px; }
+/* A season with three teams (1991 had them): the logos wrap under the year
+   instead of running into the grid */
+.row__y { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
 .row__y b { font-size: 24px; }
 .row__y { position: relative; align-self: stretch; padding-left: 14px; }
 .row__y::before { content: ''; position: absolute; left: 0; top: -6px; bottom: -5px; width: 4px; background: var(--red); transform: scaleY(0); transform-origin: top; transition: transform .3s cubic-bezier(.2, .7, .2, 1); }
-.row__y > * { transition: translate .3s cubic-bezier(.2, .7, .2, 1); }
+.row__y > * { transition: opacity .25s ease; }
 .cells { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: 2px; }
 .c { position: relative; display: grid; place-items: center; aspect-ratio: 5 / 4; min-width: 0; font-size: clamp(9px, 1vw, 15px); font-weight: 900; font-stretch: 62%; line-height: 1; cursor: default; }
 .c.win { background: var(--ink); color: var(--paper); }
@@ -443,7 +512,7 @@
    year turns red. Opacity runs with a delay by column, so a milestone dims
    the grid as a wave. No entrance animation (tried and dropped, owner). */
 .c { transition: opacity .35s ease calc(var(--k, 0) * 16ms), scale .18s ease 0s; }
-.row__y b { transition: color .2s ease, translate .3s cubic-bezier(.2, .7, .2, 1); }
+.row__y b { transition: color .2s ease, opacity .25s ease; }
 @media (hover: hover) {
     /* Solid while it's over its neighbours, or their edges show through
        (owner, 29/10); a podium's gray is its .72 ink made solid */
@@ -451,18 +520,23 @@
     .cells .c.win:hover { background-color: var(--ink); }
     .cells .c.pod:hover { opacity: 1; background-color: #504f4c; }
     .row:hover .row__y b { color: var(--red-ink); }
-    /* The milestones' hover on the season's year (owner, 29/10): a red bar
-       grows on its left and the year steps right (`translate`) */
+    /* The season's year (owner, 31/10): a red bar grows on its left and the
+       other seasons' years fade back. Nothing moves: the year and its logos
+       stepping right looked cheap (it was a 6px `translate`) */
     .row:hover .row__y::before { transform: none; }
-    .row:hover .row__y > * { translate: 6px 0; }
+    .rows:has(.row:hover) .row:not(:hover) .row__y > * { opacity: .35; }
 }
 @media (prefers-reduced-motion: reduce) { .c { transition: none; } .cells .c:hover { scale: none; } }
 .row__s { grid-column: 2; display: flex; gap: 16px; padding-bottom: 4px; }
 
 .ledger { margin-top: 72px; }
 .ledger__list { margin: 24px 0 0; padding: 0; list-style: none; columns: 2; column-gap: calc(var(--gap) * 3); }
-.ledger__list li { display: grid; grid-template-columns: 54px 1fr auto; gap: 12px; align-items: baseline; padding: 12px 0; border-top: 1px solid currentColor; break-inside: avoid; cursor: pointer; }
-.ledger__list li:hover b, .ledger__list li.sel b { color: var(--red-ink); }
+.ledger__list li { padding: 12px 0; border-top: 1px solid currentColor; break-inside: avoid; }
+/* The row itself: a button when the milestone has a race in the grid */
+.ledger__btn { all: unset; box-sizing: border-box; display: grid; grid-template-columns: 54px 1fr auto; gap: 12px; align-items: baseline; width: 100%; }
+button.ledger__btn { cursor: pointer; }
+.ledger__btn:focus-visible { outline: 3px solid var(--red); outline-offset: 6px; }
+.ledger__list li:is(:hover, :focus-within, .sel) b { color: var(--red-ink); }
 .ledger__list b { font-size: 26px; transition: all .2s ease; }
 /* Animation (owner, 29/10: "están medio xd"). A hovered milestone: a red bar grows on its
    left, year and label turn red and the label steps right. In the grid the
@@ -470,22 +544,26 @@
    race grows with a red ring pulsing out of it. A click also scrolls to it. */
 .ledger__list li { position: relative; padding-left: 16px; }
 .ledger__list li::before { content: ''; position: absolute; left: 0; top: -1px; bottom: 0; width: 4px; background: var(--red); transform: scaleY(0); transform-origin: top; transition: transform .3s cubic-bezier(.2, .7, .2, 1); }
-.ledger__list li:hover::before, .ledger__list li.sel::before { transform: none; }
-.ledger__list li > span:nth-child(2) { transition: transform .3s cubic-bezier(.2, .7, .2, 1); }
-.ledger__list li:hover > span:nth-child(2), .ledger__list li.sel > span:nth-child(2) { transform: translateX(6px); }
+.ledger__list li:is(:hover, :focus-within, .sel)::before { transform: none; }
+.ledger__btn > span:nth-child(2) { transition: transform .3s cubic-bezier(.2, .7, .2, 1); }
+.ledger__list li:is(:hover, :focus-within, .sel) .ledger__btn > span:nth-child(2) { transform: translateX(6px); }
 .ledger__list .y { transition: color .2s ease; }
-.ledger__list li:hover .y, .ledger__list li.sel .y { color: var(--red-ink); }
+.ledger__list li:is(:hover, :focus-within, .sel) .y { color: var(--red-ink); }
 .rows.is-marking .c { opacity: .25; }
 .rows.is-marking .c.sel { opacity: 1; scale: 1.25; z-index: 3; }
 .c.sel::before { content: ''; position: absolute; inset: -3px; border: 3px solid var(--red); pointer-events: none; animation: ms-ping 1.4s cubic-bezier(.2, .7, .2, 1) infinite; }
 @keyframes ms-ping { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(1.9); } }
-@media (prefers-reduced-motion: reduce) { .c.sel::before { animation: none; } .ledger__list li, .ledger__list li::before, .ledger__list li > span { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .c.sel::before { animation: none; } .ledger__list li, .ledger__list li::before, .ledger__btn > span { transition: none; } }
 .ledger__list .y { font-size: 22px; }
 @media (max-width: 1100px) { .ledger__list { columns: 1; } }
 @media (max-width: 760px) {
     .row { grid-template-columns: 1fr; gap: 6px; }
     .row__s { grid-column: 1; }
-    .c { font-size: 9px; }
+    /* A season in two lines of half the races each (--mcols, the same for
+       every season so the rounds still line up): cells twice as wide, a
+       number that reads and a bigger target for the finger */
+    .cells { grid-template-columns: repeat(var(--mcols), minmax(0, 1fr)); }
+    .c { font-size: 13px; }
     .ribbon__cells { height: 44px; }
     .ribbon__y .lbl small { display: none; }
     /* A long career: one year in five, the first and the last, or they overlap */

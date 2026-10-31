@@ -87,12 +87,15 @@ function smooth(p: readonly (readonly [number, number])[]): string {
     return d;
 }
 
-/** The form curve: start against finish, race by race. */
-function chart(rs: readonly DriverRound[], label: string, pointsLine: string): string {
+/** The form curve: start against finish, race by race. `compact` draws it for
+ *  a phone: a taller box, so the 1000-wide one's text doesn't shrink to ~4 px. */
+function chart(rs: readonly DriverRound[], label: string, pointsLine: string, compact = false): string {
     // The foot is that season's field: the most cars in any of its races (27
     // in 1990, 20 in 2005, 22 in 2026), as fieldSizeOf() on the old page
     const field = Math.max(0, ...rs.map((r) => r.field)) || 20;
-    const W = 1000, H = 360, padL = 40, padB = 26;
+    const [W, H, padL, padB] = compact ? [400, 300, 30, 22] : [1000, 360, 40, 26];
+    // A phone has room for one round number in two on a long season
+    const every = compact && rs.length > 14 ? 2 : 1;
     const x = (i: number) => padL + (i + 0.5) * ((W - padL) / rs.length);
     const y = (p: number) => 8 + ((p - 1) / Math.max(1, field - 1)) * (H - padB - 16);
     // A retirement sits where it was classified ("classified P16", as the old
@@ -124,7 +127,7 @@ function chart(rs: readonly DriverRound[], label: string, pointsLine: string): s
   <path d="${line('grid')}" fill="none" stroke="var(--mute-ink)" stroke-width="2" stroke-dasharray="5 5" stroke-linejoin="round" stroke-linecap="round"></path>
   <path d="${line('pos')}" fill="none" stroke="var(--paper)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"></path>
   ${rs.map((r, i) => {
-      const lab = `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="11" font-weight="700" fill="${r.missed || r.upcoming ? 'var(--rule-ink)' : 'var(--mute-ink)'}">${r.round}</text>`;
+      const lab = i % every ? '' : `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="11" font-weight="700" fill="${r.missed || r.upcoming ? 'var(--rule-ink)' : 'var(--mute-ink)'}">${r.round}</text>`;
       if (r.missed || r.upcoming) return lab;
       const g = r.grid ? `<circle cx="${x(i)}" cy="${y(r.grid)}" r="3.5" fill="var(--ink)" stroke="var(--mute-ink)" stroke-width="1.5"></circle>` : '';
       const f = r.out
@@ -137,8 +140,9 @@ function chart(rs: readonly DriverRound[], label: string, pointsLine: string): s
 </svg>`;
 }
 
-/** The season panel: figures, racecraft, teammate duel, form curve, rounds. */
-export function seasonHtml(view: DriverView, D: Pick<DriverProfile, 'id' | 'last'>, s: DriverSeason): string {
+/** The season panel: figures, racecraft, teammate duel, form curve, rounds.
+ *  `compact`: the phone's form curve (the browser redraws with it, ≤ 760 px). */
+export function seasonHtml(view: DriverView, D: Pick<DriverProfile, 'id' | 'last'>, s: DriverSeason, compact = false): string {
     const { w } = view;
     const S = w.season;
     const n = (v: number) => fmt(view, v);
@@ -163,8 +167,14 @@ export function seasonHtml(view: DriverView, D: Pick<DriverProfile, 'id' | 'last
     <div class="duel__who"><span class="lbl mute">${esc(fill(S.duel, { n: s.mate.together }))}</span><p class="cond"><span>${esc(D.last)}</span> <span class="mute">${esc(S.vs)}</span> ${esc(s.mate.last)}</p></div>
     <div class="duel__rows">${duelRow(S.qualifying, s.mate.quali)}${duelRow(S.race, s.mate.race)}${duelRow(S.points, s.mate.pts)}</div>
   </div>` : '';
+    // Points with their unit, which only a phone shows (its table has no heads)
+    // (the phone also drops the "·" of no points: alone at the row's end it
+    // read as a stray pixel)
+    const ptsOf = (v: number) => (v ? `${n(v)}<span class="u lbl mute"> ${esc(S.pts)}</span>` : '<span class="z">·</span>');
+    // data-l: the group's name, written before the result on a phone, where
+    // each weekend stacks race over sprint instead of side by side
     const sprintCells = (sp: DriverSprint | null) => (!hasSprints ? '' : sp
-        ? `<td class="gf cond spr">${sp.grid ? 'P' + sp.grid : '—'}<span class="arr">→</span>${res(sp)}</td><td class="n d cond spr ${arrowCls(delta(sp))}">${arrow(delta(sp))}</td><td class="n d cond spr">${sp.pts ? n(sp.pts) : '·'}</td>`
+        ? `<td class="gf cond spr" data-l="${esc(S.sprint)}">${sp.grid ? 'P' + sp.grid : '—'}<span class="arr">→</span>${res(sp)}</td><td class="n d cond spr ${arrowCls(delta(sp))}">${arrow(delta(sp))}</td><td class="n d cond spr">${ptsOf(sp.pts)}</td>`
         : '<td></td><td></td><td></td>');
     const craft = s.hasGrid
         ? top ? `<span>${fill(S.bestOf, { year: s.year, n: s.gained })}</span>`
@@ -187,7 +197,7 @@ export function seasonHtml(view: DriverView, D: Pick<DriverProfile, 'id' | 'last
   ${duel}
   <div class="chart">
     <div class="chart__head lbl"><span>${esc(S.formCurve)}</span><span class="chart__key"><span><i></i>${esc(S.finish)}</span><span><i class="g"></i>${esc(S.start)}</span><span style="color:var(--red-hi)">${esc(S.out)}</span></span></div>
-    <div class="chart__plot">${chart(rs, S.chart, S.pointsLine)}<div class="tip" data-tip></div></div>
+    <div class="chart__plot">${chart(rs, S.chart, S.pointsLine, compact)}<div class="tip" data-tip></div></div>
   </div>
   <div class="rounds-wrap"><table class="rounds ${hasSprints ? 'with-spr' : ''}">
     <thead class="lbl mute">
@@ -199,7 +209,7 @@ export function seasonHtml(view: DriverView, D: Pick<DriverProfile, 'id' | 'last
         const d = delta(r);
         // Race and sprint side by side, one row per weekend, never added up;
         // sprint first, the order they're run in (owner, 18/10)
-        return `<tr data-i="${i}"><td class="r cond">${r.round}</td><td class="gp">${gpName(r)}</td>${sprintCells(r.sprint)}<td class="gf cond ${hasSprints ? 's1' : ''}">${r.grid ? 'P' + r.grid : '—'}<span class="arr">→</span>${res(r)}${r.fl ? stopwatch(S.fastestLap) : ''}</td><td class="n d cond ${arrowCls(d)}">${arrow(d)}</td><td class="n d cond">${r.racePts ? n(r.racePts) : '·'}</td></tr>`;
+        return `<tr data-i="${i}"><td class="r cond">${r.round}</td><td class="gp">${gpName(r)}</td>${sprintCells(r.sprint)}<td class="gf cond ${hasSprints ? 's1' : ''}"${hasSprints ? ` data-l="${esc(S.race)}"` : ''}>${r.grid ? 'P' + r.grid : '—'}<span class="arr">→</span>${res(r)}${r.fl ? stopwatch(S.fastestLap) : ''}</td><td class="n d cond ${arrowCls(d)}">${arrow(d)}</td><td class="n d cond">${ptsOf(r.racePts)}</td></tr>`;
     }).join('')}</tbody>
   </table></div>`;
 }
@@ -224,7 +234,9 @@ export function tipHtml(view: DriverView, r: DriverRound): string {
 export function boardHtml(view: DriverView, D: Pick<DriverProfile, 'id' | 'first' | 'last' | 'totals' | 'ranks' | 'boards'>, k: BoardStat): string {
     const top = D.boards[k];
     const me: BoardRow = { id: D.id, first: D.first, last: D.last, value: D.totals[k], rank: D.ranks[k] };
-    const rows: (BoardRow | null)[] = top.some((r) => r.id === D.id) ? [...top] : [...top, ...(me.rank > 6 ? [null] : []), me];
+    // A zero isn't a place on the board (everyone without a win "ties" at the
+    // foot), so the driver's own row only follows when there's something to rank
+    const rows: (BoardRow | null)[] = top.some((r) => r.id === D.id) || !me.value ? [...top] : [...top, ...(me.rank > 6 ? [null] : []), me];
     const max = Math.max(1, ...rows.map((r) => r?.value ?? 0));
     return rows.map((r, i) => (!r ? `<li class="gap lbl" style="--d:${i}">···</li>`
         : `<li class="${r.id === D.id ? 'me' : ''}" style="--d:${i};--w:${(r.value / max) * 100}%"><b class="cond">${r.rank}</b><span><span class="lbl ${r.id === D.id ? '' : 'mute'}">${esc(r.first)}</span> <b class="cond">${esc(r.last)}</b></span><span class="v cond" data-v="${r.value}">${fmt(view, r.value)}</span></li>`)).join('');

@@ -106,10 +106,12 @@ const keepYear = (y: number, i: number) => i === 0 || i === years.length - 1 || 
 // the browser script, by index.
 const ribTips: string[] = [];
 const ribTip = (html: string) => ribTips.push(html) - 1;
-type Stretch = { k: string; n: number; tip: number; color: string | null };
+// `label`: the card's words as plain text, for screen readers (the card itself
+// only shows on hover)
+type Stretch = { k: string; n: number; tip: number; color: string | null; label: string };
 const ribbon = years.map((y) => {
     const s = byYear.get(y);
-    if (!s) return { y, gap: true as const, tip: ribTip(`<span class="lbl mute">${y}</span><b class="rtip__name cond">${esc(J.noRaces)}</b>`) };
+    if (!s) return { y, gap: true as const, tip: ribTip(`<span class="lbl mute">${y}</span><b class="rtip__name cond">${esc(J.noRaces)}</b>`), label: `${y} · ${J.noRaces}` };
     const runs: { k: string; n: number }[] = [];
     for (const r of s.rounds) {
         const k = r.upcoming ? 'tbd' : r.missed ? 'off' : r.team!;
@@ -130,7 +132,10 @@ const ribbon = years.map((y) => {
             : k === 'off'
             ? `${head}<b class="rtip__name cond">${esc(J.didNotRace)}</b><span class="rtip__n cond">${total}<span>/${of}</span></span>`
             : `${head}<span class="rtip__team">${logoHtml(view, team, 22)}<b class="rtip__name cond">${esc(team?.name ?? '')}</b></span><span class="rtip__n cond">${total}<span>/${of}</span></span><span class="lbl mute">${esc(plural(view, J.racesWord, total))}</span>`);
-        return { k, n: c, tip, color: k === 'tbd' || k === 'off' ? null : team?.color ?? '#8a857b' };
+        const label = k === 'tbd' ? `${y} · ${J.toCome} · ${total} ${plural(view, J.left, total)}`
+            : k === 'off' ? `${y} · ${J.didNotRace} · ${total}/${of}`
+            : `${y} · ${team?.name ?? ''} · ${total}/${of} ${plural(view, J.racesWord, total)}`;
+        return { k, n: c, tip, color: k === 'tbd' || k === 'off' ? null : team?.color ?? '#8a857b', label };
     });
     return { y, gap: false as const, stretches, champion: s.champion };
 });
@@ -157,7 +162,8 @@ const cellOf = (s: DriverSeason, r: DriverSeason['rounds'][number]) => {
     const key = msKey(s.year, r.round);
     const m = ms.get(key);
     const cls = r.out ? 'out' : r.pos === 1 ? 'win' : r.pos && r.pos <= 3 ? 'pod' : r.pts > 0 ? 'pts' : 'nop';
-    const txt = r.out ? (r.out === 'DNF' ? '×' : r.out.slice(0, 2)) : String(r.pos ?? '');
+    // DNS and DSQ in full: cut to two letters ("DN", "DS") they read as nothing
+    const txt = r.out ? (r.out === 'DNF' ? '×' : r.out) : String(r.pos ?? '');
     const result = r.out ?? `P${r.pos}`;
     const tt = fill(J.cell, { round: r.round, gp: r.gp, result: r.grid ? fill(J.from, { result, grid: r.grid }) : result, pts: n(r.pts) }) + (m ? ` · ${m.join(', ')}` : '');
     return { cls: `${cls} ${m ? 'ms' : ''}`, txt, tt, key: m ? key : '' };
@@ -192,13 +198,14 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
                     {D.nationality && <span>{D.nationality}</span>}
                     <span><TeamMark logo={lastEra.logo} color={lastEra.color} size={20} /> {lastEra.name}{D.active ? '' : ` · ${fill(T_.until, { year: lastEra.to })}`}</span>
                     {D.active ? <span class="live">{T_.onTheGrid}</span> : <span class="mute">{status}</span>}
-                    <span>{D.code ?? ''}</span>
+                    {/* No code (most drivers before 2014): no empty box at the strip's end */}
+                    {D.code && <span>{D.code}</span>}
                 </div>
                 <div class="hero__body">
                     <div>
                         <p class="hero__first">{D.first}</p>
                         <h1 class="hero__last cond"><span data-fit>{D.last}</span></h1>
-                        <div class="hero__num"><b class="cond">#{D.number}</b><span class="lbl mute">{D.active ? T_.raceNumber : T_.lastRaceNumber}<br />{D.code ?? ''}</span></div>
+                        <div class="hero__num"><b class="cond">#{D.number}</b><span class="lbl mute">{D.active ? T_.raceNumber : T_.lastRaceNumber}{D.code && <><br />{D.code}</>}</span></div>
                     </div>
                     {photo
                         ? <div class="photo"><img src={photo.src} width={photo.attributes['width']} height={photo.attributes['height']} alt={`${D.first} ${D.last}`} decoding="async" /></div>
@@ -229,7 +236,8 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
                     <div class="cell">
                         <span class="lbl">{I.nationality}</span>
                         <span class="cell__v cond nat"><Fragment set:html={flagHtml(view, D.iso)} />{D.nationality ?? '—'}</span>
-                        {D.nationality && <span class="cell__s lbl mute" data-tt={D.homeRaces.join(' · ')}>{D.homeRaces.length ? plural(view, I.homeRaces, D.homeRaces.length, { year: D.latest }) : fill(I.noHomeRaces, { year: D.latest })}</span>}
+                        {/* Home races are the latest calendar's: only a driver on the grid races them */}
+                        {D.nationality && D.active && <span class="cell__s lbl mute" data-tt={D.homeRaces.join(' · ')}>{D.homeRaces.length ? plural(view, I.homeRaces, D.homeRaces.length, { year: D.latest }) : fill(I.noHomeRaces, { year: D.latest })}</span>}
                     </div>
                     <div class="cell"><span class="lbl">{I.number}</span><span class="cell__v cond">#{D.number}</span><span class="cell__s lbl mute" data-tt={D.numbers.map((x) => `#${x}`).join(' · ')}>{D.numbers.length <= 1 ? I.onlyNumber : fill(I.numbers, { n: D.numbers.length })}</span></div>
                     <div class="cell"><span class="lbl">{I.debut}</span><span class="cell__v cond">{date(D.debut)}</span><span class="cell__s lbl mute">{debutMs ? `${debutMs.gp} · ${D.eras[0]!.name}` : D.eras[0]!.name}</span></div>
@@ -267,10 +275,13 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
         <section class="sec f-ink on-ink" id="season">
             <div class="wrap">
                 <div class="sec__head"><div><p class="sec__kick lbl">{T_.season.kick}</p>
+                    {/* One season: just the year, no picker with a single choice */}
+                    {S.length === 1 ? <h2 class="sec__title cond picker" style={`--len: ${T_.season.title.length + 5}`}>{T_.season.title} <span class="yp" data-season><span data-value>{first.year}</span></span></h2> :
                     <h2 class="sec__title cond picker" style={`--len: ${T_.season.title.length + 6}`}>{T_.season.title} <span class="yp" data-season>
-                        <button class="yp__btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label={T_.season.title}><span data-value>{first.year}</span><svg class="yp__chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" /></svg></button>
+                        {/* No aria-label: the year it shows is its name ("Season" overrode it) */}
+                        <button class="yp__btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span data-value>{first.year}</span><svg class="yp__chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" /></svg></button>
                         <span class="yp__panel"><span class="yp__list" role="listbox" aria-label={T_.season.title}>{[...S].reverse().map((s) => <span class="yp__opt" role="option" tabindex={-1} data-year={s.year} aria-selected={s.year === first.year ? 'true' : 'false'}>{s.year}</span>)}</span><span class="yp__thumb" aria-hidden="true" hidden><i></i></span></span>
-                    </span></h2></div></div>
+                    </span></h2>}</div></div>
                 <div data-one set:html={seasonHtml(view, D, first)} />
             </div>
         </section>
@@ -283,12 +294,12 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
                     <div class="sbs__grid">
                         <div class="sbs__lab lbl">{T_.sbs.championship}</div>
                         {S.map((s) => (
-                            <button class:list={['sbs__bars', { in: heightOf(s.pos) >= 16, 'is-title': s.champion, sbs__sel: s.year === first.year }]} type="button" data-y={s.year} style={`--h: ${heightOf(s.pos)}%`} data-tt={fill(T_.sbs.barTip, { year: s.year, pos: s.pos ? ord(view, s.pos) : '—', pts: n(s.pts) })} aria-label={String(s.year)}>
+                            <button class:list={['sbs__bars', { in: heightOf(s.pos) >= 16, 'is-title': s.champion, sbs__sel: s.year === first.year }]} type="button" data-y={s.year} style={`--h: ${heightOf(s.pos)}%`} aria-label={fill(T_.sbs.barTip, { year: s.year, pos: s.pos ? ord(view, s.pos) : '—', pts: n(s.pts) }) + (s.champion ? ` · ${T_.sbs.champion}` : '')}>
                                 {!s.done && <b class="now lbl">{T_.sbs.now}</b>}<span class="cond">{s.pos ?? '—'}</span><i></i>
                             </button>
                         ))}
                         <div class="sbs__lab lbl">{T_.sbs.team}</div>
-                        {S.map((s) => <div class="sbs__row">{s.teams.map((tm) => <TeamMark logo={tm.logo} color={tm.color} size={20} />)}</div>)}
+                        {S.map((s) => <div class="sbs__row">{s.teams.map((tm) => <TeamMark logo={tm.logo} color={tm.color} size={52} />)}</div>)}
                         <div class="sbs__lab lbl">{T_.sbs.points}</div>
                         {S.map((s) => <div class="sbs__row cond">{n(s.pts)}</div>)}
                         <div class="sbs__lab lbl">{T_.sbs.wins}</div>
@@ -297,12 +308,12 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
                         {S.map((s) => <div class="sbs__row cond">{s.podiums || '·'}</div>)}
                         <div class="sbs__lab lbl">{T_.sbs.vsMate}</div>
                         {S.map((s) => (
-                            <div class="sbs__row cond" data-tt={s.mate ? fill(T_.sbs.mateTip, { a: s.mate.race[0], b: s.mate.race[1], name: `${s.mate.first} ${s.mate.last}` }) : ''}>
-                                {s.mate ? <span style={s.mate.race[0] >= s.mate.race[1] ? undefined : 'color: var(--red-ink)'}>{s.mate.race[0]}–{s.mate.race[1]}</span> : '·'}
+                            <div class="sbs__row cond">
+                                {s.mate ? <><span aria-hidden="true" style={s.mate.race[0] >= s.mate.race[1] ? undefined : 'color: var(--red-ink)'}>{s.mate.race[0]}–{s.mate.race[1]}</span><span class="sr">{fill(T_.sbs.mateTip, { a: s.mate.race[0], b: s.mate.race[1], name: `${s.mate.first} ${s.mate.last}` })}</span></> : '·'}
                             </div>
                         ))}
                         <div class="sbs__lab lbl">{T_.sbs.mate}</div>
-                        {S.map((s) => <div class="sbs__row cond" data-tt={s.mate ? `${s.mate.first} ${s.mate.last}` : ''}>{s.mate ? s.mate.last.slice(0, 3) : '·'}</div>)}
+                        {S.map((s) => <div class="sbs__row cond">{s.mate ? <><span class="sbs__mate" aria-hidden="true" data-y={s.year}>{s.mate.last.slice(0, 3)}<span class="sbs__rest" style={`--n: ${[...s.mate.last.slice(3)].length}`}>{[...s.mate.last.slice(3)].map((c, i) => <span style={`--i: ${i}`}>{c}</span>)}</span></span><span class="sr">{s.mate.first} {s.mate.last}</span></> : '·'}</div>)}
                         <div class="sbs__lab"></div>
                         {S.map((s) => <div class:list={['sbs__row y cond', { sbs__sel: s.year === first.year }]} data-y={s.year}>{yy(s.year, many)}</div>)}
                     </div>
@@ -330,11 +341,12 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
                 )}
                 <div class="ranks">
                     {STATS.map(([k, label]) => (
-                        <div class="rank"><b class="cond">{n(T[k])}</b><span class="lbl">{label}</span><span class:list={['pos lbl', { top: D.ranks[k] <= 10 }]}>{fill(T_.stats.allTime, { rank: ord(view, D.ranks[k]) })}</span></div>
+                        <div class="rank"><b class="cond">{n(T[k])}</b><span class="lbl">{label}</span>{T[k] > 0 && <span class:list={['pos lbl', { top: D.ranks[k] <= 10 }]}>{fill(T_.stats.allTime, { rank: ord(view, D.ranks[k]) })}</span>}</div>
                     ))}
                 </div>
                 <div class="boardw">
-                    <div class="tabs" role="tablist">{STATS.map(([k, label], i) => <button type="button" data-k={k} aria-pressed={i === 0 ? 'true' : 'false'}>{label}</button>)}</div>
+                    {/* Toggle buttons, one pressed (a tablist needs tab roles and arrow keys) */}
+                    <div class="tabs" role="group" aria-label={T_.stats.title}>{STATS.map(([k, label], i) => <button type="button" data-k={k} aria-pressed={i === 0 ? 'true' : 'false'}>{label}</button>)}</div>
                     <ol class="board" data-board set:html={boardHtml(view, D, 'wins')} />
                 </div>
             </div>
@@ -346,11 +358,12 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
                 <div class="sec__head"><div><p class="sec__kick lbl">{plural(view, J.seasons, T.seasons)} · {plural(view, J.races, T.races, { n: n(T.races) })} · {plural(view, J.teams, D.eras.length)}</p><h2 class="sec__title cond" style={lenOf(J.title)}>{J.title}</h2></div></div>
                 <div class:list={['ribbon', { 'is-long': longRibbon }]} style={`--n: ${years.length}`}>
                     {ribbon.map((y, i) => y.gap
-                        ? <div class:list={['ribbon__y is-gap', { keep: keepYear(y.y, i) }]}><div class="ribbon__cells" data-tip={y.tip}></div><span class="lbl mute"><span>{yy(y.y, longRibbon)}</span></span></div>
+                        ? <div class:list={['ribbon__y is-gap', { keep: keepYear(y.y, i) }]}><div class="ribbon__cells" data-tip={y.tip}><span class="sr">{y.label}</span></div><span class="lbl mute" aria-hidden="true"><span>{yy(y.y, longRibbon)}</span></span></div>
                         : (
                             <div class:list={['ribbon__y', { keep: keepYear(y.y, i) }]}>
-                                <div class="ribbon__cells">{y.stretches.map((st) => <i class={st.color ? undefined : st.k} style={st.color ? `--n: ${st.n}; --c: ${st.color}` : `--n: ${st.n}`} data-tip={st.tip}></i>)}</div>
-                                <span class="lbl"><span>{yy(y.y, longRibbon)}</span>{y.champion && <span class="t"></span>}</span>
+                                <div class="ribbon__cells">{y.stretches.map((st) => <i class={st.color ? undefined : st.k} style={st.color ? `--n: ${st.n}; --c: ${st.color}` : `--n: ${st.n}`} data-tip={st.tip}><span class="sr">{st.label}</span></i>)}</div>
+                                {/* The year is in each stretch's text already; the red square says it in words */}
+                                <span class="lbl"><span aria-hidden="true">{yy(y.y, longRibbon)}</span>{y.champion && <span class="t"><span class="sr">{y.y} · {T_.sbs.champion}</span></span>}</span>
                             </div>
                         ))}
                     <div class="rtip" aria-hidden="true"></div>
@@ -366,14 +379,16 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
                             <span><i class="c win">1</i>{J.win}</span><span><i class="c pod">2</i>{J.podium}</span><span><i class="c pts">7</i>{J.points}</span><span><i class="c nop">14</i>{J.noPoints}</span><span><i class="c out">×</i>{J.out}</span><span><i class="c miss"></i>{J.missed}</span><span><i class="c ms nop"></i>{J.milestone}</span>
                         </div>
                     </div>
-                    <div class="rows" style={`--cols: ${cols}`}>
+                    <div class="rows" style={`--cols: ${cols}; --mcols: ${Math.ceil(cols / 2)}`}>
                         {S.map((s) => (
                             <div class="row">
                                 <div class="row__y"><b class="cond">{s.year}</b>{s.teams.map((tm) => <TeamMark logo={tm.logo} color={tm.color} size={18} />)}</div>
                                 <div class="cells">
                                     {s.rounds.map((r, i) => {
                                         const c = cellOf(s, r);
-                                        return <span class={`c ${c.cls}`} style={`--k: ${i}`} data-ms={c.key} data-tt={c.tt}>{c.txt}</span>;
+                                        // The visible mark ("3", "×") alone means nothing read
+                                        // aloud: the card's words go to screen readers instead
+                                        return <span class={`c ${c.cls}`} style={`--k: ${i}`} data-ms={c.key} data-tt={c.tt}><span aria-hidden="true">{c.txt}</span><span class="sr">{c.tt}</span></span>;
                                     })}
                                 </div>
                             </div>
@@ -386,13 +401,20 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
                         <div class="every__head"><h3 class="cond">{J.milestones}</h3><span class="lbl mute">{J.hint}</span></div>
                         {/* In the order they happened (owner, 29/10) */}
                         <ol class="ledger__list">
-                            {milestones.map((m) => (
-                                <li data-ms={m.round ? msKey(m.year, m.round) : ''}>
-                                    <span class="y cond">{m.year}</span>
-                                    <span><b class="cond">{labelOf(m.label)}</b><br /><span class="lbl mute">{m.gp} · {m.team}{m.streak ? ` · ${fill(J.inARow, { n: m.streak })}` : ''}</span></span>
-                                    <span class="lbl">{`P${m.pos}`}{m.grid ? <> <span class="mute">{fill(J.fromGrid, { n: m.grid })}</span></> : ''}</span>
-                                </li>
-                            ))}
+                            {milestones.map((m) => {
+                                // A button when it has a race to find in the grid
+                                // (keyboard and screen readers reach it); text otherwise
+                                const Tag = m.round ? 'button' : 'div';
+                                return (
+                                    <li data-ms={m.round ? msKey(m.year, m.round) : ''}>
+                                        <Tag class="ledger__btn" {...(m.round ? { type: 'button', 'aria-pressed': 'false' } : {})}>
+                                            <span class="y cond">{m.year}</span>
+                                            <span><b class="cond">{labelOf(m.label)}</b><br /><span class="lbl mute">{m.gp} · {m.team}{m.streak ? ` · ${fill(J.inARow, { n: m.streak })}` : ''}</span></span>
+                                            <span class="lbl">{`P${m.pos}`}{m.grid ? <> <span class="mute">{fill(J.fromGrid, { n: m.grid })}</span></> : ''}</span>
+                                        </Tag>
+                                    </li>
+                                );
+                            })}
                         </ol>
                     </div>
                 )}
@@ -445,67 +467,71 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
     // ---- The season picker: button + listbox, keyboard as the old page's ----
     const one = main.querySelector<HTMLElement>('[data-one]')!;
     const pick = main.querySelector<HTMLElement>('[data-season]')!;
-    const pickBtn = pick.querySelector<HTMLButtonElement>('.yp__btn')!;
-    const pickList = pick.querySelector<HTMLElement>('.yp__list')!;
-    const pickThumb = pick.querySelector<HTMLElement>('.yp__thumb')!;
     const pickOpts = [...pick.querySelectorAll<HTMLElement>('.yp__opt')];
-    const pickerOpen = () => pick.classList.contains('is-open');
-    // The list's scroll thumb, as the page's (ScrollThumb.astro)
-    let thumbTravel = 0, thumbRange = 0;
-    const placeThumb = () => { pickThumb.style.transform = `translateY(${thumbRange > 0 ? (pickList.scrollTop / thumbRange) * thumbTravel : 0}px)`; };
-    function measureThumb() {
-        const vh = pickList.clientHeight, full = pickList.scrollHeight;
-        thumbRange = full - vh;
-        pickThumb.hidden = thumbRange <= 0;
-        const h = Math.max(24, (vh / full) * vh);
-        pickThumb.style.height = `${h}px`;
-        thumbTravel = vh - h;
-        placeThumb();
+    // A one-season driver gets the year alone, with no button to wire
+    const pickButton = pick.querySelector<HTMLButtonElement>('.yp__btn');
+    if (pickButton) {
+        const pickBtn: HTMLButtonElement = pickButton;
+        const pickList = pick.querySelector<HTMLElement>('.yp__list')!;
+        const pickThumb = pick.querySelector<HTMLElement>('.yp__thumb')!;
+        const pickerOpen = () => pick.classList.contains('is-open');
+        // The list's scroll thumb, as the page's (ScrollThumb.astro)
+        let thumbTravel = 0, thumbRange = 0;
+        const placeThumb = () => { pickThumb.style.transform = `translateY(${thumbRange > 0 ? (pickList.scrollTop / thumbRange) * thumbTravel : 0}px)`; };
+        function measureThumb() {
+            const vh = pickList.clientHeight, full = pickList.scrollHeight;
+            thumbRange = full - vh;
+            pickThumb.hidden = thumbRange <= 0;
+            const h = Math.max(24, (vh / full) * vh);
+            pickThumb.style.height = `${h}px`;
+            thumbTravel = vh - h;
+            placeThumb();
+        }
+        pickList.addEventListener('scroll', placeThumb, { passive: true });
+        let dragY = 0, dragScroll = 0;
+        pickThumb.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+            dragY = e.clientY; dragScroll = pickList.scrollTop;
+            pickThumb.setPointerCapture(e.pointerId);
+            pickThumb.classList.add('is-drag');
+        });
+        pickThumb.addEventListener('pointermove', (e) => {
+            if (!pickThumb.hasPointerCapture(e.pointerId) || thumbTravel <= 0) return;
+            pickList.scrollTop = dragScroll + ((e.clientY - dragY) / thumbTravel) * thumbRange;
+        });
+        const stopDrag = () => pickThumb.classList.remove('is-drag');
+        pickThumb.addEventListener('pointerup', stopDrag);
+        pickThumb.addEventListener('pointercancel', stopDrag);
+        function openPicker() {
+            pick.classList.add('is-open');
+            pickBtn.setAttribute('aria-expanded', 'true');
+            const sel = pickOpts.find((o) => o.getAttribute('aria-selected') === 'true') ?? pickOpts[0]!;
+            // Scroll only the list (scrollIntoView would move the page as well)
+            pickList.scrollTop = sel.offsetTop - pickList.offsetTop - (pickList.clientHeight - sel.offsetHeight) / 2;
+            sel.focus({ preventScroll: true });
+            measureThumb();
+        }
+        function closePicker(refocus = true) {
+            if (!pickerOpen()) return;
+            pick.classList.remove('is-open');
+            pickBtn.setAttribute('aria-expanded', 'false');
+            if (refocus) pickBtn.focus();
+        }
+        pickBtn.addEventListener('click', () => (pickerOpen() ? closePicker() : openPicker()));
+        pickBtn.addEventListener('keydown', (e) => { if (e.key === 'ArrowDown' && !pickerOpen()) { e.preventDefault(); openPicker(); } });
+        pickList.addEventListener('click', (e) => {
+            const o = (e.target as HTMLElement).closest<HTMLElement>('.yp__opt');
+            if (o) { closePicker(); drawSeason(Number(o.dataset.year)); }
+        });
+        pickList.addEventListener('keydown', (e) => {
+            const i = pickOpts.indexOf(document.activeElement as HTMLElement);
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); pickOpts[Math.min(Math.max(i + (e.key === 'ArrowDown' ? 1 : -1), 0), pickOpts.length - 1)]!.focus(); }
+            else if ((e.key === 'Enter' || e.key === ' ') && i >= 0) { e.preventDefault(); closePicker(); drawSeason(Number(pickOpts[i]!.dataset.year)); }
+            else if (e.key === 'Escape') { e.preventDefault(); closePicker(); }
+            else if (e.key === 'Tab') closePicker(false);
+        });
+        document.addEventListener('click', (e) => { if (!pick.contains(e.target as Node)) closePicker(false); });
     }
-    pickList.addEventListener('scroll', placeThumb, { passive: true });
-    let dragY = 0, dragScroll = 0;
-    pickThumb.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        dragY = e.clientY; dragScroll = pickList.scrollTop;
-        pickThumb.setPointerCapture(e.pointerId);
-        pickThumb.classList.add('is-drag');
-    });
-    pickThumb.addEventListener('pointermove', (e) => {
-        if (!pickThumb.hasPointerCapture(e.pointerId) || thumbTravel <= 0) return;
-        pickList.scrollTop = dragScroll + ((e.clientY - dragY) / thumbTravel) * thumbRange;
-    });
-    const stopDrag = () => pickThumb.classList.remove('is-drag');
-    pickThumb.addEventListener('pointerup', stopDrag);
-    pickThumb.addEventListener('pointercancel', stopDrag);
-    function openPicker() {
-        pick.classList.add('is-open');
-        pickBtn.setAttribute('aria-expanded', 'true');
-        const sel = pickOpts.find((o) => o.getAttribute('aria-selected') === 'true') ?? pickOpts[0]!;
-        // Scroll only the list (scrollIntoView would move the page as well)
-        pickList.scrollTop = sel.offsetTop - pickList.offsetTop - (pickList.clientHeight - sel.offsetHeight) / 2;
-        sel.focus({ preventScroll: true });
-        measureThumb();
-    }
-    function closePicker(refocus = true) {
-        if (!pickerOpen()) return;
-        pick.classList.remove('is-open');
-        pickBtn.setAttribute('aria-expanded', 'false');
-        if (refocus) pickBtn.focus();
-    }
-    pickBtn.addEventListener('click', () => (pickerOpen() ? closePicker() : openPicker()));
-    pickBtn.addEventListener('keydown', (e) => { if (e.key === 'ArrowDown' && !pickerOpen()) { e.preventDefault(); openPicker(); } });
-    pickList.addEventListener('click', (e) => {
-        const o = (e.target as HTMLElement).closest<HTMLElement>('.yp__opt');
-        if (o) { closePicker(); drawSeason(Number(o.dataset.year)); }
-    });
-    pickList.addEventListener('keydown', (e) => {
-        const i = pickOpts.indexOf(document.activeElement as HTMLElement);
-        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); pickOpts[Math.min(Math.max(i + (e.key === 'ArrowDown' ? 1 : -1), 0), pickOpts.length - 1)]!.focus(); }
-        else if ((e.key === 'Enter' || e.key === ' ') && i >= 0) { e.preventDefault(); closePicker(); drawSeason(Number(pickOpts[i]!.dataset.year)); }
-        else if (e.key === 'Escape') { e.preventDefault(); closePicker(); }
-        else if (e.key === 'Tab') closePicker(false);
-    });
-    document.addEventListener('click', (e) => { if (!pick.contains(e.target as Node)) closePicker(false); });
 
     // ---- The season panel: race cards on the curve, rows linked to points ----
     function wireSeason(year: number) {
@@ -544,20 +570,116 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
         one.querySelector('.rounds tbody')?.addEventListener('mouseleave', () => light(null));
         plot.addEventListener('mouseleave', () => { tip.classList.remove('is-on'); light(null); });
     }
+    // A phone gets the form curve drawn for its width (driver-view.ts); the
+    // build writes the wide one, so it's redrawn here when the page is narrow
+    const phone = matchMedia('(max-width: 760px)');
     function drawSeason(year: number) {
         const s = D.seasons.find((x) => x.year === year);
         if (!s) return;
-        one.innerHTML = seasonHtml(view, D, s);
+        one.innerHTML = seasonHtml(view, D, s, phone.matches);
         wireSeason(year);
         pick.querySelector('[data-value]')!.textContent = String(year);
         pickOpts.forEach((o) => o.setAttribute('aria-selected', String(Number(o.dataset.year) === year)));
         main.querySelectorAll<HTMLElement>('.sbs__bars, .sbs__row.y').forEach((b) => b.classList.toggle('sbs__sel', Number(b.dataset.y) === year));
     }
-    wireSeason(Number(pick.querySelector('[data-value]')!.textContent));
+    const shownYear = () => Number(pick.querySelector('[data-value]')!.textContent);
+    if (phone.matches) drawSeason(shownYear());
+    else wireSeason(shownYear());
+    phone.addEventListener('change', () => drawSeason(shownYear()));
     main.querySelectorAll<HTMLElement>('.sbs__bars').forEach((b) => b.addEventListener('click', () => {
         drawSeason(Number(b.dataset.y));
         document.getElementById('season')!.scrollIntoView({ behavior: 'smooth' });
     }));
+
+    // ---- Season by season: on a phone it slides sideways ----------------------
+    // It opens on the latest seasons (the ones a race weekend is about), and a
+    // fade on either side says there's more that way
+    {
+        const wrap = main.querySelector<HTMLElement>('.sbs__wrap')!;
+        const edges = () => {
+            const end = wrap.scrollWidth - wrap.clientWidth;
+            wrap.classList.toggle('fade-l', wrap.scrollLeft > 2);
+            wrap.classList.toggle('fade-r', wrap.scrollLeft < end - 2);
+        };
+        wrap.scrollLeft = wrap.scrollWidth;
+        edges();
+        wrap.addEventListener('scroll', edges, { passive: true });
+        addEventListener('resize', edges);
+
+        // The position goes inside its bar only when it fits there with room
+        // to spare: the figure grows with the column, so a share of the
+        // height (16 %) left an 18th half outside a short bar (owner, 31/10)
+        const bars = [...wrap.querySelectorAll<HTMLElement>('.sbs__bars')];
+        const inside = () => bars.forEach((b) => {
+            const fig = b.querySelector<HTMLElement>('span')!;
+            b.classList.toggle('in', b.querySelector('i')!.offsetHeight >= fig.offsetHeight * 1.6);
+        });
+        inside();
+        addEventListener('resize', inside);
+    }
+
+    // ---- Season by season: the teammate's whole surname ---------------------
+    // Over a season's column (or with its bar focused) the rest of the surname
+    // appears after its three letters, one letter after another, while the
+    // column widens to fit it and the others give way; on the way out it all
+    // runs backwards (owner, 31/10; it was typed out letter by letter before)
+    {
+        const grid = main.querySelector<HTMLElement>('.sbs__grid')!;
+        const years = D.seasons.map((s) => String(s.year));
+        const cols = years.length + 1;
+        // Each widened column's share, kept while it closes
+        const shares = new Map<string, number>();
+        const closing = new Map<string, number>();
+        let open: HTMLElement | null = null;
+        // The same track list as the CSS, so the change animates
+        const tracks = () => {
+            const base = phone.matches ? '34px' : '0';
+            return 'var(--lab) ' + years.map((y) => `minmax(${base}, ${shares.get(y) ?? 1}fr)`).join(' ');
+        };
+        const apply = () => (grid.style.gridTemplateColumns = tracks());
+        // The share of the room the open column needs for the whole surname
+        const shareOf = (el: HTMLElement) => {
+            const n = years.length;
+            const need = el.offsetWidth + (el.lastElementChild as HTMLElement).scrollWidth + 16;
+            const room = grid.clientWidth - (grid.firstElementChild as HTMLElement).offsetWidth - 3 * n;
+            return n > 1 && need > room / n ? Math.min((need * (n - 1)) / Math.max(room - need, 1), n) : 1;
+        };
+        const close = (el: HTMLElement) => {
+            const y = el.dataset.y!;
+            el.classList.remove('open');
+            // The column narrows when its letters have gone, as .sbs__rest does
+            const n = (el.lastElementChild as HTMLElement).children.length;
+            closing.set(y, window.setTimeout(() => {
+                shares.delete(y);
+                closing.delete(y);
+                apply();
+            }, Math.max(0, (n - 1) * 45 - 150)));
+        };
+        const show = (cell: Element | null) => {
+            const i = cell ? [...grid.children].indexOf(cell) % cols : 0;
+            const year = i > 0 ? (grid.children[i] as HTMLElement).dataset.y : undefined;
+            const el = year ? grid.querySelector<HTMLElement>(`.sbs__mate[data-y="${year}"]`) : null;
+            if (el === open) return;
+            if (open) close(open);
+            if (el) {
+                clearTimeout(closing.get(year!));
+                closing.delete(year!);
+                shares.set(year!, shareOf(el));
+                const rest = el.lastElementChild as HTMLElement;
+                rest.style.setProperty('--w', `${rest.scrollWidth}px`);
+                el.classList.add('open');
+            }
+            apply();
+            open = el;
+        };
+        // Set from the start: a change from the CSS's repeat() wouldn't animate
+        apply();
+        phone.addEventListener('change', apply);
+        grid.addEventListener('mouseover', (e) => show((e.target as HTMLElement).closest('.sbs__grid > *')));
+        grid.addEventListener('mouseleave', () => show(null));
+        grid.addEventListener('focusin', (e) => show(e.target as HTMLElement));
+        grid.addEventListener('focusout', () => show(null));
+    }
 
     // ---- The ribbon's card follows the stretch under the pointer ----------
     {
@@ -613,12 +735,18 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
             main.querySelectorAll('.c.sel, .ledger__list li.sel').forEach((e) => e.classList.remove('sel'));
             grid?.classList.toggle('is-marking', Boolean(key));
             if (key) main.querySelectorAll(`[data-ms="${CSS.escape(key)}"]`).forEach((e) => e.classList.add('sel'));
+            // The pinned one reads as pressed
+            main.querySelectorAll<HTMLElement>('.ledger__list li[data-ms]').forEach((li) => li.querySelector('button')?.setAttribute('aria-pressed', String(Boolean(pinned) && li.dataset.ms === pinned)));
         };
         main.querySelectorAll<HTMLElement>('.ledger__list li[data-ms]:not([data-ms=""])').forEach((li) => {
             const key = li.dataset.ms!;
             li.addEventListener('mouseenter', () => mark(key));
-            // A click pins it (the page scrolls away from under the pointer);
-            // a second click, a click anywhere else or Esc lets go (owner, 29/10)
+            // The keyboard's focus marks it as the pointer does
+            li.addEventListener('focusin', () => mark(key));
+            li.addEventListener('focusout', () => mark(pinned));
+            // A click (or Enter, Space: it's a button) pins it (the page scrolls
+            // away from under the pointer); a second click, a click anywhere
+            // else or Esc lets go (owner, 29/10)
             li.addEventListener('mouseleave', () => mark(pinned));
             li.addEventListener('click', () => {
                 pinned = pinned === key ? null : key;
@@ -644,8 +772,12 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
         document.body.append(tt);
         let on: HTMLElement | null = null, hide = 0;
         const escText = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
-        document.addEventListener('mouseover', (e) => {
-            const el = (e.target as HTMLElement).closest?.<HTMLElement>('[data-tt]') ?? null;
+        // The keyboard's focus shows it too, on what can take focus (the
+        // season bars); the rest carry the same words as hidden text
+        document.addEventListener('focusin', (e) => show((e.target as HTMLElement).closest?.<HTMLElement>('[data-tt]') ?? null));
+        document.addEventListener('focusout', () => show(null));
+        document.addEventListener('mouseover', (e) => show((e.target as HTMLElement).closest?.<HTMLElement>('[data-tt]') ?? null));
+        function show(el: HTMLElement | null) {
             if (el === on) return;
             on = el;
             // A short wait before hiding, so crossing the 2 px gap between two
@@ -663,7 +795,7 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
             tt.style.top = `${above > 64 ? above : r.bottom + 12}px`;
             if (firstShown) { void tt.offsetWidth; tt.classList.remove('is-instant'); }
             tt.classList.add('is-on');
-        });
+        }
         addEventListener('scroll', () => { on = null; tt.classList.remove('is-on'); }, { passive: true });
     }
 </script>
