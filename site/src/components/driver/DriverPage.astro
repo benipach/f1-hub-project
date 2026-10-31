@@ -74,6 +74,8 @@ const figs = [
     { v: n(T.races), l: plural(view, T_.figs.races, T.races) },
     { v: n(T.seasons), l: plural(view, T_.figs.seasons, T.seasons) },
 ].filter((f): f is { v: string; l: string; note?: string; red?: boolean } => Boolean(f)).slice(0, 5);
+// A driver on the grid: the championship as it stands (none before the first race)
+const now = D.active && S.at(-1)!.pos ? S.at(-1)! : null;
 const status = D.active ? null : D.died && D.born ? `${new Date(D.born).getUTCFullYear()}–${new Date(D.died).getUTCFullYear()}` : fill(T_.lastRaced, { year: S.at(-1)!.year });
 
 // ---- 2. Driver info -------------------------------------------------------
@@ -207,6 +209,9 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
                     {D.nationality && <span>{D.nationality}</span>}
                     <span><TeamMark logo={lastEra.logo} color={lastEra.color} size={20} /> {lastEra.name}{D.active ? '' : ` · ${fill(T_.until, { year: lastEra.to })}`}</span>
                     {D.active ? <span class="live">{T_.onTheGrid}</span> : <span class="mute">{status}</span>}
+                    {/* Where the season stands, first thing (owner, 31/10: on a phone
+                        it was ~2,400 px down); it jumps to the season panel */}
+                    {now && <a class="strip__now" href="#season">{fill(T_.standing, { pos: ord(view, now.pos!), year: now.year, pts: n(now.pts) })}</a>}
                 </div>
                 <div class="hero__body">
                     <div>

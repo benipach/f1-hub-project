@@ -237,6 +237,7 @@ export default {
         driver: 'Driver',
         until: 'until {year}',
         onTheGrid: 'On the grid',
+        standing: '{pos} in {year} · {pts} pts',
         lastRaced: 'Last raced {year}',
         raceNumber: 'Race number',
         lastRaceNumber: 'Last race number',

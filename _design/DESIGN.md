@@ -582,7 +582,9 @@ still the live one.
   the number, the last name (≤ 28 % of the height) and the figures (≤ 14 %)
   follow the height too, so it fits instead of running past. Phones: as
   long as it needs. A strip (Driver · nationality · current or last team · "On the
-  grid" or the years), the first name, the last name fitted to its
+  grid" or the years · for a driver on the grid, the championship as it
+  stands, "3rd in 2026 · 214 pts", a link down to the season; owner, 31/10),
+  the first name, the last name fitted to its
   column, the number in red, the photo (or the number, outlined, without
   one) and up to five figures in one row, the ones that aren't zero first,
   one size for all (the widest fits). The photo is the ink → paper duotone
@@ -590,7 +592,8 @@ still the live one.
   current grid: the files go by last name, so Jos Verstappen would get Max's.
 - **Driver info:** a spec sheet in cells; teams as one row per stint with a
   "Champion" tag; before and beyond F1 side by side, only the lists there
-  are (one alone takes the row; owner, 31/10).
+  are (one alone takes the row; owner, 31/10). On a phone the short cells
+  go two to a row (owner, 31/10: the season came ~2,400 px down).
 - **One season:** a season picker of its own (button + listbox, not a
   `<select>`; keyboard as the old page; its list has the site's scroll
   thumb), six figures, racecraft (places gained in races, against the year's

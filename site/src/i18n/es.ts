@@ -218,6 +218,7 @@ export default {
         driver: 'Piloto',
         until: 'hasta {year}',
         onTheGrid: 'En la parrilla',
+        standing: '{pos} en {year} · {pts} pts',
         lastRaced: 'Última carrera en {year}',
         raceNumber: 'Número',
         lastRaceNumber: 'Último número',
