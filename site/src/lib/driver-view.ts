@@ -149,12 +149,6 @@ export function seasonHtml(view: DriverView, D: Pick<DriverProfile, 'id' | 'last
     const rs = s.rounds;
     const rc = s.racecraft;
     const top = rc && rc.id === D.id;
-    const hasSprints = rs.some((r) => r.sprint);
-    // The Grand Prix by its whole name, with the flag of where it's held (owner, 18/10)
-    const gpName = (r: DriverRound) => `<span class="gpn">${flagHtml(view, r.iso)}<span class="cond">${esc(r.full)}</span></span>`;
-    const res = (r: { pos: number | null; out: string | null }) => (r.out
-        ? `<span class="down">${r.out}</span>${r.pos ? `<span class="lbl mute" style="margin-left:10px">${esc(fill(S.classified, { n: r.pos }))}</span>` : ''}`
-        : r.pos === 1 ? '<span class="podium win cond">P1</span>' : r.pos && r.pos <= 3 ? `<span class="podium cond">P${r.pos}</span>` : r.pos ? `P${r.pos}` : '—');
     // Teammate duel: qualifying, race and points (owner, 18/10: "juntos los de
     // race y qualy"), each a split bar with the counts at its ends
     const duelRow = (label: string, [a, b]: readonly [number, number]) => {
@@ -167,15 +161,47 @@ export function seasonHtml(view: DriverView, D: Pick<DriverProfile, 'id' | 'last
     <div class="duel__who"><span class="lbl mute">${esc(plural(view, S.duel, s.mate.together))}</span><p class="cond"><span>${esc(D.last)}</span> <span class="mute">${esc(S.vs)}</span> ${esc(s.mate.last)}</p></div>
     <div class="duel__rows">${duelRow(S.qualifying, s.mate.quali)}${duelRow(S.race, s.mate.race)}${duelRow(S.points, s.mate.pts)}</div>
   </div>` : '';
-    // Points with their unit, which only a phone shows (its table has no heads)
-    // (the phone also drops the "·" of no points: alone at the row's end it
-    // read as a stray pixel)
-    const ptsOf = (v: number) => (v ? `${n(v)}<span class="u lbl mute"> ${esc(S.pts)}</span>` : '<span class="z">·</span>');
-    // data-l: the group's name, written before the result on a phone, where
-    // each weekend stacks race over sprint instead of side by side
-    const sprintCells = (sp: DriverSprint | null) => (!hasSprints ? '' : sp
-        ? `<td class="gf cond spr" data-l="${esc(S.sprint)}">${sp.grid ? 'P' + sp.grid : '—'}<span class="arr">→</span>${res(sp)}</td><td class="n d cond spr ${arrowCls(delta(sp))}">${arrow(delta(sp))}</td><td class="n d cond spr">${ptsOf(sp.pts)}</td>`
-        : '<td></td><td></td><td></td>');
+    // ---- The race cards: one small poster per weekend (owner, 31/10: the
+    // table read as one more stats sheet). The finish leads, giant, and the
+    // card's field says it at a glance: red for a win, paper for a podium,
+    // ink for points, quieter without; a retirement in red. Under it where
+    // the car started and the places made, the race's points, and the
+    // championship's total after the round. The sprint is a tag of its own,
+    // its points never added to the race's.
+    const pad = (v: number) => String(v).padStart(2, '0');
+    let running = 0;
+    const totals = rs.map((r) => (running += r.upcoming ? 0 : r.pts));
+    const sprintTag = (sp: DriverSprint | null) => (sp
+        ? `<span class="rc__spr lbl"><span>${esc(S.sprint)}</span>${sp.out ? `<b class="cond">${sp.out}</b>` : `<b class="cond">P${sp.pos}</b>`}<span>${esc(fill(S.ptsN, { n: n(sp.pts) }))}</span></span>`
+        : '');
+    const raceCard = (r: DriverRound, i: number) => {
+        const cls = r.out ? 'out' : r.pos === 1 ? 'win' : r.pos && r.pos <= 3 ? 'pod' : r.racePts > 0 ? 'pts' : 'nop';
+        const d = delta(r);
+        return `<li class="rc rc--${cls}" data-i="${i}">
+      <div class="rc__h"><span class="rc__n cond">${pad(r.round)}</span>${flagHtml(view, r.iso)}<span class="rc__gp lbl">${esc(r.gp)}</span></div>
+      <div class="rc__res cond">${r.out ? `<span class="rc__out">${r.out}</span>` : `<small>P</small>${r.pos ?? '—'}`}${r.fl ? stopwatch(S.fastestLap) : ''}</div>
+      ${r.out && r.pos ? `<span class="rc__cls lbl">${esc(fill(S.classified, { n: r.pos }))}</span>` : ''}
+      ${sprintTag(r.sprint)}
+      <div class="rc__f">
+        <span class="lbl">${esc(S.start)} <b class="cond">${r.grid ? 'P' + r.grid : '—'}</b> <span class="${arrowCls(d)}">${arrow(d)}</span></span>
+        <span class="rc__p"><b class="cond">${n(r.racePts)}</b><span class="lbl">${esc(S.pts)}</span></span>
+      </div>
+      <div class="rc__t lbl">${esc(S.total)} ${n(totals[i]!)}</div>
+    </li>`;
+    };
+    // A run of rounds to come or not raced is one card ("17–23 · 7 Grands
+    // Prix · To come"; owner, 31/10); a single one keeps its GP's name
+    const dimCard = (r: DriverRound, i: number) => {
+        const same = (x?: DriverRound) => Boolean(x) && x!.upcoming === r.upcoming && x!.missed === r.missed;
+        if (same(rs[i - 1])) return '';
+        let j = i;
+        while (same(rs[j + 1])) j++;
+        const many = j > i;
+        return `<li class="rc rc--dim ${r.missed ? 'rc--miss' : ''}">
+      <div class="rc__h"><span class="rc__n cond">${many ? `${pad(r.round)}–${pad(rs[j]!.round)}` : pad(r.round)}</span>${many ? '' : flagHtml(view, r.iso)}<span class="rc__gp lbl">${esc(many ? plural(view, S.gps, j - i + 1) : r.gp)}</span></div>
+      <div class="rc__st lbl">${esc(r.upcoming ? S.toCome : S.didNotRace)}</div>
+    </li>`;
+    };
     const craft = s.hasGrid
         ? top ? `<span>${fill(S.bestOf, { year: s.year, n: s.gained })}</span>`
               : `<span>${esc(s.gained ? fill(S.gained, { n: s.gained, rank: ord(view, s.gainedRank ?? 0), year: s.year }) : S.noGained)}</span>${rc ? `<span class="mute">${esc(fill(S.best, { name: `${rc.first} ${rc.last}`, n: rc.places }))}</span>` : ''}`
@@ -199,29 +225,7 @@ export function seasonHtml(view: DriverView, D: Pick<DriverProfile, 'id' | 'last
     <div class="chart__head lbl"><span>${esc(S.formCurve)}</span><span class="chart__key"><span><i></i>${esc(S.finish)}</span><span><i class="g"></i>${esc(S.start)}</span><span style="color:var(--red-hi)">${esc(S.out)}</span></span></div>
     <div class="chart__plot">${chart(rs, S.chart, S.pointsLine, compact)}<div class="tip" data-tip></div></div>
   </div>
-  <div class="rounds-wrap"><table class="rounds ${hasSprints ? 'with-spr' : ''}">
-    <thead class="lbl mute">
-      ${hasSprints ? `<tr class="grp"><th colspan="2"></th><th colspan="3" class="grp__spr">${esc(S.sprint)}</th><th colspan="3" class="grp__race s1">${esc(S.race)}</th></tr>` : ''}
-      <tr><th>${esc(S.rd)}</th><th>${esc(S.grandPrix)}</th>${hasSprints ? `<th>${esc(S.startFinish)}</th><th class="n">${esc(S.delta)}</th><th class="n">${esc(S.pts)}</th>` : ''}<th class="${hasSprints ? 's1' : ''}">${esc(S.startFinish)}</th><th class="n">${esc(S.delta)}</th><th class="n">${esc(S.pts)}</th></tr>
-    </thead>
-    <tbody>${rs.map((r, i) => {
-        // A run of rounds to come or not raced is one row ("17–23 · 7 Grands
-        // Prix · To come"; owner, 31/10: a one-race season had 15 rows of it);
-        // a single one keeps its GP's name
-        if (r.upcoming || r.missed) {
-            const same = (x?: DriverRound) => Boolean(x) && x!.upcoming === r.upcoming && x!.missed === r.missed;
-            if (same(rs[i - 1])) return '';
-            let j = i;
-            while (same(rs[j + 1])) j++;
-            const many = j > i;
-            return `<tr class="is-dim"><td class="r cond${many ? ' rr' : ''}">${many ? `${r.round}–${rs[j]!.round}` : r.round}</td><td class="gp">${many ? `<span class="lbl">${esc(plural(view, S.gps, j - i + 1))}</span>` : gpName(r)}</td><td class="lbl" colspan="${3 + (hasSprints ? 3 : 0)}">${esc(r.upcoming ? S.toCome : S.didNotRace)}</td></tr>`;
-        }
-        const d = delta(r);
-        // Race and sprint side by side, one row per weekend, never added up;
-        // sprint first, the order they're run in (owner, 18/10)
-        return `<tr data-i="${i}"><td class="r cond">${r.round}</td><td class="gp">${gpName(r)}</td>${sprintCells(r.sprint)}<td class="gf cond ${hasSprints ? 's1' : ''}"${hasSprints ? ` data-l="${esc(S.race)}"` : ''}>${r.grid ? 'P' + r.grid : '—'}<span class="arr">→</span>${res(r)}${r.fl ? stopwatch(S.fastestLap) : ''}</td><td class="n d cond ${arrowCls(d)}">${arrow(d)}</td><td class="n d cond">${ptsOf(r.racePts)}</td></tr>`;
-    }).join('')}</tbody>
-  </table></div>`;
+  <ol class="rcards">${rs.map((r, i) => (r.upcoming || r.missed ? dimCard(r, i) : raceCard(r, i))).join('')}</ol>`;
 }
 
 /** The race card on the form curve: round, start → finish, places, points. */

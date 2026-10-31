@@ -311,7 +311,7 @@ export default {
             sprint: 'Sprint',
             rd: 'Rd',
             grandPrix: 'Grand Prix',
-            startFinish: 'Start → Finish',
+            total: 'Total',
             delta: '+/−',
             pts: 'Pts',
             toCome: 'To come',

@@ -261,90 +261,71 @@
 .chart .tip { fill: var(--paper); }
 
 .chart__note { margin-top: 12px; }
-.rounds { width: 100%; margin-top: 48px; border-collapse: collapse; }
-.rounds th { padding: 0 10px 10px 0; text-align: left; }
-.rounds td { padding: 10px 10px 10px 0; border-top: 1px solid var(--rule-ink); }
-.rounds .n { text-align: right; }
-.rounds td.r { width: 1%; font-size: 22px; }
-/* A run of rounds ("17–23") on one line, smaller so it fits the number's column */
-.rounds td.rr { font-size: 15px; white-space: nowrap; }
-.rounds td.gp { font-size: 22px; }
-/* Race and sprint as two column groups, one row per weekend (owner, 18/10).
-   Group heads on a 4px rule; a hairline opens the sprint group; the sprint a
-   step quieter than the race; blank on weekends without one. */
-.rounds tr.grp th { padding: 0 12px 10px 0; color: var(--paper); }
-.rounds tr.grp th.grp__race, .rounds tr.grp th.grp__spr { border-bottom: 4px solid var(--paper); }
-.rounds tr.grp th.grp__spr { border-bottom-color: var(--mute-ink); color: var(--mute-ink); }
-.rounds .s1 { padding-left: 22px !important; border-left: 1px solid var(--rule-ink); }
-.rounds thead tr:last-child th { padding-top: 10px; }
-.with-spr tbody td.spr { color: var(--mute-ink); }
-.with-spr tbody td.spr.up { color: var(--mute-ink); }
-.with-spr tbody td.spr .podium { background: var(--mute-ink); }
-.with-spr tbody td.spr .podium.win { background: var(--red); color: #fff; }
-.with-spr td.gf, .with-spr td.d { font-size: 20px; }
-.gpn { display: flex; align-items: center; gap: 12px; }
-.gpn .cond { line-height: 1; text-box: trim-both cap alphabetic; }
+/* The race cards: one small poster per weekend (owner, 31/10: the table read
+   as one more stats sheet). The finish leads, giant; the card's field says it
+   at a glance (red a win, paper a podium, ink-2 points, ink and quieter
+   without, the retirement in red); under it the start and the places made,
+   the race's points and the championship's total after the round. The sprint
+   is a tag of its own, its points never added to the race's. --mt is each
+   field's quiet text colour. */
+.rcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 176px), 1fr)); gap: 6px; margin: 48px 0 0; padding: 0; list-style: none; }
+.rc { --mt: var(--mute-ink); position: relative; display: flex; flex-direction: column; min-height: 212px; padding: 12px 14px 14px; background: var(--ink-2); border-top: 4px solid var(--rule-ink); transition: transform .25s ease, box-shadow .25s ease; }
+.rc .lbl { color: var(--mt); }
+.rc__h { display: flex; align-items: center; gap: 8px; min-height: 2.6em; }
+.rc__n { font-size: 18px; color: var(--mt); white-space: nowrap; }
+.rc__gp { line-height: 1.25; }
+.rc .flag { flex: none; height: 12px; }
+.rc__res { display: flex; align-items: flex-start; gap: 8px; margin: auto 0 0; padding-top: 14px; font-size: clamp(64px, 5.2vw, 88px); line-height: .82; }
+.rc__res small { margin-right: .04em; font-size: .42em; line-height: 1; }
+.rc__res .flw { height: .3em; margin: .05em 0 0 auto; }
+.rc__out { font-size: .7em; color: var(--red-hi); }
+.rc__cls { margin-top: 8px; }
+.rc__spr { display: flex; align-items: baseline; gap: 8px; margin-top: 12px; }
+.rc__spr > :first-child { padding: 1px 5px; box-shadow: inset 0 0 0 1px var(--mt); }
+.rc__spr b { font-size: 15px; color: currentColor; }
+.rc__f { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--rule-ink); }
+.rc__f b { font-size: 17px; color: var(--paper); }
+.rc__p b { font-size: 26px; }
+.rc__p .lbl { margin-left: 4px; }
+.rc__t { margin-top: 6px; text-align: right; }
+/* The fields */
+.rc--pts { border-top-color: var(--paper); }
+.rc--nop { background: var(--ink); box-shadow: inset 0 0 0 1px var(--rule-ink-soft); }
+.rc--nop .rc__res { color: var(--mute-ink); }
+.rc--out { background: var(--ink); box-shadow: inset 0 0 0 1px var(--rule-ink-soft); border-top-color: var(--red); }
+.rc--pod { --mt: var(--mute); background: var(--paper); color: var(--ink); border-top-color: var(--ink); }
+.rc--pod .rc__f { border-top-color: var(--rule-paper); }
+.rc--pod .rc__f b, .rc--pod .up { color: var(--ink); }
+.rc--pod .down { color: var(--red-ink); }
+.rc--win { --mt: rgba(255, 255, 255, .8); background: var(--red); color: #fff; border-top-color: #fff; }
+.rc--win .rc__f { border-top-color: rgba(255, 255, 255, .35); }
+.rc--win .rc__f b, .rc--win .up { color: #fff; }
+.rc--win .flw { fill: #fff; }
+.rc--win .on-ink .flag, .rc--win .flag { box-shadow: 0 0 0 1px rgba(255, 255, 255, .5); }
+/* Rounds to come, or not raced: an outline (hatched when missed) */
+.rc--dim { min-height: 0; background: none; box-shadow: inset 0 0 0 1px var(--rule-ink); border-top-color: var(--rule-ink); }
+.rc--miss { background: repeating-linear-gradient(-45deg, var(--rule-ink-soft) 0 2px, transparent 2px 7px); }
+.rc__st { margin-top: auto; padding-top: 18px; }
+/* Hover, or its point hovered on the curve (.is-hl): the card lifts */
+.rc:not(.rc--dim):hover, .rc.is-hl { transform: translateY(-4px); box-shadow: 0 12px 26px rgba(0, 0, 0, .45); }
+@media (prefers-reduced-motion: reduce) { .rc { transition: none; } }
 .flw { display: inline-block; width: auto; height: .82em; margin-left: 10px; vertical-align: -.08em; fill: var(--fl); }
 .on-ink .flag { box-shadow: 0 0 0 1px rgba(239, 234, 224, .3); }
-.rounds .flag { height: .7em; }
-.rounds td.gf { font-size: 22px; white-space: nowrap; }
-.rounds td.gf .arr { margin: 0 8px; color: var(--mute-ink); }
-.rounds td.d { font-size: 20px; }
 .up { color: var(--paper); }
 .down { color: var(--red-hi); }
-.rounds tr.is-dim td { color: var(--mute-ink); }
-.rounds .podium { display: inline-block; min-width: 36px; padding: 2px 6px; text-align: center; background: var(--paper); color: var(--ink); }
-.rounds .win { background: var(--red); color: #fff; }
-.rounds .flg { margin-left: 8px; color: var(--fl); }
-/* Row hover (owner, 29/10): a red bar on the left, a paper tint across,
-   the round number red and the name a step right; the race's point lights
-   up on the form curve, and a point hovered there lights its row (.is-hl) */
-.rounds th:first-child, .rounds td:first-child { padding-left: 14px; }
-.rounds tbody tr:not(.is-dim) td { transition: background-color .2s ease, box-shadow .2s ease, color .2s ease; }
-.rounds .gpn { transition: transform .25s cubic-bezier(.2, .7, .2, 1); }
-.rounds tbody tr.is-hl td { background-color: rgba(239, 234, 224, .06); }
-.rounds tbody tr.is-hl td:first-child { box-shadow: inset 4px 0 0 var(--red); color: var(--red-hi); }
-.rounds tbody tr.is-hl .gpn { transform: translateX(6px); }
-@media (prefers-reduced-motion: reduce) { .rounds .gpn { transition: none; } .rounds tbody tr.is-hl .gpn { transform: none; } }
 @media (max-width: 760px) {
     .band { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 20px; }
     /* "CHAMPIONSHIP" in a third of a 360 px screen */
     .band .lbl { font-stretch: 85%; letter-spacing: .06em; }
-    .rounds .hide-s { display: none; }
-    .rounds td.gp, .rounds td.gf { font-size: 18px; }
-    /* Phone with sprints: no room for +/−, the groups keep start → finish and points */
-    .with-spr th:nth-child(4), .with-spr td:nth-child(4), .with-spr thead tr:last-child th:nth-child(7), .with-spr td:nth-child(7) { display: none; }
-    .with-spr td.gf, .with-spr td.d { font-size: 15px; }
-    .with-spr .s1 { padding-left: 10px !important; }
-    .with-spr .gpn .cond { font-size: 15px; }
-    /* The small tags go (classified, fastest lap) */
-    .rounds .gf .lbl, .rounds .flg { display: none; }
-    /* Phone with sprints: no sideways slide (it hid the race, the column that
-       matters, off the right edge). Each weekend stacks: the GP, then the race
-       and the sprint on lines of their own, each named, points on the right.
-       The race leads here; the wide table keeps the sprint first. */
-    .with-spr, .with-spr tbody { display: block; }
-    .with-spr thead { display: none; }
-    .with-spr tbody tr { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: 8px 10px; padding: 12px 0; border-top: 1px solid var(--rule-ink); }
-    .with-spr tbody td { display: block; padding: 0; border: 0; }
-    .with-spr tbody td:empty { display: none; }
-    .with-spr tbody td.r { grid-row: 1 / span 3; align-self: start; }
-    .with-spr tbody td.gp { grid-column: 2 / -1; }
-    .with-spr .s1 { padding-left: 0 !important; border-left: 0; }
-    .with-spr tbody td:nth-child(6) { grid-area: 2 / 2; }
-    .with-spr tbody td:nth-child(8) { grid-area: 2 / 3; }
-    .with-spr tbody td:nth-child(3) { grid-area: 3 / 2; }
-    .with-spr tbody td:nth-child(5) { grid-area: 3 / 3; }
-    .with-spr tr.is-dim td.lbl { grid-column: 2 / -1; }
-    .with-spr .z { display: none; }
-    .with-spr td[data-l]::before { content: attr(data-l); display: inline-block; width: 84px; font-size: 11px; font-weight: 700; font-stretch: 115%; letter-spacing: .09em; color: var(--mute-ink); vertical-align: .12em; }
-    .with-spr td.gf, .with-spr td.d { font-size: 18px; }
-    .with-spr .gpn .cond { font-size: 18px; }
-    .rounds td .u { display: inline; }
-    .with-spr tbody tr.is-hl { background-color: rgba(239, 234, 224, .06); }
-    .with-spr tbody tr.is-hl td { background-color: transparent; }
+    /* Phone: two cards to a row */
+    .rcards { grid-template-columns: 1fr 1fr; }
+    .rc { min-height: 196px; padding: 10px 12px 12px; }
+    .rc .lbl { letter-spacing: .04em; }
+    .rc__f > :first-child { white-space: nowrap; }
+    .rc__p b { font-size: 22px; }
+    .rc__res { font-size: 64px; }
+    .rc--dim { grid-column: 1 / -1; min-height: 0; }
 }
-.rounds .u { display: none; }
 
 /* 4. Season by season */
 /* Everything grows with the width of a season's column (few seasons, room to

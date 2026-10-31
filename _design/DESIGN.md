@@ -601,11 +601,18 @@ still the live one.
   halfway mark), the form curve (start dashed, finish solid, monotone curves
   that never break; a retirement is a white dot with a red × where it was
   classified; the foot is that season's field) with a race card that slides
-  from race to race, and the rounds table (sprint and race as two column
-  groups, never added up; the GP's full name and flag; the fastest-lap
-  stopwatch in `--fl`; a run of rounds to come or not raced is one row,
-  "17–23 · 7 Grands Prix · To come"; owner, 31/10). Shown first: the season running, or the best
-  finished one.
+  from race to race, and the race cards (owner, 31/10: a table read as one
+  more stats sheet). One small poster per weekend, 6–7 to a row (2 on a
+  phone): round, flag and short GP name; the finish giant; the card's field
+  says the result (red a win, paper a podium, ink-2 with a paper rule for
+  points, plain ink and a muted number without, a red "DNF" with where it
+  was classified); the sprint as a tag ("Sprint P3 · 6 pts", never added to
+  the race); at the foot the start and places made, the race's points and
+  the championship total after the round. The fastest-lap stopwatch in
+  `--fl` (white on a win). A run of rounds to come or not raced is one
+  outlined card, hatched when missed ("17–23 · 7 Grands Prix · To come").
+  A card lifts on hover and lights its point on the curve, and back. Shown
+  first: the season running, or the best finished one.
 - **Season by season:** a bar per season as tall as its final position, red
   for a title season (an 8 px square was clipped on P1 bars), then team,
   points, wins, podiums, the teammate record and who; a click opens it above.

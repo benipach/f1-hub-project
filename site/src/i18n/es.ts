@@ -292,7 +292,7 @@ export default {
             sprint: 'Sprint',
             rd: 'R.',
             grandPrix: 'Gran Premio',
-            startFinish: 'Salida → Llegada',
+            total: 'Total',
             delta: '+/−',
             pts: 'Pts',
             toCome: 'Por correr',

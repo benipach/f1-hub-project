@@ -560,7 +560,7 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
         const tip = one.querySelector<HTMLElement>('[data-tip]')!;
         const dots = [...one.querySelectorAll<SVGElement>('.chart .dot')];
         const raced = rs.map((_, i) => i).filter((i) => !rs[i]!.missed && !rs[i]!.upcoming && (rs[i]!.out || rs[i]!.pos));
-        const rows = [...one.querySelectorAll<HTMLElement>('.rounds tbody tr[data-i]')];
+        const rows = [...one.querySelectorAll<HTMLElement>('.rcards [data-i]')];
         const light = (i: number | null) => {
             const dot = i === null ? null : dots[raced.indexOf(i)];
             dots.forEach((d) => d.classList.toggle('is-on', d === dot));
@@ -584,9 +584,9 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
             tip.classList.add('is-on');
             light(i);
         }));
-        // A row lights its point on the curve (no card: the curve may be off screen)
+        // A race card lights its point on the curve (no hover card: the curve may be off screen)
         rows.forEach((row) => row.addEventListener('mouseenter', () => light(Number(row.dataset.i))));
-        one.querySelector('.rounds tbody')?.addEventListener('mouseleave', () => light(null));
+        one.querySelector('.rcards')?.addEventListener('mouseleave', () => light(null));
         plot.addEventListener('mouseleave', () => { tip.classList.remove('is-on'); light(null); });
     }
     // A phone gets the form curve drawn for its width (driver-view.ts); the
