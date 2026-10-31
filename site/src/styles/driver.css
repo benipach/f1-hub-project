@@ -421,6 +421,7 @@
 .rank .lbl + .lbl { margin-top: 4px; }
 .rank:hover, .rank[aria-pressed='true'] { color: var(--paper); }
 .rank[aria-pressed='true'] { border-top-color: var(--paper); }
+.ranks__none { margin: 24px 0 0; }
 /* Board (owner, 29/10): on each switch the rows come up one after another,
    a bar of each row's value against the leader's grows behind it and the
    numbers count up. */

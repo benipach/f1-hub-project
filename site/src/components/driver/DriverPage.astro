@@ -80,6 +80,8 @@ const status = D.active ? null : D.died && D.born ? `${new Date(D.born).getUTCFu
 const I = T_.info;
 const age = D.born ? (D.died ? fill(I.diedAged, { n: ageAt(D.born, D.died) }) : fill(I.yearsOld, { n: ageAt(D.born) })) : null;
 const debutMs = D.milestones.find((m) => m.label === 'Debut');
+type Rec = readonly (readonly [string, string])[];
+const recs = ([[I.before, P.junior], [I.beyond, P.beyond]] as [string, Rec | undefined][]).filter((r): r is [string, Rec] => Boolean(r[1]?.length));
 
 // ---- 3. One season: the active one, or the best finished -------------------
 const best = [...S].filter((s) => s.done).sort((a, b) => (a.pos ?? 99) - (b.pos ?? 99) || b.wins - a.wins || b.year - a.year)[0];
@@ -91,6 +93,13 @@ const many = S.length > 12;
 
 // ---- 5. Career stats -------------------------------------------------------
 const STATS = BOARD_STATS.map((k) => [k, T_.stats[k]] as const);
+// A zero has no place to rank (everyone without a win "ties" at the foot):
+// the stats at zero go in one quiet line, and the board opens on the first
+// one there is (owner, 31/10: a rookie saw four big dashes and a wins board
+// without himself). Races are never zero.
+const ranked = STATS.filter(([k]) => T[k] > 0);
+const zero = STATS.filter(([k]) => !T[k]).map(([, label]) => label.toLocaleLowerCase(intl));
+const firstStat = ranked[0]![0];
 
 // ---- 6. Career journey ----------------------------------------------------
 const J = T_.journey;
@@ -259,10 +268,12 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
                             </tbody>
                         </table>
                     </div>
-                    {(P.junior || P.beyond) && [[I.before, P.junior], [I.beyond, P.beyond]].map(([label, rows]) => (
-                        <div class="cell cell--2 cell--rec">
-                            <span class="lbl">{label as string}</span>
-                            {rows && <ol class="rec">{(rows as readonly (readonly [string, string])[]).map(([y, text]) => <li><span class="rec__y cond">{y}</span><span class="rec__t">{text}</span></li>)}</ol>}
+                    {/* Only the lists there are: one alone takes the whole row (an
+                        empty "Beyond F1" box read as missing; owner, 31/10) */}
+                    {recs.map(([label, rows]) => (
+                        <div class:list={['cell cell--rec', recs.length === 1 ? 'cell--4' : 'cell--2']}>
+                            <span class="lbl">{label}</span>
+                            <ol class="rec">{rows.map(([y, text]) => <li><span class="rec__y cond">{y}</span><span class="rec__t">{text}</span></li>)}</ol>
                         </div>
                     ))}
                 </div>
@@ -341,13 +352,14 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
                     driver leads, and each one picks the board below (owner, 31/10).
                     Toggle buttons, one pressed (a tablist needs tab roles and arrow keys) */}
                 <div class="ranks" role="group" aria-label={T_.stats.title}>
-                    {STATS.map(([k, label], i) => (
-                        <button class="rank" type="button" data-k={k} aria-pressed={i === 0 ? 'true' : 'false'} aria-label={`${label}: ${n(T[k])}${T[k] > 0 ? ` · ${fill(T_.stats.allTime, { rank: ord(view, D.ranks[k]) })}` : ''}`}>
-                            <b class="cond">{T[k] > 0 ? ord(view, D.ranks[k]) : '—'}</b><span class="lbl">{label}</span><span class="lbl mute">{n(T[k])}</span>
+                    {ranked.map(([k, label]) => (
+                        <button class="rank" type="button" data-k={k} aria-pressed={k === firstStat ? 'true' : 'false'} aria-label={`${label}: ${n(T[k])} · ${fill(T_.stats.allTime, { rank: ord(view, D.ranks[k]) })}`}>
+                            <b class="cond">{ord(view, D.ranks[k])}</b><span class="lbl">{label}</span><span class="lbl mute">{n(T[k])}</span>
                         </button>
                     ))}
                 </div>
-                <ol class="board" data-board set:html={boardHtml(view, D, 'wins')} />
+                {zero.length > 0 && <p class="ranks__none lbl mute">{fill(T_.stats.none, { list: new Intl.ListFormat(intl, { type: 'disjunction' }).format(zero) })}</p>}
+                <ol class="board" data-board set:html={boardHtml(view, D, firstStat)} />
             </div>
         </section>
 

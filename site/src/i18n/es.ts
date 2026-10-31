@@ -327,6 +327,7 @@ export default {
             champions: '{n} veces campeón del mundo',
             allTime: '{rank} de la historia',
             titleLine: '{pts} pts · {wins} victorias',
+            none: 'Sin {list}',
             wins: 'Victorias',
             podiums: 'Podios',
             poles: 'Poles',

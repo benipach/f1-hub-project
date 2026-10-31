@@ -346,6 +346,8 @@ export default {
             champions: '{n}× World Champion',
             allTime: '{rank} all-time',
             titleLine: '{pts} pts · {wins} wins',
+            // The stats at zero, in one line ("No wins, podiums or poles")
+            none: 'No {list}',
             wins: 'Wins',
             podiums: 'Podiums',
             poles: 'Poles',

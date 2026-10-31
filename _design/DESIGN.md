@@ -589,7 +589,8 @@ still the live one.
   (`#duo`), no red over it (owner, 18/10). Photos only for drivers on the
   current grid: the files go by last name, so Jos Verstappen would get Max's.
 - **Driver info:** a spec sheet in cells; teams as one row per stint with a
-  "Champion" tag; before and beyond F1 side by side.
+  "Champion" tag; before and beyond F1 side by side, only the lists there
+  are (one alone takes the row; owner, 31/10).
 - **One season:** a season picker of its own (button + listbox, not a
   `<select>`; keyboard as the old page; its list has the site's scroll
   thumb), six figures, racecraft (places gained in races, against the year's
@@ -606,9 +607,11 @@ still the live one.
   points, wins, podiums, the teammate record and who; a click opens it above.
 - **Career stats:** nothing the hero already says (owner, 31/10). The titles
   as a wall of their years (team, points, wins), under one line with the
-  count and its all-time rank; six all-time ranks, the place big and the
+  count and its all-time rank; the all-time ranks, the place big and the
   total under it, each one the switch for the all-time board below (the top
-  five and the driver after them).
+  five and the driver after them). A stat at zero has no place to rank: the
+  zeros go in one quiet line ("No wins, podiums or poles"), and the board
+  opens on the first stat there is (races are never zero).
 - **Career journey:** a ribbon with a stretch per run of races with one team
   (no line between races, owner 28/10), a card over it on hover ("Aston
   Martin 22/22": races with the team out of the season's); its key, each
