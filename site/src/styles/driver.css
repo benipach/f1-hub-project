@@ -44,6 +44,12 @@
 /* The season as it stands: a link down to it, underlined on hover as the site's links */
 .strip__now { color: inherit; text-decoration: underline 1px transparent; text-underline-offset: 4px; transition: text-decoration-color .2s ease; }
 .strip__now:hover { text-decoration-color: currentColor; }
+/* Very narrow phones: the strip wraps to several rows, where the dividers and
+   the padding left loose ends; plain gaps instead */
+@media (max-width: 420px) {
+    .strip { gap: 10px 18px; padding: 14px 0; }
+    .strip > * { padding: 0 !important; border: 0; }
+}
 /* Short screens (1280×720): spaces and sizes also follow the height, so
    the hero fits the first screen instead of running past it */
 .hero__body { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--gap); padding: clamp(24px, 5svh, 48px) 0 0; }
