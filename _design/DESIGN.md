@@ -51,6 +51,8 @@ nothing else. Values are the mockup's.
 | `--red-ink` | `#B30500` | Red for **small text** on paper or white | AA |
 | `--red-hi` | `#FF5A4E` | Red for **small text on ink** | AA |
 | `--fl` | `#C08BFF` | Fastest lap marker, on ink | — |
+| `--rule-ink` | `rgba(239, 234, 224, .25)` | Hairlines on ink (`--rule-ink-soft`, .16, for quieter ones) | — |
+| `--rule-paper` | `rgba(18, 18, 18, .25)` | Hairlines on paper: table and list rows | — |
 
 Team colors come from `data/teams.json` (`color`), never from a table in code.
 They appear as small flat squares (`.sq`, 10×10 px with a 1 px dark outline,

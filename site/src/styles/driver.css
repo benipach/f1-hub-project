@@ -99,7 +99,7 @@
 /* Every cell centered on the row's middle, with its text trimmed to the cap
    height and the baseline, so names, tags and figures all share one optical
    center (owner, 18/10: the baseline left room for descenders below) */
-.teams td { padding: 12px 12px 12px 0; border-top: 1px solid rgba(18, 18, 18, .25); white-space: nowrap; vertical-align: middle; line-height: 1; text-box: trim-both cap alphabetic; }
+.teams td { padding: 12px 12px 12px 0; border-top: 1px solid var(--rule-paper); white-space: nowrap; vertical-align: middle; line-height: 1; text-box: trim-both cap alphabetic; }
 .teams .n { text-align: right; }
 /* The cell's own padding already closes the table: no row padding stacked on it */
 .teams tbody tr:last-child td { padding-bottom: 0; }
@@ -130,7 +130,7 @@
    there's nothing; the list starts at the top of the cell, not at its foot */
 .cell--rec { justify-content: flex-start; }
 .rec { margin: 18px 0 0; padding: 0; list-style: none; }
-.rec li { display: grid; grid-template-columns: 4.2em 1fr; gap: 16px; align-items: center; padding: 10px 0; border-top: 1px solid rgba(18, 18, 18, .25); }
+.rec li { display: grid; grid-template-columns: 4.2em 1fr; gap: 16px; align-items: center; padding: 10px 0; border-top: 1px solid var(--rule-paper); }
 .rec li:last-child { padding-bottom: 0; }
 .rec__y { font-size: 24px; line-height: 1; white-space: nowrap; text-box: trim-both cap alphabetic; }
 .rec__t { font-size: 18px; font-weight: 600; line-height: 1.2; }
@@ -489,7 +489,7 @@
 .key span { display: inline-flex; align-items: center; gap: 6px; }
 .key i { display: inline-grid; place-items: center; width: 22px; height: 22px; font-style: normal; font-size: 11px; }
 .rows { margin-top: 24px; }
-.row { display: grid; grid-template-columns: 96px minmax(0, 1fr); align-items: center; gap: 12px; padding: 5px 0; border-top: 1px solid rgba(18, 18, 18, .2); }
+.row { display: grid; grid-template-columns: 96px minmax(0, 1fr); align-items: center; gap: 12px; padding: 5px 0; border-top: 1px solid var(--rule-paper); }
 /* A season with three teams (1991 had them): the logos wrap under the year
    instead of running into the grid */
 .row__y { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }

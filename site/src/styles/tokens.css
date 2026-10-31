@@ -22,6 +22,9 @@
     --rule-ink: rgba(239, 234, 224, .25);
     --rule-ink-soft: rgba(239, 234, 224, .16);
 
+    /* Hairlines on paper (table rows, list rows) */
+    --rule-paper: rgba(18, 18, 18, .25);
+
     /* Type */
     --font: 'Archivo Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
