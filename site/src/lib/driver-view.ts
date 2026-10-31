@@ -164,7 +164,7 @@ export function seasonHtml(view: DriverView, D: Pick<DriverProfile, 'id' | 'last
     };
     const duel = s.mate ? `
   <div class="duel">
-    <div class="duel__who"><span class="lbl mute">${esc(fill(S.duel, { n: s.mate.together }))}</span><p class="cond"><span>${esc(D.last)}</span> <span class="mute">${esc(S.vs)}</span> ${esc(s.mate.last)}</p></div>
+    <div class="duel__who"><span class="lbl mute">${esc(plural(view, S.duel, s.mate.together))}</span><p class="cond"><span>${esc(D.last)}</span> <span class="mute">${esc(S.vs)}</span> ${esc(s.mate.last)}</p></div>
     <div class="duel__rows">${duelRow(S.qualifying, s.mate.quali)}${duelRow(S.race, s.mate.race)}${duelRow(S.points, s.mate.pts)}</div>
   </div>` : '';
     // Points with their unit, which only a phone shows (its table has no heads)
@@ -205,7 +205,17 @@ export function seasonHtml(view: DriverView, D: Pick<DriverProfile, 'id' | 'last
       <tr><th>${esc(S.rd)}</th><th>${esc(S.grandPrix)}</th>${hasSprints ? `<th>${esc(S.startFinish)}</th><th class="n">${esc(S.delta)}</th><th class="n">${esc(S.pts)}</th>` : ''}<th class="${hasSprints ? 's1' : ''}">${esc(S.startFinish)}</th><th class="n">${esc(S.delta)}</th><th class="n">${esc(S.pts)}</th></tr>
     </thead>
     <tbody>${rs.map((r, i) => {
-        if (r.upcoming || r.missed) return `<tr class="is-dim"><td class="r cond">${r.round}</td><td class="gp">${gpName(r)}</td><td class="lbl" colspan="${3 + (hasSprints ? 3 : 0)}">${esc(r.upcoming ? S.toCome : S.didNotRace)}</td></tr>`;
+        // A run of rounds to come or not raced is one row ("17–23 · 7 Grands
+        // Prix · To come"; owner, 31/10: a one-race season had 15 rows of it);
+        // a single one keeps its GP's name
+        if (r.upcoming || r.missed) {
+            const same = (x?: DriverRound) => Boolean(x) && x!.upcoming === r.upcoming && x!.missed === r.missed;
+            if (same(rs[i - 1])) return '';
+            let j = i;
+            while (same(rs[j + 1])) j++;
+            const many = j > i;
+            return `<tr class="is-dim"><td class="r cond${many ? ' rr' : ''}">${many ? `${r.round}–${rs[j]!.round}` : r.round}</td><td class="gp">${many ? `<span class="lbl">${esc(plural(view, S.gps, j - i + 1))}</span>` : gpName(r)}</td><td class="lbl" colspan="${3 + (hasSprints ? 3 : 0)}">${esc(r.upcoming ? S.toCome : S.didNotRace)}</td></tr>`;
+        }
         const d = delta(r);
         // Race and sprint side by side, one row per weekend, never added up;
         // sprint first, the order they're run in (owner, 18/10)

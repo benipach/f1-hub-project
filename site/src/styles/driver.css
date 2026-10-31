@@ -266,6 +266,8 @@
 .rounds td { padding: 10px 10px 10px 0; border-top: 1px solid var(--rule-ink); }
 .rounds .n { text-align: right; }
 .rounds td.r { width: 1%; font-size: 22px; }
+/* A run of rounds ("17–23") on one line, smaller so it fits the number's column */
+.rounds td.rr { font-size: 15px; white-space: nowrap; }
 .rounds td.gp { font-size: 22px; }
 /* Race and sprint as two column groups, one row per weekend (owner, 18/10).
    Group heads on a 4px rule; a hairline opens the sprint group; the sprint a
@@ -445,7 +447,11 @@
 .board li:not(.gap) { position: relative; isolation: isolate; transition: background-color .2s ease; }
 .board li:not(.gap)::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; z-index: -1; width: var(--w, 0%); background: rgba(239, 234, 224, .07); transform-origin: left; }
 .board.is-anim li:not(.gap)::before { animation: bar-in .7s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--d, 0) * 45ms + 120ms); }
-.board li.me::before { background: rgba(18, 18, 18, .09); }
+/* The driver's own row: its bar at its true length, brighter, and its place
+   on a paper chip (owner, 31/10: a row filled with paper read as the longest
+   bar, 68 points against 5,232.5) */
+.board li.me::before { background: rgba(239, 234, 224, .22); }
+.board li.me > b:first-child { justify-self: start; padding: 2px 8px; background: var(--paper); color: var(--ink); }
 .board li > span:nth-child(2) { transition: transform .25s cubic-bezier(.2, .7, .2, 1); }
 .board li:not(.gap):not(.me):hover { background-color: rgba(239, 234, 224, .05); }
 .board li:not(.gap):hover > span:nth-child(2) { transform: translateX(6px); }
@@ -457,7 +463,6 @@
 .board li { display: grid; grid-template-columns: 60px 1fr auto; align-items: baseline; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule-ink); }
 .board li b { font-size: 30px; }
 .board li .v { font-size: 30px; }
-.board li.me { background: var(--paper); color: var(--ink); padding-left: 10px; padding-right: 10px; }
 .board li.gap { display: block; padding: 6px 0; color: var(--mute-ink); text-align: center; }
 @media (max-width: 1100px) { .ranks { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 28px; } }
 @media (max-width: 760px) { .ranks { grid-template-columns: 1fr 1fr; } .crown__t { grid-template-columns: 1fr 1fr; } }
@@ -498,6 +503,8 @@
 .rtip__n span { color: var(--mute-ink); font-size: .55em; }
 .eras { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 22px; }
 .eras span { display: inline-flex; align-items: center; gap: 8px; }
+/* Its stretch's colour, drawn as the ribbon draws it */
+.eras__c { flex: none; width: 18px; height: 10px; background: var(--c); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .3); }
 
 .every { margin-top: 72px; }
 .every__head { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 14px; padding-top: 12px; border-top: 4px solid currentColor; }

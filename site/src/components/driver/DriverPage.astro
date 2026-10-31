@@ -348,7 +348,7 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
                         <p class="lbl">{T.titles === 1 ? T_.stats.champion : fill(T_.stats.champions, { n: T.titles })} · {fill(T_.stats.allTime, { rank: ord(view, D.ranks.titles) })}</p>
                         <div class="crown__t">
                             {S.filter((s) => s.champion).map((s) => (
-                                <div><b class="cond">{s.year}</b><span class="lbl"><TeamMark logo={s.teams[0]!.logo} color={s.teams[0]!.color} size={20} /> {s.teams[0]!.name}</span><span class="lbl mute">{fill(T_.stats.titleLine, { pts: n(s.pts), wins: s.wins })}</span></div>
+                                <div><b class="cond">{s.year}</b><span class="lbl"><TeamMark logo={s.teams[0]!.logo} color={s.teams[0]!.color} size={20} /> {s.teams[0]!.name}</span><span class="lbl mute">{plural(view, T_.stats.titleLine, s.wins, { pts: n(s.pts), wins: s.wins })}</span></div>
                             ))}
                         </div>
                     </div>
@@ -384,10 +384,11 @@ const payload = { view, D: { id: D.id, first: D.first, last: D.last, totals: D.t
                         ))}
                     <div class="rtip" aria-hidden="true"></div>
                 </div>
-                {/* The ribbon's key: each team once (stints, years and races are
-                    in Driver info's table) */}
+                {/* The ribbon's key: each team once, its colour first (similar
+                    navies and pale greys can't be told apart by logo alone;
+                    owner, 31/10). Stints, years and races are Driver info's table */}
                 <div class="eras lbl">
-                    {D.eras.filter((e, i) => D.eras.findIndex((x) => x.id === e.id) === i).map((e) => <span><TeamMark logo={e.logo} color={e.color} size={18} /> {e.name}</span>)}
+                    {D.eras.filter((e, i) => D.eras.findIndex((x) => x.id === e.id) === i).map((e) => <span><i class="eras__c" style={`--c: ${e.color ?? '#8a857b'}`}></i><TeamMark logo={e.logo} color={e.color} size={18} /> {e.name}</span>)}
                 </div>
 
                 <div class="every">

@@ -603,7 +603,8 @@ still the live one.
   classified; the foot is that season's field) with a race card that slides
   from race to race, and the rounds table (sprint and race as two column
   groups, never added up; the GP's full name and flag; the fastest-lap
-  stopwatch in `--fl`). Shown first: the season running, or the best
+  stopwatch in `--fl`; a run of rounds to come or not raced is one row,
+  "17–23 · 7 Grands Prix · To come"; owner, 31/10). Shown first: the season running, or the best
   finished one.
 - **Season by season:** a bar per season as tall as its final position, red
   for a title season (an 8 px square was clipped on P1 bars), then team,
