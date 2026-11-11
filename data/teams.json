@@ -7,25 +7,23 @@
   "alfa-romeo": {
     "id": "alfa-romeo",
     "name": "Alfa Romeo",
-    "base": "milan",
-    "color": "#9D2235"
-  },
-  "alfa-romeo-sauber": {
-    "id": "alfa-romeo-sauber",
-    "name": "Alfa Romeo",
-    "base": "hinwil"
+    "base": "hinwil",
+    "color": "#9D2235",
+    "predecessors": [{ "team": "sauber", "year": 2019 }]
   },
   "alphatauri": {
     "id": "alphatauri",
     "name": "AlphaTauri",
     "base": "faenza",
-    "color": "#00283F"
+    "color": "#00283F",
+    "predecessors": [{ "team": "toro-rosso", "year": 2020 }]
   },
   "alpine": {
     "id": "alpine",
     "name": "Alpine",
     "base": "enstone",
-    "color": "#006FBA"
+    "color": "#006FBA",
+    "predecessors": [{ "team": "renault", "year": 2021 }]
   },
   "alta": {
     "id": "alta",
@@ -69,7 +67,8 @@
     "id": "aston-martin",
     "name": "Aston Martin",
     "base": "silverstone",
-    "color": "#229971"
+    "color": "#229971",
+    "predecessors": [{ "team": "racing-point", "year": 2021 }]
   },
   "ats-1963": {
     "id": "ats-1963",
@@ -84,17 +83,20 @@
   "bar": {
     "id": "bar",
     "name": "BAR",
-    "base": "brackley"
+    "base": "brackley",
+    "predecessors": [{ "team": "tyrrell", "year": 1999 }]
   },
   "bmw-sauber": {
     "id": "bmw-sauber",
-    "name": "BMW",
-    "base": "hinwil"
+    "name": "BMW Sauber",
+    "base": "hinwil",
+    "predecessors": [{ "team": "sauber", "year": 2006 }]
   },
   "benetton": {
     "id": "benetton",
     "name": "Benetton",
-    "base": "enstone"
+    "base": "enstone",
+    "predecessors": [{ "team": "toleman", "year": 1986 }]
   },
   "bellasi": {
     "id": "bellasi",
@@ -120,7 +122,8 @@
     "id": "brawn-gp",
     "name": "Brawn GP",
     "base": "brackley",
-    "color": "#E9FF00"
+    "color": "#E9FF00",
+    "predecessors": [{ "team": "honda", "year": 2009 }]
   },
   "brm": {
     "id": "brm",
@@ -146,7 +149,8 @@
   "caterham": {
     "id": "caterham",
     "name": "Caterham",
-    "base": "leafield"
+    "base": "leafield",
+    "predecessors": [{ "team": "lotus-racing", "year": 2012 }]
   },
   "coloni": {
     "id": "coloni",
@@ -201,13 +205,15 @@
   "fondmetal": {
     "id": "fondmetal",
     "name": "Fondmetal",
-    "base": "bergamo"
+    "base": "bergamo",
+    "predecessors": [{ "team": "osella", "year": 1991 }]
   },
   "force-india": {
     "id": "force-india",
     "name": "Force India",
     "base": "silverstone",
-    "color": "#F07D00"
+    "color": "#F07D00",
+    "predecessors": [{ "team": "spyker", "year": 2008 }]
   },
   "forti": {
     "id": "forti",
@@ -244,7 +250,8 @@
     "id": "honda",
     "name": "Honda",
     "base": "brackley",
-    "color": "#EBEBE1"
+    "color": "#EBEBE1",
+    "predecessors": [{ "team": "bar", "year": 2006 }]
   },
   "hrt": {
     "id": "hrt",
@@ -259,7 +266,8 @@
   "jaguar": {
     "id": "jaguar",
     "name": "Jaguar",
-    "base": "milton-keynes"
+    "base": "milton-keynes",
+    "predecessors": [{ "team": "stewart", "year": 2000 }]
   },
   "jordan": {
     "id": "jordan",
@@ -288,7 +296,8 @@
   "leyton-house": {
     "id": "leyton-house",
     "name": "Leyton House",
-    "base": "bicester"
+    "base": "bicester",
+    "predecessors": [{ "team": "march", "year": 1990 }]
   },
   "ligier": {
     "id": "ligier",
@@ -305,25 +314,34 @@
     "name": "Team Lotus",
     "base": "hethel"
   },
+  "lotus-racing": {
+    "id": "lotus-racing",
+    "name": "Lotus Racing",
+    "base": "hingham"
+  },
   "lotus-f1-team": {
     "id": "lotus-f1-team",
     "name": "Lotus F1 Team",
-    "base": "enstone"
+    "base": "enstone",
+    "predecessors": [{ "team": "renault", "year": 2012 }]
   },
   "march": {
     "id": "march",
     "name": "March",
-    "base": "bicester"
+    "base": "bicester",
+    "predecessors": [{ "team": "leyton-house", "year": 1992 }]
   },
   "manor": {
     "id": "manor",
     "name": "Manor",
-    "base": "banbury"
+    "base": "banbury",
+    "predecessors": [{ "team": "marussia", "year": 2015 }]
   },
   "marussia": {
     "id": "marussia",
     "name": "Marussia",
-    "base": "banbury"
+    "base": "banbury",
+    "predecessors": [{ "team": "virgin", "year": 2012 }]
   },
   "maserati": {
     "id": "maserati",
@@ -345,12 +363,14 @@
     "id": "mercedes",
     "name": "Mercedes-AMG",
     "base": "brackley",
-    "color": "#2BFFDB"
+    "color": "#2BFFDB",
+    "predecessors": [{ "team": "brawn-gp", "year": 2010 }]
   },
   "midland": {
     "id": "midland",
     "name": "Midland",
-    "base": "silverstone"
+    "base": "silverstone",
+    "predecessors": [{ "team": "jordan", "year": 2006 }]
   },
   "minardi": {
     "id": "minardi",
@@ -400,31 +420,36 @@
   "prost": {
     "id": "prost",
     "name": "Prost GP",
-    "base": "guyancourt"
+    "base": "guyancourt",
+    "predecessors": [{ "team": "ligier", "year": 1997 }]
   },
   "racing-point": {
     "id": "racing-point",
     "name": "Racing Point",
     "base": "silverstone",
-    "color": "#FF8EBC"
+    "color": "#FF8EBC",
+    "predecessors": [{ "team": "force-india", "year": 2019 }]
   },
   "racing-bulls": {
     "id": "racing-bulls",
     "name": "Racing Bulls",
     "base": "faenza",
-    "color": "#667DFF"
+    "color": "#667DFF",
+    "predecessors": [{ "team": "alphatauri", "year": 2024 }]
   },
   "red-bull-racing": {
     "id": "red-bull-racing",
     "name": "Red Bull Racing",
     "base": "milton-keynes",
-    "color": "#22477A"
+    "color": "#22477A",
+    "predecessors": [{ "team": "jaguar", "year": 2005 }]
   },
   "renault": {
     "id": "renault",
     "name": "Renault",
     "base": "enstone",
-    "color": "#FFCD2C"
+    "color": "#FFCD2C",
+    "predecessors": [{ "team": "benetton", "year": 2002 }, { "team": "lotus-f1-team", "year": 2016 }]
   },
   "rial": {
     "id": "rial",
@@ -439,19 +464,22 @@
   "sauber": {
     "id": "sauber",
     "name": "Sauber",
-    "base": "hinwil"
+    "base": "hinwil",
+    "predecessors": [{ "team": "bmw-sauber", "year": 2010 }]
   },
   "kick-sauber": {
     "id": "kick-sauber",
     "name": "Kick Sauber",
     "base": "hinwil",
-    "color": "#5AFF21"
+    "color": "#5AFF21",
+    "predecessors": [{ "team": "alfa-romeo", "year": 2024 }]
   },
   "audi": {
     "id": "audi",
     "name": "Audi",
     "base": "hinwil",
-    "color": "#FF2E2E"
+    "color": "#FF2E2E",
+    "predecessors": [{ "team": "kick-sauber", "year": 2026 }]
   },
   "shadow": {
     "id": "shadow",
@@ -466,7 +494,8 @@
   "spyker": {
     "id": "spyker",
     "name": "Spyker",
-    "base": "silverstone"
+    "base": "silverstone",
+    "predecessors": [{ "team": "midland", "year": 2006 }]
   },
   "spirit": {
     "id": "spirit",
@@ -502,7 +531,8 @@
     "id": "toro-rosso",
     "name": "Toro Rosso",
     "base": "faenza",
-    "color": "#161793"
+    "color": "#161793",
+    "predecessors": [{ "team": "minardi", "year": 2006 }]
   },
   "toyota": {
     "id": "toyota",

@@ -33,6 +33,7 @@ const TEAM_SLUG_ALIASES = {
     'mf1':                  'midland',
     'brawn':                'brawn-gp',
     'team-lotus':           'lotus',
+    'lotus-f1':             'lotus-f1-team', // 2012–15, Enstone; trimmed it fell into the classic Team Lotus
     'footwork':             'arrows',
     'euro-brun':            'eurobrun',
     'moda':                 'andrea-moda',
