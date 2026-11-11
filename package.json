@@ -1,9 +1,14 @@
 {
   "type": "module",
   "scripts": {
+    "check": "tsc -p scripts",
     "test": "node --test test/scripts.test.js"
   },
   "dependencies": {
     "cheerio": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.1",
+    "typescript": "^6.0.3"
   }
 }

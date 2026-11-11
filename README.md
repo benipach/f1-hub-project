@@ -109,9 +109,10 @@ To rebuild data (from the repo root, after `npm install`):
 ```bash
 node scripts/build-season.js 2025      # Build or complete a season file
 node scripts/build-careers.js          # Regenerate careers.json
-node scripts/build-seasons-index.js    # Regenerate seasons-index.json
+node scripts/build-seasons-index.ts    # Regenerate seasons-index.json
 node scripts/auto-fill-missing.js data/seasons/season2026.json --year=2026 --once   # What GitHub Actions runs
 npm test                               # Check the indexes still match the season files
+npm run check                          # Type-check the scripts written in TypeScript
 ```
 
 ---
