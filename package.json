@@ -2,7 +2,7 @@
   "type": "module",
   "scripts": {
     "check": "tsc -p scripts",
-    "test": "node --test test/scripts.test.js"
+    "test": "node --test test/*.test.js"
   },
   "dependencies": {
     "cheerio": "^1.2.0"
