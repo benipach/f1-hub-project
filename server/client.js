@@ -378,30 +378,6 @@ function onUpdate(topic, patch, feedTimestamp) {
     if (finishedChanged) broadcast("FinishedLines");
     broadcastFeed(topic, patch);
   }
-
-  if (catchingUp) return;
-
-  // TEMP DEBUG — confirm the real shape of these three topics against your
-  // live feed, then delete these three blocks once verified.
-  if (topic === "ExtrapolatedClock") {
-    console.log("[debug] ExtrapolatedClock:", JSON.stringify(state.ExtrapolatedClock));
-  }
-  if (topic === "SessionData") {
-    console.log("[debug] SessionData:", JSON.stringify(state.SessionData).slice(0, 800));
-  }
-  if (topic === "TrackStatus") {
-    console.log("[debug] TrackStatus:", JSON.stringify(state.TrackStatus));
-  }
-
-  // Sanity check in the console: current gap of the first car in the list.
-  const line = state.TimingData?.Lines;
-  if (topic === "TimingData" && line) {
-    const sample = Object.entries(line)[0];
-    if (sample) {
-      const [num, data] = sample;
-      console.log(`  car #${num} -> gap: ${data.GapToLeader ?? "?"}, laps: ${data.NumberOfLaps ?? "?"}`);
-    }
-  }
 }
 
 /**
@@ -435,10 +411,6 @@ const connection = new HubConnectionBuilder()
 function applyFeedMessage(topic, rawPatch, timestamp) {
   const patch = decodeIfCompressed(topic, rawPatch);
   if (patch == null) return;
-
-  if (topic === "DriverList" && !catchingUp) {
-    console.log("[debug] DriverList raw:", JSON.stringify(patch).slice(0, 1500));
-  }
 
   if (topic === "SessionInfo") freezeIfNewSession(patch);
 
