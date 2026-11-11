@@ -294,11 +294,14 @@ httpServer.listen(LOCAL_PORT, "0.0.0.0", () => {
 localServer.on("connection", (client, req) => {
   // Pages that connect with ?proto=2 get the feed's deltas as they come
   // (see broadcastFeed); older pages still get whole topics.
-  client.wantsDeltas = new URLSearchParams((req.url || "").split("?")[1]).get("proto") === "2";
-  console.log(`[local] frontend connected${client.wantsDeltas ? " (deltas)" : ""}`);
+  const params = new URLSearchParams((req.url || "").split("?")[1]);
+  client.wantsDeltas = params.get("proto") === "2";
+  // ...and with &gzip=1, snapshots gzipped (see snapshotFor).
+  client.wantsGzip = client.wantsDeltas && params.get("gzip") === "1";
+  console.log(`[local] frontend connected${client.wantsDeltas ? " (deltas)" : ""}${client.wantsGzip ? " (gzip)" : ""}`);
   // Catch the new client up with everything we have so far — frozen
   // results if we're between sessions, live state otherwise.
-  client.send(JSON.stringify({ type: "snapshot", state: getDisplayState() }));
+  client.send(snapshotFor(client, {}));
 
   client.on("close", () => console.log("[local] frontend disconnected"));
 });
@@ -341,10 +344,21 @@ function broadcastFeed(topic, patch) {
 // update, since potentially everything changed (e.g. back to empty state).
 function broadcastFullSnapshot() {
   if (catchingUp || !localServer.clients.size) return;
-  const payload = JSON.stringify({ type: "snapshot", state: getDisplayState() });
+  const cache = {};
   for (const client of localServer.clients) {
-    if (client.readyState === WebSocket.OPEN) sendOrDrop(client, payload);
+    if (client.readyState === WebSocket.OPEN) sendOrDrop(client, snapshotFor(client, cache));
   }
+}
+
+// The whole display state for one page: JSON text, or gzipped JSON as a
+// binary frame for pages on &gzip=1. Render's proxy strips permessage-deflate,
+// so without this a snapshot crosses the network whole (~92 KB in a race,
+// ~10 KB gzipped), on every connection and every reconnection.
+// `cache` shares the work between the pages of one broadcast.
+function snapshotFor(client, cache) {
+  cache.json ??= JSON.stringify({ type: "snapshot", state: getDisplayState() });
+  if (!client.wantsGzip) return cache.json;
+  return (cache.gzip ??= zlib.gzipSync(cache.json));
 }
 
 // Catches the 24h expiry even during a quiet period with no incoming

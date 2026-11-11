@@ -884,6 +884,13 @@ function setDelaySeconds(seconds) {
     flushPendingRelayMessages();
 }
 
+// Text frames are JSON; binary frames are gzipped JSON (snapshots).
+async function decodeRelayMessage(data) {
+    if (typeof data === 'string') return JSON.parse(data);
+    const stream = new Blob([data]).stream().pipeThrough(new DecompressionStream('gzip'));
+    return JSON.parse(await new Response(stream).text());
+}
+
 function connect() {
     const relayUrl = resolveRelayUrl();
     if (!relayUrl) {
@@ -892,14 +899,23 @@ function connect() {
     }
 
     // proto=2: send feed topics as deltas instead of whole (see the relay's broadcastFeed).
-    const ws = new WebSocket(`${relayUrl}${relayUrl.includes('?') ? '&' : '?'}proto=2`);
+    // gzip=1: send snapshots gzipped, as binary frames (see the relay's snapshotFor).
+    const gzip = typeof DecompressionStream === 'function';
+    const ws = new WebSocket(`${relayUrl}${relayUrl.includes('?') ? '&' : '?'}proto=2${gzip ? '&gzip=1' : ''}`);
+    ws.binaryType = 'arraybuffer';
 
     ws.onopen = () => {
         setConnectionNotice('No session data yet');
     };
 
+    // Unzipping a snapshot takes a moment, and the deltas right behind it
+    // must not be applied first: messages go through one at a time, in order.
+    let inbox = Promise.resolve();
     ws.onmessage = (event) => {
-        receiveRelayMessage(JSON.parse(event.data));
+        inbox = inbox
+            .then(() => decodeRelayMessage(event.data))
+            .then(receiveRelayMessage)
+            .catch((err) => console.error('[relay] bad message:', err));
     };
 
     ws.onclose = () => {
