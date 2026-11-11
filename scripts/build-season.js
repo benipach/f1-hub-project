@@ -595,7 +595,7 @@ async function main() {
     await writeReport(year, report);
   }
 
-  console.log('\nRemember to regenerate careers.json:  node scripts/build-careers.js');
+  console.log('\nRemember to regenerate careers.json:  node scripts/build-careers.ts');
 }
 
 // ── --grid: starting grid only ─────────────────────────────────────────────
@@ -629,7 +629,7 @@ async function runGridOnly(year, outPath, flags) {
   }
   await writeFile(outPath, JSON.stringify(existing, null, 2) + '\n', 'utf-8');
   console.log(`\nWritten: ${outPath}`);
-  console.log('\nRemember to regenerate careers.json:  node scripts/build-careers.js');
+  console.log('\nRemember to regenerate careers.json:  node scripts/build-careers.ts');
 }
 
 main().catch((err) => {

@@ -28,6 +28,6 @@ function rebuild(script, committed) {
 }
 
 describe("precomputed indexes", () => {
-  it("build-careers.js reproduces data/careers.json", () => rebuild("scripts/build-careers.js", "data/careers.json"));
+  it("build-careers.ts reproduces data/careers.json", () => rebuild("scripts/build-careers.ts", "data/careers.json"));
   it("build-seasons-index.ts reproduces data/seasons-index.json", () => rebuild("scripts/build-seasons-index.ts", "data/seasons-index.json"));
 });

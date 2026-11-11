@@ -92,7 +92,7 @@ jobs:
       # rankings keep showing the numbers from the previous race.
       - name: Rebuild careers.json
         if: steps.check.outputs.should_run == 'true'
-        run: node scripts/build-careers.js
+        run: node scripts/build-careers.ts
 
       # seasons-index.json is precomputed from the season files too: races
       # run, which sessions have results and who leads each season, for the

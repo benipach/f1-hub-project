@@ -36,7 +36,7 @@
     // (2018), because he reached that number fourteen years earlier.
     //
     // The date comes from careers[id].achievedAt[key], precomputed by
-    // scripts/build-careers.js: it's the day of the last event that raised that
+    // scripts/build-careers.ts: it's the day of the last event that raised that
     // counter, i.e. when the driver reached the total shown today.
     //
     // Drivers at 0 don't have that date, so they're tiebroken by their

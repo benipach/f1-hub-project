@@ -4,82 +4,99 @@
 // needs milestones and eras per driver, so they're resolved once here and the page
 // makes a single small fetch instead of 20 large ones.
 //
-// Regenerate whenever season data changes:  node scripts/build-careers.js
+// Regenerate whenever season data changes:  node scripts/build-careers.ts
 // (--out <file> writes somewhere else; the tests use it, see test/scripts.test.js)
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import {
+    DATA, loadSeasons, outputPath, readJson, resolveTeamId, runningOrder, sessionResults, teamName, teams,
+    type GrandPrix, type ResultRow, type Season,
+} from './lib/data.ts';
 
-const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SEASONS_DIR = path.join(ROOT, 'data', 'seasons');
-const outArg = process.argv.indexOf('--out');
-const OUT = outArg > -1 ? path.resolve(process.argv[outArg + 1]) : path.join(ROOT, 'data', 'careers.json');
+const circuits = readJson<Record<string, { location?: { city?: string } }>>(path.join(DATA, 'circuits.json'));
+const cities = readJson<Record<string, { country?: string }>>(path.join(DATA, 'cities.json'));
+const countries = readJson<Record<string, { isoCode?: string }>>(path.join(DATA, 'countries.json'));
 
-const readJson = p => JSON.parse(fs.readFileSync(p, 'utf8'));
-const teams = readJson(path.join(ROOT, 'data', 'teams.json'));
-const circuits = readJson(path.join(ROOT, 'data', 'circuits.json'));
-const cities = readJson(path.join(ROOT, 'data', 'cities.json'));
-const countries = readJson(path.join(ROOT, 'data', 'countries.json'));
-
-// Team resolution (aliases + token trimming) lives in js/shared/teams.js,
-// which is a classic browser script. It's evaluated here as-is so that
-// the precomputation and the frontend resolve exactly the same way; otherwise a driver
-// could have a "Mercedes-AMG" era separate from "Mercedes" just because the
-// 2026 races were loaded by the OpenF1 adapter under another name.
-const teamHelpers = new Function(
-    fs.readFileSync(path.join(ROOT, 'js', 'shared', 'teams.js'), 'utf8')
-    + '\nreturn { resolveTeamId };'
-)();
-
-function resolveTeam(rawId) {
-    const id = teamHelpers.resolveTeamId(rawId, teams);
-    const meta = teams[id] || null;
-    return {
-        id,
-        name: meta?.name || id.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-        color: meta?.color || null,
-    };
+function resolveTeam(rawId: string | null) {
+    const id = resolveTeamId(rawId as string);
+    return { id, name: teamName(id), color: teams[id]?.color || null };
 }
 
 // GP → circuit → city → country → 2-letter ISO, for the flag.
-function isoFor(gp) {
+function isoFor(gp: GrandPrix): string | null {
     const city = circuits[gp.circuitId]?.location?.city;
-    return countries[cities[city]?.country]?.isoCode || null;
+    return (city && countries[cities[city]?.country as string]?.isoCode) || null;
 }
 
-const sessionResults = (gp, key) => {
-    const r = gp?.sessions?.[key]?.results;
-    return Array.isArray(r) ? r : [];
-};
+const isRetired = (row: ResultRow) => /DN[FS]/i.test(String(row?.time || ''));
+const shortName = (gp: GrandPrix) => gp.name.replace(/ Grand Prix$/, '');
 
-const isRetired = row => /DN[FS]/i.test(String(row?.time || ''));
+// One race of one driver.
+interface Race {
+    year: number;
+    round: number;
+    gp: string;
+    iso: string | null;
+    date: string;
+    pos: number;
+    quali: number | null;
+    grid: number | null;
+    pts: number;
+    dnf: boolean;
+    dns: boolean;
+    fl: boolean;
+    team: string;
+    number: number | null;
+    era?: number;
+}
+
+// Where a title was sealed: a Race with only what the milestone reads.
+type ClinchRace = Pick<Race, 'year' | 'round' | 'gp' | 'iso' | 'date' | 'grid'> & { pos: number | null; team: string | null };
+
+interface Place { year: number; gp: string; date: string }
+
+interface RecordInfo {
+    key: string;
+    kind: 'broke' | 'equalled';
+    value: number;
+    peak?: number;
+    after?: { type: 'surpassed' | 'equalled'; by: string } & Place;
+    current?: boolean;
+}
+
+interface Milestone extends Place {
+    label: string;
+    iso: string | null;
+    pos: number | null;
+    grid: number | null;
+    team: string;
+    teamColor: string | null;
+    record?: RecordInfo;
+    streakLength?: number;
+}
 
 // ── Walk every season and collect each race per driver ──────────────────────
-const files = fs.readdirSync(SEASONS_DIR)
-    .filter(f => /^season\d{4}\.json$/.test(f))
-    .sort();
+const seasonsByYear = new Map<number, Season>();
+const byDriver = new Map<string, Race[]>();                       // driverId → races, in chronological order
+const seasonChampions = new Map<number, string>();                // year → driverId
+const seasonStandings = new Map<string, Record<number, number>>(); // driverId → { year: championship position }
+const seasonRounds = new Map<number, number[]>();                 // year → rounds not cancelled, in order
+const raceRun = new Map<number, Set<number>>();                   // year → rounds whose race has results
 
-const byDriver = new Map();          // driverId → [race, …] in chronological order
-const seasonChampions = new Map();   // year → driverId
-const seasonStandings = new Map();   // driverId → { year: championship position }
-const seasonRounds = new Map();      // year → [round, …] not cancelled, in order
-const raceRun = new Map();           // year → Set of rounds whose race has results
-
-for (const file of files) {
-    const year = Number(file.match(/\d{4}/)[0]);
-    const season = readJson(path.join(SEASONS_DIR, file));
+for (const { year, season } of loadSeasons()) {
+    seasonsByYear.set(year, season);
     // Cancelled GPs have no round (and no race): left out before sorting
-    const gps = Object.values(season).filter(g => !g.cancelled).sort((a, b) => a.round - b.round);
-    seasonRounds.set(year, gps.map(g => g.round));
+    const gps = runningOrder(season);
+    seasonRounds.set(year, gps.map(g => g.round as number));
     raceRun.set(year, new Set());
 
-    const seasonPoints = {};
+    const seasonPoints: Record<string, number> = {};
 
     for (const gp of gps) {
         const race = sessionResults(gp, 'race');
         if (!race.length) continue;
-        raceRun.get(year).add(gp.round);
+        raceRun.get(year)!.add(gp.round as number);
 
         const quali = sessionResults(gp, 'qualifying');
         const sprint = sessionResults(gp, 'sprintRace');
@@ -94,10 +111,10 @@ for (const file of files) {
             const q = quali.find(x => x.driver === r.driver);
             const s = sprint.find(x => x.driver === r.driver);
             if (!byDriver.has(r.driver)) byDriver.set(r.driver, []);
-            byDriver.get(r.driver).push({
+            byDriver.get(r.driver)!.push({
                 year,
-                round: gp.round,
-                gp: gp.name.replace(/ Grand Prix$/, ''),
+                round: gp.round as number,
+                gp: shortName(gp),
                 iso: isoFor(gp),
                 date: (gp.sessions.race.date || '').slice(0, 10),
                 pos: r.pos,
@@ -121,7 +138,7 @@ for (const file of files) {
     const standings = Object.entries(seasonPoints).sort((a, b) => b[1] - a[1]);
     standings.forEach(([id], i) => {
         if (!seasonStandings.has(id)) seasonStandings.set(id, {});
-        seasonStandings.get(id)[year] = i + 1;
+        seasonStandings.get(id)![year] = i + 1;
     });
 
     // Points still to be awarded. A weekend counts as
@@ -130,8 +147,7 @@ for (const file of files) {
     // race + 8 per sprint (F1 2026 doesn't award a fastest lap point).
     let pointsLeft = 0;
     for (const gp of gps) {
-        if (gp.cancelled) continue;
-        if (sessionResults(gp, 'race').length) continue;   // finde terminado
+        if (sessionResults(gp, 'race').length) continue;   // weekend over
         pointsLeft += 25;
         if (gp.sprint) pointsLeft += 8;
     }
@@ -145,7 +161,7 @@ for (const file of files) {
 }
 
 // ── Build each driver's record ──────────────────────────────────────────────
-function milestone(race, label) {
+function milestone(race: Race | ClinchRace | null | undefined, label: string): Milestone | null {
     if (!race) return null;
     const t = resolveTeam(race.team);
     return {
@@ -161,7 +177,7 @@ function milestone(race, label) {
     };
 }
 
-function ordinal(n) {
+function ordinal(n: number): string {
     const s = ['th', 'st', 'nd', 'rd'], v = n % 100;
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
@@ -169,13 +185,12 @@ function ordinal(n) {
 // The race where a title was mathematically sealed: the season is replayed
 // round by round looking for the first one where the champion's lead
 // over the best of the rest exceeds all the points still in play.
-function findClinchRace(year, champId) {
-    let season;
-    try { season = readJson(path.join(SEASONS_DIR, `season${year}.json`)); }
-    catch { return null; }
+function findClinchRace(year: number, champId: string): ClinchRace | null {
+    const season = seasonsByYear.get(year);
+    if (!season) return null;
 
-    const gps = Object.values(season).filter(g => !g.cancelled).sort((a, b) => a.round - b.round);
-    const running = {};
+    const gps = runningOrder(season);
+    const running: Record<string, number> = {};
 
     for (let i = 0; i < gps.length; i++) {
         const gp = gps[i];
@@ -201,8 +216,8 @@ function findClinchRace(year, champId) {
             const row = sessionResults(gp, 'race').find(r => r.driver === champId);
             return {
                 year,
-                round: gp.round,
-                gp: gp.name.replace(/ Grand Prix$/, ''),
+                round: gp.round as number,
+                gp: shortName(gp),
                 iso: isoFor(gp),
                 date: (gp.sessions?.race?.date || '').slice(0, 10),
                 pos: row?.pos ?? null,
@@ -214,11 +229,20 @@ function findClinchRace(year, champId) {
     return null;   // the clinch couldn't be verified (incomplete data)
 }
 
+// Each title's clinch race, worked out once (it's needed for the records and
+// for each champion's milestones).
+const clinchRaces = new Map<number, ClinchRace | null>();
+const clinchRace = (year: number, champId: string) => {
+    if (!clinchRaces.has(year)) clinchRaces.set(year, findClinchRace(year, champId));
+    return clinchRaces.get(year)!;
+};
+
 // Consecutive stretches with the same team. Grouped by *resolved* team, so
 // "red-bull" and "red-bull-racing" count as a single era. Each race keeps the
-// index of its era (r.era), which buildSeasonRaces() uses.
-function buildEras(races) {
-    const eras = [];
+// index of its era (r.era), which buildSeasonRaces() uses. An era's titles are
+// the driver's title years within it.
+function buildEras(races: Race[], titleYears: number[]) {
+    const eras: { teamId: string; teamName: string; teamColor: string | null; races: Race[] }[] = [];
     for (const r of races) {
         const t = resolveTeam(r.team);
         const last = eras[eras.length - 1];
@@ -237,6 +261,8 @@ function buildEras(races) {
             ? finished.reduce((b, r) => (r.pos < b.pos ? r : b))
             : null;
         const eraWins = finished.filter(r => r.pos === 1);   // already in chronological order
+        const from = years[0];
+        const to = years[years.length - 1];
         return {
             teamId: e.teamId,
             team: e.teamName,
@@ -244,21 +270,27 @@ function buildEras(races) {
             // seasons are the years actually present in the data: the dataset
             // doesn't have 2018-2025, so a from-to range would just be lying.
             seasons: years,
-            from: years[0],
-            to: years[years.length - 1],
+            from,
+            to,
             races: e.races.length,
             points: e.races.reduce((a, r) => a + r.pts, 0),
             wins: eraWins.length,
             podiums: finished.filter(r => r.pos <= 3).length,
             poles: e.races.filter(r => r.quali === 1).length,
             best: bestRace ? bestRace.pos : null,
-            bestRace,                            // input for the "best result in the team" milestone
-            firstWin: eraWins[0] ?? null,        // inputs for "first/last win with the team"
+            // Inputs for milestones, taken out before writing (see stripEra):
+            bestRace,                            // "best result in the team"
+            firstWin: eraWins[0] ?? null,        // "first/last win with the team"
             lastWin: eraWins[eraWins.length - 1] ?? null,
-            titles: years.filter(y => seasonChampions.get(y) === e.driverId),
+            titles: titleYears.filter(y => y >= from && y <= to),
         };
     });
 }
+
+type Era = ReturnType<typeof buildEras>[number];
+
+// An era as it goes into the JSON: without the races kept for milestones.
+const stripEra = ({ bestRace, firstWin, lastWin, ...era }: Era) => era;
 
 // ── ALL-TIME RECORDS ────────────────────────────────────────────────────────
 // Every race in the database is walked in order, keeping each driver's total
@@ -280,7 +312,7 @@ function buildEras(races) {
 // When nobody had anything yet in the category (the first race in the database,
 // or the first year with poles or fastest laps loaded) there's no previous record to
 // break or equal: it's taken as the starting point, with no milestone.
-const RECORDS = [
+const RECORDS: { key: string; amount: ((r: Race) => number) | null }[] = [
     { key: 'titles',      amount: null },   // added at the GP where the title was sealed
     { key: 'wins',        amount: r => !r.dnf && r.pos === 1 ? 1 : 0 },
     { key: 'podiums',     amount: r => !r.dnf && r.pos <= 3 ? 1 : 0 },
@@ -290,51 +322,51 @@ const RECORDS = [
     { key: 'starts',      amount: r => r.dns ? 0 : 1 },
 ];
 
-const raceKey = r => `${r.year}-${String(r.round).padStart(2, '0')}`;
+const raceKey = (r: { year: number; round: number }) => `${r.year}-${String(r.round).padStart(2, '0')}`;
 
 // Every row of every race, grouped by race.
-const raceRows = new Map();   // raceKey → [{ driverId, race }]
+const raceRows = new Map<string, { driverId: string; race: Race }[]>();
 for (const [driverId, races] of byDriver) {
     for (const race of races) {
         const k = raceKey(race);
         if (!raceRows.has(k)) raceRows.set(k, []);
-        raceRows.get(k).push({ driverId, race });
+        raceRows.get(k)!.push({ driverId, race });
     }
 }
 
 // Titles: they count at the race where they were sealed. If that race
 // can't be determined, the title doesn't enter the record (no date is made up).
-const clinchByRace = new Map();   // raceKey → { driverId, race }
+const clinchByRace = new Map<string, { driverId: string; race: ClinchRace }>();
 for (const [year, champId] of seasonChampions) {
-    const race = findClinchRace(year, champId);
+    const race = clinchRace(year, champId);
     if (race) clinchByRace.set(raceKey(race), { driverId: champId, race });
 }
 
-const recordMilestones = new Map();   // driverId → [milestone]
-const addRecordMilestone = (driverId, m) => {
+const recordMilestones = new Map<string, Milestone[]>();
+const addRecordMilestone = (driverId: string, m: Milestone) => {
     if (!recordMilestones.has(driverId)) recordMilestones.set(driverId, []);
-    recordMilestones.get(driverId).push(m);
+    recordMilestones.get(driverId)!.push(m);
 };
 
-const placeOf = race => ({ year: race.year, gp: race.gp, date: race.date });
+const placeOf = (race: Race | ClinchRace): Place => ({ year: race.year, gp: race.gp, date: race.date });
 
 for (const { key, amount } of RECORDS) {
-    const totals = new Map();       // driverId → total acumulado
+    const totals = new Map<string, number>();   // driverId → running total
     let recordValue = 0;
-    let holders = new Set();
+    let holders = new Set<string>();
     // Streak of each current holder: their milestones, whether they've already been sole holder in it and
     // who last equalled them (cleared if they pull ahead again).
-    const tenures = new Map();      // driverId → { events, everSole, equalledBy }
+    const tenures = new Map<string, { events: Milestone[]; everSole: boolean; equalledBy: ({ by: string } & Place) | null }>();
 
     // When a streak closes (or at the end, if it's still open) the last
     // milestone is completed with what happened afterwards: how far they extended it and who caught them.
     // If they were overtaken, the ceiling is the record they held before that race: whatever
     // they added in the same race where they were passed was no longer a record.
-    const closeTenure = (driverId, surpassedBy, heldValue) => {
+    const closeTenure = (driverId: string, surpassedBy: ({ by: string } & Place) | null, heldValue?: number) => {
         const t = tenures.get(driverId);
         tenures.delete(driverId);
         const last = t?.events[t.events.length - 1];
-        if (!last) return;
+        if (!t || !last?.record) return;
         const peak = heldValue ?? (totals.get(driverId) || 0);
         if (peak > last.record.value) last.record.peak = peak;
         if (surpassedBy) last.record.after = { type: 'surpassed', ...surpassedBy };
@@ -343,22 +375,22 @@ for (const { key, amount } of RECORDS) {
     };
 
     for (const k of [...raceRows.keys()].sort()) {
-        const changed = [];
-        const bump = (driverId, race, n) => {
+        const changed: { driverId: string; race: Race | ClinchRace }[] = [];
+        const bump = (driverId: string, race: Race | ClinchRace, n: number) => {
             if (!n) return;
             totals.set(driverId, (totals.get(driverId) || 0) + n);
             changed.push({ driverId, race });
         };
 
-        if (key === 'titles') {
+        if (amount === null) {
             const c = clinchByRace.get(k);
             if (c) bump(c.driverId, c.race, 1);
         } else {
-            for (const { driverId, race } of raceRows.get(k)) bump(driverId, race, amount(race));
+            for (const { driverId, race } of raceRows.get(k)!) bump(driverId, race, amount(race));
         }
         if (!changed.length) continue;
 
-        const top = Math.max(recordValue, ...changed.map(c => totals.get(c.driverId)));
+        const top = Math.max(recordValue, ...changed.map(c => totals.get(c.driverId)!));
         const atTop = changed.filter(c => totals.get(c.driverId) === top);
         const prevValue = recordValue;
         const prevHolders = holders;
@@ -390,7 +422,7 @@ for (const { key, amount } of RECORDS) {
             // didn't hold it either reaches the same number in that race. It's only
             // "equalled" if it ends up tied with someone who was already a holder.
             const passedOldOwners = top > prevValue && ![...prevHolders].some(id => holders.has(id));
-            let kind = null;
+            let kind: RecordInfo['kind'] | null = null;
             if (prevValue > 0) {
                 if (!wasHolder) kind = sole || passedOldOwners ? 'broke' : 'equalled';
                 else if (sole && !t.everSole) kind = 'broke';
@@ -399,8 +431,8 @@ for (const { key, amount } of RECORDS) {
             if (sole) t.equalledBy = null;
 
             if (kind) {
-                const m = milestone(race, kind === 'broke' ? 'Broke all-time record' : 'Equalled all-time record');
-                m.record = { key, kind, value: totals.get(driverId) };
+                const m = milestone(race, kind === 'broke' ? 'Broke all-time record' : 'Equalled all-time record')!;
+                m.record = { key, kind, value: totals.get(driverId)! };
                 t.events.push(m);
                 addRecordMilestone(driverId, m);
             }
@@ -409,7 +441,7 @@ for (const { key, amount } of RECORDS) {
             // that they were equalled.
             if (!wasHolder && !sole) {
                 for (const id of prevHolders) {
-                    if (holders.has(id)) tenures.get(id).equalledBy = { by: driverId, ...placeOf(race) };
+                    if (holders.has(id)) tenures.get(id)!.equalledBy = { by: driverId, ...placeOf(race) };
                 }
             }
         }
@@ -422,8 +454,8 @@ for (const { key, amount } of RECORDS) {
 // in between), only "Broke" remains: the earlier "Equalled" is redundant.
 for (const [driverId, list] of recordMilestones) {
     recordMilestones.set(driverId, list.filter(m =>
-        m.record.kind !== 'equalled'
-        || !list.some(b => b.record.kind === 'broke' && b.record.key === m.record.key && b.date > m.date)
+        m.record!.kind !== 'equalled'
+        || !list.some(b => b.record!.kind === 'broke' && b.record!.key === m.record!.key && b.date > m.date)
     ));
 }
 
@@ -439,8 +471,8 @@ for (const [driverId, list] of recordMilestones) {
 //   Lawson 2025 → [2, 2, 3, 3, …, 3]   (Red Bull Racing, then Racing Bulls)
 // Finished seasons with one team, every race raced, are left out: the strip
 // paints them whole.
-function buildSeasonRaces(races) {
-    const out = {};
+function buildSeasonRaces(races: Race[]) {
+    const out: Record<number, (number | null | 'TBD')[]> = {};
     const years = [...new Set(races.map(r => r.year))];
     for (const year of years) {
         const mine = races.filter(r => r.year === year);
@@ -451,7 +483,7 @@ function buildSeasonRaces(races) {
         if (oneTeam && mine.length >= run.size && !underWay) continue;
         out[year] = rounds.map(round => {
             const r = mine.find(x => x.round === round);
-            if (r) return r.era;
+            if (r) return r.era!;
             return run.has(round) ? null : 'TBD';
         });
     }
@@ -461,8 +493,8 @@ function buildSeasonRaces(races) {
 // Each season in one line, for the strip's tooltip on the years painted whole:
 // championship position, points and races.
 //   { "2024": { pos: 14, pts: 4, races: 6 }, … }
-function buildSeasonStats(races, standings) {
-    const out = {};
+function buildSeasonStats(races: Race[], standings: Record<number, number>) {
+    const out: Record<number, { pos: number | null; pts: number; races: number }> = {};
     for (const r of races) {
         const y = (out[r.year] ??= { pos: standings[r.year] ?? null, pts: 0, races: 0 });
         y.pts += r.pts;
@@ -471,20 +503,16 @@ function buildSeasonStats(races, standings) {
     return out;
 }
 
-const careers = {};
+const careers: Record<string, unknown> = {};
 
 for (const [driverId, races] of byDriver) {
     races.sort((a, b) => a.year - b.year || a.round - b.round);
     const finished = races.filter(r => !r.dnf);
 
-    const eras = buildEras(races);
-    // titles is resolved here because buildEras doesn't know the driverId.
     const titleYears = [...seasonChampions.entries()]
         .filter(([, id]) => id === driverId)
         .map(([y]) => y);
-    for (const era of eras) {
-        era.titles = titleYears.filter(y => y >= era.from && y <= era.to);
-    }
+    const eras = buildEras(races, titleYears);
 
     // Best finish in a championship (and every year they achieved it): it's what's
     // shown when the driver has no titles, so the section still says
@@ -521,26 +549,26 @@ for (const [driverId, races] of byDriver) {
     // Longest winning streak: the longest run of consecutive races
     // won. Only meaningful from 2 up (a single win isn't a streak).
     // It's emitted as one more timeline milestone, at the GP where it ended.
-    let streakMilestone = null, streakRace = null;
+    let streakMilestone: Milestone | null = null, streakRace: Race | null = null;
     {
-        let run = 0, endRace = null, best = 0, bestEnd = null;
+        let run = 0, best = 0, bestEnd: Race | null = null;
         for (const r of races) {
             if (!r.dnf && r.pos === 1) {
-                run++; endRace = r;
-                if (run > best) { best = run; bestEnd = endRace; }
+                run++;
+                if (run > best) { best = run; bestEnd = r; }
             } else {
                 run = 0;
             }
         }
         if (best >= 2) {
-            streakMilestone = { ...milestone(bestEnd, 'Longest winning streak'), streakLength: best };
+            streakMilestone = { ...milestone(bestEnd, 'Longest winning streak')!, streakLength: best };
             streakRace = bestEnd;
         }
     }
 
     const firstWinRace = finished.find(r => r.pos === 1) || null;
     const lastWinRace = [...finished].reverse().find(r => r.pos === 1) || null;
-    const sameRace = (a, b) => a && b && a.year === b.year && a.round === b.round;
+    const sameRace = (a: Race | null, b: Race | null) => a && b && a.year === b.year && a.round === b.round;
 
     // Teams with 2+ wins: they're the only ones that emit first/last
     // win with the team milestones.
@@ -555,7 +583,7 @@ for (const [driverId, races] of byDriver) {
         ...winEras.map(e => e.lastWin),
         streakRace,
     ].filter(Boolean);
-    const isWinRace = r => winRaces.some(w => sameRace(w, r));
+    const isWinRace = (r: Race) => winRaces.some(w => sameRace(w, r));
 
     const milestones = [
         milestone(races[0], 'Debut'),
@@ -567,7 +595,7 @@ for (const [driverId, races] of byDriver) {
         // One milestone per title, at the GP where it was sealed.
         ...titleYears
             .sort((a, b) => a - b)
-            .map((y, i) => milestone(findClinchRace(y, driverId), `${ordinal(i + 1)} World Title`)),
+            .map((y, i) => milestone(clinchRace(y, driverId), `${ordinal(i + 1)} World Title`)),
         // First and last win with each team, only if they won there 2+ times.
         // The "first with the team" is skipped if it matches the first of their
         // career (otherwise "first win" would always drag it along).
@@ -587,10 +615,7 @@ for (const [driverId, races] of byDriver) {
             .map(e => milestone(e.bestRace, 'Best result in the team')),
         // All-time records (see ALL-TIME RECORDS above).
         ...(recordMilestones.get(driverId) || []),
-    ].filter(Boolean);
-
-    // Inputs that don't go into the JSON.
-    for (const e of eras) { delete e.bestRace; delete e.firstWin; delete e.lastWin; }
+    ].filter(m => m !== null);
 
     // ── WHEN EACH FIGURE WAS REACHED ───────────────────────────────────────
     // Date of the last event that raised each counter, i.e. the day
@@ -601,7 +626,7 @@ for (const [driverId, races] of byDriver) {
     //
     // It's computed here and not in the frontend because the frontend only downloads careers.json:
     // recomputing it there would mean reading the ~7 MB of season files.
-    const lastDateOf = list => list.length ? list[list.length - 1].date || null : null;
+    const lastDateOf = (list: Race[]) => list.length ? list[list.length - 1].date || null : null;
 
     const achievedAt = {
         races:   lastDateOf(races),
@@ -635,7 +660,7 @@ for (const [driverId, races] of byDriver) {
         titleYears,
         titles,
         bestFinish,
-        eras,
+        eras: eras.map(stripEra),
         seasonRaces: buildSeasonRaces(races),
         seasonStats: buildSeasonStats(races, standings),
         milestones,
@@ -643,6 +668,7 @@ for (const [driverId, races] of byDriver) {
     };
 }
 
-fs.writeFileSync(OUT, JSON.stringify(careers));
-const kb = (fs.statSync(OUT).size / 1024).toFixed(1);
+const out = outputPath('careers.json');
+fs.writeFileSync(out, JSON.stringify(careers));
+const kb = (fs.statSync(out).size / 1024).toFixed(1);
 console.log(`careers.json written: ${Object.keys(careers).length} drivers, ${kb} KB`);

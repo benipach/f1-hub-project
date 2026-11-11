@@ -16,7 +16,7 @@
 // trimming from the right never changes the team.
 //
 // It's a classic script (defines globals): loaded with <script defer> before
-// each page's script. scripts/build-careers.js reuses it as-is
+// each page's script. scripts/lib/data.ts (the data build scripts) reuses it as-is
 // so the precomputation and the frontend resolve exactly the same way.
 
 // Abbreviations and names that don't look like the teams.json ID. Everything else is
