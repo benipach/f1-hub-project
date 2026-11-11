@@ -67,8 +67,8 @@ flowchart LR
 │   └── live.js                     # Live timing client
 ├── styles/                         # One stylesheet per page + global styles
 ├── server/                         # Live timing relay (Node.js)
-├── scripts/                        # Season builders and precomputed indexes
-├── auto-fill-missing.js            # Fills finished sessions from OpenF1 (run by GitHub Actions)
+├── scripts/                        # Season builders, precomputed indexes and the OpenF1 auto-fill
+├── test/                           # Tests for the data scripts (npm test)
 ├── data/
 │   ├── seasons/season{year}.json   # One file per season, 1990–2026
 │   ├── careers.json                # Precomputed career stats
@@ -110,6 +110,8 @@ To rebuild data (from the repo root, after `npm install`):
 node scripts/build-season.js 2025      # Build or complete a season file
 node scripts/build-careers.js          # Regenerate careers.json
 node scripts/build-seasons-index.js    # Regenerate seasons-index.json
+node scripts/auto-fill-missing.js data/seasons/season2026.json --year=2026 --once   # What GitHub Actions runs
+npm test                               # Check the indexes still match the season files
 ```
 
 ---

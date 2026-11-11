@@ -82,7 +82,7 @@ function parseArgs(argv) {
 
   const [seasonPath] = positional;
   if (!seasonPath) {
-    console.error("❌ Missing JSON path. Usage: node auto-fill-missing.js data/seasons/season2026.json");
+    console.error("❌ Missing JSON path. Usage: node scripts/auto-fill-missing.js data/seasons/season2026.json");
     process.exit(1);
   }
   return { seasonPath, ...flags };

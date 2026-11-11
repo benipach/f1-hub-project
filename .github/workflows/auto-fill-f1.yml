@@ -85,7 +85,7 @@ jobs:
           if [ "${{ github.event.inputs.force_weather }}" = "true" ]; then
             FLAGS="$FLAGS --force-weather"
           fi
-          node auto-fill-missing.js $FLAGS
+          node scripts/auto-fill-missing.js $FLAGS
 
       # careers.json is precomputed from all the season files: if new results
       # are loaded and it isn't regenerated, the driver profiles and the all-time
