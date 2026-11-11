@@ -7,6 +7,7 @@
 // once and the page requests a JSON of a few KB.
 //
 // Regenerate whenever season data changes:  node scripts/build-seasons-index.js
+// (--out <file> writes somewhere else; the tests use it, see test/scripts.test.js)
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -14,7 +15,8 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SEASONS_DIR = path.join(ROOT, 'data', 'seasons');
-const OUT = path.join(ROOT, 'data', 'seasons-index.json');
+const outArg = process.argv.indexOf('--out');
+const OUT = outArg > -1 ? path.resolve(process.argv[outArg + 1]) : path.join(ROOT, 'data', 'seasons-index.json');
 
 const readJson = p => JSON.parse(fs.readFileSync(p, 'utf8'));
 const teams = readJson(path.join(ROOT, 'data', 'teams.json'));

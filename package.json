@@ -1,5 +1,8 @@
 {
   "type": "module",
+  "scripts": {
+    "test": "node --test test/scripts.test.js"
+  },
   "dependencies": {
     "cheerio": "^1.2.0"
   }
