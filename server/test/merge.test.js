@@ -5,9 +5,16 @@
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { mergeState } from "../merge.js";
 
 describe("mergeState", () => {
+  it("is the same file in the relay and in the Live page", () => {
+    const relay = readFileSync(new URL("../merge.js", import.meta.url), "utf8");
+    const page = readFileSync(new URL("../../js/shared/merge.js", import.meta.url), "utf8");
+    assert.equal(page, relay, "server/merge.js and js/shared/merge.js differ: edit both");
+  });
+
   it("merges a nested delta and keeps the fields it doesn't mention", () => {
     const state = { Lines: { 44: { GapToLeader: "+1.2", Position: "3" } } };
     mergeState(state, { Lines: { 44: { GapToLeader: "+0.9" } } });

@@ -1,3 +1,6 @@
+// The relay's own merge, so the page and the relay can't drift apart.
+import { mergeState } from './shared/merge.js';
+
 // Local mirror of backend state: { DriverList, TimingData, TimingAppData }
 let state = {};
 
@@ -6,20 +9,6 @@ let state = {};
 // data from the feed, it's "when did *we* get this". Used to extrapolate
 // the countdown between messages (see updateSessionClock below).
 let lastClockUpdateLocalTime = Date.now();
-
-// Same recursive merge as the backend's mergeState(). Works whether
-// "data" arrives as a partial delta or a full topic object — newer
-// keys always overwrite older ones, so the result converges either way.
-function mergeState(target, patch) {
-    if (patch === null || typeof patch !== 'object') return patch;
-    if (target === null || typeof target !== 'object') {
-        target = Array.isArray(patch) ? [] : {};
-    }
-    for (const key of Object.keys(patch)) {
-        target[key] = mergeState(target[key], patch[key]);
-    }
-    return target;
-}
 
 // ── GP → CIRCUIT MAPPING (same map used in race.js) ───────────────────────
 const CIRCUIT_MAP = {
@@ -832,15 +821,14 @@ function applyRelayMessage(msg) {
         state = msg.state || {};
         if (state.ExtrapolatedClock) lastClockUpdateLocalTime = Date.now();
     } else if (msg.type === 'update') {
-        // Position.z: the relay sends the latest batch of positions whole.
-        // Merging it index by index with the previous one left old
-        // samples at the end of the array when the new batch was shorter,
-        // and the car "jumped back" to where it was a moment ago.
-        // FinishedLines also arrives whole, and replaces: if it were merged,
-        // drivers from the previous segment would stay frozen after the segment changes.
-        state[msg.topic] = msg.topic === 'Position.z' || msg.topic === 'FinishedLines'
-            ? msg.data
-            : mergeState(state[msg.topic] || {}, msg.data);
+        // Lists sent whole replace the old ones (mergeState's rule), so a
+        // shorter batch of Position.z samples no longer leaves stale ones.
+        // FinishedLines is an object, not a list, and also arrives whole:
+        // merged, drivers from the previous segment would stay frozen.
+        const data = msg.data;
+        state[msg.topic] = msg.topic === 'FinishedLines' || !data || typeof data !== 'object'
+            ? data
+            : mergeState(state[msg.topic] || {}, data);
         if (msg.topic === 'ExtrapolatedClock') lastClockUpdateLocalTime = Date.now();
     }
     updateTimingBests();

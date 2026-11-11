@@ -1,3 +1,8 @@
+// This file exists twice, byte for byte: server/merge.js (the relay) and
+// js/shared/merge.js (the Live page). Render only deploys server/ and the
+// site only publishes js/, so neither can import the other's copy.
+// server/test/merge.test.js fails if they ever differ: edit both.
+
 /**
  * Recursively merges a partial update into the local state.
  * F1's feed sends deltas: only the fields that changed, nested
