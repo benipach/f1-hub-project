@@ -12,7 +12,15 @@ services:
     name: f1-hub-relay
     runtime: node
     plan: free
-    rootDir: server
-    buildCommand: npm install
-    startCommand: node client.js
+    # No rootDir: the relay reads data/ (the season file, for the current GP)
+    # and js/shared/merge.js (the same merge the Live page uses), so it gets
+    # the whole repo. Render documents that a rootDir hides everything outside it.
+    buildCommand: npm ci --prefix server
+    startCommand: node server/client.js
+    # Redeploy only when the relay's own code changes. Without this, every
+    # auto-fill commit to data/ (every 30 min on race weekends) would restart it.
+    buildFilter:
+      paths:
+        - server/**
+        - js/shared/merge.js
     healthCheckPath: /health

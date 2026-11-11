@@ -14,7 +14,7 @@ import { fileURLToPath } from "url";
 import zlib from "node:zlib";
 import http from "node:http";
 import { updateFinishedLines } from "./finishers.js";
-import { mergeState } from "./merge.js";
+import { mergeState } from "../js/shared/merge.js";
 import { sendOrDrop } from "./send.js";
 import { TOPICS } from "./topics.js";
 import { loadSession, playSession, parsePlaybackTime, formatPlaybackTime } from "./replay/session.js";
