@@ -228,11 +228,6 @@ async function buildSessionInfoMap(meetingKey) {
   return map;
 }
 
-async function buildSessionMap(meetingKey) {
-  const info = await buildSessionInfoMap(meetingKey);
-  return Object.fromEntries(Object.entries(info).map(([resultKey, session]) => [resultKey, session.session_key]));
-}
-
 async function findSessionInfo(meetingKey, resultKey) {
   return (await buildSessionInfoMap(meetingKey))[resultKey] ?? null;
 }
@@ -446,24 +441,6 @@ async function fetchStartingGrid(qualySessionKey) {
 // For a race, the session that defines its grid.
 const GRID_SOURCE_KEY = { race: "qualifying", sprintRace: "sprintQualy" };
 
-// Adds `grid` to already saved race/sprint rows that don't have it.
-// Returns how many it filled.
-function applyGridToSession(session, gridByNumber) {
-  let n = 0;
-  for (const row of session?.results ?? []) {
-    if (row.grid !== undefined) continue;
-    const grid = gridByNumber.get(Number(row.number));
-    if (grid === undefined) continue;
-    row.grid = grid;
-    n += 1;
-  }
-  return n;
-}
-
-function raceSessionMissingGrid(session) {
-  return Array.isArray(session?.results) && session.results.some((row) => row && row.grid === undefined);
-}
-
 function ensureSession(gp, resultKey) {
   if (!gp.sessions || typeof gp.sessions !== "object" || Array.isArray(gp.sessions)) gp.sessions = {};
   if (!gp.sessions[resultKey] || typeof gp.sessions[resultKey] !== "object") gp.sessions[resultKey] = { date: null, endDate: null, weather: null, results: [] };
@@ -569,29 +546,13 @@ async function fetchSessionWeather(sessionKey) {
   };
 }
 
+// What scripts/auto-fill-missing.js uses.
 export {
-  GP_OPENF1_LOOKUP,
-  GRID_SOURCE_KEY,
-  RACE_LIKE,
-  QUALY_LIKE,
   SESSION_NAME_TO_RESULT_KEY,
-  applyGridToSession,
-  fetchStartingGrid,
-  raceSessionMissingGrid,
-  DRIVER_NAME_MISMATCHES,
-  TEAM_NAME_NORMALIZE,
-  OpenF1Error,
-  bestLapsByNumber,
   buildKnownDriverNamesFromSeason,
   buildSessionInfoMap,
-  buildSessionMap,
-  fetchSessionLaps,
-  fetchSessionResults,
   fetchSessionWeather,
   fillGPSession,
   findMeeting,
-  findMeetingKey,
-  findSessionInfo,
-  findSessionKey,
   getJSON,
 };
