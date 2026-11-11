@@ -275,10 +275,12 @@ const httpServer = http.createServer((req, res) => {
 const localServer = new WebSocketServer({
   server: httpServer,
   // Compress what goes to the pages (permessage-deflate, which browsers
-  // negotiate on their own). Every update resends its whole topic, and
-  // TimingData alone is ~27 KB about once a second: ~105 MB per hour of
-  // session per page uncompressed, ~20 times less compressed (measured with
-  // replay/ws-stats.js on a replayed race). Messages under 1 KB go as they are.
+  // negotiate on their own). It mattered most when every update resent its
+  // whole topic (TimingData alone is ~27 KB about once a second: ~105 MB
+  // per hour of session per page uncompressed, ~20 times less compressed,
+  // measured with replay/ws-stats.js on a replayed race); pages on ?proto=2
+  // now get deltas (see broadcastFeed), but snapshots and older pages still
+  // benefit. Messages under 1 KB go as they are.
   perMessageDeflate: { threshold: 1024 },
 });
 
@@ -288,8 +290,11 @@ httpServer.listen(LOCAL_PORT, "0.0.0.0", () => {
   console.log(`[local] listening on ws://localhost:${LOCAL_PORT} (health: http://localhost:${LOCAL_PORT}/health)`);
 });
 
-localServer.on("connection", (client) => {
-  console.log("[local] frontend connected");
+localServer.on("connection", (client, req) => {
+  // Pages that connect with ?proto=2 get the feed's deltas as they come
+  // (see broadcastFeed); older pages still get whole topics.
+  client.wantsDeltas = new URLSearchParams((req.url || "").split("?")[1]).get("proto") === "2";
+  console.log(`[local] frontend connected${client.wantsDeltas ? " (deltas)" : ""}`);
   // Catch the new client up with everything we have so far — frozen
   // results if we're between sessions, live state otherwise.
   client.send(JSON.stringify({ type: "snapshot", state: getDisplayState() }));
@@ -310,6 +315,22 @@ function broadcast(topic) {
   const payload = JSON.stringify({ type: "update", topic, data: getDisplayState()[topic] });
   for (const client of localServer.clients) {
     if (client.readyState === WebSocket.OPEN) client.send(payload);
+  }
+}
+
+// A topic straight from F1's feed: pages on ?proto=2 get just the delta,
+// which they merge with the same mergeState, so their copy of the state
+// stays identical to this one; older pages get the whole topic, as before.
+// TimingData whole is ~27 KB about once a second; its deltas are a few
+// hundred bytes. While a past session is frozen on screen the feed keeps
+// moving `state`, but nothing on screen changes, so nothing is sent.
+function broadcastFeed(topic, patch) {
+  if (catchingUp || frozen || !localServer.clients.size) return;
+  let delta, whole;
+  for (const client of localServer.clients) {
+    if (client.readyState !== WebSocket.OPEN) continue;
+    if (client.wantsDeltas) client.send(delta ??= JSON.stringify({ type: "delta", topic, data: patch }));
+    else client.send(whole ??= JSON.stringify({ type: "update", topic, data: state[topic] }));
   }
 }
 
@@ -342,7 +363,7 @@ function freezeIfNewSession(sessionInfoPatch) {
   console.log(`[session] new session (key=${nextKey}) not live yet, freezing results of key=${lastLiveKey} for 24h`);
 }
 
-function onUpdate(topic, feedTimestamp) {
+function onUpdate(topic, patch, feedTimestamp) {
   const wasFrozen = !!frozen;
   updateDisplayState();
   updateSessionTiming();
@@ -355,7 +376,7 @@ function onUpdate(topic, feedTimestamp) {
   if (wasFrozen && !frozen) broadcastFullSnapshot();
   else {
     if (finishedChanged) broadcast("FinishedLines");
-    broadcast(topic);
+    broadcastFeed(topic, patch);
   }
 
   if (catchingUp) return;
@@ -428,7 +449,7 @@ function applyFeedMessage(topic, rawPatch, timestamp) {
     mergeState(state[topic], patch);
     if (!catchingUp) console.log(`[${timestamp}] ${topic} updated`);
   }
-  onUpdate(topic, timestamp);
+  onUpdate(topic, patch, timestamp);
   // A new session can belong to another GP (the first one of the next weekend).
   if (topic === "SessionInfo") refreshCurrentGP();
 }

@@ -820,7 +820,10 @@ function applyRelayMessage(msg) {
     if (msg.type === 'snapshot') {
         state = msg.state || {};
         if (state.ExtrapolatedClock) lastClockUpdateLocalTime = Date.now();
-    } else if (msg.type === 'update') {
+    } else if (msg.type === 'update' || msg.type === 'delta') {
+        // 'delta' is just what changed in a feed topic (we connect with
+        // ?proto=2); 'update' is a whole topic. Both merge the same way, with
+        // the relay's own mergeState, so this copy matches the relay's.
         // Lists sent whole replace the old ones (mergeState's rule), so a
         // shorter batch of Position.z samples no longer leaves stale ones.
         // FinishedLines is an object, not a list, and also arrives whole:
@@ -888,7 +891,8 @@ function connect() {
         return;
     }
 
-    const ws = new WebSocket(relayUrl);
+    // proto=2: send feed topics as deltas instead of whole (see the relay's broadcastFeed).
+    const ws = new WebSocket(`${relayUrl}${relayUrl.includes('?') ? '&' : '?'}proto=2`);
 
     ws.onopen = () => {
         setConnectionNotice('No session data yet');
