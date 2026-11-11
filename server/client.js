@@ -15,6 +15,7 @@ import zlib from "node:zlib";
 import http from "node:http";
 import { updateFinishedLines } from "./finishers.js";
 import { mergeState } from "./merge.js";
+import { sendOrDrop } from "./send.js";
 import { TOPICS } from "./topics.js";
 import { loadSession, playSession, parsePlaybackTime, formatPlaybackTime } from "./replay/session.js";
 
@@ -314,23 +315,24 @@ function broadcast(topic) {
   if (catchingUp || !localServer.clients.size) return;
   const payload = JSON.stringify({ type: "update", topic, data: getDisplayState()[topic] });
   for (const client of localServer.clients) {
-    if (client.readyState === WebSocket.OPEN) client.send(payload);
+    if (client.readyState === WebSocket.OPEN) sendOrDrop(client, payload);
   }
 }
 
 // A topic straight from F1's feed: pages on ?proto=2 get just the delta,
 // which they merge with the same mergeState, so their copy of the state
 // stays identical to this one; older pages get the whole topic, as before.
-// TimingData whole is ~27 KB about once a second; its deltas are a few
-// hundred bytes. While a past session is frozen on screen the feed keeps
-// moving `state`, but nothing on screen changes, so nothing is sent.
+// TimingData whole is ~27 KB and, in a race, arrives 10–20 times a second
+// (Render logs, 2026 Brazilian GP); its deltas are a few hundred bytes.
+// While a past session is frozen on screen the feed keeps moving `state`,
+// but nothing on screen changes, so nothing is sent.
 function broadcastFeed(topic, patch) {
   if (catchingUp || frozen || !localServer.clients.size) return;
   let delta, whole;
   for (const client of localServer.clients) {
     if (client.readyState !== WebSocket.OPEN) continue;
-    if (client.wantsDeltas) client.send(delta ??= JSON.stringify({ type: "delta", topic, data: patch }));
-    else client.send(whole ??= JSON.stringify({ type: "update", topic, data: state[topic] }));
+    if (client.wantsDeltas) sendOrDrop(client, delta ??= JSON.stringify({ type: "delta", topic, data: patch }));
+    else sendOrDrop(client, whole ??= JSON.stringify({ type: "update", topic, data: state[topic] }));
   }
 }
 
@@ -341,7 +343,7 @@ function broadcastFullSnapshot() {
   if (catchingUp || !localServer.clients.size) return;
   const payload = JSON.stringify({ type: "snapshot", state: getDisplayState() });
   for (const client of localServer.clients) {
-    if (client.readyState === WebSocket.OPEN) client.send(payload);
+    if (client.readyState === WebSocket.OPEN) sendOrDrop(client, payload);
   }
 }
 
