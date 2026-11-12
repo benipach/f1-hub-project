@@ -27,8 +27,9 @@
 // With --force the previous data is discarded and rebuilt from the sources.
 //
 // Whatever remains incomplete (unmapped circuits, qualifying missing in Jolpica) is
-// dumped to data/seasons/_incomplete-{year}.txt, one file per year that's
-// overwritten on every run, so it never piles up old entries.
+// dumped to _incomplete-{year}.txt next to the season file written (so
+// data/seasons/ by default), one file per year that's overwritten on every
+// run, so it never piles up old entries.
 
 import { readFile, writeFile, mkdir, unlink } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
@@ -479,8 +480,8 @@ function findMissingQualifying(season) {
   return missing;
 }
 
-async function writeReport(year, report) {
-  const path = join(SEASONS_DIR, `_incomplete-${year}.txt`);
+async function writeReport(year, report, dir) {
+  const path = join(dir, `_incomplete-${year}.txt`);
   const { circuits, missingQualifying } = report;
 
   if (!circuits.length && !missingQualifying.length) {
@@ -592,7 +593,7 @@ async function main() {
   } else {
     await writeFile(outPath, JSON.stringify(merged, null, 2) + '\n', 'utf-8');
     console.log(`\nWritten: ${outPath}`);
-    await writeReport(year, report);
+    await writeReport(year, report, dirname(outPath));
   }
 
   console.log('\nRemember to regenerate careers.json:  node scripts/build-careers.ts');

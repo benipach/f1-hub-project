@@ -14,8 +14,8 @@ To record again (needs internet; run from the repo root, with the season to
 fill saved as `season2026.json`: the auto-fill takes the year from the name):
 
 ```bash
-OPENF1_FIXTURE=test/fixtures/autofill-2026/openf1.json.gz OPENF1_RECORD=1 \
-  node --import ./test/helpers/openf1-fixture.mjs scripts/auto-fill.ts \
+HTTP_FIXTURE=test/fixtures/autofill-2026/openf1.json.gz HTTP_RECORD=1 \
+  node --import ./test/helpers/http-fixture.mjs scripts/auto-fill.ts \
   season2026.json --out=expected.json
 ```
 
