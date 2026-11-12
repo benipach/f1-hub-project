@@ -19,7 +19,7 @@ Every Grand Prix in one place: live timing during sessions, the calendar in your
 
 **Automated results pipeline (GitHub Actions).** A scheduled workflow runs every 30 minutes from Friday to Monday. It first checks whether any session ended at least 45 minutes ago and is still missing results or weather, so it does nothing on most runs. When there's work to do, it pulls the data from the OpenF1 API, rebuilds the precomputed career stats and commits the result. The site updates itself after every session.
 
-**Historical archive (1990–2026).** `scripts/build-season.js` builds a full season file from the Jolpica (Ergast) API, plus practice sessions scraped from formula1.com. Together the season files weigh several MB, so the pages that need data across seasons read precomputed indexes (`careers.json`, `seasons-index.json`) instead, with a single small request.
+**Historical archive (1990–2026).** `scripts/build-season.ts` builds a full season file from the Jolpica (Ergast) API, plus practice sessions scraped from formula1.com. Together the season files weigh several MB, so the pages that need data across seasons read precomputed indexes (`careers.json`, `seasons-index.json`) instead, with a single small request.
 
 **No framework, no build step.** Vanilla HTML, CSS and JavaScript served from GitHub Pages, with Chart.js for the charts.
 
@@ -31,7 +31,7 @@ flowchart LR
     relay -->|wss://| live["live.html"]
 
     openf1["OpenF1 API"] --> actions["GitHub Actions<br/>every 30 min, Fri–Mon"]
-    jolpica["Jolpica (Ergast) API<br/>+ formula1.com"] --> build["scripts/build-season.js"]
+    jolpica["Jolpica (Ergast) API<br/>+ formula1.com"] --> build["scripts/build-season.ts"]
     actions -->|commits| data[("data/*.json")]
     build --> data
 
@@ -107,7 +107,7 @@ Playback starts when the page connects, with every timestamp moved to the presen
 To rebuild data (from the repo root, after `npm install`):
 
 ```bash
-node scripts/build-season.js 2025      # Build or complete a season file
+node scripts/build-season.ts 2025      # Build or complete a season file
 node scripts/build-careers.ts          # Regenerate careers.json
 node scripts/build-seasons-index.ts    # Regenerate seasons-index.json
 node scripts/auto-fill.ts                # Fill the current season from OpenF1 (what GitHub Actions runs)

@@ -1,0 +1,162 @@
+[
+  {
+    "pos": 1,
+    "driver": "sergio-perez",
+    "number": 11,
+    "team": "red-bull-racing-honda-rbpt",
+    "time": "1:32.758",
+    "laps": 21
+  },
+  {
+    "pos": 2,
+    "driver": "fernando-alonso",
+    "number": 14,
+    "team": "aston-martin-aramco-mercedes",
+    "time": "+0.438s",
+    "laps": 22
+  },
+  {
+    "pos": 3,
+    "driver": "max-verstappen",
+    "number": 1,
+    "team": "red-bull-racing-honda-rbpt",
+    "time": "+0.617s",
+    "laps": 21
+  },
+  {
+    "pos": 4,
+    "driver": "lando-norris",
+    "number": 4,
+    "team": "mclaren-mercedes",
+    "time": "+1.407s",
+    "laps": 21
+  },
+  {
+    "pos": 5,
+    "driver": "charles-leclerc",
+    "number": 16,
+    "team": "ferrari",
+    "time": "+1.499s",
+    "laps": 17
+  },
+  {
+    "pos": 6,
+    "driver": "lance-stroll",
+    "number": 18,
+    "team": "aston-martin-aramco-mercedes",
+    "time": "+1.540s",
+    "laps": 17
+  },
+  {
+    "pos": 7,
+    "driver": "kevin-magnussen",
+    "number": 20,
+    "team": "haas-ferrari",
+    "time": "+1.644s",
+    "laps": 20
+  },
+  {
+    "pos": 8,
+    "driver": "zhou-guanyu",
+    "number": 24,
+    "team": "alfa-romeo-ferrari",
+    "time": "+1.817s",
+    "laps": 18
+  },
+  {
+    "pos": 9,
+    "driver": "valtteri-bottas",
+    "number": 77,
+    "team": "alfa-romeo-ferrari",
+    "time": "+1.931s",
+    "laps": 20
+  },
+  {
+    "pos": 10,
+    "driver": "lewis-hamilton",
+    "number": 44,
+    "team": "mercedes",
+    "time": "+2.159s",
+    "laps": 13
+  },
+  {
+    "pos": 11,
+    "driver": "george-russell",
+    "number": 63,
+    "team": "mercedes",
+    "time": "+2.208s",
+    "laps": 20
+  },
+  {
+    "pos": 12,
+    "driver": "oscar-piastri",
+    "number": 81,
+    "team": "mclaren-mercedes",
+    "time": "+2.239s",
+    "laps": 24
+  },
+  {
+    "pos": 13,
+    "driver": "yuki-tsunoda",
+    "number": 22,
+    "team": "alphatauri-honda-rbpt",
+    "time": "+2.257s",
+    "laps": 20
+  },
+  {
+    "pos": 14,
+    "driver": "nico-hulkenberg",
+    "number": 27,
+    "team": "haas-ferrari",
+    "time": "+2.285s",
+    "laps": 22
+  },
+  {
+    "pos": 15,
+    "driver": "esteban-ocon",
+    "number": 31,
+    "team": "alpine-renault",
+    "time": "+2.347s",
+    "laps": 20
+  },
+  {
+    "pos": 16,
+    "driver": "nyck-de-vries",
+    "number": 21,
+    "team": "alphatauri-honda-rbpt",
+    "time": "+2.644s",
+    "laps": 25
+  },
+  {
+    "pos": 17,
+    "driver": "pierre-gasly",
+    "number": 10,
+    "team": "alpine-renault",
+    "time": "+2.697s",
+    "laps": 22
+  },
+  {
+    "pos": 18,
+    "driver": "logan-sargeant",
+    "number": 2,
+    "team": "williams-mercedes",
+    "time": "+2.991s",
+    "laps": 24
+  },
+  {
+    "pos": 19,
+    "driver": "alexander-albon",
+    "number": 23,
+    "team": "williams-mercedes",
+    "time": "+3.260s",
+    "laps": 15
+  },
+  {
+    "pos": 20,
+    "driver": "carlos-sainz",
+    "number": 55,
+    "team": "ferrari",
+    "time": "+3.314s",
+    "laps": 21
+  }
+]

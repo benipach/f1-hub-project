@@ -13,14 +13,15 @@ Used by `test/build-season.test.js`. Recorded on 12/11/2026.
   and the same file after `build-season 2009 --grid` (340 rows filled in).
 - `practice-2023-bahrain-fp1.html`: the 2023 Bahrain FP1 results table from
   formula1.com (only the `<table>`, out of a ~400 KB page). Read with the
-  script's table reader, it gives the same rows as `data/seasons/season2023.json`.
+  script's table reader, it gives `practice-2023-bahrain-fp1.expected.json`
+  (the rows `data/seasons/season2023.json` has for that session).
 
 To record again (needs internet; from the repo root, each run with
 `--out <file>` on a copy, never on `data/`):
 
 ```bash
 HTTP_FIXTURE=test/fixtures/build-season/jolpica.json.gz HTTP_RECORD=1 \
-  node --import ./test/helpers/http-fixture.mjs scripts/build-season.js 2023 --no-practice --out season2023.json
+  node --import ./test/helpers/http-fixture.mjs scripts/build-season.ts 2023 --no-practice --out season2023.json
 ```
 
 The recording adds to the file, so the three runs go into the same one.

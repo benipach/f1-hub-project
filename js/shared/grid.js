@@ -4,7 +4,7 @@
 // penalties, sanctions from the previous session and pit lane starts move the
 // grid. That's why race and sprint rows store their own `grid`
 // (the official grid; 0 = started from the pit lane), loaded by
-// scripts/build-season.js --grid and by the OpenF1 adapter.
+// scripts/build-season.ts --grid and by the auto-fill (scripts/lib/openf1.ts).
 //
 // Until a season has that field, it falls back to the position from the
 // corresponding qualifying (Qualifying for the race, Sprint

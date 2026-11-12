@@ -1,7 +1,7 @@
 // build-season, offline: Jolpica answers from a recording
 // (test/helpers/http-fixture.mjs), and each case has to write exactly the
-// season the real API gave. Practice (scraped from formula1.com) is left out
-// here: those pages weigh ~400 KB each; the table reader has its own test.
+// season the real API gave. Practice (scraped from formula1.com) is tested on
+// one saved results table: whole pages weigh ~400 KB each.
 // See test/fixtures/build-season/README.md.
 
 import { describe, it } from "node:test";
@@ -12,6 +12,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gunzipSync } from "node:zlib";
+import { practiceRows } from "../scripts/lib/formula1.ts";
 
 const fixtures = fileURLToPath(new URL("fixtures/build-season/", import.meta.url));
 const gunzip = (file) => gunzipSync(readFileSync(join(fixtures, file))).toString();
@@ -25,7 +26,7 @@ function run(year, args, start) {
     if (start) writeFileSync(file, start);
     execFileSync(process.execPath, [
       "--import", new URL("helpers/http-fixture.mjs", import.meta.url).href,
-      fileURLToPath(new URL("../scripts/build-season.js", import.meta.url)),
+      fileURLToPath(new URL("../scripts/build-season.ts", import.meta.url)),
       String(year), ...args, "--out", file,
     ], { env: { ...process.env, HTTP_FIXTURE: join(fixtures, "jolpica.json.gz") }, stdio: "pipe" });
     return readFileSync(file, "utf8");
@@ -46,5 +47,11 @@ describe("build-season", () => {
 
   it("--grid adds the starting grid to a season without it, and nothing else", () => {
     assert.equal(run(2009, ["--grid"], gunzip("grid-2009.input.json.gz")), gunzip("grid-2009.expected.json.gz"));
+  });
+
+  it("reads a formula1.com practice table into the rows the season files have", () => {
+    const html = readFileSync(join(fixtures, "practice-2023-bahrain-fp1.html"), "utf8");
+    const expected = JSON.parse(readFileSync(join(fixtures, "practice-2023-bahrain-fp1.expected.json"), "utf8"));
+    assert.deepEqual(practiceRows(html), expected);
   });
 });

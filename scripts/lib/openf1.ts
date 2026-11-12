@@ -1,35 +1,19 @@
 // OpenF1 (https://openf1.org) for the auto-fill: requests, finding a GP's
 // meeting, and turning sessions into the rows of a season file.
 
+import { spacedFetch } from './http.ts';
+
 // ── Requests ────────────────────────────────────────────────────────────────
 const BASE = 'https://api.openf1.org/v1';
-const GAP_MS = 250;        // requests start at least this far apart, so OpenF1 doesn't answer 429
-const RETRIES = 5;         // on 429 or 5xx, with exponential backoff
-const BACKOFF_MS = 1000;
-
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-let nextStart = 0;
+const request = spacedFetch(250);   // OpenF1 answers 429 to anything faster
 
 // An endpoint's rows; [] when OpenF1 has nothing (it answers 404 then).
 export async function get<T>(endpoint: string, params: Record<string, string | number>): Promise<T[]> {
     const url = `${BASE}${endpoint}?${new URLSearchParams(Object.entries(params).map(([k, v]) => [k, String(v)]))}`;
-    for (let attempt = 0; ; attempt++) {
-        const wait = nextStart - Date.now();
-        nextStart = Math.max(Date.now(), nextStart) + GAP_MS;
-        if (wait > 0) await sleep(wait);
-
-        const res = await fetch(url);
-        if (res.status === 404) return [];
-        if (res.ok) return await res.json() as T[];
-        if ((res.status === 429 || res.status >= 500) && attempt < RETRIES) {
-            const retryAfter = Number(res.headers.get('retry-after'));
-            const delay = retryAfter > 0 ? retryAfter * 1000 : BACKOFF_MS * 2 ** attempt + Math.random() * BACKOFF_MS;
-            console.warn(`⏳ OpenF1 ${res.status} on ${url}, retry ${attempt + 1}/${RETRIES} in ${Math.round(delay)}ms`);
-            await sleep(delay);
-            continue;
-        }
-        throw new Error(`OpenF1 ${res.status} ${res.statusText} (${url})`);
-    }
+    const res = await request(url);
+    if (res.status === 404) return [];
+    if (!res.ok) throw new Error(`OpenF1 ${res.status} ${res.statusText} (${url})`);
+    return await res.json() as T[];
 }
 
 // ── What OpenF1 sends (only the fields used here) ───────────────────────────
