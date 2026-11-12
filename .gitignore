@@ -10,3 +10,7 @@ server/replay/sessions/
 # Astro build output and generated types (site/)
 site/dist/
 site/.astro/
+
+# Gap reports written by scripts/build-season.ts (and older one-off reports)
+data/seasons/_incomplete-*.txt
+data/seasons/missing-*.txt
