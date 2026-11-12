@@ -10,13 +10,13 @@ Used by `test/autofill.test.js`.
 - `expected.json.gz`: what the auto-fill wrote. It matched
   `data/seasons/season2026.json` byte for byte.
 
-To record again (needs internet; run from the repo root, with a fresh
-`input.json` unzipped next to these files):
+To record again (needs internet; run from the repo root, with the season to
+fill saved as `season2026.json`: the auto-fill takes the year from the name):
 
 ```bash
 OPENF1_FIXTURE=test/fixtures/autofill-2026/openf1.json.gz OPENF1_RECORD=1 \
-  node --import ./test/helpers/openf1-fixture.mjs scripts/auto-fill-missing.js \
-  input.json --year=2026 --once --weather --no-backup --out=expected.json
+  node --import ./test/helpers/openf1-fixture.mjs scripts/auto-fill.ts \
+  season2026.json --out=expected.json
 ```
 
-Then gzip `input.json` and `expected.json` over the old ones.
+Then gzip `season2026.json` (as `input.json.gz`) and `expected.json` over the old ones.

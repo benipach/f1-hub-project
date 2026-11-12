@@ -79,13 +79,12 @@ jobs:
       - name: Run OpenF1 auto fill
         if: steps.check.outputs.should_run == 'true'
         run: |
-          # Cancelled GPs are skipped by their `cancelled` flag in the season file.
-          # It also copies the official session times (UTC) from OpenF1.
-          FLAGS="$SEASON_FILE --year=$SEASON_YEAR --once --weather --no-backup"
+          # Results, weather and the official session times (UTC) from OpenF1.
           if [ "${{ github.event.inputs.force_weather }}" = "true" ]; then
-            FLAGS="$FLAGS --force-weather"
+            node scripts/auto-fill.ts "$SEASON_FILE" --force-weather
+          else
+            node scripts/auto-fill.ts "$SEASON_FILE"
           fi
-          node scripts/auto-fill-missing.js $FLAGS
 
       # careers.json is precomputed from all the season files: if new results
       # are loaded and it isn't regenerated, the driver profiles and the all-time

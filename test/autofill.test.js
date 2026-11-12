@@ -1,9 +1,8 @@
 // The auto-fill, end to end and offline: the 2026 season without the results
 // and weather of the Singapore GP (a sprint weekend) and the Brazilian GP,
 // filled from a recording of OpenF1 (test/helpers/openf1-fixture.mjs) with the
-// clock stopped on the day it was recorded, run with the same options as the
-// GitHub Actions workflow. It has to give back the season exactly as the real
-// API did.
+// clock stopped on the day it was recorded. It has to give back the season
+// exactly as the real API did.
 //
 // To record again (needs internet), see test/fixtures/autofill-2026/README.md.
 
@@ -24,13 +23,13 @@ describe("auto-fill", () => {
   it("fills finished GPs (with and without a sprint) from OpenF1 exactly as the real API did", () => {
     const dir = mkdtempSync(join(tmpdir(), "f1hub-autofill-"));
     try {
-      const input = join(dir, "season.json");
+      const input = join(dir, "season2026.json");   // the year comes from the name
       const output = join(dir, "out.json");
       writeFileSync(input, gunzip("input.json.gz"));
       execFileSync(process.execPath, [
         "--import", new URL("helpers/openf1-fixture.mjs", import.meta.url).href,
-        path("../scripts/auto-fill-missing.js"),
-        input, "--year=2026", "--once", "--weather", "--no-backup", `--out=${output}`,
+        path("../scripts/auto-fill.ts"),
+        input, `--out=${output}`,
       ], { env: { ...process.env, OPENF1_FIXTURE: join(fixtures, "openf1.json.gz") }, stdio: "pipe" });
       assert.equal(readFileSync(output, "utf8"), gunzip("expected.json.gz"));
     } finally {
