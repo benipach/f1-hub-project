@@ -10,7 +10,7 @@ let state = {};
 // the countdown between messages (see updateSessionClock below).
 let lastClockUpdateLocalTime = Date.now();
 
-// ── GP → CIRCUIT MAPPING (same map used in race.js) ───────────────────────
+// ── GP → CIRCUIT MAPPING ─────────────────────────────────────────────────
 const CIRCUIT_MAP = {
     'australian-gp':     'albert-park-circuit',
     'chinese-gp':        'shanghai-international-circuit',
@@ -38,7 +38,7 @@ const CIRCUIT_MAP = {
     'abu-dhabi-gp':      'yas-marina-circuit',
 };
 
-// ── TEAM ID → LOGO FILENAME (same map used in race.js) ───────────────────
+// ── TEAM ID → LOGO FILENAME ──────────────────────────────────────────────
 const TEAM_LOGO_MAP = {
     'Mercedes':        'mercedes-logo',
     'Ferrari':         'ferrari-logo',
@@ -1408,14 +1408,15 @@ function tyreStintsHTML(appLine) {
     return `<span class="tyre-stints">${stints.map(tyreStintBadgeHTML).join('')}</span>`;
 }
 
-// Same chevron icon used for the delta indicator in race.js
+// Same chevron icon as the grid delta in shared/result-table.js
 function deltaArrowSvg(direction) {
     const rotate = direction === 'down' ? 180 : 0;
     return `<svg class="res-delta-arrow" viewBox="0 0 24 24" style="transform:rotate(${rotate}deg)" aria-hidden="true"><path d="M3.5 16 L12 7 L20.5 16" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
 
-// Live equivalent of race.js's gridDeltaHtml: compares the starting grid
-// position (GridPos, from TimingAppData) against the current live position.
+// Live equivalent of gridDeltaHtml in shared/result-table.js: compares the
+// starting grid position (GridPos, from TimingAppData) against the current
+// live position.
 function gridDeltaHtml(currentPos, gridPos) {
     const posNum = parseInt(currentPos, 10);
     if (isNaN(posNum) || gridPos == null) {
@@ -1432,7 +1433,7 @@ function gridDeltaHtml(currentPos, gridPos) {
     }
 }
 
-// Same lap time parser used in race.js: "1:18.518" or "18.518" → ms
+// Lap time string → ms: "1:18.518" or "18.518"
 function lapTimeToMs(t) {
     if (!t || typeof t !== 'string') return null;
     const clean = t.trim();
@@ -1448,8 +1449,8 @@ function lapTimeToMs(t) {
 }
 
 // ── WEATHER (hero card, top of the page) ─────────────────────────────────
-// Card markup/CSS is identical to race.js's session-weather-card; only the
-// data source differs: race.js reads pre-recorded session weather from
+// Card markup/CSS is identical to grandprix.js's session-weather-card; only the
+// data source differs: grandprix.js reads pre-recorded session weather from
 // season2026.json, this reads live WeatherData pushed over the WebSocket.
 function formatWeatherNumber(value, suffix = '') {
     return Number.isFinite(Number(value)) ? `${Number(value).toFixed(1).replace('.0', '')}${suffix}` : '—';

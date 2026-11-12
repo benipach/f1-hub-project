@@ -1,78 +1,39 @@
 // shared/api.js — all data fetching, no DOM
 
-let _gpMetaCache     = null;
-let _circuitsCache   = null;
-let _driversCache    = null;
-let _seasonsIdxCache = null;
-
 async function apiFetch(url, options = {}) {
     const res = await fetch(url, options);
     if (!res.ok) throw new Error(`${url} — HTTP ${res.status}`);
     return res.json();
 }
 
-async function loadGpMeta(base = '.')     { return (_gpMetaCache   ??= await apiFetch(`${base}/data/gp-meta.json`)); }
-async function loadCircuits(base = '.')   { return (_circuitsCache  ??= await apiFetch(`${base}/data/circuits.json`)); }
-async function loadSeason(base = '.', year) { return apiFetch(`${base}/data/seasons/season${year}.json`); }
-
-// ── New data catalogs (added for the index.js rewrite) ────────────────────
-let _latestCache    = null;
-let _teamsCache     = null;
-let _countriesCache = null;
-let _citiesCache    = null;
-
-async function loadLatest(base = '.')    { return (_latestCache    ??= await apiFetch(`${base}/data/latest.json`)); }
-async function loadTeams(base = '.')     { return (_teamsCache     ??= await apiFetch(`${base}/data/teams.json`)); }
-async function loadCountries(base = '.') { return (_countriesCache ??= await apiFetch(`${base}/data/countries.json`)); }
-async function loadCities(base = '.')    { return (_citiesCache    ??= await apiFetch(`${base}/data/cities.json`)); }
-
-// Each GP's country and, when it has them, its own code and place (shared/gp.js).
+// Catalogs: fetched once per page, then served from memory.
+let _circuitsCache   = null;
+let _latestCache     = null;
+let _teamsCache      = null;
+let _countriesCache  = null;
+let _citiesCache     = null;
 let _grandsPrixCache = null;
+let _driversCache    = null;
+
+async function loadCircuits(base = '.')   { return (_circuitsCache   ??= await apiFetch(`${base}/data/circuits.json`)); }
+async function loadLatest(base = '.')     { return (_latestCache     ??= await apiFetch(`${base}/data/latest.json`)); }
+async function loadTeams(base = '.')      { return (_teamsCache      ??= await apiFetch(`${base}/data/teams.json`)); }
+async function loadCountries(base = '.')  { return (_countriesCache  ??= await apiFetch(`${base}/data/countries.json`)); }
+async function loadCities(base = '.')     { return (_citiesCache     ??= await apiFetch(`${base}/data/cities.json`)); }
+// Each GP's country and, when it has them, its own code and place (shared/gp.js).
 async function loadGrandsPrix(base = '.') { return (_grandsPrixCache ??= await apiFetch(`${base}/data/grandsPrix.json`)); }
+async function loadDrivers(base = '.')    { return (_driversCache    ??= await apiFetch(`${base}/data/drivers.json`)); }
 
-async function loadDrivers(base = '.') {
-    return (_driversCache ??= await apiFetch(`${base}/data/drivers.json`));
-}
-
-async function loadSeasonsIndex(base = '.') {
-    if (_seasonsIdxCache) return _seasonsIdxCache;
-    const end   = new Date().getFullYear();
-    const years = Array.from({ length: end - 1950 + 1 }, (_, i) => 1950 + i);
-    const checks = await Promise.all(years.map(async (year) => {
-        try {
-            const res = await fetch(`${base}/data/seasons/season${year}.json`, { method: 'HEAD' });
-            return res.ok ? year : null;
-        } catch { return null; }
-    }));
-    return (_seasonsIdxCache = checks.filter(Boolean).sort((a, b) => a - b));
-}
+async function loadSeason(base = '.', year) { return apiFetch(`${base}/data/seasons/season${year}.json`); }
 
 // data/seasons-index.json (scripts/build-seasons-index.ts): one entry per
 // season with rounds, champions and which sessions have results. It's what
-// the Results/Championship year selectors and the Archive cards use,
-// instead of probing 70 files with HEAD like loadSeasonsIndex() does.
+// the Results/Championship year selectors and the Archive cards use.
 let _seasonsSummaryCache = null;
 async function loadSeasonsSummary(base = '.') {
     if (_seasonsSummaryCache) return _seasonsSummaryCache;
     const data = await apiFetch(`${base}/data/seasons-index.json`);
     return (_seasonsSummaryCache = (data.seasons ?? []).sort((a, b) => a.year - b.year));
-}
-
-function getRequestedSeasonYear(available) {
-    const param = Number(new URLSearchParams(window.location.search).get('season'));
-    return (param && available.includes(param)) ? param : available[available.length - 1];
-}
-
-async function loadRacesHistory(base = '.') {
-    const data = await apiFetch(`${base}/data/racesHistory.json`);
-    return Object.entries(data.racesHistory ?? {}).flatMap(([year, races]) =>
-        races.map(r => ({ ...r, year: Number(year) }))
-    );
-}
-
-async function loadGPRecords(base = '.') {
-    const data = await apiFetch(`${base}/data/gpRecords.json`);
-    return data.gpRecords ?? {};
 }
 
 // ── Season helpers ───────────────────────────────────────────────────────────

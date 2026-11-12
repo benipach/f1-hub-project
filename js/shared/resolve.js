@@ -1,5 +1,5 @@
 // shared/resolve.js — GP/circuit/team/driver resolution helpers, no DOM.
-// Used by pages/index.js and pages/race.js.
+// Loaded by grandsprix/grandprix.html and results.html.
 
 // ── Location (GP → circuit → city → country) ───────────────────────────────
 

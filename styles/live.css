@@ -6,8 +6,8 @@
    panels stack and the page scrolls normally (see APP SHELL below). */
 
 /* ---- CIRCUIT MAP (Map View) ----
-   Same asset convention as race.js: prefer the inline SVG layout, fall
-   back to the PNG if that circuit doesn't have one yet. */
+   Prefer the inline SVG layout, fall back to the PNG if that circuit
+   doesn't have one yet. */
 .circuit-map-wrap {
     position: relative;
     flex: 1 1 0;
