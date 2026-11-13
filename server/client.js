@@ -47,7 +47,7 @@ function readArgs(args) {
 }
 const args = readArgs(process.argv.slice(2));
 const recorder = args.record ? createRecorder(path.resolve(args.record), TOPICS) : null;
-// Live, recording starts from Subscribe()'s snapshot (see main), so the
+// Live, recording starts from Subscribe()'s snapshot (see subscribe), so the
 // deltas that arrive just before it don't start a recording of their own.
 let recording = false;
 
@@ -482,51 +482,82 @@ function record(write) {
 // Args are positional: (topic, data, timestamp).
 connection.on("feed", applyFeedMessage);
 
+// A dropped connection is retried by withAutomaticReconnect. F1 forgets the
+// subscription along with the old connection, so each new one subscribes
+// again: without it the relay stays connected but no "feed" ever arrives.
 connection.onreconnecting((err) => {
   console.log("[ws] reconnecting...", err?.message ?? "");
 });
 
+connection.onreconnected(async () => {
+  console.log("[ws] reconnected");
+  try {
+    await subscribe();
+  } catch (err) {
+    console.error("[ws] couldn't subscribe again:", err.message);
+    connection.stop(); // onclose starts over
+  }
+});
+
+// Closed for good (the automatic retries ran out, or stop() above): start over.
 connection.onclose((err) => {
   console.log("[ws] connection closed.", err?.message ?? "");
+  retry();
 });
+
+function retry() {
+  console.log("Retrying in 5s...");
+  setTimeout(main, 5000);
+}
 
 async function main() {
   try {
     await connection.start();
-    console.log("[ws] connected, subscribing to:", TOPICS.join(", "));
-
-    // Subscribe() itself returns the full current snapshot for every
-    // topic — "feed" only gives deltas AFTER this point. Static or
-    // rarely-changing fields (driver names, starting tyre compound, etc.)
-    // would otherwise never arrive if we joined mid-session.
-    const initial = await connection.invoke("Subscribe", TOPICS);
-    if (initial && typeof initial === "object") {
-      if (initial.SessionInfo) freezeIfNewSession(initial.SessionInfo);
-      for (const topic of Object.keys(initial)) {
-        const decoded = decodeIfCompressed(topic, initial[topic]);
-        if (decoded == null) continue;
-        state[topic] = decoded;
-        console.log(`[state] ${topic} seeded from Subscribe() snapshot`);
-      }
-      // The snapshot overwrites whatever the deltas that arrived
-      // between start() and Subscribe() left behind, so it has to be resent: otherwise
-      // an already connected frontend is stuck with the partial state from before.
-      updateDisplayState();
-      updateSessionTiming();
-      updateFinishedLines(state);
-      // The snapshot replaced SessionInfo: the GP is recomputed before sending,
-      // so the frontend doesn't get the new session with the previous GP.
-      refreshCurrentGP();
-      broadcastFullSnapshot();
-      if (recorder) {
-        record(() => recorder.restart(state));
-        recording = true;
-      }
-    }
+    console.log("[ws] connected");
   } catch (err) {
     console.error("[main] connection error:", err.message);
-    console.log("Retrying in 5s...");
-    setTimeout(main, 5000);
+    retry();
+    return;
+  }
+  try {
+    await subscribe();
+  } catch (err) {
+    console.error("[main] couldn't subscribe:", err.message);
+    connection.stop(); // onclose starts over
+  }
+}
+
+// Subscribe() returns the full current state of every topic; "feed" only
+// sends deltas after it. Static or rarely-changing fields (driver names,
+// starting tyre compound, etc.) would otherwise never arrive when joining
+// mid-session, or after a reconnect.
+async function subscribe() {
+  console.log("[ws] subscribing to:", TOPICS.join(", "));
+  const initial = await connection.invoke("Subscribe", TOPICS);
+  if (!initial || typeof initial !== "object") return;
+  if (initial.SessionInfo) freezeIfNewSession(initial.SessionInfo);
+  for (const topic of Object.keys(initial)) {
+    const decoded = decodeIfCompressed(topic, initial[topic]);
+    if (decoded == null) continue;
+    state[topic] = decoded;
+    console.log(`[state] ${topic} seeded from Subscribe() snapshot`);
+  }
+  // The snapshot overwrites whatever the deltas that arrived before it left
+  // behind, so it has to be resent: otherwise an already connected frontend
+  // is stuck with the partial state from before.
+  updateDisplayState();
+  updateSessionTiming();
+  updateFinishedLines(state);
+  // The snapshot replaced SessionInfo: the GP is recomputed before sending,
+  // so the frontend doesn't get the new session with the previous GP.
+  refreshCurrentGP();
+  broadcastFullSnapshot();
+  // A replaced state starts a new recording (next to the previous one, after
+  // a reconnect): a replay can only merge, so continuing the old file would
+  // keep whatever the snapshot dropped.
+  if (recorder) {
+    record(() => recorder.restart(state));
+    recording = true;
   }
 }
 
