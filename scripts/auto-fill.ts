@@ -17,6 +17,7 @@ interface Row {
     driver?: unknown;
     number?: number;
     team?: unknown;
+    grid?: number;
 }
 
 interface Session {
@@ -65,20 +66,27 @@ const ended = (t: number | null) => (t ?? Infinity) < Date.now();
 const hasResults = (s: Session) => Array.isArray(s.results) && s.results.length > 0;
 const noWeather = (s: Session) => s.weather == null || (typeof s.weather === 'object' && Object.keys(s.weather).length === 0);
 
-// A row written before OpenF1 knew who the driver was ("#30") or their team.
-// It sometimes publishes them late (Mexico 2026), so the session is asked
-// again while the workflow still runs for that weekend: from a Friday
-// practice to the last run on Monday. After that it's left for a human.
-// The workflow's "is there pending work" check uses the same rule.
-const incomplete = (row: Row) => typeof row.driver !== 'string' || row.driver.startsWith('#') || !row.team;
+// A row written before OpenF1 knew who the driver was ("#30"), their team or,
+// in a race, where they started. It sometimes publishes them late (Mexico
+// 2026: a driver and a team; the starting grid, some weekends), so the
+// session is asked again while the workflow still runs for that weekend:
+// from a Friday practice to the last run on Monday. After that it's left
+// for a human. The workflow's "is there pending work" check uses the same rule.
+const RACES = new Set(['race', 'sprintRace']);
+const incomplete = (key: string) => (row: Row) =>
+    typeof row.driver !== 'string' || row.driver.startsWith('#') || !row.team || (RACES.has(key) && row.grid == null);
 const RETRY_MS = 4 * 24 * 60 * 60 * 1000;
-const wantsResults = (s: Session, end: number | null) => !hasResults(s)
-    || (s.results!.some(incomplete) && (end ?? Infinity) + RETRY_MS > Date.now());
+const wantsResults = (key: string, s: Session, end: number | null) => !hasResults(s)
+    || (s.results!.some(incomplete(key)) && (end ?? Infinity) + RETRY_MS > Date.now());
+
+// Drivers the site has a profile for. A new one (a rookie in FP1, a
+// replacement) is loaded anyway, and said in the log so someone adds them.
+const knownDrivers = new Set(Object.keys(readJson<Record<string, unknown>>(path.join(DATA, 'drivers.json'))));
 
 // A GP is worth asking OpenF1 about once one of its sessions has started
 // and is missing results (or has incomplete ones) or weather.
-const needsWork = (gp: GrandPrix) => Object.values(gp.sessions ?? {}).some(s =>
-    s && typeof s === 'object' && started(time(s.date)) && (wantsResults(s, time(s.endDate)) || noWeather(s) || args.forceWeather));
+const needsWork = (gp: GrandPrix) => Object.entries(gp.sessions ?? {}).some(([key, s]) =>
+    s && typeof s === 'object' && started(time(s.date)) && (wantsResults(key, s, time(s.endDate)) || noWeather(s) || args.forceWeather));
 
 // Weather is asked for while a session runs, and once more if it ended without any.
 function wantsWeather(s: Session, o: OpenF1Session) {
@@ -173,7 +181,7 @@ async function fillGrandPrix(gpKey: string, gp: GrandPrix): Promise<number> {
             }
         }
 
-        if (wantsResults(session, time(o.date_end) ?? time(session.endDate))) {
+        if (wantsResults(key, session, time(o.date_end) ?? time(session.endDate))) {
             const had = hasResults(session);
             try {
                 const results = await get<Parameters<typeof sessionRows>[2][number]>('/session_result', { session_key: o.session_key });
@@ -182,6 +190,9 @@ async function fillGrandPrix(gpKey: string, gp: GrandPrix): Promise<number> {
                     session.results = rows;
                     sessionChanged = true;
                     console.log(`✅ ${gpKey}/${key}: results ${had ? 'completed' : 'added'}`);
+                    const unknown = rows.map(row => row.driver)
+                        .filter((id): id is string => typeof id === 'string' && !id.startsWith('#') && !knownDrivers.has(id));
+                    if (unknown.length) console.warn(`⚠️ ${gpKey}/${key}: not in drivers.json: ${unknown.join(', ')}`);
                 } else if (!rows.length && ended(time(o.date_end) ?? time(session.endDate))) {
                     console.log(`⏳ ${gpKey}/${key}: ended without OpenF1 results`);
                 }
@@ -189,14 +200,15 @@ async function fillGrandPrix(gpKey: string, gp: GrandPrix): Promise<number> {
                 console.warn(`⚠️ ${gpKey}/${key}: results (${(err as Error).message})`);
             }
         }
-        const missing = (session.results ?? []).filter(incomplete);
+        const missing = (session.results ?? []).filter(incomplete(key));
         if (missing.length) {
             const who = missing.map(row => [
                 `#${row.number}`,
                 typeof row.driver === 'string' && !row.driver.startsWith('#') ? row.driver : '',
                 row.team ? '' : '(no team)',
+                RACES.has(key) && row.grid == null ? '(no grid)' : '',
             ].filter(Boolean).join(' '));
-            console.warn(`⚠️ ${gpKey}/${key}: OpenF1 hasn't said who drove or for whom: ${who.join(', ')}`);
+            console.warn(`⚠️ ${gpKey}/${key}: OpenF1 hasn't said who drove, for whom or from where: ${who.join(', ')}`);
         }
         if (sessionChanged) changed++;
     }
