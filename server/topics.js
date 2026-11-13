@@ -1,5 +1,5 @@
 // Topics the relay subscribes to in F1's live timing feed. Shared with the
-// replay tools (replay/), which download the same topics from F1's archive.
+// replay tools (replay/), which record and play back the same topics.
 //
 // Position.z carries live X/Y car coordinates for the map overlay.
 // SessionStatus/SessionInfo drive the "keep last session's results visible

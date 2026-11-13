@@ -4,7 +4,7 @@ node_modules/
 # Relay output saved by hand (node client.js > log.txt)
 log.txt
 
-# Sessions downloaded from F1's archive for replays (server/replay/download.js)
+# Sessions recorded by the relay for replays (node client.js --record replay/sessions)
 server/replay/sessions/
 
 # Astro build output and generated types (site/)

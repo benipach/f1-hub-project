@@ -18,12 +18,38 @@ import { mergeState } from "../js/shared/merge.js";
 import { sendOrDrop } from "./send.js";
 import { TOPICS } from "./topics.js";
 import { loadSession, playSession, parsePlaybackTime, formatPlaybackTime } from "./replay/session.js";
+import { createRecorder } from "./replay/recorder.js";
 
 const URL = "https://livetiming.formula1.com/signalrcore";
 // The port can be set by the host it's deployed on (Render, Railway,
 // Fly and the like inject PORT); locally it's still 8080, so
 // ws://localhost:8080 doesn't change at all.
 const LOCAL_PORT = Number(process.env.PORT) || 8080;
+
+// ── COMMAND LINE ──────────────────────────────────────────────────────────
+//   node client.js                      live, from F1's feed
+//   node client.js --record <folder>    live, and records every session in the
+//                                       format --replay plays (replay/recorder.js)
+//   node client.js --replay <folder>    plays a recorded session instead (see REPLAY)
+//     --speed 4                         4x (the clock on screen drifts at speeds other than 1)
+//     --from 01:20:00 | start           skip to that point, or to a minute before the green flag
+function readArgs(args) {
+  const value = (name) => {
+    const i = args.indexOf(name);
+    return i >= 0 ? args[i + 1] : undefined;
+  };
+  return {
+    replay: value("--replay"),
+    record: value("--record"),
+    speed: Number(value("--speed") ?? 1),
+    from: value("--from") ?? "0",
+  };
+}
+const args = readArgs(process.argv.slice(2));
+const recorder = args.record ? createRecorder(path.resolve(args.record), TOPICS) : null;
+// Live, recording starts from Subscribe()'s snapshot (see main), so the
+// deltas that arrive just before it don't start a recording of their own.
+let recording = false;
 
 // The topics to subscribe to (and what each one is for) live in topics.js,
 // shared with the replay tools.
@@ -437,9 +463,19 @@ function applyFeedMessage(topic, rawPatch, timestamp) {
     mergeState(state[topic], patch);
     if (!catchingUp) console.log(`[${timestamp}] ${topic} updated`);
   }
+  if (recording) record(() => recorder.record(topic, rawPatch, state));
   onUpdate(topic, patch, timestamp);
   // A new session can belong to another GP (the first one of the next weekend).
   if (topic === "SessionInfo") refreshCurrentGP();
+}
+
+// A failed write (full disk, folder removed) is reported, but the relay keeps going.
+function record(write) {
+  try {
+    write();
+  } catch (err) {
+    console.error("[record] couldn't write:", err.message);
+  }
 }
 
 // The server invokes a client-side method called "feed" for every update.
@@ -482,6 +518,10 @@ async function main() {
       // so the frontend doesn't get the new session with the previous GP.
       refreshCurrentGP();
       broadcastFullSnapshot();
+      if (recorder) {
+        record(() => recorder.restart(state));
+        recording = true;
+      }
     }
   } catch (err) {
     console.error("[main] connection error:", err.message);
@@ -491,23 +531,12 @@ async function main() {
 }
 
 // ── REPLAY (node client.js --replay <folder>) ─────────────────────────────
-// Plays back a past session downloaded by replay/download.js instead of
-// connecting to F1, so the live page can be worked on any day of the week.
-//   --speed 4               4x (the clock on screen drifts at speeds other than 1)
-//   --from 01:20:00         skip to that point of the recording
-//   --from start            one minute before the session goes green
-// Playback starts when the first page connects.
-function parseReplayArgs(args) {
-  const value = (name) => {
-    const i = args.indexOf(name);
-    return i >= 0 ? args[i + 1] : undefined;
-  };
-  const dir = value("--replay");
-  if (!dir) return null;
-  return { dir: path.resolve(dir), speed: Number(value("--speed") ?? 1), from: value("--from") ?? "0" };
-}
-
-function startReplay({ dir, speed, from }) {
+// Plays back a recorded session instead of connecting to F1, so the live page
+// can be worked on any day of the week. Playback starts when the first page
+// connects. With --record too, the replay is recorded again (that's how the
+// recorder is tested: the copy must play back to the same state).
+function startReplay({ replay, speed, from }) {
+  const dir = path.resolve(replay);
   const session = loadSession(dir, TOPICS);
   const fromMs = from === "start"
     ? Math.max(0, (session.greenOffsetMs ?? 0) - 60_000)
@@ -524,6 +553,7 @@ function startReplay({ dir, speed, from }) {
 
   localServer.once("connection", () => {
     console.log(`[replay] playing from ${formatPlaybackTime(fromMs)} at ${speed}x`);
+    recording = !!recorder;
     catchingUp = fromMs > 0;
     const finishCatchingUp = () => {
       if (!catchingUp) return;
@@ -544,6 +574,5 @@ function startReplay({ dir, speed, from }) {
   });
 }
 
-const replayOptions = parseReplayArgs(process.argv.slice(2));
-if (replayOptions) startReplay(replayOptions);
+if (args.replay) startReplay(args);
 else main();

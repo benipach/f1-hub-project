@@ -1,12 +1,15 @@
-// Plays back a session downloaded by download.js, message by message and
-// with the same timing the live feed sent it.
+// Plays back a session recorded by the relay (client.js --record, see
+// recorder.js), message by message and with the same timing the live feed
+// sent it. The format is the one of F1's own archive, so a session from it
+// plays too.
 //
 // Two things make a replay look live to the relay and the page:
 //
-// 1. Real times. The archive only gives each message's time since the
+// 1. Real times. A recording only gives each message's time since the
 //    recording started, but finishers.js and live.js compare messages against
-//    the Utc / Timestamp fields inside them. The recording's start (its "base")
-//    is rebuilt from those same fields: a message can't arrive before the
+//    the Utc / Timestamp fields inside them. The relay's recordings say when
+//    they started (session.json, recordedAt). F1's archive doesn't, so there
+//    the start (the "base") is rebuilt from those same fields: a message can't arrive before the
 //    event it reports, so base >= Utc - offset for every one of them, and the
 //    tightest bound is within milliseconds of the real start. (Checked on the
 //    2026 Bahrain GP: base + offset of the "Started" status matches its Utc to
@@ -88,7 +91,7 @@ function readTopic(dir, topic) {
 
 // { info, messages (sorted by offset), baseUtcMs, durationMs, greenOffsetMs }
 export function loadSession(dir, topics) {
-  if (!fs.existsSync(dir)) throw new Error(`No downloaded session at ${dir} (see replay/download.js)`);
+  if (!fs.existsSync(dir)) throw new Error(`No recorded session at ${dir} (record one with client.js --record)`);
   const infoFile = path.join(dir, "session.json");
   const info = fs.existsSync(infoFile) ? JSON.parse(fs.readFileSync(infoFile, "utf8")) : {};
 
@@ -96,9 +99,12 @@ export function loadSession(dir, topics) {
   const messages = topics.flatMap((topic) => readTopic(dir, topic)).sort((a, b) => a.offsetMs - b.offsetMs);
   if (!messages.length) throw new Error(`No .jsonStream files in ${dir}`);
 
-  let baseUtcMs = -Infinity;
-  for (const { offsetMs, data } of messages) {
-    forEachTime(data, (ms) => { if (ms - offsetMs > baseUtcMs) baseUtcMs = ms - offsetMs; });
+  let baseUtcMs = Date.parse(info.recordedAt ?? "");
+  if (Number.isNaN(baseUtcMs)) {
+    baseUtcMs = -Infinity;
+    for (const { offsetMs, data } of messages) {
+      forEachTime(data, (ms) => { if (ms - offsetMs > baseUtcMs) baseUtcMs = ms - offsetMs; });
+    }
   }
   if (!Number.isFinite(baseUtcMs)) throw new Error(`Couldn't find any Utc / Timestamp in ${dir} to place the recording in time`);
 
