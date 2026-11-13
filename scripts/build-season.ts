@@ -74,27 +74,57 @@ function addGrid(saved?: Session, fresh?: Session): number {
     return added;
 }
 
-// The fetched season, keeping every saved session that has results (loaded
-// by hand, from OpenF1…) and its circuit; Jolpica only fills what's missing.
-function merge(fresh: Season, saved: Season) {
+// One saved GP with its fetched version: every saved session that has results
+// (loaded by hand, from OpenF1…) and its circuit stay; Jolpica only fills
+// what's missing.
+function mergeGrandPrix(gp: GrandPrix, old: GrandPrix): { gp: GrandPrix; gridAdded: number } {
     let gridAdded = 0;
-    for (const [slug, gp] of Object.entries(fresh)) {
-        const old = saved[slug];
-        if (!old) continue;
-        if (old.circuitId && !gp.circuitId) {
-            const { round, name, ...rest } = gp;
-            fresh[slug] = { round, name, circuitId: old.circuitId, ...rest };
-        }
-        const sessions = { ...gp.sessions };
-        for (const [key, s] of Object.entries(old.sessions ?? {})) {
-            if (hasResults(s) || !sessions[key]) {
-                if (RACES.includes(key)) gridAdded += addGrid(s, gp.sessions?.[key]);
-                sessions[key] = s;
-            }
-        }
-        fresh[slug].sessions = sessions;
+    if (old.circuitId && !gp.circuitId) {
+        const { round, name, ...rest } = gp;
+        gp = { round, name, circuitId: old.circuitId, ...rest };
     }
-    return gridAdded;
+    const sessions = { ...gp.sessions };
+    for (const [key, s] of Object.entries(old.sessions ?? {})) {
+        if (hasResults(s) || !sessions[key]) {
+            if (RACES.includes(key)) gridAdded += addGrid(s, gp.sessions?.[key]);
+            sessions[key] = s;
+        }
+    }
+    return { gp: { ...gp, sessions }, gridAdded };
+}
+
+// The fetched season over the saved one. GPs are matched by round, not by
+// key, because keys are sometimes chosen by hand ("barcelona-gp",
+// "bahrain-gp-in-malaysia" in 2026): the saved key stays, since the rest of
+// data/ uses it. A round only matches on the same circuit (when both say), so
+// a renumbered calendar can't pair two different races; without one, the key
+// decides. Saved GPs Jolpica doesn't have (cancelled ones have no round) stay
+// where they were; new ones go in by round.
+function merge(fresh: Season, saved: Season): { season: Season; gridAdded: number } {
+    const sameCircuit = (a: GrandPrix, b: GrandPrix) => !a.circuitId || !b.circuitId || a.circuitId === b.circuitId;
+    const freshByRound = new Map(Object.entries(fresh).map(([slug, gp]) => [gp.round, slug]));
+    const matched = new Set<string>();
+    const entries: [string, GrandPrix][] = [];
+    let gridAdded = 0;
+    for (const [slug, old] of Object.entries(saved)) {
+        const candidates = [old.round == null ? undefined : freshByRound.get(old.round), slug];
+        const freshSlug = candidates.find(c => c && fresh[c] && !matched.has(c) && sameCircuit(fresh[c], old));
+        if (!freshSlug) {
+            entries.push([slug, old]);
+            continue;
+        }
+        matched.add(freshSlug);
+        if (freshSlug !== slug) console.log(`  ${freshSlug} (Jolpica) is ${slug} here: kept as ${slug}`);
+        const merged = mergeGrandPrix(fresh[freshSlug], old);
+        gridAdded += merged.gridAdded;
+        entries.push([slug, merged.gp]);
+    }
+    for (const [slug, gp] of Object.entries(fresh)) {
+        if (matched.has(slug)) continue;
+        const at = entries.findIndex(([, e]) => e.round != null && gp.round != null && e.round > gp.round);
+        entries.splice(at === -1 ? entries.length : at, 0, [slug, gp]);
+    }
+    return { season: Object.fromEntries(entries), gridAdded };
 }
 
 // ── --grid ──────────────────────────────────────────────────────────────────
@@ -130,10 +160,13 @@ if (args.grid) {
 console.log('\n── 1/3 · Jolpica: races, qualifying, sprints and circuits ──');
 const circuitsFile = path.join(DATA, 'circuits.json');
 const knownCircuits = fs.existsSync(circuitsFile) ? new Set(Object.keys(readJson(circuitsFile))) : null;
-const { season, circuitIssues } = await fetchSeason(args.year, { knownCircuits });
+const fetched = await fetchSeason(args.year, { knownCircuits });
+const { circuitIssues } = fetched;
+let season = fetched.season as Season;
 if (existing && !args.force) {
-    const gridAdded = merge(season as Season, existing);
-    if (gridAdded) console.log(`  starting grid filled in on ${gridAdded} existing row(s)`);
+    const merged = merge(season, existing);
+    season = merged.season;
+    if (merged.gridAdded) console.log(`  starting grid filled in on ${merged.gridAdded} existing row(s)`);
 }
 
 if (args.noPractice) console.log('\n── 2/3 · practice (FP1-3): skipped (--no-practice) ──');

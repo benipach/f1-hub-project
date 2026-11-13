@@ -45,6 +45,26 @@ describe("build-season", () => {
     assert.equal(run(2023, ["--no-practice"], existing), existing);
   });
 
+  // Keys are sometimes chosen by hand, and cancelled GPs have no round: GPs
+  // are matched by round, the saved key stays, and nothing saved is dropped.
+  it("rebuilding matches GPs by round: hand-chosen keys and cancelled GPs stay", () => {
+    const saved = Object.entries(JSON.parse(gunzip("existing-2023.json.gz")))
+      .map(([key, gp]) => [key === "spanish-gp" ? "barcelona-gp" : key, gp]);
+    const imola = ["emilia-romagna-gp", { round: null, name: "Emilia Romagna Grand Prix", cancelled: true, sessions: {} }];
+    saved.splice(saved.findIndex(([key]) => key === "miami-gp") + 1, 0, imola);
+    const existing = JSON.stringify(Object.fromEntries(saved), null, 2) + "\n";
+    assert.equal(run(2023, ["--no-practice"], existing), existing);
+  });
+
+  it("rebuilding adds a GP missing from the saved season in its round's place", () => {
+    const saved = JSON.parse(gunzip("existing-2023.json.gz"));
+    const order = Object.keys(saved);
+    delete saved["japanese-gp"];
+    const result = JSON.parse(run(2023, ["--no-practice"], JSON.stringify(saved, null, 2) + "\n"));
+    assert.deepEqual(Object.keys(result), order);
+    assert.deepEqual(result["japanese-gp"], JSON.parse(gunzip("fresh-2023.expected.json.gz"))["japanese-gp"]);
+  });
+
   it("--grid adds the starting grid to a season without it, and nothing else", () => {
     assert.equal(run(2009, ["--grid"], gunzip("grid-2009.input.json.gz")), gunzip("grid-2009.expected.json.gz"));
   });
