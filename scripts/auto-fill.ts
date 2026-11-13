@@ -11,7 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { DATA, readJson } from './lib/data.ts';
-import { RESULT_KEY, findMeeting, get, meetingSessions, sessionRows, sessionWeather, type OpenF1Session } from './lib/openf1.ts';
+import { RESULT_KEY, findMeeting, meetingSessions, sessionRows, sessionWeather, yearSessions, type OpenF1Session } from './lib/openf1.ts';
 
 interface Row {
     driver?: unknown;
@@ -112,7 +112,7 @@ const MAX_SHIFT_MS = 36 * 60 * 60 * 1000;
 // provisional times. Returns how many sessions changed.
 async function syncTimes(season: Record<string, GrandPrix>): Promise<number> {
     const official = new Map<number, Record<string, OpenF1Session>>();
-    for (const s of await get<OpenF1Session>('/sessions', { year: args.year })) {
+    for (const s of await yearSessions(args.year)) {
         const key = RESULT_KEY[s.session_name];
         if (!key) continue;
         if (!official.has(s.meeting_key)) official.set(s.meeting_key, {});
@@ -157,7 +157,7 @@ async function fillGrandPrix(gpKey: string, gp: GrandPrix): Promise<number> {
         console.log(`⏭️ ${gpKey}: cancelled in OpenF1`);
         return 0;
     }
-    const sessions = await meetingSessions(meeting.meeting_key);
+    const sessions = await meetingSessions(args.year, meeting.meeting_key);
 
     let changed = 0;
     for (const [key, session] of Object.entries(gp.sessions!)) {
@@ -170,7 +170,7 @@ async function fillGrandPrix(gpKey: string, gp: GrandPrix): Promise<number> {
 
         if (wantsWeather(session, o)) {
             try {
-                const weather = await sessionWeather(o.session_key);
+                const weather = await sessionWeather(o);
                 if (weather) {
                     session.weather = weather;
                     sessionChanged = true;
@@ -184,8 +184,7 @@ async function fillGrandPrix(gpKey: string, gp: GrandPrix): Promise<number> {
         if (wantsResults(key, session, time(o.date_end) ?? time(session.endDate))) {
             const had = hasResults(session);
             try {
-                const results = await get<Parameters<typeof sessionRows>[2][number]>('/session_result', { session_key: o.session_key });
-                const rows = results.length ? await sessionRows(key, o.session_key, results, sessions) : [];
+                const rows = await sessionRows(key, sessions);
                 if (rows.length && JSON.stringify(rows) !== JSON.stringify(session.results)) {
                     session.results = rows;
                     sessionChanged = true;

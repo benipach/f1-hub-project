@@ -4,8 +4,12 @@
 import { spacedFetch } from './http.ts';
 
 // ── Requests ────────────────────────────────────────────────────────────────
+// OpenF1 answers 429 past ~3 requests a second and ~30 a minute (measured
+// 13/11/2026; the docs don't say). So requests go one every 2.1 s, and
+// everything is asked once per year or per meeting, never per session: a
+// whole weekend is 5 to 7 requests (it used to be ~23).
 const BASE = 'https://api.openf1.org/v1';
-const request = spacedFetch(250);   // OpenF1 answers 429 to anything faster
+const request = spacedFetch(2100);
 
 // An endpoint's rows; [] when OpenF1 has nothing (it answers 404 then).
 export async function get<T>(endpoint: string, params: Record<string, string | number>): Promise<T[]> {
@@ -35,7 +39,10 @@ export interface OpenF1Session {
     date_end?: string;
 }
 
-interface ResultRow {
+// Rows that belong to one session, asked for a whole meeting at once.
+interface PerSession { session_key: number }
+
+interface ResultRow extends PerSession {
     driver_number: number;
     position?: number | null;
     points?: number;
@@ -47,7 +54,7 @@ interface ResultRow {
     dsq?: boolean;
 }
 
-interface Driver {
+interface Driver extends PerSession {
     driver_number: number;
     first_name?: string;
     last_name?: string;
@@ -57,8 +64,8 @@ interface Driver {
 }
 
 interface Lap { driver_number: number; lap_duration?: number | null; is_pit_out_lap?: boolean }
-interface GridRow { driver_number?: number | null; position?: number | string }
-interface WeatherSample { [field: string]: number | undefined }
+interface GridRow extends PerSession { driver_number?: number | null; position?: number | string }
+interface WeatherSample extends PerSession { [field: string]: number | undefined }
 
 // ── Sessions ────────────────────────────────────────────────────────────────
 // OpenF1's session names → the keys of a season file's `sessions`.
@@ -80,19 +87,44 @@ const QUALY_LIKE = new Set(['qualifying', 'sprintQualy']);
 // verified against Monza 2026, the race's own key returns nothing.
 const GRID_SOURCE: Record<string, string> = { race: 'qualifying', sprintRace: 'sprintQualy' };
 
-const meetingSessionsCache = new Map<number, Record<string, OpenF1Session>>();
+// One request per key and run; a failed one is forgotten, so the next call tries again.
+function cached<T>(cache: Map<string, Promise<T>>, key: string, load: () => Promise<T>): Promise<T> {
+    if (!cache.has(key)) cache.set(key, load().catch((err) => { cache.delete(key); throw err; }));
+    return cache.get(key)!;
+}
+
+const yearSessionsCache = new Map<string, Promise<OpenF1Session[]>>();
+
+// Every session of a year, in one request: the schedule sync and each GP's
+// sessions both come from it.
+export const yearSessions = (year: number) =>
+    cached(yearSessionsCache, String(year), () => get<OpenF1Session>('/sessions', { year }));
 
 // A meeting's sessions, by result key.
-export async function meetingSessions(meetingKey: number): Promise<Record<string, OpenF1Session>> {
-    if (!meetingSessionsCache.has(meetingKey)) {
-        const byKey: Record<string, OpenF1Session> = {};
-        for (const s of await get<OpenF1Session>('/sessions', { meeting_key: meetingKey })) {
-            const key = RESULT_KEY[s.session_name];
-            if (key) byKey[key] = s;
-        }
-        meetingSessionsCache.set(meetingKey, byKey);
+export async function meetingSessions(year: number, meetingKey: number): Promise<Record<string, OpenF1Session>> {
+    const byKey: Record<string, OpenF1Session> = {};
+    for (const s of await yearSessions(year)) {
+        const key = RESULT_KEY[s.session_name];
+        if (key && s.meeting_key === meetingKey) byKey[key] = s;
     }
-    return meetingSessionsCache.get(meetingKey)!;
+    return byKey;
+}
+
+const meetingRowsCache = new Map<string, Promise<Map<number, PerSession[]>>>();
+
+// An endpoint's rows for one session, out of a single request for the whole
+// meeting (OpenF1 filters any endpoint by meeting_key; checked against Mexico
+// 2026: the same rows as asking session by session).
+async function bySession<T extends PerSession>(endpoint: string, session: OpenF1Session): Promise<T[]> {
+    const split = await cached(meetingRowsCache, `${endpoint} ${session.meeting_key}`, async () => {
+        const bySessionKey = new Map<number, PerSession[]>();
+        for (const row of await get<PerSession>(endpoint, { meeting_key: session.meeting_key })) {
+            if (!bySessionKey.has(row.session_key)) bySessionKey.set(row.session_key, []);
+            bySessionKey.get(row.session_key)!.push(row);
+        }
+        return bySessionKey;
+    });
+    return (split.get(session.session_key) ?? []) as T[];
 }
 
 // ── Finding a GP's meeting ──────────────────────────────────────────────────
@@ -196,9 +228,9 @@ const slug = (name: string) => name.toLowerCase().normalize('NFD').replace(/[̀-
 const titleCase = (name: string) => name.toLowerCase().split(/\s+/).filter(Boolean)
     .map(word => word[0].toUpperCase() + word.slice(1)).join(' ');
 
-async function drivers(sessionKey: number): Promise<Map<number, { name: string; team: string | null }>> {
+async function drivers(session: OpenF1Session): Promise<Map<number, { name: string; team: string | null }>> {
     const byNumber = new Map<number, { name: string; team: string | null }>();
-    for (const d of await get<Driver>('/drivers', { session_key: sessionKey })) {
+    for (const d of await bySession<Driver>('/drivers', session)) {
         const name = [d.first_name, d.last_name].filter(Boolean).join(' ') || titleCase(d.full_name ?? d.broadcast_name ?? '');
         const team = d.team_name ?? null;
         byNumber.set(d.driver_number, { name: slug(name), team: team && (TEAM_NAMES[team] ?? team) });
@@ -207,10 +239,10 @@ async function drivers(sessionKey: number): Promise<Map<number, { name: string; 
 }
 
 // The official starting grid, penalties included: driver number → position.
-async function startingGrid(sessionKey: number | undefined): Promise<Map<number, number>> {
+async function startingGrid(session: OpenF1Session | undefined): Promise<Map<number, number>> {
     const grid = new Map<number, number>();
-    if (!sessionKey) return grid;
-    for (const r of await get<GridRow>('/starting_grid', { session_key: sessionKey })) {
+    if (!session) return grid;
+    for (const r of await bySession<GridRow>('/starting_grid', session)) {
         const pos = Number(r.position);
         if (Number.isFinite(pos) && r.driver_number != null) grid.set(r.driver_number, pos);
     }
@@ -275,12 +307,18 @@ function raceTime(row: ResultRow): string {
 // qualifying give each driver's lap time; races, time or gap, points, best
 // lap, fastest lap and starting grid. In qualifying only DSQ is shown as a
 // status: DNF/DNS read better as "No time".
-export async function sessionRows(resultKey: string, sessionKey: number, results: ResultRow[], sessions: Record<string, OpenF1Session>) {
+// [] while OpenF1 has no results for it.
+export async function sessionRows(resultKey: string, sessions: Record<string, OpenF1Session>) {
+    const session = sessions[resultKey];
+    if (!session) return [];
+    const results = await bySession<ResultRow>('/session_result', session);
+    if (!results.length) return [];
     const race = RACE_LIKE.has(resultKey);
     const [byNumber, laps, grid] = await Promise.all([
-        drivers(sessionKey),
-        race ? get<Lap>('/laps', { session_key: sessionKey }) : [],
-        race ? startingGrid(sessions[GRID_SOURCE[resultKey]]?.session_key).catch(() => new Map<number, number>()) : new Map<number, number>(),
+        drivers(session),
+        // Laps stay per session: only races need them, and a whole meeting's are thousands.
+        race ? get<Lap>('/laps', { session_key: session.session_key }) : [],
+        race ? startingGrid(sessions[GRID_SOURCE[resultKey]]).catch(() => new Map<number, number>()) : new Map<number, number>(),
     ]);
     const best = bestLaps(laps);
     let fastest: number | null = null;
@@ -312,8 +350,8 @@ export async function sessionRows(resultKey: string, sessionKey: number, results
 
 // ── Weather ─────────────────────────────────────────────────────────────────
 // A session's weather, averaged over all its samples; null without samples.
-export async function sessionWeather(sessionKey: number) {
-    const samples = await get<WeatherSample>('/weather', { session_key: sessionKey });
+export async function sessionWeather(session: OpenF1Session) {
+    const samples = await bySession<WeatherSample>('/weather', session);
     if (!samples.length) return null;
     const values = (field: string) => samples.map(x => Number(x[field])).filter(Number.isFinite);
     const mean = (field: string) => {
