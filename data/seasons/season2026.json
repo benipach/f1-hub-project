@@ -18835,10 +18835,11 @@
           },
           {
             "pos": 9,
-            "driver": "#30",
+            "driver": "liam-lawson",
             "number": 30,
             "lapTime": "1:18.113",
-            "laps": "28"
+            "laps": "28",
+            "team": "Racing Bulls"
           },
           {
             "pos": 10,
@@ -19266,6 +19267,7 @@
             "laps": "71",
             "time": "+25.373s",
             "pts": 0,
+            "team": "Haas",
             "bestLap": "1:20.984",
             "grid": 18
           },
