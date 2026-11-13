@@ -13,11 +13,17 @@ import path from 'node:path';
 import { DATA, readJson } from './lib/data.ts';
 import { RESULT_KEY, findMeeting, get, meetingSessions, sessionRows, sessionWeather, type OpenF1Session } from './lib/openf1.ts';
 
+interface Row {
+    driver?: unknown;
+    number?: number;
+    team?: unknown;
+}
+
 interface Session {
     date?: string | null;
     endDate?: string | null;
     weather?: object | null;
-    results?: unknown[];
+    results?: Row[];
 }
 
 interface GrandPrix {
@@ -59,10 +65,20 @@ const ended = (t: number | null) => (t ?? Infinity) < Date.now();
 const hasResults = (s: Session) => Array.isArray(s.results) && s.results.length > 0;
 const noWeather = (s: Session) => s.weather == null || (typeof s.weather === 'object' && Object.keys(s.weather).length === 0);
 
+// A row written before OpenF1 knew who the driver was ("#30") or their team.
+// It sometimes publishes them late (Mexico 2026), so the session is asked
+// again while the workflow still runs for that weekend: from a Friday
+// practice to the last run on Monday. After that it's left for a human.
+// The workflow's "is there pending work" check uses the same rule.
+const incomplete = (row: Row) => typeof row.driver !== 'string' || row.driver.startsWith('#') || !row.team;
+const RETRY_MS = 4 * 24 * 60 * 60 * 1000;
+const wantsResults = (s: Session, end: number | null) => !hasResults(s)
+    || (s.results!.some(incomplete) && (end ?? Infinity) + RETRY_MS > Date.now());
+
 // A GP is worth asking OpenF1 about once one of its sessions has started
-// and is missing results or weather.
+// and is missing results (or has incomplete ones) or weather.
 const needsWork = (gp: GrandPrix) => Object.values(gp.sessions ?? {}).some(s =>
-    s && typeof s === 'object' && started(time(s.date)) && (!hasResults(s) || noWeather(s) || args.forceWeather));
+    s && typeof s === 'object' && started(time(s.date)) && (wantsResults(s, time(s.endDate)) || noWeather(s) || args.forceWeather));
 
 // Weather is asked for while a session runs, and once more if it ended without any.
 function wantsWeather(s: Session, o: OpenF1Session) {
@@ -157,19 +173,30 @@ async function fillGrandPrix(gpKey: string, gp: GrandPrix): Promise<number> {
             }
         }
 
-        if (!hasResults(session)) {
+        if (wantsResults(session, time(o.date_end) ?? time(session.endDate))) {
+            const had = hasResults(session);
             try {
                 const results = await get<Parameters<typeof sessionRows>[2][number]>('/session_result', { session_key: o.session_key });
-                if (results.length) {
-                    session.results = await sessionRows(key, o.session_key, results, sessions);
+                const rows = results.length ? await sessionRows(key, o.session_key, results, sessions) : [];
+                if (rows.length && JSON.stringify(rows) !== JSON.stringify(session.results)) {
+                    session.results = rows;
                     sessionChanged = true;
-                    console.log(`✅ ${gpKey}/${key}: results added`);
-                } else if (ended(time(o.date_end) ?? time(session.endDate))) {
+                    console.log(`✅ ${gpKey}/${key}: results ${had ? 'completed' : 'added'}`);
+                } else if (!rows.length && ended(time(o.date_end) ?? time(session.endDate))) {
                     console.log(`⏳ ${gpKey}/${key}: ended without OpenF1 results`);
                 }
             } catch (err) {
                 console.warn(`⚠️ ${gpKey}/${key}: results (${(err as Error).message})`);
             }
+        }
+        const missing = (session.results ?? []).filter(incomplete);
+        if (missing.length) {
+            const who = missing.map(row => [
+                `#${row.number}`,
+                typeof row.driver === 'string' && !row.driver.startsWith('#') ? row.driver : '',
+                row.team ? '' : '(no team)',
+            ].filter(Boolean).join(' '));
+            console.warn(`⚠️ ${gpKey}/${key}: OpenF1 hasn't said who drove or for whom: ${who.join(', ')}`);
         }
         if (sessionChanged) changed++;
     }

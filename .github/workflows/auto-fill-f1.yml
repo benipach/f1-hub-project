@@ -58,6 +58,11 @@ jobs:
               // session times from OpenF1, and a schedule change has to show
               // up before the weekend, not after its first session.
               const soon = 7 * 24 * 60 * 60 * 1000;
+              // Rows written before OpenF1 knew the driver (\"#30\") or the
+              // team are asked for again until the Monday after (the same
+              // rule as scripts/auto-fill.ts: 4 days after the session ends).
+              const retry = 4 * 24 * 60 * 60 * 1000;
+              const incomplete = (r) => typeof r.driver !== 'string' || r.driver.startsWith('#') || !r.team;
               const shouldRun = Object.values(data).some(gp =>
                 // A cancelled GP will never have results: if it isn't
                 // excluded, the job fires every half hour to do nothing.
@@ -69,7 +74,9 @@ jobs:
                   if (!ended) return false;
                   const missingResults = !Array.isArray(s.results) || s.results.length === 0;
                   const missingWeather = isEmptyWeather(s.weather);
-                  return missingResults || missingWeather;
+                  const incompleteResults = !missingResults && s.results.some(incomplete)
+                    && new Date(s.endDate).getTime() + retry > now;
+                  return missingResults || missingWeather || incompleteResults;
                 })
               );
               console.log('should_run=' + shouldRun);
