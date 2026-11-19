@@ -93,7 +93,9 @@
 
     // Series = one chart line + one table row. It's built the same way for
     // drivers and for teams; the only difference is where each point comes from.
-    function buildSeries(rounds, { keyOf, groupOf, metaOf }){
+    // `ptsOf` is a row's points for this standings (a team excluded from the
+    // constructors' championship scores 0 there; data/exclusions.json).
+    function buildSeries(rounds, { keyOf, groupOf, metaOf, ptsOf = row => row.pts || 0 }){
         const byKey = new Map();
 
         const ensure = key => {
@@ -122,9 +124,10 @@
                 const entry = ensure(key);
                 const slot = entry.perRound[i] || { pts: 0, sprintPts: 0, pos: null, retired: false, sprintPos: null, sprintRetired: false, best: null };
 
-                slot.pts += row.pts || 0;
+                const pts = ptsOf(row);
+                slot.pts += pts;
                 if(row.sprint){
-                    slot.sprintPts += row.pts || 0;
+                    slot.sprintPts += pts;
                     // Sprint position only for the chart tooltip.
                     slot.sprintPos = groupOf ? null : row.pos ?? null;
                     slot.sprintRetired = groupOf ? false : isRetired(row);
@@ -813,7 +816,8 @@
             fetch(`${BASE}/cities.json`).then(r => r.json()),
             fetch(`${BASE}/countries.json`).then(r => r.json()),
             fetch(`${BASE}/grandsPrix.json`).then(r => r.json()),
-        ]).then(([drivers, teams, circuits, cities, countries, grandsPrix]) => ({ drivers, teams, circuits, cities, countries, grandsPrix })));
+            fetch(`${BASE}/exclusions.json`).then(r => r.json()),
+        ]).then(([drivers, teams, circuits, cities, countries, grandsPrix, exclusions]) => ({ drivers, teams, circuits, cities, countries, grandsPrix, exclusions })));
     }
 
     // ── Render ─────────────────────────────────────────────────────────────
@@ -823,9 +827,9 @@
         initTabs(root);
         root.classList.remove('is-empty');
 
-        let season, drivers, teams, circuits, cities, countries, grandsPrix;
+        let season, drivers, teams, circuits, cities, countries, grandsPrix, exclusions;
         try {
-            [season, { drivers, teams, circuits, cities, countries, grandsPrix }] = await Promise.all([
+            [season, { drivers, teams, circuits, cities, countries, grandsPrix, exclusions }] = await Promise.all([
                 loaded ?? fetch(`${BASE}/seasons/season${year}.json`).then(r => { if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }),
                 loadShared(),
             ]);
@@ -874,8 +878,10 @@
             },
         }));
 
+        const excludedTeams = new Set(Object.keys(exclusions[year]?.constructors ?? {}));
         const teamSeries = buildSeries(rounds, {
             keyOf: row => resolveTeamId(row.team, teams),
+            ptsOf: row => excludedTeams.has(resolveTeamId(row.team, teams)) ? 0 : row.pts || 0,
             groupOf: true,
             metaOf: row => {
                 const meta = teamMeta(resolveTeamId(row.team, teams));

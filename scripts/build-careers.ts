@@ -10,7 +10,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {
-    DATA, loadSeasons, outputPath, readJson, resolveTeamId, runningOrder, sessionResults, teamName, teams,
+    DATA, DRIVER_MAX, loadSeasons, outputPath, pointsLeft, readJson, resolveTeamId, runningOrder, sessionResults, teamName, teams,
+    titleDecided,
     type GrandPrix, type ResultRow, type Season,
 } from './lib/data.ts';
 
@@ -141,23 +142,8 @@ for (const { year, season } of loadSeasons()) {
         seasonStandings.get(id)![year] = i + 1;
     });
 
-    // Points still to be awarded. A weekend counts as
-    // pending only if its race hasn't been run; if the race is in, the sprint
-    // (if there is one) is too, even if its results are missing from the JSON. 25 per
-    // race + 8 per sprint (F1 2026 doesn't award a fastest lap point).
-    let pointsLeft = 0;
-    for (const gp of gps) {
-        if (sessionResults(gp, 'race').length) continue;   // weekend over
-        pointsLeft += 25;
-        if (gp.sprint) pointsLeft += 8;
-    }
-
-    // Champion only if the title is decided: either the season is over (nothing left
-    // to award), or the leader's advantage over 2nd already exceeds all the points
-    // in play, so they can't be caught.
-    const gap = standings.length >= 2 ? standings[0][1] - standings[1][1] : Infinity;
-    const decided = standings.length > 0 && (pointsLeft === 0 || gap > pointsLeft);
-    if (decided) seasonChampions.set(year, standings[0][0]);
+    // Champion only once the title is decided (the same rule as seasons-index.json).
+    if (titleDecided(standings.map(([, pts]) => pts), pointsLeft(gps, DRIVER_MAX))) seasonChampions.set(year, standings[0][0]);
 }
 
 // ── Build each driver's record ──────────────────────────────────────────────

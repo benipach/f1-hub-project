@@ -11,7 +11,10 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { DATA, loadSeasons, outputPath, readJson, resolveTeamId, runningOrder, sessionResults, teamName, type Season } from './lib/data.ts';
+import {
+    DATA, DRIVER_MAX, TEAM_MAX, excludedTeams, loadSeasons, outputPath, pointsLeft, readJson, resolveTeamId, runningOrder,
+    sessionResults, teamName, titleDecided, type Season,
+} from './lib/data.ts';
 
 const drivers = readJson<Record<string, { firstName: string; lastName: string }>>(path.join(DATA, 'drivers.json'));
 
@@ -24,7 +27,9 @@ function summarize(year: number, season: Season) {
     const raced = gps.filter(gp => sessionResults(gp, 'race').length);
     const sessions = SESSION_KEYS.filter(key => gps.some(gp => sessionResults(gp, key).length));
 
-    // Race + sprint points, same as buildSeries in js/championship.js.
+    // Race + sprint points, same as buildSeries in js/championship.js. A team
+    // excluded that year (data/exclusions.json) scores nothing.
+    const excluded = excludedTeams(year);
     const driverPts = new Map<string, number>();
     const teamPts = new Map<string, number>();
     const driverTeam = new Map<string, string>();
@@ -35,16 +40,21 @@ function summarize(year: number, season: Season) {
                 if (!row.driver) continue;
                 const teamId = resolveTeamId(row.team);
                 add(driverPts, row.driver, row.pts || 0);
-                add(teamPts, teamId, row.pts || 0);
+                if (!excluded.has(teamId)) add(teamPts, teamId, row.pts || 0);
                 driverTeam.set(row.driver, teamId);
                 if (key === 'race' && row.pos === 1) add(wins, row.driver, 1);
             }
         }
     }
 
-    const top = (map: Map<string, number>) => [...map.entries()].sort((a, b) => b[1] - a[1])[0] ?? null;
-    const champ = top(driverPts);
-    const teamChamp = top(teamPts);
+    // The champion once the title is decided (the same rule as careers.json):
+    // a season still being run has a leader, not yet a champion.
+    const champion = (map: Map<string, number>, max: typeof DRIVER_MAX) => {
+        const standings = [...map.entries()].sort((a, b) => b[1] - a[1]);
+        return titleDecided(standings.map(([, pts]) => pts), pointsLeft(gps, max)) ? standings[0] : null;
+    };
+    const champ = champion(driverPts, DRIVER_MAX);
+    const teamChamp = champion(teamPts, TEAM_MAX);
 
     const driverName = (id: string) => {
         const d = drivers[id];

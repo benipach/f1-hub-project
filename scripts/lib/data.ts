@@ -82,6 +82,30 @@ export const titleCase = (id: string): string => id.replace(/-/g, ' ').replace(/
 
 export const teamName = (id: string): string => teams[id]?.name ?? titleCase(id);
 
+// ── Championships ───────────────────────────────────────────────────────────
+// Teams excluded from a year's constructors' championship
+// (data/exclusions.json, with the reason): their results and their drivers'
+// points stand, but the team scores nothing. 2007: McLaren.
+const exclusions = readJson<Record<string, { constructors?: Record<string, string> }>>(path.join(DATA, 'exclusions.json'));
+export const excludedTeams = (year: number): Set<string> => new Set(Object.keys(exclusions[year]?.constructors ?? {}));
+
+// The most points still to be won, with today's scoring: a weekend counts as
+// done once its race is in (its sprint too). Only the season being run has
+// any left, so older scoring systems never come into it.
+export const DRIVER_MAX = { race: 25, sprint: 8 };
+export const TEAM_MAX = { race: 25 + 18, sprint: 8 + 7 };   // first and second
+export function pointsLeft(gps: GrandPrix[], max: { race: number; sprint: number }): number {
+    return gps.filter(gp => !sessionResults(gp, 'race').length)
+        .reduce((left, gp) => left + max.race + (gp.sprint ? max.sprint : 0), 0);
+}
+
+// A title is decided once the season is over or nobody can catch the leader.
+// `standings`: points, best first.
+export function titleDecided(standings: number[], left: number): boolean {
+    if (!standings.length) return false;
+    return left === 0 || standings[0] - (standings[1] ?? 0) > left;
+}
+
 // ── Output ──────────────────────────────────────────────────────────────────
 // Where a build script writes: --out <file> if given (the tests use it, see
 // test/scripts.test.js), otherwise its file in data/.
