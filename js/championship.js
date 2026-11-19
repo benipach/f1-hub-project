@@ -28,7 +28,6 @@
         return Array.isArray(r) ? r : [];
     };
 
-    const isRetired = row => /DN[FS]/i.test(String(row?.time || ''));
 
     // Results sometimes carry the team as a slug ("red-bull-racing") and
     // sometimes as a name ("Racing Bulls"); we normalize to a slug for the color.
@@ -130,11 +129,11 @@
                     slot.sprintPts += pts;
                     // Sprint position only for the chart tooltip.
                     slot.sprintPos = groupOf ? null : row.pos ?? null;
-                    slot.sprintRetired = groupOf ? false : isRetired(row);
+                    slot.sprintRetired = groupOf ? false : notFinished(row);
                 } else {
                     // Position and retirement come from the main race; the sprint
                     // only adds points.
-                    const retired = isRetired(row);
+                    const retired = notFinished(row);
                     slot.pos = groupOf ? null : row.pos ?? null;
                     slot.retired = groupOf ? false : retired;
                     if(!retired){
@@ -330,7 +329,7 @@
                 if(!slot) return;
 
                 const dnf = slot.retired;
-                const label = dnf ? 'DNF' : `+${slot.pts}`;
+                const label = dnf || `+${slot.pts}`;
                 if(!dnf && !slot.pts) return;          // a zero doesn't deserve a label
 
                 ctx.fillStyle = dnf ? 'rgba(217,86,79,1)' : withAlpha(focus.meta.color, 1);
@@ -551,8 +550,8 @@
                                 const s = series.find(x => x.id === item.dataset.seriesId);
                                 const slot = s?.perRound[item.dataIndex];
                                 const lines = [`${r.name} GP`];
-                                if(slot?.pos) lines.push(`Race    ${slot.retired ? 'DNF' : 'P' + slot.pos}`);
-                                if(slot?.sprintPos) lines.push(`Sprint  ${slot.sprintRetired ? 'DNF' : 'P' + slot.sprintPos}`);
+                                if(slot?.pos) lines.push(`Race    ${slot.retired || 'P' + slot.pos}`);
+                                if(slot?.sprintPos) lines.push(`Sprint  ${slot.sprintRetired || 'P' + slot.sprintPos}`);
                                 lines.push(`Total   ${item.parsed.y} pts`);
                                 return lines;
                             },

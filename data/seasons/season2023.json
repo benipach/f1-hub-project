@@ -284,7 +284,7 @@
             "team": "williams",
             "laps": 56,
             "pts": 0,
-            "time": "+1.136",
+            "time": "+1 Lap",
             "bestLap": "1:36.037",
             "grid": 16
           },
@@ -295,7 +295,7 @@
             "team": "haas-f1-team",
             "laps": 56,
             "pts": 0,
-            "time": "+16.757",
+            "time": "+1 Lap",
             "bestLap": "1:36.471",
             "grid": 17
           },
@@ -306,7 +306,7 @@
             "team": "alphatauri",
             "laps": 56,
             "pts": 0,
-            "time": "+22.523",
+            "time": "+1 Lap",
             "bestLap": "1:37.709",
             "grid": 19
           },
@@ -317,7 +317,7 @@
             "team": "haas-f1-team",
             "laps": 56,
             "pts": 0,
-            "time": "+38.911",
+            "time": "+1 Lap",
             "bestLap": "1:36.616",
             "grid": 10
           },
@@ -328,7 +328,7 @@
             "team": "alfa-romeo",
             "laps": 56,
             "pts": 0,
-            "time": "+39.649",
+            "time": "+1 Lap",
             "bestLap": "1:33.996",
             "fastestLap": true,
             "grid": 13
@@ -340,7 +340,7 @@
             "team": "mclaren",
             "laps": 55,
             "pts": 0,
-            "time": "+6.636",
+            "time": "+2 Laps",
             "bestLap": "1:35.822",
             "grid": 11
           },
@@ -1225,7 +1225,7 @@
             "team": "alfa-romeo",
             "laps": 49,
             "pts": 0,
-            "time": "+29.584",
+            "time": "+1 Lap",
             "bestLap": "1:34.384",
             "grid": 14
           },
@@ -2968,16 +2968,6 @@
             "pts": 0,
             "time": "DNF",
             "grid": 16
-          },
-          {
-            "pos": 20,
-            "driver": "logan-sargeant",
-            "number": 2,
-            "team": "williams",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF",
-            "grid": 0
           }
         ]
       },
@@ -3169,7 +3159,7 @@
             "team": "haas-f1-team",
             "laps": 50,
             "pts": 0,
-            "time": "+9.937",
+            "time": "+1 Lap",
             "bestLap": "1:46.731",
             "grid": 20
           },
@@ -3180,7 +3170,7 @@
             "team": "alfa-romeo",
             "laps": 50,
             "pts": 0,
-            "time": "+19.098",
+            "time": "+1 Lap",
             "bestLap": "1:46.304",
             "grid": 13
           },
@@ -3737,7 +3727,7 @@
             "team": "mclaren",
             "laps": 56,
             "pts": 0,
-            "time": "+20.510",
+            "time": "+1 Lap",
             "bestLap": "1:32.006",
             "grid": 19
           },
@@ -3748,7 +3738,7 @@
             "team": "williams",
             "laps": 56,
             "pts": 0,
-            "time": "+34.388",
+            "time": "+1 Lap",
             "bestLap": "1:32.384",
             "grid": 20
           }
@@ -4501,7 +4491,7 @@
             "team": "mclaren",
             "laps": 77,
             "pts": 2,
-            "time": "+4.061",
+            "time": "+1 Lap",
             "bestLap": "1:17.844",
             "grid": 10
           },
@@ -4512,7 +4502,7 @@
             "team": "mclaren",
             "laps": 77,
             "pts": 1,
-            "time": "+13.959",
+            "time": "+1 Lap",
             "bestLap": "1:17.513",
             "grid": 11
           },
@@ -4523,7 +4513,7 @@
             "team": "alfa-romeo",
             "laps": 77,
             "pts": 0,
-            "time": "+28.963",
+            "time": "+1 Lap",
             "bestLap": "1:17.824",
             "grid": 15
           },
@@ -4534,7 +4524,7 @@
             "team": "alphatauri",
             "laps": 77,
             "pts": 0,
-            "time": "+57.317",
+            "time": "+1 Lap",
             "bestLap": "1:17.561",
             "grid": 12
           },
@@ -4545,7 +4535,7 @@
             "team": "alfa-romeo",
             "laps": 77,
             "pts": 0,
-            "time": "+1:11.852",
+            "time": "+1 Lap",
             "bestLap": "1:16.926",
             "grid": 19
           },
@@ -4556,7 +4546,7 @@
             "team": "williams",
             "laps": 77,
             "pts": 0,
-            "time": "+1:19.210",
+            "time": "+1 Lap",
             "bestLap": "1:16.672",
             "grid": 13
           },
@@ -4567,7 +4557,7 @@
             "team": "alphatauri",
             "laps": 76,
             "pts": 0,
-            "time": "+7.545",
+            "time": "+2 Laps",
             "bestLap": "1:17.680",
             "grid": 9
           },
@@ -4578,7 +4568,7 @@
             "team": "red-bull",
             "laps": 76,
             "pts": 0,
-            "time": "+49.024",
+            "time": "+2 Laps",
             "bestLap": "1:16.269",
             "grid": 20
           },
@@ -4589,7 +4579,7 @@
             "team": "haas-f1-team",
             "laps": 76,
             "pts": 0,
-            "time": "+58.506",
+            "time": "+2 Laps",
             "bestLap": "1:16.991",
             "grid": 18
           },
@@ -4600,7 +4590,7 @@
             "team": "williams",
             "laps": 76,
             "pts": 0,
-            "time": "+1:17.983",
+            "time": "+2 Laps",
             "bestLap": "1:17.302",
             "grid": 16
           },
@@ -4927,7 +4917,7 @@
             "team": "mclaren",
             "laps": 65,
             "pts": 0,
-            "time": "+4.275",
+            "time": "+1 Lap",
             "bestLap": "1:18.679",
             "grid": 9
           },
@@ -4938,7 +4928,7 @@
             "team": "alphatauri",
             "laps": 65,
             "pts": 0,
-            "time": "+5.327",
+            "time": "+1 Lap",
             "bestLap": "1:18.594",
             "grid": 14
           },
@@ -4949,7 +4939,7 @@
             "team": "haas-f1-team",
             "laps": 65,
             "pts": 0,
-            "time": "+17.297",
+            "time": "+1 Lap",
             "bestLap": "1:18.776",
             "grid": 7
           },
@@ -4960,7 +4950,7 @@
             "team": "williams",
             "laps": 65,
             "pts": 0,
-            "time": "+27.708",
+            "time": "+1 Lap",
             "bestLap": "1:19.133",
             "grid": 18
           },
@@ -4971,7 +4961,7 @@
             "team": "mclaren",
             "laps": 65,
             "pts": 0,
-            "time": "+30.390",
+            "time": "+1 Lap",
             "bestLap": "1:17.182",
             "grid": 3
           },
@@ -4982,7 +4972,7 @@
             "team": "haas-f1-team",
             "laps": 65,
             "pts": 0,
-            "time": "+38.080",
+            "time": "+1 Lap",
             "bestLap": "1:18.069",
             "grid": 17
           },
@@ -4993,7 +4983,7 @@
             "team": "alfa-romeo",
             "laps": 65,
             "pts": 0,
-            "time": "+49.943",
+            "time": "+1 Lap",
             "bestLap": "1:18.242",
             "grid": 16
           },
@@ -5004,7 +4994,7 @@
             "team": "williams",
             "laps": 65,
             "pts": 0,
-            "time": "+51.677",
+            "time": "+1 Lap",
             "bestLap": "1:19.247",
             "grid": 20
           }
@@ -5823,7 +5813,7 @@
             "team": "haas-f1-team",
             "laps": 69,
             "pts": 0,
-            "time": "+16.943",
+            "time": "+1 Lap",
             "bestLap": "1:17.232",
             "grid": 5
           },
@@ -5834,7 +5824,7 @@
             "team": "alfa-romeo",
             "laps": 69,
             "pts": 0,
-            "time": "+17.377",
+            "time": "+1 Lap",
             "bestLap": "1:17.090",
             "grid": 20
           },
@@ -5845,7 +5835,7 @@
             "team": "haas-f1-team",
             "laps": 69,
             "pts": 0,
-            "time": "+1:10.259",
+            "time": "+1 Lap",
             "bestLap": "1:16.126",
             "grid": 13
           },
@@ -5856,7 +5846,7 @@
             "team": "alphatauri",
             "laps": 69,
             "pts": 0,
-            "time": "+1:14.967",
+            "time": "+1 Lap",
             "bestLap": "1:16.656",
             "grid": 17
           },
@@ -6891,7 +6881,7 @@
             "team": "alfa-romeo",
             "laps": 70,
             "pts": 0,
-            "time": "+24.633",
+            "time": "+1 Lap",
             "bestLap": "1:09.786",
             "grid": 17
           },
@@ -6902,7 +6892,7 @@
             "team": "williams",
             "laps": 70,
             "pts": 0,
-            "time": "+31.384",
+            "time": "+1 Lap",
             "bestLap": "1:09.611",
             "grid": 18
           },
@@ -6913,7 +6903,7 @@
             "team": "alpine-f1-team",
             "laps": 70,
             "pts": 0,
-            "time": "+42.140",
+            "time": "+1 Lap",
             "bestLap": "1:09.797",
             "grid": 12
           },
@@ -6924,7 +6914,7 @@
             "team": "alfa-romeo",
             "laps": 70,
             "pts": 0,
-            "time": "+42.777",
+            "time": "+1 Lap",
             "bestLap": "1:09.940",
             "grid": 14
           },
@@ -6935,7 +6925,7 @@
             "team": "mclaren",
             "laps": 70,
             "pts": 0,
-            "time": "+46.569",
+            "time": "+1 Lap",
             "bestLap": "1:09.862",
             "grid": 13
           },
@@ -6946,7 +6936,7 @@
             "team": "alphatauri",
             "laps": 70,
             "pts": 0,
-            "time": "+49.703",
+            "time": "+1 Lap",
             "bestLap": "1:09.852",
             "grid": 20
           },
@@ -6957,7 +6947,7 @@
             "team": "haas-f1-team",
             "laps": 70,
             "pts": 0,
-            "time": "+56.653",
+            "time": "+1 Lap",
             "bestLap": "1:10.176",
             "grid": 19
           },
@@ -6968,7 +6958,7 @@
             "team": "alphatauri",
             "laps": 70,
             "pts": 0,
-            "time": "+59.873",
+            "time": "+1 Lap",
             "bestLap": "1:09.620",
             "grid": 16
           },
@@ -8265,7 +8255,7 @@
             "team": "aston-martin",
             "laps": 69,
             "pts": 1,
-            "time": "+14.615",
+            "time": "+1 Lap",
             "bestLap": "1:23.425",
             "grid": 14
           },
@@ -8276,7 +8266,7 @@
             "team": "williams",
             "laps": 69,
             "pts": 0,
-            "time": "+29.087",
+            "time": "+1 Lap",
             "bestLap": "1:24.051",
             "grid": 16
           },
@@ -8287,7 +8277,7 @@
             "team": "alfa-romeo",
             "laps": 69,
             "pts": 0,
-            "time": "+30.079",
+            "time": "+1 Lap",
             "bestLap": "1:23.651",
             "grid": 7
           },
@@ -8298,7 +8288,7 @@
             "team": "alphatauri",
             "laps": 69,
             "pts": 0,
-            "time": "+36.257",
+            "time": "+1 Lap",
             "bestLap": "1:23.934",
             "grid": 13
           },
@@ -8309,7 +8299,7 @@
             "team": "haas-f1-team",
             "laps": 69,
             "pts": 0,
-            "time": "+51.298",
+            "time": "+1 Lap",
             "bestLap": "1:23.573",
             "grid": 10
           },
@@ -8320,7 +8310,7 @@
             "team": "alphatauri",
             "laps": 69,
             "pts": 0,
-            "time": "+51.543",
+            "time": "+1 Lap",
             "bestLap": "1:23.269",
             "grid": 17
           },
@@ -8331,7 +8321,7 @@
             "team": "alfa-romeo",
             "laps": 69,
             "pts": 0,
-            "time": "+1:00.491",
+            "time": "+1 Lap",
             "bestLap": "1:23.743",
             "grid": 5
           },
@@ -8342,7 +8332,7 @@
             "team": "haas-f1-team",
             "laps": 69,
             "pts": 0,
-            "time": "+1:22.351",
+            "time": "+1 Lap",
             "bestLap": "1:23.864",
             "grid": 19
           },
@@ -10850,7 +10840,7 @@
             "team": "haas-f1-team",
             "laps": 50,
             "pts": 0,
-            "time": "+2.093",
+            "time": "+1 Lap",
             "bestLap": "1:25.894",
             "grid": 13
           },
@@ -10861,7 +10851,7 @@
             "team": "haas-f1-team",
             "laps": 50,
             "pts": 0,
-            "time": "+12.624",
+            "time": "+1 Lap",
             "bestLap": "1:26.278",
             "grid": 19
           },
@@ -10883,7 +10873,7 @@
             "team": "alphatauri",
             "laps": 0,
             "pts": 0,
-            "time": "DNF",
+            "time": "DNS",
             "grid": 11
           }
         ]
@@ -11747,16 +11737,6 @@
             "pts": 0,
             "time": "DNF",
             "grid": 15
-          },
-          {
-            "pos": 20,
-            "driver": "lance-stroll",
-            "number": 18,
-            "team": "aston-martin",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF",
-            "grid": 0
           }
         ]
       },
@@ -12529,7 +12509,7 @@
             "team": "alphatauri",
             "laps": 52,
             "pts": 0,
-            "time": "+3.089",
+            "time": "+1 Lap",
             "bestLap": "1:38.267",
             "grid": 11
           },
@@ -12540,7 +12520,7 @@
             "team": "alphatauri",
             "laps": 52,
             "pts": 0,
-            "time": "+3.974",
+            "time": "+1 Lap",
             "bestLap": "1:37.768",
             "grid": 9
           },
@@ -12551,7 +12531,7 @@
             "team": "alfa-romeo",
             "laps": 52,
             "pts": 0,
-            "time": "+6.340",
+            "time": "+1 Lap",
             "bestLap": "1:37.791",
             "grid": 19
           },
@@ -12562,7 +12542,7 @@
             "team": "haas-f1-team",
             "laps": 52,
             "pts": 0,
-            "time": "+9.598",
+            "time": "+1 Lap",
             "bestLap": "1:37.250",
             "grid": 18
           },
@@ -12573,7 +12553,7 @@
             "team": "haas-f1-team",
             "laps": 52,
             "pts": 0,
-            "time": "+29.570",
+            "time": "+1 Lap",
             "bestLap": "1:37.842",
             "grid": 15
           },
@@ -13661,7 +13641,7 @@
             "team": "haas-f1-team",
             "laps": 56,
             "pts": 0,
-            "time": "+1.246",
+            "time": "+1 Lap",
             "bestLap": "1:27.067",
             "grid": 18
           },
@@ -13672,7 +13652,7 @@
             "team": "alphatauri",
             "laps": 56,
             "pts": 0,
-            "time": "+8.958",
+            "time": "+1 Lap",
             "bestLap": "1:27.174",
             "grid": 11
           },
@@ -13683,7 +13663,7 @@
             "team": "haas-f1-team",
             "laps": 56,
             "pts": 0,
-            "time": "+15.085",
+            "time": "+1 Lap",
             "bestLap": "1:26.489",
             "grid": 14
           },
@@ -13694,7 +13674,7 @@
             "team": "alphatauri",
             "laps": 56,
             "pts": 0,
-            "time": "+27.108",
+            "time": "+1 Lap",
             "bestLap": "1:27.113",
             "grid": 17
           },
@@ -13726,7 +13706,7 @@
             "team": "ferrari",
             "laps": 0,
             "pts": 0,
-            "time": "DNF",
+            "time": "DNS",
             "grid": 12
           }
         ]
@@ -14748,7 +14728,7 @@
             "team": "alfa-romeo",
             "laps": 55,
             "pts": 0,
-            "time": "+3.576",
+            "time": "+1 Lap",
             "bestLap": "1:41.879",
             "grid": 12
           },
@@ -14759,7 +14739,7 @@
             "team": "haas-f1-team",
             "laps": 55,
             "pts": 0,
-            "time": "+8.072",
+            "time": "+1 Lap",
             "bestLap": "1:41.506",
             "grid": 17
           },
@@ -14770,7 +14750,7 @@
             "team": "alphatauri",
             "laps": 55,
             "pts": 0,
-            "time": "+8.852",
+            "time": "+1 Lap",
             "bestLap": "1:39.366",
             "grid": 14
           },
@@ -14814,7 +14794,7 @@
             "team": "mercedes",
             "laps": 56,
             "pts": 0,
-            "time": "+2.225",
+            "time": "DSQ",
             "bestLap": "1:39.582",
             "grid": 3
           },
@@ -14825,7 +14805,7 @@
             "team": "ferrari",
             "laps": 56,
             "pts": 0,
-            "time": "+24.662",
+            "time": "DSQ",
             "bestLap": "1:41.025",
             "grid": 1
           }
@@ -16032,7 +16012,7 @@
             "team": "alpine-f1-team",
             "laps": 70,
             "pts": 1,
-            "time": "+9.841",
+            "time": "+1 Lap",
             "bestLap": "1:14.206",
             "grid": 14
           },
@@ -16043,7 +16023,7 @@
             "team": "williams",
             "laps": 70,
             "pts": 0,
-            "time": "+26.208",
+            "time": "+1 Lap",
             "bestLap": "1:15.738",
             "grid": 19
           },
@@ -16054,7 +16034,7 @@
             "team": "haas-f1-team",
             "laps": 70,
             "pts": 0,
-            "time": "+29.960",
+            "time": "+1 Lap",
             "bestLap": "1:15.036",
             "grid": 11
           },
@@ -16065,7 +16045,7 @@
             "team": "alphatauri",
             "laps": 70,
             "pts": 0,
-            "time": "+1:09.961",
+            "time": "+1 Lap",
             "bestLap": "1:13.866",
             "grid": 17
           },
@@ -16076,7 +16056,7 @@
             "team": "mclaren",
             "laps": 69,
             "pts": 0,
-            "time": "+3.636",
+            "time": "+2 Laps",
             "bestLap": "1:14.310",
             "grid": 10
           },
@@ -16140,7 +16120,7 @@
             "team": "ferrari",
             "laps": 0,
             "pts": 0,
-            "time": "DNF",
+            "time": "DNS",
             "grid": 2
           }
         ]
@@ -17548,7 +17528,7 @@
             "team": "alfa-romeo",
             "laps": 57,
             "pts": 0,
-            "time": "+12.411",
+            "time": "+1 Lap",
             "bestLap": "1:29.863",
             "grid": 18
           },
@@ -17559,7 +17539,7 @@
             "team": "haas-f1-team",
             "laps": 57,
             "pts": 0,
-            "time": "+14.876",
+            "time": "+1 Lap",
             "bestLap": "1:29.934",
             "grid": 17
           }

@@ -12,6 +12,15 @@
 // rest inherit their country's (data/countries.json): Australian → AUS /
 // Australia, British → GBR / United Kingdom.
 
+// A race row whose driver wasn't classified as a finisher: "DNF", "DNS" or
+// "DSQ" (formula1.com's labels, stored as the row's `time`); null otherwise.
+// Both charts mark those rounds with it. Same rule as notFinished in
+// scripts/lib/data.ts.
+function notFinished(row) {
+    const time = String(row?.time ?? '');
+    return /^(DNF|DNS|DSQ)$/.test(time) ? time : null;
+}
+
 // "Bahrain Grand Prix in Malaysia" → "Bahrain in Malaysia": removes "Grand Prix"
 // wherever it is, not just from the end, so what comes after isn't lost.
 function gpShortLabel(name) {

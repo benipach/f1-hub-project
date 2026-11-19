@@ -976,7 +976,7 @@
             "team": "sauber",
             "laps": 58,
             "pts": 0,
-            "time": "DNF",
+            "time": "DSQ",
             "bestLap": "1:30.384",
             "grid": 9
           },
@@ -987,7 +987,7 @@
             "team": "sauber",
             "laps": 58,
             "pts": 0,
-            "time": "DNF",
+            "time": "DSQ",
             "bestLap": "1:29.962",
             "grid": 13
           }
@@ -1955,7 +1955,7 @@
             "team": "hrt",
             "laps": 46,
             "pts": 0,
-            "time": "+10 Laps",
+            "time": "DNF",
             "bestLap": "1:46.521",
             "grid": 23
           },
@@ -2010,7 +2010,7 @@
             "team": "hrt",
             "laps": 14,
             "pts": 0,
-            "time": "+42 Laps",
+            "time": "DNF",
             "bestLap": "1:49.385",
             "grid": 24
           },
@@ -4081,7 +4081,7 @@
             "team": "virgin",
             "laps": 0,
             "pts": 0,
-            "time": "DNF",
+            "time": "DNS",
             "grid": 21
           }
         ]
@@ -6141,16 +6141,6 @@
             "time": "DNF",
             "bestLap": "1:22.102",
             "grid": 20
-          },
-          {
-            "pos": 24,
-            "driver": "sergio-perez",
-            "number": 17,
-            "team": "sauber",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF",
-            "grid": 0
           }
         ]
       }

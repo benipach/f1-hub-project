@@ -725,7 +725,7 @@
             "team": "red-bull",
             "laps": 0,
             "pts": 0,
-            "time": "DNF",
+            "time": "DNS",
             "grid": 12
           },
           {
@@ -735,18 +735,8 @@
             "team": "mclaren",
             "laps": 0,
             "pts": 0,
-            "time": "DNF",
+            "time": "DNS",
             "grid": 17
-          },
-          {
-            "pos": 18,
-            "driver": "valtteri-bottas",
-            "number": 77,
-            "team": "williams",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF",
-            "grid": 0
           }
         ]
       }
@@ -1603,16 +1593,6 @@
             "time": "DNF",
             "bestLap": "1:48.760",
             "grid": 9
-          },
-          {
-            "pos": 20,
-            "driver": "will-stevens",
-            "number": 28,
-            "team": "manor-marussia",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF",
-            "grid": 0
           }
         ]
       }
@@ -3351,7 +3331,7 @@
             "team": "mclaren",
             "laps": 0,
             "pts": 0,
-            "time": "DNF",
+            "time": "DNS",
             "grid": 20
           }
         ]
@@ -7699,7 +7679,7 @@
             "team": "sauber",
             "laps": 0,
             "pts": 0,
-            "time": "DNF",
+            "time": "DNS",
             "grid": 16
           }
         ]
@@ -8512,7 +8492,7 @@
             "team": "manor-marussia",
             "laps": 65,
             "pts": 0,
-            "time": "+4 Laps",
+            "time": "DNF",
             "bestLap": "1:29.543",
             "grid": 20
           },
@@ -9429,7 +9409,7 @@
             "team": "force-india",
             "laps": 0,
             "pts": 0,
-            "time": "DNF",
+            "time": "DNS",
             "grid": 11
           }
         ]
@@ -10269,7 +10249,7 @@
             "team": "mercedes",
             "laps": 50,
             "pts": 0,
-            "time": "+3 Laps",
+            "time": "DNF",
             "bestLap": "1:27.067",
             "grid": 4
           },
@@ -10280,7 +10260,7 @@
             "team": "mclaren",
             "laps": 47,
             "pts": 0,
-            "time": "+6 Laps",
+            "time": "DNF",
             "bestLap": "1:29.285",
             "grid": 16
           },
@@ -15311,7 +15291,7 @@
             "team": "williams",
             "laps": 70,
             "pts": 0,
-            "time": "DNF",
+            "time": "DSQ",
             "bestLap": "1:15.743",
             "grid": 8
           }

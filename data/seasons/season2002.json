@@ -467,7 +467,7 @@
             "team": "arrows",
             "laps": 16,
             "pts": 0,
-            "time": "DNF"
+            "time": "DSQ"
           },
           {
             "pos": 12,
@@ -476,7 +476,7 @@
             "team": "arrows",
             "laps": 15,
             "pts": 0,
-            "time": "DNF"
+            "time": "DSQ"
           },
           {
             "pos": 13,
@@ -2991,24 +2991,6 @@
             "laps": 0,
             "pts": 0,
             "time": "DNF"
-          },
-          {
-            "pos": 21,
-            "driver": "mark-webber",
-            "number": 22,
-            "team": "minardi",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF"
-          },
-          {
-            "pos": 22,
-            "driver": "alex-yoong",
-            "number": 23,
-            "team": "minardi",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF"
           }
         ]
       }
@@ -3473,7 +3455,7 @@
             "team": "bar",
             "laps": 70,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "DNF"
           },
           {
             "pos": 11,
@@ -4592,7 +4574,7 @@
             "team": "williams",
             "laps": 70,
             "pts": 0,
-            "time": "DNF"
+            "time": "+51.518"
           },
           {
             "pos": 8,
@@ -6368,16 +6350,7 @@
             "team": "ferrari",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
-          },
-          {
-            "pos": 22,
-            "driver": "giancarlo-fisichella",
-            "number": 9,
-            "team": "jordan",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF"
+            "time": "DNS"
           }
         ]
       }
@@ -9682,15 +9655,6 @@
             "number": 8,
             "team": "sauber",
             "laps": 3,
-            "pts": 0,
-            "time": "DNF"
-          },
-          {
-            "pos": 20,
-            "driver": "allan-mcnish",
-            "number": 25,
-            "team": "toyota",
-            "laps": 0,
             "pts": 0,
             "time": "DNF"
           }

@@ -35,7 +35,6 @@
         return Array.isArray(r) ? r : [];
     };
 
-    const isRetired = row => /DN[FS]/i.test(String(row?.time || ''));
 
     // resolveTeamId() comes from js/shared/teams.js: results carry the
     // team sometimes as a slug, sometimes as a name ("Red Bull") and sometimes
@@ -79,7 +78,7 @@
             }
 
             const sprint = sessionResults(gp, 'sprintRace').find(r => r.driver === id);
-            const retired = isRetired(me);
+            const retired = notFinished(me);
             // Actual grid (with penalties), or the qualifying position if the season
             // doesn't have the field yet (see shared/grid.js).
             const start = startingGridFor(gp, 'race')[id] ?? null;
@@ -142,7 +141,7 @@
         for(const gp of Object.values(season)){
             const grid = startingGridFor(gp, 'race');
             for(const r of sessionResults(gp, 'race')){
-                if(isRetired(r) || typeof r.pos !== 'number') continue;
+                if(notFinished(r) || typeof r.pos !== 'number') continue;
                 const g = grid[r.driver]?.pos;
                 if(typeof g !== 'number') continue;
                 const delta = g - r.pos;
@@ -244,7 +243,7 @@
                     <td class="season-round-result">
                         <span class="season-round-grid">${r.gridLabel}</span>
                         <span class="season-round-arrow" aria-hidden="true"></span>
-                        <span class="season-round-finish">${r.retired ? 'DNF' : 'P' + r.finish}</span>
+                        <span class="season-round-finish">${r.retired || 'P' + r.finish}</span>
                     </td>
                     <td class="is-center">${deltaHtml(delta)}</td>
                     <td class="season-round-pts is-right">${r.pts}</td>
@@ -305,7 +304,7 @@
                 <svg class="form-tip-arrow" viewBox="0 0 24 12" aria-hidden="true"><path d="M0 6h20M15 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
                 <div>
                     <span class="form-tip-key">Finish</span>
-                    <span class="form-tip-pos ${finishCls}">${r.retired ? 'DNF' : 'P' + r.finish}</span>
+                    <span class="form-tip-pos ${finishCls}">${r.retired || 'P' + r.finish}</span>
                 </div>
                 ${deltaChip}
             </div>

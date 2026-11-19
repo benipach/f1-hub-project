@@ -926,7 +926,7 @@
             "team": "marussia",
             "laps": 53,
             "pts": 0,
-            "time": "+5 Laps",
+            "time": "DNF",
             "bestLap": "1:35.011",
             "grid": 21
           },
@@ -8253,16 +8253,6 @@
             "time": "DNF",
             "bestLap": "1:45.491",
             "grid": 18
-          },
-          {
-            "pos": 24,
-            "driver": "timo-glock",
-            "number": 24,
-            "team": "marussia",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF",
-            "grid": 0
           }
         ]
       }
@@ -9293,7 +9283,7 @@
             "team": "caterham",
             "laps": 0,
             "pts": 0,
-            "time": "DNF",
+            "time": "DNS",
             "grid": 18
           }
         ]
@@ -11309,7 +11299,7 @@
             "team": "sauber",
             "laps": 67,
             "pts": 0,
-            "time": "+2 Laps",
+            "time": "DNF",
             "bestLap": "1:25.745",
             "grid": 15
           },
@@ -11375,7 +11365,7 @@
             "team": "mercedes",
             "laps": 58,
             "pts": 0,
-            "time": "+11 Laps",
+            "time": "DNF",
             "bestLap": "1:26.778",
             "grid": 17
           }
@@ -15429,7 +15419,7 @@
             "team": "lotus-f1",
             "laps": 51,
             "pts": 0,
-            "time": "+2 Laps",
+            "time": "DNF",
             "bestLap": "1:38.277",
             "grid": 4
           },

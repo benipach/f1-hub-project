@@ -618,7 +618,7 @@
             "team": "sauber",
             "laps": 58,
             "pts": 0,
-            "time": "DNF"
+            "time": "DSQ"
           },
           {
             "pos": 11,
@@ -1200,7 +1200,7 @@
             "team": "mclaren",
             "laps": 71,
             "pts": 0,
-            "time": "DNF"
+            "time": "DSQ"
           },
           {
             "pos": 12,
@@ -1280,24 +1280,6 @@
             "number": 12,
             "team": "benetton",
             "laps": 6,
-            "pts": 0,
-            "time": "DNF"
-          },
-          {
-            "pos": 21,
-            "driver": "pedro-diniz",
-            "number": 16,
-            "team": "sauber",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF"
-          },
-          {
-            "pos": 22,
-            "driver": "mika-salo",
-            "number": 17,
-            "team": "sauber",
-            "laps": 0,
             "pts": 0,
             "time": "DNF"
           }
@@ -2710,7 +2692,7 @@
             "team": "bar",
             "laps": 56,
             "pts": 0,
-            "time": "+4 Laps"
+            "time": "DNF"
           },
           {
             "pos": 17,
@@ -2719,7 +2701,7 @@
             "team": "jordan",
             "laps": 54,
             "pts": 0,
-            "time": "+6 Laps"
+            "time": "DNF"
           },
           {
             "pos": 18,

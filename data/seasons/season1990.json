@@ -242,15 +242,6 @@
             "laps": 0,
             "pts": 0,
             "time": "DNF"
-          },
-          {
-            "pos": 27,
-            "driver": "philippe-alliot",
-            "number": 26,
-            "team": "ligier",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF"
           }
         ]
       },
@@ -1556,15 +1547,6 @@
             "laps": 0,
             "pts": 0,
             "time": "DNF"
-          },
-          {
-            "pos": 27,
-            "driver": "pierluigi-martini",
-            "number": 23,
-            "team": "minardi",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF"
           }
         ]
       },
@@ -2234,7 +2216,7 @@
             "team": "benetton",
             "laps": 34,
             "pts": 0,
-            "time": "DNF"
+            "time": "DSQ"
           }
         ]
       },
@@ -2785,7 +2767,7 @@
             "team": "larrousse",
             "laps": 66,
             "pts": 0,
-            "time": "+4 Laps"
+            "time": "DNF"
           },
           {
             "pos": 13,
@@ -2794,7 +2776,7 @@
             "team": "osella",
             "laps": 65,
             "pts": 0,
-            "time": "+5 Laps"
+            "time": "DNF"
           },
           {
             "pos": 14,
@@ -3573,15 +3555,6 @@
             "number": 21,
             "team": "dallara",
             "laps": 10,
-            "pts": 0,
-            "time": "DNF"
-          },
-          {
-            "pos": 27,
-            "driver": "roberto-moreno",
-            "number": 33,
-            "team": "euro-brun",
-            "laps": 0,
             "pts": 0,
             "time": "DNF"
           }
@@ -5614,7 +5587,7 @@
             "team": "ligier",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DSQ"
           }
         ]
       },
@@ -8299,15 +8272,6 @@
             "laps": 0,
             "pts": 0,
             "time": "DNF"
-          },
-          {
-            "pos": 26,
-            "driver": "satoru-nakajima",
-            "number": 3,
-            "team": "tyrrell",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF"
           }
         ]
       },
@@ -8965,15 +8929,6 @@
             "driver": "emanuele-pirro",
             "number": 21,
             "team": "dallara",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF"
-          },
-          {
-            "pos": 26,
-            "driver": "martin-donnelly",
-            "number": 12,
-            "team": "team-lotus",
             "laps": 0,
             "pts": 0,
             "time": "DNF"
@@ -9635,15 +9590,6 @@
             "driver": "stefano-modena",
             "number": 8,
             "team": "brabham",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF"
-          },
-          {
-            "pos": 26,
-            "driver": "jean-alesi",
-            "number": 4,
-            "team": "tyrrell",
             "laps": 0,
             "pts": 0,
             "time": "DNF"

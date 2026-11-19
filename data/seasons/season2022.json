@@ -1228,18 +1228,8 @@
             "team": "alphatauri",
             "laps": 0,
             "pts": 0,
-            "time": "DNF",
+            "time": "DNS",
             "grid": 19
-          },
-          {
-            "pos": 20,
-            "driver": "mick-schumacher",
-            "number": 47,
-            "team": "haas-f1-team",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF",
-            "grid": 0
           }
         ]
       },
@@ -9126,7 +9116,7 @@
             "team": "alpine-f1-team",
             "laps": 0,
             "pts": 0,
-            "time": "DNF",
+            "time": "DNS",
             "grid": 8
           }
         ]

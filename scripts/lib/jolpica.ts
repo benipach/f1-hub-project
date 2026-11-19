@@ -105,11 +105,27 @@ const CIRCUIT_IDS: Record<string, string> = {
 // ── Rows ────────────────────────────────────────────────────────────────────
 const LAPPED = /^\+\d+\s+Laps?$/;
 
-function raceRow(r: Result) {
+// The race's `time` with formula1.com's labels: the winner's time, "+gap",
+// "+N Lap(s)", or DSQ / DNS / DNF. The status goes first: a disqualified car
+// keeps its Time in Jolpica, and since 2023 a lapped car is "Lapped" with a
+// Time that isn't its gap.
+function raceTime(r: Result, leaderLaps: number): string {
+    const status = r.status ?? '';
+    if (status === 'Disqualified' || status === 'Excluded') return 'DSQ';
+    if (status === 'Did not start') return 'DNS';
+    if (status === 'Lapped') {
+        const n = leaderLaps - Number(r.laps);
+        return `+${n} Lap${n > 1 ? 's' : ''}`;
+    }
+    if (r.Time?.time) return r.position === '1' ? r.Time.time : `+${r.Time.time.replace(/^\+/, '')}`;
+    return status === 'Finished' || LAPPED.test(status) ? status : 'DNF';
+}
+
+const raceRows = (results: Result[]) => results.map(r => raceRow(r, Number(results[0]?.laps)));
+
+function raceRow(r: Result, leaderLaps: number) {
     const pos = Number(r.position);
-    const time = r.Time?.time ? (pos === 1 ? r.Time.time : `+${r.Time.time.replace(/^\+/, '')}`)
-        : r.status === 'Finished' || LAPPED.test(r.status ?? '') ? r.status
-        : 'DNF';
+    const time = raceTime(r, leaderLaps);
     const row: Record<string, unknown> = {
         pos,
         driver: driverId(r.Driver),
@@ -170,8 +186,8 @@ export async function fetchSeason(year: number, { gridOnly = false, knownCircuit
 
         const sessions: Record<string, unknown> = {};
         if (qualifying.length) sessions.qualifying = session(start(race.Qualifying), HOUR, qualifying.map(qualifyingRow));
-        if (sprint.length) sessions.sprintRace = session(start(race.Sprint), HOUR, sprint.map(raceRow));
-        if (results.length) sessions.race = session(start(race), 4 * HOUR, results.map(raceRow));   // 4 h: room for SC and red flags
+        if (sprint.length) sessions.sprintRace = session(start(race.Sprint), HOUR, raceRows(sprint));
+        if (results.length) sessions.race = session(start(race), 4 * HOUR, raceRows(results));   // 4 h: room for SC and red flags
 
         const gp: Record<string, unknown> = { round, name: race.raceName };
         const jolpicaId = race.Circuit?.circuitId;

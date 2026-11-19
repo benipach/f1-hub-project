@@ -37,7 +37,13 @@ export interface GrandPrix {
 
 export type Season = Record<string, GrandPrix>;
 
-export const readJson = <T>(file: string): T => JSON.parse(fs.readFileSync(file, 'utf8')) as T;
+// A race row whose driver wasn't classified as a finisher: its `time` is
+// "DNF", "DNS" or "DSQ" (formula1.com's labels); null otherwise. The site's
+// pages use the same rule (notFinished in js/shared/gp.js).
+export const notFinished = (row: ResultRow): string | null =>
+    /^(DNF|DNS|DSQ)$/.test(String(row?.time ?? '')) ? String(row.time) : null;
+
+export const readJson =<T>(file: string): T => JSON.parse(fs.readFileSync(file, 'utf8')) as T;
 
 // Every season, oldest first.
 export function loadSeasons(): { year: number; season: Season }[] {

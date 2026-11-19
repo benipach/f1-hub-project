@@ -10,7 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {
-    DATA, DRIVER_MAX, loadSeasons, outputPath, pointsLeft, readJson, resolveTeamId, runningOrder, sessionResults, teamName, teams,
+    DATA, DRIVER_MAX, loadSeasons, notFinished, outputPath, pointsLeft, readJson, resolveTeamId, runningOrder, sessionResults, teamName, teams,
     titleDecided,
     type GrandPrix, type ResultRow, type Season,
 } from './lib/data.ts';
@@ -30,7 +30,6 @@ function isoFor(gp: GrandPrix): string | null {
     return (city && countries[cities[city]?.country as string]?.isoCode) || null;
 }
 
-const isRetired = (row: ResultRow) => /DN[FS]/i.test(String(row?.time || ''));
 const shortName = (gp: GrandPrix) => gp.name.replace(/ Grand Prix$/, '');
 
 // One race of one driver.
@@ -125,10 +124,11 @@ for (const { year, season } of loadSeasons()) {
                 quali: q?.pos ?? null,
                 grid: typeof r.grid === 'number' ? r.grid : (q?.pos ?? null),
                 pts: (r.pts || 0) + (s?.pts || 0),
-                dnf: isRetired(r),
-                // Listed in the race but didn't start: doesn't count as a start
-                // for the "most race starts" record.
-                dns: /DNS/i.test(String(r.time || '')),
+                dnf: notFinished(r) !== null,
+                // Listed in the race but didn't start: formula1.com doesn't
+                // count it as a Grand Prix entered (races, debut, starts). The
+                // row stays for its sprint points.
+                dns: r.time === 'DNS',
                 fl: Boolean(r.fastestLap),
                 team: r.team,
                 number: r.number ?? null,
@@ -258,7 +258,7 @@ function buildEras(races: Race[], titleYears: number[]) {
             seasons: years,
             from,
             to,
-            races: e.races.length,
+            races: e.races.filter(r => !r.dns).length,
             points: e.races.reduce((a, r) => a + r.pts, 0),
             wins: eraWins.length,
             podiums: finished.filter(r => r.pos <= 3).length,
@@ -484,7 +484,7 @@ function buildSeasonStats(races: Race[], standings: Record<number, number>) {
     for (const r of races) {
         const y = (out[r.year] ??= { pos: standings[r.year] ?? null, pts: 0, races: 0 });
         y.pts += r.pts;
-        y.races++;
+        if (!r.dns) y.races++;
     }
     return out;
 }
@@ -494,6 +494,7 @@ const careers: Record<string, unknown> = {};
 for (const [driverId, races] of byDriver) {
     races.sort((a, b) => a.year - b.year || a.round - b.round);
     const finished = races.filter(r => !r.dnf);
+    const started = races.filter(r => !r.dns);
 
     const titleYears = [...seasonChampions.entries()]
         .filter(([, id]) => id === driverId)
@@ -522,7 +523,7 @@ for (const [driverId, races] of byDriver) {
             teamId: team.id,
             team: team.name,
             color: team.color,
-            races: seasonRaces.length,
+            races: seasonRaces.filter(r => !r.dns).length,
             wins: seasonFinished.filter(r => r.pos === 1).length,
             podiums: seasonFinished.filter(r => r.pos <= 3).length,
             points: seasonRaces.reduce((a, r) => a + r.pts, 0),
@@ -572,7 +573,7 @@ for (const [driverId, races] of byDriver) {
     const isWinRace = (r: Race) => winRaces.some(w => sameRace(w, r));
 
     const milestones = [
-        milestone(races[0], 'Debut'),
+        milestone(started[0], 'Debut'),
         milestone(races.find(r => r.pts > 0), 'First points'),
         milestone(finished.find(r => r.pos <= 3), 'First podium'),
         milestone(firstWinRace, 'First win'),
@@ -631,11 +632,11 @@ for (const [driverId, races] of byDriver) {
     };
 
     careers[driverId] = {
-        races: races.length,
+        races: started.length,
         // Debut date. Used as a tiebreaker in rankings for
         // drivers who still have 0 in a category: there's no "when they
         // achieved it", but there is "since when they've been trying".
-        debut: races[0]?.date ?? null,
+        debut: started[0]?.date ?? null,
         seasons: [...new Set(races.map(r => r.year))].sort(),
         number: lastNumbered?.number ?? null,
         points: races.reduce((a, r) => a + r.pts, 0),

@@ -845,7 +845,7 @@
             "team": "mclaren",
             "laps": 58,
             "pts": 0,
-            "time": "DNF",
+            "time": "DSQ",
             "bestLap": "1:29.020"
           }
         ]
@@ -8506,15 +8506,6 @@
             "laps": 1,
             "pts": 0,
             "time": "DNF"
-          },
-          {
-            "pos": 20,
-            "driver": "felipe-massa",
-            "number": 3,
-            "team": "ferrari",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF"
           }
         ]
       }
@@ -9346,7 +9337,7 @@
             "team": "williams",
             "laps": 54,
             "pts": 0,
-            "time": "+3 Laps",
+            "time": "DNF",
             "bestLap": "1:39.747"
           },
           {
@@ -11000,7 +10991,7 @@
             "team": "toro-rosso",
             "laps": 52,
             "pts": 0,
-            "time": "+1 Lap",
+            "time": "DNF",
             "bestLap": "1:25.564"
           },
           {
@@ -12745,15 +12736,6 @@
             "pts": 0,
             "time": "DNF",
             "bestLap": "1:35.392"
-          },
-          {
-            "pos": 20,
-            "driver": "timo-glock",
-            "number": 10,
-            "team": "toyota",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF"
           }
         ]
       }

@@ -2221,24 +2221,6 @@
             "laps": 0,
             "pts": 0,
             "time": "DNF"
-          },
-          {
-            "pos": 26,
-            "driver": "roland-ratzenberger",
-            "number": 32,
-            "team": "simtek",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF"
-          },
-          {
-            "pos": 27,
-            "driver": "rubens-barrichello",
-            "number": 14,
-            "team": "jordan",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF"
           }
         ]
       },
@@ -2915,24 +2897,6 @@
             "driver": "pierluigi-martini",
             "number": 23,
             "team": "minardi",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF"
-          },
-          {
-            "pos": 25,
-            "driver": "heinz-harald-frentzen",
-            "number": 30,
-            "team": "sauber",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF"
-          },
-          {
-            "pos": 26,
-            "driver": "karl-wendlinger",
-            "number": 29,
-            "team": "sauber",
             "laps": 0,
             "pts": 0,
             "time": "DNF"
@@ -3781,15 +3745,6 @@
             "laps": 0,
             "pts": 0,
             "time": "DNF"
-          },
-          {
-            "pos": 27,
-            "driver": "andrea-montermini",
-            "number": 32,
-            "team": "simtek",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF"
           }
         ]
       },
@@ -4423,7 +4378,7 @@
             "team": "team-lotus",
             "laps": 62,
             "pts": 0,
-            "time": "+7 Laps"
+            "time": "DNF"
           },
           {
             "pos": 16,
@@ -4432,7 +4387,7 @@
             "team": "footwork",
             "laps": 68,
             "pts": 0,
-            "time": "DNF"
+            "time": "DSQ"
           },
           {
             "pos": 17,
@@ -6211,7 +6166,7 @@
             "team": "benetton",
             "laps": 60,
             "pts": 0,
-            "time": "DNF"
+            "time": "DSQ"
           },
           {
             "pos": 18,
@@ -8855,7 +8810,7 @@
             "team": "benetton",
             "laps": 44,
             "pts": 0,
-            "time": "DNF"
+            "time": "DSQ"
           },
           {
             "pos": 15,
@@ -10627,7 +10582,7 @@
             "team": "ligier",
             "laps": 70,
             "pts": 0,
-            "time": "DNF"
+            "time": "DSQ"
           },
           {
             "pos": 18,

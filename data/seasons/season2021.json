@@ -3859,7 +3859,7 @@
             "team": "ferrari",
             "laps": 0,
             "pts": 0,
-            "time": "DNF",
+            "time": "DNS",
             "grid": 1
           }
         ]
@@ -9147,7 +9147,7 @@
             "team": "aston-martin",
             "laps": 70,
             "pts": 0,
-            "time": "DNF",
+            "time": "DSQ",
             "bestLap": "1:21.459",
             "grid": 10
           }
@@ -11973,7 +11973,7 @@
             "team": "alphatauri",
             "laps": 0,
             "pts": 0,
-            "time": "DNF",
+            "time": "DNS",
             "grid": 0
           }
         ]
@@ -18680,16 +18680,6 @@
             "time": "DNF",
             "bestLap": "1:29.698",
             "grid": 18
-          },
-          {
-            "pos": 20,
-            "driver": "nikita-mazepin",
-            "number": 9,
-            "team": "haas-f1-team",
-            "laps": 0,
-            "pts": 0,
-            "time": "DNF",
-            "grid": 20
           }
         ]
       },
