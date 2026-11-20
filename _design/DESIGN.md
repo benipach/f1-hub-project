@@ -202,6 +202,16 @@ profile stays at `/descartado/poster/driver/<id>/` for reference):
   champion" / "So far", position, points, wins, podiums, poles, the race
   head-to-head with the teammate ("14–3 HADJAR", gray when lost); titles with
   the red tint.
+- **Career numbers** (`driver/DriverStats.astro`, `styles/driver-stats.css`):
+  where he stands all time, with an intro instead of a number row. For a
+  champion, his titles first (the year big in red, team, wins, points). Then
+  **the six boards together, three a row, the standings' tables** (no toggle,
+  no script): wins, podiums, poles, fastest laps, points, races; the top five
+  and him in his place (red tint, after "⋮" when out of it); the column header
+  says his number and place ("74 · 3rd all time"). **Each row's logo is the
+  team that driver last added to that stat with** (owner, 20/11: Räikkönen,
+  Alfa Romeo for races, Ferrari for wins; `BoardRow.team` in `lib/driver.ts`).
+  A stat at zero has no board: one line ("No wins, podiums… yet").
 
 **Charts** (`styles/chart.css`, `lib/curve.ts`, `lib/chart-tip.ts`): one look
 for every chart. White 2 px line drawn as a gentle monotone curve (never past a

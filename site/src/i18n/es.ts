@@ -392,6 +392,18 @@ export default {
         soFar: 'Hasta ahora',
         points: '{n} puntos',
     },
+    driverStats: {
+        kicker: 'De todos los tiempos',
+        title: 'Números de la carrera',
+        intro: 'Dónde está {name} entre los {n} pilotos registrados desde {year}: los cinco primeros de cada estadística y su puesto.',
+        titles: 'Títulos mundiales · {rank} de la historia',
+        wins: { one: '{n} victoria', other: '{n} victorias' },
+        pts: '{n} pts',
+        allTime: '{rank} de la historia',
+        stats: { wins: 'Victorias', podiums: 'Podios', poles: 'Poles', fastestLaps: 'Vueltas rápidas', points: 'Puntos', races: 'Carreras' },
+        lower: { wins: 'victorias', podiums: 'podios', poles: 'poles', fastestLaps: 'vueltas rápidas', points: 'puntos', races: 'carreras' },
+        none: 'Todavía sin {list}.',
+    },
     driver: {
         meta: '{name}: su carrera en la F1, cada temporada y cada carrera | F1 Hub',
         description: '{name} en la Fórmula 1: {races} carreras, {wins} victorias, {podiums} podios. Cada temporada y cada carrera, salida contra llegada.',

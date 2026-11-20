@@ -1,0 +1,75 @@
+---
+// The driver profile's section 5, career numbers (approved 20/11/2026,
+// mockup in the owner's copy: _design/driver-f1/stats.html): where he stands
+// all time. His titles first (for a champion), then the six boards together,
+// the homepage standings' tables, three a row: the top five, and him (red
+// tint) in his place after "⋮" when he isn't in it. Each row's logo is the team
+// that driver last added to that stat with (lib/driver.ts BoardRow.team).
+// A stat at zero has no board: they go in one line.
+import '../../styles/hero.css';
+import '../../styles/driver-stats.css';
+import TeamMark from '../TeamMark.astro';
+import { useI18n } from '../../i18n';
+import { BOARD_STATS, type BoardRow, type DriverProfile } from '../../lib/driver';
+
+interface Props {
+    driver: DriverProfile;
+}
+
+const { driver: D } = Astro.props;
+const { t, fill, plural, ord, intl } = useI18n(Astro.currentLocale);
+const w = t.driverStats;
+const num = new Intl.NumberFormat(intl);
+const n = (v: number) => num.format(v);
+const titleSeasons = D.seasons.filter((s) => s.champion);
+// The mockup's order: what he won first, then how much and how long
+const ORDER = ['wins', 'podiums', 'poles', 'fastestLaps', 'points', 'races'] as const satisfies readonly (typeof BOARD_STATS)[number][];
+const boards = ORDER.map((k) => ({ k, top: D.boards[k], me: D.mine[k] })).filter((b) => b.me.value > 0);
+const zero = ORDER.filter((k) => !(D.mine[k].value > 0)).map((k) => w.lower[k]);
+const list = new Intl.ListFormat(intl, { type: 'conjunction' }).format(zero);
+---
+
+<section class="dstats" aria-labelledby="dstats-title">
+    <div class="wrap">
+        <div class="sec-head sec-head--intro">
+            <div><p class="sec-k">{w.kicker}</p><h2 class="sec-title" id="dstats-title">{w.title}</h2></div>
+            <p class="sec-intro">{fill(w.intro, { name: D.last, n: D.onRecord, year: D.archiveFrom })}</p>
+        </div>
+
+        {titleSeasons.length > 0 && (
+            <div class="dstats__col dstats__titles">
+                <p class="col-h"><span>{fill(w.titles, { rank: ord(D.mine.titles.rank) })}</span><span>{titleSeasons.length}</span></p>
+                <div class="tt">
+                    {titleSeasons.map((s) => (
+                        <div class="tt__y">
+                            <b>{s.year}</b>
+                            <span class="tt__team"><TeamMark logo={s.teams.at(-1)!.logo} color={s.teams.at(-1)!.color} size={22} />{s.teams.at(-1)!.name}</span>
+                            <span class="tt__s">{plural(w.wins, s.wins)} · {fill(w.pts, { n: n(s.pts) })}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        )}
+
+        <div class="dstats__boards">
+            {boards.map(({ k, top, me }) => {
+                const inTop = top.some((r) => r.id === D.id);
+                const rows: (BoardRow | null)[] = inTop ? [...top] : [...top, ...(me.rank > 6 ? [null] : []), me];
+                return (
+                    <div class="dstats__col">
+                        <p class="col-h"><span>{w.stats[k]}</span><span><b class="mine">{n(me.value)}</b> · {fill(w.allTime, { rank: ord(me.rank) })}</span></p>
+                        {rows.map((r) => r ? (
+                            <div class:list={['br', { 'br--me': r.id === D.id }]}>
+                                <span class="br__pos">{r.rank}</span>
+                                {r.team ? <TeamMark logo={r.team.logo} color={r.team.color} size={22} /> : <span></span>}
+                                <span class="br__name">{r.last}</span>
+                                <span class="br__v">{n(r.value)}</span>
+                            </div>
+                        ) : <div class="br br--gap" aria-hidden="true"><span class="br__pos">⋮</span></div>)}
+                    </div>
+                );
+            })}
+        </div>
+        {zero.length > 0 && <p class="dstats__none">{fill(w.none, { list })}</p>}
+    </div>
+</section>

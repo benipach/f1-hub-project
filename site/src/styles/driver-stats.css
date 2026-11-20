@@ -1,0 +1,42 @@
+/* The driver profile's career numbers (components/driver/DriverStats.astro).
+   The header (.sec-head) is f1.css's; the column header (.col-h) hero.css's. */
+
+.dstats { padding: 72px 0 80px; background: var(--base-700); }
+.dstats__col { border-top: 3px solid #fff; padding-top: 12px; }
+.dstats .col-h { margin-bottom: 8px; }
+.dstats .col-h .mine { color: #fff; }
+
+/* the titles: one cell per title, the year big and red */
+.dstats__titles { margin-top: 40px; }
+.tt { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.tt__y { display: grid; gap: 4px; padding: 10px 20px 12px 16px; border-left: 1px solid var(--rule); }
+.tt__y:first-child { padding-left: 0; border-left: 0; }
+.tt__y b { font: 44px/1 'F1 Black'; color: var(--red); }
+.tt__team { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; text-transform: uppercase; color: #fff; }
+.tt__team .team-mark { width: 22px; height: 22px; object-fit: contain; }
+.tt__s { font-size: 12px; text-transform: uppercase; color: var(--dim); }
+
+/* the boards: the standings' tables, three a row */
+.dstats__boards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 20px; margin-top: 40px; }
+.br {
+    display: grid; grid-template-columns: 30px 22px minmax(0, 1fr) auto; align-items: center; gap: 12px;
+    height: 38px; padding: 0 4px; border-bottom: 1px solid var(--line); font-weight: 700; font-size: 15px; color: #fff;
+    font-variant-numeric: tabular-nums;
+}
+.br:last-child { border-bottom: 0; }
+.br__pos, .br__v { text-align: right; }
+.br .team-mark { width: 22px; height: 22px; object-fit: contain; }
+.br__name { overflow: hidden; text-transform: uppercase; white-space: nowrap; text-overflow: ellipsis; }
+.br--me { background: rgba(225, 6, 0, .12); }
+.br--gap { height: 26px; color: var(--dim); }
+.dstats__none { margin-top: 24px; font-size: 14px; color: var(--dim); }
+
+@media (max-width: 1100px) {
+    .dstats__boards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+    .dstats { padding: 48px 0 56px; }
+    .dstats__boards { grid-template-columns: minmax(0, 1fr); }
+    .tt { grid-template-columns: 1fr 1fr; }
+    .tt__y:nth-child(odd) { padding-left: 0; border-left: 0; }
+}

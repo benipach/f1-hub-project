@@ -122,7 +122,11 @@ export const BOARD_STATS = ['wins', 'podiums', 'poles', 'points', 'fastestLaps',
 export type BoardStat = (typeof BOARD_STATS)[number];
 type RankStat = BoardStat | 'titles';
 
-export type BoardRow = { readonly id: string; readonly first: string; readonly last: string; readonly value: number; readonly rank: number };
+export type BoardRow = {
+    readonly id: string; readonly first: string; readonly last: string; readonly value: number; readonly rank: number;
+    /** The team he last added to this stat with (owner, 20/11: Räikkönen's last race was with Alfa Romeo, his last win with Ferrari). */
+    readonly team: DriverTeam | null;
+};
 
 export type DriverProfile = {
     readonly id: string;
@@ -138,6 +142,8 @@ export type DriverProfile = {
     readonly numbers: readonly number[];
     /** The seasons he carried each number, in the same order. */
     readonly numberYears: readonly { readonly number: number; readonly years: readonly number[] }[];
+    /** The archive's first season (1990 today). */
+    readonly archiveFrom: number;
     /** The career starts in the archive's first season, so it may have started before. */
     readonly fromArchive: boolean;
     readonly debut: string;
@@ -166,6 +172,10 @@ export type DriverProfile = {
     readonly seasons: readonly DriverSeason[];
     /** The all-time top five of each board stat. */
     readonly boards: Readonly<Record<BoardStat, readonly BoardRow[]>>;
+    /** His own row on every board, titles included. */
+    readonly mine: Readonly<Record<RankStat, BoardRow>>;
+    /** Drivers on the boards: everyone in careers.json. */
+    readonly onRecord: number;
 };
 
 // ---- A season's rounds, once per build -------------------------------------
@@ -321,13 +331,31 @@ function context(dataDir: URL): Context {
     for (const { year } of index) seasons.set(year, buildSeason(dataDir, year, partial));
     // All-time boards, ranked as the old page ranks them: the value, then who
     // got there first, then the id
+    // The team each driver last added to each stat with: every race of the
+    // archive in order (the rows carry the resolved team id)
+    const lastTeam = new Map<string, Partial<Record<RankStat, string>>>();
+    const mark = (id: string, k: RankStat, team: string) => { const e = lastTeam.get(id) ?? {}; e[k] = team; lastTeam.set(id, e); };
+    for (const year of [...seasons.keys()].sort((a, b) => a - b)) {
+        for (const r of seasons.get(year)!.rounds) for (const x of r.rows) {
+            mark(x.driver, 'races', x.team);
+            if (!x.out && x.pos === 1) mark(x.driver, 'wins', x.team);
+            if (!x.out && x.pos <= 3) mark(x.driver, 'podiums', x.team);
+            if (r.pole === x.driver) mark(x.driver, 'poles', x.team);
+            if (x.fl) mark(x.driver, 'fastestLaps', x.team);
+            if (x.pts > 0) mark(x.driver, 'points', x.team);
+        }
+    }
+    for (const [id, c] of Object.entries(careers)) { const last = c.titles.at(-1); if (last) mark(id, 'titles', last.teamId); }
+    const teamOf = (teamId: string | undefined): DriverTeam | null => (teamId
+        ? { id: teamId, name: base.teams[teamId]?.name ?? titleCase(teamId), color: base.teams[teamId]?.color ?? null, logo: teamLogo(base.repoRoot, teamId) }
+        : null);
     const boards = {} as Record<RankStat, BoardRow[]>;
     for (const k of [...BOARD_STATS, 'titles'] as const) {
         const val = (id: string) => (k === 'titles' ? careers[id]!.titleYears.length : careers[id]![k]);
         const when = (id: string) => careers[id]!.achievedAt[k] ?? careers[id]!.debut;
         boards[k] = Object.keys(careers)
             .sort((a, b) => val(b) - val(a) || when(a).localeCompare(when(b)) || a.localeCompare(b))
-            .map((id, i) => ({ id, ...nameOf(base.drivers, id), value: round1(val(id)), rank: i + 1 }));
+            .map((id, i) => ({ id, ...nameOf(base.drivers, id), value: round1(val(id)), rank: i + 1, team: teamOf(lastTeam.get(id)?.[k]) }));
     }
     cached = { ...partial, boards };
     return cached;
@@ -463,6 +491,7 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
         number: c.number,
         numbers,
         numberYears,
+        archiveFrom: Math.min(...ctx.seasons.keys()),
         fromArchive: c.seasons[0] === Math.min(...ctx.seasons.keys()),
         debut: c.debut,
         active: c.seasons.at(-1) === ctx.latest,
@@ -481,5 +510,7 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
         milestones,
         seasons,
         boards: Object.fromEntries(BOARD_STATS.map((k) => [k, ctx.boards[k].slice(0, 5)])) as Record<BoardStat, BoardRow[]>,
+        mine: Object.fromEntries([...BOARD_STATS, 'titles'].map((k) => [k, ctx.boards[k as RankStat].find((x) => x.id === id)!])) as Record<RankStat, BoardRow>,
+        onRecord: Object.keys(ctx.careers).length,
     };
 }

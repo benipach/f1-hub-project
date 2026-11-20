@@ -68,6 +68,13 @@ function heroWords(t: Dict) {
 }
 export type HeroWords = ReturnType<typeof heroWords>;
 
+/** An ordinal in the locale's way: English "1st", "22nd"; Spanish "1.º". */
+export function ordinal(locale: Locale, n: number): string {
+    if (locale === 'es') return `${n}.º`;
+    const s = ['th', 'st', 'nd', 'rd'], v = n % 100;
+    return n + (s[(v - 20) % 10] ?? s[v] ?? s[0]!);
+}
+
 /** Everything a component needs for one locale. */
 export function useI18n(value: string | undefined) {
     const locale = toLocale(value);
@@ -85,5 +92,7 @@ export function useI18n(value: string | undefined) {
         /** The right plural form, filled: plural(t.standings.points, 3) → "3 points". */
         plural: (forms: Plural, n: number, values: Record<string, string | number> = {}) =>
             fill(rules.select(n) === 'one' ? forms.one : forms.other, { n, ...values }),
+        /** "3rd" / "3.º". */
+        ord: (n: number) => ordinal(locale, n),
     };
 }

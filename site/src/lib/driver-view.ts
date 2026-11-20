@@ -247,7 +247,7 @@ export function tipHtml(view: DriverView, r: DriverRound): string {
 /** The all-time board of one stat: the top five, and the driver after them. */
 export function boardHtml(view: DriverView, D: Pick<DriverProfile, 'id' | 'first' | 'last' | 'totals' | 'ranks' | 'boards'>, k: BoardStat): string {
     const top = D.boards[k];
-    const me: BoardRow = { id: D.id, first: D.first, last: D.last, value: D.totals[k], rank: D.ranks[k] };
+    const me: BoardRow = { id: D.id, first: D.first, last: D.last, value: D.totals[k], rank: D.ranks[k], team: null };
     // A zero isn't a place on the board (everyone without a win "ties" at the
     // foot), so the driver's own row only follows when there's something to rank
     const rows: (BoardRow | null)[] = top.some((r) => r.id === D.id) || !me.value ? [...top] : [...top, ...(me.rank > 6 ? [null] : []), me];
