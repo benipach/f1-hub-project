@@ -15,6 +15,11 @@ Used by `test/build-season.test.js`. Recorded on 12/11/2026.
   formula1.com (only the `<table>`, out of a ~400 KB page). Read with the
   script's table reader, it gives `practice-2023-bahrain-fp1.expected.json`
   (the rows `data/seasons/season2023.json` has for that session).
+- `qualifying-1990-san-marino-q1.html` / `-q2.html` (19/11/2026): the two
+  qualifying sessions of the 1990 San Marino GP on formula1.com (only the
+  `<table>`). Each car's best lap of either gives
+  `qualifying-1990-san-marino.expected.json`: Senna on pole (1:23.220), and
+  the cars that started in the same order as formula1.com's starting grid.
 
 To record again (needs internet; from the repo root, each run with
 `--out <file>` on a copy, never on `data/`):

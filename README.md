@@ -17,9 +17,9 @@ Every Grand Prix in one place: live timing during sessions, the calendar in your
 - **Estimated car positions.** The public feed doesn't include car GPS positions (only F1 TV accounts get them), so the track map places each car from mini-sector timing: it knows the last checkpoint each car passed (~25 per lap) and moves it at the pace of its last lap until the next one.
 - **TV sync.** The page can delay incoming data by a few seconds so it doesn't spoil an overtake before the broadcast shows it.
 
-**Automated results pipeline (GitHub Actions).** A scheduled workflow runs every 30 minutes from Friday to Monday. It first checks whether any session ended at least 45 minutes ago and is still missing results or weather, so it does nothing on most runs. When there's work to do, it pulls the data from the OpenF1 API, rebuilds the precomputed career stats and commits the result. The site updates itself after every session.
+**Automated results pipeline (GitHub Actions).** A scheduled workflow runs every 30 minutes from Friday to Monday. The script first checks whether there's anything pending (a session that already ran and is missing results or weather, or one in the next week whose time may have moved), so on most runs it ends without a single request. When there's work to do, it pulls the data from the OpenF1 API, rebuilds the precomputed career stats and commits the result. The site updates itself after every session.
 
-**Historical archive (1990–2026).** `scripts/build-season.ts` builds a full season file from the Jolpica (Ergast) API, plus practice sessions scraped from formula1.com. Together the season files weigh several MB, so the pages that need data across seasons read precomputed indexes (`careers.json`, `seasons-index.json`) instead, with a single small request.
+**Historical archive (1990–2026).** `scripts/build-season.ts` builds a full season file from the Jolpica (Ergast) API, plus practice sessions and the qualifying Jolpica lacks (most of 1990–2002) scraped from formula1.com. Together the season files weigh several MB, so the pages that need data across seasons read precomputed indexes (`careers.json`, `seasons-index.json`) instead, with a single small request.
 
 **No framework, no build step.** Vanilla HTML, CSS and JavaScript served from GitHub Pages, with Chart.js for the charts.
 

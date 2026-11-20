@@ -5023,6 +5023,166 @@
     "sprint": false,
     "cancelled": false,
     "sessions": {
+      "qualifying": {
+        "date": null,
+        "endDate": null,
+        "results": [
+          {
+            "pos": 1,
+            "driver": "damon-hill",
+            "number": 5,
+            "team": "williams",
+            "lapTime": "1:21.059"
+          },
+          {
+            "pos": 2,
+            "driver": "jacques-villeneuve",
+            "number": 6,
+            "team": "williams",
+            "lapTime": "1:21.079"
+          },
+          {
+            "pos": 3,
+            "driver": "michael-schumacher",
+            "number": 1,
+            "team": "ferrari",
+            "lapTime": "1:21.198"
+          },
+          {
+            "pos": 4,
+            "driver": "jean-alesi",
+            "number": 3,
+            "team": "benetton",
+            "lapTime": "1:21.529"
+          },
+          {
+            "pos": 5,
+            "driver": "eddie-irvine",
+            "number": 2,
+            "team": "ferrari",
+            "lapTime": "1:21.657"
+          },
+          {
+            "pos": 6,
+            "driver": "mika-hakkinen",
+            "number": 7,
+            "team": "mclaren",
+            "lapTime": "1:21.807"
+          },
+          {
+            "pos": 7,
+            "driver": "gerhard-berger",
+            "number": 4,
+            "team": "benetton",
+            "lapTime": "1:21.926"
+          },
+          {
+            "pos": 8,
+            "driver": "rubens-barrichello",
+            "number": 11,
+            "team": "jordan",
+            "lapTime": "1:21.982"
+          },
+          {
+            "pos": 9,
+            "driver": "martin-brundle",
+            "number": 12,
+            "team": "jordan",
+            "lapTime": "1:22.321"
+          },
+          {
+            "pos": 10,
+            "driver": "david-coulthard",
+            "number": 8,
+            "team": "mclaren",
+            "lapTime": "1:22.332"
+          },
+          {
+            "pos": 11,
+            "driver": "olivier-panis",
+            "number": 9,
+            "team": "ligier",
+            "lapTime": "1:22.481"
+          },
+          {
+            "pos": 12,
+            "driver": "heinz-harald-frentzen",
+            "number": 15,
+            "team": "sauber",
+            "lapTime": "1:22.875"
+          },
+          {
+            "pos": 13,
+            "driver": "jos-verstappen",
+            "number": 17,
+            "team": "footwork",
+            "lapTime": "1:23.067"
+          },
+          {
+            "pos": 14,
+            "driver": "mika-salo",
+            "number": 19,
+            "team": "tyrrell",
+            "lapTime": "1:23.118"
+          },
+          {
+            "pos": 15,
+            "driver": "johnny-herbert",
+            "number": 14,
+            "team": "sauber",
+            "lapTime": "1:23.201"
+          },
+          {
+            "pos": 16,
+            "driver": "giancarlo-fisichella",
+            "number": 21,
+            "team": "minardi",
+            "lapTime": "1:23.519"
+          },
+          {
+            "pos": 17,
+            "driver": "ukyo-katayama",
+            "number": 18,
+            "team": "tyrrell",
+            "lapTime": "1:23.599"
+          },
+          {
+            "pos": 18,
+            "driver": "pedro-diniz",
+            "number": 10,
+            "team": "ligier",
+            "lapTime": "1:23.959"
+          },
+          {
+            "pos": 19,
+            "driver": "pedro-lamy",
+            "number": 20,
+            "team": "minardi",
+            "lapTime": "1:24.262"
+          },
+          {
+            "pos": 20,
+            "driver": "luca-badoer",
+            "number": 22,
+            "team": "forti",
+            "lapTime": "1:25.012"
+          },
+          {
+            "pos": 21,
+            "driver": "ricardo-rosset",
+            "number": 16,
+            "team": "footwork",
+            "lapTime": "1:25.193"
+          },
+          {
+            "pos": 22,
+            "driver": "andrea-montermini",
+            "number": 23,
+            "team": "forti",
+            "lapTime": "1:26.109"
+          }
+        ]
+      },
       "race": {
         "date": "1996-06-16T00:00:00Z",
         "endDate": "1996-06-16T04:00:00.000Z",
@@ -5596,6 +5756,166 @@
     "sprint": false,
     "cancelled": false,
     "sessions": {
+      "qualifying": {
+        "date": null,
+        "endDate": null,
+        "results": [
+          {
+            "pos": 1,
+            "driver": "michael-schumacher",
+            "number": 1,
+            "team": "ferrari",
+            "lapTime": "1:15.989"
+          },
+          {
+            "pos": 2,
+            "driver": "damon-hill",
+            "number": 5,
+            "team": "williams",
+            "lapTime": "1:16.058"
+          },
+          {
+            "pos": 3,
+            "driver": "jean-alesi",
+            "number": 3,
+            "team": "benetton",
+            "lapTime": "1:16.310"
+          },
+          {
+            "pos": 4,
+            "driver": "gerhard-berger",
+            "number": 4,
+            "team": "benetton",
+            "lapTime": "1:16.592"
+          },
+          {
+            "pos": 5,
+            "driver": "mika-hakkinen",
+            "number": 7,
+            "team": "mclaren",
+            "lapTime": "1:16.634"
+          },
+          {
+            "pos": 6,
+            "driver": "jacques-villeneuve",
+            "number": 6,
+            "team": "williams",
+            "lapTime": "1:16.905"
+          },
+          {
+            "pos": 7,
+            "driver": "david-coulthard",
+            "number": 8,
+            "team": "mclaren",
+            "lapTime": "1:17.007"
+          },
+          {
+            "pos": 8,
+            "driver": "martin-brundle",
+            "number": 12,
+            "team": "jordan",
+            "lapTime": "1:17.187"
+          },
+          {
+            "pos": 9,
+            "driver": "olivier-panis",
+            "number": 9,
+            "team": "ligier",
+            "lapTime": "1:17.390"
+          },
+          {
+            "pos": 10,
+            "driver": "eddie-irvine",
+            "number": 2,
+            "team": "ferrari",
+            "lapTime": "1:17.443"
+          },
+          {
+            "pos": 11,
+            "driver": "rubens-barrichello",
+            "number": 11,
+            "team": "jordan",
+            "lapTime": "1:17.665"
+          },
+          {
+            "pos": 12,
+            "driver": "pedro-diniz",
+            "number": 10,
+            "team": "ligier",
+            "lapTime": "1:17.676"
+          },
+          {
+            "pos": 13,
+            "driver": "heinz-harald-frentzen",
+            "number": 15,
+            "team": "sauber",
+            "lapTime": "1:17.739"
+          },
+          {
+            "pos": 14,
+            "driver": "mika-salo",
+            "number": 19,
+            "team": "tyrrell",
+            "lapTime": "1:18.021"
+          },
+          {
+            "pos": 15,
+            "driver": "ukyo-katayama",
+            "number": 18,
+            "team": "tyrrell",
+            "lapTime": "1:18.242"
+          },
+          {
+            "pos": 16,
+            "driver": "jos-verstappen",
+            "number": 17,
+            "team": "footwork",
+            "lapTime": "1:18.324"
+          },
+          {
+            "pos": 17,
+            "driver": "johnny-herbert",
+            "number": 14,
+            "team": "sauber",
+            "lapTime": "1:18.556"
+          },
+          {
+            "pos": 18,
+            "driver": "giancarlo-fisichella",
+            "number": 21,
+            "team": "minardi",
+            "lapTime": "1:18.604"
+          },
+          {
+            "pos": 19,
+            "driver": "pedro-lamy",
+            "number": 20,
+            "team": "minardi",
+            "lapTime": "1:19.210"
+          },
+          {
+            "pos": 20,
+            "driver": "ricardo-rosset",
+            "number": 16,
+            "team": "footwork",
+            "lapTime": "1:19.242"
+          },
+          {
+            "pos": 21,
+            "driver": "luca-badoer",
+            "number": 22,
+            "team": "forti",
+            "lapTime": "1:20.562"
+          },
+          {
+            "pos": 22,
+            "driver": "andrea-montermini",
+            "number": 23,
+            "team": "forti",
+            "lapTime": "1:20.647"
+          }
+        ]
+      },
       "race": {
         "date": "1996-06-30T00:00:00Z",
         "endDate": "1996-06-30T04:00:00.000Z",
@@ -6169,6 +6489,166 @@
     "sprint": false,
     "cancelled": false,
     "sessions": {
+      "qualifying": {
+        "date": null,
+        "endDate": null,
+        "results": [
+          {
+            "pos": 1,
+            "driver": "damon-hill",
+            "number": 5,
+            "team": "williams",
+            "lapTime": "1:26.875"
+          },
+          {
+            "pos": 2,
+            "driver": "jacques-villeneuve",
+            "number": 6,
+            "team": "williams",
+            "lapTime": "1:27.070"
+          },
+          {
+            "pos": 3,
+            "driver": "michael-schumacher",
+            "number": 1,
+            "team": "ferrari",
+            "lapTime": "1:27.707"
+          },
+          {
+            "pos": 4,
+            "driver": "mika-hakkinen",
+            "number": 7,
+            "team": "mclaren",
+            "lapTime": "1:27.856"
+          },
+          {
+            "pos": 5,
+            "driver": "jean-alesi",
+            "number": 3,
+            "team": "benetton",
+            "lapTime": "1:28.307"
+          },
+          {
+            "pos": 6,
+            "driver": "rubens-barrichello",
+            "number": 11,
+            "team": "jordan",
+            "lapTime": "1:28.409"
+          },
+          {
+            "pos": 7,
+            "driver": "gerhard-berger",
+            "number": 4,
+            "team": "benetton",
+            "lapTime": "1:28.653"
+          },
+          {
+            "pos": 8,
+            "driver": "martin-brundle",
+            "number": 12,
+            "team": "jordan",
+            "lapTime": "1:28.946"
+          },
+          {
+            "pos": 9,
+            "driver": "david-coulthard",
+            "number": 8,
+            "team": "mclaren",
+            "lapTime": "1:28.966"
+          },
+          {
+            "pos": 10,
+            "driver": "eddie-irvine",
+            "number": 2,
+            "team": "ferrari",
+            "lapTime": "1:29.186"
+          },
+          {
+            "pos": 11,
+            "driver": "heinz-harald-frentzen",
+            "number": 15,
+            "team": "sauber",
+            "lapTime": "1:29.591"
+          },
+          {
+            "pos": 12,
+            "driver": "ukyo-katayama",
+            "number": 18,
+            "team": "tyrrell",
+            "lapTime": "1:29.913"
+          },
+          {
+            "pos": 13,
+            "driver": "johnny-herbert",
+            "number": 14,
+            "team": "sauber",
+            "lapTime": "1:29.947"
+          },
+          {
+            "pos": 14,
+            "driver": "mika-salo",
+            "number": 19,
+            "team": "tyrrell",
+            "lapTime": "1:29.949"
+          },
+          {
+            "pos": 15,
+            "driver": "jos-verstappen",
+            "number": 17,
+            "team": "footwork",
+            "lapTime": "1:30.102"
+          },
+          {
+            "pos": 16,
+            "driver": "olivier-panis",
+            "number": 9,
+            "team": "ligier",
+            "lapTime": "1:30.167"
+          },
+          {
+            "pos": 17,
+            "driver": "ricardo-rosset",
+            "number": 16,
+            "team": "footwork",
+            "lapTime": "1:30.529"
+          },
+          {
+            "pos": 18,
+            "driver": "pedro-diniz",
+            "number": 10,
+            "team": "ligier",
+            "lapTime": "1:31.076"
+          },
+          {
+            "pos": 19,
+            "driver": "giancarlo-fisichella",
+            "number": 21,
+            "team": "minardi",
+            "lapTime": "1:31.365"
+          },
+          {
+            "pos": 20,
+            "driver": "pedro-lamy",
+            "number": 20,
+            "team": "minardi",
+            "lapTime": "1:31.454"
+          },
+          {
+            "pos": 21,
+            "driver": "andrea-montermini",
+            "number": 23,
+            "team": "forti-ford",
+            "lapTime": "1:35.206"
+          },
+          {
+            "pos": 22,
+            "driver": "luca-badoer",
+            "number": 22,
+            "team": "forti-ford",
+            "lapTime": "1:35.304"
+          }
+        ]
+      },
       "race": {
         "date": "1996-07-14T00:00:00Z",
         "endDate": "1996-07-14T04:00:00.000Z",
@@ -6692,6 +7172,152 @@
     "sprint": false,
     "cancelled": false,
     "sessions": {
+      "qualifying": {
+        "date": null,
+        "endDate": null,
+        "results": [
+          {
+            "pos": 1,
+            "driver": "damon-hill",
+            "number": 5,
+            "team": "williams",
+            "lapTime": "1:43.912"
+          },
+          {
+            "pos": 2,
+            "driver": "gerhard-berger",
+            "number": 4,
+            "team": "benetton",
+            "lapTime": "1:44.299"
+          },
+          {
+            "pos": 3,
+            "driver": "michael-schumacher",
+            "number": 1,
+            "team": "ferrari",
+            "lapTime": "1:44.477"
+          },
+          {
+            "pos": 4,
+            "driver": "mika-hakkinen",
+            "number": 7,
+            "team": "mclaren",
+            "lapTime": "1:44.644"
+          },
+          {
+            "pos": 5,
+            "driver": "jean-alesi",
+            "number": 3,
+            "team": "benetton",
+            "lapTime": "1:44.670"
+          },
+          {
+            "pos": 6,
+            "driver": "jacques-villeneuve",
+            "number": 6,
+            "team": "williams",
+            "lapTime": "1:44.842"
+          },
+          {
+            "pos": 7,
+            "driver": "david-coulthard",
+            "number": 8,
+            "team": "mclaren",
+            "lapTime": "1:44.951"
+          },
+          {
+            "pos": 8,
+            "driver": "eddie-irvine",
+            "number": 2,
+            "team": "ferrari",
+            "lapTime": "1:45.389"
+          },
+          {
+            "pos": 9,
+            "driver": "rubens-barrichello",
+            "number": 11,
+            "team": "jordan",
+            "lapTime": "1:45.452"
+          },
+          {
+            "pos": 10,
+            "driver": "martin-brundle",
+            "number": 12,
+            "team": "jordan",
+            "lapTime": "1:45.876"
+          },
+          {
+            "pos": 11,
+            "driver": "pedro-diniz",
+            "number": 10,
+            "team": "ligier",
+            "lapTime": "1:46.575"
+          },
+          {
+            "pos": 12,
+            "driver": "olivier-panis",
+            "number": 9,
+            "team": "ligier",
+            "lapTime": "1:46.746"
+          },
+          {
+            "pos": 13,
+            "driver": "heinz-harald-frentzen",
+            "number": 15,
+            "team": "sauber",
+            "lapTime": "1:46.899"
+          },
+          {
+            "pos": 14,
+            "driver": "johnny-herbert",
+            "number": 14,
+            "team": "sauber",
+            "lapTime": "1:47.711"
+          },
+          {
+            "pos": 15,
+            "driver": "mika-salo",
+            "number": 19,
+            "team": "tyrrell",
+            "lapTime": "1:48.139"
+          },
+          {
+            "pos": 16,
+            "driver": "ukyo-katayama",
+            "number": 18,
+            "team": "tyrrell",
+            "lapTime": "1:48.381"
+          },
+          {
+            "pos": 17,
+            "driver": "jos-verstappen",
+            "number": 17,
+            "team": "footwork",
+            "lapTime": "1:48.512"
+          },
+          {
+            "pos": 18,
+            "driver": "pedro-lamy",
+            "number": 20,
+            "team": "minardi",
+            "lapTime": "1:49.461"
+          },
+          {
+            "pos": 19,
+            "driver": "ricardo-rosset",
+            "number": 16,
+            "team": "footwork",
+            "lapTime": "1:49.551"
+          },
+          {
+            "pos": 20,
+            "driver": "giovanni-lavaggi",
+            "number": 21,
+            "team": "minardi-ford",
+            "lapTime": "1:51.357"
+          }
+        ]
+      },
       "race": {
         "date": "1996-07-28T00:00:00Z",
         "endDate": "1996-07-28T04:00:00.000Z",
@@ -7206,6 +7832,152 @@
     "sprint": false,
     "cancelled": false,
     "sessions": {
+      "qualifying": {
+        "date": null,
+        "endDate": null,
+        "results": [
+          {
+            "pos": 1,
+            "driver": "michael-schumacher",
+            "number": 1,
+            "team": "ferrari",
+            "lapTime": "1:17.129"
+          },
+          {
+            "pos": 2,
+            "driver": "damon-hill",
+            "number": 5,
+            "team": "williams",
+            "lapTime": "1:17.182"
+          },
+          {
+            "pos": 3,
+            "driver": "jacques-villeneuve",
+            "number": 6,
+            "team": "williams",
+            "lapTime": "1:17.259"
+          },
+          {
+            "pos": 4,
+            "driver": "eddie-irvine",
+            "number": 2,
+            "team": "ferrari",
+            "lapTime": "1:18.617"
+          },
+          {
+            "pos": 5,
+            "driver": "jean-alesi",
+            "number": 3,
+            "team": "benetton",
+            "lapTime": "1:18.754"
+          },
+          {
+            "pos": 6,
+            "driver": "gerhard-berger",
+            "number": 4,
+            "team": "benetton",
+            "lapTime": "1:18.794"
+          },
+          {
+            "pos": 7,
+            "driver": "mika-hakkinen",
+            "number": 7,
+            "team": "mclaren",
+            "lapTime": "1:19.116"
+          },
+          {
+            "pos": 8,
+            "driver": "johnny-herbert",
+            "number": 14,
+            "team": "sauber",
+            "lapTime": "1:19.292"
+          },
+          {
+            "pos": 9,
+            "driver": "david-coulthard",
+            "number": 8,
+            "team": "mclaren",
+            "lapTime": "1:19.384"
+          },
+          {
+            "pos": 10,
+            "driver": "heinz-harald-frentzen",
+            "number": 15,
+            "team": "sauber",
+            "lapTime": "1:19.436"
+          },
+          {
+            "pos": 11,
+            "driver": "olivier-panis",
+            "number": 9,
+            "team": "ligier",
+            "lapTime": "1:19.538"
+          },
+          {
+            "pos": 12,
+            "driver": "martin-brundle",
+            "number": 12,
+            "team": "jordan",
+            "lapTime": "1:19.828"
+          },
+          {
+            "pos": 13,
+            "driver": "rubens-barrichello",
+            "number": 11,
+            "team": "jordan",
+            "lapTime": "1:19.966"
+          },
+          {
+            "pos": 14,
+            "driver": "ukyo-katayama",
+            "number": 18,
+            "team": "tyrrell",
+            "lapTime": "1:20.499"
+          },
+          {
+            "pos": 15,
+            "driver": "pedro-diniz",
+            "number": 10,
+            "team": "ligier",
+            "lapTime": "1:20.665"
+          },
+          {
+            "pos": 16,
+            "driver": "mika-salo",
+            "number": 19,
+            "team": "tyrrell",
+            "lapTime": "1:20.678"
+          },
+          {
+            "pos": 17,
+            "driver": "jos-verstappen",
+            "number": 17,
+            "team": "footwork",
+            "lapTime": "1:20.781"
+          },
+          {
+            "pos": 18,
+            "driver": "ricardo-rosset",
+            "number": 16,
+            "team": "footwork",
+            "lapTime": "1:21.590"
+          },
+          {
+            "pos": 19,
+            "driver": "pedro-lamy",
+            "number": 20,
+            "team": "minardi",
+            "lapTime": "1:21.713"
+          },
+          {
+            "pos": 20,
+            "driver": "giovanni-lavaggi",
+            "number": 21,
+            "team": "minardi",
+            "lapTime": "1:22.468"
+          }
+        ]
+      },
       "race": {
         "date": "1996-08-11T00:00:00Z",
         "endDate": "1996-08-11T04:00:00.000Z",
@@ -7729,6 +8501,152 @@
     "sprint": false,
     "cancelled": false,
     "sessions": {
+      "qualifying": {
+        "date": null,
+        "endDate": null,
+        "results": [
+          {
+            "pos": 1,
+            "driver": "jacques-villeneuve",
+            "number": 6,
+            "team": "williams",
+            "lapTime": "1:50.574"
+          },
+          {
+            "pos": 2,
+            "driver": "damon-hill",
+            "number": 5,
+            "team": "williams",
+            "lapTime": "1:50.980"
+          },
+          {
+            "pos": 3,
+            "driver": "michael-schumacher",
+            "number": 1,
+            "team": "ferrari",
+            "lapTime": "1:51.778"
+          },
+          {
+            "pos": 4,
+            "driver": "david-coulthard",
+            "number": 8,
+            "team": "mclaren",
+            "lapTime": "1:51.884"
+          },
+          {
+            "pos": 5,
+            "driver": "gerhard-berger",
+            "number": 4,
+            "team": "benetton",
+            "lapTime": "1:51.960"
+          },
+          {
+            "pos": 6,
+            "driver": "mika-hakkinen",
+            "number": 7,
+            "team": "mclaren",
+            "lapTime": "1:52.318"
+          },
+          {
+            "pos": 7,
+            "driver": "jean-alesi",
+            "number": 3,
+            "team": "benetton",
+            "lapTime": "1:52.354"
+          },
+          {
+            "pos": 8,
+            "driver": "martin-brundle",
+            "number": 12,
+            "team": "jordan",
+            "lapTime": "1:52.977"
+          },
+          {
+            "pos": 9,
+            "driver": "eddie-irvine",
+            "number": 2,
+            "team": "ferrari",
+            "lapTime": "1:53.043"
+          },
+          {
+            "pos": 10,
+            "driver": "rubens-barrichello",
+            "number": 11,
+            "team": "jordan",
+            "lapTime": "1:53.152"
+          },
+          {
+            "pos": 11,
+            "driver": "heinz-harald-frentzen",
+            "number": 15,
+            "team": "sauber",
+            "lapTime": "1:53.199"
+          },
+          {
+            "pos": 12,
+            "driver": "johnny-herbert",
+            "number": 14,
+            "team": "sauber",
+            "lapTime": "1:53.993"
+          },
+          {
+            "pos": 13,
+            "driver": "mika-salo",
+            "number": 19,
+            "team": "tyrrell",
+            "lapTime": "1:54.095"
+          },
+          {
+            "pos": 14,
+            "driver": "olivier-panis",
+            "number": 9,
+            "team": "ligier",
+            "lapTime": "1:54.220"
+          },
+          {
+            "pos": 15,
+            "driver": "pedro-diniz",
+            "number": 10,
+            "team": "ligier",
+            "lapTime": "1:54.700"
+          },
+          {
+            "pos": 16,
+            "driver": "jos-verstappen",
+            "number": 17,
+            "team": "footwork",
+            "lapTime": "1:55.150"
+          },
+          {
+            "pos": 17,
+            "driver": "ukyo-katayama",
+            "number": 18,
+            "team": "tyrrell",
+            "lapTime": "1:55.371"
+          },
+          {
+            "pos": 18,
+            "driver": "ricardo-rosset",
+            "number": 16,
+            "team": "footwork",
+            "lapTime": "1:56.286"
+          },
+          {
+            "pos": 19,
+            "driver": "pedro-lamy",
+            "number": 20,
+            "team": "minardi",
+            "lapTime": "1:56.830"
+          },
+          {
+            "pos": 20,
+            "driver": "giovanni-lavaggi",
+            "number": 21,
+            "team": "minardi-ford",
+            "lapTime": "1:58.579"
+          }
+        ]
+      },
       "race": {
         "date": "1996-08-25T00:00:00Z",
         "endDate": "1996-08-25T04:00:00.000Z",
@@ -8243,6 +9161,152 @@
     "sprint": false,
     "cancelled": false,
     "sessions": {
+      "qualifying": {
+        "date": null,
+        "endDate": null,
+        "results": [
+          {
+            "pos": 1,
+            "driver": "damon-hill",
+            "number": 5,
+            "team": "williams",
+            "lapTime": "1:24.204"
+          },
+          {
+            "pos": 2,
+            "driver": "jacques-villeneuve",
+            "number": 6,
+            "team": "williams",
+            "lapTime": "1:24.521"
+          },
+          {
+            "pos": 3,
+            "driver": "michael-schumacher",
+            "number": 1,
+            "team": "ferrari",
+            "lapTime": "1:24.781"
+          },
+          {
+            "pos": 4,
+            "driver": "mika-hakkinen",
+            "number": 7,
+            "team": "mclaren",
+            "lapTime": "1:24.939"
+          },
+          {
+            "pos": 5,
+            "driver": "david-coulthard",
+            "number": 8,
+            "team": "mclaren",
+            "lapTime": "1:24.976"
+          },
+          {
+            "pos": 6,
+            "driver": "jean-alesi",
+            "number": 3,
+            "team": "benetton",
+            "lapTime": "1:25.201"
+          },
+          {
+            "pos": 7,
+            "driver": "eddie-irvine",
+            "number": 2,
+            "team": "ferrari",
+            "lapTime": "1:25.226"
+          },
+          {
+            "pos": 8,
+            "driver": "gerhard-berger",
+            "number": 4,
+            "team": "benetton",
+            "lapTime": "1:25.470"
+          },
+          {
+            "pos": 9,
+            "driver": "martin-brundle",
+            "number": 12,
+            "team": "jordan",
+            "lapTime": "1:26.037"
+          },
+          {
+            "pos": 10,
+            "driver": "rubens-barrichello",
+            "number": 11,
+            "team": "jordan",
+            "lapTime": "1:26.194"
+          },
+          {
+            "pos": 11,
+            "driver": "olivier-panis",
+            "number": 9,
+            "team": "ligier",
+            "lapTime": "1:26.206"
+          },
+          {
+            "pos": 12,
+            "driver": "johnny-herbert",
+            "number": 14,
+            "team": "sauber",
+            "lapTime": "1:26.345"
+          },
+          {
+            "pos": 13,
+            "driver": "heinz-harald-frentzen",
+            "number": 15,
+            "team": "sauber",
+            "lapTime": "1:26.505"
+          },
+          {
+            "pos": 14,
+            "driver": "pedro-diniz",
+            "number": 10,
+            "team": "ligier",
+            "lapTime": "1:26.726"
+          },
+          {
+            "pos": 15,
+            "driver": "jos-verstappen",
+            "number": 17,
+            "team": "footwork",
+            "lapTime": "1:27.270"
+          },
+          {
+            "pos": 16,
+            "driver": "ukyo-katayama",
+            "number": 18,
+            "team": "tyrrell",
+            "lapTime": "1:28.234"
+          },
+          {
+            "pos": 17,
+            "driver": "mika-salo",
+            "number": 19,
+            "team": "tyrrell",
+            "lapTime": "1:28.472"
+          },
+          {
+            "pos": 18,
+            "driver": "pedro-lamy",
+            "number": 20,
+            "team": "minardi",
+            "lapTime": "1:28.933"
+          },
+          {
+            "pos": 19,
+            "driver": "ricardo-rosset",
+            "number": 16,
+            "team": "footwork",
+            "lapTime": "1:29.181"
+          },
+          {
+            "pos": 20,
+            "driver": "giovanni-lavaggi",
+            "number": 21,
+            "team": "minardi",
+            "lapTime": "1:29.833"
+          }
+        ]
+      },
       "race": {
         "date": "1996-09-08T00:00:00Z",
         "endDate": "1996-09-08T04:00:00.000Z",
@@ -8765,6 +9829,152 @@
     "sprint": false,
     "cancelled": false,
     "sessions": {
+      "qualifying": {
+        "date": null,
+        "endDate": null,
+        "results": [
+          {
+            "pos": 1,
+            "driver": "damon-hill",
+            "number": 5,
+            "team": "williams",
+            "lapTime": "1:20.330"
+          },
+          {
+            "pos": 2,
+            "driver": "jacques-villeneuve",
+            "number": 6,
+            "team": "williams",
+            "lapTime": "1:20.339"
+          },
+          {
+            "pos": 3,
+            "driver": "jean-alesi",
+            "number": 3,
+            "team": "benetton",
+            "lapTime": "1:21.088"
+          },
+          {
+            "pos": 4,
+            "driver": "michael-schumacher",
+            "number": 1,
+            "team": "ferrari",
+            "lapTime": "1:21.236"
+          },
+          {
+            "pos": 5,
+            "driver": "gerhard-berger",
+            "number": 4,
+            "team": "benetton",
+            "lapTime": "1:21.293"
+          },
+          {
+            "pos": 6,
+            "driver": "eddie-irvine",
+            "number": 2,
+            "team": "ferrari",
+            "lapTime": "1:21.362"
+          },
+          {
+            "pos": 7,
+            "driver": "mika-hakkinen",
+            "number": 7,
+            "team": "mclaren",
+            "lapTime": "1:21.640"
+          },
+          {
+            "pos": 8,
+            "driver": "david-coulthard",
+            "number": 8,
+            "team": "mclaren",
+            "lapTime": "1:22.066"
+          },
+          {
+            "pos": 9,
+            "driver": "rubens-barrichello",
+            "number": 11,
+            "team": "jordan",
+            "lapTime": "1:22.205"
+          },
+          {
+            "pos": 10,
+            "driver": "martin-brundle",
+            "number": 12,
+            "team": "jordan",
+            "lapTime": "1:22.324"
+          },
+          {
+            "pos": 11,
+            "driver": "heinz-harald-frentzen",
+            "number": 15,
+            "team": "sauber",
+            "lapTime": "1:22.325"
+          },
+          {
+            "pos": 12,
+            "driver": "johnny-herbert",
+            "number": 14,
+            "team": "sauber",
+            "lapTime": "1:22.655"
+          },
+          {
+            "pos": 13,
+            "driver": "mika-salo",
+            "number": 19,
+            "team": "tyrrell",
+            "lapTime": "1:22.765"
+          },
+          {
+            "pos": 14,
+            "driver": "ukyo-katayama",
+            "number": 18,
+            "team": "tyrrell",
+            "lapTime": "1:23.013"
+          },
+          {
+            "pos": 15,
+            "driver": "olivier-panis",
+            "number": 9,
+            "team": "ligier",
+            "lapTime": "1:23.055"
+          },
+          {
+            "pos": 16,
+            "driver": "jos-verstappen",
+            "number": 17,
+            "team": "footwork",
+            "lapTime": "1:23.531"
+          },
+          {
+            "pos": 17,
+            "driver": "ricardo-rosset",
+            "number": 16,
+            "team": "footwork",
+            "lapTime": "1:24.230"
+          },
+          {
+            "pos": 18,
+            "driver": "pedro-diniz",
+            "number": 10,
+            "team": "ligier",
+            "lapTime": "1:24.293"
+          },
+          {
+            "pos": 19,
+            "driver": "pedro-lamy",
+            "number": 20,
+            "team": "minardi",
+            "lapTime": "1:24.510"
+          },
+          {
+            "pos": 20,
+            "driver": "giovanni-lavaggi",
+            "number": 21,
+            "team": "minardi",
+            "lapTime": "1:25.612"
+          }
+        ]
+      },
       "race": {
         "date": "1996-09-22T00:00:00Z",
         "endDate": "1996-09-22T04:00:00.000Z",
@@ -9288,6 +10498,152 @@
     "sprint": false,
     "cancelled": false,
     "sessions": {
+      "qualifying": {
+        "date": null,
+        "endDate": null,
+        "results": [
+          {
+            "pos": 1,
+            "driver": "jacques-villeneuve",
+            "number": 6,
+            "team": "williams",
+            "lapTime": "1:38.909"
+          },
+          {
+            "pos": 2,
+            "driver": "damon-hill",
+            "number": 5,
+            "team": "williams",
+            "lapTime": "1:39.370"
+          },
+          {
+            "pos": 3,
+            "driver": "michael-schumacher",
+            "number": 1,
+            "team": "ferrari",
+            "lapTime": "1:40.071"
+          },
+          {
+            "pos": 4,
+            "driver": "gerhard-berger",
+            "number": 4,
+            "team": "benetton",
+            "lapTime": "1:40.364"
+          },
+          {
+            "pos": 5,
+            "driver": "mika-hakkinen",
+            "number": 7,
+            "team": "mclaren",
+            "lapTime": "1:40.458"
+          },
+          {
+            "pos": 6,
+            "driver": "eddie-irvine",
+            "number": 2,
+            "team": "ferrari",
+            "lapTime": "1:41.005"
+          },
+          {
+            "pos": 7,
+            "driver": "heinz-harald-frentzen",
+            "number": 15,
+            "team": "sauber",
+            "lapTime": "1:41.277"
+          },
+          {
+            "pos": 8,
+            "driver": "david-coulthard",
+            "number": 8,
+            "team": "mclaren",
+            "lapTime": "1:41.384"
+          },
+          {
+            "pos": 9,
+            "driver": "jean-alesi",
+            "number": 3,
+            "team": "benetton",
+            "lapTime": "1:41.562"
+          },
+          {
+            "pos": 10,
+            "driver": "martin-brundle",
+            "number": 12,
+            "team": "jordan",
+            "lapTime": "1:41.600"
+          },
+          {
+            "pos": 11,
+            "driver": "rubens-barrichello",
+            "number": 11,
+            "team": "jordan",
+            "lapTime": "1:41.919"
+          },
+          {
+            "pos": 12,
+            "driver": "olivier-panis",
+            "number": 9,
+            "team": "ligier",
+            "lapTime": "1:42.206"
+          },
+          {
+            "pos": 13,
+            "driver": "johnny-herbert",
+            "number": 14,
+            "team": "sauber",
+            "lapTime": "1:42.658"
+          },
+          {
+            "pos": 14,
+            "driver": "ukyo-katayama",
+            "number": 18,
+            "team": "tyrrell",
+            "lapTime": "1:42.711"
+          },
+          {
+            "pos": 15,
+            "driver": "mika-salo",
+            "number": 19,
+            "team": "tyrrell",
+            "lapTime": "1:42.840"
+          },
+          {
+            "pos": 16,
+            "driver": "pedro-diniz",
+            "number": 10,
+            "team": "ligier",
+            "lapTime": "1:43.196"
+          },
+          {
+            "pos": 17,
+            "driver": "jos-verstappen",
+            "number": 17,
+            "team": "footwork",
+            "lapTime": "1:43.383"
+          },
+          {
+            "pos": 18,
+            "driver": "pedro-lamy",
+            "number": 20,
+            "team": "minardi",
+            "lapTime": "1:44.874"
+          },
+          {
+            "pos": 19,
+            "driver": "ricardo-rosset",
+            "number": 16,
+            "team": "footwork",
+            "lapTime": "1:45.412"
+          },
+          {
+            "pos": 20,
+            "driver": "giovanni-lavaggi",
+            "number": 21,
+            "team": "minardi-ford",
+            "lapTime": "1:46.795"
+          }
+        ]
+      },
       "race": {
         "date": "1996-10-13T00:00:00Z",
         "endDate": "1996-10-13T04:00:00.000Z",

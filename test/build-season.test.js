@@ -12,7 +12,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gunzipSync } from "node:zlib";
-import { practiceRows } from "../scripts/lib/formula1.ts";
+import { practiceRows, qualifyingRows } from "../scripts/lib/formula1.ts";
 
 const fixtures = fileURLToPath(new URL("fixtures/build-season/", import.meta.url));
 const gunzip = (file) => gunzipSync(readFileSync(join(fixtures, file))).toString();
@@ -73,5 +73,11 @@ describe("build-season", () => {
     const html = readFileSync(join(fixtures, "practice-2023-bahrain-fp1.html"), "utf8");
     const expected = JSON.parse(readFileSync(join(fixtures, "practice-2023-bahrain-fp1.expected.json"), "utf8"));
     assert.deepEqual(practiceRows(html), expected);
+  });
+
+  it("builds a two-session qualifying from each car's best lap (formula1.com, 1990)", () => {
+    const pages = [1, 2].map((q) => readFileSync(join(fixtures, `qualifying-1990-san-marino-q${q}.html`), "utf8"));
+    const expected = JSON.parse(readFileSync(join(fixtures, "qualifying-1990-san-marino.expected.json"), "utf8"));
+    assert.deepEqual(qualifyingRows(pages), expected);
   });
 });

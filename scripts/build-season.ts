@@ -1,17 +1,20 @@
 // Builds data/seasons/season{year}.json: races, qualifying and sprints from
-// Jolpica, practice (FP1-3) from formula1.com, and each GP's circuit.
+// Jolpica, practice (FP1-3) and the qualifying Jolpica lacks from
+// formula1.com, and each GP's circuit.
 //
 //   node scripts/build-season.ts <year>               the whole season
 //   --no-practice    without formula1.com (old years, or offline)
 //   --force          start over, discarding what the file had
 //   --grid           only add the starting grid to the races of an existing file
+//   --qualifying     only add the missing qualifying of an existing file, from formula1.com
 //   --dry-run        say what it would do, write nothing
 //   --out <file>     write somewhere else (the tests use it, see test/build-season.test.js)
 //
 // Over an existing file, nothing loaded before is lost: every session with
 // results stays, and only the gaps are filled (plus the races' starting grid,
 // where missing). --grid touches nothing else and costs ~1 request per GP:
-// with Jolpica's 500 an hour, about 20 seasons an hour.
+// with Jolpica's 500 an hour, about 20 seasons an hour. --qualifying doesn't
+// use Jolpica (1-3 formula1.com pages per GP without one).
 //
 // What's left incomplete (circuits to create, qualifying Jolpica doesn't have)
 // goes to _incomplete-{year}.txt next to the season file, rewritten each run.
@@ -19,7 +22,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { DATA, readJson } from './lib/data.ts';
-import { fetchPractice } from './lib/formula1.ts';
+import { fetchPractice, fetchQualifying } from './lib/formula1.ts';
 import { fetchSeason, type CircuitIssue } from './lib/jolpica.ts';
 
 type Row = Record<string, unknown> & { driver?: string; number?: number; grid?: number };
@@ -29,20 +32,21 @@ type Season = Record<string, GrandPrix>;
 
 // ── Command line ────────────────────────────────────────────────────────────
 function parseArgs(argv: string[]) {
-    const flags = { noPractice: false, force: false, grid: false, dryRun: false, out: '' };
+    const flags = { noPractice: false, force: false, grid: false, qualifying: false, dryRun: false, out: '' };
     let year = NaN;
     for (let i = 0; i < argv.length; i++) {
         const a = argv[i];
         if (a === '--no-practice') flags.noPractice = true;
         else if (a === '--force') flags.force = true;
         else if (a === '--grid') flags.grid = true;
+        else if (a === '--qualifying') flags.qualifying = true;
         else if (a === '--dry-run') flags.dryRun = true;
         else if (a === '--out') flags.out = argv[++i];
         else if (a.startsWith('--')) throw new Error(`Unknown option ${a}`);
         else year = Number(a);
     }
     if (!year) {
-        console.error('Usage: node scripts/build-season.ts <year> [--no-practice] [--force] [--grid] [--dry-run] [--out <file>]');
+        console.error('Usage: node scripts/build-season.ts <year> [--no-practice] [--force] [--grid] [--qualifying] [--dry-run] [--out <file>]');
         process.exit(1);
     }
     return { year, ...flags, out: flags.out || path.join(DATA, 'seasons', `season${year}.json`) };
@@ -127,6 +131,50 @@ function merge(fresh: Season, saved: Season): { season: Season; gridAdded: numbe
     return { season: Object.fromEntries(entries), gridAdded };
 }
 
+// Fills the qualifying Jolpica doesn't have from formula1.com. Each row
+// takes the driver and team ids of the same car number in that GP's race,
+// so the qualifying matches the race (poles, grid); a car that didn't make
+// the race (DNQ) keeps the ids formula1.com's names give. Returns how many
+// GPs it filled.
+async function addQualifying(season: Season, year: number): Promise<number> {
+    const missing = new Map(Object.entries(season)
+        .filter(([, gp]) => !gp.cancelled && gp.round != null && !hasResults(gp.sessions?.qualifying))
+        .map(([slug, gp]) => [gp.round as number, slug]));
+    if (!missing.size) return 0;
+    const fetched = await fetchQualifying(year, new Set(missing.keys()));
+    let n = 0;
+    for (const [round, rows] of Object.entries(fetched)) {
+        const gp = season[missing.get(Number(round))!];
+        const race = new Map((gp.sessions?.race?.results ?? []).map(r => [r.number, r]));
+        const results = rows.map(row => {
+            const same = race.get(row.number as number);
+            return same ? { ...row, driver: same.driver, team: same.team } : row;
+        });
+        const { qualifying: _, ...rest } = gp.sessions ?? {};
+        gp.sessions = { qualifying: { date: null, endDate: null, results }, ...rest };   // first, as Jolpica's
+        n++;
+    }
+    return n;
+}
+
+// ── --qualifying ────────────────────────────────────────────────────────────
+if (args.qualifying) {
+    if (!existing) {
+        console.error(`--qualifying needs an existing season file: ${args.out} doesn't exist. Build the season first.`);
+        process.exit(1);
+    }
+    console.log('\n── formula1.com: missing qualifying ──');
+    const added = await addQualifying(existing, args.year);
+    console.log(`  ${added} GP(s) with qualifying added`);
+    if (args.dryRun) console.log('\n(--dry-run: nothing is written)');
+    else if (!added) console.log('\nNothing to write.');
+    else {
+        write(existing);
+        console.log(`\nWritten: ${args.out}\n\nRemember to regenerate careers.json:  node scripts/build-careers.ts`);
+    }
+    process.exit(0);
+}
+
 // ── --grid ──────────────────────────────────────────────────────────────────
 if (args.grid) {
     if (!existing) {
@@ -171,7 +219,7 @@ if (existing && !args.force) {
 
 if (args.noPractice) console.log('\n── 2/3 · practice (FP1-3): skipped (--no-practice) ──');
 else {
-    console.log('\n── 2/3 · practice (FP1-3) from formula1.com ──');
+    console.log('\n── 2/3 · practice (FP1-3) and missing qualifying from formula1.com ──');
     try {
         const practice = await fetchPractice(args.year);
         const slugByRound = new Map(Object.entries(season).map(([slug, gp]) => [gp.round, slug]));
@@ -185,6 +233,8 @@ else {
             n++;
         }
         console.log(`  ${n} race(s) with FP added`);
+        const q = await addQualifying(season, args.year);
+        if (q) console.log(`  ${q} race(s) with qualifying added (Jolpica doesn't have it)`);
     } catch (err) {
         console.warn(`  ! couldn't scrape practice: ${(err as Error).message}`);
     }
