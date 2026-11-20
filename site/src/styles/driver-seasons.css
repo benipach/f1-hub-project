@@ -1,0 +1,92 @@
+/* The driver profile's seasons, race by race (components/driver/DriverSeasons.astro).
+   The header (.sec-head) is f1.css's; the column header (.col-h) is hero.css's. */
+
+/* One panel per season: the one targeted by #season-<year>, or the featured one */
+.dseason { display: none; padding: 72px 0 80px; background: var(--base-700); }
+.dseason:target, .dseasons:not(:has(.dseason:target)) .dseason--featured { display: block; }
+
+/* the seasons: the navbar's links, the one shown underlined in red */
+.years { display: flex; flex-wrap: wrap; gap: 4px 22px; margin-top: 30px; }
+.years a { padding: 6px 0; font-size: 16px; color: var(--dim); text-decoration: none; border-bottom: 3px solid transparent; }
+.years a:hover { color: #fff; }
+.years a[aria-current] { color: #fff; font-weight: 700; border-bottom-color: var(--red); }
+
+.dseason__cols { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 20px; margin-top: 28px; align-items: start; }
+.dseason__col { border-top: 3px solid #fff; padding-top: 12px; }
+.dseason .col-h { align-items: baseline; margin-bottom: 6px; }
+.dseason__side { display: grid; gap: 36px; }
+
+/* the rounds: the timing table */
+.rr__th, .rr { --cols: 64px 64px 56px 150px 44px 52px; }
+.dseason--sprints .rr__th, .dseason--sprints .rr { --cols: 64px 64px 56px 132px 150px 44px 52px; }
+.rr__th { display: grid; grid-template-columns: var(--cols); gap: 0 12px; margin-right: 4px; font-weight: 400; font-size: 11px; color: var(--dim); }
+.rr__th i { font-style: normal; text-align: right; }
+.rr__th i.l, .rr__th i:nth-last-child(3) { text-align: left; }
+.dseason--sprints .rr__th i:nth-child(4) { padding-left: 42px; text-align: left; }
+.rr {
+    display: grid; grid-template-columns: 26px 26px minmax(0, 1fr) var(--cols); align-items: center; gap: 0 12px;
+    min-height: 40px; padding: 4px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums;
+}
+.rr__rd { font-weight: 700; font-size: 13px; color: var(--dim); text-align: right; white-space: nowrap; }
+.rr__flag { width: 26px; height: auto; border-radius: 2px; }
+.rr__gp { overflow: hidden; font-weight: 700; font-size: 15px; text-transform: uppercase; color: #fff; white-space: nowrap; text-overflow: ellipsis; }
+.rr__gp small { margin-left: 8px; font-weight: 400; font-size: 11px; color: var(--dim); }
+.rr__n { font-weight: 700; font-size: 15px; color: var(--text); text-align: right; white-space: nowrap; }
+.rr__dim { font-weight: 400; color: var(--dim); }
+.rr__fin, .rr__tot { color: #fff; }
+.rr__out { font-size: 13px; color: var(--dim); }
+/* places made from the grid (components/driver/Places.astro), in the race and the sprint */
+.rr__d { font-weight: 700; font-size: 15px; }
+.places { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; }
+.places .tri { width: 9px; height: 7px; fill: currentColor; }
+.places.up { color: var(--green); }
+.places.down { color: var(--red); }
+.places.same { color: var(--dim); }
+/* the sprint: finish, places made, points */
+.rr__spr { display: grid; grid-template-columns: 34px 40px auto; align-items: center; gap: 0 8px; font-size: 14px; white-space: nowrap; }
+.rr__spr-fin { color: var(--text); text-align: right; }
+.rr__spr-fin.rr__out { font-size: 12px; }
+.rr__spr .places { grid-column: 2; }
+.rr__spr-pts { grid-column: 3; color: var(--dim); }
+.rr__note { font-size: 12px; text-transform: uppercase; color: var(--text); white-space: nowrap; }
+.rr__note .fl { color: var(--purple); }
+.rr--win { background: rgba(225, 6, 0, .12); }
+.rr--dim { grid-template-columns: 26px 26px minmax(0, 1fr) auto; }
+.rr--dim .rr__gp, .rr--dim .rr__note { color: var(--dim); }
+
+/* the teammate: three split bars, his share in white */
+.vs { margin: 8px 0 14px; font: 28px/1 'F1 Black'; text-transform: uppercase; color: var(--dim); }
+.vs b { font-weight: 400; color: #fff; }
+.vs span { font: 13px 'F1', system-ui, sans-serif; vertical-align: middle; }
+.du { display: grid; grid-template-columns: 90px 40px minmax(0, 1fr) 40px; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.du:last-child { border-bottom: 0; }
+.du__l { font-size: 12px; text-transform: uppercase; color: var(--dim); }
+.du b { font-weight: 700; font-size: 18px; color: #fff; text-align: center; }
+.du b.lo { font-weight: 400; color: var(--dim); }
+.du__bar { display: flex; gap: 3px; height: 6px; }
+.du__bar i { border-radius: 3px; background: #fff; }
+.du__bar i + i { background: var(--base-600); }
+
+.mini { display: grid; grid-template-columns: 1fr 1fr; margin: 6px 0 0; }
+.mini div { padding: 6px 14px 0; border-left: 1px solid var(--rule); }
+.mini div:first-child { padding-left: 0; border-left: 0; }
+.mini dd { margin: 0; font-weight: 700; font-size: 32px; color: #fff; }
+.mini dd.up { color: var(--green); }
+.mini dt { font-size: 12px; line-height: 1.35; text-transform: uppercase; color: var(--dim); }
+
+@media (max-width: 1100px) {
+    .dseason__cols { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+}
+@media (max-width: 760px) {
+    .dseason { padding: 48px 0 56px; }
+    .dseason .sec-facts { display: grid; grid-template-columns: repeat(3, 1fr); row-gap: 12px; }
+    .dseason .sec-facts div:nth-child(3n+1) { padding-left: 0; border-left: 0; }
+    .dseason .sec-facts div { padding-right: 10px; }
+    .dseason .sec-facts dd { font-size: 24px; }
+    .years { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    /* the rounds on a phone: round, flag, Grand Prix, finish, points */
+    .rr__th { display: none; }
+    .rr { grid-template-columns: 22px 22px minmax(0, 1fr) 48px 40px; }
+    .rr__dim, .rr__d, .rr__spr, .rr:not(.rr--dim) .rr__note, .rr__tot { display: none; }
+    .rr--dim { grid-template-columns: 22px 22px minmax(0, 1fr) auto; }
+}

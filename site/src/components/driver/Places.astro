@@ -1,0 +1,16 @@
+---
+// Places made from the grid, as the driver profile's season table shows them
+// (owner, 20/11/2026): a small triangle, green up or red down, with the count;
+// a gray bar as wide as the triangle when level; nothing without a grid or
+// for a retirement. Used for the race and for the sprint.
+interface Props {
+    /** grid − finish; null when there's nothing to compare. */
+    delta: number | null;
+}
+
+const { delta } = Astro.props;
+---
+
+{delta !== null && delta > 0 && <span class="places up"><svg class="tri" viewBox="0 0 10 8" aria-hidden="true"><path d="M5 0L10 8H0z" /></svg>{delta}</span>}
+{delta !== null && delta < 0 && <span class="places down"><svg class="tri" viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>{-delta}</span>}
+{delta === 0 && <span class="places same"><svg class="tri" viewBox="0 0 10 8" aria-hidden="true"><rect y="3" width="10" height="2" /></svg></span>}

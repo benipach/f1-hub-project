@@ -11,7 +11,7 @@ import '../../styles/hero.css';
 import '../../styles/driver-hero.css';
 import TeamMark from '../TeamMark.astro';
 import { useI18n } from '../../i18n';
-import type { DriverProfile, DriverSeason } from '../../lib/driver';
+import { featuredSeason, type DriverProfile } from '../../lib/driver';
 import { href } from '../../lib/paths';
 
 interface Props {
@@ -52,10 +52,7 @@ const figs = [
     { v: n(T.seasons), l: plural(f.seasons, T.seasons) },
 ].filter((x): x is { v: string; l: string; note?: string } => Boolean(x)).slice(0, 5);
 
-// The season: the one on now, or the best he finished (position, wins, latest)
-const best = [...D.seasons].filter((s) => s.done)
-    .sort((a, b) => (a.pos ?? 99) - (b.pos ?? 99) || b.wins - a.wins || b.year - a.year)[0];
-const S: DriverSeason = D.active ? D.seasons.at(-1)! : best ?? D.seasons.at(-1)!;
+const S = featuredSeason(D);
 const raced = S.rounds.filter((r) => !r.upcoming).length;
 const left = S.rounds.filter((r) => r.upcoming);
 // Still in play under the current rules: 25 a race, 8 a sprint
@@ -65,10 +62,7 @@ const gap = S.rival ? (leads ? `+${n(S.pts - S.rival.pts)}` : `−${n(S.rival.pt
 const seasonTeam = S.teams.at(-1);
 
 // His last five races, newest first
-const last = D.seasons.flatMap((s) => s.rounds.filter((r) => !r.upcoming && !r.missed).map((r) => ({ year: s.year, r }))).slice(-5).reverse();
-// "Brazilian GP" → "Brazilian", "GP de Brasil" → "Brasil"
-const nameOf = (gp: string) => gp.replace(/\bGP\b/, '').trim().replace(/^de\s+/, '');
----
+const last = D.seasons.flatMap((s) => s.rounds.filter((r) => !r.upcoming && !r.missed).map((r) => ({ year: s.year, r }))).slice(-5).reverse();---
 
 <section class="hero hero--driver">
     <div class="wrap">
@@ -119,7 +113,7 @@ const nameOf = (gp: string) => gp.replace(/\bGP\b/, '').trim().replace(/^de\s+/,
                     <div><b>{S.podiums}</b><span>{plural(f.podiums, S.podiums)}</span></div>
                     <div><b>{S.poles}</b><span>{plural(f.poles, S.poles)}</span></div>
                 </div>
-                <a class="btn btn--ghost" href="#season">{D.active ? h.raceByRace : fill(h.yearRaceByRace, { year: S.year })} →</a>
+                <a class="btn btn--ghost" href={`#season-${S.year}`}>{D.active ? h.raceByRace : fill(h.yearRaceByRace, { year: S.year })} →</a>
             </div>
             <div class="col">
                 <p class="col-h"><span>{D.active ? h.lastRaces : h.lastRacesEver}</span><span>{h.resultPoints}</span></p>
@@ -127,7 +121,7 @@ const nameOf = (gp: string) => gp.replace(/\bGP\b/, '').trim().replace(/^de\s+/,
                     <div class:list={['row', 'row--race', { 'row--win': r.pos === 1 && !r.out }]}>
                         <span class:list={['row__pos', { 'row__pos--out': r.out }]}>{r.out ?? r.pos}</span>
                         {r.iso ? <img class="row__flag" src={href(`img/flags/${r.iso.toLowerCase()}.svg`)} alt="" width="26" height="18" loading="lazy" /> : <span></span>}
-                        <span class="row__drv">{nameOf(r.gp)}{!D.active && <i> {year}</i>}</span>
+                        <span class="row__drv">{r.short}{!D.active && <i> {year}</i>}</span>
                         <span class="row__gap">{r.pts ? `+${n(r.pts)}` : '0'}</span>
                     </div>
                 ))}

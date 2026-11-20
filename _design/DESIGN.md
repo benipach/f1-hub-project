@@ -173,6 +173,19 @@ profile stays at `/descartado/poster/driver/<id>/` for reference):
   only for the drivers with those facts. A career that starts in 1990 (the
   archive's first season) says "First race on record" and has no age at the
   debut, until 1950–1989 are loaded.
+- **Seasons, race by race** (`driver/DriverSeasons.astro`,
+  `styles/driver-seasons.css`): one panel per season he raced, all built into
+  the page (`#season-<year>`); **the year links are plain anchors and CSS shows
+  the targeted panel** (`:target`, or the featured season when none: the one
+  on now, or his best), no script. Header with the season's numbers (the
+  position in red for a title); the years under it like the navbar's links,
+  the one shown underlined in red. A row per round: round, flag, Grand Prix
+  (+ "Sprint"), grid, finish, **places made as a small SVG triangle, green up
+  or red down, with the count; a gray bar as wide as the triangle when level**,
+  sprint result with the same triangle against its own grid (the column exists only in seasons with sprints, so never
+  before 2021), "Pole" and "Fastest lap" (purple), points, running total; wins
+  with the red tint; rounds to come as one row. On the right, the teammate
+  (three split bars: qualifying, race, points) and racecraft.
 
 ## 6. What was tried and rejected
 

@@ -34,6 +34,8 @@ export type DriverRound = {
     readonly full: string;
     /** "Australian GP", in the page's language. */
     readonly gp: string;
+    /** "Australian" ("Australia" in Spanish): the name alone, for tables. */
+    readonly short: string;
     /** ISO code of the country where it's held, for the flag. */
     readonly iso: string | null;
     readonly upcoming: boolean;
@@ -342,6 +344,13 @@ export function driverIds(dataDir: URL): string[] {
     return Object.keys(context(dataDir).careers);
 }
 
+/** The season the profile opens on: the one on now, or the best he finished (position, wins, latest). */
+export function featuredSeason(D: Pick<DriverProfile, 'active' | 'seasons'>): DriverSeason {
+    const best = [...D.seasons].filter((s) => s.done)
+        .sort((a, b) => (a.pos ?? 99) - (b.pos ?? 99) || b.wins - a.wins || b.year - a.year)[0];
+    return D.active ? D.seasons.at(-1)! : best ?? D.seasons.at(-1)!;
+}
+
 /** One driver's profile; Grand Prix and country names in the page's language. */
 export function buildDriver(dataDir: URL, id: string, locale: string): DriverProfile {
     const ctx = context(dataDir);
@@ -356,6 +365,8 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
     // "Gran Premio de Australia" and "GP de Australia" in Spanish
     const fullOf = (r: Round) => names.gp(r.id, r.name);
     const gpOf = (r: Round) => fullOf(r).replace(/Grand Prix|Gran Premio/, 'GP');
+    // "Australian Grand Prix" → "Australian", "Gran Premio de Australia" → "Australia"
+    const shortOf = (r: Round) => fullOf(r).replace(/\s*Grand Prix\b/, '').replace(/^Gran Premio\s+(de\s+)?/, '').trim();
     const seasonOf = (year: number) => ctx.seasons.get(year)!;
 
     const numberYears: { number: number; years: number[] }[] = [];
@@ -375,7 +386,7 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
         const S = seasonOf(year);
         const rounds = S.rounds.map((r): DriverRound => {
             const x = r.rows.find((row) => row.driver === id);
-            const common = { round: r.round, full: fullOf(r), gp: gpOf(r), iso: r.iso, field: r.field, sprintWeekend: r.sprint };
+            const common = { round: r.round, full: fullOf(r), gp: gpOf(r), short: shortOf(r), iso: r.iso, field: r.field, sprintWeekend: r.sprint };
             const blank = { team: null, grid: null, pos: null, out: null, pts: 0, racePts: 0, sprint: null, fl: false, pole: false };
             if (!r.raced) return { ...common, ...blank, upcoming: true, missed: false };
             if (!x) return { ...common, ...blank, upcoming: false, missed: true };

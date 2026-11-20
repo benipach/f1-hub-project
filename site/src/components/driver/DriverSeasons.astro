@@ -1,0 +1,151 @@
+---
+// The driver profile's section 3, one season race by race (approved
+// 20/11/2026, mockup in the owner's copy: _design/driver-f1/season.html).
+//
+// Every season he raced is built into the page, one panel each
+// (#season-<year>). The year links are plain anchors and CSS shows the panel
+// targeted, or the featured one (lib/driver.ts featuredSeason) when none is:
+// no browser script.
+import '../../styles/hero.css';
+import '../../styles/driver-seasons.css';
+import { useI18n } from '../../i18n';
+import { featuredSeason, type DriverProfile, type DriverRound, type DriverSeason } from '../../lib/driver';
+import { href } from '../../lib/paths';
+import Places from './Places.astro';
+
+interface Props {
+    driver: DriverProfile;
+}
+
+const { driver: D } = Astro.props;
+const { t, fill, plural, intl } = useI18n(Astro.currentLocale);
+const w = t.driverSeason;
+const f = t.driver.figs;
+const num = new Intl.NumberFormat(intl);
+const n = (v: number) => num.format(v);
+const featured = featuredSeason(D).year;
+const years = [...D.seasons].map((s) => s.year).reverse();
+
+type Row =
+    | { kind: 'race'; r: DriverRound; total: number; delta: number | null }
+    | { kind: 'dim'; from: DriverRound; to: DriverRound; count: number; label: string };
+
+// A season's rows: each round raced, and each run of rounds to come (or not
+// raced) as one row
+function rowsOf(s: DriverSeason): Row[] {
+    const rows: Row[] = [];
+    let total = 0;
+    const rs = s.rounds;
+    for (let i = 0; i < rs.length; i++) {
+        const r = rs[i]!;
+        if (r.upcoming || r.missed) {
+            let j = i;
+            while (rs[j + 1] && rs[j + 1]!.upcoming === r.upcoming && rs[j + 1]!.missed === r.missed) j++;
+            rows.push({ kind: 'dim', from: r, to: rs[j]!, count: j - i + 1, label: r.upcoming ? w.toCome : w.didNotRace });
+            i = j;
+            continue;
+        }
+        total += r.pts;
+        rows.push({ kind: 'race', r, total, delta: !r.out && r.grid && r.pos ? r.grid - r.pos : null });
+    }
+    return rows;
+}
+
+const seasons = D.seasons.map((s) => {
+    const sprints = s.rounds.some((r) => r.sprintWeekend);
+    const rows = rowsOf(s);
+    const out = s.rounds.filter((r) => !r.upcoming && !r.missed && r.out).length;
+    const head = [
+        { v: s.pos ? `P${s.pos}` : '—', l: s.champion ? w.champion : s.done ? w.championship : w.championshipNow, red: s.champion },
+        { v: n(s.pts), l: w.points },
+        { v: String(s.wins), l: plural(f.wins, s.wins) },
+        { v: String(s.podiums), l: plural(f.podiums, s.podiums) },
+        { v: String(s.poles), l: plural(f.poles, s.poles) },
+        { v: String(s.fls), l: plural(f.fastestLaps, s.fls) },
+    ];
+    return { s, sprints, rows, out, head };
+});
+
+const range = (a: number, b: number) => (a === b ? `${a}` : `${a}–${b}`);
+const sprintDelta = (sp: NonNullable<DriverRound['sprint']>) => (!sp.out && sp.grid && sp.pos ? sp.grid - sp.pos : null);
+---
+
+<section class="dseasons" aria-label={w.kicker}>
+    {seasons.map(({ s, sprints, rows, out, head }) => (
+        <div class:list={['dseason', { 'dseason--featured': s.year === featured, 'dseason--sprints': sprints }]} id={`season-${s.year}`}>
+            <div class="wrap">
+                <div class="sec-head">
+                    <div><p class="sec-k">{w.kicker}</p><h2 class="sec-title">{fill(w.title, { year: s.year })}</h2></div>
+                    <dl class="sec-facts">{head.map((x) => <div><dd class:list={{ red: x.red }}>{x.v}</dd><dt>{x.l}</dt></div>)}</dl>
+                </div>
+                {years.length > 1 && (
+                    <nav class="years" aria-label={w.seasons}>
+                        {years.map((y) => <a href={`#season-${y}`} aria-current={y === s.year ? 'true' : undefined}>{y}</a>)}
+                    </nav>
+                )}
+                <div class="dseason__cols">
+                    <div class="dseason__col">
+                        <p class="col-h">
+                            <span>{s.teams.map((tm) => tm.name).join(' · ')} · {plural(w.rounds, s.rounds.length)}</span>
+                            <span class="rr__th">
+                                <i>{w.cols.grid}</i><i>{w.cols.finish}</i><i class="l">{w.cols.places}</i>{sprints && <i>{w.cols.sprint}</i>}<i></i><i>{w.cols.pts}</i><i>{w.cols.total}</i>
+                            </span>
+                        </p>
+                        {rows.map((row) => row.kind === 'dim' ? (
+                            <div class="rr rr--dim">
+                                <span class="rr__rd">{range(row.from.round, row.to.round)}</span>
+                                {row.count === 1 && row.from.iso ? <img class="rr__flag" src={href(`img/flags/${row.from.iso.toLowerCase()}.svg`)} alt="" width="26" height="18" loading="lazy" /> : <span></span>}
+                                <span class="rr__gp">{row.count === 1 ? row.from.short : plural(w.gps, row.count)}</span>
+                                <span class="rr__note">{row.label}</span>
+                            </div>
+                        ) : (
+                            <div class:list={['rr', { 'rr--win': !row.r.out && row.r.pos === 1 }]}>
+                                <span class="rr__rd">{row.r.round}</span>
+                                {row.r.iso ? <img class="rr__flag" src={href(`img/flags/${row.r.iso.toLowerCase()}.svg`)} alt="" width="26" height="18" loading="lazy" /> : <span></span>}
+                                <span class="rr__gp">{row.r.short}{row.r.sprintWeekend && <small>{w.cols.sprint}</small>}</span>
+                                <span class="rr__n rr__dim">{row.r.grid ? `P${row.r.grid}` : '—'}</span>
+                                <span class:list={['rr__n rr__fin', { rr__out: row.r.out }]}>{row.r.out ?? `P${row.r.pos}`}</span>
+                                <span class="rr__d"><Places delta={row.delta} /></span>
+                                {sprints && (
+                                    <span class="rr__spr">
+                                        {row.r.sprint && <>
+                                            <span class:list={['rr__spr-fin', { rr__out: row.r.sprint.out }]}>{row.r.sprint.out ?? `P${row.r.sprint.pos}`}</span>
+                                            <Places delta={sprintDelta(row.r.sprint)} />
+                                            {row.r.sprint.pts > 0 && <span class="rr__spr-pts">+{n(row.r.sprint.pts)}</span>}
+                                        </>}
+                                    </span>
+                                )}
+                                <span class="rr__note">{row.r.pole && w.pole}{row.r.pole && row.r.fl && ' · '}{row.r.fl && <span class="fl">{w.fastestLap}</span>}</span>
+                                <span class="rr__n">{row.r.racePts ? `+${n(row.r.racePts)}` : '0'}</span>
+                                <span class="rr__n rr__tot">{n(row.total)}</span>
+                            </div>
+                        ))}
+                    </div>
+                    <div class="dseason__side">
+                        {s.mate && (
+                            <div class="dseason__col">
+                                <p class="col-h"><span>{w.teammate}</span><span>{plural(w.together, s.mate.together)}</span></p>
+                                <p class="vs"><b>{D.last}</b> <span>{w.vs}</span> {s.mate.last}</p>
+                                {([[w.qualifying, s.mate.quali], [w.race, s.mate.race], [w.points, s.mate.pts]] as const).map(([label, [a, b]]) => (
+                                    <div class="du">
+                                        <span class="du__l">{label}</span>
+                                        <b class:list={{ lo: a < b }}>{n(Math.round(a))}</b>
+                                        <span class="du__bar"><i style={`flex: ${a || 0.0001}`}></i><i style={`flex: ${b || 0.0001}`}></i></span>
+                                        <b class:list={{ lo: b <= a }}>{n(Math.round(b))}</b>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                        <div class="dseason__col">
+                            <p class="col-h"><span>{w.racecraft}</span></p>
+                            <dl class="mini">
+                                {s.hasGrid && <div><dd class="up">+{s.gained}</dd><dt>{w.gained}<br />{w.gainedSub}</dt></div>}
+                                <div><dd>{out}</dd><dt>{plural(w.retirements, out)}</dt></div>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    ))}
+</section>
