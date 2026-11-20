@@ -310,6 +310,30 @@ export default {
     // The driver profile (DESIGN.md, "Driver profile"). The season panel and
     // the boards are drawn again in the browser: driver-view.ts gets this
     // part as JSON.
+    driverHero: {
+        kicker: 'Driver',
+        yearsOld: '{n} years old',
+        diedAged: 'Died aged {n}',
+        onTheGrid: 'On the grid',
+        lastRaced: 'Last raced {year}',
+        nationality: 'Nationality',
+        teamSince: 'Team · since {year}',
+        lastTeam: 'Last team · {years}',
+        season: 'Season {year}',
+        bestSeason: 'Best season · {year}',
+        champion: 'World Champion',
+        inChampionship: 'In the championship',
+        points: 'Points',
+        round: 'Round {n} / {total}',
+        toGo: '{n} to go · {pts} points in play',
+        toLeader: 'To the leader',
+        aheadOf: 'Ahead of {name}',
+        raceByRace: 'The season race by race',
+        yearRaceByRace: '{year} race by race',
+        lastRaces: 'Last races',
+        lastRacesEver: 'Last races in F1',
+        resultPoints: 'Result · points',
+    },
     driver: {
         meta: '{name}: F1 career, every season and every race | F1 Hub',
         description: '{name} in Formula 1: {races} races, {wins} wins, {podiums} podiums. Every season and every race, start against finish.',

@@ -1,0 +1,15 @@
+---
+// Scrapped content: the poster driver profile (components/poster/DriverPage.astro),
+// English only, kept as a reference while the new profile is built section by section.
+import DriverPage from '../../../../components/poster/DriverPage.astro';
+import { DATA_DIR } from '../../../../lib/data';
+import { driverIds } from '../../../../lib/driver';
+
+export function getStaticPaths() {
+    return driverIds(DATA_DIR).map((id) => ({ params: { id } }));
+}
+
+const { id } = Astro.params;
+---
+
+<DriverPage id={id} />

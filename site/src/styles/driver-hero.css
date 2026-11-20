@@ -1,0 +1,63 @@
+/* The driver profile's hero (components/driver/DriverHero.astro): what it adds
+   to the homepage hero's pieces (hero.css). */
+
+/* ── top band: number, name, country and team; the cutout on the right ── */
+.ident--driver { position: relative; grid-template-columns: minmax(0, 1fr) 380px; align-items: stretch; min-height: 330px; }
+.ident--nophoto { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+.ident--driver .who { align-self: center; }
+.name { min-width: 0; }
+.kicker .on { display: inline-flex; align-items: center; gap: 7px; color: var(--red); }
+.kicker .on::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--red); }
+
+/* country and team, as present as the name: the real flag and logo */
+.tags { display: flex; flex-wrap: wrap; gap: 14px 0; margin-top: 20px; }
+.tag { display: flex; align-items: center; gap: 14px; padding: 0 32px 0 24px; border-left: 1px solid var(--rule); }
+.tag:first-child { padding-left: 0; border-left: 0; }
+.tag__flag { width: auto; height: 40px; border-radius: 3px; }
+.tag .team-mark { width: 44px; height: 44px; object-fit: contain; }
+.tag b { display: block; font-weight: 700; font-size: 24px; line-height: 1.1; text-transform: uppercase; color: #fff; }
+.tag small { display: block; margin-top: 3px; font-size: 12px; text-transform: uppercase; color: var(--dim); }
+.facts dt { white-space: nowrap; }
+
+/* the cutout, head to chest, standing on the bottom band's heavy rule */
+.cutout { position: relative; overflow: hidden; margin-top: -40px; }
+.cutout img { position: absolute; left: 50%; top: 34px; width: 300px; height: auto; transform: translateX(-50%); }
+.cutout::after { content: ''; position: absolute; inset: auto 0 0; height: 90px; background: linear-gradient(transparent, var(--base-700)); }
+
+/* ── bottom band: the season and the last races ──────────────────────── */
+.hero--driver .session h2 small { display: block; margin-top: 8px; font: 11px 'F1', system-ui, sans-serif; text-transform: uppercase; color: var(--dim); }
+.bar--done i { background: rgba(255, 255, 255, .55); }
+
+/* last races: the timing table with the flag where the team logo goes */
+.row--race { grid-template-columns: 40px 26px minmax(0, 1fr) auto; height: 38px; }
+.row--race:last-child { border-bottom: 0; }
+.row__pos--out { font-size: 13px; color: var(--dim); }
+.row__flag { width: 26px; height: auto; border-radius: 2px; }
+.row--race .row__drv { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.row__drv i { font-style: normal; color: var(--dim); }
+.row--race .row__gap { min-width: 44px; }
+.row--win { background: rgba(225, 6, 0, .12); }
+
+/* ── narrower screens ─────────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+    .ident--driver { grid-template-columns: minmax(0, 1fr) 260px; gap: 24px; }
+    .ident--nophoto { grid-template-columns: minmax(0, 1fr); }
+    .cutout img { width: 240px; }
+    .ident--driver .facts { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; row-gap: 14px; }
+    .ident--driver .facts div:nth-child(4) { padding-left: 0; border-left: 0; }
+}
+@media (max-width: 760px) {
+    .ident--driver { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+    .cutout { display: none; }
+    .ident--driver .who { grid-template-columns: minmax(0, 1fr); }
+    .ident--driver .round { grid-row: auto; margin: 0 0 14px; }
+    .ident--driver .gp { font-size: min(48px, 11.5vw); }
+    .tags { flex-direction: column; }
+    .tag { padding: 0; border-left: 0; }
+    .tag__flag, .tag .team-mark { width: 48px; height: 36px; object-fit: contain; object-position: left center; }
+    .tag b { font-size: 20px; }
+    .ident--driver .facts { grid-template-columns: 1fr 1fr; }
+    .ident--driver .facts div { padding-left: 0; border-left: 0; }
+    .facts dt { white-space: normal; }
+    .hero--driver .part__lbl { flex-direction: column; gap: 4px; }
+}

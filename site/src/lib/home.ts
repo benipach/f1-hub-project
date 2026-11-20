@@ -180,6 +180,12 @@ export function driverPhoto(repoRoot: URL, driverId: string): string | null {
     return existsSync(new URL(path, repoRoot)) ? path : null;
 }
 
+/** The driver's full-body cutout (transparent background), if img/drivers has one. */
+export function driverCutout(repoRoot: URL, driverId: string): string | null {
+    const path = `img/drivers/${driverId.split('-').pop()}.png`;
+    return existsSync(new URL(path, repoRoot)) ? path : null;
+}
+
 /** The team's logo, if img/teams has one (same file the old pages use). */
 export function teamLogo(repoRoot: URL, teamId: string): string | null {
     const path = `img/teams/${teamId}-logo.png`;

@@ -10,7 +10,7 @@
 import { loadCareers, loadCircuits, loadCities, loadCountries, loadDrivers, loadGrandsPrix, loadLatestYear, loadSeason, loadSeasonsIndex, loadTeams } from '@f1hub/shared/data/load';
 import type { RawCareers } from '@f1hub/shared/data/raw';
 import type { GrandPrix, SessionOf } from '@f1hub/shared/data/season';
-import { driverPhoto, namesIn, teamLogo } from './home';
+import { driverCutout, driverPhoto, namesIn, teamLogo } from './home';
 
 export type DriverTeam = {
     readonly id: string;
@@ -38,6 +38,8 @@ export type DriverRound = {
     readonly iso: string | null;
     readonly upcoming: boolean;
     readonly missed: boolean;
+    /** A sprint weekend (what's still in play counts the sprint too). */
+    readonly sprintWeekend: boolean;
     readonly team: string | null;
     readonly grid: number | null;
     /** The classified position; for a retirement, where it was classified. */
@@ -82,6 +84,8 @@ export type DriverSeason = {
     readonly racecraft: { readonly id: string; readonly first: string; readonly last: string; readonly places: number } | null;
     readonly mate: DriverMate | null;
     readonly champion: boolean;
+    /** Who the standings measure him against: the leader, or the runner-up when he leads. */
+    readonly rival: { readonly id: string; readonly first: string; readonly last: string; readonly pts: number } | null;
     readonly rounds: readonly DriverRound[];
 };
 
@@ -134,6 +138,8 @@ export type DriverProfile = {
     readonly homeRaces: readonly string[];
     readonly latest: number;
     readonly photo: string | null;
+    /** The full-body cutout on a transparent background (img/drivers/<last name>.png), same rule as the photo. */
+    readonly cutout: string | null;
     readonly totals: {
         readonly races: number;
         readonly points: number;
@@ -179,6 +185,7 @@ type Round = {
     readonly date: string;
     readonly iso: string | null;
     readonly raced: boolean;
+    readonly sprint: boolean;
     readonly rows: readonly Row[];
     readonly pole: string | null;
     readonly field: number;
@@ -242,7 +249,7 @@ function buildSeason(dataDir: URL, year: number, ctx: Context): Season {
             return {
                 round: gp.round ?? 0, id: gp.id, name, short: name.replace(/ Grand Prix$/, ''), date: dayOf(gp),
                 iso: (country && ctx.countries[country]?.isoCode) || null,
-                raced: race.length > 0, rows, pole, field,
+                raced: race.length > 0, sprint: gp.sprint, rows, pole, field,
             };
         });
     const pts = new Map<string, number>();
@@ -361,7 +368,7 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
         const S = seasonOf(year);
         const rounds = S.rounds.map((r): DriverRound => {
             const x = r.rows.find((row) => row.driver === id);
-            const common = { round: r.round, full: fullOf(r), gp: gpOf(r), iso: r.iso, field: r.field };
+            const common = { round: r.round, full: fullOf(r), gp: gpOf(r), iso: r.iso, field: r.field, sprintWeekend: r.sprint };
             const blank = { team: null, grid: null, pos: null, out: null, pts: 0, racePts: 0, sprint: null, fl: false, pole: false };
             if (!r.raced) return { ...common, ...blank, upcoming: true, missed: false };
             if (!x) return { ...common, ...blank, upcoming: false, missed: true };
@@ -392,6 +399,8 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
             mate = { id: mateId, ...nameOf(ctx.drivers, mateId), race, quali, pts: [round1(pts[0]), round1(pts[1])], together: duels.length };
         }
         const done = S.done;
+        const table = [...S.pts].sort((a, b) => b[1] - a[1]);
+        const rivalId = table[0]?.[0] === id ? table[1]?.[0] : table[0]?.[0];
         return {
             year, done, hasGrid: S.hasGrid,
             teams: [...new Set(raced.map((e) => e.x.team))].map(teamOf),
@@ -406,6 +415,7 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
             racecraft: S.best ? { id: S.best.id, ...nameOf(ctx.drivers, S.best.id), places: S.best.places } : null,
             mate,
             champion: done && ctx.champions.get(year) === id,
+            rival: rivalId ? { id: rivalId, ...nameOf(ctx.drivers, rivalId), pts: round1(S.pts.get(rivalId) ?? 0) } : null,
             rounds,
         };
     });
@@ -437,6 +447,7 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
         // The photos are the current grid's, filed by last name: only for a
         // driver on it, or Jos Verstappen would get Max's
         photo: c.seasons.at(-1) === ctx.latest ? driverPhoto(ctx.repoRoot, id) : null,
+        cutout: c.seasons.at(-1) === ctx.latest ? driverCutout(ctx.repoRoot, id) : null,
         totals: {
             races: c.races, points: round1(c.points), wins: c.wins, podiums: c.podiums, poles: c.poles, fastestLaps: c.fastestLaps,
             titles: c.titleYears.length, titleYears: c.titleYears, seasons: c.seasons.length,

@@ -1,7 +1,7 @@
 ---
 // A driver's profile in every locale but English: /es/driver-preview/<id>/…
 // The components read the language from Astro.currentLocale.
-import DriverPage from '../../../components/driver/DriverPage.astro';
+import DriverProfile from '../../../components/driver/DriverProfile.astro';
 import { DEFAULT_LOCALE, LOCALES } from '../../../i18n';
 import { DATA_DIR } from '../../../lib/data';
 import { driverIds } from '../../../lib/driver';
@@ -14,4 +14,4 @@ export function getStaticPaths() {
 const { id } = Astro.params;
 ---
 
-<DriverPage id={id} />
+<DriverProfile id={id} />

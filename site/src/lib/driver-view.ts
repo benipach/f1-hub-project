@@ -1,7 +1,7 @@
 // The parts of the driver profile that change in the page: the season panel
 // (picked from the season picker or "Season by season") and the all-time
 // board (its tabs). Plain functions that return HTML, so the build writes the
-// first state into the page and the browser script (DriverPage.astro) draws
+// first state into the page and the browser script (components/poster/DriverPage.astro) draws
 // the next ones with the same code. Ported from the approved mockup
 // (_design/driver/index.html, 18–29/10); every comment marked "owner" is a
 // call the owner made there.

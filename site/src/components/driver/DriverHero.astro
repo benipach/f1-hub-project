@@ -1,0 +1,137 @@
+---
+// The driver profile's hero (approved 20/11/2026, mockup in the owner's copy:
+// _design/driver-f1/hero.html). The homepage hero's pieces (styles/hero.css)
+// with a driver in them:
+// - top band: the race number in the red circle, the name, the country and
+//   the team with the real flag and logo, the career in five numbers, and
+//   the full-body cutout on the right;
+// - bottom band: the season on now (or the best he finished, for a driver
+//   off the grid) and his last five races.
+import '../../styles/hero.css';
+import '../../styles/driver-hero.css';
+import TeamMark from '../TeamMark.astro';
+import { useI18n } from '../../i18n';
+import type { DriverProfile, DriverSeason } from '../../lib/driver';
+import { href } from '../../lib/paths';
+
+interface Props {
+    driver: DriverProfile;
+}
+
+const { driver: D } = Astro.props;
+const { t, fill, plural, intl } = useI18n(Astro.currentLocale);
+const h = t.driverHero;
+const f = t.driver.figs;
+const num = new Intl.NumberFormat(intl);
+const n = (v: number) => num.format(v);
+const T = D.totals;
+const lastEra = D.eras.at(-1)!;
+const span = (a: number, b: number) => (a === b ? `${a}` : `${a}–${b}`);
+
+// Age on the day the page is built (the site is built after every session)
+const ageAt = (born: string, ref?: string) => {
+    const b = new Date(born), r = ref ? new Date(ref) : new Date();
+    let a = r.getUTCFullYear() - b.getUTCFullYear();
+    if (r.getUTCMonth() < b.getUTCMonth() || (r.getUTCMonth() === b.getUTCMonth() && r.getUTCDate() < b.getUTCDate())) a--;
+    return a;
+};
+const age = D.born ? (D.died ? fill(h.diedAged, { n: ageAt(D.born, D.died) }) : fill(h.yearsOld, { n: ageAt(D.born) })) : null;
+const status = D.active ? null
+    : D.died && D.born ? span(new Date(D.born).getUTCFullYear(), new Date(D.died).getUTCFullYear())
+    : fill(h.lastRaced, { year: D.seasons.at(-1)!.year });
+
+// The career in numbers: the first five that aren't zero
+const figs = [
+    T.titles && { v: n(T.titles), l: plural(f.titles, T.titles), note: T.titleYears.join(' · ') },
+    T.wins && { v: n(T.wins), l: plural(f.wins, T.wins) },
+    T.podiums && { v: n(T.podiums), l: plural(f.podiums, T.podiums) },
+    T.poles && { v: n(T.poles), l: plural(f.poles, T.poles) },
+    T.fastestLaps && { v: n(T.fastestLaps), l: plural(f.fastestLaps, T.fastestLaps) },
+    T.points && { v: n(T.points), l: f.points },
+    { v: n(T.races), l: plural(f.races, T.races) },
+    { v: n(T.seasons), l: plural(f.seasons, T.seasons) },
+].filter((x): x is { v: string; l: string; note?: string } => Boolean(x)).slice(0, 5);
+
+// The season: the one on now, or the best he finished (position, wins, latest)
+const best = [...D.seasons].filter((s) => s.done)
+    .sort((a, b) => (a.pos ?? 99) - (b.pos ?? 99) || b.wins - a.wins || b.year - a.year)[0];
+const S: DriverSeason = D.active ? D.seasons.at(-1)! : best ?? D.seasons.at(-1)!;
+const raced = S.rounds.filter((r) => !r.upcoming).length;
+const left = S.rounds.filter((r) => r.upcoming);
+// Still in play under the current rules: 25 a race, 8 a sprint
+const inPlay = left.reduce((sum, r) => sum + 25 + (r.sprintWeekend ? 8 : 0), 0);
+const leads = S.pos === 1;
+const gap = S.rival ? (leads ? `+${n(S.pts - S.rival.pts)}` : `−${n(S.rival.pts - S.pts)}`) : null;
+const seasonTeam = S.teams.at(-1);
+
+// His last five races, newest first
+const last = D.seasons.flatMap((s) => s.rounds.filter((r) => !r.upcoming && !r.missed).map((r) => ({ year: s.year, r }))).slice(-5).reverse();
+// "Brazilian GP" → "Brazilian", "GP de Brasil" → "Brasil"
+const nameOf = (gp: string) => gp.replace(/\bGP\b/, '').trim().replace(/^de\s+/, '');
+---
+
+<section class="hero hero--driver">
+    <div class="wrap">
+        <div class:list={['ident', 'ident--driver', { 'ident--nophoto': !D.cutout }]}>
+            <div class="who">
+                <span class="round">{D.number}</span>
+                <div class="name">
+                    <p class="kicker">
+                        {h.kicker}{age && ` · ${age}`}{D.code && ` · ${D.code}`} · {D.active ? <span class="on">{h.onTheGrid}</span> : status}
+                    </p>
+                    <h1 class="gp">{D.first}<br />{D.last}</h1>
+                    <div class="tags">
+                        {D.nationality && (
+                            <div class="tag">
+                                {D.iso && <img class="tag__flag" src={href(`img/flags/${D.iso.toLowerCase()}.svg`)} alt="" width="60" height="40" />}
+                                <span><b>{D.nationality}</b><small>{h.nationality}</small></span>
+                            </div>
+                        )}
+                        <div class="tag">
+                            <TeamMark logo={lastEra.logo} color={lastEra.color} size={44} />
+                            <span><b>{lastEra.name}</b><small>{D.active ? fill(h.teamSince, { year: lastEra.from }) : fill(h.lastTeam, { years: span(lastEra.from, lastEra.to) })}</small></span>
+                        </div>
+                    </div>
+                </div>
+                <dl class="facts">
+                    {figs.map((x) => <div><dd>{x.v}</dd><dt>{x.l}{x.note && <><br />{x.note}</>}</dt></div>)}
+                </dl>
+            </div>
+            {D.cutout && <div class="cutout"><img src={href(D.cutout)} alt={`${D.first} ${D.last}`} width="300" decoding="async" /></div>}
+        </div>
+
+        <div class="stage">
+            <div class="col">
+                <p class="col-h"><span>{fill(D.active ? h.season : h.bestSeason, { year: S.year })}</span>{seasonTeam && <span>{seasonTeam.name}</span>}</p>
+                <div class="session">
+                    <h2>{S.pos ? `P${S.pos}` : '—'}<small>{S.champion ? h.champion : h.inChampionship}</small></h2>
+                    <div class="clock">{n(S.pts)}<small>{h.points}</small></div>
+                </div>
+                {left.length > 0 && (
+                    <div class="rounds">
+                        <div class="bar bar--done"><i style={`width: ${(raced / S.rounds.length) * 100}%`}></i></div>
+                        <p class="part__lbl"><span>{fill(h.round, { n: raced, total: S.rounds.length })}</span><span>{fill(h.toGo, { n: left.length, pts: inPlay })}</span></p>
+                    </div>
+                )}
+                <div class="now">
+                    {gap && S.rival && <div><b>{gap}</b><span>{leads ? fill(h.aheadOf, { name: S.rival.last }) : <>{h.toLeader}<br />{S.rival.last}</>}</span></div>}
+                    <div><b>{S.wins}</b><span>{plural(f.wins, S.wins)}</span></div>
+                    <div><b>{S.podiums}</b><span>{plural(f.podiums, S.podiums)}</span></div>
+                    <div><b>{S.poles}</b><span>{plural(f.poles, S.poles)}</span></div>
+                </div>
+                <a class="btn btn--ghost" href="#season">{D.active ? h.raceByRace : fill(h.yearRaceByRace, { year: S.year })} →</a>
+            </div>
+            <div class="col">
+                <p class="col-h"><span>{D.active ? h.lastRaces : h.lastRacesEver}</span><span>{h.resultPoints}</span></p>
+                {last.map(({ year, r }) => (
+                    <div class:list={['row', 'row--race', { 'row--win': r.pos === 1 && !r.out }]}>
+                        <span class:list={['row__pos', { 'row__pos--out': r.out }]}>{r.out ?? r.pos}</span>
+                        {r.iso ? <img class="row__flag" src={href(`img/flags/${r.iso.toLowerCase()}.svg`)} alt="" width="26" height="18" loading="lazy" /> : <span></span>}
+                        <span class="row__drv">{nameOf(r.gp)}{!D.active && <i> {year}</i>}</span>
+                        <span class="row__gap">{r.pts ? `+${n(r.pts)}` : '0'}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    </div>
+</section>

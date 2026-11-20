@@ -1,0 +1,30 @@
+---
+// A driver's profile on the new look (layouts/Site.astro), rebuilt section by
+// section from 20/11/2026: mockup, the owner's changes, then Astro. Rendered by
+// pages/driver-preview/[id].astro (English) and pages/[lang]/driver-preview/[id].astro.
+// Sections so far: the hero. The scrapped poster profile, kept for reference,
+// is at /descartado/poster/driver/<id>/.
+import Site from '../../layouts/Site.astro';
+import DriverHero from './DriverHero.astro';
+import { DATA_DIR } from '../../lib/data';
+import { buildDriver } from '../../lib/driver';
+import { useI18n, fill } from '../../i18n';
+
+interface Props {
+    id: string;
+}
+
+const { id } = Astro.props;
+const { locale, t } = useI18n(Astro.currentLocale);
+const D = buildDriver(DATA_DIR, id, locale);
+const name = `${D.first} ${D.last}`;
+---
+
+<Site
+    title={fill(t.driver.meta, { name })}
+    description={fill(t.driver.description, { name, races: D.totals.races, wins: D.totals.wins, podiums: D.totals.podiums })}
+    current="drivers"
+    noindex
+>
+    <DriverHero driver={D} />
+</Site>

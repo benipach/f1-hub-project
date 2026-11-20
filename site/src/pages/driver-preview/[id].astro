@@ -4,7 +4,7 @@
 // search engines, not linked yet): the old drivers/driver.html?driver=<id>
 // is still the live one. /drivers/ itself belongs to the old pages
 // (LEGACY_PATHS), so the new profile can't live there until they go.
-import DriverPage from '../../components/driver/DriverPage.astro';
+import DriverProfile from '../../components/driver/DriverProfile.astro';
 import { DATA_DIR } from '../../lib/data';
 import { driverIds } from '../../lib/driver';
 
@@ -15,4 +15,4 @@ export function getStaticPaths() {
 const { id } = Astro.params;
 ---
 
-<DriverPage id={id} />
+<DriverProfile id={id} />
