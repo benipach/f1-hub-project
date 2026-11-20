@@ -1,27 +1,24 @@
 ---
 // The shell of the new F1 Hub pages (20/11/2026): the published site's dark,
-// its Formula 1 type and its navbar, one content width (styles/f1.css).
-// Pages are rebuilt on it section by section, starting with the homepage hero.
+// its Formula 1 type, one content width (styles/f1.css) and the new navbar
+// (components/SiteNav.astro). Pages are rebuilt on it section by section.
 import '../styles/f1.css';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteNav, { type NavPage } from '../components/SiteNav.astro';
 import { href } from '../lib/paths';
 import { useI18n } from '../i18n';
 
 interface Props {
     title: string;
     description: string;
+    /** Section of the site, marked in the navbar. */
+    current?: NavPage | undefined;
     /** Keep the page out of search engines (work-in-progress pages). */
     noindex?: boolean;
 }
 
-const { title, description, noindex = false } = Astro.props;
+const { title, description, current, noindex = false } = Astro.props;
 const { locale } = useI18n(Astro.currentLocale);
-const links = [
-    ['Calendar', href('index.html#calendar')],
-    ['Results', href('results.html')],
-    ['Drivers', href('drivers.html')],
-    ['Teams', href('teams.html')],
-    ['Live', href('live.html')],
-] as const;
 ---
 
 <!doctype html>
@@ -37,34 +34,10 @@ const links = [
     <link rel="preload" href={href('fonts/Formula1-Black.woff2')} as="font" type="font/woff2" crossorigin />
 </head>
 <body>
-    <header class="nav">
-        <div class="wrap">
-            <a href={href('')} aria-label="F1 Hub"><img src={href('img/logo.png')} alt="F1 Hub" height="40" /></a>
-            <nav>
-                <ul>{links.map(([name, url]) => <li><a href={url}>{name}</a></li>)}</ul>
-            </nav>
-        </div>
-    </header>
-    <main>
+    <SiteNav current={current} />
+    <main id="top">
         <slot />
     </main>
+    <SiteFooter />
 </body>
 </html>
-
-<style>
-    .nav { background: var(--base-900); border-bottom: 1px solid var(--line); }
-    .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
-    .nav img { height: 40px; width: auto; }
-    .nav ul { display: flex; gap: 32px; margin: 0; padding: 0; list-style: none; }
-    .nav a { font-size: 17px; text-transform: uppercase; text-decoration: none; color: #fff; }
-    .nav a:hover { color: var(--red); }
-    /* Phones: the links on their own line, scrolling sideways if they must
-       (the navbar is redone later as its own section) */
-    @media (max-width: 760px) {
-        .nav .wrap { flex-wrap: wrap; height: auto; padding-top: 10px; padding-bottom: 8px; row-gap: 8px; }
-        .nav nav { width: 100%; overflow-x: auto; }
-        .nav ul { gap: 18px; }
-        .nav a { font-size: 13px; white-space: nowrap; }
-        .nav img { height: 28px; }
-    }
-</style>

@@ -50,3 +50,5 @@ a { color: inherit; }
 img { display: block; }
 [hidden] { display: none !important; }
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gut); }
+/* Links to a section (#calendar) land below the sticky navbar */
+[id] { scroll-margin-top: 72px; }

@@ -1,0 +1,149 @@
+---
+// The navbar of the new pages (_design/hero-f1/navbar.html, approved
+// 20/11/2026): the logo with the season, the sections, the current one
+// underlined in red. While a session of the coming Grand Prix runs, "Live"
+// turns red with a beating dot (on phones it also stays in sight next to the
+// menu button). Phones get a menu button that drops the sections down.
+import { loadLatestYear, loadSeason } from '@f1hub/shared/data/load';
+import { useI18n } from '../i18n';
+import { DATA_DIR } from '../lib/data';
+import { href } from '../lib/paths';
+
+export type NavPage = 'calendar' | 'results' | 'championship' | 'drivers' | 'teams' | 'live';
+
+interface Props {
+    current?: NavPage | undefined;
+}
+
+const { current } = Astro.props;
+const { t, fill } = useI18n(Astro.currentLocale);
+const s = t.sections;
+const season = loadLatestYear(DATA_DIR);
+
+// The coming Grand Prix's sessions, for the live dot: the first one of the
+// season whose race has no results yet
+const next = loadSeason(DATA_DIR, season).find((gp) =>
+    !gp.cancelled && !gp.sessions.some((x) => x.key === 'race' && x.results.length > 0));
+const sessions = (next?.sessions ?? []).flatMap((x) =>
+    x.time?.kind === 'datetime' && x.time.end ? [[x.time.start, x.time.end]] : []);
+
+const links: [NavPage, string, string][] = [
+    ['calendar', s.calendar, `${href('home-preview')}#calendar`],
+    ['results', s.results, href('results.html')],
+    ['championship', s.championship, href('championship.html')],
+    ['drivers', s.drivers, href('drivers.html')],
+    ['teams', s.teams, href('teams.html')],
+    ['live', s.live, href('live.html')],
+];
+---
+
+<header class="nav" data-nav>
+    <div class="wrap">
+        <a class="brand" href={href('')} aria-label={t.nav.home}>
+            <img src={href('img/logo.png')} alt="F1 Hub" width="113" height="36" />
+            <span>{fill(t.nav.season, { year: season })}</span>
+        </a>
+        <nav aria-label={t.nav.main}>
+            <ul class="links">
+                {links.map(([key, name, url]) => (
+                    <li><a href={url} aria-current={key === current ? 'page' : undefined} data-live-link={key === 'live' ? '' : undefined}>{name}</a></li>
+                ))}
+            </ul>
+        </nav>
+        <div class="right">
+            <a class="live-chip" href={href('live.html')} hidden data-live-chip>{s.live}</a>
+            <button class="burger" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label={t.nav.openMenu}
+                data-open={t.nav.openMenu} data-close={t.nav.closeMenu}><i></i></button>
+        </div>
+    </div>
+    <nav class="menu" id="nav-menu" aria-label={t.nav.main}>
+        {links.map(([key, name, url]) => (
+            <a href={url} aria-current={key === current ? 'page' : undefined} data-live-link={key === 'live' ? '' : undefined}>{name}<span aria-hidden="true">→</span></a>
+        ))}
+    </nav>
+    <script type="application/json" data-nav-sessions set:html={JSON.stringify(sessions)}></script>
+</header>
+
+<script>
+    const nav = document.querySelector<HTMLElement>('[data-nav]');
+    if (nav) {
+        // The menu (phones)
+        const button = nav.querySelector<HTMLButtonElement>('.burger')!;
+        const toggle = (open: boolean) => {
+            nav.classList.toggle('open', open);
+            button.setAttribute('aria-expanded', String(open));
+            button.setAttribute('aria-label', (open ? button.dataset['close'] : button.dataset['open']) ?? '');
+        };
+        button.addEventListener('click', () => toggle(!nav.classList.contains('open')));
+        nav.querySelectorAll('.menu a').forEach((a) => a.addEventListener('click', () => toggle(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggle(false); });
+
+        // "Live" in red while a session runs; checked every 30 s
+        const sessions = JSON.parse(nav.querySelector('[data-nav-sessions]')?.textContent ?? '[]') as [string, string][];
+        const spans = sessions.map(([a, b]) => [Date.parse(a), Date.parse(b)] as const);
+        const live = () => {
+            const t = Date.now();
+            const on = spans.some(([a, b]) => a <= t && t < b);
+            nav.querySelectorAll('[data-live-link]').forEach((el) => el.classList.toggle('is-live', on));
+            nav.querySelector<HTMLElement>('[data-live-chip]')!.hidden = !on;
+        };
+        live();
+        setInterval(live, 30_000);
+    }
+</script>
+
+<style>
+    .nav { position: sticky; top: 0; z-index: 50; background: var(--base-900); border-bottom: 1px solid var(--line); }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .brand { display: flex; align-items: center; gap: 16px; text-decoration: none; }
+    .brand img { height: 36px; width: auto; }
+    .brand span { padding-left: 16px; border-left: 1px solid var(--rule); font-weight: 700; font-size: 12px; text-transform: uppercase; color: var(--dim); }
+    .nav > .wrap > nav { height: 100%; }
+    .links { display: flex; align-items: stretch; height: 100%; gap: 30px; margin: 0; padding: 0; list-style: none; }
+    .links a { position: relative; display: flex; align-items: center; gap: 8px; height: 100%; font-size: 16px; color: #fff; text-decoration: none; }
+    .links a:hover { color: var(--red); }
+    .links a[aria-current='page']::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; background: var(--red); }
+    .is-live { color: var(--red) !important; font-weight: 700; }
+    .links .is-live::before, .live-chip::before {
+        content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--red); animation: nav-pulse 1.4s infinite;
+    }
+    @keyframes nav-pulse { 50% { opacity: .25; } }
+
+    .right { display: none; align-items: center; gap: 14px; }
+    .live-chip { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; text-transform: uppercase; color: var(--red); text-decoration: none; }
+    .burger { position: relative; width: 40px; height: 40px; border: 0; border-radius: 8px; background: transparent; cursor: pointer; }
+    .burger i, .burger::before, .burger::after {
+        content: ''; position: absolute; left: 10px; right: 10px; height: 2px; background: #fff; transition: transform .2s ease, opacity .2s ease;
+    }
+    .burger::before { top: 13px; }
+    .burger i { top: 19px; }
+    .burger::after { top: 25px; }
+    .open .burger::before { transform: translateY(6px) rotate(45deg); }
+    .open .burger i { opacity: 0; }
+    .open .burger::after { transform: translateY(-6px) rotate(-45deg); }
+    .burger:focus-visible, .links a:focus-visible, .menu a:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+    .menu { display: none; }
+    .menu a {
+        display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line);
+        font: 24px/1 'F1 Black'; text-transform: uppercase; color: #fff; text-decoration: none;
+    }
+    .menu a span { font: 22px 'F1'; color: var(--dim); }
+    .menu a[aria-current='page'] { color: var(--red); }
+
+    @media (max-width: 1100px) {
+        .links { gap: 20px; }
+        .links a { font-size: 14px; }
+        .brand span { display: none; }
+    }
+    @media (max-width: 860px) {
+        .nav .wrap { height: 56px; }
+        .brand img { height: 26px; }
+        .nav > .wrap > nav { display: none; }
+        .right { display: flex; }
+        .open .menu {
+            display: block; position: absolute; top: 100%; left: 0; right: 0;
+            padding: 4px var(--gut) 16px; background: var(--base-900); border-bottom: 1px solid var(--line);
+        }
+    }
+</style>

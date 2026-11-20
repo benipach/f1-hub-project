@@ -1,0 +1,140 @@
+---
+// The footer of the new pages (_design/hero-f1/footer.html, approved
+// 20/11/2026): the logo and what the site is, the sections in four columns,
+// the visitor's time zone and the language, the legal notice and the credits.
+import { LANGUAGE_NAMES, LOCALES, localePath, pathWithoutLocale, useI18n } from '../i18n';
+import { loadLatestYear } from '@f1hub/shared/data/load';
+import { DATA_DIR } from '../lib/data';
+import { href } from '../lib/paths';
+
+const { locale, t } = useI18n(Astro.currentLocale);
+const f = t.footer;
+const s = t.sections;
+const year = loadLatestYear(DATA_DIR);
+const path = pathWithoutLocale(Astro.url.pathname);
+
+// In the site's one order (the same as the navbar and the index)
+const columns: { title: string; links: [label: string, path: string | null][] }[] = [
+    { title: f.season, links: [[s.calendar, `${href('home-preview')}#calendar`], [s.liveTiming, href('live.html')], [s.results, href('results.html')], [s.championship, href('championship.html')]] },
+    { title: f.grid, links: [[s.drivers, href('drivers.html')], [s.teams, href('teams.html')]] },
+    { title: f.history, links: [[s.archive, href('archive.html')], [s.hallOfFame, null]] },
+];
+const resources: [label: string, url: string][] = [
+    ['Formula 1', 'https://www.formula1.com'],
+    ['FIA', 'https://www.fia.com'],
+    ['OpenF1', 'https://openf1.org'],
+];
+const social: [label: string, url: string][] = [
+    ['GitHub', 'https://github.com/benipach'],
+    ['LinkedIn', 'https://linkedin.com/in/benicio-pacheco'],
+    [f.portfolio, 'https://benipach.dev'],
+];
+---
+
+<footer class="ft" aria-label={f.label}>
+    <div class="wrap">
+        <div class="ft__top">
+            <div>
+                <img class="ft__logo" src={href('img/logo.png')} alt="F1 Hub" width="125" height="40" loading="lazy" />
+                <p class="ft__tag">{f.tagline}</p>
+            </div>
+            {columns.map((col) => (
+                <nav class="ft__col" aria-label={col.title}>
+                    <h3>{col.title}</h3>
+                    {col.links.map(([label, url]) => url
+                        ? <a href={url}>{label}</a>
+                        : <span>{label} <small>{s.soon}</small></span>)}
+                </nav>
+            ))}
+            <nav class="ft__col" aria-label={f.resources}>
+                <h3>{f.resources}</h3>
+                {resources.map(([label, url]) => <a class="ext" href={url} target="_blank" rel="noopener">{label}</a>)}
+            </nav>
+        </div>
+
+        <div class="ft__mid">
+            <span>{f.timesIn} <b>{f.localTime}</b> <span data-ft-zone></span></span>
+            <nav class="ft__lang" aria-label={t.nav.language}>
+                {LOCALES.map((code) => (
+                    <a href={localePath(code, path)} lang={code} hreflang={code} aria-current={code === locale ? 'true' : undefined} data-ft-lang>{LANGUAGE_NAMES[code]}</a>
+                ))}
+            </nav>
+        </div>
+
+        <div class="ft__legal">
+            <p>{f.legal1}</p>
+            <p>{f.legal2}</p>
+        </div>
+
+        <div class="ft__bottom">
+            <span>© {year} F1 Hub · {f.builtBy} <a href="https://benipach.dev" target="_blank" rel="noopener">Benicio Pacheco</a></span>
+            <nav class="ft__social" aria-label="Benicio Pacheco">
+                {social.map(([label, url]) => <a href={url} target="_blank" rel="noopener">{label}</a>)}
+                <a href="#top" data-ft-top>{f.backToTop} ↑</a>
+            </nav>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // The visitor's zone ("· Buenos Aires · GMT-3"), and the language links
+    // keep the query and the hash (a preview's ?now=, #calendar).
+    const zone = document.querySelector('[data-ft-zone]');
+    if (zone) {
+        const city = (Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC').split('/').pop()!.replace(/_/g, ' ');
+        const h = -new Date().getTimezoneOffset() / 60;
+        zone.textContent = `· ${city} · GMT${h >= 0 ? '+' : '−'}${Math.abs(h)}`;
+    }
+    document.querySelectorAll<HTMLAnchorElement>('[data-ft-lang]').forEach((a) => {
+        a.addEventListener('click', () => { a.href = a.href.split(/[?#]/)[0] + location.search + location.hash; });
+    });
+    document.querySelector('[data-ft-top]')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+
+<style>
+    .ft { position: relative; background: var(--base-900); border-top: 1px solid var(--line); }
+    .ft::before { content: ''; position: absolute; inset: 0 0 auto; height: 3px; background: var(--red); }
+    .ft__top { display: grid; grid-template-columns: minmax(0, 1.6fr) repeat(4, minmax(0, 1fr)); gap: 40px; padding: 56px 0 48px; }
+    .ft__logo { height: 40px; width: auto; }
+    .ft__tag { margin-top: 18px; max-width: 420px; font-size: 15px; line-height: 1.5; color: var(--dim); }
+    .ft__col h3 { padding-bottom: 10px; margin: 0 0 6px; border-bottom: 3px solid #fff; font-weight: 700; font-size: 13px; text-transform: uppercase; color: #fff; }
+    .ft__col a, .ft__col span {
+        display: flex; justify-content: space-between; align-items: center; padding: 9px 0;
+        border-bottom: 1px solid var(--line); font-size: 15px; color: var(--text); text-decoration: none;
+    }
+    .ft__col a:hover { color: var(--red); }
+    .ft__col span { color: var(--dim); }
+    .ft__col small { font-weight: 700; font-size: 11px; text-transform: uppercase; }
+    .ft__col .ext::after { content: '↗'; font-size: 13px; color: var(--dim); }
+
+    .ft__mid {
+        display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 16px 0;
+        border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+        font-weight: 700; font-size: 12px; text-transform: uppercase; color: var(--dim);
+    }
+    .ft__mid b { color: #fff; }
+    .ft__lang { display: flex; gap: 4px; }
+    .ft__lang a { padding: 6px 10px; border-radius: 6px; color: var(--dim); text-decoration: none; }
+    .ft__lang a:hover { color: #fff; }
+    .ft__lang a[aria-current] { background: var(--base-600); color: #fff; }
+
+    .ft__legal { max-width: 980px; padding: 22px 0; font-size: 12px; line-height: 1.6; color: var(--dim); }
+    .ft__legal p + p { margin-top: 8px; }
+    .ft__bottom { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 18px 0 26px; border-top: 1px solid var(--line); font-size: 13px; color: var(--dim); }
+    .ft__bottom a { color: #fff; text-decoration: none; }
+    .ft__bottom a:hover { color: var(--red); }
+    .ft__social { display: flex; flex-wrap: wrap; gap: 22px; font-weight: 700; font-size: 12px; text-transform: uppercase; }
+    .ft a:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+    @media (max-width: 1100px) {
+        .ft__top { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .ft__top > :first-child { grid-column: 1 / -1; }
+    }
+    @media (max-width: 760px) {
+        .ft__top { gap: 28px; padding: 40px 0 32px; }
+        .ft__mid, .ft__bottom { flex-direction: column; align-items: flex-start; }
+    }
+</style>
