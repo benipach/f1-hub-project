@@ -436,8 +436,12 @@ function updateTimingBests() {
                 if (value === stale[slot]) continue;
                 delete stale[slot]; // changed: from here on it belongs to this segment
             }
+            // A lap only counts once F1 counts it, as the driver's best lap
+            // (below): an out/in lap or a deleted one never becomes a best,
+            // so it never comes out purple (Las Vegas FP1 2026, wet: the only
+            // lap was a 31-minute one from the pits).
             const ms = lapTimeToMs(value);
-            if (ms != null) recordBest(num, slot, ms);
+            if (ms != null && slot !== 'lap') recordBest(num, slot, ms);
         }
         if (stale) {
             for (const i of Object.keys(stale.segments)) {
