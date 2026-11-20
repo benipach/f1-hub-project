@@ -16,6 +16,7 @@ import http from "node:http";
 import { updateFinishedLines } from "./finishers.js";
 import { mergeState } from "../js/shared/merge.js";
 import { sendOrDrop } from "./send.js";
+import { startHomeChannel } from "./home.js";
 import { TOPICS } from "./topics.js";
 import { loadSession, playSession, parsePlaybackTime, formatPlaybackTime } from "./replay/session.js";
 import { createRecorder } from "./replay/recorder.js";
@@ -321,6 +322,15 @@ localServer.on("connection", (client, req) => {
   // Pages that connect with ?proto=2 get the feed's deltas as they come
   // (see broadcastFeed); older pages still get whole topics.
   const params = new URLSearchParams((req.url || "").split("?")[1]);
+  // The homepage (?proto=home) gets only its small summary, never the feed
+  // (see home.js and homeChannel below).
+  if (params.get("proto") === "home") {
+    client.wantsHome = true;
+    console.log("[local] homepage connected");
+    client.send(homeChannel.hello());
+    client.on("close", () => console.log("[local] homepage disconnected"));
+    return;
+  }
   client.wantsDeltas = params.get("proto") === "2";
   // ...and with &gzip=1, snapshots gzipped (see snapshotFor).
   client.wantsGzip = client.wantsDeltas && params.get("gzip") === "1";
@@ -338,13 +348,20 @@ localServer.on("connection", (client, req) => {
 refreshCurrentGP();
 setInterval(refreshCurrentGP, 15 * 60 * 1000);
 
+// The homepage's summary, once a second when it changed (home.js).
+const homeChannel = startHomeChannel({
+  getState: getDisplayState,
+  clients: () => [...localServer.clients].filter((c) => c.wantsHome && c.readyState === WebSocket.OPEN),
+  send: sendOrDrop,
+});
+
 function broadcast(topic) {
   // With no page open (or while a replay catches up, see startReplay), skip
   // the JSON.stringify of a whole topic: that's what costs here.
   if (catchingUp || !localServer.clients.size) return;
   const payload = JSON.stringify({ type: "update", topic, data: getDisplayState()[topic] });
   for (const client of localServer.clients) {
-    if (client.readyState === WebSocket.OPEN) sendOrDrop(client, payload);
+    if (client.readyState === WebSocket.OPEN && !client.wantsHome) sendOrDrop(client, payload);
   }
 }
 
@@ -359,7 +376,7 @@ function broadcastFeed(topic, patch) {
   if (catchingUp || frozen || !localServer.clients.size) return;
   let delta, whole;
   for (const client of localServer.clients) {
-    if (client.readyState !== WebSocket.OPEN) continue;
+    if (client.readyState !== WebSocket.OPEN || client.wantsHome) continue;
     if (client.wantsDeltas) sendOrDrop(client, delta ??= JSON.stringify({ type: "delta", topic, data: patch }));
     else sendOrDrop(client, whole ??= JSON.stringify({ type: "update", topic, data: state[topic] }));
   }
@@ -372,7 +389,7 @@ function broadcastFullSnapshot() {
   if (catchingUp || !localServer.clients.size) return;
   const cache = {};
   for (const client of localServer.clients) {
-    if (client.readyState === WebSocket.OPEN) sendOrDrop(client, snapshotFor(client, cache));
+    if (client.readyState === WebSocket.OPEN && !client.wantsHome) sendOrDrop(client, snapshotFor(client, cache));
   }
 }
 
