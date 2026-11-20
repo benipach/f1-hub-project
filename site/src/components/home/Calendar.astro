@@ -1,0 +1,128 @@
+---
+// The homepage calendar (_design/hero-f1/calendar.html, approved 20/11/2026):
+// the season in numbers, a strip with a mark per Grand Prix and a card per
+// Grand Prix, four a row. Dates and countdowns are written in the browser,
+// in the visitor's time (the script below).
+import '../../styles/calendar.css';
+import { useI18n } from '../../i18n';
+import type { Calendar } from '../../lib/calendar';
+import { href } from '../../lib/paths';
+
+interface Props {
+    calendar: Calendar;
+}
+
+const { calendar } = Astro.props;
+const { t, intl } = useI18n(Astro.currentLocale);
+const c = t.calendarF1;
+const km = new Intl.NumberFormat(intl, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+const month = new Intl.DateTimeFormat(intl, { month: 'long', timeZone: 'UTC' });
+const running = calendar.rounds.filter((r) => r.status !== 'cancelled');
+const first = running[0];
+const last = running.at(-1);
+const monthOf = (iso: string | null | undefined) => (iso ? month.format(new Date(iso)) : '');
+// "Las Vegas" / "Grand Prix" on two lines; a name that doesn't end in Grand Prix wraps on its own
+const lines = (name: string) => {
+    const m = name.match(/^(.*\S)\s+(Grand Prix)$/) ?? name.match(/^(Gran Premio)\s+(.*)$/);
+    return m ? [m[1]!, m[2]!] : [name];
+};
+---
+
+<section class="cal" id="calendar" aria-labelledby="cal-title">
+    <div class="wrap">
+        <div class="cal__head">
+            <div>
+                <p class="cal__k">{c.kicker}</p>
+                <h2 class="cal__title" id="cal-title">{c.season}<br />{calendar.season}</h2>
+            </div>
+            <dl class="cal__facts">
+                <div><dd>{calendar.total}</dd><dt>{c.rounds}</dt></div>
+                <div><dd>{calendar.raced}</dd><dt>{c.raced}</dt></div>
+                <div><dd class="red">{calendar.toGo}</dd><dt>{c.toGo}</dt></div>
+            </dl>
+        </div>
+
+        <div class="cal__strip" aria-hidden="true">
+            {calendar.rounds.map((r) => <i class={`st st--${r.status}`}></i>)}
+        </div>
+        <div class="cal__ends">
+            <span>R1 · {first?.city} · {monthOf(first?.raceStart)}</span>
+            <span>R{calendar.total} · {last?.city} · {monthOf(last?.raceStart)}</span>
+        </div>
+
+        <div class="cal__grid">
+            {calendar.rounds.map((r) => (
+                <article class={`rd rd--${r.status}`}>
+                    <div class="rd__head">
+                        <span class="rd__n">{r.round === null ? '—' : String(r.round).padStart(2, '0')}</span>
+                        {r.layout ? <span class="rd__trk" style={`--src: url(${href(r.layout)})`} aria-hidden="true"></span> : <span />}
+                        <p class="rd__tag">{r.sprint && c.sprint}</p>
+                        <h3 class="rd__name">{lines(r.name).map((line, i) => <>{i > 0 && <br />}{line}</>)}</h3>
+                        {r.flag && <img class="rd__flag" src={href(r.flag)} alt="" width="56" height="42" loading="lazy" />}
+                    </div>
+                    <dl class="rd__meta">
+                        <div><dt>{r.city ?? ''}</dt><dd data-range-start={r.weekendStart} data-range-end={r.raceStart ?? r.weekendStart}>—</dd></div>
+                        <div><dt>{c.laps}</dt><dd>{r.laps ?? '—'}</dd></div>
+                        <div><dt>{c.lapKm}</dt><dd>{r.lengthKm === null ? '—' : km.format(r.lengthKm)}</dd></div>
+                    </dl>
+                    <div class="rd__foot">
+                        {r.status === 'done' && r.podium.map((p) => (
+                            <div class="pd">
+                                <span class="pd__pos">{p.pos}</span>
+                                {p.teamLogo ? <img src={href(p.teamLogo)} alt="" width="20" height="20" loading="lazy" /> : <span />}
+                                <span>{p.code}</span>
+                                <span class="pd__t">{p.result}</span>
+                            </div>
+                        ))}
+                        {r.status === 'cancelled' && <><span class="k">{c.status}</span><span class="v">{c.cancelled}</span></>}
+                        {(r.status === 'next' || r.status === 'upcoming') && (
+                            <><span class="k">{r.status === 'next' ? c.nextLightsOut : c.lightsOutIn}</span><span class="v" data-cd-race={r.raceStart} data-cd-over={t.heroF1.onTheWay} data-cd-status={c.status}>—</span></>
+                        )}
+                    </div>
+                </article>
+            ))}
+        </div>
+
+        <div class="cal__foot">
+            <span>{c.localTime}</span>
+            <a href={href(`results.html?season=${calendar.season}`)}>{c.archive} →</a>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Dates in the visitor's time ("20–22 Nov", "30 Oct–1 Nov") and the
+    // countdowns to each race ("2d 01h", "05h 12m"), once a minute.
+    const intl = document.documentElement.lang === 'es' ? 'es' : 'en-GB';
+    const day = new Intl.DateTimeFormat(intl, { day: 'numeric' });
+    const mon = new Intl.DateTimeFormat(intl, { month: 'short' });
+    const m = (d: Date) => mon.format(d).replace('.', '');
+    document.querySelectorAll<HTMLElement>('[data-range-start]').forEach((el) => {
+        const a = new Date(el.dataset['rangeStart'] ?? '');
+        const b = new Date(el.dataset['rangeEnd'] ?? '');
+        if (Number.isNaN(a.getTime()) || Number.isNaN(b.getTime())) return;
+        el.textContent = a.getMonth() === b.getMonth()
+            ? `${day.format(a)}–${day.format(b)} ${m(b)}`
+            : `${day.format(a)} ${m(a)}–${day.format(b)} ${m(b)}`;
+    });
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const countdowns = [...document.querySelectorAll<HTMLElement>('[data-cd-race]')];
+    const tick = () => {
+        for (const el of countdowns) {
+            const ms = Date.parse(el.dataset['cdRace'] ?? '') - Date.now();
+            // The race has started or ended and its result isn't in the build yet
+            if (ms <= 0) {
+                el.textContent = el.dataset['cdOver'] ?? '';
+                if (el.previousElementSibling) el.previousElementSibling.textContent = el.dataset['cdStatus'] ?? '';
+                continue;
+            }
+            const left = Math.floor(ms / 60000);
+            const d = Math.floor(left / 1440);
+            const h = Math.floor((left % 1440) / 60);
+            const text = d ? `${d}d ${pad(h)}h` : `${pad(h)}h ${pad(left % 60)}m`;
+            if (el.textContent !== text) el.textContent = text;
+        }
+    };
+    tick();
+    setInterval(tick, 60_000);
+</script>

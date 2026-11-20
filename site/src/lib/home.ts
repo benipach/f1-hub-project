@@ -162,7 +162,7 @@ function layoutNames(circuitId: string): string[] {
 }
 
 /** A circuit's layout SVG file, as a path inside the site, if there is one. */
-function layoutFile(repoRoot: URL, circuitId: string | null): string | null {
+export function layoutFile(repoRoot: URL, circuitId: string | null): string | null {
     if (!circuitId) return null;
     for (const name of layoutNames(circuitId)) {
         if (existsSync(new URL(`img/circuits/${name}`, repoRoot))) return `img/circuits/${name}`;

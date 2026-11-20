@@ -203,6 +203,23 @@ export default {
         leader: 'Líder',
     },
 
+    calendarF1: {
+        kicker: 'Calendario',
+        season: 'Temporada',
+        rounds: 'Rondas',
+        raced: 'Corridas',
+        toGo: 'Faltan',
+        sprint: 'Fin de semana sprint',
+        laps: 'Vueltas',
+        lapKm: 'Km por vuelta',
+        lightsOutIn: 'Se larga en',
+        nextLightsOut: 'Próxima · se larga en',
+        cancelled: 'Cancelado',
+        status: 'Estado',
+        localTime: 'Fechas en tu hora local',
+        archive: 'Archivo de temporadas',
+    },
+
     calendar: {
         sectionNo: '01 — Calendario',
         season: 'Temporada',

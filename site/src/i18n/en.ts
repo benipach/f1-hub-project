@@ -216,6 +216,24 @@ export default {
         leader: 'Leader',
     },
 
+    // The homepage calendar (_design/hero-f1/calendar.html, approved 20/11/2026)
+    calendarF1: {
+        kicker: 'Calendar',
+        season: 'Season',
+        rounds: 'Rounds',
+        raced: 'Raced',
+        toGo: 'To go',
+        sprint: 'Sprint weekend',
+        laps: 'Laps',
+        lapKm: 'Lap km',
+        lightsOutIn: 'Lights out in',
+        nextLightsOut: 'Next · lights out in',
+        cancelled: 'Cancelled',
+        status: 'Status',
+        localTime: 'Dates in your local time',
+        archive: 'Seasons archive',
+    },
+
     calendar: {
         sectionNo: '01 — Calendar',
         season: 'Season',
