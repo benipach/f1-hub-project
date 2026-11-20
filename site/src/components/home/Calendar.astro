@@ -30,12 +30,12 @@ const lines = (name: string) => {
 
 <section class="cal" id="calendar" aria-labelledby="cal-title">
     <div class="wrap">
-        <div class="cal__head">
+        <div class="sec-head">
             <div>
-                <p class="cal__k">{c.kicker}</p>
-                <h2 class="cal__title" id="cal-title">{c.season}<br />{calendar.season}</h2>
+                <p class="sec-k">{c.kicker}</p>
+                <h2 class="sec-title" id="cal-title">{c.season}<br />{calendar.season}</h2>
             </div>
-            <dl class="cal__facts">
+            <dl class="sec-facts">
                 <div><dd>{calendar.total}</dd><dt>{c.rounds}</dt></div>
                 <div><dd>{calendar.raced}</dd><dt>{c.raced}</dt></div>
                 <div><dd class="red">{calendar.toGo}</dd><dt>{c.toGo}</dt></div>

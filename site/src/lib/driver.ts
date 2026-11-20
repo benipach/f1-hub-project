@@ -132,6 +132,10 @@ export type DriverProfile = {
     readonly number: number;
     /** Every race number used, in the order first carried. */
     readonly numbers: readonly number[];
+    /** The seasons he carried each number, in the same order. */
+    readonly numberYears: readonly { readonly number: number; readonly years: readonly number[] }[];
+    /** The career starts in the archive's first season, so it may have started before. */
+    readonly fromArchive: boolean;
     readonly debut: string;
     readonly active: boolean;
     /** The latest season's Grands Prix held in the driver's country. */
@@ -354,11 +358,14 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
     const gpOf = (r: Round) => fullOf(r).replace(/Grand Prix|Gran Premio/, 'GP');
     const seasonOf = (year: number) => ctx.seasons.get(year)!;
 
-    const numbers: number[] = [];
+    const numberYears: { number: number; years: number[] }[] = [];
     for (const year of c.seasons) for (const r of seasonOf(year).rounds) {
         const n = r.rows.find((x) => x.driver === id)?.number;
-        if (n !== undefined && !numbers.includes(n)) numbers.push(n);
+        if (n === undefined) continue;
+        const entry = numberYears.find((e) => e.number === n) ?? numberYears[numberYears.push({ number: n, years: [] }) - 1]!;
+        if (!entry.years.includes(year)) entry.years.push(year);
     }
+    const numbers = numberYears.map((e) => e.number);
 
     // Home races: the latest calendar's Grands Prix in the driver's country
     // (owner, 18/10: "cuántas carreras tiene actualmente el país de su nacionalidad")
@@ -440,6 +447,8 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
         died: d?.dateOfDeath ?? null,
         number: c.number,
         numbers,
+        numberYears,
+        fromArchive: c.seasons[0] === Math.min(...ctx.seasons.keys()),
         debut: c.debut,
         active: c.seasons.at(-1) === ctx.latest,
         homeRaces,

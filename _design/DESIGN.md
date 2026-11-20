@@ -88,7 +88,7 @@ Two faces, both `woff2` in `fonts/`, preloaded by `Site.astro`:
 
 ## 4. Layout pieces
 
-**Section header** (calendar, standings, index): kicker in red, the title in
+**Section header** (`.sec-head` in `f1.css`: calendar, standings, index, driver info): kicker in red, the title in
 F1 Black, and on the right either a **number row** or one line of intro.
 
 **Number row** (`.facts`, `.now`): numbers in a row over a 1 px `--rule` line,
@@ -161,6 +161,18 @@ profile stays at `/descartado/poster/driver/<id>/` for reference):
   still in play, gap to the leader (or lead over the runner-up), wins,
   podiums, poles; and his last five races as a table (result, flag, Grand
   Prix, points; wins with the red tint).
+- **Driver info** (`driver/DriverInfo.astro`, `styles/driver-info.css`):
+  nothing the hero shows already. Section header with seasons, teams and age
+  at the debut; two columns with the heavy rule: the person (1/3, a label and
+  a value per row: full name, born, died, debut with its result, every race
+  number with its years, home races) and his teams (2/3, a row per stint:
+  logo, name, years, races, wins, podiums, points, best; titles in red under
+  the name). **This table keeps small column titles** (Years, Races…): six
+  numbers in a row can't be read without them (approved 20/11). On a phone
+  the numbers go to a line under the name. Before and beyond F1 under it,
+  only for the drivers with those facts. A career that starts in 1990 (the
+  archive's first season) says "First race on record" and has no age at the
+  debut, until 1950–1989 are loaded.
 
 ## 6. What was tried and rejected
 

@@ -52,3 +52,24 @@ img { display: block; }
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gut); }
 /* Links to a section (#calendar) land below the sticky navbar */
 [id] { scroll-margin-top: 72px; }
+
+/* A section's header (homepage calendar, standings and index; driver profile):
+   red kicker, the title in F1 Black, and on the right a number row or one
+   line of intro. */
+.sec-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 40px; }
+.sec-head--intro { grid-template-columns: minmax(0, 1fr) minmax(0, 420px); }
+.sec-k { font-weight: 700; font-size: 13px; text-transform: uppercase; color: var(--red); }
+.sec-title { margin-top: 10px; font: 76px/.95 'F1 Black'; text-transform: uppercase; color: #fff; }
+.sec-intro { font-size: 18px; line-height: 1.4; color: var(--dim); }
+.sec-facts { display: flex; margin: 0; border-top: 1px solid var(--rule); }
+.sec-facts div { padding: 12px 40px 0 14px; border-left: 1px solid var(--rule); }
+.sec-facts div:first-child { padding-left: 0; border-left: 0; }
+.sec-facts dd { margin: 0; font-weight: 700; font-size: 32px; color: #fff; }
+.sec-facts dd.red { color: var(--red); }
+.sec-facts dt { font-size: 12px; text-transform: uppercase; color: var(--dim); }
+@media (max-width: 760px) {
+    .sec-head { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .sec-head--intro { gap: 16px; }
+    .sec-title { font-size: 48px; }
+    .sec-facts div { padding-right: 18px; }
+}

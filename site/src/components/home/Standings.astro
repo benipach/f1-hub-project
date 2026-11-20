@@ -23,12 +23,12 @@ const columns: { head: string; rows: readonly StandingRow[] }[] = [
 
 <section class="std" aria-labelledby="std-title">
     <div class="wrap">
-        <div class="std__head">
+        <div class="sec-head">
             <div>
-                <p class="std__k">{s.kicker}</p>
-                <h2 class="std__title" id="std-title">{s.title}</h2>
+                <p class="sec-k">{s.kicker}</p>
+                <h2 class="sec-title" id="std-title">{s.title}</h2>
             </div>
-            <dl class="std__facts">
+            <dl class="sec-facts">
                 <div><dd>{standings.raced} / {standings.rounds}</dd><dt>{s.afterRound}</dt></div>
                 {standings.leader && <div><dd>{standings.lead}</dd><dt>{fill(s.lead, { name: standings.leader })}</dt></div>}
                 <div><dd class="red">{standings.rounds - standings.raced}</dd><dt>{s.toGo}</dt></div>

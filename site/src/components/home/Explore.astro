@@ -24,12 +24,12 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 <section class="idx" aria-labelledby="idx-title">
     <div class="wrap">
-        <div class="idx__head">
+        <div class="sec-head sec-head--intro">
             <div>
-                <p class="idx__k">{e.kicker}</p>
-                <h2 class="idx__title" id="idx-title">{e.title}</h2>
+                <p class="sec-k">{e.kicker}</p>
+                <h2 class="sec-title" id="idx-title">{e.title}</h2>
             </div>
-            <p class="idx__intro">{e.intro}</p>
+            <p class="sec-intro">{e.intro}</p>
         </div>
         <nav class="idx__list" aria-labelledby="idx-title">
             {rows.map((r, i) => r.path ? (

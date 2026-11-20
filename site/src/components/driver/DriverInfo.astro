@@ -1,0 +1,119 @@
+---
+// The driver profile's section 2, "Driver info" (approved 20/11/2026, mockup
+// in the owner's copy: _design/driver-f1/info.html). Nothing the hero shows
+// already: the header's number row (seasons, teams, age at the debut), then
+// two columns with the heavy rule, the person (1/3) and his teams (2/3), and
+// before and beyond F1 for the drivers that have them (driver-facts.ts).
+import '../../styles/hero.css';
+import '../../styles/driver-info.css';
+import TeamMark from '../TeamMark.astro';
+import { useI18n } from '../../i18n';
+import type { DriverProfile } from '../../lib/driver';
+import { DRIVER_FACTS } from '../../lib/driver-facts';
+
+interface Props {
+    driver: DriverProfile;
+}
+
+const { driver: D } = Astro.props;
+const { t, fill, plural, intl } = useI18n(Astro.currentLocale);
+const w = t.driverInfo;
+const F = DRIVER_FACTS[D.id] ?? {};
+const num = new Intl.NumberFormat(intl);
+const n = (v: number) => num.format(v);
+const date = (iso: string) => new Date(iso).toLocaleDateString(intl, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const span = (a: number, b: number) => (a === b ? `${a}` : `${a}–${b}`);
+const ageAt = (born: string, ref: string) => {
+    const b = new Date(born), r = new Date(ref);
+    let a = r.getUTCFullYear() - b.getUTCFullYear();
+    if (r.getUTCMonth() < b.getUTCMonth() || (r.getUTCMonth() === b.getUTCMonth() && r.getUTCDate() < b.getUTCDate())) a--;
+    return a;
+};
+// Runs of consecutive years: [2015, 2016, 2017, 2020] → "2015–2017, 2020"
+const runs = (years: readonly number[]) => {
+    const out: [number, number][] = [];
+    for (const y of years) {
+        const last = out.at(-1);
+        if (last && last[1] === y - 1) last[1] = y; else out.push([y, y]);
+    }
+    return out.map(([a, b]) => span(a, b)).join(', ');
+};
+
+const S = D.seasons;
+const teamCount = new Set(D.eras.map((e) => e.id)).size;
+const debut = D.milestones.find((m) => m.label === 'Debut');
+
+// The header's number row
+const head = [
+    { v: span(S[0]!.year, S.at(-1)!.year), l: plural(w.seasons, S.length) },
+    { v: String(teamCount), l: plural(w.teamsCount, teamCount) },
+    D.born && !D.fromArchive && { v: String(ageAt(D.born, D.debut)), l: w.ageAtDebut },
+].filter((x): x is { v: string; l: string } => Boolean(x));
+
+// The person, a row each: [label, value, note]
+const debutRace = debut && [fill(w.debutRace, { gp: debut.gp, team: debut.team, pos: debut.pos }), debut.grid ? fill(w.fromGrid, { grid: debut.grid }) : null].filter(Boolean).join(' ');
+const rows: [label: string, value: string, note: string | null][] = [];
+if (F.fullName) rows.push([w.fullName, F.fullName, null]);
+if (D.born) rows.push([w.born, date(D.born), F.birthplace ?? null]);
+if (D.died && D.born) rows.push([w.died, date(D.died), [fill(w.aged, { n: ageAt(D.born, D.died) }), F.deathPlace].filter(Boolean).join(' · ')]);
+rows.push([D.fromArchive ? w.firstOnRecord : w.debut, date(D.debut), [debutRace, D.fromArchive ? fill(w.archiveStarts, { year: S[0]!.year }) : null].filter(Boolean).join(' · ') || null]);
+if (D.numberYears.length) rows.push([
+    w.numbers,
+    D.numberYears.map((x) => `#${x.number}`).join(' · '),
+    D.numberYears.length > 1 ? D.numberYears.map((x) => `#${x.number} ${runs(x.years)}`).join(' · ') : w.onlyNumber,
+]);
+if (D.active) rows.push([w.homeRaces, D.homeRaces.length ? D.homeRaces.join(' · ') : w.noHomeRaces, fill(w.onCalendar, { year: D.latest })]);
+
+const eras = [...D.eras].reverse();
+const c = w.cols;
+const extra = ([[w.before, F.junior], [w.beyond, F.beyond]] as const).filter((x) => x[1]?.length);
+---
+
+<section class="dinfo" aria-labelledby="dinfo-title">
+    <div class="wrap">
+        <div class="sec-head">
+            <div><p class="sec-k">{w.kicker}</p><h2 class="sec-title" id="dinfo-title">{w.title}</h2></div>
+            <dl class="sec-facts">{head.map((x) => <div><dd>{x.v}</dd><dt>{x.l}</dt></div>)}</dl>
+        </div>
+        <div class="dinfo__cols">
+            <div class="dinfo__col">
+                <p class="col-h"><span>{w.profile}</span></p>
+                {rows.map(([label, value, note]) => (
+                    <div class="kv"><span class="kv__l">{label}</span><span class="kv__v">{value}{note && <small>{note}</small>}</span></div>
+                ))}
+            </div>
+            <div class="dinfo__col">
+                <p class="col-h">
+                    <span>{fill(w.teams, { n: teamCount })}</span>
+                    <span class="tteams__th"><i>{c.years}</i><i>{c.races}</i><i>{c.wins}</i><i>{c.podiums}</i><i>{c.points}</i><i>{c.best}</i></span>
+                </p>
+                {eras.map((e) => (
+                    <div class="tteams__row">
+                        <TeamMark logo={e.logo} color={e.color} size={26} />
+                        <span class="tteams__name">
+                            {e.name}
+                            {e.titles.length > 0 && <small class="tteams__titles">{fill(w.champion, { years: e.titles.join(' · ') })}</small>}
+                            <small class="tteams__line">{c.races} {e.races} · {c.wins} {e.wins} · {c.podiums} {e.podiums} · {c.points} {n(Math.round(e.points))}</small>
+                        </span>
+                        <span class="tteams__n tteams__y">{span(e.from, e.to)}</span>
+                        <span class="tteams__n">{e.races}</span>
+                        <span class="tteams__n">{e.wins || '·'}</span>
+                        <span class="tteams__n">{e.podiums || '·'}</span>
+                        <span class="tteams__n">{n(Math.round(e.points))}</span>
+                        <span class="tteams__n">{e.best ? `P${e.best}` : '—'}</span>
+                    </div>
+                ))}
+                {extra.length > 0 && (
+                    <div class="dinfo__more">
+                        {extra.map(([title, list]) => (
+                            <div class="dinfo__col">
+                                <p class="col-h"><span>{title}</span></p>
+                                {list!.map(([year, text]) => <div class="kv kv--rec"><span class="kv__l">{year}</span><span class="kv__v">{text}</span></div>)}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    </div>
+</section>

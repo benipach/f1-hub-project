@@ -1,15 +1,6 @@
 /* The homepage calendar (components/home/Calendar.astro). */
 
 .cal { padding: 72px 0 80px; }
-.cal__head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 40px; }
-.cal__k { font-weight: 700; font-size: 13px; text-transform: uppercase; color: var(--red); }
-.cal__title { margin-top: 10px; font: 76px/.95 'F1 Black'; text-transform: uppercase; color: #fff; }
-.cal__facts { display: flex; margin: 0; border-top: 1px solid var(--rule); }
-.cal__facts div { padding: 12px 40px 0 14px; border-left: 1px solid var(--rule); }
-.cal__facts div:first-child { padding-left: 0; border-left: 0; }
-.cal__facts dd { margin: 0; font-weight: 700; font-size: 32px; color: #fff; }
-.cal__facts dd.red { color: var(--red); }
-.cal__facts dt { font-size: 12px; text-transform: uppercase; color: var(--dim); }
 
 .cal__strip { display: flex; gap: 4px; margin-top: 36px; }
 .st { flex: 1; height: 8px; border-radius: 2px; }
@@ -66,8 +57,6 @@
 }
 @media (max-width: 760px) {
     .cal { padding: 48px 0 56px; }
-    .cal__head { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-    .cal__title { font-size: 48px; }
     .cal__grid { grid-template-columns: minmax(0, 1fr); }
     .cal__ends span:last-child { text-align: right; }
 }

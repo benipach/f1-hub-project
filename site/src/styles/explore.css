@@ -1,10 +1,6 @@
 /* The homepage index (components/home/Explore.astro). */
 
 .idx { padding: 72px 0 80px; }
-.idx__head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); align-items: end; gap: 40px; }
-.idx__k { font-weight: 700; font-size: 13px; text-transform: uppercase; color: var(--red); }
-.idx__title { margin-top: 10px; font: 76px/.95 'F1 Black'; text-transform: uppercase; color: #fff; }
-.idx__intro { font-size: 18px; line-height: 1.4; color: var(--dim); }
 .idx__list { margin-top: 40px; border-top: 3px solid #fff; }
 .idx__row {
     display: grid; grid-template-columns: 56px minmax(0, 1fr) minmax(0, 1fr) 48px; align-items: center; gap: 24px;
@@ -28,8 +24,6 @@ a.idx__row:focus-visible { outline: 2px solid var(--red); outline-offset: -2px; 
 
 @media (max-width: 760px) {
     .idx { padding: 48px 0 56px; }
-    .idx__head { grid-template-columns: minmax(0, 1fr); gap: 16px; }
-    .idx__title { font-size: 48px; }
     .idx__row { grid-template-columns: 32px minmax(0, 1fr) 28px; gap: 12px; row-gap: 6px; padding: 14px 4px; }
     .idx__name { font-size: 24px; }
     .idx__text { grid-column: 2; grid-row: 2; font-size: 14px; }
