@@ -1,5 +1,5 @@
 // Picks the homepage hero's state from the current time and keeps it current
-// (_design/DESIGN.md, section 6):
+// (_design/descartado/DESIGN-poster.md, section 6):
 //   1. live, if a session of the next Grand Prix is running;
 //   2. result, if the last race ended less than 24 h ago;
 //   3. upcoming otherwise, counting down to the next session. If every

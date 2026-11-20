@@ -1,4 +1,4 @@
-/* Primitives of the "Poster" system (_design/DESIGN.md, sections 2 and 4):
+/* Primitives of the "Poster" system (_design/descartado/DESIGN-poster.md, sections 2 and 4):
    type roles, layout and the small shared pieces. Kept apart from base.css
    (the reset and the page-wide rules) so the old pages can load them for the
    new navbar and footer without the reset (legacy-chrome.css, 16/10). */

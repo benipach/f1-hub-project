@@ -32,7 +32,7 @@ const LEGACY_PATHS = [
     'fonts',
 ];
 
-// Option B (_design/DESIGN.md, section 5 "Old pages"): the old pages get the
+// Option B (_design/descartado/DESIGN-poster.md, section 5 "Old pages"): the old pages get the
 // new navbar and footer, so the site looks like one while its pages are
 // rebuilt one at a time. src/pages/legacy-chrome.astro renders the two; here
 // they replace the old <header class="navbar"> and <footer class="footer">

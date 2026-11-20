@@ -1,4 +1,4 @@
-/* Reset and page-wide rules of the "Poster" system (_design/DESIGN.md, section
+/* Reset and page-wide rules of the "Poster" system (_design/descartado/DESIGN-poster.md, section
    2). The classes (type roles, layout, primitives) are in primitives.css. */
 
 *, *::before, *::after { box-sizing: border-box; }

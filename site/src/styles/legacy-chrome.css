@@ -1,4 +1,4 @@
-/* The new navbar and footer on the old pages (option B, _design/DESIGN.md
+/* The new navbar and footer on the old pages (option B, _design/descartado/DESIGN-poster.md
    section 5 "Old pages"). legacy-chrome.astro renders them with this sheet;
    the legacy-site integration puts both into every old page, after the page's
    own stylesheets, so these rules come later in the cascade. Only the chrome

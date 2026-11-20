@@ -1,5 +1,5 @@
 // What the homepage hero needs, prepared at build time from data/
-// (_design/DESIGN.md, sections 5 and 6).
+// (_design/descartado/DESIGN-poster.md, sections 5 and 6).
 //
 // The page is static: it's built when the data changes (after each session),
 // but which state the hero shows depends on when someone looks at it. So the

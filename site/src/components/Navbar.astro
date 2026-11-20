@@ -1,5 +1,5 @@
 ---
-// Site navbar (_design/DESIGN.md, section 5). An ink bar, sticky, with the
+// Site navbar (_design/descartado/DESIGN-poster.md, section 5). An ink bar, sticky, with the
 // logo, the season and a hamburger button at every width; the sections (the
 // same as the homepage's Explore index) and the language switcher are in a
 // full-screen menu that drops down from the bar.
@@ -32,7 +32,7 @@ const { t, fill } = useI18n(Astro.currentLocale);
 const s = t.sections;
 
 // Every section, in the site's one order and groups (the same in the Explore
-// index and the footer; _design/DESIGN.md, "Site sections"): the season in
+// index and the footer; _design/descartado/DESIGN-poster.md, "Site sections"): the season in
 // time order, the grid, then history. Live is drawn on its own (its dot and
 // "now"); Hall of Fame has no page yet ("Soon").
 type Item = { page: NavPage | 'calendar' | 'hallOfFame'; label: string; to: string | null };

@@ -1,4 +1,4 @@
-/* The driver profile (_design/DESIGN.md, "Driver profile"), ported from the
+/* The driver profile (_design/descartado/DESIGN-poster.md, "Driver profile"), ported from the
    approved mockup (_design/driver/index.html, 18–29/10); every "owner" note
    is a call the owner made there. Global on purpose: the season panel and
    the boards are written as HTML strings (lib/driver-view.ts), which scoped

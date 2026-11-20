@@ -1,5 +1,5 @@
 // What a driver's profile needs, prepared at build time from data/
-// (_design/DESIGN.md, "Driver profile"; the approved mockup is
+// (_design/descartado/DESIGN-poster.md, "Driver profile"; the approved mockup is
 // _design/driver/index.html in the owner's working copy).
 //
 // Every number comes from the season files, careers.json and
