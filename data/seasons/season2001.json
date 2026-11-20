@@ -537,7 +537,8 @@
             "team": "ferrari",
             "laps": 58,
             "pts": 10,
-            "time": "1:38:26.533"
+            "time": "1:38:26.533",
+            "grid": 1
           },
           {
             "pos": 2,
@@ -546,7 +547,8 @@
             "team": "mclaren",
             "laps": 58,
             "pts": 6,
-            "time": "+1.717"
+            "time": "+1.717",
+            "grid": 6
           },
           {
             "pos": 3,
@@ -555,7 +557,8 @@
             "team": "ferrari",
             "laps": 58,
             "pts": 4,
-            "time": "+33.491"
+            "time": "+33.491",
+            "grid": 2
           },
           {
             "pos": 4,
@@ -564,7 +567,8 @@
             "team": "sauber",
             "laps": 58,
             "pts": 3,
-            "time": "+1:11.479"
+            "time": "+1:11.479",
+            "grid": 10
           },
           {
             "pos": 5,
@@ -573,7 +577,8 @@
             "team": "jordan",
             "laps": 58,
             "pts": 2,
-            "time": "+1:12.807"
+            "time": "+1:12.807",
+            "grid": 4
           },
           {
             "pos": 6,
@@ -582,7 +587,8 @@
             "team": "sauber",
             "laps": 58,
             "pts": 1,
-            "time": "+1:24.143"
+            "time": "+1:24.143",
+            "grid": 13
           },
           {
             "pos": 7,
@@ -591,7 +597,8 @@
             "team": "bar",
             "laps": 58,
             "pts": 0,
-            "time": "+1:27.050"
+            "time": "+1:27.050",
+            "grid": 9
           },
           {
             "pos": 8,
@@ -600,7 +607,8 @@
             "team": "jaguar",
             "laps": 57,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 21
           },
           {
             "pos": 9,
@@ -609,7 +617,8 @@
             "team": "prost",
             "laps": 57,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 14
           },
           {
             "pos": 10,
@@ -618,7 +627,8 @@
             "team": "arrows",
             "laps": 57,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 15
           },
           {
             "pos": 11,
@@ -627,7 +637,8 @@
             "team": "jaguar",
             "laps": 57,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 12
           },
           {
             "pos": 12,
@@ -636,7 +647,8 @@
             "team": "minardi",
             "laps": 56,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 19
           },
           {
             "pos": 13,
@@ -645,7 +657,8 @@
             "team": "benetton",
             "laps": 55,
             "pts": 0,
-            "time": "+3 Laps"
+            "time": "+3 Laps",
+            "grid": 17
           },
           {
             "pos": 14,
@@ -654,7 +667,8 @@
             "team": "benetton",
             "laps": 52,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 16
           },
           {
             "pos": 15,
@@ -663,7 +677,8 @@
             "team": "williams",
             "laps": 40,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 11
           },
           {
             "pos": 16,
@@ -672,7 +687,8 @@
             "team": "jordan",
             "laps": 38,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 7
           },
           {
             "pos": 17,
@@ -681,7 +697,8 @@
             "team": "mclaren",
             "laps": 25,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 3
           },
           {
             "pos": 18,
@@ -690,7 +707,8 @@
             "team": "williams",
             "laps": 4,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 5
           },
           {
             "pos": 19,
@@ -699,7 +717,8 @@
             "team": "bar",
             "laps": 4,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 8
           },
           {
             "pos": 20,
@@ -708,7 +727,8 @@
             "team": "minardi",
             "laps": 3,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 22
           },
           {
             "pos": 21,
@@ -717,7 +737,8 @@
             "team": "arrows",
             "laps": 2,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 18
           },
           {
             "pos": 22,
@@ -726,7 +747,8 @@
             "team": "prost",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 20
           }
         ]
       }
@@ -1263,7 +1285,8 @@
             "team": "ferrari",
             "laps": 55,
             "pts": 10,
-            "time": "1:47:34.801"
+            "time": "1:47:34.801",
+            "grid": 1
           },
           {
             "pos": 2,
@@ -1272,7 +1295,8 @@
             "team": "ferrari",
             "laps": 55,
             "pts": 6,
-            "time": "+23.660"
+            "time": "+23.660",
+            "grid": 2
           },
           {
             "pos": 3,
@@ -1281,7 +1305,8 @@
             "team": "mclaren",
             "laps": 55,
             "pts": 4,
-            "time": "+28.555"
+            "time": "+28.555",
+            "grid": 8
           },
           {
             "pos": 4,
@@ -1290,7 +1315,8 @@
             "team": "jordan",
             "laps": 55,
             "pts": 3,
-            "time": "+46.543"
+            "time": "+46.543",
+            "grid": 9
           },
           {
             "pos": 5,
@@ -1299,7 +1325,8 @@
             "team": "williams",
             "laps": 55,
             "pts": 2,
-            "time": "+48.233"
+            "time": "+48.233",
+            "grid": 3
           },
           {
             "pos": 6,
@@ -1308,7 +1335,8 @@
             "team": "mclaren",
             "laps": 55,
             "pts": 1,
-            "time": "+48.606"
+            "time": "+48.606",
+            "grid": 4
           },
           {
             "pos": 7,
@@ -1317,7 +1345,8 @@
             "team": "arrows",
             "laps": 55,
             "pts": 0,
-            "time": "+1:21.560"
+            "time": "+1:21.560",
+            "grid": 18
           },
           {
             "pos": 8,
@@ -1326,7 +1355,8 @@
             "team": "jordan",
             "laps": 54,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 5
           },
           {
             "pos": 9,
@@ -1335,7 +1365,8 @@
             "team": "prost",
             "laps": 54,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 13
           },
           {
             "pos": 10,
@@ -1344,7 +1375,8 @@
             "team": "jaguar",
             "laps": 54,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 15
           },
           {
             "pos": 11,
@@ -1353,7 +1385,8 @@
             "team": "benetton",
             "laps": 53,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 17
           },
           {
             "pos": 12,
@@ -1362,7 +1395,8 @@
             "team": "prost",
             "laps": 53,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 19
           },
           {
             "pos": 13,
@@ -1371,7 +1405,8 @@
             "team": "minardi",
             "laps": 52,
             "pts": 0,
-            "time": "+3 Laps"
+            "time": "+3 Laps",
+            "grid": 21
           },
           {
             "pos": 14,
@@ -1380,7 +1415,8 @@
             "team": "minardi",
             "laps": 51,
             "pts": 0,
-            "time": "+4 Laps"
+            "time": "+4 Laps",
+            "grid": 20
           },
           {
             "pos": 15,
@@ -1389,7 +1425,8 @@
             "team": "benetton",
             "laps": 31,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 16
           },
           {
             "pos": 16,
@@ -1398,7 +1435,8 @@
             "team": "bar",
             "laps": 3,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 7
           },
           {
             "pos": 17,
@@ -1407,7 +1445,8 @@
             "team": "sauber",
             "laps": 3,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 11
           },
           {
             "pos": 18,
@@ -1416,7 +1455,8 @@
             "team": "arrows",
             "laps": 3,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 22
           },
           {
             "pos": 19,
@@ -1425,7 +1465,8 @@
             "team": "williams",
             "laps": 3,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 6
           },
           {
             "pos": 20,
@@ -1434,7 +1475,8 @@
             "team": "jaguar",
             "laps": 3,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 12
           },
           {
             "pos": 21,
@@ -1443,7 +1485,8 @@
             "team": "bar",
             "laps": 1,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 10
           },
           {
             "pos": 22,
@@ -1452,7 +1495,8 @@
             "team": "sauber",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 14
           }
         ]
       }
@@ -1996,7 +2040,8 @@
             "team": "mclaren",
             "laps": 71,
             "pts": 10,
-            "time": "1:39:00.834"
+            "time": "1:39:00.834",
+            "grid": 5
           },
           {
             "pos": 2,
@@ -2005,7 +2050,8 @@
             "team": "ferrari",
             "laps": 71,
             "pts": 6,
-            "time": "+16.164"
+            "time": "+16.164",
+            "grid": 1
           },
           {
             "pos": 3,
@@ -2014,7 +2060,8 @@
             "team": "sauber",
             "laps": 70,
             "pts": 4,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 9
           },
           {
             "pos": 4,
@@ -2023,7 +2070,8 @@
             "team": "bar",
             "laps": 70,
             "pts": 3,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 11
           },
           {
             "pos": 5,
@@ -2032,7 +2080,8 @@
             "team": "jordan",
             "laps": 70,
             "pts": 2,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 7
           },
           {
             "pos": 6,
@@ -2041,7 +2090,8 @@
             "team": "benetton",
             "laps": 70,
             "pts": 1,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 18
           },
           {
             "pos": 7,
@@ -2050,7 +2100,8 @@
             "team": "bar",
             "laps": 70,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 12
           },
           {
             "pos": 8,
@@ -2059,7 +2110,8 @@
             "team": "prost",
             "laps": 70,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 15
           },
           {
             "pos": 9,
@@ -2068,7 +2120,8 @@
             "team": "minardi",
             "laps": 68,
             "pts": 0,
-            "time": "+3 Laps"
+            "time": "+3 Laps",
+            "grid": 22
           },
           {
             "pos": 10,
@@ -2077,7 +2130,8 @@
             "team": "benetton",
             "laps": 64,
             "pts": 0,
-            "time": "+7 Laps"
+            "time": "+7 Laps",
+            "grid": 20
           },
           {
             "pos": 11,
@@ -2086,7 +2140,8 @@
             "team": "jordan",
             "laps": 63,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 8
           },
           {
             "pos": 12,
@@ -2095,7 +2150,8 @@
             "team": "sauber",
             "laps": 55,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 10
           },
           {
             "pos": 13,
@@ -2104,7 +2160,8 @@
             "team": "williams",
             "laps": 54,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 2
           },
           {
             "pos": 14,
@@ -2113,7 +2170,8 @@
             "team": "prost",
             "laps": 54,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 21
           },
           {
             "pos": 15,
@@ -2122,7 +2180,8 @@
             "team": "jaguar",
             "laps": 52,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 13
           },
           {
             "pos": 16,
@@ -2131,7 +2190,8 @@
             "team": "williams",
             "laps": 38,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 4
           },
           {
             "pos": 17,
@@ -2140,7 +2200,8 @@
             "team": "arrows",
             "laps": 37,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 17
           },
           {
             "pos": 18,
@@ -2149,7 +2210,8 @@
             "team": "jaguar",
             "laps": 30,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 14
           },
           {
             "pos": 19,
@@ -2158,7 +2220,8 @@
             "team": "minardi",
             "laps": 25,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 19
           },
           {
             "pos": 20,
@@ -2167,7 +2230,8 @@
             "team": "arrows",
             "laps": 15,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 16
           },
           {
             "pos": 21,
@@ -2176,7 +2240,8 @@
             "team": "ferrari",
             "laps": 2,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 6
           },
           {
             "pos": 22,
@@ -2185,7 +2250,8 @@
             "team": "mclaren",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 3
           }
         ]
       }
@@ -2728,7 +2794,8 @@
             "team": "williams",
             "laps": 62,
             "pts": 10,
-            "time": "1:30:44.817"
+            "time": "1:30:44.817",
+            "grid": 3
           },
           {
             "pos": 2,
@@ -2737,7 +2804,8 @@
             "team": "mclaren",
             "laps": 62,
             "pts": 6,
-            "time": "+4.352"
+            "time": "+4.352",
+            "grid": 1
           },
           {
             "pos": 3,
@@ -2746,7 +2814,8 @@
             "team": "ferrari",
             "laps": 62,
             "pts": 4,
-            "time": "+34.766"
+            "time": "+34.766",
+            "grid": 6
           },
           {
             "pos": 4,
@@ -2755,7 +2824,8 @@
             "team": "mclaren",
             "laps": 62,
             "pts": 3,
-            "time": "+36.315"
+            "time": "+36.315",
+            "grid": 2
           },
           {
             "pos": 5,
@@ -2764,7 +2834,8 @@
             "team": "jordan",
             "laps": 62,
             "pts": 2,
-            "time": "+1:25.558"
+            "time": "+1:25.558",
+            "grid": 5
           },
           {
             "pos": 6,
@@ -2773,7 +2844,8 @@
             "team": "jordan",
             "laps": 61,
             "pts": 1,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 9
           },
           {
             "pos": 7,
@@ -2782,7 +2854,8 @@
             "team": "sauber",
             "laps": 61,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 12
           },
           {
             "pos": 8,
@@ -2791,7 +2864,8 @@
             "team": "bar",
             "laps": 61,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 8
           },
           {
             "pos": 9,
@@ -2800,7 +2874,8 @@
             "team": "prost",
             "laps": 61,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 14
           },
           {
             "pos": 10,
@@ -2809,7 +2884,8 @@
             "team": "arrows",
             "laps": 60,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 16
           },
           {
             "pos": 11,
@@ -2818,7 +2894,8 @@
             "team": "jaguar",
             "laps": 60,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 15
           },
           {
             "pos": 12,
@@ -2827,7 +2904,8 @@
             "team": "benetton",
             "laps": 60,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 21
           },
           {
             "pos": 13,
@@ -2836,7 +2914,8 @@
             "team": "minardi",
             "laps": 50,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 22
           },
           {
             "pos": 14,
@@ -2845,7 +2924,8 @@
             "team": "williams",
             "laps": 48,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 7
           },
           {
             "pos": 15,
@@ -2854,7 +2934,8 @@
             "team": "jaguar",
             "laps": 42,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 13
           },
           {
             "pos": 16,
@@ -2863,7 +2944,8 @@
             "team": "benetton",
             "laps": 31,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 19
           },
           {
             "pos": 17,
@@ -2872,7 +2954,8 @@
             "team": "bar",
             "laps": 30,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 11
           },
           {
             "pos": 18,
@@ -2881,7 +2964,8 @@
             "team": "prost",
             "laps": 28,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 20
           },
           {
             "pos": 19,
@@ -2890,7 +2974,8 @@
             "team": "ferrari",
             "laps": 24,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 4
           },
           {
             "pos": 20,
@@ -2899,7 +2984,8 @@
             "team": "sauber",
             "laps": 17,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 10
           },
           {
             "pos": 21,
@@ -2908,7 +2994,8 @@
             "team": "arrows",
             "laps": 6,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 17
           },
           {
             "pos": 22,
@@ -2917,7 +3004,8 @@
             "team": "minardi",
             "laps": 5,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 18
           }
         ]
       }
@@ -3461,7 +3549,8 @@
             "team": "ferrari",
             "laps": 65,
             "pts": 10,
-            "time": "1:31:03.305"
+            "time": "1:31:03.305",
+            "grid": 1
           },
           {
             "pos": 2,
@@ -3470,7 +3559,8 @@
             "team": "williams",
             "laps": 65,
             "pts": 6,
-            "time": "+40.738"
+            "time": "+40.738",
+            "grid": 12
           },
           {
             "pos": 3,
@@ -3479,7 +3569,8 @@
             "team": "bar",
             "laps": 65,
             "pts": 4,
-            "time": "+49.626"
+            "time": "+49.626",
+            "grid": 7
           },
           {
             "pos": 4,
@@ -3488,7 +3579,8 @@
             "team": "jordan",
             "laps": 65,
             "pts": 3,
-            "time": "+51.253"
+            "time": "+51.253",
+            "grid": 6
           },
           {
             "pos": 5,
@@ -3497,7 +3589,8 @@
             "team": "mclaren",
             "laps": 65,
             "pts": 2,
-            "time": "+51.616"
+            "time": "+51.616",
+            "grid": 3
           },
           {
             "pos": 6,
@@ -3506,7 +3599,8 @@
             "team": "sauber",
             "laps": 65,
             "pts": 1,
-            "time": "+1:01.893"
+            "time": "+1:01.893",
+            "grid": 10
           },
           {
             "pos": 7,
@@ -3515,7 +3609,8 @@
             "team": "bar",
             "laps": 65,
             "pts": 0,
-            "time": "+1:04.977"
+            "time": "+1:04.977",
+            "grid": 11
           },
           {
             "pos": 8,
@@ -3524,7 +3619,8 @@
             "team": "sauber",
             "laps": 65,
             "pts": 0,
-            "time": "+1:19.808"
+            "time": "+1:19.808",
+            "grid": 9
           },
           {
             "pos": 9,
@@ -3533,7 +3629,8 @@
             "team": "mclaren",
             "laps": 64,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 2
           },
           {
             "pos": 10,
@@ -3542,7 +3639,8 @@
             "team": "prost",
             "laps": 64,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 15
           },
           {
             "pos": 11,
@@ -3551,7 +3649,8 @@
             "team": "prost",
             "laps": 64,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 14
           },
           {
             "pos": 12,
@@ -3560,7 +3659,8 @@
             "team": "arrows",
             "laps": 63,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 17
           },
           {
             "pos": 13,
@@ -3569,7 +3669,8 @@
             "team": "minardi",
             "laps": 63,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 18
           },
           {
             "pos": 14,
@@ -3578,7 +3679,8 @@
             "team": "benetton",
             "laps": 63,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 19
           },
           {
             "pos": 15,
@@ -3587,7 +3689,8 @@
             "team": "benetton",
             "laps": 62,
             "pts": 0,
-            "time": "+3 Laps"
+            "time": "+3 Laps",
+            "grid": 21
           },
           {
             "pos": 16,
@@ -3596,7 +3699,8 @@
             "team": "minardi",
             "laps": 62,
             "pts": 0,
-            "time": "+3 Laps"
+            "time": "+3 Laps",
+            "grid": 22
           },
           {
             "pos": 17,
@@ -3605,7 +3709,8 @@
             "team": "ferrari",
             "laps": 49,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 4
           },
           {
             "pos": 18,
@@ -3614,7 +3719,8 @@
             "team": "jaguar",
             "laps": 48,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 13
           },
           {
             "pos": 19,
@@ -3623,7 +3729,8 @@
             "team": "williams",
             "laps": 20,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 5
           },
           {
             "pos": 20,
@@ -3632,7 +3739,8 @@
             "team": "arrows",
             "laps": 8,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 16
           },
           {
             "pos": 21,
@@ -3641,7 +3749,8 @@
             "team": "jaguar",
             "laps": 5,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 20
           },
           {
             "pos": 22,
@@ -3650,7 +3759,8 @@
             "team": "jordan",
             "laps": 5,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 8
           }
         ]
       }
@@ -4194,7 +4304,8 @@
             "team": "mclaren",
             "laps": 71,
             "pts": 10,
-            "time": "1:27:45.927"
+            "time": "1:27:45.927",
+            "grid": 7
           },
           {
             "pos": 2,
@@ -4203,7 +4314,8 @@
             "team": "ferrari",
             "laps": 71,
             "pts": 6,
-            "time": "+2.190"
+            "time": "+2.190",
+            "grid": 1
           },
           {
             "pos": 3,
@@ -4212,7 +4324,8 @@
             "team": "ferrari",
             "laps": 71,
             "pts": 4,
-            "time": "+2.527"
+            "time": "+2.527",
+            "grid": 4
           },
           {
             "pos": 4,
@@ -4221,7 +4334,8 @@
             "team": "sauber",
             "laps": 71,
             "pts": 3,
-            "time": "+41.593"
+            "time": "+41.593",
+            "grid": 9
           },
           {
             "pos": 5,
@@ -4230,7 +4344,8 @@
             "team": "bar",
             "laps": 71,
             "pts": 2,
-            "time": "+53.775"
+            "time": "+53.775",
+            "grid": 10
           },
           {
             "pos": 6,
@@ -4239,7 +4354,8 @@
             "team": "arrows",
             "laps": 70,
             "pts": 1,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 16
           },
           {
             "pos": 7,
@@ -4248,7 +4364,8 @@
             "team": "jaguar",
             "laps": 70,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 13
           },
           {
             "pos": 8,
@@ -4257,7 +4374,8 @@
             "team": "bar",
             "laps": 70,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 12
           },
           {
             "pos": 9,
@@ -4266,7 +4384,8 @@
             "team": "sauber",
             "laps": 69,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 6
           },
           {
             "pos": 10,
@@ -4275,7 +4394,8 @@
             "team": "prost",
             "laps": 69,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 20
           },
           {
             "pos": 11,
@@ -4284,7 +4404,8 @@
             "team": "prost",
             "laps": 69,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 17
           },
           {
             "pos": 12,
@@ -4293,7 +4414,8 @@
             "team": "benetton",
             "laps": 60,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 21
           },
           {
             "pos": 13,
@@ -4302,7 +4424,8 @@
             "team": "jaguar",
             "laps": 48,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 14
           },
           {
             "pos": 14,
@@ -4311,7 +4434,8 @@
             "team": "williams",
             "laps": 41,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 2
           },
           {
             "pos": 15,
@@ -4320,7 +4444,8 @@
             "team": "minardi",
             "laps": 38,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 18
           },
           {
             "pos": 16,
@@ -4329,7 +4454,8 @@
             "team": "minardi",
             "laps": 25,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 22
           },
           {
             "pos": 17,
@@ -4338,7 +4464,8 @@
             "team": "arrows",
             "laps": 17,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 15
           },
           {
             "pos": 18,
@@ -4347,7 +4474,8 @@
             "team": "jordan",
             "laps": 14,
             "pts": 0,
-            "time": "DSQ"
+            "time": "DSQ",
+            "grid": 5
           },
           {
             "pos": 19,
@@ -4356,7 +4484,8 @@
             "team": "williams",
             "laps": 10,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 3
           },
           {
             "pos": 20,
@@ -4365,7 +4494,8 @@
             "team": "benetton",
             "laps": 3,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 19
           },
           {
             "pos": 21,
@@ -4374,7 +4504,8 @@
             "team": "mclaren",
             "laps": 1,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 8
           },
           {
             "pos": 22,
@@ -4383,7 +4514,8 @@
             "team": "jordan",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 11
           }
         ]
       }
@@ -4927,7 +5059,8 @@
             "team": "ferrari",
             "laps": 78,
             "pts": 10,
-            "time": "1:47:22.561"
+            "time": "1:47:22.561",
+            "grid": 2
           },
           {
             "pos": 2,
@@ -4936,7 +5069,8 @@
             "team": "ferrari",
             "laps": 78,
             "pts": 6,
-            "time": "+0.431"
+            "time": "+0.431",
+            "grid": 4
           },
           {
             "pos": 3,
@@ -4945,7 +5079,8 @@
             "team": "jaguar",
             "laps": 78,
             "pts": 4,
-            "time": "+30.698"
+            "time": "+30.698",
+            "grid": 6
           },
           {
             "pos": 4,
@@ -4954,7 +5089,8 @@
             "team": "bar",
             "laps": 78,
             "pts": 3,
-            "time": "+32.454"
+            "time": "+32.454",
+            "grid": 9
           },
           {
             "pos": 5,
@@ -4963,7 +5099,8 @@
             "team": "mclaren",
             "laps": 77,
             "pts": 2,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 1
           },
           {
             "pos": 6,
@@ -4972,7 +5109,8 @@
             "team": "prost",
             "laps": 77,
             "pts": 1,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 11
           },
           {
             "pos": 7,
@@ -4981,7 +5119,8 @@
             "team": "benetton",
             "laps": 77,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 17
           },
           {
             "pos": 8,
@@ -4990,7 +5129,8 @@
             "team": "arrows",
             "laps": 77,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 19
           },
           {
             "pos": 9,
@@ -4999,7 +5139,8 @@
             "team": "arrows",
             "laps": 76,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 20
           },
           {
             "pos": 10,
@@ -5008,7 +5149,8 @@
             "team": "sauber",
             "laps": 73,
             "pts": 0,
-            "time": "+5 Laps"
+            "time": "+5 Laps",
+            "grid": 15
           },
           {
             "pos": 11,
@@ -5017,7 +5159,8 @@
             "team": "williams",
             "laps": 57,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 5
           },
           {
             "pos": 12,
@@ -5026,7 +5169,8 @@
             "team": "minardi",
             "laps": 56,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 22
           },
           {
             "pos": 13,
@@ -5035,7 +5179,8 @@
             "team": "minardi",
             "laps": 54,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 18
           },
           {
             "pos": 14,
@@ -5044,7 +5189,8 @@
             "team": "jordan",
             "laps": 49,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 13
           },
           {
             "pos": 15,
@@ -5053,7 +5199,8 @@
             "team": "benetton",
             "laps": 43,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 10
           },
           {
             "pos": 16,
@@ -5062,7 +5209,8 @@
             "team": "jordan",
             "laps": 30,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 8
           },
           {
             "pos": 17,
@@ -5071,7 +5219,8 @@
             "team": "prost",
             "laps": 24,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 21
           },
           {
             "pos": 18,
@@ -5080,7 +5229,8 @@
             "team": "jaguar",
             "laps": 18,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 14
           },
           {
             "pos": 19,
@@ -5089,7 +5239,8 @@
             "team": "mclaren",
             "laps": 15,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 3
           },
           {
             "pos": 20,
@@ -5098,7 +5249,8 @@
             "team": "bar",
             "laps": 13,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 12
           },
           {
             "pos": 21,
@@ -5107,7 +5259,8 @@
             "team": "williams",
             "laps": 2,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 7
           },
           {
             "pos": 22,
@@ -5116,7 +5269,8 @@
             "team": "sauber",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 16
           }
         ]
       }
@@ -5653,7 +5807,8 @@
             "team": "williams",
             "laps": 69,
             "pts": 10,
-            "time": "1:34:31.522"
+            "time": "1:34:31.522",
+            "grid": 2
           },
           {
             "pos": 2,
@@ -5662,7 +5817,8 @@
             "team": "ferrari",
             "laps": 69,
             "pts": 6,
-            "time": "+20.235"
+            "time": "+20.235",
+            "grid": 1
           },
           {
             "pos": 3,
@@ -5671,7 +5827,8 @@
             "team": "mclaren",
             "laps": 69,
             "pts": 4,
-            "time": "+40.672"
+            "time": "+40.672",
+            "grid": 8
           },
           {
             "pos": 4,
@@ -5680,7 +5837,8 @@
             "team": "sauber",
             "laps": 69,
             "pts": 3,
-            "time": "+1:08.116"
+            "time": "+1:08.116",
+            "grid": 7
           },
           {
             "pos": 5,
@@ -5689,7 +5847,8 @@
             "team": "prost",
             "laps": 69,
             "pts": 2,
-            "time": "+1:10.435"
+            "time": "+1:10.435",
+            "grid": 16
           },
           {
             "pos": 6,
@@ -5698,7 +5857,8 @@
             "team": "jaguar",
             "laps": 68,
             "pts": 1,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 14
           },
           {
             "pos": 7,
@@ -5707,7 +5867,8 @@
             "team": "jordan",
             "laps": 68,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 12
           },
           {
             "pos": 8,
@@ -5716,7 +5877,8 @@
             "team": "prost",
             "laps": 68,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 19
           },
           {
             "pos": 9,
@@ -5725,7 +5887,8 @@
             "team": "minardi",
             "laps": 66,
             "pts": 0,
-            "time": "+3 Laps"
+            "time": "+3 Laps",
+            "grid": 21
           },
           {
             "pos": 10,
@@ -5734,7 +5897,8 @@
             "team": "arrows",
             "laps": 65,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 13
           },
           {
             "pos": 11,
@@ -5743,7 +5907,8 @@
             "team": "jordan",
             "laps": 63,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 4
           },
           {
             "pos": 12,
@@ -5752,7 +5917,8 @@
             "team": "mclaren",
             "laps": 54,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 3
           },
           {
             "pos": 13,
@@ -5761,7 +5927,8 @@
             "team": "bar",
             "laps": 38,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 6
           },
           {
             "pos": 14,
@@ -5770,7 +5937,8 @@
             "team": "bar",
             "laps": 34,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 9
           },
           {
             "pos": 15,
@@ -5779,7 +5947,8 @@
             "team": "arrows",
             "laps": 24,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 17
           },
           {
             "pos": 16,
@@ -5788,7 +5957,8 @@
             "team": "williams",
             "laps": 19,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 10
           },
           {
             "pos": 17,
@@ -5797,7 +5967,8 @@
             "team": "ferrari",
             "laps": 19,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 5
           },
           {
             "pos": 18,
@@ -5806,7 +5977,8 @@
             "team": "benetton",
             "laps": 17,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 20
           },
           {
             "pos": 19,
@@ -5815,7 +5987,8 @@
             "team": "minardi",
             "laps": 7,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 22
           },
           {
             "pos": 20,
@@ -5824,7 +5997,8 @@
             "team": "sauber",
             "laps": 1,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 11
           },
           {
             "pos": 21,
@@ -5833,7 +6007,8 @@
             "team": "jaguar",
             "laps": 1,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 15
           },
           {
             "pos": 22,
@@ -5842,7 +6017,8 @@
             "team": "benetton",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 18
           }
         ]
       }
@@ -6385,7 +6561,8 @@
             "team": "ferrari",
             "laps": 67,
             "pts": 10,
-            "time": "1:29:42.724"
+            "time": "1:29:42.724",
+            "grid": 1
           },
           {
             "pos": 2,
@@ -6394,7 +6571,8 @@
             "team": "williams",
             "laps": 67,
             "pts": 6,
-            "time": "+4.127"
+            "time": "+4.127",
+            "grid": 3
           },
           {
             "pos": 3,
@@ -6403,7 +6581,8 @@
             "team": "mclaren",
             "laps": 67,
             "pts": 4,
-            "time": "+24.993"
+            "time": "+24.993",
+            "grid": 5
           },
           {
             "pos": 4,
@@ -6412,7 +6591,8 @@
             "team": "williams",
             "laps": 67,
             "pts": 3,
-            "time": "+33.345"
+            "time": "+33.345",
+            "grid": 2
           },
           {
             "pos": 5,
@@ -6421,7 +6601,8 @@
             "team": "ferrari",
             "laps": 67,
             "pts": 2,
-            "time": "+45.495"
+            "time": "+45.495",
+            "grid": 4
           },
           {
             "pos": 6,
@@ -6430,7 +6611,8 @@
             "team": "mclaren",
             "laps": 67,
             "pts": 1,
-            "time": "+1:04.868"
+            "time": "+1:04.868",
+            "grid": 6
           },
           {
             "pos": 7,
@@ -6439,7 +6621,8 @@
             "team": "jaguar",
             "laps": 67,
             "pts": 0,
-            "time": "+1:06.198"
+            "time": "+1:06.198",
+            "grid": 12
           },
           {
             "pos": 8,
@@ -6448,7 +6631,8 @@
             "team": "jaguar",
             "laps": 66,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 16
           },
           {
             "pos": 9,
@@ -6457,7 +6641,8 @@
             "team": "bar",
             "laps": 66,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 11
           },
           {
             "pos": 10,
@@ -6466,7 +6651,8 @@
             "team": "sauber",
             "laps": 66,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 9
           },
           {
             "pos": 11,
@@ -6475,7 +6661,8 @@
             "team": "benetton",
             "laps": 66,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 15
           },
           {
             "pos": 12,
@@ -6484,7 +6671,8 @@
             "team": "prost",
             "laps": 65,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 17
           },
           {
             "pos": 13,
@@ -6493,7 +6681,8 @@
             "team": "benetton",
             "laps": 65,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 20
           },
           {
             "pos": 14,
@@ -6502,7 +6691,8 @@
             "team": "minardi",
             "laps": 65,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 21
           },
           {
             "pos": 15,
@@ -6511,7 +6701,8 @@
             "team": "prost",
             "laps": 64,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 14
           },
           {
             "pos": 16,
@@ -6520,7 +6711,8 @@
             "team": "arrows",
             "laps": 58,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 19
           },
           {
             "pos": 17,
@@ -6529,7 +6721,8 @@
             "team": "sauber",
             "laps": 54,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 10
           },
           {
             "pos": 18,
@@ -6538,7 +6731,8 @@
             "team": "jordan",
             "laps": 48,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 8
           },
           {
             "pos": 19,
@@ -6547,7 +6741,8 @@
             "team": "jordan",
             "laps": 44,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 7
           },
           {
             "pos": 20,
@@ -6556,7 +6751,8 @@
             "team": "arrows",
             "laps": 29,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 18
           },
           {
             "pos": 21,
@@ -6565,7 +6761,8 @@
             "team": "bar",
             "laps": 23,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 13
           },
           {
             "pos": 22,
@@ -6574,7 +6771,8 @@
             "team": "minardi",
             "laps": 7,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 22
           }
         ]
       }
@@ -7117,7 +7315,8 @@
             "team": "ferrari",
             "laps": 72,
             "pts": 10,
-            "time": "1:33:35.636"
+            "time": "1:33:35.636",
+            "grid": 2
           },
           {
             "pos": 2,
@@ -7126,7 +7325,8 @@
             "team": "williams",
             "laps": 72,
             "pts": 6,
-            "time": "+10.399"
+            "time": "+10.399",
+            "grid": 1
           },
           {
             "pos": 3,
@@ -7135,7 +7335,8 @@
             "team": "ferrari",
             "laps": 72,
             "pts": 4,
-            "time": "+16.381"
+            "time": "+16.381",
+            "grid": 8
           },
           {
             "pos": 4,
@@ -7144,7 +7345,8 @@
             "team": "mclaren",
             "laps": 72,
             "pts": 3,
-            "time": "+17.106"
+            "time": "+17.106",
+            "grid": 3
           },
           {
             "pos": 5,
@@ -7153,7 +7355,8 @@
             "team": "jordan",
             "laps": 72,
             "pts": 2,
-            "time": "+1:08.285"
+            "time": "+1:08.285",
+            "grid": 5
           },
           {
             "pos": 6,
@@ -7162,7 +7365,8 @@
             "team": "sauber",
             "laps": 71,
             "pts": 1,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 9
           },
           {
             "pos": 7,
@@ -7171,7 +7375,8 @@
             "team": "sauber",
             "laps": 71,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 13
           },
           {
             "pos": 8,
@@ -7180,7 +7385,8 @@
             "team": "jordan",
             "laps": 71,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 7
           },
           {
             "pos": 9,
@@ -7189,7 +7395,8 @@
             "team": "bar",
             "laps": 71,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 11
           },
           {
             "pos": 10,
@@ -7198,7 +7405,8 @@
             "team": "prost",
             "laps": 71,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 15
           },
           {
             "pos": 11,
@@ -7207,7 +7415,8 @@
             "team": "benetton",
             "laps": 71,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 16
           },
           {
             "pos": 12,
@@ -7216,7 +7425,8 @@
             "team": "prost",
             "laps": 70,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 19
           },
           {
             "pos": 13,
@@ -7225,7 +7435,8 @@
             "team": "arrows",
             "laps": 70,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 18
           },
           {
             "pos": 14,
@@ -7234,7 +7445,8 @@
             "team": "jaguar",
             "laps": 70,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 14
           },
           {
             "pos": 15,
@@ -7243,7 +7455,8 @@
             "team": "minardi",
             "laps": 69,
             "pts": 0,
-            "time": "+3 Laps"
+            "time": "+3 Laps",
+            "grid": 22
           },
           {
             "pos": 16,
@@ -7252,7 +7465,8 @@
             "team": "benetton",
             "laps": 68,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 17
           },
           {
             "pos": 17,
@@ -7261,7 +7475,8 @@
             "team": "minardi",
             "laps": 65,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 21
           },
           {
             "pos": 18,
@@ -7270,7 +7485,8 @@
             "team": "jaguar",
             "laps": 54,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 12
           },
           {
             "pos": 19,
@@ -7279,7 +7495,8 @@
             "team": "williams",
             "laps": 52,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 6
           },
           {
             "pos": 20,
@@ -7288,7 +7505,8 @@
             "team": "arrows",
             "laps": 17,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 20
           },
           {
             "pos": 21,
@@ -7297,7 +7515,8 @@
             "team": "bar",
             "laps": 5,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 10
           },
           {
             "pos": 22,
@@ -7306,7 +7525,8 @@
             "team": "mclaren",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 4
           }
         ]
       }
@@ -7850,7 +8070,8 @@
             "team": "mclaren",
             "laps": 60,
             "pts": 10,
-            "time": "1:25:33.770"
+            "time": "1:25:33.770",
+            "grid": 2
           },
           {
             "pos": 2,
@@ -7859,7 +8080,8 @@
             "team": "ferrari",
             "laps": 60,
             "pts": 6,
-            "time": "+33.646"
+            "time": "+33.646",
+            "grid": 1
           },
           {
             "pos": 3,
@@ -7868,7 +8090,8 @@
             "team": "ferrari",
             "laps": 60,
             "pts": 4,
-            "time": "+59.281"
+            "time": "+59.281",
+            "grid": 6
           },
           {
             "pos": 4,
@@ -7877,7 +8100,8 @@
             "team": "williams",
             "laps": 60,
             "pts": 3,
-            "time": "+1:08.772"
+            "time": "+1:08.772",
+            "grid": 8
           },
           {
             "pos": 5,
@@ -7886,7 +8110,8 @@
             "team": "sauber",
             "laps": 59,
             "pts": 2,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 7
           },
           {
             "pos": 6,
@@ -7895,7 +8120,8 @@
             "team": "sauber",
             "laps": 59,
             "pts": 1,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 9
           },
           {
             "pos": 7,
@@ -7904,7 +8130,8 @@
             "team": "jordan",
             "laps": 59,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 5
           },
           {
             "pos": 8,
@@ -7913,7 +8140,8 @@
             "team": "bar",
             "laps": 59,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 12
           },
           {
             "pos": 9,
@@ -7922,7 +8150,8 @@
             "team": "jaguar",
             "laps": 59,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 15
           },
           {
             "pos": 10,
@@ -7931,7 +8160,8 @@
             "team": "arrows",
             "laps": 58,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 17
           },
           {
             "pos": 11,
@@ -7940,7 +8170,8 @@
             "team": "prost",
             "laps": 58,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 14
           },
           {
             "pos": 12,
@@ -7949,7 +8180,8 @@
             "team": "jaguar",
             "laps": 58,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 13
           },
           {
             "pos": 13,
@@ -7958,7 +8190,8 @@
             "team": "benetton",
             "laps": 58,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 19
           },
           {
             "pos": 14,
@@ -7967,7 +8200,8 @@
             "team": "arrows",
             "laps": 58,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 20
           },
           {
             "pos": 15,
@@ -7976,7 +8210,8 @@
             "team": "benetton",
             "laps": 58,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 18
           },
           {
             "pos": 16,
@@ -7985,7 +8220,8 @@
             "team": "minardi",
             "laps": 57,
             "pts": 0,
-            "time": "+3 Laps"
+            "time": "+3 Laps",
+            "grid": 21
           },
           {
             "pos": 17,
@@ -7994,7 +8230,8 @@
             "team": "williams",
             "laps": 36,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 10
           },
           {
             "pos": 18,
@@ -8003,7 +8240,8 @@
             "team": "prost",
             "laps": 6,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 16
           },
           {
             "pos": 19,
@@ -8012,7 +8250,8 @@
             "team": "mclaren",
             "laps": 2,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 3
           },
           {
             "pos": 20,
@@ -8021,7 +8260,8 @@
             "team": "jordan",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 4
           },
           {
             "pos": 21,
@@ -8030,7 +8270,8 @@
             "team": "bar",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 11
           }
         ]
       }
@@ -8573,7 +8814,8 @@
             "team": "williams",
             "laps": 45,
             "pts": 10,
-            "time": "1:18:17.873"
+            "time": "1:18:17.873",
+            "grid": 2
           },
           {
             "pos": 2,
@@ -8582,7 +8824,8 @@
             "team": "ferrari",
             "laps": 45,
             "pts": 6,
-            "time": "+46.117"
+            "time": "+46.117",
+            "grid": 6
           },
           {
             "pos": 3,
@@ -8591,7 +8834,8 @@
             "team": "bar",
             "laps": 45,
             "pts": 4,
-            "time": "+1:02.806"
+            "time": "+1:02.806",
+            "grid": 12
           },
           {
             "pos": 4,
@@ -8600,7 +8844,8 @@
             "team": "benetton",
             "laps": 45,
             "pts": 3,
-            "time": "+1:03.477"
+            "time": "+1:03.477",
+            "grid": 17
           },
           {
             "pos": 5,
@@ -8609,7 +8854,8 @@
             "team": "benetton",
             "laps": 45,
             "pts": 2,
-            "time": "+1:05.454"
+            "time": "+1:05.454",
+            "grid": 18
           },
           {
             "pos": 6,
@@ -8618,7 +8864,8 @@
             "team": "prost",
             "laps": 45,
             "pts": 1,
-            "time": "+1:05.950"
+            "time": "+1:05.950",
+            "grid": 14
           },
           {
             "pos": 7,
@@ -8627,7 +8874,8 @@
             "team": "bar",
             "laps": 45,
             "pts": 0,
-            "time": "+1:17.527"
+            "time": "+1:17.527",
+            "grid": 13
           },
           {
             "pos": 8,
@@ -8636,7 +8884,8 @@
             "team": "arrows",
             "laps": 44,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 19
           },
           {
             "pos": 9,
@@ -8645,7 +8894,8 @@
             "team": "arrows",
             "laps": 44,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 20
           },
           {
             "pos": 10,
@@ -8654,7 +8904,8 @@
             "team": "minardi",
             "laps": 44,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 21
           },
           {
             "pos": 11,
@@ -8663,7 +8914,8 @@
             "team": "jordan",
             "laps": 34,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 10
           },
           {
             "pos": 12,
@@ -8672,7 +8924,8 @@
             "team": "mclaren",
             "laps": 27,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 5
           },
           {
             "pos": 13,
@@ -8681,7 +8934,8 @@
             "team": "minardi",
             "laps": 26,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 22
           },
           {
             "pos": 14,
@@ -8690,7 +8944,8 @@
             "team": "williams",
             "laps": 24,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 1
           },
           {
             "pos": 15,
@@ -8699,7 +8954,8 @@
             "team": "ferrari",
             "laps": 23,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 4
           },
           {
             "pos": 16,
@@ -8708,7 +8964,8 @@
             "team": "prost",
             "laps": 23,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 16
           },
           {
             "pos": 17,
@@ -8717,7 +8974,8 @@
             "team": "sauber",
             "laps": 16,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 8
           },
           {
             "pos": 18,
@@ -8726,7 +8984,8 @@
             "team": "jaguar",
             "laps": 16,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 11
           },
           {
             "pos": 19,
@@ -8735,7 +8994,8 @@
             "team": "mclaren",
             "laps": 13,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 3
           },
           {
             "pos": 20,
@@ -8744,7 +9004,8 @@
             "team": "jordan",
             "laps": 7,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 15
           },
           {
             "pos": 21,
@@ -8753,7 +9014,8 @@
             "team": "sauber",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 7
           },
           {
             "pos": 22,
@@ -8762,7 +9024,8 @@
             "team": "jaguar",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 9
           }
         ]
       }
@@ -9306,7 +9569,8 @@
             "team": "ferrari",
             "laps": 77,
             "pts": 10,
-            "time": "1:41:49.675"
+            "time": "1:41:49.675",
+            "grid": 1
           },
           {
             "pos": 2,
@@ -9315,7 +9579,8 @@
             "team": "ferrari",
             "laps": 77,
             "pts": 6,
-            "time": "+3.363"
+            "time": "+3.363",
+            "grid": 3
           },
           {
             "pos": 3,
@@ -9324,7 +9589,8 @@
             "team": "mclaren",
             "laps": 77,
             "pts": 4,
-            "time": "+3.940"
+            "time": "+3.940",
+            "grid": 2
           },
           {
             "pos": 4,
@@ -9333,7 +9599,8 @@
             "team": "williams",
             "laps": 77,
             "pts": 3,
-            "time": "+49.687"
+            "time": "+49.687",
+            "grid": 4
           },
           {
             "pos": 5,
@@ -9342,7 +9609,8 @@
             "team": "mclaren",
             "laps": 77,
             "pts": 2,
-            "time": "+1:10.293"
+            "time": "+1:10.293",
+            "grid": 6
           },
           {
             "pos": 6,
@@ -9351,7 +9619,8 @@
             "team": "sauber",
             "laps": 76,
             "pts": 1,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 7
           },
           {
             "pos": 7,
@@ -9360,7 +9629,8 @@
             "team": "sauber",
             "laps": 76,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 9
           },
           {
             "pos": 8,
@@ -9369,7 +9639,8 @@
             "team": "williams",
             "laps": 76,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 8
           },
           {
             "pos": 9,
@@ -9378,7 +9649,8 @@
             "team": "bar",
             "laps": 75,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 10
           },
           {
             "pos": 10,
@@ -9387,7 +9659,8 @@
             "team": "jordan",
             "laps": 75,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 12
           },
           {
             "pos": 11,
@@ -9396,7 +9669,8 @@
             "team": "jaguar",
             "laps": 75,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 13
           },
           {
             "pos": 12,
@@ -9405,7 +9679,8 @@
             "team": "arrows",
             "laps": 74,
             "pts": 0,
-            "time": "+3 Laps"
+            "time": "+3 Laps",
+            "grid": 21
           },
           {
             "pos": 13,
@@ -9414,7 +9689,8 @@
             "team": "benetton",
             "laps": 67,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 15
           },
           {
             "pos": 14,
@@ -9423,7 +9699,8 @@
             "team": "prost",
             "laps": 63,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 16
           },
           {
             "pos": 15,
@@ -9432,7 +9709,8 @@
             "team": "minardi",
             "laps": 63,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 22
           },
           {
             "pos": 16,
@@ -9441,7 +9719,8 @@
             "team": "bar",
             "laps": 58,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 11
           },
           {
             "pos": 17,
@@ -9450,7 +9729,8 @@
             "team": "jordan",
             "laps": 53,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 5
           },
           {
             "pos": 18,
@@ -9459,7 +9739,8 @@
             "team": "minardi",
             "laps": 37,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 18
           },
           {
             "pos": 19,
@@ -9468,7 +9749,8 @@
             "team": "benetton",
             "laps": 34,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 17
           },
           {
             "pos": 20,
@@ -9477,7 +9759,8 @@
             "team": "arrows",
             "laps": 11,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 20
           },
           {
             "pos": 21,
@@ -9486,7 +9769,8 @@
             "team": "prost",
             "laps": 8,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 19
           },
           {
             "pos": 22,
@@ -9495,7 +9779,8 @@
             "team": "jaguar",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 14
           }
         ]
       }
@@ -10039,7 +10324,8 @@
             "team": "ferrari",
             "laps": 36,
             "pts": 10,
-            "time": "1:08:05.002"
+            "time": "1:08:05.002",
+            "grid": 3
           },
           {
             "pos": 2,
@@ -10048,7 +10334,8 @@
             "team": "mclaren",
             "laps": 36,
             "pts": 6,
-            "time": "+10.098"
+            "time": "+10.098",
+            "grid": 9
           },
           {
             "pos": 3,
@@ -10057,7 +10344,8 @@
             "team": "benetton",
             "laps": 36,
             "pts": 4,
-            "time": "+27.742"
+            "time": "+27.742",
+            "grid": 8
           },
           {
             "pos": 4,
@@ -10066,7 +10354,8 @@
             "team": "mclaren",
             "laps": 36,
             "pts": 3,
-            "time": "+36.087"
+            "time": "+36.087",
+            "grid": 7
           },
           {
             "pos": 5,
@@ -10075,7 +10364,8 @@
             "team": "ferrari",
             "laps": 36,
             "pts": 2,
-            "time": "+54.521"
+            "time": "+54.521",
+            "grid": 5
           },
           {
             "pos": 6,
@@ -10084,7 +10374,8 @@
             "team": "jordan",
             "laps": 36,
             "pts": 1,
-            "time": "+59.684"
+            "time": "+59.684",
+            "grid": 13
           },
           {
             "pos": 7,
@@ -10093,7 +10384,8 @@
             "team": "williams",
             "laps": 36,
             "pts": 0,
-            "time": "+59.986"
+            "time": "+59.986",
+            "grid": 2
           },
           {
             "pos": 8,
@@ -10102,7 +10394,8 @@
             "team": "bar",
             "laps": 36,
             "pts": 0,
-            "time": "+1:04.970"
+            "time": "+1:04.970",
+            "grid": 6
           },
           {
             "pos": 9,
@@ -10111,7 +10404,8 @@
             "team": "prost",
             "laps": 35,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 4
           },
           {
             "pos": 10,
@@ -10120,7 +10414,8 @@
             "team": "arrows",
             "laps": 35,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 19
           },
           {
             "pos": 11,
@@ -10129,7 +10424,8 @@
             "team": "bar",
             "laps": 35,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 11
           },
           {
             "pos": 12,
@@ -10138,7 +10434,8 @@
             "team": "arrows",
             "laps": 35,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 21
           },
           {
             "pos": 13,
@@ -10147,7 +10444,8 @@
             "team": "minardi",
             "laps": 31,
             "pts": 0,
-            "time": "+5 Laps"
+            "time": "+5 Laps",
+            "grid": 22
           },
           {
             "pos": 14,
@@ -10156,7 +10454,8 @@
             "team": "jordan",
             "laps": 31,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 16
           },
           {
             "pos": 15,
@@ -10165,7 +10464,8 @@
             "team": "benetton",
             "laps": 17,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 15
           },
           {
             "pos": 16,
@@ -10174,7 +10474,8 @@
             "team": "williams",
             "laps": 1,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 1
           },
           {
             "pos": 17,
@@ -10183,7 +10484,8 @@
             "team": "jaguar",
             "laps": 1,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 10
           },
           {
             "pos": 18,
@@ -10192,7 +10494,8 @@
             "team": "sauber",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 14
           },
           {
             "pos": 19,
@@ -10201,7 +10504,8 @@
             "team": "sauber",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 12
           },
           {
             "pos": 20,
@@ -10210,7 +10514,8 @@
             "team": "jaguar",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 17
           },
           {
             "pos": 21,
@@ -10219,7 +10524,8 @@
             "team": "prost",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 18
           },
           {
             "pos": 22,
@@ -10228,7 +10534,8 @@
             "team": "minardi",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 20
           }
         ]
       }
@@ -10772,7 +11079,8 @@
             "team": "williams",
             "laps": 53,
             "pts": 10,
-            "time": "1:16:58.493"
+            "time": "1:16:58.493",
+            "grid": 1
           },
           {
             "pos": 2,
@@ -10781,7 +11089,8 @@
             "team": "ferrari",
             "laps": 53,
             "pts": 6,
-            "time": "+5.175"
+            "time": "+5.175",
+            "grid": 2
           },
           {
             "pos": 3,
@@ -10790,7 +11099,8 @@
             "team": "williams",
             "laps": 53,
             "pts": 4,
-            "time": "+17.335"
+            "time": "+17.335",
+            "grid": 4
           },
           {
             "pos": 4,
@@ -10799,7 +11109,8 @@
             "team": "ferrari",
             "laps": 53,
             "pts": 3,
-            "time": "+24.991"
+            "time": "+24.991",
+            "grid": 3
           },
           {
             "pos": 5,
@@ -10808,7 +11119,8 @@
             "team": "jaguar",
             "laps": 53,
             "pts": 2,
-            "time": "+1:14.984"
+            "time": "+1:14.984",
+            "grid": 10
           },
           {
             "pos": 6,
@@ -10817,7 +11129,8 @@
             "team": "bar",
             "laps": 53,
             "pts": 1,
-            "time": "+1:22.469"
+            "time": "+1:22.469",
+            "grid": 15
           },
           {
             "pos": 7,
@@ -10826,7 +11139,8 @@
             "team": "sauber",
             "laps": 53,
             "pts": 0,
-            "time": "+1:23.107"
+            "time": "+1:23.107",
+            "grid": 9
           },
           {
             "pos": 8,
@@ -10835,7 +11149,8 @@
             "team": "jordan",
             "laps": 52,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 16
           },
           {
             "pos": 9,
@@ -10844,7 +11159,8 @@
             "team": "bar",
             "laps": 52,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 17
           },
           {
             "pos": 10,
@@ -10853,7 +11169,8 @@
             "team": "benetton",
             "laps": 52,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 14
           },
           {
             "pos": 11,
@@ -10862,7 +11179,8 @@
             "team": "sauber",
             "laps": 52,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 8
           },
           {
             "pos": 12,
@@ -10871,7 +11189,8 @@
             "team": "prost",
             "laps": 52,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 20
           },
           {
             "pos": 13,
@@ -10880,7 +11199,8 @@
             "team": "minardi",
             "laps": 51,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 21
           },
           {
             "pos": 14,
@@ -10889,7 +11209,8 @@
             "team": "arrows",
             "laps": 46,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 18
           },
           {
             "pos": 15,
@@ -10898,7 +11219,8 @@
             "team": "minardi",
             "laps": 44,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 22
           },
           {
             "pos": 16,
@@ -10907,7 +11229,8 @@
             "team": "prost",
             "laps": 28,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 12
           },
           {
             "pos": 17,
@@ -10916,7 +11239,8 @@
             "team": "arrows",
             "laps": 25,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 19
           },
           {
             "pos": 18,
@@ -10925,7 +11249,8 @@
             "team": "mclaren",
             "laps": 19,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 7
           },
           {
             "pos": 19,
@@ -10934,7 +11259,8 @@
             "team": "jaguar",
             "laps": 14,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 13
           },
           {
             "pos": 20,
@@ -10943,7 +11269,8 @@
             "team": "mclaren",
             "laps": 6,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 6
           },
           {
             "pos": 21,
@@ -10952,7 +11279,8 @@
             "team": "benetton",
             "laps": 4,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 11
           },
           {
             "pos": 22,
@@ -10961,7 +11289,8 @@
             "team": "jordan",
             "laps": 0,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 5
           }
         ]
       }
@@ -11504,7 +11833,8 @@
             "team": "mclaren",
             "laps": 73,
             "pts": 10,
-            "time": "1:32:42.840"
+            "time": "1:32:42.840",
+            "grid": 4
           },
           {
             "pos": 2,
@@ -11513,7 +11843,8 @@
             "team": "ferrari",
             "laps": 73,
             "pts": 6,
-            "time": "+11.046"
+            "time": "+11.046",
+            "grid": 1
           },
           {
             "pos": 3,
@@ -11522,7 +11853,8 @@
             "team": "mclaren",
             "laps": 73,
             "pts": 4,
-            "time": "+12.043"
+            "time": "+12.043",
+            "grid": 7
           },
           {
             "pos": 4,
@@ -11531,7 +11863,8 @@
             "team": "jordan",
             "laps": 73,
             "pts": 3,
-            "time": "+57.423"
+            "time": "+57.423",
+            "grid": 8
           },
           {
             "pos": 5,
@@ -11540,7 +11873,8 @@
             "team": "jaguar",
             "laps": 73,
             "pts": 2,
-            "time": "+1:12.434"
+            "time": "+1:12.434",
+            "grid": 14
           },
           {
             "pos": 6,
@@ -11549,7 +11883,8 @@
             "team": "sauber",
             "laps": 73,
             "pts": 1,
-            "time": "+1:12.996"
+            "time": "+1:12.996",
+            "grid": 6
           },
           {
             "pos": 7,
@@ -11558,7 +11893,8 @@
             "team": "jordan",
             "laps": 72,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 9
           },
           {
             "pos": 8,
@@ -11567,7 +11903,8 @@
             "team": "benetton",
             "laps": 72,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 12
           },
           {
             "pos": 9,
@@ -11576,7 +11913,8 @@
             "team": "benetton",
             "laps": 72,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 10
           },
           {
             "pos": 10,
@@ -11585,7 +11923,8 @@
             "team": "prost",
             "laps": 72,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 15
           },
           {
             "pos": 11,
@@ -11594,7 +11933,8 @@
             "team": "bar",
             "laps": 72,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 13
           },
           {
             "pos": 12,
@@ -11603,7 +11943,8 @@
             "team": "jaguar",
             "laps": 72,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 16
           },
           {
             "pos": 13,
@@ -11612,7 +11953,8 @@
             "team": "arrows",
             "laps": 72,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 19
           },
           {
             "pos": 14,
@@ -11621,7 +11963,8 @@
             "team": "prost",
             "laps": 72,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 21
           },
           {
             "pos": 15,
@@ -11630,7 +11973,8 @@
             "team": "ferrari",
             "laps": 71,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 5
           },
           {
             "pos": 16,
@@ -11639,7 +11983,8 @@
             "team": "bar",
             "laps": 45,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 18
           },
           {
             "pos": 17,
@@ -11648,7 +11993,8 @@
             "team": "arrows",
             "laps": 44,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 20
           },
           {
             "pos": 18,
@@ -11657,7 +12003,8 @@
             "team": "williams",
             "laps": 38,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 3
           },
           {
             "pos": 19,
@@ -11666,7 +12013,8 @@
             "team": "minardi",
             "laps": 38,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 22
           },
           {
             "pos": 20,
@@ -11675,7 +12023,8 @@
             "team": "williams",
             "laps": 36,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 2
           },
           {
             "pos": 21,
@@ -11684,7 +12033,8 @@
             "team": "minardi",
             "laps": 36,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 17
           },
           {
             "pos": 22,
@@ -11693,7 +12043,8 @@
             "team": "sauber",
             "laps": 2,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 11
           }
         ]
       }
@@ -12237,7 +12588,8 @@
             "team": "ferrari",
             "laps": 53,
             "pts": 10,
-            "time": "1:27:33.298"
+            "time": "1:27:33.298",
+            "grid": 1
           },
           {
             "pos": 2,
@@ -12246,7 +12598,8 @@
             "team": "williams",
             "laps": 53,
             "pts": 6,
-            "time": "+3.154"
+            "time": "+3.154",
+            "grid": 2
           },
           {
             "pos": 3,
@@ -12255,7 +12608,8 @@
             "team": "mclaren",
             "laps": 53,
             "pts": 4,
-            "time": "+23.262"
+            "time": "+23.262",
+            "grid": 7
           },
           {
             "pos": 4,
@@ -12264,7 +12618,8 @@
             "team": "mclaren",
             "laps": 53,
             "pts": 3,
-            "time": "+35.539"
+            "time": "+35.539",
+            "grid": 5
           },
           {
             "pos": 5,
@@ -12273,7 +12628,8 @@
             "team": "ferrari",
             "laps": 53,
             "pts": 2,
-            "time": "+36.544"
+            "time": "+36.544",
+            "grid": 4
           },
           {
             "pos": 6,
@@ -12282,7 +12638,8 @@
             "team": "williams",
             "laps": 53,
             "pts": 1,
-            "time": "+37.122"
+            "time": "+37.122",
+            "grid": 3
           },
           {
             "pos": 7,
@@ -12291,7 +12648,8 @@
             "team": "benetton",
             "laps": 53,
             "pts": 0,
-            "time": "+1:37.102"
+            "time": "+1:37.102",
+            "grid": 9
           },
           {
             "pos": 8,
@@ -12300,7 +12658,8 @@
             "team": "jordan",
             "laps": 52,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 8
           },
           {
             "pos": 9,
@@ -12309,7 +12668,8 @@
             "team": "sauber",
             "laps": 52,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 10
           },
           {
             "pos": 10,
@@ -12318,7 +12678,8 @@
             "team": "bar",
             "laps": 52,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 14
           },
           {
             "pos": 11,
@@ -12327,7 +12688,8 @@
             "team": "minardi",
             "laps": 52,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 18
           },
           {
             "pos": 12,
@@ -12336,7 +12698,8 @@
             "team": "prost",
             "laps": 52,
             "pts": 0,
-            "time": "+1 Lap"
+            "time": "+1 Lap",
+            "grid": 15
           },
           {
             "pos": 13,
@@ -12345,7 +12708,8 @@
             "team": "bar",
             "laps": 51,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 17
           },
           {
             "pos": 14,
@@ -12354,7 +12718,8 @@
             "team": "arrows",
             "laps": 51,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 20
           },
           {
             "pos": 15,
@@ -12363,7 +12728,8 @@
             "team": "arrows",
             "laps": 51,
             "pts": 0,
-            "time": "+2 Laps"
+            "time": "+2 Laps",
+            "grid": 21
           },
           {
             "pos": 16,
@@ -12372,7 +12738,8 @@
             "team": "minardi",
             "laps": 50,
             "pts": 0,
-            "time": "+3 Laps"
+            "time": "+3 Laps",
+            "grid": 22
           },
           {
             "pos": 17,
@@ -12381,7 +12748,8 @@
             "team": "benetton",
             "laps": 47,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 6
           },
           {
             "pos": 18,
@@ -12390,7 +12758,8 @@
             "team": "jaguar",
             "laps": 45,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 16
           },
           {
             "pos": 19,
@@ -12399,7 +12768,8 @@
             "team": "prost",
             "laps": 42,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 19
           },
           {
             "pos": 20,
@@ -12408,7 +12778,8 @@
             "team": "jaguar",
             "laps": 24,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 13
           },
           {
             "pos": 21,
@@ -12417,7 +12788,8 @@
             "team": "sauber",
             "laps": 5,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 12
           },
           {
             "pos": 22,
@@ -12426,7 +12798,8 @@
             "team": "jordan",
             "laps": 5,
             "pts": 0,
-            "time": "DNF"
+            "time": "DNF",
+            "grid": 11
           }
         ]
       }
