@@ -1,6 +1,8 @@
 // Fills a season file with what OpenF1 has published: the official session
 // times, and the results and weather of the sessions already run. GitHub
-// Actions runs it every 30 minutes on race weekends (.github/workflows/auto-fill-f1.yml).
+// Actions runs it every 30 minutes from Friday to Monday
+// (.github/workflows/auto-fill-f1.yml); with nothing pending it ends before
+// asking OpenF1 anything, so most of those runs cost a second.
 //
 //   node scripts/auto-fill.ts                    the current season (data/latest.json)
 //   node scripts/auto-fill.ts data/seasons/season2025.json
@@ -87,6 +89,17 @@ const knownDrivers = new Set(Object.keys(readJson<Record<string, unknown>>(path.
 // and is missing results (or has incomplete ones) or weather.
 const needsWork = (gp: GrandPrix) => Object.entries(gp.sessions ?? {}).some(([key, s]) =>
     s && typeof s === 'object' && started(time(s.date)) && (wantsResults(key, s, time(s.endDate)) || noWeather(s) || args.forceWeather));
+
+// A session in the next 7 days also counts as pending: its official time is
+// synced from OpenF1, and a schedule change has to show up before the
+// weekend, not after its first session.
+const SOON_MS = 7 * 24 * 60 * 60 * 1000;
+const startsSoon = (gp: GrandPrix) => Object.values(gp.sessions ?? {}).some(s => {
+    const t = time(s?.date);
+    return t !== null && t > Date.now() && t - Date.now() <= SOON_MS;
+});
+const pending = (season: Record<string, GrandPrix>) => Object.values(season).some(gp =>
+    !gp.cancelled && gp.sessions && typeof gp.sessions === 'object' && (startsSoon(gp) || needsWork(gp)));
 
 // Weather is asked for while a session runs, and once more if it ended without any.
 function wantsWeather(s: Session, o: OpenF1Session) {
@@ -218,6 +231,10 @@ async function fillGrandPrix(gpKey: string, gp: GrandPrix): Promise<number> {
 const season = readJson<Record<string, GrandPrix>>(args.file);
 let updates = 0;
 console.log(`🏁 Auto-fill OpenF1 ${args.year}`);
+if (!pending(season)) {
+    console.log('✔️ Nothing pending: no session in the next 7 days, and every session run has its results and weather.');
+    process.exit(0);
+}
 
 // First, so the started/ended checks below use the official times.
 try {

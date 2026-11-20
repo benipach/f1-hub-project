@@ -26,98 +26,25 @@ jobs:
         with:
           node-version: 24
 
-      # The season to fill is whatever data/latest.json points to, so moving
-      # to a new year is just updating that file (and adding the season file).
-      # The year and the path used to be hardcoded here: in January this job
-      # would have kept looking for 2026 results.
-      - name: Find the current season
-        run: |
-          YEAR=$(node -p "require('./data/latest.json').latestSeason")
-          echo "SEASON_YEAR=$YEAR" >> "$GITHUB_ENV"
-          echo "SEASON_FILE=data/seasons/season$YEAR.json" >> "$GITHUB_ENV"
-          echo "Current season: $YEAR"
-
-      - name: Check if there is pending work
-        id: check
-        run: |
-          if [ "${{ github.event.inputs.force_weather }}" = "true" ]; then
-            echo "should_run=true" >> "$GITHUB_OUTPUT"
-          else
-            node -e "
-              const fs = require('node:fs');
-              const path = process.env.SEASON_FILE;
-              if (!fs.existsSync(path)) {
-                console.error(path + ' does not exist: data/latest.json points to a season with no file.');
-                process.exit(1);
-              }
-              const data = JSON.parse(fs.readFileSync(path, 'utf8'));
-              const now = Date.now();
-              const grace = 45 * 60 * 1000; // 45 min after endDate, gives OpenF1 time to publish
-              const isEmptyWeather = (w) => w === null || w === undefined || (typeof w === 'object' && Object.keys(w).length === 0);
-              // A session in the next 7 days also counts: the job syncs the
-              // session times from OpenF1, and a schedule change has to show
-              // up before the weekend, not after its first session.
-              const soon = 7 * 24 * 60 * 60 * 1000;
-              // Rows written before OpenF1 knew the driver (\"#30\"), the team
-              // or, in a race, the starting position are asked for again until
-              // the Monday after (the same rule as scripts/auto-fill.ts: 4 days
-              // after the session ends).
-              const retry = 4 * 24 * 60 * 60 * 1000;
-              const races = ['race', 'sprintRace'];
-              const incomplete = (key) => (r) => typeof r.driver !== 'string' || r.driver.startsWith('#') || !r.team
-                || (races.includes(key) && r.grid == null);
-              const shouldRun = Object.values(data).some(gp =>
-                // A cancelled GP will never have results: if it isn't
-                // excluded, the job fires every half hour to do nothing.
-                gp && !gp.cancelled && typeof gp.sessions === 'object' && Object.entries(gp.sessions).some(([key, s]) => {
-                  if (!s || !s.endDate) return false;
-                  const start = new Date(s.date).getTime();
-                  if (start > now && start - now <= soon) return true;
-                  const ended = new Date(s.endDate).getTime() + grace <= now;
-                  if (!ended) return false;
-                  const missingResults = !Array.isArray(s.results) || s.results.length === 0;
-                  const missingWeather = isEmptyWeather(s.weather);
-                  const incompleteResults = !missingResults && s.results.some(incomplete(key))
-                    && new Date(s.endDate).getTime() + retry > now;
-                  return missingResults || missingWeather || incompleteResults;
-                })
-              );
-              console.log('should_run=' + shouldRun);
-            " >> "$GITHUB_OUTPUT"
-          fi
-
+      # The season is whatever data/latest.json points to (moving to a new
+      # year is updating that file and adding the season file). The script
+      # decides itself whether there's anything to do: with nothing pending
+      # it ends without asking OpenF1 anything (see scripts/auto-fill.ts).
       - name: Run OpenF1 auto fill
-        if: steps.check.outputs.should_run == 'true'
+        run: node scripts/auto-fill.ts ${{ github.event.inputs.force_weather == 'true' && '--force-weather' || '' }}
+
+      # careers.json and seasons-index.json are precomputed from the season
+      # files (driver profiles, all-time rankings, the Results page's year
+      # selector): when a season changes they're rebuilt with it, or the
+      # site keeps showing the numbers from the previous race.
+      - name: Rebuild the indexes and commit
         run: |
-          # Results, weather and the official session times (UTC) from OpenF1.
-          if [ "${{ github.event.inputs.force_weather }}" = "true" ]; then
-            node scripts/auto-fill.ts "$SEASON_FILE" --force-weather
-          else
-            node scripts/auto-fill.ts "$SEASON_FILE"
-          fi
-
-      # careers.json is precomputed from all the season files: if new results
-      # are loaded and it isn't regenerated, the driver profiles and the all-time
-      # rankings keep showing the numbers from the previous race.
-      - name: Rebuild careers.json
-        if: steps.check.outputs.should_run == 'true'
-        run: node scripts/build-careers.ts
-
-      # seasons-index.json is precomputed from the season files too: races
-      # run, which sessions have results and who leads each season, for the
-      # year selector and the season cards on the Results page. It used to be
-      # left out of this job and fell weeks behind the 2026 results.
-      - name: Rebuild seasons-index.json
-        if: steps.check.outputs.should_run == 'true'
-        run: node scripts/build-seasons-index.ts
-
-      - name: Commit changes
-        if: steps.check.outputs.should_run == 'true'
-        run: |
+          git diff --quiet data/seasons && echo "No changes to commit" && exit 0
+          node scripts/build-careers.ts
+          node scripts/build-seasons-index.ts
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add "$SEASON_FILE" data/careers.json data/seasons-index.json
-          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git add data/seasons data/careers.json data/seasons-index.json
           git commit -m "Auto update F1 session data"
           # There may have been other pushes between the checkout and this point.
           git pull --rebase

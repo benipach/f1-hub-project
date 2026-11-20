@@ -44,6 +44,17 @@ describe("auto-fill", () => {
     assert.equal(autofill(gunzip("input.json.gz")).written, gunzip("expected.json.gz"));
   });
 
+  // Most of the workflow's runs (every 30 min, Friday to Monday) find nothing
+  // to do: the season complete and the next GP more than a week away (Las
+  // Vegas, 9 days after the recording). The script ends before asking OpenF1
+  // anything (the times aren't synced either), so a request would fail here.
+  it("ends without asking OpenF1 anything when nothing is pending", () => {
+    const { written, log } = autofill(gunzip("expected.json.gz"));
+    assert.equal(written, null);
+    assert.match(log, /Nothing pending/);
+    assert.doesNotMatch(log, /Session times/);
+  });
+
   // OpenF1 sometimes publishes a driver, their team or the starting grid
   // after the results (Mexico 2026: "#30" in FP3, Hirakawa without a team in
   // the race).
