@@ -1,0 +1,37 @@
+/* The homepage index (components/home/Explore.astro). */
+
+.idx { padding: 72px 0 80px; }
+.idx__head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); align-items: end; gap: 40px; }
+.idx__k { font-weight: 700; font-size: 13px; text-transform: uppercase; color: var(--red); }
+.idx__title { margin-top: 10px; font: 76px/.95 'F1 Black'; text-transform: uppercase; color: #fff; }
+.idx__intro { font-size: 18px; line-height: 1.4; color: var(--dim); }
+.idx__list { margin-top: 40px; border-top: 3px solid #fff; }
+.idx__row {
+    display: grid; grid-template-columns: 56px minmax(0, 1fr) minmax(0, 1fr) 48px; align-items: center; gap: 24px;
+    padding: 18px 8px; border-bottom: 1px solid var(--line); color: inherit; text-decoration: none;
+    transition: background .15s ease;
+}
+.idx__n { font-weight: 700; font-size: 15px; color: var(--dim); }
+.idx__name { font: 40px/1 'F1 Black'; text-transform: uppercase; color: #fff; }
+.idx__text { font-size: 16px; color: var(--dim); }
+.idx__go { justify-self: end; font-size: 28px; color: #fff; transition: transform .15s ease, color .15s ease; }
+a.idx__row:hover { background: var(--base-700); }
+a.idx__row:hover .idx__go { color: var(--red); transform: translateX(4px); }
+a.idx__row:focus-visible { outline: 2px solid var(--red); outline-offset: -2px; }
+.idx__row--soon .idx__name { color: var(--dim); }
+.idx__soon { justify-self: end; font-weight: 700; font-size: 12px; text-transform: uppercase; color: var(--dim); }
+.idx__live {
+    display: inline-block; width: 10px; height: 10px; margin-left: 14px; border-radius: 50%;
+    background: var(--red); vertical-align: middle; animation: idx-pulse 1.4s infinite;
+}
+@keyframes idx-pulse { 50% { opacity: .25; } }
+
+@media (max-width: 760px) {
+    .idx { padding: 48px 0 56px; }
+    .idx__head { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+    .idx__title { font-size: 48px; }
+    .idx__row { grid-template-columns: 32px minmax(0, 1fr) 28px; gap: 12px; row-gap: 6px; padding: 14px 4px; }
+    .idx__name { font-size: 24px; }
+    .idx__text { grid-column: 2; grid-row: 2; font-size: 14px; }
+    .idx__go, .idx__soon { grid-column: 3; grid-row: 1; }
+}

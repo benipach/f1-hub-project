@@ -8,6 +8,7 @@
 // numbers row, tyres) is filled with sample data from the last race, so the
 // layout can be judged: it isn't real for the simulated session.
 import Calendar from './Calendar.astro';
+import Explore from './Explore.astro';
 import Hero, { type HeroLiveRow, type HeroNumbers } from './Hero.astro';
 import Standings from './Standings.astro';
 import Site from '../../layouts/Site.astro';
@@ -68,6 +69,7 @@ const numbers: HeroNumbers = {
     <Hero hero={hero} preview={{ rows, numbers, laps: hero.next?.raceLaps ?? null }} />
     <Calendar calendar={calendar} />
     <Standings standings={standings} />
+    <Explore />
 
     <nav class="moments" aria-label="Simulate a moment (preview only)">
         <span class="moments__k">Preview</span>

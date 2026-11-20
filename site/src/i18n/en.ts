@@ -293,6 +293,7 @@ export default {
 
     explore: {
         sectionNo: '03 — Explore',
+        kicker: 'Explore',
         title: 'Index',
         intro: 'Everything on F1 Hub: live timing, results, standings, profiles and the history of the sport.',
         live: 'Positions, gaps, sectors and tyres from F1’s official feed.',

@@ -274,6 +274,7 @@ export default {
 
     explore: {
         sectionNo: '03 — Explorar',
+        kicker: 'Explorar',
         title: 'Índice',
         intro: 'Todo F1 Hub: tiempos en vivo, resultados, posiciones, perfiles y la historia del deporte.',
         live: 'Posiciones, diferencias, sectores y neumáticos, del feed oficial de la F1.',

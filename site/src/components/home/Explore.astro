@@ -1,0 +1,52 @@
+---
+// The homepage index (_design/hero-f1/index-pages.html, approved 20/11/2026):
+// every section of the site, a row each, in the site's one order (the season
+// in time order, the grid, then history). The calendar is left out: it's on
+// this page. A section without a page yet reads "Soon".
+import '../../styles/explore.css';
+import { useI18n } from '../../i18n';
+import { href } from '../../lib/paths';
+
+const { t } = useI18n(Astro.currentLocale);
+const s = t.sections;
+const e = t.explore;
+const rows: { title: string; text: string; path: string | null; live?: boolean }[] = [
+    { title: s.liveTiming, text: e.live, path: 'live.html', live: true },
+    { title: s.results, text: e.results, path: 'results.html' },
+    { title: s.championship, text: e.championship, path: 'championship.html' },
+    { title: s.drivers, text: e.drivers, path: 'drivers.html' },
+    { title: s.teams, text: e.teams, path: 'teams.html' },
+    { title: s.archive, text: e.archive, path: 'archive.html' },
+    { title: s.hallOfFame, text: e.hallOfFame, path: null },
+];
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<section class="idx" aria-labelledby="idx-title">
+    <div class="wrap">
+        <div class="idx__head">
+            <div>
+                <p class="idx__k">{e.kicker}</p>
+                <h2 class="idx__title" id="idx-title">{e.title}</h2>
+            </div>
+            <p class="idx__intro">{e.intro}</p>
+        </div>
+        <nav class="idx__list" aria-labelledby="idx-title">
+            {rows.map((r, i) => r.path ? (
+                <a class="idx__row" href={href(r.path)}>
+                    <span class="idx__n">{pad(i + 1)}</span>
+                    <span class="idx__name">{r.title}{r.live && <i class="idx__live" aria-hidden="true"></i>}</span>
+                    <span class="idx__text">{r.text}</span>
+                    <span class="idx__go" aria-hidden="true">→</span>
+                </a>
+            ) : (
+                <div class="idx__row idx__row--soon">
+                    <span class="idx__n">{pad(i + 1)}</span>
+                    <span class="idx__name">{r.title}</span>
+                    <span class="idx__text">{r.text}</span>
+                    <span class="idx__soon">{s.soon}</span>
+                </div>
+            ))}
+        </nav>
+    </div>
+</section>
