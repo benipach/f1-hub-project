@@ -201,6 +201,8 @@ export default {
         classified: 'Clasificados',
         fullResults: 'Resultados completos',
         leader: 'Líder',
+        trackWords: { green: 'Verde', yellow: 'Bandera amarilla', sc: 'Safety car', vsc: 'Virtual SC', red: 'Bandera roja' },
+        compass: ['Norte', 'Noreste', 'Este', 'Sureste', 'Sur', 'Suroeste', 'Oeste', 'Noroeste'],
     },
 
     calendarF1: {

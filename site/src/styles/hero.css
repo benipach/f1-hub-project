@@ -85,6 +85,9 @@
 .now b { display: block; font-weight: 700; font-size: 24px; color: #fff; }
 .now b.fl { color: var(--purple); }
 .now b.green { color: var(--green); }
+.now b.yellow { color: var(--yellow); }
+.now span span { display: inline; margin: 0; }
+.now b.red { color: var(--red); }
 .now span { display: block; margin-top: 2px; font-size: 12px; line-height: 1.35; text-transform: uppercase; color: var(--dim); }
 
 /* the table */

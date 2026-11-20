@@ -214,6 +214,9 @@ export default {
         classified: 'Classified',
         fullResults: 'Full results',
         leader: 'Leader',
+        // The live feed's track status and wind direction (server/home.js)
+        trackWords: { green: 'Green', yellow: 'Yellow flag', sc: 'Safety car', vsc: 'Virtual SC', red: 'Red flag' },
+        compass: ['North', 'Northeast', 'East', 'Southeast', 'South', 'Southwest', 'West', 'Northwest'],
     },
 
     // The homepage calendar (_design/hero-f1/calendar.html, approved 20/11/2026)

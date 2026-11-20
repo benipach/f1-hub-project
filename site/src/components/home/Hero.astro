@@ -11,7 +11,9 @@
 // place. `preview` fills them with sample data and accepts ?now=.
 import '../../styles/hero.css';
 import { useI18n } from '../../i18n';
-import type { HomeHero } from '../../lib/home';
+import { loadTeams } from '@f1hub/shared/data/load';
+import { DATA_DIR } from '../../lib/data';
+import { teamLogo, type HomeHero } from '../../lib/home';
 import { href } from '../../lib/paths';
 import HeroIdent from './HeroIdent.astro';
 import HeroTimetable from './HeroTimetable.astro';
@@ -38,10 +40,22 @@ interface Props {
 
 const { hero, preview } = Astro.props;
 const { next, last, rounds } = hero;
-const { t, fill, intl } = useI18n(Astro.currentLocale);
+const { t, intl } = useI18n(Astro.currentLocale);
 const h = t.heroF1;
 const n = preview?.numbers;
 const dash = '—';
+// "Air {t}": the words around the air temperature, which the feed fills in
+const [airBefore, airAfter] = h.air.split('{t}') as [string, string];
+// The relay's homepage channel (server/home.js, ?proto=home); a page can
+// point elsewhere with ?relay=ws://localhost:8080, like the live page.
+const RELAY = 'wss://f1-hub-relay.onrender.com';
+// Team logos by teams.json id, for the names the feed sends ("Haas F1 Team")
+const logos = Object.fromEntries(
+    Object.keys(loadTeams(DATA_DIR)).flatMap((id) => {
+        const logo = teamLogo(new URL('../', DATA_DIR), id);
+        return logo ? [[id, logo]] : [];
+    }),
+);
 
 const state = {
     sessions: next?.sessions ?? [],
@@ -51,8 +65,11 @@ const state = {
         leftIn: h.leftIn, nextPart: h.nextPart, partDone: h.partDone, minutes: h.minutes, remaining: h.remaining,
         lap: h.lap, towerBest: h.towerBest, towerThrough: h.towerThrough, towerInterval: h.towerInterval,
         eliminated: h.eliminated, leader: h.leader, yourTime: h.yourTime, startsIn: h.startsIn,
+        track: h.trackWords, compass: h.compass,
     },
     preview: preview ? { rows: preview.rows, laps: preview.laps } : null,
+    relay: RELAY,
+    logos,
 };
 const winner = last?.rows[0];
 const fastest = last?.field.find((r) => r.fastestLap);
@@ -92,11 +109,11 @@ const units = [['d', h.units.d], ['h', h.units.h], ['m', h.units.m], ['s', h.uni
                         <div class="bar" data-bar><i data-bar-fill></i></div>
                         <div class="parts" data-parts hidden></div>
                         <div class="now" data-feed>
-                            <div><b class="fl">{n?.fastest.time ?? dash}</b><span>{h.fastestLap}<br />{n?.fastest.driver ?? ''}</span></div>
-                            <div data-cell="cars"><b>{n?.cars ?? dash}</b><span>{h.carsOnTrack}</span></div>
-                            <div data-cell="status"><b class="green">{n?.status ?? dash}</b><span>{h.trackStatus}</span></div>
-                            <div><b>{n?.track ?? dash}</b><span>{h.track}<br />{fill(h.air, { t: n?.air ?? dash })}</span></div>
-                            <div><b>{n?.wind ?? dash}</b><span>{h.wind}<br />{n?.windFrom ?? ''}</span></div>
+                            <div><b class="fl" data-v="fastest">{n?.fastest.time ?? dash}</b><span>{h.fastestLap}<br /><span data-v="fastestName">{n?.fastest.driver ?? ''}</span></span></div>
+                            <div data-cell="cars"><b data-v="cars">{n?.cars ?? dash}</b><span>{h.carsOnTrack}</span></div>
+                            <div data-cell="status"><b class="green" data-v="status">{n?.status ?? dash}</b><span>{h.trackStatus}</span></div>
+                            <div><b data-v="track">{n?.track ?? dash}</b><span>{h.track}<br />{airBefore}<span data-v="air">{n?.air ?? dash}</span>{airAfter}</span></div>
+                            <div><b data-v="wind">{n?.wind ?? dash}</b><span>{h.wind}<br /><span data-v="windFrom">{n?.windFrom ?? ''}</span></span></div>
                         </div>
                         <a class="btn" href={href('live.html')}>{h.openLive} →</a>
                     </div>
@@ -120,22 +137,16 @@ const units = [['d', h.units.d], ['h', h.units.h], ['m', h.units.m], ['s', h.uni
                         <div class="session"><h2>{h.onTheWay}</h2></div>
                         <p class="lead">{h.onTheWayText}</p>
                         <div class="now" data-feed>
-                            <div><b>{n?.raceTime ?? dash}</b><span>{h.raceTime}<br />{preview?.rows[0]?.name ?? ''}</span></div>
-                            <div><b class="fl">{n?.fastest.time ?? dash}</b><span>{h.fastestLap}<br />{n?.fastest.driver ?? ''}</span></div>
-                            <div><b>{n?.cars ?? dash}</b><span>{h.classified}</span></div>
-                            <div><b>{n?.track ?? dash}</b><span>{h.track}<br />{fill(h.air, { t: n?.air ?? dash })}</span></div>
+                            <div><b data-v="laps">{next.raceLaps ? `${next.raceLaps} / ${next.raceLaps}` : dash}</b><span>{h.laps}</span></div>
+                            <div><b class="fl" data-v="fastest">{n?.fastest.time ?? dash}</b><span>{h.fastestLap}<br /><span data-v="fastestName">{n?.fastest.driver ?? ''}</span></span></div>
+                            <div><b data-v="track">{n?.track ?? dash}</b><span>{h.track}<br />{airBefore}<span data-v="air">{n?.air ?? dash}</span>{airAfter}</span></div>
+                            <div><b data-v="wind">{n?.wind ?? dash}</b><span>{h.wind}<br /><span data-v="windFrom">{n?.windFrom ?? ''}</span></span></div>
                         </div>
                         <a class="btn btn--ghost" href={href('live.html')}>{h.finalLaps} →</a>
                     </div>
                     <div class="col tower" data-feed>
                         <p class="col-h"><span>{h.provisional}</span></p>
-                        {preview?.rows.slice(0, 10).map((r) => (
-                            <div class:list={['row', { 'row--fl': r.fastest }]}>
-                                <span class="row__pos">{r.pos}</span>
-                                {r.logo ? <img class="row__team" src={href(r.logo)} alt="" /> : <span />}
-                                <span class="row__drv">{r.name}</span><span class="row__gap">{r.gap}</span><span />
-                            </div>
-                        ))}
+                        <div data-pending-rows></div>
                     </div>
                     <div data-nofeed><HeroTimetable sessions={next.sessions} /></div>
                 </div>
