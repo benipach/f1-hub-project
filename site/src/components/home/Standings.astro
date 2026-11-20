@@ -1,0 +1,61 @@
+---
+// The homepage standings (_design/hero-f1/standings.html, approved 20/11/2026):
+// three tables of eleven, the same as the hero's: drivers P1–P11, drivers
+// P12–P22, the constructors. The leader of each championship tinted.
+import '../../styles/standings.css';
+import { useI18n } from '../../i18n';
+import type { StandingRow, Standings } from '../../lib/standings';
+import { href } from '../../lib/paths';
+
+interface Props {
+    standings: Standings;
+}
+
+const { standings } = Astro.props;
+const { t, fill } = useI18n(Astro.currentLocale);
+const s = t.standingsF1;
+const columns: { head: string; rows: readonly StandingRow[] }[] = [
+    { head: fill(s.drivers, { from: 1, to: Math.min(11, standings.drivers.length) }), rows: standings.drivers.slice(0, 11) },
+    { head: fill(s.drivers, { from: 12, to: Math.min(22, standings.drivers.length) }), rows: standings.drivers.slice(11, 22) },
+    { head: s.constructors, rows: standings.teams.slice(0, 11) },
+].filter((c) => c.rows.length > 0);
+---
+
+<section class="std" aria-labelledby="std-title">
+    <div class="wrap">
+        <div class="std__head">
+            <div>
+                <p class="std__k">{s.kicker}</p>
+                <h2 class="std__title" id="std-title">{s.title}</h2>
+            </div>
+            <dl class="std__facts">
+                <div><dd>{standings.raced} / {standings.rounds}</dd><dt>{s.afterRound}</dt></div>
+                {standings.leader && <div><dd>{standings.lead}</dd><dt>{fill(s.lead, { name: standings.leader })}</dt></div>}
+                <div><dd class="red">{standings.rounds - standings.raced}</dd><dt>{s.toGo}</dt></div>
+            </dl>
+        </div>
+
+        <div class="std__tables">
+            {columns.map((col) => (
+                <div class="std__col">
+                    <p class="std__col-h"><span>{col.head}</span><span>{s.ptsBehind}</span></p>
+                    {col.rows.map((r) => (
+                        <div class:list={['srow', { 'srow--lead': r.pos === 1 }]}>
+                            <span class="srow__pos">{r.pos}</span>
+                            {r.teamLogo ? <img class="srow__team" src={href(r.teamLogo)} alt="" width="22" height="22" loading="lazy" /> : <span />}
+                            <span class="srow__name">{r.name}</span>
+                            <span class="srow__pts">{r.points}</span>
+                            <span class="srow__gap">{r.behind > 0 ? `−${r.behind}` : ''}</span>
+                        </div>
+                    ))}
+                </div>
+            ))}
+        </div>
+
+        <div class="std__links">
+            <a class="btn" href={href(`results.html?season=${standings.season}`)}>{s.full} →</a>
+            <a class="btn btn--ghost" href={href('drivers.html')}>{s.driversLink}</a>
+            <a class="btn btn--ghost" href={href('teams.html')}>{s.teamsLink}</a>
+        </div>
+    </div>
+</section>

@@ -220,6 +220,20 @@ export default {
         archive: 'Archivo de temporadas',
     },
 
+    standingsF1: {
+        kicker: 'Campeonato',
+        title: 'Posiciones',
+        afterRound: 'Tras la ronda',
+        lead: 'Ventaja · {name}',
+        toGo: 'Rondas por correr',
+        drivers: 'Pilotos · P{from} – P{to}',
+        constructors: 'Constructores',
+        ptsBehind: 'Pts · diferencia',
+        full: 'Posiciones completas',
+        driversLink: 'Pilotos',
+        teamsLink: 'Equipos',
+    },
+
     calendar: {
         sectionNo: '01 — Calendario',
         season: 'Temporada',

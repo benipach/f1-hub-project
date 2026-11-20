@@ -234,6 +234,21 @@ export default {
         archive: 'Seasons archive',
     },
 
+    // The homepage standings (_design/hero-f1/standings.html, approved 20/11/2026)
+    standingsF1: {
+        kicker: 'Championship',
+        title: 'Standings',
+        afterRound: 'After round',
+        lead: 'Lead · {name}',
+        toGo: 'Rounds to go',
+        drivers: 'Drivers · P{from} – P{to}',
+        constructors: 'Constructors',
+        ptsBehind: 'Pts · behind',
+        full: 'Full standings',
+        driversLink: 'Drivers',
+        teamsLink: 'Teams',
+    },
+
     calendar: {
         sectionNo: '01 — Calendar',
         season: 'Season',
