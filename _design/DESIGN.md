@@ -186,6 +186,12 @@ profile stays at `/descartado/poster/driver/<id>/` for reference):
   before 2021), "Pole" and "Fastest lap" (purple), points, running total; wins
   with the red tint; rounds to come as one row. On the right, the teammate
   (three split bars: qualifying, race, points) and racecraft.
+  Above the table, **the form chart** (`driver/FormChart.astro`): grid
+  (dashed gray) and finish (white, 2 px) per race, P1–P3 as a faint band, the
+  dashed points cut of that season (from the data: 6 to 2002, 8 to 2009, 10
+  since), a win as a red dot, a retirement as a red × where it was
+  classified; a legend; a wide drawing and a taller one for phones; hovering
+  a race shows our own card (round, grid → finish, places, points, sprint).
 
 ## 6. What was tried and rejected
 

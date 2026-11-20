@@ -72,6 +72,8 @@ export type DriverSeason = {
     readonly year: number;
     readonly done: boolean;
     readonly hasGrid: boolean;
+    /** The last place that scored in a race that season (6 to 2002, 8 to 2009, 10 since): the chart's points line. */
+    readonly pointsTo: number;
     readonly teams: readonly DriverTeam[];
     readonly pos: number | null;
     readonly pts: number;
@@ -206,6 +208,7 @@ type Season = {
     readonly best: { readonly id: string; readonly places: number } | null;
     readonly done: boolean;
     readonly hasGrid: boolean;
+    readonly pointsTo: number;
 };
 
 const round1 = (n: number) => Math.round(n * 10) / 10;
@@ -274,6 +277,7 @@ function buildSeason(dataDir: URL, year: number, ctx: Context): Season {
         best: gainers[0] ? { id: gainers[0][0], places: gainers[0][1] } : null,
         done: rounds.every((r) => r.raced),
         hasGrid: rounds.some((r) => r.rows.some((x) => x.grid)),
+        pointsTo: Math.max(0, ...rounds.flatMap((r) => r.rows.filter((x) => !x.out && x.racePts > 0).map((x) => x.pos))),
     };
 }
 
@@ -420,7 +424,7 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
         const table = [...S.pts].sort((a, b) => b[1] - a[1]);
         const rivalId = table[0]?.[0] === id ? table[1]?.[0] : table[0]?.[0];
         return {
-            year, done, hasGrid: S.hasGrid,
+            year, done, hasGrid: S.hasGrid, pointsTo: S.pointsTo,
             teams: [...new Set(raced.map((e) => e.x.team))].map(teamOf),
             pos: S.standing.get(id) ?? null,
             pts: round1(S.pts.get(id) ?? 0),

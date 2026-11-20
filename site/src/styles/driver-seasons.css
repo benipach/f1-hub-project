@@ -90,3 +90,42 @@
     .rr__dim, .rr__d, .rr__spr, .rr:not(.rr--dim) .rr__note, .rr__tot { display: none; }
     .rr--dim { grid-template-columns: 22px 22px minmax(0, 1fr) auto; }
 }
+
+/* ── the form chart (components/driver/FormChart.astro) ───────────────── */
+.fc { margin-top: 28px; border-top: 3px solid #fff; padding-top: 12px; }
+.fc .col-h { align-items: center; }
+.fc__key { display: flex; gap: 18px; font-weight: 400; font-size: 12px; color: var(--dim); }
+.fc__key > span { display: inline-flex; align-items: center; gap: 7px; }
+.fc__sw { width: 18px; height: 0; border-top: 2px solid #fff; }
+.fc__sw--grid { border-top: 2px dashed var(--dim); }
+.fc__key-out svg { width: 10px; height: 10px; stroke: var(--red); stroke-width: 2; }
+.fc__plot { position: relative; margin-top: 6px; }
+.fc__svg { display: block; width: 100%; height: auto; overflow: visible; }
+.fc__svg--compact { display: none; }
+.fc__band { fill: #fff; opacity: .05; }
+.fc__pts { stroke: var(--rule); stroke-dasharray: 2 4; }
+.fc__lab { font: 700 11px 'F1', system-ui, sans-serif; fill: var(--dim); }
+.fc__lab--dim { fill: var(--base-600); }
+.fc__grid { fill: none; stroke: var(--dim); stroke-width: 2; stroke-dasharray: 5 5; stroke-linejoin: round; stroke-linecap: round; }
+.fc__fin { fill: none; stroke: #fff; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.fc__g { fill: var(--base-700); stroke: var(--dim); stroke-width: 1.5; }
+.fc__f { fill: #fff; stroke: var(--base-700); stroke-width: 2; }
+.fc__f--win { fill: var(--red); }
+.fc__x { stroke: var(--red); stroke-width: 2; stroke-linecap: square; pointer-events: none; }
+.fc__hit { fill: transparent; cursor: default; }
+.fc__hit:hover { fill: rgba(255, 255, 255, .04); }
+.fc__tip {
+    position: absolute; top: -8px; z-index: 2; display: grid; gap: 3px; min-width: 170px; padding: 10px 12px; pointer-events: none;
+    border-radius: 8px; background: var(--base-900); border: 1px solid var(--line); box-shadow: 0 8px 24px rgba(0, 0, 0, .5); transform: translateY(-100%);
+}
+.fc__tip-a { font-size: 11px; text-transform: uppercase; color: var(--dim); }
+.fc__tip-b { font-size: 20px; color: #fff; }
+.fc__tip-c, .fc__tip-d { font-size: 12px; color: var(--text); }
+.fc__tip-d:empty { display: none; }
+.fc__tip[data-dir='up'] .fc__tip-c { color: var(--green); }
+.fc__tip[data-dir='down'] .fc__tip-c, .fc__tip[data-dir='out'] .fc__tip-c { color: var(--red); }
+@media (max-width: 760px) {
+    .fc__svg--wide { display: none; }
+    .fc__svg--compact { display: block; }
+    .fc__key { gap: 12px; }
+}

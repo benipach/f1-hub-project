@@ -12,6 +12,7 @@ import { useI18n } from '../../i18n';
 import { featuredSeason, type DriverProfile, type DriverRound, type DriverSeason } from '../../lib/driver';
 import { href } from '../../lib/paths';
 import Places from './Places.astro';
+import FormChart from './FormChart.astro';
 
 interface Props {
     driver: DriverProfile;
@@ -83,6 +84,7 @@ const sprintDelta = (sp: NonNullable<DriverRound['sprint']>) => (!sp.out && sp.g
                         {years.map((y) => <a href={`#season-${y}`} aria-current={y === s.year ? 'true' : undefined}>{y}</a>)}
                     </nav>
                 )}
+                <FormChart season={s} />
                 <div class="dseason__cols">
                     <div class="dseason__col">
                         <p class="col-h">
