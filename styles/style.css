@@ -70,18 +70,18 @@
 
 @font-face {
     font-family: 'F1-Regular';
-    src: url('../fonts/Formula1-Regular.ttf') format('truetype');
+    src: url('../fonts/Formula1-Regular.woff2') format('woff2');
 }
 
 @font-face {
     font-family: 'F1-Bold';
-    src: url('../fonts/Formula1-Bold.ttf') format('truetype');
+    src: url('../fonts/Formula1-Bold.woff2') format('woff2');
     font-weight: 700;
 }
 
 @font-face {
     font-family: 'F1-Black';
-    src: url('../fonts/Formula1-Black.ttf') format('truetype');
+    src: url('../fonts/Formula1-Black.woff2') format('woff2');
 }
 
 /* ======================================= */
