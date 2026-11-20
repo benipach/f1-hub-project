@@ -1,0 +1,93 @@
+---
+// Preview of the new homepage while it's rebuilt section by section (out of
+// search engines, not linked from the site), in the page's language:
+// pages/home-preview.astro (English) and pages/[lang]/home-preview.astro.
+//
+// ?now=<ISO date> simulates another moment; the panel at the bottom has
+// moments taken from the data. What the live feed will send (the table, the
+// numbers row, tyres) is filled with sample data from the last race, so the
+// layout can be judged: it isn't real for the simulated session.
+import Hero, { type HeroLiveRow, type HeroNumbers } from './Hero.astro';
+import Site from '../../layouts/Site.astro';
+import { DATA_DIR } from '../../lib/data';
+import { buildHomeHero } from '../../lib/home';
+import { useI18n } from '../../i18n';
+
+const i18n = useI18n(Astro.currentLocale);
+const hero = buildHomeHero(DATA_DIR, i18n);
+const at = (iso: string | undefined, minutes: number) =>
+    iso ? new Date(Date.parse(iso) + minutes * 60_000).toISOString().replace(/\.\d{3}Z$/, 'Z') : null;
+
+const sessions = hero.next?.sessions ?? [];
+const practice = sessions.find((s) => s.key.startsWith('fp'));
+const qualifying = sessions.find((s) => s.key === 'qualifying');
+const race = sessions.find((s) => s.key === 'race');
+
+const moments = [
+    { label: 'Now', now: null },
+    { label: '2 days before', now: at(sessions[0]?.start, -2 * 24 * 60) },
+    { label: 'Practice live', now: at(practice?.start, 20) },
+    { label: 'Q1 live', now: at(qualifying?.start, 8) },
+    { label: 'Q1–Q2 break', now: at(qualifying?.start, 21) },
+    { label: 'Q2 live', now: at(qualifying?.start, 32) },
+    { label: 'Race live', now: at(race?.start, 50) },
+    { label: 'Results on the way', now: at(race?.end, 10) },
+    { label: 'Race result', now: at(hero.last?.raceEnd, 120) },
+].filter((m) => m.label === 'Now' || m.now);
+
+// Sample data where the feed goes: the last race's field, compounds made up
+const tyres = ['soft', 'soft', 'medium', 'soft', 'hard', 'medium', 'soft', 'soft', 'hard', 'soft'];
+const rows: HeroLiveRow[] = (hero.last?.field ?? []).map((r, i) => ({
+    pos: r.pos,
+    name: r.lastName,
+    logo: r.teamLogo,
+    gap: r.result,
+    tyre: tyres[i % tyres.length]!,
+    fastest: r.fastestLap,
+}));
+const fl = hero.last?.field.find((r) => r.fastestLap);
+const numbers: HeroNumbers = {
+    fastest: { time: '1:34.876', driver: fl?.lastName ?? '' },
+    cars: `14 / ${rows.length || 22}`,
+    status: 'Green',
+    track: '21.4°',
+    air: '13.9°',
+    wind: '4 km/h',
+    windFrom: 'Southwest',
+    raceTime: hero.last?.rows[0]?.result ?? '',
+};
+---
+
+<Site title="Home preview | F1 Hub" description="Preview of the new F1 Hub homepage." noindex>
+    <Hero hero={hero} preview={{ rows, numbers, laps: hero.next?.raceLaps ?? null }} />
+
+    <nav class="moments" aria-label="Simulate a moment (preview only)">
+        <span class="moments__k">Preview</span>
+        {moments.map((m) => <a href={m.now ? `?now=${m.now}` : '?'}>{m.label}</a>)}
+    </nav>
+</Site>
+
+<style>
+    .moments {
+        position: fixed;
+        bottom: 18px;
+        left: 50%;
+        z-index: 60;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 2px;
+        max-width: calc(100% - 20px);
+        padding: 4px;
+        border: 1px solid rgba(255, 255, 255, .2);
+        border-radius: 8px;
+        background: var(--base-900);
+        transform: translateX(-50%);
+        font-weight: 700;
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+    .moments__k { padding: 0 10px 0 8px; color: var(--dim); }
+    .moments a { padding: 10px 12px; border-radius: 6px; color: #fff; text-decoration: none; }
+    .moments a:hover { background: var(--red); }
+</style>

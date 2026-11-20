@@ -1,0 +1,183 @@
+---
+// The homepage hero (_design/hero-f1/index.html, approved by the owner on
+// 20/11/2026). Four states, all rendered at build time; lib/hero.ts shows the
+// one that fits the current time:
+//   upcoming  countdown to the next session + the timetable
+//   live      the session (practice, qualifying Q1/Q2/Q3, race) + its table
+//   pending   race over, official result not in the data yet
+//   result    the last race, up to 24 h after it
+// Live positions, gaps, tyres and weather come from the live feed (phase 4);
+// without it those parts stay hidden and the timetable takes the table's
+// place. `preview` fills them with sample data and accepts ?now=.
+import '../../styles/hero.css';
+import { useI18n } from '../../i18n';
+import type { HomeHero } from '../../lib/home';
+import { href } from '../../lib/paths';
+import HeroIdent from './HeroIdent.astro';
+import HeroTimetable from './HeroTimetable.astro';
+
+/** A row of the live table, as the feed will send it. */
+export type HeroLiveRow = { pos: number; name: string; logo: string | null; gap: string; tyre: string | null; fastest: boolean };
+/** The live numbers row, as the feed will send it. */
+export type HeroNumbers = {
+    fastest: { time: string; driver: string };
+    cars: string;
+    status: string;
+    track: string;
+    air: string;
+    wind: string;
+    windFrom: string;
+    raceTime: string;
+};
+
+interface Props {
+    hero: HomeHero;
+    /** Preview pages only: sample data where the feed goes, and ?now=. */
+    preview?: { rows: HeroLiveRow[]; numbers: HeroNumbers; laps: number | null } | undefined;
+}
+
+const { hero, preview } = Astro.props;
+const { next, last, rounds } = hero;
+const { t, fill, intl } = useI18n(Astro.currentLocale);
+const h = t.heroF1;
+const n = preview?.numbers;
+const dash = '—';
+
+const state = {
+    sessions: next?.sessions ?? [],
+    lastRaceEnd: last?.raceEnd ?? null,
+    intl,
+    words: {
+        leftIn: h.leftIn, nextPart: h.nextPart, partDone: h.partDone, minutes: h.minutes, remaining: h.remaining,
+        lap: h.lap, towerBest: h.towerBest, towerThrough: h.towerThrough, towerInterval: h.towerInterval,
+        eliminated: h.eliminated, leader: h.leader, yourTime: h.yourTime, startsIn: h.startsIn,
+    },
+    preview: preview ? { rows: preview.rows, laps: preview.laps } : null,
+};
+const winner = last?.rows[0];
+const fastest = last?.field.find((r) => r.fastestLap);
+const units = [['d', h.units.d], ['h', h.units.h], ['m', h.units.m], ['s', h.units.s]] as const;
+---
+
+<div class="hero-root" data-hero-root data-base={href('')}>
+    {next && (
+        <section class="hero" data-state="upcoming">
+            <div class="wrap">
+                <HeroIdent gp={next} rounds={rounds} />
+                <div class="stage">
+                    <div class="col">
+                        <p class="state-label" data-next-label></p>
+                        <div class="count">
+                            {units.map(([k, label]) => <div><b data-cd={k}>00</b><span>{label}</span></div>)}
+                        </div>
+                        <a class="btn btn--ghost" href={href(`grandsprix/grandprix.html?gp=${next.id}`)}>{h.guide} →</a>
+                    </div>
+                    <HeroTimetable sessions={next.sessions} />
+                </div>
+            </div>
+        </section>
+    )}
+
+    {next && (
+        <section class="hero" data-state="live" hidden>
+            <div class="wrap">
+                <HeroIdent gp={next} rounds={rounds} />
+                <div class="stage stage--live">
+                    <div class="col">
+                        <p class="state-label state-label--live"><span class="on">{h.live}</span></p>
+                        <div class="session">
+                            <h2 data-live-name></h2>
+                            <div class="clock"><span data-clock-v></span><small data-clock-k></small></div>
+                        </div>
+                        <div class="bar" data-bar><i data-bar-fill></i></div>
+                        <div class="parts" data-parts hidden></div>
+                        <div class="now" data-feed>
+                            <div><b class="fl">{n?.fastest.time ?? dash}</b><span>{h.fastestLap}<br />{n?.fastest.driver ?? ''}</span></div>
+                            <div data-cell="cars"><b>{n?.cars ?? dash}</b><span>{h.carsOnTrack}</span></div>
+                            <div data-cell="status"><b class="green">{n?.status ?? dash}</b><span>{h.trackStatus}</span></div>
+                            <div><b>{n?.track ?? dash}</b><span>{h.track}<br />{fill(h.air, { t: n?.air ?? dash })}</span></div>
+                            <div><b>{n?.wind ?? dash}</b><span>{h.wind}<br />{n?.windFrom ?? ''}</span></div>
+                        </div>
+                        <a class="btn" href={href('live.html')}>{h.openLive} →</a>
+                    </div>
+                    <div class="col tower" data-feed>
+                        <p class="col-h"><span data-tower-h></span></p>
+                        <div data-tower-rows></div>
+                    </div>
+                    <div data-nofeed><HeroTimetable sessions={next.sessions} /></div>
+                </div>
+            </div>
+        </section>
+    )}
+
+    {next && (
+        <section class="hero" data-state="pending" hidden>
+            <div class="wrap">
+                <HeroIdent gp={next} rounds={rounds} />
+                <div class="stage">
+                    <div class="col">
+                        <p class="state-label">{h.chequered}{next.raceLaps && ` · ${next.raceLaps} / ${next.raceLaps} ${h.laps}`}</p>
+                        <div class="session"><h2>{h.onTheWay}</h2></div>
+                        <p class="lead">{h.onTheWayText}</p>
+                        <div class="now" data-feed>
+                            <div><b>{n?.raceTime ?? dash}</b><span>{h.raceTime}<br />{preview?.rows[0]?.name ?? ''}</span></div>
+                            <div><b class="fl">{n?.fastest.time ?? dash}</b><span>{h.fastestLap}<br />{n?.fastest.driver ?? ''}</span></div>
+                            <div><b>{n?.cars ?? dash}</b><span>{h.classified}</span></div>
+                            <div><b>{n?.track ?? dash}</b><span>{h.track}<br />{fill(h.air, { t: n?.air ?? dash })}</span></div>
+                        </div>
+                        <a class="btn btn--ghost" href={href('live.html')}>{h.finalLaps} →</a>
+                    </div>
+                    <div class="col tower" data-feed>
+                        <p class="col-h"><span>{h.provisional}</span></p>
+                        {preview?.rows.slice(0, 10).map((r) => (
+                            <div class:list={['row', { 'row--fl': r.fastest }]}>
+                                <span class="row__pos">{r.pos}</span>
+                                {r.logo ? <img class="row__team" src={href(r.logo)} alt="" /> : <span />}
+                                <span class="row__drv">{r.name}</span><span class="row__gap">{r.gap}</span><span />
+                            </div>
+                        ))}
+                    </div>
+                    <div data-nofeed><HeroTimetable sessions={next.sessions} /></div>
+                </div>
+            </div>
+        </section>
+    )}
+
+    {last && (
+        <section class="hero" data-state="result" hidden>
+            <div class="wrap">
+                <HeroIdent gp={last.gp} rounds={rounds} />
+                <div class="stage">
+                    <div class="col">
+                        <p class="state-label">{h.chequered} · {last.laps} {h.laps}</p>
+                        <div class="session"><h2>{h.result}</h2></div>
+                        <div class="now">
+                            <div><b>{winner?.result ?? dash}</b><span>{h.raceTime}<br />{winner?.lastName ?? ''}</span></div>
+                            <div><b class="fl">{fastest?.lastName ?? dash}</b><span>{h.fastestLap}</span></div>
+                            <div><b>{last.classified} / {last.starters}</b><span>{h.classified}</span></div>
+                            <div><b>{last.laps}</b><span>{h.laps}</span></div>
+                        </div>
+                        <a class="btn btn--ghost" href={href(`results.html?season=${hero.season}`)}>{h.fullResults} →</a>
+                    </div>
+                    <div class="col tower">
+                        <p class="col-h"><span>{h.resultTable}</span></p>
+                        {last.rows.map((r) => (
+                            <div class:list={['row', { 'row--fl': r.fastestLap }]}>
+                                <span class="row__pos">{r.pos}</span>
+                                {r.teamLogo ? <img class="row__team" src={href(r.teamLogo)} alt="" /> : <span />}
+                                <span class="row__drv">{r.lastName}</span><span class="row__gap">{r.result}</span><span />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </section>
+    )}
+
+    <script type="application/json" data-hero-state set:html={JSON.stringify(state)}></script>
+</div>
+
+<script>
+    import { startHero } from '../../lib/hero';
+    startHero();
+</script>

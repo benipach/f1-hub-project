@@ -1,0 +1,46 @@
+---
+// The hero's top band, the same in every state: the round, the Grand Prix,
+// its circuit with its numbers, and the layout (always the thin-border one).
+import { useI18n } from '../../i18n';
+import type { HeroGrandPrix } from '../../lib/home';
+import { href } from '../../lib/paths';
+
+interface Props {
+    gp: HeroGrandPrix;
+    rounds: number;
+}
+
+const { gp, rounds } = Astro.props;
+const { t, fill, intl } = useI18n(Astro.currentLocale);
+const h = t.heroF1;
+const km = new Intl.NumberFormat(intl, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+
+// The weekend's dates: "19 – 22 Nov 2026"
+const first = gp.sessions[0]?.start;
+const last = gp.sessions.at(-1)?.start;
+const day = new Intl.DateTimeFormat(intl, { day: 'numeric', timeZone: 'UTC' });
+const full = new Intl.DateTimeFormat(intl, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const dates = first && last ? `${day.format(new Date(first))} – ${full.format(new Date(last))}` : '';
+
+// "Las Vegas" / "Grand Prix" on two lines, "Gran Premio" / "de Las Vegas" in Spanish
+const split = gp.name.match(/^(.*\S)\s+(Grand Prix)$/) ?? gp.name.match(/^(Gran Premio)\s+(.*)$/);
+const lines = split ? [split[1]!, split[2]!] : [gp.name];
+---
+
+<div class="ident">
+    <div class="who">
+        <span class="round">{gp.round}</span>
+        <div>
+            <p class="kicker">{fill(h.kicker, { n: gp.round, total: rounds })}{dates && ` · ${dates}`}</p>
+            <h1 class="gp">{lines.map((line, i) => <>{i > 0 && <br />}{line}</>)}</h1>
+            {gp.circuit && <p class="circuit">{gp.circuit}</p>}
+        </div>
+        <dl class="facts">
+            {gp.length !== null && <div><dd>{km.format(gp.length)}</dd><dt>{h.kmLap}</dt></div>}
+            {gp.turns !== null && <div><dd>{gp.turns}</dd><dt>{h.turns}</dt></div>}
+            {gp.raceLaps !== null && <div><dd>{gp.raceLaps}</dd><dt>{h.laps}</dt></div>}
+            {gp.lapRecord && <div><dd>{gp.lapRecord.time}</dd><dt>{h.lapRecord}<br />{gp.lapRecord.driver} {gp.lapRecord.year}</dt></div>}
+        </dl>
+    </div>
+    {gp.layout && <div class="track" style={`--src: url(${href(gp.layout)})`} role="img" aria-label={gp.circuit ?? gp.name}></div>}
+</div>

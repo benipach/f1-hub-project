@@ -1,0 +1,52 @@
+/* The new F1 Hub look (20/11/2026): the published site's dark and its
+   Formula 1 type, one content width for the whole site. Rules from the owner:
+   bold text is F1 Regular at weight 700 (never the F1 Bold file), no extra
+   letter-spacing, and big numbers without tabular figures (tables keep them,
+   to line the columns up). Pages built on layouts/Site.astro use this; the
+   poster pages (scrapped) keep tokens.css. */
+
+@font-face {
+    font-family: 'F1';
+    src: url('/f1-hub-project/fonts/Formula1-Regular.woff2') format('woff2');
+    font-display: swap;
+}
+@font-face {
+    font-family: 'F1 Black';
+    src: url('/f1-hub-project/fonts/Formula1-Black.woff2') format('woff2');
+    font-display: swap;
+}
+
+:root {
+    --red: rgb(225, 6, 0);
+    --base-900: rgb(6, 6, 9);
+    --base-800: rgb(10, 10, 15);
+    --base-700: rgb(19, 19, 28);
+    --base-600: rgb(30, 30, 42);
+    --line: rgba(255, 255, 255, .08);
+    --rule: rgba(255, 255, 255, .25);
+    --text: rgb(220, 220, 220);
+    --dim: rgb(150, 150, 160);
+    --purple: #b138dd;
+    --green: #00c853;
+    --yellow: #ffd12e;
+    /* One content width for every page (owner, 19/11) */
+    --wrap: 1440px;
+    --gut: 32px;
+}
+@media (max-width: 760px) {
+    :root { --gut: 16px; }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { color-scheme: dark; }
+body {
+    margin: 0;
+    background: var(--base-800);
+    color: var(--text);
+    font-family: 'F1', system-ui, sans-serif;
+}
+h1, h2, h3, p { margin: 0; }
+a { color: inherit; }
+img { display: block; }
+[hidden] { display: none !important; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gut); }

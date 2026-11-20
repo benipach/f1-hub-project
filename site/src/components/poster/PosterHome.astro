@@ -1,16 +1,17 @@
 ---
-// Preview of the new homepage while it's built (kept out of search engines,
-// not linked from the site), in the page's language: rendered by
-// pages/home-preview.astro (English) and pages/[lang]/home-preview.astro
-// (every other locale). When it replaces the old index.html it becomes
-// the index pages and index.html leaves LEGACY_PATHS.
+// Scrapped content: the "poster" homepage, dropped halfway through
+// development (owner, 19/11/2026: "poco F1"), kept as it was at
+// pages/descartado/poster/. Not linked from anywhere and out of search
+// engines. Frozen: nothing here is maintained (components/poster/ and
+// lib/hero-state.ts are only for this page); the full version is the git
+// tag poster-descartado.
 //
 // ?now=<ISO date> simulates another moment, so the three hero states can be
 // checked any day; the panel at the bottom has moments taken from the data.
-import Calendar from '../home/Calendar.astro';
-import Explore from '../home/Explore.astro';
-import Hero from '../home/Hero.astro';
-import Standings from '../home/Standings.astro';
+import Calendar from './Calendar.astro';
+import Explore from './Explore.astro';
+import Hero from './Hero.astro';
+import Standings from './Standings.astro';
 import Base from '../../layouts/Base.astro';
 import { DATA_DIR } from '../../lib/data';
 import { buildHomeHero, buildSeasonPoster, buildStandings } from '../../lib/home';
@@ -52,7 +53,8 @@ const tower = hero.last?.rows.map((row) => ({
 }));
 ---
 
-<Base title="Home preview | F1 Hub" description="Preview of the new F1 Hub homepage." noindex>
+<Base title="Diseño descartado: póster | F1 Hub" description="A homepage design dropped halfway through development." noindex>
+    <p class="scrapped lbl">Diseño descartado a mitad de desarrollo · oct–nov 2026</p>
     <Hero hero={hero} preview tower={tower ?? undefined} previewLaps={hero.last?.laps} />
     <Calendar poster={poster} />
     <Standings standings={standings} />
@@ -65,6 +67,13 @@ const tower = hero.last?.rows.map((row) => ({
 </Base>
 
 <style>
+    .scrapped {
+        margin: 0;
+        padding: 10px var(--gut);
+        background: var(--red);
+        color: #fff;
+        text-align: center;
+    }
     .moments {
         position: fixed;
         bottom: 18px;

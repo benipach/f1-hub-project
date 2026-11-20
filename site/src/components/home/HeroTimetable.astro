@@ -1,0 +1,24 @@
+---
+// The weekend's timetable in the visitor's time (lib/hero.ts writes the days,
+// the times and the zone, and marks the sessions done, live and next).
+import { useI18n } from '../../i18n';
+import type { HeroSession } from '../../lib/home';
+
+interface Props {
+    sessions: readonly HeroSession[];
+}
+
+const { sessions } = Astro.props;
+const { t } = useI18n(Astro.currentLocale);
+---
+
+<div class="col timetable">
+    <p class="col-h"><span>{t.heroF1.timetable}</span><span data-zone></span></p>
+    {sessions.map((s) => (
+        <div class:list={['sess', { 'sess--race': s.key === 'race' }]} data-session={s.key}>
+            <span class="sess__day" data-at={s.start} data-fmt="day"></span>
+            <span class="sess__name">{s.name}</span>
+            <span class="sess__time" data-at={s.start}></span>
+        </div>
+    ))}
+</div>

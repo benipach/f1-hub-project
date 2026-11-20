@@ -89,6 +89,11 @@ export type HeroResult = {
     /** Laps the winner completed. */
     readonly laps: number;
     readonly rows: readonly HeroRow[];
+    /** Every row of the race, top 10 included. */
+    readonly field: readonly HeroRow[];
+    /** Drivers classified, and how many took the start. */
+    readonly classified: number;
+    readonly starters: number;
     /** The winner's portrait inside the site, when there is one. */
     readonly winnerPhoto: string | null;
 };
@@ -212,14 +217,16 @@ export function buildHomeHero(dataDir: URL, i18n: I18n): HomeHero {
      * (nothing typed by hand): the distance in laps, as the most laps a winner
      * completed (a race cut short by rain doesn't lower it), and the lap record,
      * the fastest race lap (rows have bestLap from 2004; a new layout starts a
-     * new record, as in F1's own).
+     * new record, as in F1's own). Only the same Grand Prix counts: the Sakhir
+     * GP 2020 ran on Bahrain's outer loop (87 laps, a 55 s lap) under the
+     * same circuitId.
      */
-    const circuitRaceStats = (circuitId: string, from: number) => {
+    const circuitRaceStats = (gpId: string, circuitId: string, from: number) => {
         let laps = 0;
         let record: { ms: number; driver: string; year: number } | null = null;
         for (let year = from; year <= season; year++) {
             for (const g of seasonGps(year)) {
-                const r = g.circuitId === circuitId ? race(g) : undefined;
+                const r = g.circuitId === circuitId && g.id === gpId ? race(g) : undefined;
                 if (!r) continue;
                 laps = Math.max(laps, r.results.find((row) => row.pos === 1)?.laps ?? 0);
                 for (const row of r.results) {
@@ -255,7 +262,7 @@ export function buildHomeHero(dataDir: URL, i18n: I18n): HomeHero {
             length: layout?.length ?? null,
             turns: layout?.turns ?? null,
             ...(gp.circuitId && layout
-                ? circuitRaceStats(gp.circuitId, layout.validFrom)
+                ? circuitRaceStats(gp.id, gp.circuitId, layout.validFrom)
                 : { raceLaps: null, lapRecord: null }),
             sprint: gp.sprint,
             sessions: gp.sessions.flatMap((s) =>
@@ -273,11 +280,7 @@ export function buildHomeHero(dataDir: URL, i18n: I18n): HomeHero {
     let lastResult: HeroResult | null = null;
     const lastRace = last ? race(last) : undefined;
     if (last && lastRace && lastRace.time?.kind === 'datetime' && lastRace.time.end) {
-        lastResult = {
-            gp: heroGp(last),
-            raceEnd: lastRace.time.end,
-            laps: lastRace.results[0]?.laps ?? 0,
-            rows: lastRace.results.slice(0, 10).map((row) => {
+        const field = lastRace.results.map((row): HeroRow => {
                 const driver = drivers[row.driver];
                 const team = teams[row.teamId];
                 const grid = row.grid && row.grid > 0 ? row.grid : null;
@@ -294,7 +297,15 @@ export function buildHomeHero(dataDir: URL, i18n: I18n): HomeHero {
                     gained: grid === null ? null : grid - row.pos,
                     fastestLap: row.fastestLap,
                 };
-            }),
+        });
+        lastResult = {
+            gp: heroGp(last),
+            raceEnd: lastRace.time.end,
+            laps: lastRace.results[0]?.laps ?? 0,
+            rows: field.slice(0, 10),
+            field,
+            classified: lastRace.results.filter((row) => ['time', 'gap', 'lapped'].includes(row.outcome.kind)).length,
+            starters: lastRace.results.filter((row) => row.outcome.kind !== 'dns').length,
             winnerPhoto: lastRace.results[0] ? driverPhoto(repoRoot, lastRace.results[0].driver) : null,
         };
     }
