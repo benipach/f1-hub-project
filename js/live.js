@@ -15,7 +15,7 @@ const CIRCUIT_MAP = {
     'australian-gp':     'albert-park-circuit',
     'chinese-gp':        'shanghai-international-circuit',
     'japanese-gp':       'suzuka-international-racing-course',
-    'bahrain-gp':        'bahrain-internatinal-circuit',
+    'bahrain-gp':        'bahrain-international-circuit',
     'saudi-arabian-gp':  'jeddah-corniche-circuit',
     'miami-gp':          'miami-international-autodrome',
     'canadian-gp':       'circuit-gilles-villeneuve',
