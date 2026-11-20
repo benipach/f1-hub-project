@@ -1,0 +1,82 @@
+---
+// The career in one line: the final championship position, season by season
+// (driver profile, section 4; approved 20/11/2026). The form chart's look and
+// curve (lib/curve.ts): a title is a bigger red dot labelled in red, the top
+// three and the season on now are labelled, a year he didn't race breaks the
+// line. A wide drawing and a taller one for phones; hovering a season shows
+// its card (lib/chart-tip.ts).
+import '../../styles/chart.css';
+import type { DriverSeason } from '../../lib/driver';
+import { curvePath } from '../../lib/curve';
+import { useI18n } from '../../i18n';
+
+interface Props {
+    seasons: readonly DriverSeason[];
+}
+
+const { seasons } = Astro.props;
+const { t, fill, intl } = useI18n(Astro.currentLocale);
+const w = t.driverCareer;
+const num = new Intl.NumberFormat(intl);
+const from = seasons[0]!.year, to = seasons.at(-1)!.year;
+const span = to - from + 1;
+const byYear = new Map(seasons.map((s) => [s.year, s]));
+const worst = Math.max(10, ...seasons.map((s) => s.pos ?? 0));
+const years = Array.from({ length: span }, (_, i) => from + i);
+
+function draw(compact: boolean) {
+    const [W, H, padL, padB, padT] = compact ? [400, 320, 30, 22, 30] : [1000, 280, 40, 26, 34];
+    const step = (W - padL) / span;
+    const x = (year: number) => padL + (year - from + 0.5) * step;
+    const y = (p: number) => padT + ((p - 1) / (worst - 1)) * (H - padB - padT - 12);
+    // The line breaks over the years he didn't race
+    const runs: [number, number][][] = [[]];
+    for (const year of years) {
+        const s = byYear.get(year);
+        if (!s?.pos) { if (runs.at(-1)!.length) runs.push([]); continue; }
+        runs.at(-1)!.push([x(year), y(s.pos)]);
+    }
+    const short = compact || span > 14;
+    const skip = (year: number) => compact && span > 12 && (year - from) % 2 === 1;
+    const ticks = [1, 3, 10, worst].filter((v, i, a) => a.indexOf(v) === i);
+    return { W, H, padL, padB, step, x, y, short, skip, ticks, line: runs.filter((r) => r.length).map((r) => curvePath(r)).join('') };
+}
+const charts = [draw(false), draw(true)];
+const teamsOf = (s: DriverSeason) => s.teams.map((tm) => tm.name).join(' · ');
+---
+
+<div class="fc">
+    <p class="col-h">
+        <span>{w.position}</span>
+        <span class="fc__key"><span><i class="fc__sw"></i>{w.final}</span><span><i class="fc__dot"></i>{w.title1}</span></span>
+    </p>
+    <div class="fc__plot">
+        {charts.map((c, k) => (
+            <svg class:list={['fc__svg', k ? 'fc__svg--compact' : 'fc__svg--wide']} viewBox={`0 0 ${c.W} ${c.H}`} role="img" aria-label={w.chart}>
+                <rect x={c.padL} y={c.y(1) - 7} width={c.W - c.padL} height={c.y(3) - c.y(1) + 14} class="fc__band" />
+                {c.ticks.map((v) => <text x="0" y={c.y(v) + 4} class="fc__lab">P{v}</text>)}
+                <path d={c.line} class="fc__fin" />
+                {years.map((year) => {
+                    const s = byYear.get(year);
+                    return (
+                        <>
+                            {!c.skip(year) && <text x={c.x(year)} y={c.H - 6} text-anchor="middle" class:list={['fc__lab', { 'fc__lab--dim': !s }]}>{c.short ? `’${String(year).slice(2)}` : year}</text>}
+                            {s?.pos && <circle cx={c.x(year)} cy={c.y(s.pos)} r={s.champion ? 6 : 4.5} class:list={['fc__f', { 'fc__f--win': s.champion }]} />}
+                            {s?.pos && (s.champion || s.pos <= 3 || !s.done) && <text x={c.x(year)} y={c.y(s.pos) - 12} text-anchor="middle" class:list={['fc__val', { 'fc__val--red': s.champion }]}>P{s.pos}</text>}
+                        </>
+                    );
+                })}
+                {seasons.map((s) => (
+                    <rect class="fc__hit" x={c.x(s.year) - c.step / 2} y="0" width={c.step} height={c.H - c.padB}
+                        data-a={`${s.year} · ${teamsOf(s)}`} data-b={s.pos ? `P${s.pos}` : '—'}
+                        data-c={fill(w.points, { n: num.format(s.pts) })} data-d={s.champion ? w.champion : !s.done ? w.soFar : ''} />
+                ))}
+            </svg>
+        ))}
+        <div class="fc__tip" hidden><span class="fc__tip-a"></span><b class="fc__tip-b"></b><span class="fc__tip-c"></span><span class="fc__tip-d"></span></div>
+    </div>
+</div>
+
+<script>
+    import '../../lib/chart-tip';
+</script>

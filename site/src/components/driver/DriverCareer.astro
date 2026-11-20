@@ -1,0 +1,65 @@
+---
+// The driver profile's section 4, season by season (approved 20/11/2026,
+// mockup in the owner's copy: _design/driver-f1/career.html): the header's
+// numbers, the career chart, and a row per season (newest first) that links
+// to that season race by race (#season-<year>, DriverSeasons.astro).
+import '../../styles/hero.css';
+import '../../styles/driver-career.css';
+import TeamMark from '../TeamMark.astro';
+import CareerChart from './CareerChart.astro';
+import { useI18n } from '../../i18n';
+import type { DriverProfile } from '../../lib/driver';
+
+interface Props {
+    driver: DriverProfile;
+}
+
+const { driver: D } = Astro.props;
+const { t, plural, intl } = useI18n(Astro.currentLocale);
+const w = t.driverCareer;
+const num = new Intl.NumberFormat(intl);
+const S = D.seasons;
+const best = Math.min(...S.map((s) => s.pos ?? 99));
+const head = [
+    { v: String(D.totals.titles), l: plural(w.titles, D.totals.titles), red: D.totals.titles > 0 },
+    { v: String(S.filter((s) => s.pos && s.pos <= 3).length), l: w.top3 },
+    { v: best < 99 ? `P${best}` : '—', l: w.best },
+    { v: String(S.length), l: w.seasons },
+];
+const c = w.cols;
+---
+
+<section class="dcareer" aria-labelledby="dcareer-title">
+    <div class="wrap">
+        <div class="sec-head">
+            <div><p class="sec-k">{w.kicker}</p><h2 class="sec-title" id="dcareer-title">{w.title}</h2></div>
+            <dl class="sec-facts">{head.map((x) => <div><dd class:list={{ red: x.red }}>{x.v}</dd><dt>{x.l}</dt></div>)}</dl>
+        </div>
+        <CareerChart seasons={S} />
+        <div class="dcareer__col">
+            <p class="col-h">
+                <span>{w.every}</span>
+                <span class="sr__th"><i>{c.pos}</i><i>{c.pts}</i><i>{c.wins}</i><i>{c.podiums}</i><i>{c.poles}</i><i class="l">{c.mate}</i><i></i></span>
+            </p>
+            {[...S].reverse().map((s) => (
+                <a class:list={['sr', { 'sr--title': s.champion }]} href={`#season-${s.year}`}>
+                    <span class="sr__y">{s.year}</span>
+                    <span class="sr__team">
+                        {s.teams.map((tm) => <TeamMark logo={tm.logo} color={tm.color} size={26} />)}
+                        <span class="sr__tn">
+                            <b>{s.teams.map((tm) => tm.name).join(' · ')}</b>
+                            {s.champion ? <small>{w.champion}</small> : !s.done && <small class="sr__now">{w.soFar}</small>}
+                        </span>
+                    </span>
+                    <span class="sr__n sr__pos">{s.pos ? `P${s.pos}` : '—'}</span>
+                    <span class="sr__n">{num.format(s.pts)}</span>
+                    <span class="sr__n">{s.wins || '·'}</span>
+                    <span class="sr__n">{s.podiums || '·'}</span>
+                    <span class="sr__n">{s.poles || '·'}</span>
+                    <span class="sr__mate">{s.mate && <><b class:list={{ lo: s.mate.race[0] < s.mate.race[1] }}>{s.mate.race[0]}–{s.mate.race[1]}</b> {s.mate.last}</>}</span>
+                    <span class="sr__go" aria-hidden="true">→</span>
+                </a>
+            ))}
+        </div>
+    </div>
+</section>

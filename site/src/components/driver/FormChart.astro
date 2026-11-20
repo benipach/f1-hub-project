@@ -12,6 +12,8 @@
 // the browser's title); the script is shared by every chart on the page.
 import type { DriverRound, DriverSeason } from '../../lib/driver';
 import { useI18n } from '../../i18n';
+import { curvePath } from '../../lib/curve';
+import '../../styles/chart.css';
 
 interface Props {
     season: DriverSeason;
@@ -32,28 +34,6 @@ function draw(compact: boolean) {
     const x = (i: number) => padL + (i + 0.5) * step;
     const y = (p: number) => 10 + ((p - 1) / Math.max(1, field - 1)) * (H - padB - 20);
     const outPos = (r: DriverRound) => r.pos ?? field;
-    // A gentle curve through every point (owner, 20/11: "apenitas curvatura"):
-    // monotone cubic (Fritsch–Carlson), so it never swings past a point (no
-    // place above P1, no place that didn't happen), with its tangents eased
-    // to 60 % so the bends stay slight
-    const EASE = 0.6;
-    const f = (v: number) => v.toFixed(1);
-    const path = (pts: [number, number][]) => {
-        if (pts.length < 3) return pts.map(([px, py], i) => `${i ? 'L' : 'M'}${f(px)} ${f(py)}`).join('');
-        const d = pts.slice(1).map(([px, py], i) => (py - pts[i]![1]) / (px - pts[i]![0]));
-        const m = pts.map((_, i) => (i === 0 ? d[0]! : i === pts.length - 1 ? d.at(-1)! : d[i - 1]! * d[i]! <= 0 ? 0 : (d[i - 1]! + d[i]!) / 2));
-        for (let i = 0; i < d.length; i++) {
-            if (d[i] === 0) { m[i] = 0; m[i + 1] = 0; continue; }
-            const a = m[i]! / d[i]!, b = m[i + 1]! / d[i]!, s = a * a + b * b;
-            if (s > 9) { const k = 3 / Math.sqrt(s); m[i] = k * a * d[i]!; m[i + 1] = k * b * d[i]!; }
-        }
-        let out = `M${f(pts[0]![0])} ${f(pts[0]![1])}`;
-        for (let i = 0; i < pts.length - 1; i++) {
-            const [x0, y0] = pts[i]!, [x1, y1] = pts[i + 1]!, h = (x1 - x0) / 3;
-            out += `C${f(x0 + h)} ${f(y0 + EASE * m[i]! * h)} ${f(x1 - h)} ${f(y1 - EASE * m[i + 1]! * h)} ${f(x1)} ${f(y1)}`;
-        }
-        return out;
-    };
     const line = (key: 'pos' | 'grid') => {
         const runs: [number, number][][] = [[]];
         rs.forEach((r, i) => {
@@ -63,7 +43,7 @@ function draw(compact: boolean) {
             if (v == null) return;
             runs.at(-1)!.push([x(i), y(v)]);
         });
-        return runs.filter((run) => run.length).map(path).join('');
+        return runs.filter((run) => run.length).map((run) => curvePath(run)).join('');
     };
     const ticks = [1, 3, pointsTo, field].filter((v, i, a) => a.indexOf(v) === i && v <= field);
     return { W, H, padL, padB, every, step, x, y, outPos, finish: line('pos'), grid: line('grid'), ticks };
@@ -123,19 +103,5 @@ const charts = [draw(false), draw(true)];
 </div>
 
 <script>
-    // The race card on the form chart: follows the hovered race, inside its plot
-    document.addEventListener('pointerover', (e) => {
-        const hit = (e.target as Element).closest?.('.fc__hit') as SVGRectElement | null;
-        const plot = (e.target as Element).closest?.('.fc__plot') as HTMLElement | null;
-        if (!plot) return;
-        const tip = plot.querySelector<HTMLElement>('.fc__tip')!;
-        if (!hit) { tip.hidden = true; return; }
-        for (const k of ['a', 'b', 'c', 'd'] as const) tip.querySelector<HTMLElement>(`.fc__tip-${k}`)!.textContent = hit.dataset[k] ?? '';
-        tip.dataset.dir = hit.dataset.dir ?? '';
-        tip.hidden = false;
-        const box = plot.getBoundingClientRect(), r = hit.getBoundingClientRect();
-        const left = Math.min(Math.max(r.left + r.width / 2 - box.left - tip.offsetWidth / 2, 0), box.width - tip.offsetWidth);
-        tip.style.left = `${left}px`;
-    });
-    document.addEventListener('pointerleave', () => document.querySelectorAll<HTMLElement>('.fc__tip').forEach((tip) => (tip.hidden = true)), true);
+    import '../../lib/chart-tip';
 </script>

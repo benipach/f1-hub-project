@@ -192,6 +192,22 @@ profile stays at `/descartado/poster/driver/<id>/` for reference):
   since), a win as a red dot, a retirement as a red × where it was
   classified; a legend; a wide drawing and a taller one for phones; hovering
   a race shows our own card (round, grid → finish, places, points, sprint).
+- **Season by season** (`driver/DriverCareer.astro`, `driver/CareerChart.astro`,
+  `styles/driver-career.css`): header with titles (red), top-3 seasons, best
+  finish, seasons; the career chart (final championship position per year,
+  the same look and curve; a title is a bigger red dot labelled "P1" in red;
+  the top three and the season on now labelled; a year not raced breaks the
+  line); a row per season, newest first, **each a link to that season above**
+  (`#season-<year>`): year, logo and team (both teams in a split year), "World
+  champion" / "So far", position, points, wins, podiums, poles, the race
+  head-to-head with the teammate ("14–3 HADJAR", gray when lost); titles with
+  the red tint.
+
+**Charts** (`styles/chart.css`, `lib/curve.ts`, `lib/chart-tip.ts`): one look
+for every chart. White 2 px line drawn as a gentle monotone curve (never past a
+point; tangents at 60 %), P1–P3 as a faint band, labels in 11 px bold `--dim`,
+a legend in the column header, a wide drawing and a taller one for phones, and
+our own hover card (never `title=`).
 
 ## 6. What was tried and rejected
 

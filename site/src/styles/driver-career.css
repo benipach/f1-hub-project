@@ -1,0 +1,49 @@
+/* The driver profile's season by season (components/driver/DriverCareer.astro).
+   The header (.sec-head) is f1.css's, the chart's look chart.css's, the column
+   header (.col-h) hero.css's. */
+
+.dcareer { padding: 72px 0 80px; }
+.dcareer .fc { margin-top: 40px; }
+.dcareer__col { margin-top: 36px; border-top: 3px solid #fff; padding-top: 12px; }
+.dcareer .col-h { align-items: baseline; margin-bottom: 6px; }
+
+/* a row per season, newest first, each a link to that season */
+.sr__th, .sr { --cols: 56px 64px 52px 64px 52px 210px 20px; }
+.sr__th { display: grid; grid-template-columns: var(--cols); gap: 0 14px; margin-right: 4px; font-weight: 400; font-size: 11px; color: var(--dim); }
+.sr__th i { font-style: normal; text-align: right; }
+.sr__th i.l { text-align: left; }
+.sr {
+    display: grid; grid-template-columns: 56px minmax(0, 1fr) var(--cols); align-items: center; gap: 0 14px;
+    min-height: 52px; padding: 6px 4px; border-bottom: 1px solid var(--line); color: inherit; text-decoration: none;
+    font-variant-numeric: tabular-nums; transition: background .15s ease;
+}
+.sr:hover { background: rgba(255, 255, 255, .04); }
+.sr__y { font-weight: 700; font-size: 18px; color: #fff; }
+.sr__team { display: flex; align-items: center; gap: 10px; min-width: 0; overflow: hidden; }
+.sr__team .team-mark { flex: none; width: 26px; height: 26px; object-fit: contain; }
+.sr__tn { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.sr__tn b { min-width: 0; overflow: hidden; font-size: 15px; text-transform: uppercase; color: #fff; white-space: nowrap; text-overflow: ellipsis; }
+.sr__tn small { font-size: 12px; color: var(--red); white-space: nowrap; }
+.sr__tn small.sr__now { color: var(--dim); }
+.sr__n { font-weight: 700; font-size: 15px; color: var(--text); text-align: right; }
+.sr__pos { color: #fff; }
+.sr--title { background: rgba(225, 6, 0, .12); }
+.sr--title:hover { background: rgba(225, 6, 0, .18); }
+.sr--title .sr__pos { color: var(--red); }
+.sr__mate { overflow: hidden; font-size: 13px; text-transform: uppercase; color: var(--dim); white-space: nowrap; text-overflow: ellipsis; }
+.sr__mate b { margin-right: 6px; font-size: 15px; color: #fff; }
+.sr__mate b.lo { font-weight: 400; color: var(--dim); }
+.sr__go { color: var(--dim); text-align: right; }
+.sr:hover .sr__go { color: #fff; }
+
+@media (max-width: 760px) {
+    .dcareer { padding: 48px 0 56px; }
+    .dcareer .sec-facts { display: grid; grid-template-columns: 1fr 1fr; row-gap: 12px; }
+    .dcareer .sec-facts div:nth-child(odd) { padding-left: 0; border-left: 0; }
+    .dcareer .fc__key { flex-direction: column; align-items: flex-end; gap: 4px; }
+    .sr__th { display: none; }
+    .sr { grid-template-columns: 44px minmax(0, 1fr) 44px 48px 16px; }
+    .sr > :nth-child(5), .sr > :nth-child(6), .sr > :nth-child(7), .sr > :nth-child(8) { display: none; }
+    .sr__tn { flex-direction: column; align-items: stretch; gap: 2px; overflow: hidden; }
+    .sr__tn b { display: block; }
+}
