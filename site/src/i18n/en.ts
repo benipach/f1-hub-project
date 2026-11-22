@@ -377,7 +377,7 @@ export default {
         points: 'Points',
         seasons: 'Seasons',
         rounds: { one: '{n} round', other: '{n} rounds' },
-        cols: { grid: 'Grid', finish: 'Finish', places: 'Places', sprint: 'Sprint', pts: 'Pts', total: 'Total' },
+        cols: { grid: 'Grid', finish: 'Finish', places: 'Places', race: 'Race', sprint: 'Sprint', pts: 'Pts', total: 'Total' },
         pole: 'Pole',
         fastestLap: 'Fastest lap',
         toCome: 'To come',

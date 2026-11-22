@@ -354,7 +354,7 @@ export default {
         points: 'Puntos',
         seasons: 'Temporadas',
         rounds: { one: '{n} ronda', other: '{n} rondas' },
-        cols: { grid: 'Largada', finish: 'Llegada', places: 'Puestos', sprint: 'Sprint', pts: 'Pts', total: 'Total' },
+        cols: { grid: 'Largada', finish: 'Llegada', places: 'Puestos', race: 'Carrera', sprint: 'Sprint', pts: 'Pts', total: 'Total' },
         pole: 'Pole',
         fastestLap: 'Vuelta rápida',
         toCome: 'Por correr',

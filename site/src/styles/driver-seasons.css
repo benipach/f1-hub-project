@@ -16,24 +16,33 @@
 .dseason .col-h { align-items: baseline; margin-bottom: 6px; }
 .dseason__side { display: grid; gap: 36px; }
 
-/* the rounds: the timing table */
-.rr__th, .rr { --cols: 64px 64px 56px 150px 44px 52px; }
-.dseason--sprints .rr__th, .dseason--sprints .rr { --cols: 64px 64px 56px 132px 150px 44px 52px; }
-.rr__th { display: grid; grid-template-columns: var(--cols); gap: 0 12px; margin-right: 4px; font-weight: 400; font-size: 11px; color: var(--dim); }
-.rr__th i { font-style: normal; text-align: right; }
-.rr__th i.l, .rr__th i:nth-last-child(3) { text-align: left; }
-.dseason--sprints .rr__th i:nth-child(4) { padding-left: 42px; text-align: left; }
+/* the rounds: the timing table. Two groups, each with its head over its columns
+   and split from the next by a thin rule (owner, 22/11: the race and the sprint
+   ran together): RACE grid · finish · places · pts | SPRINT finish · places · pts | total */
+.rr { --cols: 58px 58px 58px 40px 60px; } /* "LARGADA", "LLEGADA", "PUESTOS" fit */
+.dseason--sprints .rr { --cols: 58px 58px 58px 40px 64px 58px 40px 60px; }
 .rr {
     display: grid; grid-template-columns: 26px 26px minmax(0, 1fr) var(--cols); align-items: center; gap: 0 12px;
-    min-height: 40px; padding: 4px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums;
+    min-height: 40px; padding: 0 4px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums;
 }
+.rr .sep { align-self: stretch; display: flex; align-items: center; justify-content: flex-end; padding-left: 8px; border-left: 1px solid var(--rule); }
+.rr--grp, .rr--head { min-height: 0; border-bottom: 0; }
+.rr--grp .g { grid-column: span 4; padding-bottom: 4px; border-bottom: 1px solid #fff; font: 700 11px 'F1'; text-transform: uppercase; color: #fff; }
+.rr--grp .g--spr { grid-column: span 3; }
+.rr--grp .g--tot { grid-column: span 1; border-bottom: 0; }
+.rr--head { padding-top: 6px; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
+.rr--head i { font-style: normal; font-size: 11px; text-transform: uppercase; color: var(--dim); text-align: right; }
+.rr--head i.l { text-align: left; }
 .rr__rd { font-weight: 700; font-size: 13px; color: var(--dim); text-align: right; white-space: nowrap; }
 .rr__flag { width: 26px; height: auto; border-radius: 2px; }
-.rr__gp { overflow: hidden; font-weight: 700; font-size: 15px; text-transform: uppercase; color: #fff; white-space: nowrap; text-overflow: ellipsis; }
-.rr__gp small { margin-left: 8px; font-weight: 400; font-size: 11px; color: var(--dim); }
+.rr__gp { display: flex; align-items: baseline; gap: 8px; min-width: 0; font-weight: 700; font-size: 15px; text-transform: uppercase; color: #fff; white-space: nowrap; }
+.rr__name { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.rr__gp small { flex: none; font-weight: 400; font-size: 11px; color: var(--dim); }
+.rr__gp small.fl { color: var(--purple); }
 .rr__n { font-weight: 700; font-size: 15px; color: var(--text); text-align: right; white-space: nowrap; }
 .rr__dim { font-weight: 400; color: var(--dim); }
 .rr__fin, .rr__tot { color: #fff; }
+.rr__pts { font-weight: 400; color: var(--text); }
 .rr__out { font-size: 13px; color: var(--dim); }
 /* places made from the grid (components/driver/Places.astro), in the race and the sprint */
 .rr__d { font-weight: 700; font-size: 15px; }
@@ -42,16 +51,9 @@
 .places.up { color: var(--green); }
 .places.down { color: var(--red); }
 .places.same { color: var(--dim); }
-/* the sprint: finish, places made, points */
-.rr__spr { display: grid; grid-template-columns: 34px 40px auto; align-items: center; gap: 0 8px; font-size: 14px; white-space: nowrap; }
-.rr__spr-fin { color: var(--text); text-align: right; }
-.rr__spr-fin.rr__out { font-size: 12px; }
-.rr__spr .places { grid-column: 2; }
-.rr__spr-pts { grid-column: 3; color: var(--dim); }
 .rr__note { font-size: 12px; text-transform: uppercase; color: var(--text); white-space: nowrap; }
-.rr__note .fl { color: var(--purple); }
 .rr--win { background: rgba(225, 6, 0, .12); }
-.rr--dim { grid-template-columns: 26px 26px minmax(0, 1fr) auto; }
+.rr--dim { grid-template-columns: 26px 26px minmax(0, 1fr) auto; min-height: 40px; }
 .rr--dim .rr__gp, .rr--dim .rr__note { color: var(--dim); }
 
 /* the teammate: three split bars, his share in white */
@@ -85,8 +87,8 @@
     .dseason .sec-facts dd { font-size: 24px; }
     .years { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
     /* the rounds on a phone: round, flag, Grand Prix, finish, points */
-    .rr__th { display: none; }
-    .rr { grid-template-columns: 22px 22px minmax(0, 1fr) 48px 40px; }
-    .rr__dim, .rr__d, .rr__spr, .rr:not(.rr--dim) .rr__note, .rr__tot { display: none; }
+    .rr--grp, .rr--head { display: none; }
+    .dseason--sprints .rr, .rr { grid-template-columns: 22px 22px minmax(0, 1fr) 48px 40px; }
+    .rr__dim, .rr__d, .rr .sep, .rr__s, .rr__gp small, .rr__tot { display: none; } /* a phone: the race finish and points */
     .rr--dim { grid-template-columns: 22px 22px minmax(0, 1fr) auto; }
 }

@@ -89,10 +89,10 @@ const sprintDelta = (sp: NonNullable<DriverRound['sprint']>) => (!sp.out && sp.g
                     <div class="dseason__col">
                         <p class="col-h">
                             <span>{s.teams.map((tm) => tm.name).join(' · ')} · {plural(w.rounds, s.rounds.length)}</span>
-                            <span class="rr__th">
-                                <i>{w.cols.grid}</i><i>{w.cols.finish}</i><i class="l">{w.cols.places}</i>{sprints && <i>{w.cols.sprint}</i>}<i></i><i>{w.cols.pts}</i><i>{w.cols.total}</i>
-                            </span>
                         </p>
+                        {/* Two groups with their own heads, split by a rule (owner, 22/11: the race and the sprint ran together) */}
+                        <div class="rr rr--grp" aria-hidden="true"><span></span><span></span><span></span><b class="g">{w.cols.race}</b>{sprints && <b class="g g--spr">{w.cols.sprint}</b>}<b class="g g--tot"></b></div>
+                        <div class="rr rr--head" aria-hidden="true"><span></span><span></span><span></span><i>{w.cols.grid}</i><i>{w.cols.finish}</i><i class="l">{w.cols.places}</i><i>{w.cols.pts}</i>{sprints && <><i class="sep">{w.cols.finish}</i><i class="l">{w.cols.places}</i><i>{w.cols.pts}</i></>}<i class="sep">{w.cols.total}</i></div>
                         {rows.map((row) => row.kind === 'dim' ? (
                             <div class="rr rr--dim">
                                 <span class="rr__rd">{range(row.from.round, row.to.round)}</span>
@@ -104,22 +104,17 @@ const sprintDelta = (sp: NonNullable<DriverRound['sprint']>) => (!sp.out && sp.g
                             <div class:list={['rr', { 'rr--win': !row.r.out && row.r.pos === 1 }]}>
                                 <span class="rr__rd">{row.r.round}</span>
                                 {row.r.iso ? <img class="rr__flag" src={href(`img/flags/${row.r.iso.toLowerCase()}.svg`)} alt="" width="26" height="18" loading="lazy" /> : <span></span>}
-                                <span class="rr__gp">{row.r.short}{row.r.sprintWeekend && <small>{w.cols.sprint}</small>}</span>
+                                <span class="rr__gp"><span class="rr__name">{row.r.short}</span>{row.r.pole && <small>{w.pole}</small>}{row.r.fl && <small class="fl">{w.fastestLap}</small>}</span>
                                 <span class="rr__n rr__dim">{row.r.grid ? `P${row.r.grid}` : '—'}</span>
                                 <span class:list={['rr__n rr__fin', { rr__out: row.r.out }]}>{row.r.out ?? `P${row.r.pos}`}</span>
                                 <span class="rr__d"><Places delta={row.delta} /></span>
-                                {sprints && (
-                                    <span class="rr__spr">
-                                        {row.r.sprint && <>
-                                            <span class:list={['rr__spr-fin', { rr__out: row.r.sprint.out }]}>{row.r.sprint.out ?? `P${row.r.sprint.pos}`}</span>
-                                            <Places delta={sprintDelta(row.r.sprint)} />
-                                            {row.r.sprint.pts > 0 && <span class="rr__spr-pts">+{n(row.r.sprint.pts)}</span>}
-                                        </>}
-                                    </span>
-                                )}
-                                <span class="rr__note">{row.r.pole && w.pole}{row.r.pole && row.r.fl && ' · '}{row.r.fl && <span class="fl">{w.fastestLap}</span>}</span>
-                                <span class="rr__n">{row.r.racePts ? `+${n(row.r.racePts)}` : '0'}</span>
-                                <span class="rr__n rr__tot">{n(row.total)}</span>
+                                <span class="rr__n rr__pts">{row.r.racePts ? `+${n(row.r.racePts)}` : '0'}</span>
+                                {sprints && (row.r.sprint ? <>
+                                    <span class:list={['rr__n rr__fin rr__s sep', { rr__out: row.r.sprint.out }]}>{row.r.sprint.out ?? `P${row.r.sprint.pos}`}</span>
+                                    <span class="rr__d rr__s"><Places delta={sprintDelta(row.r.sprint)} /></span>
+                                    <span class="rr__n rr__pts rr__s">{row.r.sprint.pts ? `+${n(row.r.sprint.pts)}` : '0'}</span>
+                                </> : <><span class="rr__s sep"></span><span class="rr__s"></span><span class="rr__s"></span></>)}
+                                <span class="rr__n rr__tot sep">{n(row.total)}</span>
                             </div>
                         ))}
                     </div>
