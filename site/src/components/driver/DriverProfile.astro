@@ -2,7 +2,7 @@
 // A driver's profile on the new look (layouts/Site.astro), rebuilt section by
 // section from 20/11/2026: mockup, the owner's changes, then Astro. Rendered by
 // pages/driver-preview/[id].astro (English) and pages/[lang]/driver-preview/[id].astro.
-// Sections so far: the hero, driver info, the seasons race by race, season by season, career numbers. The scrapped poster profile, kept for reference,
+// Sections so far: the hero, driver info, the seasons race by race, season by season, career numbers, the milestones. The scrapped poster profile, kept for reference,
 // is at /descartado/poster/driver/<id>/.
 import Site from '../../layouts/Site.astro';
 import DriverHero from './DriverHero.astro';
@@ -10,6 +10,7 @@ import DriverInfo from './DriverInfo.astro';
 import DriverSeasons from './DriverSeasons.astro';
 import DriverCareer from './DriverCareer.astro';
 import DriverStats from './DriverStats.astro';
+import DriverJourney from './DriverJourney.astro';
 import { DATA_DIR } from '../../lib/data';
 import { buildDriver } from '../../lib/driver';
 import { useI18n, fill } from '../../i18n';
@@ -35,4 +36,5 @@ const name = `${D.first} ${D.last}`;
     <DriverSeasons driver={D} />
     <DriverCareer driver={D} />
     <DriverStats driver={D} />
+    <DriverJourney driver={D} />
 </Site>

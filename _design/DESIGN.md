@@ -170,9 +170,10 @@ profile stays at `/descartado/poster/driver/<id>/` for reference):
   the name). **This table keeps small column titles** (Years, Races…): six
   numbers in a row can't be read without them (approved 20/11). On a phone
   the numbers go to a line under the name. Before and beyond F1 under it,
-  only for the drivers with those facts. A career that starts in 1990 (the
-  archive's first season) says "First race on record" and has no age at the
-  debut, until 1950–1989 are loaded.
+  only for the drivers with those facts. Every career says "Debut" and the
+  age at the debut, even one that starts in 1990: **the site never says the
+  archive starts in 1990** (owner, 22/11); the numbers fill in as 1950–1989
+  are loaded.
 - **Seasons, race by race** (`driver/DriverSeasons.astro`,
   `styles/driver-seasons.css`): one panel per season he raced, all built into
   the page (`#season-<year>`); **the year links are plain anchors and CSS shows
@@ -212,6 +213,27 @@ profile stays at `/descartado/poster/driver/<id>/` for reference):
   team that driver last added to that stat with** (owner, 20/11: Räikkönen,
   Alfa Romeo for races, Ferrari for wins; `BoardRow.team` in `lib/driver.ts`).
   A stat at zero has no board: one line ("No wins, podiums… yet").
+- **Milestones** (`driver/DriverJourney.astro`, `styles/driver-journey.css`,
+  `lib/driver-journey.ts`): header with how many races each first took and the
+  first title (red); a timeline by year (the year big, a line with a dot per
+  milestone, a table row each: date, his race number, flag, Grand Prix, team).
+  **Each kind has its own drawing** (owner, 22/11: "cada uno con su
+  distintivo"): the winning streak as a line of stations (flag and dot per win,
+  first and last named); a world title with its number big in red, points,
+  wins, the margin over the runner-up, and a bar per round (white: won; red and
+  raised with the flag: where it was decided, worked out from the points still
+  to be had; dimmed after); the firsts of one race in one row with his age and
+  the field as a track (ring where he started, dot where he finished, red for a
+  win, a red × for a retirement); a team's first or last win as one bar split
+  at that win with both sides in words ("1 race before it", "19 more races, no
+  win"); the best result at a team he never won with as P1–P10 with the places
+  above it bracketed "never reached"; a record as the all-time table on that
+  day (top three, him in red) and what became of it. Hover cards on the title
+  rounds, the firsts' track and the best result, opened by a tap too, sliding
+  with what they point at so they stay on screen. **Motion: hover only, no
+  entrance animations** (owner, 22/11). **Never say "since 1990"** (owner,
+  22/11): the all-time tables count every season on file and fill in as older
+  ones come in.
 
 **Charts** (`styles/chart.css`, `lib/curve.ts`, `lib/chart-tip.ts`): one look
 for every chart. White 2 px line drawn as a gentle monotone curve (never past a

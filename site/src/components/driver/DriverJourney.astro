@@ -1,0 +1,221 @@
+---
+// The driver profile's section 6, the milestones (approved 22/11/2026, mockup
+// in the owner's copy: _design/driver-f1/journey.html). A timeline by year, a
+// row per milestone, and each kind its own drawing (lib/driver-journey.ts says
+// what each one carries):
+//   streak  a line of stations, a flag and a dot per win, the first and last named
+//   title   the number big in red, the season in numbers, a bar a round (white:
+//           won; red and raised, with the flag: where it was decided), a hover
+//           card on every round
+//   firsts  what he did for the first time, his age, and the field as a track:
+//           a ring where he started, a dot where he finished (hover: the race)
+//   teamWin his spell at the team as one bar split at this win, both sides in words
+//   best    P1 to P10, the places above his best bracketed as never reached,
+//           how many times (hover: those races)
+//   record  the all-time table that day, him on top, and what became of it
+// Hover cards are drawn here (no title=), open on a tap too (tabindex + :focus),
+// and slide with what they point at so they never leave the screen. Motion:
+// hover only (owner, 22/11).
+import '../../styles/hero.css';
+import '../../styles/driver-journey.css';
+import TeamMark from '../TeamMark.astro';
+import { useI18n } from '../../i18n';
+import { href } from '../../lib/paths';
+import type { DriverProfile } from '../../lib/driver';
+import type { JourneyItem } from '../../lib/driver-journey';
+
+interface Props {
+    driver: DriverProfile;
+}
+
+const { driver: D } = Astro.props;
+const { t, fill, plural, ord, intl } = useI18n(Astro.currentLocale);
+const w = t.driverJourney;
+const J = D.journey;
+const num = new Intl.NumberFormat(intl, { maximumFractionDigits: 1 });
+const n = (v: number) => num.format(v);
+const dayFmt = new Intl.DateTimeFormat(intl, { day: 'numeric', month: 'short', timeZone: 'UTC' });
+const day = (iso: string) => dayFmt.format(new Date(`${iso}T12:00:00Z`)).replace('.', '');
+const flag = (iso: string | null, cls = 'ms__flag') => (iso ? `<img class="${cls}" src="${href(`img/flags/${iso.toLowerCase()}.svg`)}" alt="" loading="lazy">` : '');
+const times = (k: number) => (k === 1 ? w.once : k === 2 ? w.twice : fill(w.times, { n: k }));
+const kindOf = (i: JourneyItem) => ({ streak: 'streak', title: 'title ms--champ', firsts: 'firsts', teamWin: 'spell', best: 'best', record: 'rec', plain: 'other' })[i.kind];
+---
+
+<section class="djourney" aria-labelledby="djourney-title">
+    <div class="wrap">
+        <div class="sec-head">
+            <div><p class="sec-k">{w.kicker}</p><h2 class="sec-title" id="djourney-title">{w.title}</h2></div>
+            {(J.facts.length > 0 || J.firstTitle) && (
+                <dl class="sec-facts">
+                    {J.facts.map((f) => <div><dd>{fill(w.race, { n: f.raceNo })}</dd><dt>{w.facts[f.label as keyof typeof w.facts]}<br /><span>{f.gp} {f.year}</span></dt></div>)}
+                    {J.firstTitle && <div><dd class="red">{J.firstTitle.year}</dd><dt>{w.firstTitle}<br /><span>{fill(w.season, { n: J.firstTitle.season })}</span></dt></div>}
+                </dl>
+            )}
+        </div>
+
+        <div class="djourney__col">
+            <p class="col-h"><span>{plural(w.count, J.count, { from: J.from, to: J.to })}</span></p>
+            <div class="yr yr--head" aria-hidden="true"><div></div><div class="yr__list"><div class="ms ms--head"><i></i><i>{w.cols.race}</i><i></i><i>{w.cols.gp}</i><i>{w.cols.what}</i><i>{w.cols.result}</i><i>{w.cols.team}</i></div></div></div>
+            {J.years.map(({ year, items }) => (
+                <div class="yr">
+                    <div class="yr__y">{year}</div>
+                    <div class="yr__list">
+                        {items.map((i) => (
+                            <div class={`ms ms--${kindOf(i)}`}>
+                                <span class="ms__dot"></span>
+                                {i.kind === 'streak' ? (
+                                    <Fragment>
+                                        <span class="ms__d">{day(i.startDate)}<br />{day(i.date)}</span>
+                                        <span class="ms__n">{i.startNo}<br />{i.raceNo}</span>
+                                        <div class="stk">
+                                            <div class="stk__head"><b class="stk__n">{i.length}</b><span><b>{w.streak}</b><small>{fill(w.streakSub, { n: i.length, from: i.run[0]?.short ?? '', to: i.run.at(-1)?.short ?? '' })}</small></span></div>
+                                            <ol class="stk__line" style={`--n:${i.run.length}`}>
+                                                {i.run.map((r, k) => (
+                                                    <li>
+                                                        {r.iso ? <img src={href(`img/flags/${r.iso.toLowerCase()}.svg`)} alt="" loading="lazy" /> : <span class="stk__noflag"></span>}
+                                                        <i></i>
+                                                        <span>{k === 0 || k === i.run.length - 1 ? <Fragment><b class="stk__full">{r.short}</b><b class="stk__code">{r.code}</b></Fragment> : r.code}</span>
+                                                    </li>
+                                                ))}
+                                            </ol>
+                                        </div>
+                                    </Fragment>
+                                ) : i.kind === 'title' ? (
+                                    <Fragment>
+                                        <span class="ms__d">{day(i.date)}</span>
+                                        <span class="ms__n">{i.raceNo}</span>
+                                        <div class="ch">
+                                            <div class="ch__head"><b class="ch__n">{i.no}</b><span><b>{w.champion}</b><small>{fill(w.nthTitle, { ord: ord(i.no) })} · {i.toGo === 0 ? fill(w.lastRace, { gp: i.gp }) : plural(i.sprint ? w.inSprint : w.atRace, i.toGo, { gp: i.gp })}</small></span></div>
+                                            <dl class="ch__facts">
+                                                <div><dd>{n(i.pts)}</dd><dt>{w.points}</dt></div>
+                                                <div><dd>{i.wins}<small>/{i.rounds.length}</small></dd><dt>{w.wins}</dt></div>
+                                                <div><dd>+{n(i.rival.margin)}</dd><dt>{i.rival.team && <TeamMark logo={i.rival.team.logo} color={i.rival.team.color} size={16} />}{fill(w.over, { name: i.rival.last })}</dt></div>
+                                            </dl>
+                                            <ol class="ch__bar" style={`--n:${i.rounds.length}`}>
+                                                {i.rounds.map((r, k) => (
+                                                    <li tabindex="0" class:list={[{ at: k === i.at, after: k > i.at, won: r.won }]}>
+                                                        {k === i.at && <span class="ch__at" set:html={`${flag(r.iso, '')}${r.code}`} />}
+                                                        <span class="ch__tip" style={`--p:${(k / Math.max(1, i.rounds.length - 1)).toFixed(3)}`}>
+                                                            <span class="ch__tip-a">{fill(w.round, { n: r.round, date: day(r.date) })}</span>
+                                                            <span class="ch__tip-b" set:html={`${flag(r.iso, '')}${r.gp}`} />
+                                                            <span class:list={['ch__tip-c', { out: !!r.out, win: r.won }]}>
+                                                                {r.out === 'DNS' && !r.grid ? w.noStart : r.out ? `${r.out}${r.grid ? ` · ${fill(w.from, { n: r.grid })}` : ''}` : `P${r.pos}${r.grid ? ` ${fill(w.from, { n: r.grid })}` : ''}`}{r.sprint ? ` · ${fill(w.sprintPos, { n: r.sprint })}` : ''}<em>{fill(w.pts, { n: n(r.pts) })}</em>
+                                                            </span>
+                                                            <span class="ch__tip-d">{k === i.at ? <b>{i.sprint ? w.decidedSprint : w.decided}</b> : k > i.at ? fill(w.champ, { n: n(r.lead), name: r.other }) : r.lead > 0 ? fill(w.leads, { n: n(r.lead), name: r.other }) : r.lead < 0 ? fill(w.behind, { n: n(-r.lead), name: r.other }) : fill(w.level, { name: r.other })}</span>
+                                                        </span>
+                                                    </li>
+                                                ))}
+                                            </ol>
+                                            <p class="ch__key"><span><i class="k-won"></i>{w.keyWin}</span><span><i class="k-at"></i>{w.keyDecided}</span><span>{fill(w.roundsAll, { n: i.rounds.length })}</span></p>
+                                        </div>
+                                    </Fragment>
+                                ) : (
+                                    <Fragment>
+                                        <span class="ms__d">{day(i.date)}</span>
+                                        <span class="ms__n">{i.raceNo}</span>
+                                        {i.iso ? <img class="ms__flag" src={href(`img/flags/${i.iso.toLowerCase()}.svg`)} alt="" width="26" height="18" loading="lazy" /> : <span></span>}
+                                        <span class="ms__gp">{i.gp}</span>
+                                        {i.kind === 'firsts' ? (() => {
+                                            const x = (p: number) => ((i.field - p) / Math.max(1, i.field - 1)) * 100; // P1 at the right end: the front
+                                            // No grid on file (some old seasons): no start ring, no line, nothing said about places
+                                            const known = i.grid != null;
+                                            const grid = i.grid ?? i.pos;
+                                            const moved = i.out || !known ? null : grid - i.pos;
+                                            const sub = [fill(w.race, { n: i.raceNo }), ...(i.age ? [fill(w.aged, { y: i.age.years, d: i.age.days })] : [])].join(' · ');
+                                            return (
+                                                <div class="fr">
+                                                    <div class="fr__what">
+                                                        <span class="fr__labels">{i.labels.map((l) => <b>{w.firsts[l as keyof typeof w.firsts] ?? l}</b>)}</span>
+                                                        <small>{sub}</small>
+                                                        {i.pole && <small>{fill(w.pole, { s: (i.pole.ms / 1000).toFixed(3), name: i.pole.over })}</small>}
+                                                    </div>
+                                                    <div class="fr__track" tabindex="0" style={`--g:${x(grid).toFixed(2)}%;--f:${x(i.out ? grid : i.pos).toFixed(2)}%`}>
+                                                        <span class="fr__rail"></span>
+                                                        {moved !== null && <span class:list={['fr__run', { 'fr__run--back': moved < 0 }]}></span>}
+                                                        {known && moved !== 0 && <span class="fr__start"><i></i><em>P{grid}</em></span>}
+                                                        {i.out
+                                                            ? <span class="fr__out"><em>{i.out}</em></span>
+                                                            : <span class:list={['fr__end', { 'fr__end--win': i.pos === 1, 'fr__end--same': moved === 0 }]}><i></i><em>P{i.pos}</em></span>}
+                                                        <span class="fr__tip">
+                                                            <span class="ch__tip-a">{fill(w.cars, { gp: i.gp, year, n: i.field })}</span>
+                                                            <span class="ch__tip-c">{known && fill(w.started, { n: grid })} <em>{i.out ? <b class="out">{i.out}</b> : fill(w.finished, { n: i.pos })}</em></span>
+                                                            <span class="ch__tip-d">{i.out ? (known ? `${fill(w.outAfter, { n: grid })} · ` : '') : moved === null ? '' : `${moved > 0 ? plural(w.gained, moved) : moved < 0 ? plural(w.lost, -moved) : w.same} · `}{fill(w.pts, { n: n(i.pts) })}</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })() : i.kind === 'teamWin' ? (() => {
+                                            const head = i.first ? w.firstWin : i.latest ? w.latestWin : w.lastWin;
+                                            const sub = `${fill(w.withTeam, { team: i.team.name })} · ${i.first ? (i.before === 0 ? w.onDebut : fill(w.atNth, { ord: ord(i.before + 1), n: i.before + 1 })) : i.wins === 1 ? w.onlyWin : fill(w.winOf, { n: i.winNo, m: i.wins })}`;
+                                            const b = (k: number) => `<b>${k}</b>`;
+                                            const left = i.first
+                                                ? (i.before ? plural(w.before, i.before, { n: b(i.before) }) : '')
+                                                : (i.winNo > 1 ? plural(w.winsBefore, i.winNo - 1, { n: b(i.winNo - 1) }) : '');
+                                            const right = i.first
+                                                ? (i.after ? plural(w.moreWins, i.wins - 1, { n: b(i.wins - 1), m: plural(w.inRaces, i.after, { n: b(i.after) }) }) : '')
+                                                : (i.after ? plural(i.still ? w.noMoreYet : w.noMore, i.after, { n: b(i.after) }) : w.lastThere);
+                                            return (
+                                                <div class="sp">
+                                                    <div class="sp__what"><b>{head}</b><small>{sub}</small></div>
+                                                    <div class:list={['sp__bar', { 'sp__bar--first': i.first }]} style={`--x:${(i.x * 100).toFixed(2)}%`}>
+                                                        <span class="sp__a"></span><span class="sp__b"></span>
+                                                        <span class="sp__win"></span>
+                                                        <span class="sp__l" set:html={left} /><span class="sp__r" set:html={right} />
+                                                    </div>
+                                                </div>
+                                            );
+                                        })() : i.kind === 'best' ? (() => {
+                                            const top = Math.max(10, i.pos);
+                                            return (
+                                                <div class="sp">
+                                                    <div class="sp__what"><b>{w.best}</b><small>{fill(w.withTeam, { team: i.team.name })} · {fill(i.still ? w.noWinYet : w.neverWon, { n: i.races })}</small></div>
+                                                    <div class="bs" style={`--n:${top};--b:${i.pos}`}>
+                                                        {i.pos > 2 && <span class="bs__never">{i.pos > 3 ? <span>{w.neverReached}</span> : <span>{w.never}</span>}</span>}
+                                                        <ol class="bs__pos">
+                                                            {Array.from({ length: top }, (_, k) => k + 1).map((p) => p === i.pos ? (
+                                                                <li class="me" tabindex="0">P{p}<small>{times(i.times.length)}</small>
+                                                                    <span class="bs__tip" style={`--p:${((i.pos - 1) / (top - 1)).toFixed(3)}`}>
+                                                                        <span class="ch__tip-a">{fill(w.bestWith, { pos: i.pos, team: i.team.name, times: times(i.times.length) })}</span>
+                                                                        {i.times.map((r) => <span class="bs__tip-r"><Fragment set:html={flag(r.iso, '')} />{r.gp} <em>{r.year}{r.grid ? ` · ${fill(w.from, { n: r.grid })}` : ''}</em></span>)}
+                                                                    </span>
+                                                                </li>
+                                                            ) : <li class:list={[{ up: p < i.pos }]}>P{p}</li>)}
+                                                        </ol>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })() : i.kind === 'record' ? (
+                                            <div class="sp">
+                                                <div class="sp__what">
+                                                    <b>{i.broke ? w.record : w.equalled}</b>
+                                                    <small>{fill(w.most, { stat: w.stats[i.stat as keyof typeof w.stats] ?? i.stat })}{i.prev && ` · ${i.broke ? fill(w.passing, { name: i.prev.last, n: n(i.prev.value) }) : fill(w.levelWith, { name: i.prev.last })}`}</small>
+                                                    {i.then && <small class="rc__then">{i.then.current ? fill(w.stillHis, { n: n(i.then.peak) }) : fill(w.heldUntil, { gp: i.then.gp, year: i.then.year, name: i.then.by, n: n(i.then.peak) })}</small>}
+                                                </div>
+                                                <ol class="rc">
+                                                    {i.table.map((r) => (
+                                                        <li class:list={[{ me: r.id === D.id }]}>
+                                                            <span class="rc__p">{r.rank}</span>
+                                                            {r.team ? <TeamMark logo={r.team.logo} color={r.team.color} size={20} /> : <span></span>}
+                                                            <span class="rc__name">{r.last}</span>
+                                                            <span class="rc__v">{n(r.value)}</span>
+                                                        </li>
+                                                    ))}
+                                                </ol>
+                                            </div>
+                                        ) : i.kind === 'plain' ? (
+                                            <Fragment>
+                                                <span class="ms__what">{i.label}</span>
+                                                <span class="ms__res">P{i.pos}{i.grid && <small>{fill(w.from, { n: i.grid })}</small>}</span>
+                                            </Fragment>
+                                        ) : null}
+                                    </Fragment>
+                                )}
+                                <span class="ms__team"><TeamMark logo={i.team.logo} color={i.team.color} size={22} />{i.team.name}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
+        </div>
+    </div>
+</section>

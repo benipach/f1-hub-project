@@ -11,6 +11,7 @@ import { loadCareers, loadCircuits, loadCities, loadCountries, loadDrivers, load
 import type { RawCareers } from '@f1hub/shared/data/raw';
 import type { GrandPrix, SessionOf } from '@f1hub/shared/data/season';
 import { driverCutout, driverPhoto, namesIn, teamLogo } from './home';
+import { buildJourney, type Journey } from './driver-journey';
 
 export type DriverTeam = {
     readonly id: string;
@@ -142,10 +143,6 @@ export type DriverProfile = {
     readonly numbers: readonly number[];
     /** The seasons he carried each number, in the same order. */
     readonly numberYears: readonly { readonly number: number; readonly years: readonly number[] }[];
-    /** The archive's first season (1990 today). */
-    readonly archiveFrom: number;
-    /** The career starts in the archive's first season, so it may have started before. */
-    readonly fromArchive: boolean;
     readonly debut: string;
     readonly active: boolean;
     /** The latest season's Grands Prix held in the driver's country. */
@@ -169,6 +166,8 @@ export type DriverProfile = {
     readonly ranks: Readonly<Record<RankStat, number>>;
     readonly eras: readonly DriverEra[];
     readonly milestones: readonly DriverMilestone[];
+    /** Section 6, the milestones, each kind with what its drawing needs (lib/driver-journey.ts). */
+    readonly journey: Journey;
     readonly seasons: readonly DriverSeason[];
     /** The all-time top five of each board stat. */
     readonly boards: Readonly<Record<BoardStat, readonly BoardRow[]>>;
@@ -180,7 +179,7 @@ export type DriverProfile = {
 
 // ---- A season's rounds, once per build -------------------------------------
 
-type Row = {
+export type Row = {
     readonly driver: string;
     readonly team: string;
     readonly number: number;
@@ -194,9 +193,15 @@ type Row = {
     readonly fl: boolean;
 };
 
-type Round = {
+export type Round = {
     readonly round: number;
     readonly id: string;
+    /** Three letters for tight rows ("MIA", "GBR"): the GP's own, else its country's. */
+    readonly code: string;
+    /** The sprint's day, on a sprint weekend. */
+    readonly sprintDate: string | null;
+    /** On pole, who was second and by how much (ms), from qualifying times. */
+    readonly poleGap: { readonly second: string; readonly ms: number } | null;
     /** The English name without "Grand Prix": careers.json's milestones use it. */
     readonly short: string;
     readonly name: string;
@@ -209,7 +214,7 @@ type Round = {
     readonly field: number;
 };
 
-type Season = {
+export type Season = {
     readonly rounds: readonly Round[];
     readonly standing: ReadonlyMap<string, number>;
     readonly pts: ReadonlyMap<string, number>;
@@ -260,13 +265,17 @@ function buildSeason(dataDir: URL, year: number, ctx: Context): Season {
                 };
             });
             const pole = quali.find((q) => q.pos === 1)?.driver ?? rows.find((x) => x.grid === 1)?.driver ?? null;
+            const [q1, q2] = [...quali].sort((a, b) => a.pos - b.pos);
+            const poleGap = q1?.best && q2?.best && q1.driver === pole ? { second: q2.driver, ms: q2.best - q1.best } : null;
+            const sprintTime = session(gp, 'sprintRace')?.time;
+            const sprintDate = sprintTime?.kind === 'datetime' ? sprintTime.start.slice(0, 10) : sprintTime?.kind === 'date' ? sprintTime.date : null;
             // Where it's held: GP → circuit → city → country, as the old page does
             // (the Bahrain GP in Malaysia is Malaysian)
             const city = gp.circuitId ? ctx.circuits[gp.circuitId]?.location.city : undefined;
             const country = (city && ctx.cities[city]?.country) ?? ctx.grandsPrix[gp.id]?.country;
             const name = gp.name.replace(/^Formula 1 /, '');
             return {
-                round: gp.round ?? 0, id: gp.id, name, short: name.replace(/ Grand Prix$/, ''), date: dayOf(gp),
+                round: gp.round ?? 0, id: gp.id, code: ctx.grandsPrix[gp.id]?.code ?? (country && ctx.countries[country]?.code) ?? gp.id.slice(0, 3).toUpperCase(), sprintDate: sprint.length ? sprintDate : null, poleGap, name, short: name.replace(/ Grand Prix$/, ''), date: dayOf(gp),
                 iso: (country && ctx.countries[country]?.isoCode) || null,
                 raced: race.length > 0, sprint: gp.sprint, rows, pole, field,
             };
@@ -293,7 +302,7 @@ function buildSeason(dataDir: URL, year: number, ctx: Context): Season {
 
 // ---- Everything shared by the profiles, read once per build ----------------
 
-type Context = {
+export type Context = {
     readonly repoRoot: URL;
     readonly latest: number;
     readonly teams: ReturnType<typeof loadTeams>;
@@ -491,8 +500,6 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
         number: c.number,
         numbers,
         numberYears,
-        archiveFrom: Math.min(...ctx.seasons.keys()),
-        fromArchive: c.seasons[0] === Math.min(...ctx.seasons.keys()),
         debut: c.debut,
         active: c.seasons.at(-1) === ctx.latest,
         homeRaces,
@@ -508,6 +515,7 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
         ranks: Object.fromEntries([...BOARD_STATS, 'titles'].map((k) => [k, rankOf(k as RankStat)])) as Record<RankStat, number>,
         eras: c.eras.map((e) => ({ ...teamOf(e.teamId), name: ctx.teams[e.teamId]?.name ?? e.team, from: e.from, to: e.to, races: e.races, wins: e.wins, podiums: e.podiums, points: e.points, best: e.best, titles: e.titles })),
         milestones,
+        journey: buildJourney(ctx, id, { gpOf, shortOf, teamOf, lastOf: (x) => nameOf(ctx.drivers, x).last }),
         seasons,
         boards: Object.fromEntries(BOARD_STATS.map((k) => [k, ctx.boards[k].slice(0, 5)])) as Record<BoardStat, BoardRow[]>,
         mine: Object.fromEntries([...BOARD_STATS, 'titles'].map((k) => [k, ctx.boards[k as RankStat].find((x) => x.id === id)!])) as Record<RankStat, BoardRow>,

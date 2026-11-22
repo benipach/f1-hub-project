@@ -1,0 +1,246 @@
+/* The driver profile's milestones (components/driver/DriverJourney.astro),
+   from the approved mockup (_design/driver-f1/journey.html in the owner's copy).
+   Everything is scoped to .djourney; the header (.sec-head) is f1.css's and
+   the column header (.col-h) hero.css's. Motion: hover only (owner, 22/11). */
+
+.djourney { padding: 72px 0 80px; }
+.djourney__col { margin-top: 40px; border-top: 3px solid #fff; padding-top: 12px; }
+.djourney .col-h { margin-bottom: 6px; }
+/* the header: the number row under the title (how many races each first took, the first title) */
+.djourney .sec-head { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+.djourney .sec-facts { justify-self: start; }
+.djourney .sec-facts dd { font-size: 28px; white-space: nowrap; }
+.djourney .sec-facts dt span { text-transform: none; }
+
+/* the timeline: the year on the left, a line with a dot per milestone, a table row each */
+.djourney .ms { --cols: 56px 44px 26px 200px minmax(0, 1fr) 110px 220px; }
+.djourney .yr--head { border-bottom: 0; }
+.djourney .yr--head .yr__list::before { display: none; }
+.djourney .ms--head { min-height: 0; padding-bottom: 4px; font: 11px 'F1'; text-transform: uppercase; color: var(--dim); }
+.djourney .ms--head i { font-style: normal; }
+.djourney .ms--head i:nth-child(2) { text-align: right; }
+.djourney .yr { display: grid; grid-template-columns: 120px minmax(0, 1fr); border-bottom: 1px solid var(--line); }
+.djourney .yr__y { padding: 14px 0; font: 32px/1 'F1 Black'; color: #fff; }
+.djourney .yr__list { position: relative; padding-left: 32px; }
+.djourney .yr__list::before { content: ''; position: absolute; left: 7px; top: 0; bottom: 0; width: 2px; background: var(--rule); }
+.djourney .ms { position: relative; display: grid; grid-template-columns: var(--cols); align-items: center; gap: 0 14px; min-height: 52px; padding: 6px 4px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.djourney .ms:last-child { border-bottom: 0; }
+.djourney .ms__dot { position: absolute; left: -30px; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: var(--base-800); border: 2px solid var(--dim); }
+.djourney .ms--first .ms__dot { background: #fff; border-color: #fff; }
+.djourney .ms--title .ms__dot { width: 16px; height: 16px; margin-top: -8px; left: -32px; background: var(--red); border-color: var(--red); }
+.djourney .ms--record .ms__dot { border-color: #fff; }
+.djourney .ms__d { font: 12px 'F1'; text-transform: uppercase; color: var(--dim); white-space: nowrap; }
+.djourney .ms__n { font: 700 13px 'F1'; color: var(--dim); text-align: right; }
+.djourney .ms__flag { width: 26px; height: auto; border-radius: 2px; }
+.djourney .ms__gp { font: 700 15px 'F1'; text-transform: uppercase; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.djourney .ms__what { font: 15px 'F1'; color: var(--text); }
+.djourney .ms__what small { margin-left: 8px; font-size: 12px; color: var(--dim); }
+.djourney .ms--first .ms__what { font-weight: 700; color: #fff; }
+.djourney .ms--title { background: rgba(225, 6, 0, .12); }
+.djourney .ms--title .ms__what { font: 18px 'F1 Black'; text-transform: uppercase; color: var(--red); }
+.djourney .ms--title .ms__what small { font: 12px 'F1'; text-transform: none; }
+.djourney .ms--record .ms__what { font-weight: 700; color: #fff; }
+.djourney .ms__res { font: 700 15px 'F1'; color: #fff; white-space: nowrap; }
+.djourney .ms__res small { margin-left: 6px; font: 12px 'F1'; color: var(--dim); }
+/* the streak: its own drawing across the Grand Prix, milestone and result columns */
+.djourney .ms--streak { align-items: start; padding: 14px 4px 16px; }
+.djourney .ms--streak .ms__dot { top: 26px; margin-top: 0; background: #fff; border-color: #fff; }
+.djourney .ms--streak .ms__d, .djourney .ms--streak .ms__n { padding-top: 4px; line-height: 1.5; }
+.djourney .ms--streak .ms__team { padding-top: 6px; }
+.djourney .stk { grid-column: 3 / 7; }
+.djourney .stk__head { display: flex; align-items: center; gap: 14px; }
+.djourney .stk__n { font: 44px/1 'F1 Black'; color: #fff; }
+.djourney .stk__head > span { display: grid; gap: 3px; }
+.djourney .stk__head > span b { font: 18px/1 'F1 Black'; text-transform: uppercase; color: #fff; }
+.djourney .stk__head small { font: 12px 'F1'; color: var(--dim); }
+.djourney .stk__line { --fh: 16px; position: relative; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); margin: 16px 0 0; padding: 0; list-style: none; }
+.djourney .stk__line::before { content: ''; position: absolute; left: calc(50% / var(--n)); right: calc(50% / var(--n)); top: calc(var(--fh) + 6px + 4px); height: 2px; background: #fff; } /* flag + gap + half the dot - half the line: through the dots' centre */
+.djourney .stk__line li { position: relative; display: grid; justify-items: center; gap: 6px; }
+.djourney .stk__line img, .djourney .stk__noflag { width: 24px; height: var(--fh); border-radius: 2px; }
+.djourney .stk__line i { position: relative; width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 3px var(--base-800); }
+.djourney .stk__line span { font: 700 11px 'F1'; text-transform: uppercase; color: var(--dim); white-space: nowrap; }
+.djourney .stk__line li:first-child span, .djourney .stk__line li:last-child span { color: #fff; }
+.djourney .stk__line b { font-weight: 700; }
+.djourney .stk__code { display: none; }
+/* a record: the all-time table on that day, the site's table look (pos · NAME ·
+   value), him on top in a red tint; under the words, what became of it */
+.djourney .ms--rec { padding: 12px 4px; }
+.djourney .rc { margin: 0; padding: 0; list-style: none; }
+.djourney .rc li { display: grid; grid-template-columns: 22px 20px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 5px 10px; border-bottom: 1px solid var(--line); font: 700 13px 'F1'; color: var(--dim); }
+.djourney .rc li:last-child { border-bottom: 0; }
+.djourney .rc li.me { background: rgba(225, 6, 0, .14); color: #fff; }
+.djourney .rc li img { width: 20px; height: 20px; object-fit: contain; }
+.djourney .rc__name { text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.djourney .rc__v { font-variant-numeric: tabular-nums; }
+.djourney .rc__then { margin-top: 6px !important; color: var(--text) !important; }
+/* best result at a team he never won with: P1 to P10 in a row; the places
+   above his best under a bracket ("never reached"), his best in white with a
+   red line under it and how many times; hover lists those races */
+.djourney .ms--best { padding: 10px 4px; }
+.djourney .bs { position: relative; padding-top: 16px; }
+.djourney .bs__never { position: absolute; top: 6px; left: 4px; width: calc((var(--b) - 1) / var(--n) * 100% - 8px); height: 8px; border: 1px solid var(--rule); border-bottom: 0; border-radius: 3px 3px 0 0; }
+.djourney .bs__never span { position: absolute; left: 50%; top: -6px; transform: translateX(-50%); padding: 0 6px; background: var(--base-800); font: 10px/1 'F1'; text-transform: uppercase; color: var(--dim); white-space: nowrap; }
+.djourney .bs__pos { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); margin: 0; padding: 0; list-style: none; }
+.djourney .bs__pos li { position: relative; padding: 6px 0; font: 700 13px 'F1'; color: var(--dim); text-align: center; border-top: 2px solid var(--base-600); outline: none; }
+.djourney .bs__pos li.up { color: rgba(255, 255, 255, .22); }
+.djourney .bs__pos li.me { color: #fff; font-size: 16px; border-top-color: var(--red); cursor: default; }
+.djourney .bs__pos li small { display: block; margin-top: 2px; font: 10px 'F1'; text-transform: uppercase; color: var(--dim); white-space: nowrap; }
+.djourney .bs__tip {
+    position: absolute; bottom: calc(100% + 8px); left: 50%; z-index: 3; display: grid; gap: 5px; min-width: 220px; padding: 10px 12px; pointer-events: none; text-align: left;
+    border-radius: 8px; background: var(--base-900); border: 1px solid var(--line); box-shadow: 0 8px 24px rgba(0, 0, 0, .5); white-space: nowrap;
+    opacity: 0; visibility: hidden; transform: translate(calc(var(--p) * -100%), 4px); transition: opacity .16s ease, transform .16s ease, visibility .16s; /* slides with the place: never off the edge */
+}
+.djourney .bs__pos li.me:hover .bs__tip, .djourney .bs__pos li.me:focus .bs__tip { opacity: 1; visibility: visible; transform: translate(calc(var(--p) * -100%), 0); }
+.djourney .bs__tip-r { display: flex; align-items: center; gap: 8px; font: 700 13px 'F1'; text-transform: uppercase; color: #fff; }
+.djourney .bs__tip-r img { width: 20px; height: auto; border-radius: 2px; }
+.djourney .bs__tip-r em { font-style: normal; font-weight: 400; text-transform: none; color: var(--dim); }
+@media (prefers-reduced-motion: reduce) { .djourney .bs__tip { transition: none; } }
+/* a team's first or last win: his spell there as one bar, split at this win (a
+   red mark). First win: the stretch before it grey (the wait), after it white.
+   Last win: before it white, after it grey (no more wins there). Words under
+   each side say what it holds. */
+.djourney .ms--spell { padding: 10px 4px; }
+.djourney .sp { grid-column: 5 / 7; display: grid; grid-template-columns: minmax(0, 1fr) 360px; align-items: center; gap: 0 24px; }
+.djourney .sp__what b { display: block; font: 17px/1.15 'F1 Black'; text-transform: uppercase; color: #fff; }
+.djourney .sp__what small { display: block; margin-top: 3px; font: 12px 'F1'; color: var(--dim); }
+.djourney .sp__bar { position: relative; height: 40px; }
+.djourney .sp__a, .djourney .sp__b { position: absolute; top: 12px; height: 4px; border-radius: 2px; }
+.djourney .sp__a { left: 0; width: calc(var(--x) - 3px); background: #fff; }
+.djourney .sp__b { left: calc(var(--x) + 3px); right: 0; background: var(--base-600); }
+.djourney .sp__bar--first .sp__a { background: var(--base-600); }
+.djourney .sp__bar--first .sp__b { background: #fff; }
+.djourney .sp__win { position: absolute; left: var(--x); top: 6px; width: 4px; height: 16px; margin-left: -2px; border-radius: 2px; background: var(--red); }
+.djourney .sp__l, .djourney .sp__r { position: absolute; top: 24px; font: 11px 'F1'; text-transform: uppercase; color: var(--dim); white-space: nowrap; }
+.djourney .sp__l b, .djourney .sp__r b { font-weight: 700; color: #fff; }
+.djourney .sp__l { left: 0; }
+.djourney .sp__r { right: 0; }
+.djourney .ch__tip-c.win { color: #fff; }
+.djourney .ch__tip-c .out { color: var(--red); }
+.djourney .ch__tip-c em { font-style: normal; font-weight: 400; color: var(--dim); }
+/* the firsts: what he did, how old he was, and a track of the field (P1 at the
+   right, the front): a ring where he started, a dot where he finished (red for a
+   win), a line between them; out of the race, a red mark at his grid slot */
+.djourney .ms--firsts { padding: 10px 4px; }
+.djourney .fr { grid-column: 5 / 7; display: grid; grid-template-columns: minmax(0, 1fr) 300px; align-items: center; gap: 0 24px; }
+.djourney .fr__labels { display: flex; flex-wrap: wrap; gap: 0 12px; }
+.djourney .fr__labels b { font: 17px/1.15 'F1 Black'; text-transform: uppercase; color: #fff; }
+.djourney .fr__labels b + b { color: var(--dim); }
+.djourney .fr__what small { display: block; margin-top: 3px; font: 12px 'F1'; color: var(--dim); }
+.djourney .fr__track { position: relative; height: 44px; margin-right: 6px; outline: none; }
+.djourney .fr__track::after { content: ''; position: absolute; right: -6px; top: 13px; width: 2px; height: 14px; background: var(--rule); } /* the front, past P1 */
+.djourney .fr__rail { position: absolute; left: 0; right: 0; top: 19px; height: 2px; background: repeating-linear-gradient(90deg, var(--rule) 0 2px, transparent 2px 6px); }
+.djourney .fr__run { position: absolute; top: 19px; height: 2px; left: min(var(--g), var(--f)); width: calc(max(var(--g), var(--f)) - min(var(--g), var(--f))); background: #fff; }
+.djourney .fr__run--back { background: var(--dim); }
+.djourney .fr__start, .djourney .fr__end, .djourney .fr__out { position: absolute; top: 20px; display: grid; justify-items: center; transform: translate(-50%, -50%); }
+.djourney .fr__start { left: var(--g); }
+.djourney .fr__end, .djourney .fr__out { left: var(--f); }
+.djourney .fr__start i, .djourney .fr__end i { width: 12px; height: 12px; border-radius: 50%; }
+.djourney .fr__start i { background: var(--base-800); border: 2px solid #fff; }
+.djourney .fr__end i { background: #fff; box-shadow: 0 0 0 3px var(--base-800); }
+.djourney .fr__end--win i { background: var(--red); }
+.djourney .fr__end--same i { box-shadow: 0 0 0 3px var(--base-800), 0 0 0 5px #fff; } /* started and finished in the same place: one dot, ringed */
+.djourney .fr__start em, .djourney .fr__end em, .djourney .fr__out em { position: absolute; font: 700 11px 'F1'; font-style: normal; white-space: nowrap; }
+.djourney .fr__start em { top: 18px; color: var(--dim); }
+.djourney .fr__end em { bottom: 18px; color: #fff; }
+.djourney .ms--firsts .fr__out { width: 14px; height: 14px; }
+.djourney .fr__out::before, .djourney .fr__out::after { content: ''; position: absolute; left: 6px; top: -1px; width: 2px; height: 16px; background: var(--red); transform: rotate(45deg); }
+.djourney .fr__out::after { transform: rotate(-45deg); }
+.djourney .fr__out em { bottom: 20px; color: var(--red); }
+.djourney .fr__track:hover .fr__start i, .djourney .fr__track:focus-visible .fr__start i { box-shadow: 0 0 0 3px var(--base-800), 0 0 0 4px var(--dim); }
+.djourney .fr__tip {
+    position: absolute; bottom: calc(100% + 6px); right: 0; z-index: 3; display: grid; gap: 3px; min-width: 210px; padding: 10px 12px; pointer-events: none;
+    border-radius: 8px; background: var(--base-900); border: 1px solid var(--line); box-shadow: 0 8px 24px rgba(0, 0, 0, .5); font-family: 'F1'; white-space: nowrap;
+    opacity: 0; visibility: hidden; transform: translateY(4px); transition: opacity .16s ease, transform .16s ease, visibility .16s;
+}
+.djourney .fr__track:hover .fr__tip, .djourney .fr__track:focus .fr__tip { opacity: 1; visibility: visible; transform: none; }
+.djourney .fr__tip .ch__tip-c em { font-weight: 700; color: #fff; }
+.djourney .fr__tip .out { font-weight: 700; color: var(--red); }
+@media (prefers-reduced-motion: reduce) { .djourney .fr__tip { transition: none; } }
+/* a title */
+.djourney .ms--champ { align-items: start; padding: 16px 4px 18px; }
+.djourney .ms--champ .ms__dot { top: 30px; margin-top: 0; }
+.djourney .ms--champ .ms__d, .djourney .ms--champ .ms__n, .djourney .ms--champ .ms__team { padding-top: 8px; }
+.djourney .ch { grid-column: 3 / 7; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0 24px; }
+.djourney .ch__head { display: flex; align-items: center; gap: 14px; }
+.djourney .ch__n { font: 56px/.85 'F1 Black'; color: var(--red); }
+.djourney .ch__head > span { display: grid; gap: 4px; }
+.djourney .ch__head > span b { font: 22px/1 'F1 Black'; text-transform: uppercase; color: var(--red); }
+.djourney .ch__head small { font: 12px 'F1'; color: var(--text); }
+.djourney .ch__facts { display: flex; margin: 0; }
+.djourney .ch__facts div { padding-left: 16px; margin-left: 16px; border-left: 1px solid var(--rule); }
+.djourney .ch__facts div:first-child { margin-left: 0; padding-left: 0; border-left: 0; }
+.djourney .ch__facts dd { margin: 0; font: 700 22px/1.1 'F1'; color: #fff; white-space: nowrap; }
+.djourney .ch__facts dd small { font-size: 13px; color: var(--dim); }
+.djourney .ch__facts dt { display: flex; align-items: center; gap: 5px; font: 11px 'F1'; text-transform: uppercase; color: var(--dim); white-space: nowrap; }
+.djourney .ch__facts dt img { width: 16px; height: 16px; object-fit: contain; }
+.djourney .ch__bar { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); align-items: end; gap: 3px; height: 46px; margin: 12px 0 0; padding: 0; list-style: none; }
+.djourney .ch__bar li { position: relative; height: 8px; border-radius: 2px; background: var(--base-600); }
+.djourney .ch__bar li.won { background: #fff; }
+.djourney .ch__bar li.after { opacity: .3; }
+.djourney .ch__bar li.at { height: 18px; background: var(--red); opacity: 1; }
+.djourney .ch__at { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 5px; font: 700 11px 'F1'; text-transform: uppercase; color: #fff; white-space: nowrap; }
+.djourney .ch__at img { width: 20px; height: auto; border-radius: 2px; }
+/* the bars answer a hover (or a tap, on the phone): the whole column is the target */
+.djourney .ch__bar li { outline: none; cursor: default; }
+.djourney .ch__bar li::after { content: ''; position: absolute; left: -2px; right: -2px; bottom: -6px; height: 52px; }
+.djourney .ch__bar li:hover, .djourney .ch__bar li:focus-visible { box-shadow: 0 0 0 2px var(--base-800), 0 0 0 3px #fff; opacity: 1; }
+.djourney .ch__tip {
+    position: absolute; bottom: calc(100% + 12px); left: 50%; z-index: 3; display: grid; gap: 3px; opacity: 0; visibility: hidden; min-width: 190px; padding: 10px 12px; pointer-events: none; transform: translateX(calc(var(--p) * -100%)); /* slides with the bar: never off the edge */
+    border-radius: 8px; background: var(--base-900); border: 1px solid var(--line); box-shadow: 0 8px 24px rgba(0, 0, 0, .5); font-family: 'F1'; white-space: nowrap;
+}
+.djourney .ch__bar li:hover .ch__tip, .djourney .ch__bar li:focus .ch__tip { opacity: 1; visibility: visible; transform: translate(calc(var(--p) * -100%), -4px); }
+.djourney .ch__bar li:hover .ch__at, .djourney .ch__bar li:focus .ch__at { visibility: hidden; }
+.djourney .ch__tip-a { font-size: 11px; text-transform: uppercase; color: var(--dim); }
+.djourney .ch__tip-b { display: flex; align-items: center; gap: 8px; font: 700 18px 'F1'; text-transform: uppercase; color: #fff; }
+.djourney .ch__tip-b img { width: 22px; height: auto; border-radius: 2px; }
+.djourney .ch__tip-c { display: flex; gap: 10px; font: 700 13px 'F1'; color: #fff; }
+.djourney .ch__tip-c em { margin-left: auto; font-style: normal; font-weight: 400; color: var(--dim); }
+.djourney .ch__tip-c.out { color: var(--red); }
+.djourney .ch__tip-d { font-size: 12px; color: var(--text); }
+.djourney .ch__tip-d b { font-weight: 700; color: var(--red); text-transform: uppercase; }
+.djourney .ch__key { grid-column: 1 / -1; display: flex; gap: 16px; margin-top: 8px; font: 11px 'F1'; text-transform: uppercase; color: var(--dim); }
+.djourney .ch__key span { display: flex; align-items: center; gap: 6px; }
+.djourney .ch__key span:last-child { margin-left: auto; }
+.djourney .ch__key i { width: 12px; height: 8px; border-radius: 2px; }
+.djourney .k-won { background: #fff; }
+.djourney .k-at { background: var(--red); }
+.djourney .ms__team { display: flex; align-items: center; gap: 8px; font: 700 13px 'F1'; text-transform: uppercase; color: var(--text); white-space: nowrap; overflow: hidden; }
+.djourney .ms__team img { width: 22px; height: 22px; object-fit: contain; }
+@media (max-width: 1100px) {
+    .djourney .yr--head { display: none; }
+    .djourney .ms { --cols: 56px 36px 22px minmax(0, 1fr) 60px; }
+    .djourney .ms__what { grid-column: 4 / -1; grid-row: 2; }
+    .djourney .stk, .djourney .ch { grid-column: 3 / -1; }
+    .djourney .sp { grid-column: 4 / -1; grid-row: 2; grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 4px; }
+    .djourney .fr { grid-column: 4 / -1; grid-row: 2; grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 4px; }
+    .djourney .fr__track { max-width: 320px; }
+
+    .djourney .ch { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .djourney .ms__team { display: none; }
+}
+@media (max-width: 760px) {
+    .djourney .sec-facts { display: grid; grid-template-columns: 1fr 1fr; row-gap: 12px; }
+    .djourney .sec-facts div:nth-child(odd) { padding-left: 0; border-left: 0; }
+    .djourney .yr { grid-template-columns: minmax(0, 1fr); }
+    .djourney .yr__y { padding: 14px 0 6px; font-size: 24px; }
+    .djourney .ms { --cols: 50px 26px 22px minmax(0, 1fr) 40px; gap: 4px 8px; }
+    .djourney .ms__res small { display: none; }
+    .djourney .stk__n { font-size: 32px; }
+    .djourney .stk__head > span b { font-size: 15px; }
+    .djourney .stk__line { --fh: 12px; }
+    .djourney .stk__line img, .djourney .stk__noflag { width: 18px; }
+    .djourney .stk__line span { font-size: 9px; }
+    .djourney .ch__tip, .djourney .fr__tip { max-width: 290px; white-space: normal; } /* never wider than the drawing it slides along */
+    .djourney .ms--firsts .fr, .djourney .ms--spell .sp, .djourney .ms--best .sp, .djourney .ms--rec .sp { grid-column: 1 / -1; margin-top: 8px; }
+    .djourney .fr__track { max-width: none; }
+    .djourney .ms--streak .stk, .djourney .ms--champ .ch { grid-column: 1 / -1; grid-row: 2; margin-top: 10px; }
+    .djourney .ch__n { font-size: 44px; }
+    .djourney .ch__head > span b { font-size: 17px; }
+    .djourney .ch__facts dd { font-size: 18px; }
+    .djourney .ch__bar { gap: 2px; }
+    .djourney .stk__full { display: none; }
+    .djourney .stk__code { display: inline; }
+}
+/* motion: hover only (owner, 22/11: no entrance animations for now). The card fades and rises in. */
+.djourney .ch__tip { transition: opacity .16s ease, transform .16s ease, visibility .16s; }
+@media (prefers-reduced-motion: reduce) { .djourney .ch__tip { transition: none; } }

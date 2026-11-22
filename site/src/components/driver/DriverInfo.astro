@@ -47,7 +47,7 @@ const debut = D.milestones.find((m) => m.label === 'Debut');
 const head = [
     { v: span(S[0]!.year, S.at(-1)!.year), l: plural(w.seasons, S.length) },
     { v: String(teamCount), l: plural(w.teamsCount, teamCount) },
-    D.born && !D.fromArchive && { v: String(ageAt(D.born, D.debut)), l: w.ageAtDebut },
+    D.born && { v: String(ageAt(D.born, D.debut)), l: w.ageAtDebut },
 ].filter((x): x is { v: string; l: string } => Boolean(x));
 
 // The person, a row each: [label, value, note]
@@ -56,7 +56,7 @@ const rows: [label: string, value: string, note: string | null][] = [];
 if (F.fullName) rows.push([w.fullName, F.fullName, null]);
 if (D.born) rows.push([w.born, date(D.born), F.birthplace ?? null]);
 if (D.died && D.born) rows.push([w.died, date(D.died), [fill(w.aged, { n: ageAt(D.born, D.died) }), F.deathPlace].filter(Boolean).join(' · ')]);
-rows.push([D.fromArchive ? w.firstOnRecord : w.debut, date(D.debut), [debutRace, D.fromArchive ? fill(w.archiveStarts, { year: S[0]!.year }) : null].filter(Boolean).join(' · ') || null]);
+rows.push([w.debut, date(D.debut), debutRace || null]);
 if (D.numberYears.length) rows.push([
     w.numbers,
     D.numberYears.map((x) => `#${x.number}`).join(' · '),

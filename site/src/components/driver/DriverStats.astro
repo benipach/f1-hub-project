@@ -33,7 +33,7 @@ const list = new Intl.ListFormat(intl, { type: 'conjunction' }).format(zero);
     <div class="wrap">
         <div class="sec-head sec-head--intro">
             <div><p class="sec-k">{w.kicker}</p><h2 class="sec-title" id="dstats-title">{w.title}</h2></div>
-            <p class="sec-intro">{fill(w.intro, { name: D.last, n: D.onRecord, year: D.archiveFrom })}</p>
+            <p class="sec-intro">{fill(w.intro, { name: D.last, n: D.onRecord })}</p>
         </div>
 
         {titleSeasons.length > 0 && (
