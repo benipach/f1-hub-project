@@ -169,13 +169,13 @@ export type DriverProfile = {
     /** Section 6, the milestones, each kind with what its drawing needs (lib/driver-journey.ts). */
     readonly journey: Journey;
     readonly seasons: readonly DriverSeason[];
-    /** The all-time top five of each board stat. */
+    /** Five rows of each all-time board around him (owner, 22/11): the two ahead and the two behind; the top five when he's 1st to 3rd. */
     readonly boards: Readonly<Record<BoardStat, readonly BoardRow[]>>;
     /** His own row on every board, titles included. */
     readonly mine: Readonly<Record<RankStat, BoardRow>>;
     /** Drivers on the boards: everyone in careers.json. */
     readonly onRecord: number;
-    /** The champions' table (owner, 22/11): the top five with a title, and him in his place when he's a champion outside it; each title with the team it was won with. Empty when he has none. */
+    /** The champions' table, five rows around him the same way, each title with the team it was won with. Empty when he has no title. */
     readonly champions: readonly (BoardRow & { readonly titles: readonly { readonly year: number; readonly team: DriverTeam }[] })[];
 };
 
@@ -382,6 +382,15 @@ function nameOf(drivers: ReturnType<typeof loadDrivers>, id: string): { first: s
     return { first: parts.slice(0, -1).join(' '), last: parts.at(-1) ?? id };
 }
 
+/** Five rows of a ranked board around one driver: the two ahead and the two
+ *  behind, slid to stay on the board (the top five for 1st to 3rd, the last
+ *  five at the foot). */
+function around<T extends { readonly id: string }>(board: readonly T[], id: string): T[] {
+    const i = board.findIndex((r) => r.id === id);
+    const start = Math.max(0, Math.min(i - 2, board.length - 5));
+    return board.slice(start, start + 5);
+}
+
 /** Every driver with a profile: everyone in careers.json. */
 export function driverIds(dataDir: URL): string[] {
     return Object.keys(context(dataDir).careers);
@@ -519,15 +528,11 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
         milestones,
         journey: buildJourney(ctx, id, { gpOf, shortOf, teamOf, lastOf: (x) => nameOf(ctx.drivers, x).last }),
         seasons,
-        boards: Object.fromEntries(BOARD_STATS.map((k) => [k, ctx.boards[k].slice(0, 5)])) as Record<BoardStat, BoardRow[]>,
+        boards: Object.fromEntries(BOARD_STATS.map((k) => [k, around(ctx.boards[k], id)])) as Record<BoardStat, BoardRow[]>,
         mine: Object.fromEntries([...BOARD_STATS, 'titles'].map((k) => [k, ctx.boards[k as RankStat].find((x) => x.id === id)!])) as Record<RankStat, BoardRow>,
         onRecord: Object.keys(ctx.careers).length,
         champions: c.titleYears.length === 0 ? [] : (() => {
-            const won = ctx.boards.titles.filter((r) => r.value > 0);
-            const rows = won.slice(0, 5);
-            const me = won.find((r) => r.id === id);
-            if (me && !rows.includes(me)) rows.push(me);
-            return rows.map((r) => ({ ...r, titles: ctx.careers[r.id]!.titles.map((t) => ({ year: t.year, team: teamOf(t.teamId) })) }));
+            return around(ctx.boards.titles.filter((r) => r.value > 0), id).map((r) => ({ ...r, titles: ctx.careers[r.id]!.titles.map((t) => ({ year: t.year, team: teamOf(t.teamId) })) }));
         })(),
     };
 }

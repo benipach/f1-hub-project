@@ -425,17 +425,17 @@
    a bar of each row's value against the leader's grows behind it and the
    numbers count up. */
 .board[data-board] { margin-top: 48px; }
-.board li:not(.gap) { position: relative; isolation: isolate; transition: background-color .2s ease; }
-.board li:not(.gap)::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; z-index: -1; width: var(--w, 0%); background: rgba(239, 234, 224, .07); transform-origin: left; }
-.board.is-anim li:not(.gap)::before { animation: bar-in .7s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--d, 0) * 45ms + 120ms); }
+.board li { position: relative; isolation: isolate; transition: background-color .2s ease; }
+.board li::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; z-index: -1; width: var(--w, 0%); background: rgba(239, 234, 224, .07); transform-origin: left; }
+.board.is-anim li::before { animation: bar-in .7s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--d, 0) * 45ms + 120ms); }
 /* The driver's own row: its bar at its true length, brighter, and its place
    on a paper chip (owner, 31/10: a row filled with paper read as the longest
    bar, 68 points against 5,232.5) */
 .board li.me::before { background: rgba(239, 234, 224, .22); }
 .board li.me > b:first-child { justify-self: start; padding: 2px 8px; background: var(--paper); color: var(--ink); }
 .board li > span:nth-child(2) { transition: transform .25s cubic-bezier(.2, .7, .2, 1); }
-.board li:not(.gap):not(.me):hover { background-color: rgba(239, 234, 224, .05); }
-.board li:not(.gap):hover > span:nth-child(2) { transform: translateX(6px); }
+.board li:not(.me):hover { background-color: rgba(239, 234, 224, .05); }
+.board li:hover > span:nth-child(2) { transform: translateX(6px); }
 .board.is-anim li { animation: row-in .45s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--d, 0) * 45ms); }
 @keyframes row-in { from { opacity: 0; transform: translateY(10px); } }
 @keyframes bar-in { from { transform: scaleX(0); } }
@@ -444,7 +444,6 @@
 .board li { display: grid; grid-template-columns: 60px 1fr auto; align-items: baseline; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule-ink); }
 .board li b { font-size: 30px; }
 .board li .v { font-size: 30px; }
-.board li.gap { display: block; padding: 6px 0; color: var(--mute-ink); text-align: center; }
 @media (max-width: 1100px) { .ranks { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 28px; } }
 @media (max-width: 760px) { .ranks { grid-template-columns: 1fr 1fr; } .crown__t { grid-template-columns: 1fr 1fr; } }
 

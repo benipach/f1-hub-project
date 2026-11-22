@@ -393,7 +393,7 @@ export default {
     driverStats: {
         kicker: 'De todos los tiempos',
         title: 'Números de la carrera',
-        intro: 'Dónde está {name} entre los {n} pilotos registrados: los cinco primeros de cada estadística y su puesto.',
+        intro: 'Dónde está {name} entre los {n} pilotos registrados: en cada tabla, los dos que tiene adelante y los dos de atrás.',
         titles: 'Títulos mundiales',
         allTime: '{rank} de la historia',
         stats: { wins: 'Victorias', podiums: 'Podios', poles: 'Poles', fastestLaps: 'Vueltas rápidas', points: 'Puntos', races: 'Carreras' },

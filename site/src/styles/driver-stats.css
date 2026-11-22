@@ -35,7 +35,6 @@
 .br .team-mark { width: 22px; height: 22px; object-fit: contain; }
 .br__name { overflow: hidden; text-transform: uppercase; white-space: nowrap; text-overflow: ellipsis; }
 .br--me { background: rgba(225, 6, 0, .12); }
-.br--gap { height: 26px; color: var(--dim); }
 .dstats__none { margin-top: 24px; font-size: 14px; color: var(--dim); }
 
 @media (max-width: 1100px) {

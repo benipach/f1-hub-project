@@ -197,7 +197,7 @@ const kindOf = (i: JourneyItem) => ({ streak: 'streak', title: 'title ms--champ'
                                                     {i.table.map((r) => (
                                                         <li class:list={[{ me: r.id === D.id }]}>
                                                             <span class="rc__p">{r.rank}</span>
-                                                            {r.team ? <TeamMark logo={r.team.logo} color={r.team.color} size={20} /> : <span></span>}
+                                                            {r.team && (r.team.logo || r.team.color) ? <TeamMark logo={r.team.logo} color={r.team.color} size={20} /> : <span></span>}
                                                             <span class="rc__name">{r.last}</span>
                                                             <span class="rc__v">{n(r.value)}</span>
                                                         </li>

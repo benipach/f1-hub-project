@@ -416,7 +416,7 @@ export default {
     driverStats: {
         kicker: 'All time',
         title: 'Career numbers',
-        intro: 'Where {name} stands among the {n} drivers on record: the top five of each, and his place.',
+        intro: 'Where {name} stands among the {n} drivers on record: in each table, the two ahead of him and the two behind.',
         titles: 'World titles',
         allTime: '{rank} all time',
         stats: { wins: 'Wins', podiums: 'Podiums', poles: 'Poles', fastestLaps: 'Fastest laps', points: 'Points', races: 'Races' },

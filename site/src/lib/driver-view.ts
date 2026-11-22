@@ -8,7 +8,7 @@
 
 import { fill } from '../i18n/fill';
 import type { Dict, Plural } from '../i18n';
-import type { BoardRow, BoardStat, DriverProfile, DriverRound, DriverSeason, DriverSprint, DriverTeam } from './driver';
+import type { BoardStat, DriverProfile, DriverRound, DriverSeason, DriverSprint, DriverTeam } from './driver';
 
 export type DriverWords = {
     readonly season: Dict['driver']['season'];
@@ -244,14 +244,9 @@ export function tipHtml(view: DriverView, r: DriverRound): string {
       ${sp ? `<span class="tip__spr lbl"><span>${esc(S.sprint)}</span><span class="cond">${sp.grid ? 'P' + sp.grid : '—'} → ${sp.out ? `<span class="tip__out">${sp.out}</span>` : 'P' + sp.pos}</span><span class="${arrowCls(delta(sp))}">${arrow(delta(sp))}</span><span class="mute">${pts(sp.pts)}</span></span>` : ''}`;
 }
 
-/** The all-time board of one stat: the top five, and the driver after them. */
-export function boardHtml(view: DriverView, D: Pick<DriverProfile, 'id' | 'first' | 'last' | 'totals' | 'ranks' | 'boards'>, k: BoardStat): string {
-    const top = D.boards[k];
-    const me: BoardRow = { id: D.id, first: D.first, last: D.last, value: D.totals[k], rank: D.ranks[k], team: null };
-    // A zero isn't a place on the board (everyone without a win "ties" at the
-    // foot), so the driver's own row only follows when there's something to rank
-    const rows: (BoardRow | null)[] = top.some((r) => r.id === D.id) || !me.value ? [...top] : [...top, ...(me.rank > 6 ? [null] : []), me];
-    const max = Math.max(1, ...rows.map((r) => r?.value ?? 0));
-    return rows.map((r, i) => (!r ? `<li class="gap lbl" style="--d:${i}">···</li>`
-        : `<li class="${r.id === D.id ? 'me' : ''}" style="--d:${i};--w:${(r.value / max) * 100}%"><b class="cond">${r.rank}</b><span><span class="lbl ${r.id === D.id ? '' : 'mute'}">${esc(r.first)}</span> <b class="cond">${esc(r.last)}</b></span><span class="v cond" data-v="${r.value}">${fmt(view, r.value)}</span></li>`)).join('');
+/** The all-time board of one stat: five rows around the driver (lib/driver.ts around()). */
+export function boardHtml(view: DriverView, D: Pick<DriverProfile, 'id' | 'boards'>, k: BoardStat): string {
+    const rows = D.boards[k];
+    const max = Math.max(1, ...rows.map((r) => r.value));
+    return rows.map((r, i) => `<li class="${r.id === D.id ? 'me' : ''}" style="--d:${i};--w:${(r.value / max) * 100}%"><b class="cond">${r.rank}</b><span><span class="lbl ${r.id === D.id ? '' : 'mute'}">${esc(r.first)}</span> <b class="cond">${esc(r.last)}</b></span><span class="v cond" data-v="${r.value}">${fmt(view, r.value)}</span></li>`).join('');
 }

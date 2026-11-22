@@ -204,15 +204,18 @@ profile stays at `/descartado/poster/driver/<id>/` for reference):
   head-to-head with the teammate ("14–3 HADJAR", gray when lost); titles with
   the red tint.
 - **Career numbers** (`driver/DriverStats.astro`, `styles/driver-stats.css`):
-  where he stands all time, with an intro instead of a number row. For a
-  champion, **the champions' table first** (owner, 22/11), as wide as the
-  section: the top five and him in his place, **each title a mark with the
+  where he stands all time, with an intro instead of a number row. **Every
+  table shows five rows around him** (owner, 22/11): the two ahead and the two
+  behind, or the top five when he's 1st to 3rd, the last five at the foot
+  (`around()` in `lib/driver.ts`); no "⋮" row. For a
+  champion, **the champions' table first**, as wide as the
+  section, **each title a mark with the
   logo of the team it was won with and the year, every mark the same width so
   the years line up row to row**, thin dividers between them (no pills); his
   row in the red tint, his years white and bigger. Then
   **the six boards together, three a row, the standings' tables** (no toggle,
-  no script): wins, podiums, poles, fastest laps, points, races; the top five
-  and him in his place (red tint, after "⋮" when out of it); the column header
+  no script): wins, podiums, poles, fastest laps, points, races; his row in the
+  red tint; the column header
   says his number and place ("74 · 3rd all time"). **Each row's logo is the
   team that driver last added to that stat with** (owner, 20/11: Räikkönen,
   Alfa Romeo for races, Ferrari for wins; `BoardRow.team` in `lib/driver.ts`).
