@@ -1,0 +1,23 @@
+/* A slice of the championship in a hover card (components/driver/Standings.astro; the homepage's own table is standings.css):
+   the Career numbers tables' proportions scaled to the card's 13px (15 → 13: logo
+   22 → 19, gap 12 → 10, row 38 → 33); 12px on a phone. The places moved reuse the
+   season table's arrows (.places, driver-seasons.css). */
+.slice { display: grid; margin-top: 6px; border-top: 1px solid var(--line); }
+.slice__r {
+    display: grid; grid-template-columns: 26px 19px minmax(0, 1fr) auto 34px; align-items: center; gap: 10px;
+    height: 33px; padding: 0 4px; border-bottom: 1px solid var(--line); font: 700 13px 'F1'; color: #fff; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.slice--moves .slice__r { grid-template-columns: 26px 22px 19px minmax(0, 1fr) auto 34px; }
+.slice__r:last-child { border-bottom: 0; }
+.slice__r.me { background: rgba(225, 6, 0, .14); }
+.slice__r .team-mark { width: 19px; height: 19px; object-fit: contain; }
+.slice__p, .slice__v, .slice__g { text-align: right; }
+.slice__m .places { font-size: 11px; gap: 3px; }
+.slice__m .places .tri { width: 7px; height: 6px; }
+.slice__n { overflow: hidden; text-overflow: ellipsis; text-transform: uppercase; }
+.slice__g { font-weight: 400; color: var(--dim); }
+@media (max-width: 760px) {
+    .slice__r { grid-template-columns: 16px 17px minmax(0, 1fr) auto 28px; gap: 7px; height: 30px; font-size: 12px; }
+    .slice--moves .slice__r { grid-template-columns: 16px 20px 17px minmax(0, 1fr) auto 28px; }
+    .slice__r .team-mark { width: 17px; height: 17px; }
+}

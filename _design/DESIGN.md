@@ -196,9 +196,12 @@ profile stays at `/descartado/poster/driver/<id>/` for reference):
 - **Season by season** (`driver/DriverCareer.astro`, `driver/CareerChart.astro`,
   `styles/driver-career.css`): header with titles (red), top-3 seasons, best
   finish, seasons; the career chart (final championship position per year,
-  the same look and curve; a title is a bigger red dot labelled "P1" in red;
-  the top three and the season on now labelled; a year not raced breaks the
-  line); a row per season, newest first, **each a link to that season above**
+  the same look and curve, but no top-three band and only P1 and the worst
+  place on the axis; every season labelled with its place, under the dot in a
+  dip; on a phone with more than 14 seasons the number alone; a title is a
+  bigger red dot labelled in red; a year not raced breaks the line; hovering a season grows its dot and fades its card in, with the final
+  table around him, two ahead and two behind: `driver/Standings.astro`, the
+  same slice the milestones' title cards use); a row per season, newest first, **each a link to that season above**
   (`#season-<year>`): year, logo and team (both teams in a split year), "World
   champion" / "So far", position, points, wins, podiums, poles, the race
   head-to-head with the teammate ("14–3 HADJAR", gray when lost); titles with
@@ -222,8 +225,16 @@ profile stays at `/descartado/poster/driver/<id>/` for reference):
   A stat at zero has no board: one line ("No wins, podiums… yet").
 - **Milestones** (`driver/DriverJourney.astro`, `styles/driver-journey.css`,
   `lib/driver-journey.ts`): header with how many races each first took and the
-  first title (red); a timeline by year (the year big, a line with a dot per
-  milestone, a table row each: date, his race number, flag, Grand Prix, team).
+  first title (red); a timeline by year. **Each year folds** (owner, 22/11: the
+  rows were too tight): open by default (owner), closed it is one line with the year big, each
+  milestone's headline split by thin rules (a title in red; a record names its
+  stat) and that year's team logos; open, each milestone is its own block
+  (thin border, 8px radius, 12px apart) on a line with a dot each: date, his
+  race number, flag, Grand Prix, team. "Open every year" toggles them all (a
+  small script; each year opens without it). On a phone the headlines go one a
+  line. Each year's title-season round card shows the championship after that
+  race (the one ahead, him, the one behind) in the Career numbers tables'
+  proportions, with the season page's arrows only when someone moved.
   **Each kind has its own drawing** (owner, 22/11: "cada uno con su
   distintivo"): the winning streak as a line of stations (flag and dot per win,
   first and last named); a world title with its number big in red, points,

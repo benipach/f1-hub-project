@@ -1,13 +1,15 @@
 ---
 // The career in one line: the final championship position, season by season
 // (driver profile, section 4; approved 20/11/2026). The form chart's look and
-// curve (lib/curve.ts): a title is a bigger red dot labelled in red, the top
-// three and the season on now are labelled, a year he didn't race breaks the
-// line. A wide drawing and a taller one for phones; hovering a season shows
-// its card (lib/chart-tip.ts).
+// curve (lib/curve.ts): every season labelled with its place, a title a
+// bigger red dot labelled in red, a year he didn't race breaks the line; the
+// axis names only the top and the bottom (owner, 22/11: no top-three band). A wide drawing and a taller one for phones; hovering a season shows
+// its card (lib/chart-tip.ts) with the final table around him (two ahead, two
+// behind), and its dot grows.
 import '../../styles/chart.css';
 import type { DriverSeason } from '../../lib/driver';
 import { curvePath } from '../../lib/curve';
+import Standings from './Standings.astro';
 import { useI18n } from '../../i18n';
 
 interface Props {
@@ -23,6 +25,12 @@ const span = to - from + 1;
 const byYear = new Map(seasons.map((s) => [s.year, s]));
 const worst = Math.max(10, ...seasons.map((s) => s.pos ?? 0));
 const years = Array.from({ length: span }, (_, i) => from + i);
+// A season worse than the ones beside it (a dip in the line) has its place under
+// the dot, so the line climbing out of it never runs through the label
+const dip = (year: number) => {
+    const p = byYear.get(year)?.pos, near = [byYear.get(year - 1)?.pos, byYear.get(year + 1)?.pos].filter((v): v is number => !!v);
+    return !!p && p < worst && near.length > 0 && near.every((v) => v < p);
+};
 
 function draw(compact: boolean) {
     const [W, H, padL, padB, padT] = compact ? [400, 320, 30, 22, 30] : [1000, 280, 40, 26, 34];
@@ -38,8 +46,9 @@ function draw(compact: boolean) {
     }
     const short = compact || span > 14;
     const skip = (year: number) => compact && span > 12 && (year - from) % 2 === 1;
-    const ticks = [1, 3, 10, worst].filter((v, i, a) => a.indexOf(v) === i);
-    return { W, H, padL, padB, step, x, y, short, skip, ticks, line: runs.filter((r) => r.length).map((r) => curvePath(r)).join('') };
+    // A phone with many seasons: the places without the P (the axis says P1 and P20)
+    const tag = (p: number) => (compact && span > 14 ? String(p) : `P${p}`);
+    return { W, H, padL, padB, step, x, y, short, skip, tag, line: runs.filter((r) => r.length).map((r) => curvePath(r)).join('') };
 }
 const charts = [draw(false), draw(true)];
 const teamsOf = (s: DriverSeason) => s.teams.map((tm) => tm.name).join(' · ');
@@ -53,27 +62,27 @@ const teamsOf = (s: DriverSeason) => s.teams.map((tm) => tm.name).join(' · ');
     <div class="fc__plot">
         {charts.map((c, k) => (
             <svg class:list={['fc__svg', k ? 'fc__svg--compact' : 'fc__svg--wide']} viewBox={`0 0 ${c.W} ${c.H}`} role="img" aria-label={w.chart}>
-                <rect x={c.padL} y={c.y(1) - 7} width={c.W - c.padL} height={c.y(3) - c.y(1) + 14} class="fc__band" />
-                {c.ticks.map((v) => <text x="0" y={c.y(v) + 4} class="fc__lab">P{v}</text>)}
+                {[1, worst].map((v) => <text x="0" y={c.y(v) + 4} class="fc__lab">P{v}</text>)}
                 <path d={c.line} class="fc__fin" />
                 {years.map((year) => {
                     const s = byYear.get(year);
                     return (
                         <>
                             {!c.skip(year) && <text x={c.x(year)} y={c.H - 6} text-anchor="middle" class:list={['fc__lab', { 'fc__lab--dim': !s }]}>{c.short ? `’${String(year).slice(2)}` : year}</text>}
-                            {s?.pos && <circle cx={c.x(year)} cy={c.y(s.pos)} r={s.champion ? 6 : 4.5} class:list={['fc__f', { 'fc__f--win': s.champion }]} />}
-                            {s?.pos && (s.champion || s.pos <= 3 || !s.done) && <text x={c.x(year)} y={c.y(s.pos) - 12} text-anchor="middle" class:list={['fc__val', { 'fc__val--red': s.champion }]}>P{s.pos}</text>}
+                            {s?.pos && <circle cx={c.x(year)} cy={c.y(s.pos)} r={s.champion ? 6 : 4.5} class:list={['fc__f', { 'fc__f--win': s.champion }]} data-k={year} />}
+                            {s?.pos && <text x={c.x(year)} y={c.y(s.pos) + (dip(year) ? 21 : -12)} text-anchor="middle" class:list={['fc__val', { 'fc__val--red': s.champion }]}>{c.tag(s.pos)}</text>}
                         </>
                     );
                 })}
                 {seasons.map((s) => (
                     <rect class="fc__hit" x={c.x(s.year) - c.step / 2} y="0" width={c.step} height={c.H - c.padB}
-                        data-a={`${s.year} · ${teamsOf(s)}`} data-b={s.pos ? `P${s.pos}` : '—'}
+                        data-k={s.year} data-a={`${s.year} · ${teamsOf(s)}`} data-b={s.pos ? `P${s.pos}` : '—'}
                         data-c={fill(w.points, { n: num.format(s.pts) })} data-d={s.champion ? w.champion : !s.done ? w.soFar : ''} />
                 ))}
             </svg>
         ))}
-        <div class="fc__tip" hidden><span class="fc__tip-a"></span><b class="fc__tip-b"></b><span class="fc__tip-c"></span><span class="fc__tip-d"></span></div>
+        {seasons.map((s) => s.table.length > 1 && <template data-k={s.year}><Standings rows={s.table} /></template>)}
+        <div class="fc__tip"><span class="fc__tip-a"></span><b class="fc__tip-b"></b><span class="fc__tip-c"></span><span class="fc__tip-d"></span><span class="fc__tip-t"></span></div>
     </div>
 </div>
 

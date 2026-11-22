@@ -1,0 +1,34 @@
+---
+// A slice of the championship around one driver, as the Career numbers tables
+// look, scaled to a hover card: pos · places moved (with `moves`, only when
+// someone moved) · logo · NAME · points · gap to the leader. Used by the
+// milestones' title-season cards and the season-by-season chart's card.
+import '../../styles/standings-slice.css';
+import Places from './Places.astro';
+import TeamMark from '../TeamMark.astro';
+import type { StandingRow } from '../../lib/driver-journey';
+import { useI18n } from '../../i18n';
+
+interface Props {
+    rows: readonly StandingRow[];
+    /** Show the places each one moved (a race against the one before). */
+    moves?: boolean;
+}
+
+const { rows, moves = false } = Astro.props;
+const { intl } = useI18n(Astro.currentLocale);
+const num = new Intl.NumberFormat(intl, { maximumFractionDigits: 1 });
+---
+
+<span class:list={['slice', { 'slice--moves': moves }]}>
+    {rows.map((s) => (
+        <span class:list={['slice__r', { me: s.me }]}>
+            <span class="slice__p">{s.pos}</span>
+            {moves && <span class="slice__m"><Places delta={s.move || null} /></span>}
+            {s.team && (s.team.logo || s.team.color) ? <TeamMark logo={s.team.logo} color={s.team.color} size={19} /> : <span></span>}
+            <span class="slice__n">{s.last}</span>
+            <span class="slice__v">{num.format(s.pts)}</span>
+            <span class="slice__g">{s.gap > 0 ? `-${num.format(s.gap)}` : ''}</span>
+        </span>
+    ))}
+</span>

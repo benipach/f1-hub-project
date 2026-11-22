@@ -14,17 +14,33 @@
 
 /* the timeline: the year on the left, a line with a dot per milestone, a table row each */
 .djourney .ms { --cols: 56px 44px 26px 200px minmax(0, 1fr) 110px 220px; }
-.djourney .yr--head { border-bottom: 0; }
-.djourney .yr--head .yr__list::before { display: none; }
-.djourney .ms--head { min-height: 0; padding-bottom: 4px; font: 11px 'F1'; text-transform: uppercase; color: var(--dim); }
+/* each year folds (owner, 22/11: the rows were too tight): closed, one line with the year, what
+   happened that year (a title in red) and its teams; open, the milestones apart from each other */
+.djourney .col-h { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.djourney .yr-all { padding: 0; border: 0; background: none; font: 700 12px 'F1'; text-transform: uppercase; color: var(--text); cursor: pointer; }
+.djourney .yr-all:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
+.djourney .yr__sum { display: grid; grid-template-columns: 120px minmax(0, 1fr) auto 14px; align-items: center; gap: 20px; padding: 18px 12px 18px 0; list-style: none; cursor: pointer; transition: background .16s ease; }
+.djourney .yr__sum::-webkit-details-marker { display: none; }
+.djourney .yr__sum:hover { background: rgba(255, 255, 255, .03); }
+.djourney .yr__sum:focus-visible { outline: 1px solid #fff; outline-offset: -1px; }
+.djourney .yr__what { display: flex; flex-wrap: wrap; row-gap: 6px; min-width: 0; }
+.djourney .yr__what span { padding: 0 14px; border-left: 1px solid var(--rule); font: 700 14px 'F1'; text-transform: uppercase; color: #fff; }
+.djourney .yr__what span:first-child { padding-left: 0; border-left: 0; }
+.djourney .yr__what .red { color: var(--red); }
+.djourney .yr__teams { display: flex; gap: 10px; }
+.djourney .yr__teams .team-mark { width: 20px; height: 20px; object-fit: contain; }
+.djourney .yr__chev { width: 14px; height: 8px; fill: none; stroke: var(--dim); stroke-width: 1.5; }
+.djourney .yr__sum:hover .yr__chev { stroke: #fff; }
+.djourney .yr[open] .yr__chev { transform: rotate(180deg); }
+.djourney .ms.ms--head { min-height: 0; padding: 0 17px 2px; border: 0; font: 11px 'F1'; text-transform: uppercase; color: var(--dim); }
 .djourney .ms--head i { font-style: normal; }
 .djourney .ms--head i:nth-child(2) { text-align: right; }
-.djourney .yr { display: grid; grid-template-columns: 120px minmax(0, 1fr); border-bottom: 1px solid var(--line); }
-.djourney .yr__y { padding: 14px 0; font: 32px/1 'F1 Black'; color: #fff; }
-.djourney .yr__list { position: relative; padding-left: 32px; }
-.djourney .yr__list::before { content: ''; position: absolute; left: 7px; top: 0; bottom: 0; width: 2px; background: var(--rule); }
-.djourney .ms { position: relative; display: grid; grid-template-columns: var(--cols); align-items: center; gap: 0 14px; min-height: 52px; padding: 6px 4px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
-.djourney .ms:last-child { border-bottom: 0; }
+.djourney .yr { border-bottom: 1px solid var(--line); }
+.djourney .yr__y { font: 32px/1 'F1 Black'; color: #fff; }
+.djourney .yr__list { position: relative; display: grid; gap: 12px; padding: 0 0 28px 32px; }
+.djourney .yr__list::before { content: ''; position: absolute; left: 7px; top: 24px; bottom: 28px; width: 2px; background: var(--rule); }
+.djourney .ms { position: relative; display: grid; grid-template-columns: var(--cols); align-items: center; gap: 0 14px; min-height: 64px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 8px; font-variant-numeric: tabular-nums; }
+.djourney .ms--head + .ms { margin-top: -4px; }
 .djourney .ms__dot { position: absolute; left: -30px; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: var(--base-800); border: 2px solid var(--dim); }
 .djourney .ms--first .ms__dot { background: #fff; border-color: #fff; }
 .djourney .ms--title .ms__dot { width: 16px; height: 16px; margin-top: -8px; left: -32px; background: var(--red); border-color: var(--red); }
@@ -43,7 +59,7 @@
 .djourney .ms__res { font: 700 15px 'F1'; color: #fff; white-space: nowrap; }
 .djourney .ms__res small { margin-left: 6px; font: 12px 'F1'; color: var(--dim); }
 /* the streak: its own drawing across the Grand Prix, milestone and result columns */
-.djourney .ms--streak { align-items: start; padding: 14px 4px 16px; }
+.djourney .ms--streak { align-items: start; padding-block: 16px 18px; }
 .djourney .ms--streak .ms__dot { top: 26px; margin-top: 0; background: #fff; border-color: #fff; }
 .djourney .ms--streak .ms__d, .djourney .ms--streak .ms__n { padding-top: 4px; line-height: 1.5; }
 .djourney .ms--streak .ms__team { padding-top: 6px; }
@@ -64,7 +80,7 @@
 .djourney .stk__code { display: none; }
 /* a record: the all-time table on that day, the site's table look (pos · NAME ·
    value), him on top in a red tint; under the words, what became of it */
-.djourney .ms--rec { padding: 12px 4px; }
+.djourney .ms--rec { padding-block: 12px; }
 .djourney .rc { margin: 0; padding: 0; list-style: none; }
 .djourney .rc li { display: grid; grid-template-columns: 22px 20px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 5px 10px; border-bottom: 1px solid var(--line); font: 700 13px 'F1'; color: var(--dim); }
 .djourney .rc li:last-child { border-bottom: 0; }
@@ -76,7 +92,7 @@
 /* best result at a team he never won with: P1 to P10 in a row; the places
    above his best under a bracket ("never reached"), his best in white with a
    red line under it and how many times; hover lists those races */
-.djourney .ms--best { padding: 10px 4px; }
+.djourney .ms--best { padding-block: 10px; }
 .djourney .bs { position: relative; padding-top: 16px; }
 .djourney .bs__never { position: absolute; top: 6px; left: 4px; width: calc((var(--b) - 1) / var(--n) * 100% - 8px); height: 8px; border: 1px solid var(--rule); border-bottom: 0; border-radius: 3px 3px 0 0; }
 .djourney .bs__never span { position: absolute; left: 50%; top: -6px; transform: translateX(-50%); padding: 0 6px; background: var(--base-800); font: 10px/1 'F1'; text-transform: uppercase; color: var(--dim); white-space: nowrap; }
@@ -99,7 +115,7 @@
    red mark). First win: the stretch before it grey (the wait), after it white.
    Last win: before it white, after it grey (no more wins there). Words under
    each side say what it holds. */
-.djourney .ms--spell { padding: 10px 4px; }
+.djourney .ms--spell { padding-block: 10px; }
 .djourney .sp { grid-column: 5 / 7; display: grid; grid-template-columns: minmax(0, 1fr) 360px; align-items: center; gap: 0 24px; }
 .djourney .sp__what b { display: block; font: 17px/1.15 'F1 Black'; text-transform: uppercase; color: #fff; }
 .djourney .sp__what small { display: block; margin-top: 3px; font: 12px 'F1'; color: var(--dim); }
@@ -120,7 +136,7 @@
 /* the firsts: what he did, how old he was, and a track of the field (P1 at the
    right, the front): a ring where he started, a dot where he finished (red for a
    win), a line between them; out of the race, a red mark at his grid slot */
-.djourney .ms--firsts { padding: 10px 4px; }
+.djourney .ms--firsts { padding-block: 10px; }
 .djourney .fr { grid-column: 5 / 7; display: grid; grid-template-columns: minmax(0, 1fr) 300px; align-items: center; gap: 0 24px; }
 .djourney .fr__labels { display: flex; flex-wrap: wrap; gap: 0 12px; }
 .djourney .fr__labels b { font: 17px/1.15 'F1 Black'; text-transform: uppercase; color: #fff; }
@@ -157,7 +173,7 @@
 .djourney .fr__tip .out { font-weight: 700; color: var(--red); }
 @media (prefers-reduced-motion: reduce) { .djourney .fr__tip { transition: none; } }
 /* a title */
-.djourney .ms--champ { align-items: start; padding: 16px 4px 18px; }
+.djourney .ms--champ { align-items: start; padding-block: 16px 18px; }
 .djourney .ms--champ .ms__dot { top: 30px; margin-top: 0; }
 .djourney .ms--champ .ms__d, .djourney .ms--champ .ms__n, .djourney .ms--champ .ms__team { padding-top: 8px; }
 .djourney .ch { grid-column: 3 / 7; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0 24px; }
@@ -198,23 +214,8 @@
 .djourney .ch__tip-c.out { color: var(--red); }
 .djourney .ch__tip-d { font-size: 12px; color: var(--text); }
 .djourney .ch__tip-d b { font-weight: 700; color: var(--red); text-transform: uppercase; }
-/* the championship after that race, as the Career numbers tables, scaled to the card's 13px
-   (15 → 13: logo 22 → 19, gap 12 → 10, row 38 → 33): pos · places moved (only when he
-   moved) · logo · NAME · pts · gap to the leader */
-.djourney .ch__tip:has(.ch__st) { min-width: 320px; }
-.djourney .ch__st { display: grid; margin-top: 6px; border-top: 1px solid var(--line); }
-.djourney .ch__st-r {
-    display: grid; grid-template-columns: 26px 22px 19px minmax(0, 1fr) auto 34px; align-items: center; gap: 10px;
-    height: 33px; padding: 0 4px; border-bottom: 1px solid var(--line); font-weight: 700; font-size: 13px; color: #fff; font-variant-numeric: tabular-nums;
-}
-.djourney .ch__st-r:last-child { border-bottom: 0; }
-.djourney .ch__st-r.me { background: rgba(225, 6, 0, .14); }
-.djourney .ch__st-r .team-mark { width: 19px; height: 19px; object-fit: contain; }
-.djourney .ch__st-p, .djourney .ch__st-v, .djourney .ch__st-g { text-align: right; }
-.djourney .ch__st-m .places { font-size: 11px; gap: 3px; }
-.djourney .ch__st-m .places .tri { width: 7px; height: 6px; }
-.djourney .ch__st-n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-transform: uppercase; }
-.djourney .ch__st-g { font-weight: 400; color: var(--dim); }
+/* the championship after that race: components/driver/Standings.astro */
+.djourney .ch__tip:has(.slice) { min-width: 320px; }
 .djourney .ch__key { grid-column: 1 / -1; display: flex; gap: 16px; margin-top: 8px; font: 11px 'F1'; text-transform: uppercase; color: var(--dim); }
 .djourney .ch__key span { display: flex; align-items: center; gap: 6px; }
 .djourney .ch__key span:last-child { margin-left: auto; }
@@ -224,7 +225,8 @@
 .djourney .ms__team { display: flex; align-items: center; gap: 8px; font: 700 13px 'F1'; text-transform: uppercase; color: var(--text); white-space: nowrap; overflow: hidden; }
 .djourney .ms__team img { width: 22px; height: 22px; object-fit: contain; }
 @media (max-width: 1100px) {
-    .djourney .yr--head { display: none; }
+    .djourney .ms--head { display: none; }
+    .djourney .yr__sum { grid-template-columns: 90px minmax(0, 1fr) auto 14px; gap: 14px; }
     .djourney .ms { --cols: 56px 36px 22px minmax(0, 1fr) 60px; }
     .djourney .ms__what { grid-column: 4 / -1; grid-row: 2; }
     .djourney .stk, .djourney .ch { grid-column: 3 / -1; }
@@ -236,15 +238,24 @@
     .djourney .ms__team { display: none; }
 }
 @media (max-width: 760px) {
-    .djourney .ch__tip:has(.ch__st) { min-width: 290px; } /* as wide as the phone cards go */
-    .djourney .ch__st-r { grid-template-columns: 16px 20px 17px minmax(0, 1fr) auto 28px; gap: 7px; height: 30px; font-size: 12px; } /* the same ratios at 12px */
-    .djourney .ch__st-r .team-mark { width: 17px; height: 17px; }
+    .djourney .ch__tip:has(.slice) { min-width: 290px; } /* as wide as the phone cards go */
     .djourney .sec-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
     .djourney .sec-facts div { padding-right: 10px; }
     .djourney .sec-facts dd { font-size: 22px; } /* "Carrera 18" two a line on a phone */
     .djourney .sec-facts div:nth-child(odd) { padding-left: 0; border-left: 0; }
-    .djourney .yr { grid-template-columns: minmax(0, 1fr); }
-    .djourney .yr__y { padding: 14px 0 6px; font-size: 24px; }
+    .djourney .yr__sum { grid-template-columns: minmax(0, 1fr) auto 14px; gap: 6px 12px; padding: 14px 4px 14px 0; }
+    .djourney .yr__y { grid-column: 1; font-size: 24px; }
+    .djourney .yr__what { grid-column: 1 / -1; grid-row: 2; }
+    .djourney .yr__what { flex-direction: column; row-gap: 4px; } /* one a line: a wrapped line would start with a rule */
+    .djourney .yr__what span { padding: 0; border-left: 0; font-size: 12px; }
+    .djourney .col-h { flex-wrap: wrap; }
+    .djourney .yr-all { white-space: nowrap; }
+    .djourney .yr__teams { grid-column: 2; grid-row: 1; }
+    .djourney .yr__list { gap: 10px; padding: 0 0 20px 20px; }
+    .djourney .yr__list::before { left: 3px; }
+    .djourney .ms { padding: 12px 10px; }
+    .djourney .ms__dot { left: -23px; }
+    .djourney .ms--title .ms__dot { left: -25px; }
     .djourney .ms { --cols: 50px 26px 22px minmax(0, 1fr) 40px; gap: 4px 8px; }
     .djourney .ms__res small { display: none; }
     .djourney .stk__n { font-size: 32px; }

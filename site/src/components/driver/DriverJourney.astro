@@ -18,7 +18,7 @@
 // hover only (owner, 22/11).
 import '../../styles/hero.css';
 import '../../styles/driver-journey.css';
-import Places from './Places.astro';
+import Standings from './Standings.astro';
 import TeamMark from '../TeamMark.astro';
 import { useI18n } from '../../i18n';
 import { href } from '../../lib/paths';
@@ -39,6 +39,20 @@ const dayFmt = new Intl.DateTimeFormat(intl, { day: 'numeric', month: 'short', t
 const day = (iso: string) => dayFmt.format(new Date(`${iso}T12:00:00Z`)).replace('.', '');
 const flag = (iso: string | null, cls = 'ms__flag') => (iso ? `<img class="${cls}" src="${href(`img/flags/${iso.toLowerCase()}.svg`)}" alt="" loading="lazy">` : '');
 const times = (k: number) => (k === 1 ? w.once : k === 2 ? w.twice : fill(w.times, { n: k }));
+// What a closed year says: each milestone's headline, as its row shows it
+const head = (i: JourneyItem): string => {
+    switch (i.kind) {
+        case 'title': return w.champion;
+        case 'streak': return w.streak;
+        case 'firsts': return i.labels.map((l) => w.firsts[l as keyof typeof w.firsts] ?? l).join(' · ');
+        case 'teamWin': return i.first ? w.firstWin : i.latest ? w.latestWin : w.lastWin;
+        case 'best': return w.best;
+        case 'record': return `${i.broke ? w.record : w.equalled} · ${w.stats[i.stat as keyof typeof w.stats] ?? i.stat}`;
+        default: return i.label;
+    }
+};
+// The teams of a year, once each
+const teamsOf = (items: readonly JourneyItem[]) => [...new Map(items.map((i) => [i.team.id, i.team])).values()];
 const kindOf = (i: JourneyItem) => ({ streak: 'streak', title: 'title ms--champ', firsts: 'firsts', teamWin: 'spell', best: 'best', record: 'rec', plain: 'other' })[i.kind];
 ---
 
@@ -55,12 +69,17 @@ const kindOf = (i: JourneyItem) => ({ streak: 'streak', title: 'title ms--champ'
         </div>
 
         <div class="djourney__col">
-            <p class="col-h"><span>{plural(w.count, J.count, { from: J.from, to: J.to })}</span></p>
-            <div class="yr yr--head" aria-hidden="true"><div></div><div class="yr__list"><div class="ms ms--head"><i></i><i>{w.cols.race}</i><i></i><i>{w.cols.gp}</i><i>{w.cols.what}</i><i>{w.cols.result}</i><i>{w.cols.team}</i></div></div></div>
+            <p class="col-h"><span>{plural(w.count, J.count, { from: J.from, to: J.to })}</span>{J.years.length > 1 && <button type="button" class="yr-all" data-open={w.openAll} data-close={w.closeAll}>{w.closeAll}</button>}</p>
             {J.years.map(({ year, items }) => (
-                <div class="yr">
-                    <div class="yr__y">{year}</div>
+                <details class="yr" open>
+                    <summary class="yr__sum">
+                        <span class="yr__y">{year}</span>
+                        <span class="yr__what">{items.map((i) => <span class:list={[{ red: i.kind === 'title' }]}>{head(i)}</span>)}</span>
+                        <span class="yr__teams">{teamsOf(items).map((t) => (t.logo || t.color ? <TeamMark logo={t.logo} color={t.color} size={20} /> : null))}</span>
+                        <svg class="yr__chev" viewBox="0 0 14 8" aria-hidden="true"><path d="M1 1l6 6 6-6" /></svg>
+                    </summary>
                     <div class="yr__list">
+                        <div class="ms ms--head" aria-hidden="true"><i></i><i>{w.cols.race}</i><i></i><i>{w.cols.gp}</i><i>{w.cols.what}</i><i>{w.cols.result}</i><i>{w.cols.team}</i></div>
                         {items.map((i) => (
                             <div class={`ms ms--${kindOf(i)}`}>
                                 <span class="ms__dot"></span>
@@ -103,18 +122,7 @@ const kindOf = (i: JourneyItem) => ({ streak: 'streak', title: 'title ms--champ'
                                                                 {r.out === 'DNS' && !r.grid ? w.noStart : r.out ? `${r.out}${r.grid ? ` · ${fill(w.from, { n: r.grid })}` : ''}` : `P${r.pos}${r.grid ? ` ${fill(w.from, { n: r.grid })}` : ''}`}{r.sprint ? ` · ${fill(w.sprintPos, { n: r.sprint })}` : ''}<em>{fill(w.pts, { n: n(r.pts) })}</em>
                                                             </span>
                                                             {k === i.at && <span class="ch__tip-d"><b>{i.sprint ? w.decidedSprint : w.decided}</b></span>}
-                                                            <span class="ch__st">
-                                                                {r.table.map((s) => (
-                                                                    <span class:list={['ch__st-r', { me: s.me }]}>
-                                                                        <span class="ch__st-p">{s.pos}</span>
-                                                                        <span class="ch__st-m"><Places delta={s.move || null} /></span>
-                                                                        {s.team && (s.team.logo || s.team.color) ? <TeamMark logo={s.team.logo} color={s.team.color} size={14} /> : <span></span>}
-                                                                        <span class="ch__st-n">{s.last}</span>
-                                                                        <span class="ch__st-v">{n(s.pts)}</span>
-                                                                        <span class="ch__st-g">{s.gap > 0 ? `-${n(s.gap)}` : ''}</span>
-                                                                    </span>
-                                                                ))}
-                                                            </span>
+                                                            <Standings rows={r.table} moves />
                                                         </span>
                                                     </li>
                                                 ))}
@@ -229,8 +237,18 @@ const kindOf = (i: JourneyItem) => ({ streak: 'streak', title: 'title ms--champ'
                             </div>
                         ))}
                     </div>
-                </div>
+                </details>
             ))}
         </div>
     </div>
 </section>
+
+<script>
+    // "Open every year" / "Close every year": the years are <details>, so each opens on its own without this
+    for (const b of document.querySelectorAll<HTMLButtonElement>('.djourney .yr-all')) {
+        const years = [...b.closest('.djourney')!.querySelectorAll<HTMLDetailsElement>('details.yr')];
+        const sync = () => { b.textContent = years.every((d) => d.open) ? b.dataset.close! : b.dataset.open!; };
+        b.addEventListener('click', () => { const open = !years.every((d) => d.open); for (const d of years) d.open = open; sync(); });
+        for (const d of years) d.addEventListener('toggle', sync);
+    }
+</script>

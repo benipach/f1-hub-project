@@ -11,7 +11,7 @@ import { loadCareers, loadCircuits, loadCities, loadCountries, loadDrivers, load
 import type { RawCareers } from '@f1hub/shared/data/raw';
 import type { GrandPrix, SessionOf } from '@f1hub/shared/data/season';
 import { driverCutout, driverPhoto, namesIn, teamLogo } from './home';
-import { buildJourney, tally, type Journey } from './driver-journey';
+import { buildJourney, tally, type Journey, type StandingRow } from './driver-journey';
 
 export type DriverTeam = {
     readonly id: string;
@@ -91,6 +91,8 @@ export type DriverSeason = {
     readonly champion: boolean;
     /** Who the standings measure him against: the leader, or the runner-up when he leads. */
     readonly rival: { readonly id: string; readonly first: string; readonly last: string; readonly pts: number } | null;
+    /** The championship around him at the end (or so far): two ahead, two behind; the top five from 1st to 3rd. */
+    readonly table: readonly StandingRow[];
     readonly rounds: readonly DriverRound[];
 };
 
@@ -457,6 +459,9 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
         const done = S.done;
         const table = [...S.pts].sort((a, b) => b[1] - a[1]);
         const rivalId = table[0]?.[0] === id ? table[1]?.[0] : table[0]?.[0];
+        const car = new Map(S.rounds.flatMap((r) => r.rows.map((x) => [x.driver, x.team] as const))); // the team of each one's last race
+        const lead = table[0]?.[1] ?? 0;
+        const standings = around(table.map(([d, p], k) => ({ id: d, pos: k + 1, last: nameOf(ctx.drivers, d).last, team: car.has(d) ? teamOf(car.get(d)!) : null, pts: round1(p), gap: round1(lead - p), move: 0, me: d === id })), id);
         return {
             year, done, hasGrid: S.hasGrid, pointsTo: S.pointsTo,
             teams: [...new Set(raced.map((e) => e.x.team))].map(teamOf),
@@ -472,6 +477,7 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
             mate,
             champion: done && ctx.champions.get(year) === id,
             rival: rivalId ? { id: rivalId, ...nameOf(ctx.drivers, rivalId), pts: round1(S.pts.get(rivalId) ?? 0) } : null,
+            table: standings.map(({ id: _, ...r }) => r),
             rounds,
         };
     });

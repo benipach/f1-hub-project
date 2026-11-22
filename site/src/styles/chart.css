@@ -21,11 +21,26 @@
 .fc__f--win { fill: var(--red); }
 .fc__x { stroke: var(--red); stroke-width: 2; stroke-linecap: square; pointer-events: none; }
 .fc__hit { fill: transparent; cursor: default; }
+.fc__hit { transition: fill .2s ease; }
 .fc__hit:hover { fill: rgba(255, 255, 255, .04); }
 .fc__tip {
     position: absolute; top: -8px; z-index: 2; display: grid; gap: 3px; min-width: 170px; padding: 10px 12px; pointer-events: none;
-    border-radius: 8px; background: var(--base-900); border: 1px solid var(--line); box-shadow: 0 8px 24px rgba(0, 0, 0, .5); transform: translateY(-100%);
+    border-radius: 8px; background: var(--base-900); border: 1px solid var(--line); box-shadow: 0 8px 24px rgba(0, 0, 0, .5);
+    opacity: 0; visibility: hidden; transform: translateY(calc(-100% + 4px));
 }
+.fc__tip.is-on { opacity: 1; visibility: visible; transform: translateY(-100%); }
+.fc__tip:has(.slice) { min-width: 320px; }
+.fc__tip-t:empty { display: none; }
+/* the hovered season's dot grows */
+.fc__f { transform-box: fill-box; transform-origin: center; }
+.fc__f.is-on { transform: scale(1.5); }
+/* motion: hover only (owner, 22/11). The card fades and rises in, then glides from one
+   season to the next (left, only once it shows: lib/chart-tip.ts); the dot grows; the
+   column fades in and out. */
+.fc__tip { transition: opacity .16s ease, transform .16s ease, visibility .16s; }
+.fc__tip--glide { transition: opacity .16s ease, transform .16s ease, visibility .16s, left .22s cubic-bezier(.2, .7, .3, 1); }
+.fc__f { transition: transform .16s ease; }
+@media (prefers-reduced-motion: reduce) { .fc__tip, .fc__tip--glide, .fc__f, .fc__hit { transition: none; } }
 .fc__tip-a { font-size: 11px; text-transform: uppercase; color: var(--dim); }
 .fc__tip-b { font-size: 20px; color: #fff; }
 .fc__tip-c, .fc__tip-d { font-size: 12px; color: var(--text); }
@@ -33,10 +48,12 @@
 .fc__tip[data-dir='up'] .fc__tip-c { color: var(--green); }
 .fc__tip[data-dir='down'] .fc__tip-c, .fc__tip[data-dir='out'] .fc__tip-c { color: var(--red); }
 @media (max-width: 760px) {
+    .fc__tip:has(.slice) { min-width: 290px; }
     .fc__svg--wide { display: none; }
     .fc__svg--compact { display: block; }
     .fc__key { flex-wrap: wrap; justify-content: flex-end; gap: 4px 12px; } /* "Llegada · Largada · Abandono" may need two lines */
 }
 .fc__val { font: 700 12px 'F1', system-ui, sans-serif; fill: #fff; }
 .fc__val--red { fill: var(--red); }
+.fc__svg--compact .fc__val { font-size: 10px; } /* a place on every season: they share a phone's width */
 .fc__dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); }

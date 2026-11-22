@@ -408,6 +408,8 @@ export default {
         firstTitle: 'Primer título',
         season: 'temporada {n}',
         count: { one: '{n} hito · {from}–{to}', other: '{n} hitos · {from}–{to}' },
+        openAll: 'Abrir todos los años',
+        closeAll: 'Cerrar todos los años',
         cols: { race: 'Carrera', gp: 'Gran Premio', what: 'Hito', result: 'Resultado', team: 'Equipo' },
         from: 'desde P{n}',
         streak: 'Racha de victorias más larga',

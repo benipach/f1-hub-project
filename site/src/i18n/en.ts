@@ -431,6 +431,8 @@ export default {
         firstTitle: 'First title',
         season: 'season {n}',
         count: { one: '{n} milestone · {from}–{to}', other: '{n} milestones · {from}–{to}' },
+        openAll: 'Open every year',
+        closeAll: 'Close every year',
         cols: { race: 'Race', gp: 'Grand Prix', what: 'Milestone', result: 'Result', team: 'Team' },
         from: 'from P{n}',
         streak: 'Longest winning streak',
