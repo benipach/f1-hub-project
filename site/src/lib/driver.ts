@@ -11,7 +11,7 @@ import { loadCareers, loadCircuits, loadCities, loadCountries, loadDrivers, load
 import type { RawCareers } from '@f1hub/shared/data/raw';
 import type { GrandPrix, SessionOf } from '@f1hub/shared/data/season';
 import { driverCutout, driverPhoto, namesIn, teamLogo } from './home';
-import { buildJourney, type Journey } from './driver-journey';
+import { buildJourney, tally, type Journey } from './driver-journey';
 
 export type DriverTeam = {
     readonly id: string;
@@ -341,22 +341,7 @@ function context(dataDir: URL): Context {
     const partial = { ...base, seasons, boards: {} as Context['boards'] };
     for (const { year } of index) seasons.set(year, buildSeason(dataDir, year, partial));
     // All-time boards, ranked as the old page ranks them: the value, then who
-    // got there first, then the id
-    // The team each driver last added to each stat with: every race of the
-    // archive in order (the rows carry the resolved team id)
-    const lastTeam = new Map<string, Partial<Record<RankStat, string>>>();
-    const mark = (id: string, k: RankStat, team: string) => { const e = lastTeam.get(id) ?? {}; e[k] = team; lastTeam.set(id, e); };
-    for (const year of [...seasons.keys()].sort((a, b) => a - b)) {
-        for (const r of seasons.get(year)!.rounds) for (const x of r.rows) {
-            mark(x.driver, 'races', x.team);
-            if (!x.out && x.pos === 1) mark(x.driver, 'wins', x.team);
-            if (!x.out && x.pos <= 3) mark(x.driver, 'podiums', x.team);
-            if (r.pole === x.driver) mark(x.driver, 'poles', x.team);
-            if (x.fl) mark(x.driver, 'fastestLaps', x.team);
-            if (x.pts > 0) mark(x.driver, 'points', x.team);
-        }
-    }
-    for (const [id, c] of Object.entries(careers)) { const last = c.titles.at(-1); if (last) mark(id, 'titles', last.teamId); }
+    // got there first, then the id; the logo is the team of his last one
     const teamOf = (teamId: string | undefined): DriverTeam | null => (teamId
         ? { id: teamId, name: base.teams[teamId]?.name ?? titleCase(teamId), color: base.teams[teamId]?.color ?? null, logo: teamLogo(base.repoRoot, teamId) }
         : null);
@@ -364,9 +349,10 @@ function context(dataDir: URL): Context {
     for (const k of [...BOARD_STATS, 'titles'] as const) {
         const val = (id: string) => (k === 'titles' ? careers[id]!.titleYears.length : careers[id]![k]);
         const when = (id: string) => careers[id]!.achievedAt[k] ?? careers[id]!.debut;
+        const last = tally(partial, k);
         boards[k] = Object.keys(careers)
             .sort((a, b) => val(b) - val(a) || when(a).localeCompare(when(b)) || a.localeCompare(b))
-            .map((id, i) => ({ id, ...nameOf(base.drivers, id), value: round1(val(id)), rank: i + 1, team: teamOf(lastTeam.get(id)?.[k]) }));
+            .map((id, i) => ({ id, ...nameOf(base.drivers, id), value: round1(val(id)), rank: i + 1, team: teamOf(last.get(id)?.team) }));
     }
     cached = { ...partial, boards };
     return cached;

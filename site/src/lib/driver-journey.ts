@@ -274,18 +274,14 @@ export function buildJourney(ctx: Context, id: string, h: JourneyHelpers): Journ
         if (m.record && /all-time record/.test(m.label)) {
             const R = m.record;
             const dayBefore = new Date(Date.parse(base.date) - 864e5).toISOString().slice(0, 10);
-            const now = allTime(ctx, R.key, base.date), before = allTime(ctx, R.key, dayBefore);
+            const now = ranked(tally(ctx, R.key, base.date)), before = ranked(tally(ctx, R.key, dayBefore));
             const prev = before.find(([d]) => d !== id);
             const top = now.slice(0, 3);
             if (!top.some(([d]) => d === id)) { const me = now.find(([d]) => d === id); if (me) top[2] = me; }
-            const teamAt = (d: string) => {
-                const era = [...(ctx.careers[d]?.eras ?? [])].reverse().find((x) => x.seasons.some((y) => y <= m.year));
-                return era ? h.teamOf(era.teamId) : null;
-            };
             items.push({
                 ...base, year: m.year, kind: 'record', stat: R.key, broke: R.kind === 'broke',
-                prev: prev ? { last: h.lastOf(prev[0]), value: prev[1] } : null,
-                table: top.map(([d, v]) => ({ id: d, last: h.lastOf(d), team: teamAt(d), value: Math.round(v * 10) / 10, rank: now.findIndex(([x]) => x === d) + 1 })),
+                prev: prev ? { last: h.lastOf(prev[0]), value: prev[1].value } : null,
+                table: top.map(([d, v]) => ({ id: d, last: h.lastOf(d), team: h.teamOf(v.team), value: Math.round(v.value * 10) / 10, rank: now.findIndex(([x]) => x === d) + 1 })),
                 then: R.current && R.peak !== undefined ? { current: true, peak: R.peak }
                     : R.after && R.peak !== undefined ? { current: false, peak: R.peak, by: h.lastOf(R.after.by), gp: gpIn(R.after.year, R.after.gp, R.after.date), year: R.after.year } : null,
             });
@@ -312,26 +308,40 @@ export function buildJourney(ctx: Context, id: string, h: JourneyHelpers): Journ
     };
 }
 
-// The all-time table of one stat on a day, from every season on file, counted
-// as build-careers counts it: a DNS is no start, points take the sprints in
-function allTime(ctx: Context, key: string, date: string): [string, number][] {
-    const tot = new Map<string, number>();
-    const add = (d: string, v: number) => { if (v) tot.set(d, (tot.get(d) ?? 0) + v); };
-    for (const [year, S] of [...ctx.seasons].sort((a, b) => a[0] - b[0])) {
-        if (year > Number(date.slice(0, 4))) break;
-        for (const r of S.rounds) {
-            if (!r.raced || r.date > date) continue;
-            for (const x of r.rows) {
-                if (key === 'points') add(x.driver, x.pts);
-                else if (key === 'starts') add(x.driver, x.out === 'DNS' ? 0 : 1);
-                else if (key === 'races') add(x.driver, 1);
-                else if (key === 'wins') add(x.driver, !x.out && x.pos === 1 ? 1 : 0);
-                else if (key === 'podiums') add(x.driver, !x.out && x.pos <= 3 ? 1 : 0);
-                else if (key === 'fastestLaps') add(x.driver, x.fl ? 1 : 0);
-            }
-            if (key === 'poles' && r.pole) add(r.pole, 1);
+// One all-time stat on a day, from every season on file, counted as
+// build-careers counts it (a DNS is no start, points take the sprints in):
+// each driver's total and the team he last added to it with. The career
+// tables and the record milestones both read it, so a logo always means
+// the same thing: where his last one came from
+export type Tally = Map<string, { value: number; team: string }>;
+export function tally(src: Pick<Context, 'seasons' | 'careers'>, key: string, until = '9999'): Tally {
+    const out: Tally = new Map();
+    const add = (d: string, v: number, team: string) => { if (v) out.set(d, { value: (out.get(d)?.value ?? 0) + v, team }); };
+    if (key === 'titles') {
+        for (const [d, c] of Object.entries(src.careers)) for (const t of c.titles) if (`${t.year}-12-31` <= until) add(d, 1, t.teamId);
+        return out;
+    }
+    const gain = (r: Round, x: Row): number => {
+        switch (key) {
+            case 'points': return x.pts;
+            case 'starts': return x.out === 'DNS' ? 0 : 1;
+            case 'races': return 1;
+            case 'wins': return !x.out && x.pos === 1 ? 1 : 0;
+            case 'podiums': return !x.out && x.pos <= 3 ? 1 : 0;
+            case 'poles': return r.pole === x.driver ? 1 : 0;
+            case 'fastestLaps': return x.fl ? 1 : 0;
+            default: return 0;
+        }
+    };
+    for (const year of [...src.seasons.keys()].sort((a, b) => a - b)) {
+        if (year > Number(until.slice(0, 4))) break;
+        for (const r of src.seasons.get(year)!.rounds) {
+            if (!r.raced || r.date > until) continue;
+            for (const x of r.rows) add(x.driver, gain(r, x), x.team);
         }
     }
-    if (key === 'titles') for (const [year, d] of ctx.champions) if (`${year}-12-31` <= date) add(d, 1);
-    return [...tot].sort((a, b) => b[1] - a[1]);
+    return out;
 }
+
+/** A tally as a table, best first. */
+const ranked = (t: Tally) => [...t].sort((a, b) => b[1].value - a[1].value);
