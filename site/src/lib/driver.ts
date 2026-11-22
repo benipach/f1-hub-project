@@ -175,6 +175,8 @@ export type DriverProfile = {
     readonly mine: Readonly<Record<RankStat, BoardRow>>;
     /** Drivers on the boards: everyone in careers.json. */
     readonly onRecord: number;
+    /** The champions' table (owner, 22/11): the top five with a title, and him in his place when he's a champion outside it; each title with the team it was won with. Empty when he has none. */
+    readonly champions: readonly (BoardRow & { readonly titles: readonly { readonly year: number; readonly team: DriverTeam }[] })[];
 };
 
 // ---- A season's rounds, once per build -------------------------------------
@@ -520,5 +522,12 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
         boards: Object.fromEntries(BOARD_STATS.map((k) => [k, ctx.boards[k].slice(0, 5)])) as Record<BoardStat, BoardRow[]>,
         mine: Object.fromEntries([...BOARD_STATS, 'titles'].map((k) => [k, ctx.boards[k as RankStat].find((x) => x.id === id)!])) as Record<RankStat, BoardRow>,
         onRecord: Object.keys(ctx.careers).length,
+        champions: c.titleYears.length === 0 ? [] : (() => {
+            const won = ctx.boards.titles.filter((r) => r.value > 0);
+            const rows = won.slice(0, 5);
+            const me = won.find((r) => r.id === id);
+            if (me && !rows.includes(me)) rows.push(me);
+            return rows.map((r) => ({ ...r, titles: ctx.careers[r.id]!.titles.map((t) => ({ year: t.year, team: teamOf(t.teamId) })) }));
+        })(),
     };
 }

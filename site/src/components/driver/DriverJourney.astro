@@ -94,7 +94,7 @@ const kindOf = (i: JourneyItem) => ({ streak: 'streak', title: 'title ms--champ'
                                             <ol class="ch__bar" style={`--n:${i.rounds.length}`}>
                                                 {i.rounds.map((r, k) => (
                                                     <li tabindex="0" class:list={[{ at: k === i.at, after: k > i.at, won: r.won }]}>
-                                                        {k === i.at && <span class="ch__at" set:html={`${flag(r.iso, '')}${r.code}`} />}
+                                                        {k === i.at && <span class="ch__at" style={`--p:${(k / Math.max(1, i.rounds.length - 1)).toFixed(3)}`} set:html={`${flag(r.iso, '')}${r.code}`} />}
                                                         <span class="ch__tip" style={`--p:${(k / Math.max(1, i.rounds.length - 1)).toFixed(3)}`}>
                                                             <span class="ch__tip-a">{fill(w.round, { n: r.round, date: day(r.date) })}</span>
                                                             <span class="ch__tip-b" set:html={`${flag(r.iso, '')}${r.gp}`} />
@@ -165,16 +165,18 @@ const kindOf = (i: JourneyItem) => ({ streak: 'streak', title: 'title ms--champ'
                                                 </div>
                                             );
                                         })() : i.kind === 'best' ? (() => {
-                                            const top = Math.max(10, i.pos);
+                                            // P1 to P10; a best result further back comes after a "…" (P1–P10 … P16), so a phone never gets 16 tight cells
+                                            const places: (number | null)[] = i.pos <= 10 ? Array.from({ length: 10 }, (_, k) => k + 1) : [...Array.from({ length: 10 }, (_, k) => k + 1), null, i.pos];
+                                            const at = places.indexOf(i.pos);
                                             return (
                                                 <div class="sp">
-                                                    <div class="sp__what"><b>{w.best}</b><small>{fill(w.withTeam, { team: i.team.name })} · {fill(i.still ? w.noWinYet : w.neverWon, { n: i.races })}</small></div>
-                                                    <div class="bs" style={`--n:${top};--b:${i.pos}`}>
+                                                    <div class="sp__what"><b>{w.best}</b><small>{fill(w.withTeam, { team: i.team.name })} · {i.pos === 1 ? fill(w.wonThere, { times: times(i.times.length), n: i.races }) : fill(i.still ? w.noWinYet : w.neverWon, { n: i.races })}</small></div>
+                                                    <div class="bs" style={`--n:${places.length};--b:${at + 1}`}>
                                                         {i.pos > 2 && <span class="bs__never">{i.pos > 3 ? <span>{w.neverReached}</span> : <span>{w.never}</span>}</span>}
                                                         <ol class="bs__pos">
-                                                            {Array.from({ length: top }, (_, k) => k + 1).map((p) => p === i.pos ? (
+                                                            {places.map((p) => p === null ? <li class="up" aria-hidden="true">…</li> : p === i.pos ? (
                                                                 <li class="me" tabindex="0">P{p}<small>{times(i.times.length)}</small>
-                                                                    <span class="bs__tip" style={`--p:${((i.pos - 1) / (top - 1)).toFixed(3)}`}>
+                                                                    <span class="bs__tip" style={`--p:${(at / (places.length - 1)).toFixed(3)}`}>
                                                                         <span class="ch__tip-a">{fill(w.bestWith, { pos: i.pos, team: i.team.name, times: times(i.times.length) })}</span>
                                                                         {i.times.map((r) => <span class="bs__tip-r"><Fragment set:html={flag(r.iso, '')} />{r.gp} <em>{r.year}{r.grid ? ` · ${fill(w.from, { n: r.grid })}` : ''}</em></span>)}
                                                                     </span>

@@ -1,7 +1,9 @@
 ---
 // The driver profile's section 5, career numbers (approved 20/11/2026,
 // mockup in the owner's copy: _design/driver-f1/stats.html): where he stands
-// all time. His titles first (for a champion), then the six boards together,
+// all time. For a champion, the champions' table first (owner, 22/11): the
+// top five and him, each title a mark with the team's logo and the year, all
+// the same width so the years line up. Then the six boards together,
 // the homepage standings' tables, three a row: the top five, and him (red
 // tint) in his place after "⋮" when he isn't in it. Each row's logo is the team
 // that driver last added to that stat with (lib/driver.ts BoardRow.team).
@@ -17,11 +19,10 @@ interface Props {
 }
 
 const { driver: D } = Astro.props;
-const { t, fill, plural, ord, intl } = useI18n(Astro.currentLocale);
+const { t, fill, ord, intl } = useI18n(Astro.currentLocale);
 const w = t.driverStats;
 const num = new Intl.NumberFormat(intl);
 const n = (v: number) => num.format(v);
-const titleSeasons = D.seasons.filter((s) => s.champion);
 // The mockup's order: what he won first, then how much and how long
 const ORDER = ['wins', 'podiums', 'poles', 'fastestLaps', 'points', 'races'] as const satisfies readonly (typeof BOARD_STATS)[number][];
 const boards = ORDER.map((k) => ({ k, top: D.boards[k], me: D.mine[k] })).filter((b) => b.me.value > 0);
@@ -36,18 +37,22 @@ const list = new Intl.ListFormat(intl, { type: 'conjunction' }).format(zero);
             <p class="sec-intro">{fill(w.intro, { name: D.last, n: D.onRecord })}</p>
         </div>
 
-        {titleSeasons.length > 0 && (
+        {D.champions.length > 0 && (
             <div class="dstats__col dstats__titles">
-                <p class="col-h"><span>{fill(w.titles, { rank: ord(D.mine.titles.rank) })}</span><span>{titleSeasons.length}</span></p>
-                <div class="tt">
-                    {titleSeasons.map((s) => (
-                        <div class="tt__y">
-                            <b>{s.year}</b>
-                            <span class="tt__team"><TeamMark logo={s.teams.at(-1)!.logo} color={s.teams.at(-1)!.color} size={22} />{s.teams.at(-1)!.name}</span>
-                            <span class="tt__s">{plural(w.wins, s.wins)} · {fill(w.pts, { n: n(s.pts) })}</span>
+                <p class="col-h"><span>{w.titles}</span><span><b class="mine">{D.mine.titles.value}</b> · {fill(w.allTime, { rank: ord(D.mine.titles.rank) })}</span></p>
+                {D.champions.map((r, i) => (
+                    <Fragment>
+                        {i > 0 && r.rank > D.champions[i - 1]!.rank + 1 && <div class="br br--gap" aria-hidden="true"><span class="br__pos">⋮</span></div>}
+                        <div class:list={['tb', { 'tb--me': r.id === D.id }]}>
+                            <span class="br__pos">{r.rank}</span>
+                            <span class="br__name">{r.last}</span>
+                            <ol class="tb__marks">
+                                {r.titles.map((x) => <li><TeamMark logo={x.team.logo} color={x.team.color} size={18} />{x.year}</li>)}
+                            </ol>
+                            <span class="br__v">{r.value}</span>
                         </div>
-                    ))}
-                </div>
+                    </Fragment>
+                ))}
             </div>
         )}
 

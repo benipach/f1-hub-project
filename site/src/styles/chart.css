@@ -35,7 +35,7 @@
 @media (max-width: 760px) {
     .fc__svg--wide { display: none; }
     .fc__svg--compact { display: block; }
-    .fc__key { gap: 12px; }
+    .fc__key { flex-wrap: wrap; justify-content: flex-end; gap: 4px 12px; } /* "Llegada · Largada · Abandono" may need two lines */
 }
 .fc__val { font: 700 12px 'F1', system-ui, sans-serif; fill: #fff; }
 .fc__val--red { fill: var(--red); }

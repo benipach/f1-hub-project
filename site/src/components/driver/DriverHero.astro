@@ -73,7 +73,7 @@ const last = D.seasons.flatMap((s) => s.rounds.filter((r) => !r.upcoming && !r.m
                     <p class="kicker">
                         {h.kicker}{age && ` · ${age}`}{D.code && ` · ${D.code}`} · {D.active ? <span class="on">{h.onTheGrid}</span> : status}
                     </p>
-                    <h1 class="gp">{D.first}<br />{D.last}</h1>
+                    <h1 class="gp" style={`--len:${Math.max(D.first.length, D.last.length)}`}>{D.first}<br />{D.last}</h1>
                     <div class="tags">
                         {D.nationality && (
                             <div class="tag">

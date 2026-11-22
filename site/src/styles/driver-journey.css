@@ -178,7 +178,7 @@
 .djourney .ch__bar li.won { background: #fff; }
 .djourney .ch__bar li.after { opacity: .3; }
 .djourney .ch__bar li.at { height: 18px; background: var(--red); opacity: 1; }
-.djourney .ch__at { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 5px; font: 700 11px 'F1'; text-transform: uppercase; color: #fff; white-space: nowrap; }
+.djourney .ch__at { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(calc(var(--p, .5) * -100%)); /* slides like the cards: the last round's label stays inside */ display: flex; align-items: center; gap: 5px; font: 700 11px 'F1'; text-transform: uppercase; color: #fff; white-space: nowrap; }
 .djourney .ch__at img { width: 20px; height: auto; border-radius: 2px; }
 /* the bars answer a hover (or a tap, on the phone): the whole column is the target */
 .djourney .ch__bar li { outline: none; cursor: default; }
@@ -219,7 +219,9 @@
     .djourney .ms__team { display: none; }
 }
 @media (max-width: 760px) {
-    .djourney .sec-facts { display: grid; grid-template-columns: 1fr 1fr; row-gap: 12px; }
+    .djourney .sec-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
+    .djourney .sec-facts div { padding-right: 10px; }
+    .djourney .sec-facts dd { font-size: 22px; } /* "Carrera 18" two a line on a phone */
     .djourney .sec-facts div:nth-child(odd) { padding-left: 0; border-left: 0; }
     .djourney .yr { grid-template-columns: minmax(0, 1fr); }
     .djourney .yr__y { padding: 14px 0 6px; font-size: 24px; }
@@ -230,14 +232,17 @@
     .djourney .stk__line { --fh: 12px; }
     .djourney .stk__line img, .djourney .stk__noflag { width: 18px; }
     .djourney .stk__line span { font-size: 9px; }
-    .djourney .ch__tip, .djourney .fr__tip { max-width: 290px; white-space: normal; } /* never wider than the drawing it slides along */
+    .djourney .ch__tip, .djourney .fr__tip, .djourney .bs__tip { max-width: 290px; min-width: 0; white-space: normal; } /* never wider than the drawing it slides along */
     .djourney .ms--firsts .fr, .djourney .ms--spell .sp, .djourney .ms--best .sp, .djourney .ms--rec .sp { grid-column: 1 / -1; margin-top: 8px; }
     .djourney .fr__track { max-width: none; }
     .djourney .ms--streak .stk, .djourney .ms--champ .ch { grid-column: 1 / -1; grid-row: 2; margin-top: 10px; }
     .djourney .ch__n { font-size: 44px; }
     .djourney .ch__head > span b { font-size: 17px; }
     .djourney .ch__facts dd { font-size: 18px; }
+    .djourney .ch__facts div { margin-left: 12px; padding-left: 12px; min-width: 0; }
+    .djourney .ch__facts dt { white-space: normal; } /* "sobre Schumacher" may take two lines */
     .djourney .ch__bar { gap: 2px; }
+    .djourney .bs__pos li small { white-space: normal; line-height: 1.1; } /* "dos veces" under P14 of 14 */
     .djourney .stk__full { display: none; }
     .djourney .stk__code { display: inline; }
 }

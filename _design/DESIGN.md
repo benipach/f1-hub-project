@@ -205,7 +205,11 @@ profile stays at `/descartado/poster/driver/<id>/` for reference):
   the red tint.
 - **Career numbers** (`driver/DriverStats.astro`, `styles/driver-stats.css`):
   where he stands all time, with an intro instead of a number row. For a
-  champion, his titles first (the year big in red, team, wins, points). Then
+  champion, **the champions' table first** (owner, 22/11), as wide as the
+  section: the top five and him in his place, **each title a mark with the
+  logo of the team it was won with and the year, every mark the same width so
+  the years line up row to row**, thin dividers between them (no pills); his
+  row in the red tint, his years white and bigger. Then
   **the six boards together, three a row, the standings' tables** (no toggle,
   no script): wins, podiums, poles, fastest laps, points, races; the top five
   and him in his place (red tint, after "⋮" when out of it); the column header

@@ -6,15 +6,22 @@
 .dstats .col-h { margin-bottom: 8px; }
 .dstats .col-h .mine { color: #fff; }
 
-/* the titles: one cell per title, the year big and red */
+/* the titles: the champions' table as wide as the section (owner, 22/11), a
+   row each, every title a mark (that team's logo and the year), all the same
+   width so the years line up row to row; his row and years stand out */
 .dstats__titles { margin-top: 40px; }
-.tt { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
-.tt__y { display: grid; gap: 4px; padding: 10px 20px 12px 16px; border-left: 1px solid var(--rule); }
-.tt__y:first-child { padding-left: 0; border-left: 0; }
-.tt__y b { font: 44px/1 'F1 Black'; color: var(--red); }
-.tt__team { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; text-transform: uppercase; color: #fff; }
-.tt__team .team-mark { width: 22px; height: 22px; object-fit: contain; }
-.tt__s { font-size: 12px; text-transform: uppercase; color: var(--dim); }
+.tb {
+    display: grid; grid-template-columns: 30px 200px minmax(0, 1fr) 40px; align-items: center; gap: 12px;
+    min-height: 48px; padding: 0 4px; border-bottom: 1px solid var(--line); font-weight: 700; font-size: 15px; color: #fff;
+}
+.tb:last-child { border-bottom: 0; }
+.tb--me { background: rgba(225, 6, 0, .12); }
+.tb .br__v { font-size: 20px; }
+.tb__marks { display: flex; flex-wrap: wrap; row-gap: 6px; margin: 0; padding: 8px 0; list-style: none; }
+.tb__marks li { display: flex; flex: 0 0 104px; align-items: center; gap: 7px; padding: 0 14px; border-left: 1px solid var(--rule); font-weight: 700; font-size: 14px; color: var(--dim); }
+.tb__marks li:first-child { flex-basis: 90px; padding-left: 0; border-left: 0; }
+.tb__marks .team-mark { width: 18px; height: 18px; object-fit: contain; }
+.tb--me .tb__marks li { font-size: 16px; color: #fff; }
 
 /* the boards: the standings' tables, three a row */
 .dstats__boards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 20px; margin-top: 40px; }
@@ -37,6 +44,8 @@
 @media (max-width: 760px) {
     .dstats { padding: 48px 0 56px; }
     .dstats__boards { grid-template-columns: minmax(0, 1fr); }
-    .tt { grid-template-columns: 1fr 1fr; }
-    .tt__y:nth-child(odd) { padding-left: 0; border-left: 0; }
+    .tb { grid-template-columns: 26px minmax(0, 1fr) 32px; padding: 8px 4px; }
+    .tb__marks { grid-column: 2 / -1; grid-row: 2; gap: 6px 14px; padding-top: 4px; } /* no dividers: a wrapped line must not start with one */
+    .tb__marks li, .tb__marks li:first-child { flex-basis: 70px; padding: 0; border-left: 0; font-size: 13px; }
+    .tb--me .tb__marks li { font-size: 14px; }
 }

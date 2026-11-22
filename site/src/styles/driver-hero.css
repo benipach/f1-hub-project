@@ -51,7 +51,8 @@
     .cutout { display: none; }
     .ident--driver .who { grid-template-columns: minmax(0, 1fr); }
     .ident--driver .round { grid-row: auto; margin: 0 0 14px; }
-    .ident--driver .gp { font-size: min(48px, 11.5vw); }
+    /* the longer line sets the size, so "SCHIATTARELLA" fits as well as "ALBON" (a letter is up to ~.86 em wide) */
+    .ident--driver .gp { font-size: min(48px, 11.5vw, calc((100vw - 40px) / (var(--len, 8) * .86))); }
     .tags { flex-direction: column; }
     .tag { padding: 0; border-left: 0; }
     .tag__flag, .tag .team-mark { width: 48px; height: 36px; object-fit: contain; object-position: left center; }

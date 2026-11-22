@@ -70,6 +70,6 @@ img { display: block; }
 @media (max-width: 760px) {
     .sec-head { grid-template-columns: minmax(0, 1fr); gap: 24px; }
     .sec-head--intro { gap: 16px; }
-    .sec-title { font-size: 48px; }
+    .sec-title { font-size: min(48px, 11vw); } /* "TEMPORADA", the longest word in a title, fits a 360 px phone */
     .sec-facts div { padding-right: 18px; }
 }
