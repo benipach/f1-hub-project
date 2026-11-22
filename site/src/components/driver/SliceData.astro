@@ -1,0 +1,34 @@
+---
+// The standings slices a chart's hover card shows (lib/chart-tip.ts draws
+// them, in Standings.astro's markup), packed small: one JSON per chart, names
+// and teams written once, each team's mark rendered once as a <template> (its
+// logo goes through astro:assets). A chart with a slice table per race would
+// otherwise carry thousands of hidden rows (owner, 22/11: the form chart's
+// card shows the race and the championship after it).
+import '../../styles/standings-slice.css';
+import TeamMark from '../TeamMark.astro';
+import type { DriverTeam } from '../../lib/driver';
+import type { StandingRow } from '../../lib/driver-journey';
+
+interface Props {
+    /** By the hit's data-k: its tables, in the order of `heads`. */
+    tables: Readonly<Record<string, readonly (readonly StandingRow[])[]>>;
+    /** A heading per table ('' for none). */
+    heads: readonly string[];
+    /** Per table: show the places each one moved. */
+    moves: readonly boolean[];
+}
+
+const { tables, heads, moves } = Astro.props;
+const names: string[] = [], teams: DriverTeam[] = [];
+const at = <T,>(list: T[], v: T, key: (x: T) => string) => { const i = list.findIndex((x) => key(x) === key(v)); return i >= 0 ? i : list.push(v) - 1; };
+// A row: [pos, name, team (-1 none), points (null blank), gap, moved, me 0/1, note]
+const r = Object.fromEntries(Object.entries(tables).map(([k, list]) => [k, list.map((rows) => rows.map((s) => [
+    s.pos, at(names, s.last, (x) => x), s.team && (s.team.logo || s.team.color) ? at(teams, s.team, (x) => x.id) : -1,
+    s.note && !s.pts ? null : s.pts, s.gap, s.move, s.me ? 1 : 0, s.note ?? '',
+]))]));
+const json = JSON.stringify({ h: heads, m: moves, n: names, r }).replace(/</g, '\\u003c');
+---
+
+<script type="application/json" class="fc__slices" set:html={json} />
+{teams.map((tm, i) => <template data-team={i}><TeamMark logo={tm.logo} color={tm.color} size={19} /></template>)}

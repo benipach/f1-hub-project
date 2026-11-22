@@ -360,6 +360,8 @@ export default {
         beyond: 'Beyond F1',
     },
     driverSeason: {
+        sliceRace: 'Race',
+        sliceChamp: 'Championship',
         form: 'Form · grid to finish',
         finish: 'Finish',
         grid: 'Grid',

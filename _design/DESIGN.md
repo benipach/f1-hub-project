@@ -193,6 +193,13 @@ profile stays at `/descartado/poster/driver/<id>/` for reference):
   since), a win as a red dot, a retirement as a red × where it was
   classified; a legend; a wide drawing and a taller one for phones; hovering
   a race shows our own card (round, grid → finish, places, points, sprint).
+- **The charts' hover cards** (`lib/chart-tip.ts`, `driver/SliceData.astro`):
+  the card fades in, then glides from one point to the next; the hovered dot
+  grows. Standings slices (two ahead, two behind) are packed per chart as a
+  small JSON and drawn on hover in `Standings.astro`'s markup: the form chart
+  shows the race (places from the grid, a retirement's code) and the
+  championship after it side by side (stacked on a phone); the season-by-season
+  chart the final table.
 - **Season by season** (`driver/DriverCareer.astro`, `driver/CareerChart.astro`,
   `styles/driver-career.css`): header with titles (red), top-3 seasons, best
   finish, seasons; the career chart (final championship position per year,

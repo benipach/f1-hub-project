@@ -29,8 +29,13 @@
     opacity: 0; visibility: hidden; transform: translateY(calc(-100% + 4px));
 }
 .fc__tip.is-on { opacity: 1; visibility: visible; transform: translateY(-100%); }
+/* the slices (lib/chart-tip.ts): one under the lines, or two side by side (the race, the championship after it) */
 .fc__tip:has(.slice) { min-width: 320px; }
+.fc__tip:has(.fc__tip-s + .fc__tip-s) { min-width: 664px; }
+.fc__tip-t { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0 18px; }
 .fc__tip-t:empty { display: none; }
+.fc__tip-s { display: grid; min-width: 0; }
+.fc__tip-h { margin-top: 8px; font-size: 11px; text-transform: uppercase; color: var(--dim); }
 /* the hovered season's dot grows */
 .fc__f { transform-box: fill-box; transform-origin: center; }
 .fc__f.is-on { transform: scale(1.5); }
@@ -48,7 +53,8 @@
 .fc__tip[data-dir='up'] .fc__tip-c { color: var(--green); }
 .fc__tip[data-dir='down'] .fc__tip-c, .fc__tip[data-dir='out'] .fc__tip-c { color: var(--red); }
 @media (max-width: 760px) {
-    .fc__tip:has(.slice) { min-width: 290px; }
+    .fc__tip:has(.slice), .fc__tip:has(.fc__tip-s + .fc__tip-s) { min-width: 290px; }
+    .fc__tip-t { grid-auto-flow: row; } /* a phone: the two one under the other */
     .fc__svg--wide { display: none; }
     .fc__svg--compact { display: block; }
     .fc__key { flex-wrap: wrap; justify-content: flex-end; gap: 4px 12px; } /* "Llegada · Largada · Abandono" may need two lines */

@@ -9,7 +9,7 @@
 import '../../styles/chart.css';
 import type { DriverSeason } from '../../lib/driver';
 import { curvePath } from '../../lib/curve';
-import Standings from './Standings.astro';
+import SliceData from './SliceData.astro';
 import { useI18n } from '../../i18n';
 
 interface Props {
@@ -81,7 +81,7 @@ const teamsOf = (s: DriverSeason) => s.teams.map((tm) => tm.name).join(' · ');
                 ))}
             </svg>
         ))}
-        {seasons.map((s) => s.table.length > 1 && <template data-k={s.year}><Standings rows={s.table} /></template>)}
+        <SliceData tables={Object.fromEntries(seasons.flatMap((s) => (s.table.length > 1 ? [[s.year, [s.table]]] : [])))} heads={['']} moves={[false]} />
         <div class="fc__tip"><span class="fc__tip-a"></span><b class="fc__tip-b"></b><span class="fc__tip-c"></span><span class="fc__tip-d"></span><span class="fc__tip-t"></span></div>
     </div>
 </div>

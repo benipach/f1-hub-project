@@ -337,6 +337,8 @@ export default {
         beyond: 'Después de la F1',
     },
     driverSeason: {
+        sliceRace: 'Carrera',
+        sliceChamp: 'Campeonato',
         form: 'Forma · de la largada a la llegada',
         finish: 'Llegada',
         grid: 'Largada',

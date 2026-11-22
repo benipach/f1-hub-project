@@ -45,7 +45,7 @@ export type JourneyRace = {
 };
 
 /** One line of the championship after a race: gap to the leader, places moved in that race (0 = same). */
-export type StandingRow = { readonly pos: number; readonly last: string; readonly team: DriverTeam | null; readonly pts: number; readonly gap: number; readonly move: number; readonly me: boolean };
+export type StandingRow = { readonly pos: number; readonly last: string; readonly team: DriverTeam | null; readonly pts: number; readonly gap: number; readonly move: number; readonly me: boolean; readonly note?: string };
 
 export type JourneyItem = JourneyBase & (
     | { readonly kind: 'streak'; readonly length: number; readonly run: readonly JourneyRace[]; readonly startNo: number; readonly startDate: string }

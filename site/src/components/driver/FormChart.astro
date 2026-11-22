@@ -9,10 +9,12 @@
 //
 // Two drawings of the same chart: a wide one and, on a phone, a taller one,
 // so the text doesn't shrink. Hovering a race shows its card (our own, never
-// the browser's title); the script is shared by every chart on the page.
+// the browser's title): the race around him and the championship after it,
+// two ahead and two behind (SliceData); the script is shared by every chart.
 import type { DriverRound, DriverSeason } from '../../lib/driver';
 import { useI18n } from '../../i18n';
 import { curvePath } from '../../lib/curve';
+import SliceData from './SliceData.astro';
 import '../../styles/chart.css';
 
 interface Props {
@@ -88,17 +90,18 @@ const charts = [draw(false), draw(true)];
                     <>
                         {i % c.every === 0 && <text x={c.x(i)} y={c.H - 6} text-anchor="middle" class:list={['fc__lab', { 'fc__lab--dim': r.upcoming || r.missed }]}>{r.round}</text>}
                         {!r.upcoming && !r.missed && r.grid && <circle cx={c.x(i)} cy={c.y(r.grid)} r="3.5" class="fc__g" />}
-                        {!r.upcoming && !r.missed && r.out && <><circle cx={c.x(i)} cy={c.y(c.outPos(r))} r="4.5" class="fc__f" /><path d={`M${c.x(i) - 3} ${c.y(c.outPos(r)) - 3}l6 6m0 -6l-6 6`} class="fc__x" /></>}
-                        {!r.upcoming && !r.missed && !r.out && r.pos && <circle cx={c.x(i)} cy={c.y(r.pos)} r="4.5" class:list={['fc__f', { 'fc__f--win': r.pos === 1 }]} />}
+                        {!r.upcoming && !r.missed && r.out && <><circle cx={c.x(i)} cy={c.y(c.outPos(r))} r="4.5" class="fc__f" data-k={i} /><path d={`M${c.x(i) - 3} ${c.y(c.outPos(r)) - 3}l6 6m0 -6l-6 6`} class="fc__x" /></>}
+                        {!r.upcoming && !r.missed && !r.out && r.pos && <circle cx={c.x(i)} cy={c.y(r.pos)} r="4.5" class:list={['fc__f', { 'fc__f--win': r.pos === 1 }]} data-k={i} />}
                     </>
                 ))}
                 {tips.map((tip, i) => tip && (
                     <rect class="fc__hit" x={c.x(i) - c.step / 2} y="0" width={c.step} height={c.H - c.padB}
-                        data-a={tip.a} data-b={tip.b} data-c={tip.c} data-d={tip.d} data-dir={tip.dir} />
+                        data-k={i} data-a={tip.a} data-b={tip.b} data-c={tip.c} data-d={tip.d} data-dir={tip.dir} />
                 ))}
             </svg>
         ))}
-        <div class="fc__tip"><span class="fc__tip-a"></span><b class="fc__tip-b"></b><span class="fc__tip-c"></span><span class="fc__tip-d"></span></div>
+        <SliceData tables={Object.fromEntries(rs.flatMap((r, i) => (r.race.length ? [[i, [r.race, r.champ]]] : [])))} heads={[w.sliceRace, w.sliceChamp]} moves={[true, true]} />
+        <div class="fc__tip"><span class="fc__tip-a"></span><b class="fc__tip-b"></b><span class="fc__tip-c"></span><span class="fc__tip-d"></span><span class="fc__tip-t"></span></div>
     </div>
 </div>
 
