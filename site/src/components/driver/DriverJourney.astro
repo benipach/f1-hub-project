@@ -18,6 +18,7 @@
 // hover only (owner, 22/11).
 import '../../styles/hero.css';
 import '../../styles/driver-journey.css';
+import Places from './Places.astro';
 import TeamMark from '../TeamMark.astro';
 import { useI18n } from '../../i18n';
 import { href } from '../../lib/paths';
@@ -101,7 +102,19 @@ const kindOf = (i: JourneyItem) => ({ streak: 'streak', title: 'title ms--champ'
                                                             <span class:list={['ch__tip-c', { out: !!r.out, win: r.won }]}>
                                                                 {r.out === 'DNS' && !r.grid ? w.noStart : r.out ? `${r.out}${r.grid ? ` · ${fill(w.from, { n: r.grid })}` : ''}` : `P${r.pos}${r.grid ? ` ${fill(w.from, { n: r.grid })}` : ''}`}{r.sprint ? ` · ${fill(w.sprintPos, { n: r.sprint })}` : ''}<em>{fill(w.pts, { n: n(r.pts) })}</em>
                                                             </span>
-                                                            <span class="ch__tip-d">{k === i.at ? <b>{i.sprint ? w.decidedSprint : w.decided}</b> : k > i.at ? fill(w.champ, { n: n(r.lead), name: r.other }) : r.lead > 0 ? fill(w.leads, { n: n(r.lead), name: r.other }) : r.lead < 0 ? fill(w.behind, { n: n(-r.lead), name: r.other }) : fill(w.level, { name: r.other })}</span>
+                                                            {k === i.at && <span class="ch__tip-d"><b>{i.sprint ? w.decidedSprint : w.decided}</b></span>}
+                                                            <span class="ch__st">
+                                                                {r.table.map((s) => (
+                                                                    <span class:list={['ch__st-r', { me: s.me }]}>
+                                                                        <span class="ch__st-p">{s.pos}</span>
+                                                                        <span class="ch__st-m"><Places delta={s.move || null} /></span>
+                                                                        {s.team && (s.team.logo || s.team.color) ? <TeamMark logo={s.team.logo} color={s.team.color} size={14} /> : <span></span>}
+                                                                        <span class="ch__st-n">{s.last}</span>
+                                                                        <span class="ch__st-v">{n(s.pts)}</span>
+                                                                        <span class="ch__st-g">{s.gap > 0 ? `-${n(s.gap)}` : ''}</span>
+                                                                    </span>
+                                                                ))}
+                                                            </span>
                                                         </span>
                                                     </li>
                                                 ))}

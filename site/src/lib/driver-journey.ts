@@ -44,6 +44,9 @@ export type JourneyRace = {
     readonly won: boolean;
 };
 
+/** One line of the championship after a race: gap to the leader, places moved in that race (0 = same). */
+export type StandingRow = { readonly pos: number; readonly last: string; readonly team: DriverTeam | null; readonly pts: number; readonly gap: number; readonly move: number; readonly me: boolean };
+
 export type JourneyItem = JourneyBase & (
     | { readonly kind: 'streak'; readonly length: number; readonly run: readonly JourneyRace[]; readonly startNo: number; readonly startDate: string }
     | {
@@ -56,7 +59,8 @@ export type JourneyItem = JourneyBase & (
         readonly sprint: boolean;
         readonly toGo: number;
         readonly rival: { readonly last: string; readonly team: DriverTeam | null; readonly margin: number };
-        readonly rounds: readonly (JourneyRace & { readonly lead: number; readonly other: string })[];
+        /** After each race: the championship around him (the one ahead, him, the one behind; the top three when he leads or is 2nd). */
+        readonly rounds: readonly (JourneyRace & { readonly table: readonly StandingRow[] })[];
     }
     | {
         readonly kind: 'firsts';
@@ -205,15 +209,22 @@ export function buildJourney(ctx: Context, id: string, h: JourneyHelpers): Journ
             ]);
             const most = { sprint: 0, race: 0 };
             for (const v of ev) for (const x of v.r.rows) { const k = v.sprint ? 'sprint' : 'race'; most[k] = Math.max(most[k], v.pts(x)); }
-            const tot = new Map<string, number>();
-            const after = new Map<string, { lead: number; other: string }>();
+            const tot = new Map<string, number>(), car = new Map<string, string>();
+            const after = new Map<string, StandingRow[]>();
+            let was = new Map<string, number>();
             let at: (typeof ev)[number] | null = null;
             ev.forEach((v, i) => {
-                for (const x of v.r.rows) tot.set(x.driver, (tot.get(x.driver) ?? 0) + v.pts(x));
+                for (const x of v.r.rows) { tot.set(x.driver, (tot.get(x.driver) ?? 0) + v.pts(x)); car.set(x.driver, x.team); }
                 const st = [...tot].sort((a, b) => b[1] - a[1]);
                 if (!v.sprint) {
-                    const other = st[0]?.[0] === id ? st[1] : st[0];
-                    if (other) after.set(v.r.id, { lead: (tot.get(id) ?? 0) - other[1], other: h.lastOf(other[0]) });
+                    const me = st.findIndex(([d]) => d === id);
+                    const from = Math.max(0, Math.min(me - 1, st.length - 3));
+                    const lead = st[0]?.[1] ?? 0;
+                    after.set(v.r.id, st.slice(from, from + 3).map(([d, p]) => {
+                        const pos = st.findIndex(([x]) => x === d) + 1;
+                        return { pos, last: h.lastOf(d), team: car.has(d) ? h.teamOf(car.get(d)!) : null, pts: Math.round(p * 10) / 10, gap: Math.round((lead - p) * 10) / 10, move: was.has(d) ? was.get(d)! - pos : 0, me: d === id };
+                    }));
+                    was = new Map(st.map(([d], k) => [d, k + 1]));
                 }
                 if (at) return;
                 const left = ev.slice(i + 1).reduce((a, x) => a + (x.sprint ? most.sprint : most.race), 0);
@@ -235,11 +246,10 @@ export function buildJourney(ctx: Context, id: string, h: JourneyHelpers): Journ
                 rival: { last: second ? h.lastOf(second[0]) : '', team: rTeam ? h.teamOf(rTeam) : null, margin: Math.round(((tot.get(id) ?? 0) - (second?.[1] ?? 0)) * 10) / 10 },
                 rounds: rounds.map((r) => {
                     const x = mine(r);
-                    const a = after.get(r.id) ?? { lead: 0, other: '' };
                     return {
                         year: m.year, round: r.round, date: r.date, gp: h.gpOf(r), short: h.shortOf(r), code: r.code, iso: r.iso,
                         grid: x?.grid ?? null, pos: x?.pos ?? 0, out: x ? x.out : 'DNS', pts: x?.pts ?? 0, sprint: x?.sprint?.pos ?? null,
-                        won: !!x && !x.out && x.pos === 1, lead: Math.round(a.lead * 10) / 10, other: a.other,
+                        won: !!x && !x.out && x.pos === 1, table: after.get(r.id) ?? [],
                     };
                 }),
             });

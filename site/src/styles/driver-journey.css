@@ -198,6 +198,23 @@
 .djourney .ch__tip-c.out { color: var(--red); }
 .djourney .ch__tip-d { font-size: 12px; color: var(--text); }
 .djourney .ch__tip-d b { font-weight: 700; color: var(--red); text-transform: uppercase; }
+/* the championship after that race, as the Career numbers tables, scaled to the card's 13px
+   (15 → 13: logo 22 → 19, gap 12 → 10, row 38 → 33): pos · places moved (only when he
+   moved) · logo · NAME · pts · gap to the leader */
+.djourney .ch__tip:has(.ch__st) { min-width: 320px; }
+.djourney .ch__st { display: grid; margin-top: 6px; border-top: 1px solid var(--line); }
+.djourney .ch__st-r {
+    display: grid; grid-template-columns: 26px 22px 19px minmax(0, 1fr) auto 34px; align-items: center; gap: 10px;
+    height: 33px; padding: 0 4px; border-bottom: 1px solid var(--line); font-weight: 700; font-size: 13px; color: #fff; font-variant-numeric: tabular-nums;
+}
+.djourney .ch__st-r:last-child { border-bottom: 0; }
+.djourney .ch__st-r.me { background: rgba(225, 6, 0, .14); }
+.djourney .ch__st-r .team-mark { width: 19px; height: 19px; object-fit: contain; }
+.djourney .ch__st-p, .djourney .ch__st-v, .djourney .ch__st-g { text-align: right; }
+.djourney .ch__st-m .places { font-size: 11px; gap: 3px; }
+.djourney .ch__st-m .places .tri { width: 7px; height: 6px; }
+.djourney .ch__st-n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-transform: uppercase; }
+.djourney .ch__st-g { font-weight: 400; color: var(--dim); }
 .djourney .ch__key { grid-column: 1 / -1; display: flex; gap: 16px; margin-top: 8px; font: 11px 'F1'; text-transform: uppercase; color: var(--dim); }
 .djourney .ch__key span { display: flex; align-items: center; gap: 6px; }
 .djourney .ch__key span:last-child { margin-left: auto; }
@@ -219,6 +236,9 @@
     .djourney .ms__team { display: none; }
 }
 @media (max-width: 760px) {
+    .djourney .ch__tip:has(.ch__st) { min-width: 290px; } /* as wide as the phone cards go */
+    .djourney .ch__st-r { grid-template-columns: 16px 20px 17px minmax(0, 1fr) auto 28px; gap: 7px; height: 30px; font-size: 12px; } /* the same ratios at 12px */
+    .djourney .ch__st-r .team-mark { width: 17px; height: 17px; }
     .djourney .sec-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
     .djourney .sec-facts div { padding-right: 10px; }
     .djourney .sec-facts dd { font-size: 22px; } /* "Carrera 18" two a line on a phone */
