@@ -13,6 +13,7 @@
 // two ahead and two behind (SliceData); the script is shared by every chart.
 import type { DriverRound, DriverSeason } from '../../lib/driver';
 import { useI18n } from '../../i18n';
+import { href } from '../../lib/paths';
 import { curvePath } from '../../lib/curve';
 import SliceData from './SliceData.astro';
 import '../../styles/chart.css';
@@ -22,7 +23,7 @@ interface Props {
 }
 
 const { season: s } = Astro.props;
-const { t, fill, plural, intl } = useI18n(Astro.currentLocale);
+const { t, fill, intl } = useI18n(Astro.currentLocale);
 const w = t.driverSeason;
 const num = new Intl.NumberFormat(intl);
 const rs = s.rounds;
@@ -51,17 +52,18 @@ function draw(compact: boolean) {
     return { W, H, padL, padB, every, step, x, y, outPos, finish: line('pos'), grid: line('grid'), ticks };
 }
 
-// The hover card's lines, written at build time
+// The hover card's head, written at build time (owner, 22/11: as the milestones'
+// cards): "Round 7 · 7 Jun", then the flag and the Grand Prix; the race itself is
+// in the card's table (places from the grid, points), the sprint in a line
+const dayFmt = new Intl.DateTimeFormat(intl, { day: 'numeric', month: 'short', timeZone: 'UTC' });
+const day = (iso: string) => dayFmt.format(new Date(`${iso}T12:00:00Z`)).replace('.', '');
 const tipOf = (r: DriverRound) => {
-    const d = !r.out && r.grid && r.pos ? r.grid - r.pos : null;
-    const places = r.out ? (r.pos ? fill(w.classified, { n: r.pos }) : '') : d === null ? '' : d > 0 ? plural(w.up, d) : d < 0 ? plural(w.down, -d) : w.same;
     const sp = r.sprint;
     return {
-        a: `R${r.round} · ${r.short}`,
-        b: `${r.grid ? `P${r.grid}` : '—'} → ${r.out ?? `P${r.pos}`}`,
-        c: [places, r.racePts ? fill(w.ptsN, { n: num.format(r.racePts) }) : w.noPoints].filter(Boolean).join(' · '),
+        a: fill(t.driverJourney.round, { n: r.round, date: day(r.date) }),
+        b: r.gp,
+        f: r.iso ? href(`img/flags/${r.iso.toLowerCase()}.svg`) : '',
         d: sp ? `${w.cols.sprint} · ${sp.grid ? `P${sp.grid}` : '—'} → ${sp.out ?? `P${sp.pos}`}${sp.pts ? ` · ${fill(w.ptsN, { n: num.format(sp.pts) })}` : ''}` : '',
-        dir: d === null ? (r.out ? 'out' : '') : d > 0 ? 'up' : d < 0 ? 'down' : '',
     };
 };
 const tips = rs.map((r) => (r.upcoming || r.missed ? null : tipOf(r)));
@@ -96,7 +98,7 @@ const charts = [draw(false), draw(true)];
                 ))}
                 {tips.map((tip, i) => tip && (
                     <rect class="fc__hit" x={c.x(i) - c.step / 2} y="0" width={c.step} height={c.H - c.padB}
-                        data-k={i} data-a={tip.a} data-b={tip.b} data-c={tip.c} data-d={tip.d} data-dir={tip.dir} />
+                        data-k={i} data-a={tip.a} data-b={tip.b} data-f={tip.f} data-d={tip.d} />
                 ))}
             </svg>
         ))}

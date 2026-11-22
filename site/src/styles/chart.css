@@ -31,11 +31,13 @@
 .fc__tip.is-on { opacity: 1; visibility: visible; transform: translateY(-100%); }
 /* the slices (lib/chart-tip.ts): one under the lines, or two side by side (the race, the championship after it) */
 .fc__tip:has(.slice) { min-width: 320px; }
-.fc__tip:has(.fc__tip-s + .fc__tip-s) { min-width: 664px; }
-.fc__tip-t { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0 18px; }
+.fc__tip:has(.fc__tip-s + .fc__tip-s) { min-width: 680px; }
+.fc__tip-t { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0 28px; }
 .fc__tip-t:empty { display: none; }
 .fc__tip-s { display: grid; min-width: 0; }
-.fc__tip-h { margin-top: 8px; font-size: 11px; text-transform: uppercase; color: var(--dim); }
+/* each table's title: white, bold, on a white rule (the site's section heads), so the race and the championship never mix up */
+.fc__tip-h { margin-top: 12px; padding-top: 7px; border-top: 2px solid #fff; font: 700 12px 'F1'; text-transform: uppercase; color: #fff; }
+.fc__tip-h + .slice { margin-top: 4px; border-top: 0; }
 /* the hovered season's dot grows */
 .fc__f { transform-box: fill-box; transform-origin: center; }
 .fc__f.is-on { transform: scale(1.5); }
@@ -48,10 +50,10 @@
 @media (prefers-reduced-motion: reduce) { .fc__tip, .fc__tip--glide, .fc__f, .fc__hit { transition: none; } }
 .fc__tip-a { font-size: 11px; text-transform: uppercase; color: var(--dim); }
 .fc__tip-b { font-size: 20px; color: #fff; }
+.fc__tip-b:has(img) { display: flex; align-items: center; gap: 8px; font-size: 18px; text-transform: uppercase; } /* a race: the flag and the Grand Prix, as the milestones' cards */
+.fc__tip-b img { width: 22px; height: auto; border-radius: 2px; }
 .fc__tip-c, .fc__tip-d { font-size: 12px; color: var(--text); }
-.fc__tip-d:empty { display: none; }
-.fc__tip[data-dir='up'] .fc__tip-c { color: var(--green); }
-.fc__tip[data-dir='down'] .fc__tip-c, .fc__tip[data-dir='out'] .fc__tip-c { color: var(--red); }
+.fc__tip-c:empty, .fc__tip-d:empty { display: none; }
 @media (max-width: 760px) {
     .fc__tip:has(.slice), .fc__tip:has(.fc__tip-s + .fc__tip-s) { min-width: 290px; }
     .fc__tip-t { grid-auto-flow: row; } /* a phone: the two one under the other */

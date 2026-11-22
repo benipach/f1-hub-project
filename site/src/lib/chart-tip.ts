@@ -1,7 +1,8 @@
 // The hover card of the profile's charts (FormChart, CareerChart): our own,
 // never the browser's title. Each chart has a .fc__plot with one .fc__tip and
 // .fc__hit areas carrying the card's lines in data-a … data-d (written at
-// build time); the card follows the hovered one inside its plot. A hit with
+// build time; data-f, a flag before data-b); the card follows the hovered one
+// inside its plot. A hit with
 // data-k lights up the marks with the same data-k (the dot grows) and, when
 // the plot packs standings slices for it (SliceData.astro), the card draws
 // them in Standings.astro's markup (keep the two alike).
@@ -59,11 +60,11 @@ document.addEventListener('pointerover', (e) => {
     if (!hit) { hide(plot); return; }
     unmark(plot);
     for (const k of ['a', 'b', 'c', 'd'] as const) tip.querySelector<HTMLElement>(`.fc__tip-${k}`)!.textContent = hit.dataset[k] ?? '';
+    if (hit.dataset.f) tip.querySelector('.fc__tip-b')!.insertAdjacentHTML('afterbegin', `<img src="${hit.dataset.f}" alt="">`);
     const k = hit.dataset.k;
     const table = tip.querySelector<HTMLElement>('.fc__tip-t');
     if (table) table.innerHTML = k ? slices(plot, k) : '';
     if (k) for (const m of hit.ownerSVGElement?.querySelectorAll(`[data-k="${k}"]:not(.fc__hit)`) ?? []) m.classList.add('is-on');
-    tip.dataset.dir = hit.dataset.dir ?? '';
     const box = plot.getBoundingClientRect(), r = hit.getBoundingClientRect();
     const left = `${Math.min(Math.max(r.left + r.width / 2 - box.left - tip.offsetWidth / 2, 0), box.width - tip.offsetWidth)}px`;
     // Already showing: glide over. Hidden: put it in place first, then fade in

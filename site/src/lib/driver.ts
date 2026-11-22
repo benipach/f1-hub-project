@@ -36,6 +36,8 @@ export type DriverRound = {
     readonly champ: readonly StandingRow[];
     /** "Australian Grand Prix", in the page's language. */
     readonly full: string;
+    /** The race day, ISO. */
+    readonly date: string;
     /** "Australian GP", in the page's language. */
     readonly gp: string;
     /** "Australian" ("Australia" in Spanish): the name alone, for tables. */
@@ -445,7 +447,7 @@ export function buildDriver(dataDir: URL, id: string, locale: string): DriverPro
         }
         const rounds = S.rounds.map((r): DriverRound => {
             const x = r.rows.find((row) => row.driver === id);
-            const common = { race: x ? slices.get(r)?.race ?? [] : [], champ: x ? slices.get(r)?.champ ?? [] : [], round: r.round, full: fullOf(r), gp: gpOf(r), short: shortOf(r), iso: r.iso, field: r.field, sprintWeekend: r.sprint };
+            const common = { race: x ? slices.get(r)?.race ?? [] : [], champ: x ? slices.get(r)?.champ ?? [] : [], round: r.round, full: fullOf(r), date: r.date, gp: gpOf(r), short: shortOf(r), iso: r.iso, field: r.field, sprintWeekend: r.sprint };
             const blank = { team: null, grid: null, pos: null, out: null, pts: 0, racePts: 0, sprint: null, fl: false, pole: false };
             if (!r.raced) return { ...common, ...blank, upcoming: true, missed: false };
             if (!x) return { ...common, ...blank, upcoming: false, missed: true };
