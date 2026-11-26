@@ -13,6 +13,8 @@ import { featuredSeason, type DriverProfile, type DriverRound, type DriverSeason
 import { href } from '../../lib/paths';
 import Places from './Places.astro';
 import FormChart from './FormChart.astro';
+import { getImage } from 'astro:assets';
+import flSource from '../../../../img/fastest-lap.png';
 
 interface Props {
     driver: DriverProfile;
@@ -26,6 +28,9 @@ const num = new Intl.NumberFormat(intl);
 const n = (v: number) => num.format(v);
 const featured = featuredSeason(D).year;
 const years = [...D.seasons].map((s) => s.year).reverse();
+// The fastest lap as its mark (img/fastest-lap.png, the purple stopwatch), not words,
+// before the finish it goes with (owner, 22/11); the table head says what it is
+const fl = await getImage({ src: flSource, width: 36, format: 'webp', quality: 80 });
 
 type Row =
     | { kind: 'race'; r: DriverRound; total: number; delta: number | null }
@@ -89,6 +94,7 @@ const sprintDelta = (sp: NonNullable<DriverRound['sprint']>) => (!sp.out && sp.g
                     <div class="dseason__col">
                         <p class="col-h">
                             <span>{s.teams.map((tm) => tm.name).join(' · ')} · {plural(w.rounds, s.rounds.length)}</span>
+                            {s.fls > 0 && <span class="rr__key"><img class="rr__fl" src={fl.src} alt="" width="16" height="16" loading="lazy" />{w.fastestLap}</span>}
                         </p>
                         {/* Two groups with their own heads, split by a rule (owner, 22/11: the race and the sprint ran together) */}
                         <div class="rr rr--grp" aria-hidden="true"><span></span><span></span><span></span><b class="g">{w.cols.race}</b>{sprints && <b class="g g--spr">{w.cols.sprint}</b>}<b class="g g--tot"></b></div>
@@ -104,9 +110,9 @@ const sprintDelta = (sp: NonNullable<DriverRound['sprint']>) => (!sp.out && sp.g
                             <div class:list={['rr', { 'rr--win': !row.r.out && row.r.pos === 1 }]}>
                                 <span class="rr__rd">{row.r.round}</span>
                                 {row.r.iso ? <img class="rr__flag" src={href(`img/flags/${row.r.iso.toLowerCase()}.svg`)} alt="" width="26" height="18" loading="lazy" /> : <span></span>}
-                                <span class="rr__gp"><span class="rr__name">{row.r.short}</span>{row.r.pole && <small>{w.pole}</small>}{row.r.fl && <small class="fl">{w.fastestLap}</small>}</span>
-                                <span class="rr__n rr__dim">{row.r.grid ? `P${row.r.grid}` : '—'}</span>
-                                <span class:list={['rr__n rr__fin', { rr__out: row.r.out }]}>{row.r.out ?? `P${row.r.pos}`}</span>
+                                <span class="rr__gp"><span class="rr__name">{row.r.short}</span></span>
+                                <span class:list={['rr__n rr__dim', { rr__p1: row.r.grid === 1 }]}>{row.r.grid ? `P${row.r.grid}` : '—'}</span>
+                                <span class:list={['rr__n rr__fin', { rr__out: row.r.out }]}>{row.r.fl && <img class="rr__fl" src={fl.src} alt={w.fastestLap} width="16" height="16" loading="lazy" />}{row.r.out ?? `P${row.r.pos}`}</span>
                                 <span class="rr__d"><Places delta={row.delta} /></span>
                                 <span class="rr__n rr__pts">{row.r.racePts ? `+${n(row.r.racePts)}` : '0'}</span>
                                 {sprints && (row.r.sprint ? <>

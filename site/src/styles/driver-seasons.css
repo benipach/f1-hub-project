@@ -37,10 +37,12 @@
 .rr__flag { width: 26px; height: auto; border-radius: 2px; }
 .rr__gp { display: flex; align-items: baseline; gap: 8px; min-width: 0; font-weight: 700; font-size: 15px; text-transform: uppercase; color: #fff; white-space: nowrap; }
 .rr__name { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.rr__gp small { flex: none; font-weight: 400; font-size: 11px; color: var(--dim); }
-.rr__gp small.fl { color: var(--purple); }
+.rr__fl { width: 16px; height: 16px; border-radius: 3px; vertical-align: -2px; } /* the fastest lap: img/fastest-lap.png */
+.rr__fin:has(.rr__fl) { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+.rr__key { display: inline-flex; align-items: center; gap: 7px; font-weight: 400; font-size: 12px; color: var(--dim); }
 .rr__n { font-weight: 700; font-size: 15px; color: var(--text); text-align: right; white-space: nowrap; }
 .rr__dim { font-weight: 400; color: var(--dim); }
+.rr__dim.rr__p1 { font-weight: 700; color: #fff; } /* started first: the grid's P1 in bold, no "pole" word (owner, 22/11) */
 .rr__fin, .rr__tot { color: #fff; }
 .rr__pts { font-weight: 400; color: var(--text); }
 .rr__out { font-size: 13px; color: var(--dim); }
@@ -88,7 +90,7 @@
     .years { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
     /* the rounds on a phone: round, flag, Grand Prix, finish, points */
     .rr--grp, .rr--head { display: none; }
-    .dseason--sprints .rr, .rr { grid-template-columns: 22px 22px minmax(0, 1fr) 48px 40px; }
-    .rr__dim, .rr__d, .rr .sep, .rr__s, .rr__gp small, .rr__tot { display: none; } /* a phone: the race finish and points */
+    .dseason--sprints .rr, .rr { grid-template-columns: 22px 22px minmax(0, 1fr) 56px 40px; } /* the finish takes the fastest lap's mark */
+    .rr__dim, .rr__d, .rr .sep, .rr__s, .rr__tot { display: none; } /* a phone: the race finish and points */
     .rr--dim { grid-template-columns: 22px 22px minmax(0, 1fr) auto; }
 }
